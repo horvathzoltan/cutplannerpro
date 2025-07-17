@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1589</width>
+    <height>654</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QGroupBox" name="leftBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>430</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Cutting Requests</string>
+      </property>
+      <layout class="QVBoxLayout" name="leftLayout">
+       <item>
+        <widget class="QTableWidget" name="tableInput">
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Length (mm)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Quantity</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Category</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Buttons</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="btnAddRow">
+           <property name="text">
+            <string>Add Row</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinKerf">
+           <property name="suffix">
+            <string notr="true" comment="mm"/>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>10</number>
+           </property>
+           <property name="singleStep">
+            <number>0</number>
+           </property>
+           <property name="value">
+            <number>3</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="midBox">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Results</string>
+      </property>
+      <layout class="QVBoxLayout" name="midLayout">
+       <item>
+        <widget class="QPushButton" name="btnOptimize">
+         <property name="text">
+          <string>Optimize Plan</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableResults">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Rod#</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Category</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Cuts</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Kerf</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Waste</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="rightBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>600</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>500</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Leftovers</string>
+      </property>
+      <layout class="QVBoxLayout" name="rightLayout">
+       <item>
+        <widget class="QLabel" name="labelLeftovers">
+         <property name="text">
+          <string>Material Stock and Waster Summary</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableStock">
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Category</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length (mm)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Quantity</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableLeftovers">
+         <column>
+          <property name="text">
+           <string>Rod#</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Category</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length (mm)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Cuts</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Reusable</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1589</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
