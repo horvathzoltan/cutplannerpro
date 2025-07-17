@@ -7,8 +7,16 @@
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
 
-void CuttingPresenter::addRequest(const CuttingRequest& req) {
+void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
     model.addRequest(req);
+}
+
+void CuttingPresenter::setCuttingRequests(const QVector<CuttingRequest>& list) {
+    model.setRequests(list);
+}
+
+void CuttingPresenter::setStockInventory(const QVector<StockEntry>& list) {
+    model.setStockInventory(list);
 }
 
 void CuttingPresenter::setKerf(int kerf) {
@@ -21,8 +29,13 @@ void CuttingPresenter::clearRequests() {
 
 void CuttingPresenter::runOptimization() {
     model.optimize();
-    //view->updatePlanTable(model.getPlans());
-    //view->updateLeftovers(model.getLeftoverResults());
+
+    // ✨ Ha készen állsz rá, itt frissíthetjük a View táblákat:
+    if (view) {
+        view->updatePlanTable(model.getPlans());
+        view->appendLeftovers(model.getLeftoverResults());
+        view->updateStockTableFromRegistry(); // ha a készlet változik
+    }
 }
 
 QVector<CutPlan> CuttingPresenter::getPlans()
@@ -36,22 +49,9 @@ QVector<CutResult> CuttingPresenter::getLeftoverResults()
 }
 
 
-// void CuttingPresenter::updateLeftovers() {
-//     QVector<CutResult> leftovers = model.getLeftoverResults();
-//     view->updateLeftoversTable(leftovers);
-// }
 
 
 
-/**/
-
-void CuttingPresenter::setCuttingRequests(const QVector<CuttingRequest>& list) {
-    model.setRequests(list);
-}
-
-void CuttingPresenter::setStockInventory(const QVector<StockEntry>& list) {
-    model.setStockInventory(list);
-}
 
 
 

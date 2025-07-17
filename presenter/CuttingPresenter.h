@@ -1,5 +1,4 @@
-#ifndef CUTTINGPRESENTER_H
-#define CUTTINGPRESENTER_H
+#pragma once
 
 #include <QObject>
 #include "../model/CuttingOptimizerModel.h"
@@ -19,14 +18,21 @@ class CuttingPresenter : public QObject {
 public:
     explicit CuttingPresenter(MainWindow* view, QObject *parent = nullptr);
 
-    void addRequest(const CuttingRequest& req);
-    void setKerf(int kerf);
-    void clearRequests();
-    void runOptimization();
-
+    // Vágási igények
+    void addCutRequest(const CuttingRequest& req);
     void setCuttingRequests(const QVector<CuttingRequest> &list);
+    void clearRequests();
+
+    // Készlet
     void setStockInventory(const QVector<StockEntry> &list);
 
+    // Paraméterek
+    void setKerf(int kerf);
+
+    // Optimalizálás
+    void runOptimization();
+
+    // Eredmények lekérése
     QVector<CutPlan> getPlans();
     QVector<CutResult> getLeftoverResults();
 private:
@@ -34,4 +40,3 @@ private:
     CuttingOptimizerModel model; 
 };
 
-#endif // CUTTINGPRESENTER_H

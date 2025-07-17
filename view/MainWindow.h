@@ -27,7 +27,7 @@ public:
     void clearCutTable();
     void addCutRow(int rodNumber, const CutPlan& plan);
 
-    //QVector<ProfileStock> readInventoryFromStockTable();
+    QVector<StockEntry> readInventoryFromStockTable();
     QVector<CuttingRequest> readRequestsFromInputTable();
 
     void updatePlanTable(const QVector<CutPlan> &plans);
@@ -43,8 +43,8 @@ private:
     CuttingPresenter* presenter;   
 
     void initTestInputTable();
-    void initTestStockInventory();
-    void initTestLeftoverResults();
+    void initTestStockTable();
+    void initTestLeftoversTable();
 
     void updateStockTable();
     void decorateTableStock();

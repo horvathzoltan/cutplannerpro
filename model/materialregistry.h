@@ -10,8 +10,9 @@ class MaterialRegistry {
 private:
     MaterialRegistry() = default;  // 🔐 Privát konstruktor a singletonhoz
 
-public:
     QVector<MaterialMaster> materials;  // 📦 Betöltött anyagtörzs lista
+public:
+
 
     // 🔁 Singleton elérés
     static MaterialRegistry& instance() {
@@ -21,6 +22,8 @@ public:
 
     // 🔍 Keresés technikai azonosító szerint (id)
     std::optional<MaterialMaster> findById(const QUuid& id) const;
+
+    const QVector<MaterialMaster>& all() const { return materials;}
 
     bool isBarcodeUnique(const QString& barcode) const;
 

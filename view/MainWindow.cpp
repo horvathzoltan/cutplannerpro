@@ -14,6 +14,8 @@
 #include "../model/cutresult.h"
 #include "../model/CuttingOptimizerModel.h"
 
+#include <model/stockrepository.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -90,12 +92,14 @@ void MainWindow::addRowToTableInput(const CuttingRequest& request) {
     ui->tableInput->setItem(row, 0, itemName);
 
     // 📏 Hossz
-    auto* itemLength = new QTableWidgetItem(QString::number(request.requiredLength));
+    QString h = QString::number(request.requiredLength);
+    auto* itemLength = new QTableWidgetItem(h);
     itemLength->setTextAlignment(Qt::AlignCenter);
     ui->tableInput->setItem(row, 0, itemLength);
 
     // 🔢 Mennyiség
-    auto* itemQty = new QTableWidgetItem(QString::number(request.quantity));
+    QString q = QString::number(request.quantity);
+    auto* itemQty = new QTableWidgetItem(q);
     itemQty->setTextAlignment(Qt::AlignCenter);
     ui->tableInput->setItem(row, 1, itemQty);
 
@@ -137,15 +141,21 @@ void MainWindow::addRowToTableInput(const CuttingRequest& request) {
 void MainWindow::on_btnAddRow_clicked() {
     AddInputDialog dialog(this);
 
-    if (dialog.exec() != QDialog::Accepted) return;
+    const int result = dialog.exec();
+    if (result != QDialog::Accepted)
+        return;
 
     CuttingRequest request;
     request.materialId = dialog.selectedMaterialId();
     request.requiredLength = dialog.length();
     request.quantity = dialog.quantity();
 
-    if (request.materialId.isNull() || request.requiredLength <= 0 || request.quantity <= 0) {
-        QMessageBox::warning(this, "Hibás adat", "Hiányzó vagy érvénytelen vágási igény.");
+    if (request.materialId.isNull()) {
+        QMessageBox::warning(this, "Hibás adat", "Nem lett anyag kiválasztva.");
+        return;
+    }
+    if (request.requiredLength <= 0 || request.quantity <= 0) {
+        QMessageBox::warning(this, "Hibás adat", "A hossz és darabszám érvénytelen.");
         return;
     }
 
@@ -156,7 +166,17 @@ void MainWindow::on_btnAddRow_clicked() {
 
 void MainWindow::on_btnOptimize_clicked() {
     QVector<CuttingRequest> requestList = readRequestsFromInputTable();
-    QVector<ProfileStock> stockList     = readInventoryFromStockTable();
+    QVector<StockEntry> stockList     = readInventoryFromStockTable();
+
+    if (requestList.isEmpty()) {
+        QMessageBox::warning(this, "Hiba", "Nincs vágási igény megadva.");
+        return;
+    }
+
+    if (stockList.isEmpty()) {
+        QMessageBox::warning(this, "Hiba", "Nincs készlet megadva.");
+        return;
+    }
 
     decorateTableStock();
 
@@ -164,12 +184,7 @@ void MainWindow::on_btnOptimize_clicked() {
     presenter->setCuttingRequests(requestList);
     presenter->setStockInventory(stockList);
 
-    presenter->runOptimization();
-    // 📊 Táblák frissítése
-
-    //updateLeftovers(presenter->getLeftoverResults());
-    appendLeftovers(presenter->getLeftoverResults());
-    updatePlanTable(presenter->getPlans());  // ✅ ez a helyes név
+    presenter->runOptimization();    
 }
 
 
@@ -184,43 +199,38 @@ void MainWindow::initTestStockTable() {
     ui->tableStock->setRowCount(0);
     QStringList categories = { "RollerTube", "BottomBar" };
 
-    struct Row {
-        QString name;
-        ProfileCategory category;
-        int length;
+    const auto& materials = MaterialRegistry::instance().all();
+
+    struct StockRow {
+        QUuid materialId;
+        int stockLength_mm;
         int quantity;
     };
 
-    QVector<Row> rows =
-        {
-            {"Csőtengely Ø60", ProfileCategory::RollerTube, 6000, 5},
-            {"Csőtengely Ø60", ProfileCategory::RollerTube, 7000, 10},
-            {"Redőnysúly Ø12",  ProfileCategory::BottomBar, 4000, 12},
-            {"Redőnysúly Ø22",  ProfileCategory::BottomBar, 3000, 10},
-            {"Redőnysúly Ø22",  ProfileCategory::BottomBar, 4000, 8}
-        };
+    QVector<StockRow> rows = {
+        { materials[0].id, 6000, 5 },
+        { materials[0].id, 7000, 10 },
+        { materials[1].id, 4000, 12 },
+        { materials[1].id, 3000, 10 },
+        { materials[1].id, 4000, 8 }
+    };
 
     for (const auto& r : rows) {
+        const auto opt = MaterialRegistry::instance().findById(r.materialId);
+        if (!opt.has_value())
+            continue;
+
+        const MaterialMaster& m = *opt;
+
         int row = ui->tableStock->rowCount();
         ui->tableStock->insertRow(row);
 
-        ui->tableStock->setItem(row, 0, new QTableWidgetItem(r.name));
-        QString categoryStr = CategoryUtils::categoryToString(r.category);
+        ui->tableStock->setItem(row, 0, new QTableWidgetItem(m.name));
+        QString categoryStr = CategoryUtils::categoryToString(m.category);
         ui->tableStock->setItem(row, 1, new QTableWidgetItem(categoryStr));
-        ui->tableStock->setItem(row, 2, new QTableWidgetItem(QString::number(r.length)));
-        ui->tableStock->setItem(row, 3, new QTableWidgetItem(QString::number(r.quantity)));
-
-        //QComboBox* combo = new QComboBox();
-
-        //combo->addItems(categories);
-        // Kategória beállítása
-
-        //combo->setCurrentText(categoryStr);
-
-        //ui->tableStock->setCellWidget(row, 3, combo);
+        ui->tableStock->setItem(row, 2, new QTableWidgetItem(QString::number(r.stockLength_mm)));
+        ui->tableStock->setItem(row, 3, new QTableWidgetItem(QString::number(r.quantity)));       
     }
-
-    //ui->tableStock->setHorizontalHeaderLabels({ "Megnevezés", "Hossz", "Darabszám", "Típus" });
 }
 
 /*
@@ -281,24 +291,9 @@ void MainWindow::updateLeftovers(const QVector<CutResult> &results) {
 
 /**/
 
-void MainWindow::initTestStockInventory() {
-    profileInventory.clear();
-
-    profileInventory.append({
-        "Csőtengely Ø60", ProfileCategory::RollerTube, 7000, 2
-    });
-    profileInventory.append({
-        "Csőtengely Ø60", ProfileCategory::RollerTube, 6000, 1
-    });
-    profileInventory.append({
-        "Redőnysúly 3m",  ProfileCategory::BottomBar, 3000, 3
-    });
-
-    //updateStockTable(); // ha van rá metódus, frissíti a táblázatot
-}
 
 void MainWindow::updateStockTableFromRegistry() {
-    const auto& materials = MaterialRegistry::instance().materials;
+    const auto& materials = MaterialRegistry::instance().all();
 
     ui->tableStock->clearContents();
     ui->tableStock->setRowCount(materials.size());
@@ -318,22 +313,16 @@ void MainWindow::updateStockTableFromRegistry() {
 void MainWindow::initTestInputTable() {
     ui->tableInput->setRowCount(0);
 
-    //QStringList categories = { "RollerTube", "BottomBar" };
+    const auto& materials = MaterialRegistry::instance().all();
 
-    struct RowData {
-        int length;
-        int quantity;
-        ProfileCategory category;
+    QVector<CuttingRequest> testRequests = {
+        { materials[0].id, 1800, 2 },
+        { materials[1].id, 2200, 1 },
+        { materials[0].id, 2900, 1 }
     };
 
-    QVector<RowData> testRequests = {
-        {1800, 2, ProfileCategory::RollerTube},
-        {2200, 1, ProfileCategory::BottomBar},
-        {2900, 1, ProfileCategory::RollerTube}
-    };
-
-    for (const auto& row : testRequests) {
-            addRowToTableInput(row.length, row.quantity, row.category);
+    for (const auto& req : testRequests) {
+        addRowToTableInput(req);
     }
 }
 
@@ -341,56 +330,62 @@ void MainWindow::initTestInputTable() {
 void MainWindow::updateStockTable() {
     ui->tableStock->setRowCount(0);
 
-    for (const ProfileStock &item : profileInventory) {
+    const QVector<StockEntry> inventory = StockRepository::instance().all();
+
+    for (const StockEntry &entry : inventory) {
+        const auto opt = MaterialRegistry::instance().findById(entry.materialId);
+        if (!opt.has_value())
+            continue;
+
+        const MaterialMaster& material = *opt;
+
         int row = ui->tableStock->rowCount();
         ui->tableStock->insertRow(row);
 
-        ui->tableStock->setItem(row, 0, new QTableWidgetItem(item.name));
-        ui->tableStock->setItem(row, 1, new QTableWidgetItem(
-                                            item.category == ProfileCategory::RollerTube ? "RollerTube" : "BottomBar"));
-        ui->tableStock->setItem(row, 2, new QTableWidgetItem(QString::number(item.length)));
-        ui->tableStock->setItem(row, 3, new QTableWidgetItem(QString::number(item.quantity)));
+        ui->tableStock->setItem(row, 0, new QTableWidgetItem(material.name));
+        ui->tableStock->setItem(row, 1, new QTableWidgetItem(CategoryUtils::categoryToString(material.category)));
+        ui->tableStock->setItem(row, 2, new QTableWidgetItem(QString::number(entry.stockLength_mm)));
+        ui->tableStock->setItem(row, 3, new QTableWidgetItem(QString::number(entry.quantity)));
     }
 }
 
-/**/
-
-
-
-/**/
-
-QVector<ProfileStock> MainWindow::readInventoryFromStockTable() {
-    QVector<ProfileStock> inventory;
+QVector<StockEntry> MainWindow::readInventoryFromStockTable() {
+    QVector<StockEntry> inventory;
     int rowCount = ui->tableStock->rowCount();
 
     for (int row = 0; row < rowCount; ++row) {
         auto* nameItem = ui->tableStock->item(row, 0);
-        //QWidget* catWidget = ui->tableStock->cellWidget(row, 1); // ⬅️ combó!
-        auto* catItem = ui->tableStock->item(row, 1);
+        //QWidget* comboWidget = ui->tableStock->cellWidget(row, 1); // ⬅️ combó!
+        //auto* catItem = ui->tableStock->item(row, 1);
         auto* lengthItem = ui->tableStock->item(row, 2);
         auto* qtyItem = ui->tableStock->item(row, 3);
 
 
-        if (!nameItem || !lengthItem || !qtyItem || !catItem)
+        if (!nameItem || !lengthItem || !qtyItem)
             continue;
 
-        bool okLen = false, okQty = false;
-
         QString name = nameItem->text().trimmed();
+        bool okLen = false, okQty = false;
         int length = lengthItem->text().toInt(&okLen);
         int quantity = qtyItem->text().toInt(&okQty);
 
-        // QComboBox* combo = qobject_cast<QComboBox*>(catWidget);
-        // if (!combo)
-        //     continue;
-
-        QString categoryStr = catItem->text().trimmed();
-        ProfileCategory category = CategoryUtils::categoryFromString(categoryStr);
-
-        if (!okLen || !okQty || name.isEmpty() || length <= 0 || quantity <= 0 || category == ProfileCategory::Unknown)
+        if (name.isEmpty() || !okLen || !okQty || length <= 0 || quantity <= 0)
             continue;
 
-        inventory.append({ name, category, length, quantity });
+        // 🔁 Név alapján törzsanyag keresés
+        const auto& allMaterials = MaterialRegistry::instance().all();
+        auto master = std::find_if(allMaterials.begin(), allMaterials.end(),
+            [&](const MaterialMaster& m) { return m.name.compare(name, Qt::CaseInsensitive) == 0; });
+
+        if (master == allMaterials.end())
+            continue;
+
+        StockEntry entry;
+        entry.materialId = master->id;
+        entry.stockLength_mm = length;
+        entry.quantity = quantity;
+
+        inventory.append(entry);
     }
 
     return inventory;
@@ -404,33 +399,35 @@ QVector<CuttingRequest> MainWindow::readRequestsFromInputTable() {
     for (int row = 0; row < rowCount; ++row) {
         auto* lengthItem   = ui->tableInput->item(row, 0);
         auto* quantityItem = ui->tableInput->item(row, 1);
-        auto* categoryItem = ui->tableInput->item(row, 2);
+        auto* nameItem = ui->tableInput->item(row, 2);
         //auto* categoryWidget = ui->tableInput->cellWidget(row, 2); // combobox!
 
-        if (!lengthItem || !quantityItem || !categoryItem)
+        if (!lengthItem || !quantityItem || !nameItem)
             continue;
 
         bool okLen = false, okQty = false;
         int length   = lengthItem->text().toInt(&okLen);
         int quantity = quantityItem->text().toInt(&okQty);
-        QString categoryStr = categoryItem->text();
-        //QString categoryStr;
+        QString name = nameItem->text().trimmed();
 
-        // 👇 QComboBox-ra cast
-        // QComboBox* combo = qobject_cast<QComboBox*>(categoryWidget);
-        // if (combo)
-        //     categoryStr = combo->currentText().trimmed();
-
-
-
-        if (!okLen || !okQty || length <= 0 || quantity <= 0 || categoryStr.isEmpty())
+        if (!okLen || !okQty || length <= 0 || quantity <= 0 || name.isEmpty())
             continue;
 
-        ProfileCategory category = CategoryUtils::categoryFromString(categoryStr);
-        if (category == ProfileCategory::Unknown)
+        // 🔍 Név alapján keresés a törzsben
+        const auto& all = MaterialRegistry::instance().all();
+        auto it = std::find_if(all.begin(), all.end(), [&](const MaterialMaster& m) {
+            return m.name.compare(name, Qt::CaseInsensitive) == 0;
+        });
+
+        if (it == all.end())
             continue;
 
-        result.append({ length, quantity, category });
+        CuttingRequest req;
+        req.materialId     = it->id;
+        req.requiredLength = length;
+        req.quantity       = quantity;
+
+        result.append(req);
     }
 
     return result;
@@ -506,9 +503,9 @@ void MainWindow::addCutRow(int rodNumber, const CutPlan& plan) {
     cutsWidget->setAutoFillBackground(true);
     cutsWidget->setStyleSheet(QString("background-color: %1").arg(bgColor.name()));
 
-
-    QString categoryStr = CategoryUtils::categoryToString(plan.category);
-    QString badgeColor = CategoryUtils::badgeColorForCategory(plan.category);
+    auto planCategory = plan.category();
+    QString categoryStr = CategoryUtils::categoryToString(planCategory);
+    QString badgeColor = CategoryUtils::badgeColorForCategory(planCategory);
 
     // 🏷️ Kategóriacímke QLabel-ként, badge-stílusban
     QLabel *categoryLabel = new QLabel(categoryStr);
@@ -727,25 +724,30 @@ void MainWindow::addLeftoverRow(const CutResult& res, int rodIndex) {
         ui->tableLeftovers->setItem(row, col, item);
     };
 
-    const int reusableCol = 4;
+    auto opt = MaterialRegistry::instance().findById(res.materialId);
+    const MaterialMaster* master = opt ? &*opt : nullptr;
 
-    setItem(0, QString::number(rodIndex + 1));          // ID
-    setItem(1, CategoryUtils::categoryToString(res.category));
+    const int colReusable = 4;
+    const int colSource    = 5;
+
+    setItem(0, QString::number(rodIndex + 1));          // Rod index
+    setItem(1, master ? master->name : "(ismeretlen)"); //Anyag név
     setItem(2, QString::number(res.length));            // Eredeti hossz
-    //setItem(3, QString::number(res.waste));             // Maradék
     setItem(3, res.cutsAsString());                     // Vágások
-    ui->tableLeftovers->setItem(row, reusableCol, itemReusable);
+    ui->tableLeftovers->setItem(row, colReusable, itemReusable);
+    setItem(colSource, res.sourceAsString());
 
-    auto* itemSource = new QTableWidgetItem(res.sourceAsString());
-    itemSource->setTextAlignment(Qt::AlignCenter);
-    ui->tableLeftovers->setItem(row, 5, itemSource);
+    // auto* itemSource = new QTableWidgetItem(res.sourceAsString());
+    // itemSource->setTextAlignment(Qt::AlignCenter);
+    // ui->tableLeftovers->setItem(row, 5, itemSource);
 
     // 🎨 Kategóriaalapú színezés, ha van hozzá szín
-    //if (res.category.has_value()) {
-    QColor bg = QColor(CategoryUtils::badgeColorForCategory(res.category));//.lighter(160);
+    // 🎨 Törzsadatból színezés
+    if (master) {
+        QColor bg = CategoryUtils::badgeColorForCategory(master->category);
         for (int col = 0; col < ui->tableLeftovers->columnCount(); ++col) {
-        if (col == reusableCol)
-            continue; // ne színezzük a ✔/✘ oszlopot
+            if (col == colReusable)
+                continue; // a ✔/✘ oszlop ne kapjon háttért
 
             auto* item = ui->tableLeftovers->item(row, col);
             if (!item) {
@@ -755,20 +757,24 @@ void MainWindow::addLeftoverRow(const CutResult& res, int rodIndex) {
             item->setBackground(bg);
             item->setForeground(col == 1 ? Qt::white : Qt::black);
         }
-    //}
+    }
 }
 
 void MainWindow::initTestLeftoversTable() {
     ui->tableLeftovers->setRowCount(0);
-    // ui->tableLeftovers->setColumnCount(6);
-    // ui->tableLeftovers->setHorizontalHeaderLabels({
-    //     "ID", "Típus", "Eredeti", "Maradék", "Vágások", "Újrafelhasználható"
-    // });
+    /*
+    ui->tableLeftovers->setColumnCount(6);
+    ui->tableLeftovers->setHorizontalHeaderLabels({
+        "ID", "Anyag", "Eredeti", "Maradék", "Vágások", "Forrás"
+    });
+*/
+
+    const auto& materials = MaterialRegistry::instance().all();
 
     QVector<CutResult> testLeftovers = {
-        { 3000, {}, 2940, ProfileCategory::RollerTube , LeftoverSource::Manual , std::nullopt },
-        { 3000, {1800, 1200}, 180, ProfileCategory::RollerTube, LeftoverSource::Manual , std::nullopt},
-        { 4000, {600, 500}, 100, ProfileCategory::BottomBar, LeftoverSource::Manual , std::nullopt}
+        { materials[0].id, 3000, {}, 2940, LeftoverSource::Manual, std::nullopt },
+        { materials[0].id, 3000, {1800, 1200}, 180, LeftoverSource::Manual, std::nullopt },
+        { materials[1].id, 4000, {600, 500}, 100, LeftoverSource::Manual, std::nullopt }
     };
 
     for (int i = 0; i < testLeftovers.size(); ++i) {
