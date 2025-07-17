@@ -107,14 +107,16 @@ void CuttingOptimizerModel::optimize() {
 
         // ➕ Maradék mentése, ha van értelme (>300 mm)
         if (waste >= 300) {
-            leftoverResults.append({
-                waste,
-                selectedCombo,
-                waste,
-                selectedStock.category(),
-                usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization,
-                usedReusable ? std::nullopt : std::make_optional(currentOpId)
-            });
+            CutResult result;
+            result.materialId     = selectedStock.materialId;
+            result.length         = selectedStock.stockLength_mm;
+            result.cuts           = selectedCombo;
+            result.waste          = waste;
+            result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
+            result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
+
+            leftoverResults.append(result);
+
         }
     }
 }

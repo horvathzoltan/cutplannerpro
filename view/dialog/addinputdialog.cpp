@@ -28,7 +28,7 @@ AddInputDialog::~AddInputDialog()
 
 
 void AddInputDialog::populateMaterialCombo() {
-    const auto& registry = MaterialRegistry::instance().materials;
+    const auto& registry = MaterialRegistry::instance().all();
 
     ui->comboMaterial->clear();
     for (const auto& m : registry) {
