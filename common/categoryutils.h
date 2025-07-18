@@ -1,14 +1,8 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
+ #include "model/materialmaster.h"
+// #include <QColor>
 #include <QString>
-
-
-enum class ProfileCategory {
-    RollerTube,  // Tengelyek (csőmotorhoz)
-    BottomBar,   // Súlyprofilok (redőny, napháló alja)
-    Unknown
-};
 
 namespace CategoryUtils {
 
@@ -24,12 +18,10 @@ static inline ProfileCategory categoryFromString(const QString& str) {
     return ProfileCategory::Unknown;
 }
 
-static inline QString badgeColorForCategory(ProfileCategory cat) {
+static inline QString categoryToColorName(ProfileCategory cat) {
     if (cat == ProfileCategory::RollerTube) return "#345678"; // acélkék
     if (cat == ProfileCategory::BottomBar)  return "#506070"; // kékesszürke
-    return "#7f8c8d"; // tompaszürke (ismeretlen kategória)
+    return "#FA8072"; // 😣 lazacszín - hibás / ismeretlen kategória
 }
 
 }
-
-#endif // COMMON_H

@@ -1,6 +1,6 @@
-name;barcode;length;dim1;dim2;shape;defaultMachineId;type
-Csőtengely Ø60;MAT-ROLL60-6000;6000;60;;Round;M1;Steel
-Csőtengely Ø60;MAT-ROLL60-7000;7000;60;;Round;M1;Steel
-Redőnysúly Ø12;MAT-BAR12-4000;4000;12;60;Rectangular;M2;Aluminium
-Redőnysúly Ø22;MAT-BAR22-3000;3000;22;60;Rectangular;M2;Aluminium
-Redőnysúly Ø22;MAT-BAR22-4000;4000;22;60;Rectangular;M2;Aluminium
+name;barcode;length;dim1;dim2;shape;defaultMachineId;type;category
+Csőtengely Ø60;MAT-ROLL60-6000;6000;60;;Round;M1;Steel;RollerTube
+Csőtengely Ø60;MAT-ROLL60-7000;7000;60;;Round;M1;Steel;RollerTube
+Redőnysúly Ø12;MAT-BAR12-4000;4000;12;;Round;M1;Steel;BottomBar
+Redőnysúly Ø22;MAT-BAR22-3000;3000;22;;Round;M1;Steel;BottomBar
+Redőnysúly Ø22;MAT-BAR22-4000;4000;22;;Round;M1;Steel;BottomBar

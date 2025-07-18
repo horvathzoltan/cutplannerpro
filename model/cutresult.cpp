@@ -1,6 +1,7 @@
 #include "cutresult.h"
 
 #include "materialregistry.h"
+#include "../common/materialutils.h"
 
 QString CutResult::cutsAsString() const {
     QStringList list;
@@ -31,6 +32,6 @@ MaterialType CutResult::materialType() const {
 
 QColor CutResult::categoryColor() const {
     const auto& m = MaterialRegistry::instance().findById(materialId);
-    return m ? CategoryUtils::badgeColorForCategory(m->category) : QColor(Qt::gray);
+    return m ? MaterialUtils::colorForMaterial(*m) : QColor(Qt::gray);
 }
 

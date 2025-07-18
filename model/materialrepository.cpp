@@ -3,6 +3,7 @@
 #include <QTextStream>
 #include <QUuid>
 
+#include "common/categoryutils.h"
 #include "materialrepository.h"
 #include "materialmaster.h"
 #include "materialtype.h"
@@ -55,15 +56,19 @@ QVector<MaterialMaster> MaterialRepository::loadFromCSV_private(const QString& f
         if (isFirstLine) { isFirstLine = false; continue; }
 
         const QStringList columns = line.split(';');
-        if (columns.size() < 8) continue;
+        if (columns.size() < 9) continue;
 
         MaterialMaster m;  // automatikusan generált QUuid, shape és type default
+
+        m.id = QUuid::createUuid(); // 🆔 Automatikus azonosító generálás
 
         m.name = columns[0];                      // 📛 Név
         m.barcode = columns[1];                   // 📦 Barcode közvetlenül a CSV-ből
         m.stockLength_mm = columns[2].toDouble(); // 📏 Szálhossz
         m.defaultMachineId = columns[6];          // ⚙️ Gépid
         m.type = MaterialType::fromString(columns[7]); // 🧪 Típus
+
+        m.category = CategoryUtils::categoryFromString(columns[8]);
 
         // 🔍 Forma felismerés
         m.shape = CrossSectionShape::fromString(columns[5]);

@@ -10,6 +10,7 @@ QString MaterialType::toString() const {
     case Type::Plastic: return "Plastic";
     case Type::Composite: return "Composite";
     case Type::Other: return "Other";
+    default: return "Unknown";
     }
     return "Unknown";
 }

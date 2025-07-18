@@ -9,7 +9,6 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    common/common.cpp \
     common/filenamehelper.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
@@ -29,8 +28,9 @@ SOURCES += \
     view/dialog/addinputdialog.cpp
 
 HEADERS += \
-    common/common.h \
+    common/categoryutils.h \
     common/filenamehelper.h \
+    common/materialutils.h \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
     model/crosssectionshape.h \

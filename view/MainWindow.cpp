@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "common/materialutils.h"
 #include "ui_MainWindow.h"
 
 #include "../presenter/CuttingPresenter.h"
@@ -23,9 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
       // 🟢 Vágási kérés tábla – fix méretek, alternáló sorok
-    ui->tableInput->setColumnWidth(0, 100); // Anyag
+    ui->tableInput->setColumnWidth(0, 120); // Anyag
     ui->tableInput->setColumnWidth(1, 70); // Hossz
-    ui->tableInput->setColumnWidth(2, 100); // Darabszám
+    ui->tableInput->setColumnWidth(2, 70); // Darabszám
     ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->tableInput->horizontalHeader()->setStretchLastSection(false);
     ui->tableInput->setAlternatingRowColors(true);
@@ -61,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     presenter = new CuttingPresenter(this, this);
 
     // 📥 Tesztadatok betöltése
-    initTestInputTable();              // Feltölti a tableInput-ot
+    fillTestData_inputTable();              // Feltölti a tableInput-ot
     updateStockTableFromRegistry();    // Frissíti a tableStock a StockRepository alapján
     decorateTableStock();              // Stílus, színezés
     initTestLeftoversTable();          // Feltölti a maradékokat tesztadattal
@@ -78,7 +79,7 @@ MainWindow::~MainWindow()
 //     ui->tableInput->horizontalHeader()->setStretchLastSection(true);
 // }
 
-void MainWindow::addRowToTableInput(const CuttingRequest& request) {
+void MainWindow::addRow_inputTable(const CuttingRequest& request) {
     int row = ui->tableInput->rowCount();
     ui->tableInput->insertRow(row);
 
@@ -89,27 +90,21 @@ void MainWindow::addRowToTableInput(const CuttingRequest& request) {
     QString name = mat ? mat->name : "(ismeretlen)";
     auto* itemName = new QTableWidgetItem(name);
     itemName->setTextAlignment(Qt::AlignCenter);
+    auto matId = QVariant::fromValue(request.materialId);
+    itemName->setData(Qt::UserRole, matId);  // ⬅️ itt tároljuk
     ui->tableInput->setItem(row, 0, itemName);
 
     // 📏 Hossz
     QString h = QString::number(request.requiredLength);
     auto* itemLength = new QTableWidgetItem(h);
     itemLength->setTextAlignment(Qt::AlignCenter);
-    ui->tableInput->setItem(row, 0, itemLength);
+    ui->tableInput->setItem(row, 1, itemLength);
 
     // 🔢 Mennyiség
     QString q = QString::number(request.quantity);
     auto* itemQty = new QTableWidgetItem(q);
     itemQty->setTextAlignment(Qt::AlignCenter);
-    ui->tableInput->setItem(row, 1, itemQty);
-
-    // // 🏷️ Kategória
-    // QString catStr = CategoryUtils::categoryToString(category);
-    // auto* itemCat = new QTableWidgetItem(catStr);
-    // itemCat->setTextAlignment(Qt::AlignCenter);
-    // itemCat->setFont(QFont("Segoe UI", 9, QFont::Bold));
-    // itemCat->setForeground(Qt::white);
-    // ui->tableInput->setItem(row, 2, itemCat);
+    ui->tableInput->setItem(row, 2, itemQty);
 
     // 🗑️ Törlésgomb
     QPushButton* btnDelete = new QPushButton("🗑️");
@@ -125,7 +120,8 @@ void MainWindow::addRowToTableInput(const CuttingRequest& request) {
     ui->tableInput->setCellWidget(row, 3, btnDelete);
 
     // 🎨 Háttérszín minden cellára            
-    QColor bg = QColor(CategoryUtils::badgeColorForCategory(mat->category)).lighter(160);
+    //QColor bg = QColor(CategoryUtils::badgeColorForCategory(mat->category)).lighter(160);
+    QColor bg = MaterialUtils::colorForMaterial(*mat);//.lighter(160);
     for (int col = 0; col < ui->tableInput->columnCount(); ++col) {
         auto* item = ui->tableInput->item(row, col);
         if (!item) {
@@ -133,10 +129,113 @@ void MainWindow::addRowToTableInput(const CuttingRequest& request) {
             ui->tableInput->setItem(row, col, item);
         }
         item->setBackground(bg);
-        item->setForeground(col == 2 ? Qt::white : Qt::black);
+        item->setForeground(col == 0 ? Qt::white : Qt::black); // Név kiemelve
+
+        // if (mat) {
+        //     QString tip = MaterialUtils::tooltipForMaterial(*mat);
+
+        //     if (mat->category == ProfileCategory::Unknown)
+        //         tip += "\n⚠️ Kategória hiányzik vagy nem felismerhető a CSV-ből.";
+
+        //     item->setToolTip(tip);
+        // }
+    }
+
+    applyVisualStyleToInputRow(row, mat, request);
+}
+
+void MainWindow::applyVisualStyleToInputRow(int row, const MaterialMaster* mat, const CuttingRequest& request) {
+    if (!mat) return;
+
+    QColor bg = MaterialUtils::colorForMaterial(*mat); // 🎨 Háttérszín az anyag alapján
+
+    // 💬 Alap tooltip szöveg
+    QString baseTip = MaterialUtils::tooltipForMaterial(*mat);
+    if (mat->category == ProfileCategory::Unknown)
+        baseTip += "\n⚠️ Kategória hiányzik vagy ismeretlen – CSV fájlban lehet hiba.";
+
+    for (int col = 0; col < ui->tableInput->columnCount(); ++col) {
+        auto* item = ui->tableInput->item(row, col);
+        if (!item) {
+            item = new QTableWidgetItem();
+            ui->tableInput->setItem(row, col, item);
+        }
+
+        item->setBackground(bg);
+        item->setForeground(bg.lightness() < 128 ? Qt::white : Qt::black); // 🌓 Kontrasztos szöveg
+        item->setTextAlignment(Qt::AlignCenter);
+
+        // 🧠 Tooltip tartalom oszlop szerint
+        switch (col) {
+        case 0: item->setToolTip(baseTip); break;
+        case 1: item->setToolTip(QString("Vágáshossz: %1 mm\n%2").arg(request.requiredLength).arg(baseTip)); break;
+        case 2: item->setToolTip(QString("Darabszám: %1 db\n%2").arg(request.quantity).arg(baseTip)); break;
+        }
     }
 }
 
+QVector<CuttingRequest> MainWindow::readDataFrom_inputTable() {
+    QVector<CuttingRequest> result;
+
+    for (int row = 0; row < ui->tableInput->rowCount(); ++row) {
+        auto* itemName = ui->tableInput->item(row, 0);
+        QUuid materialId = itemName ? itemName->data(Qt::UserRole).toUuid() : QUuid();
+
+        bool okLength = false;
+        bool okQty = false;
+
+        int length = ui->tableInput->item(row, 1)->text().toInt(&okLength);
+        int qty    = ui->tableInput->item(row, 2)->text().toInt(&okQty);
+
+        if (materialId.isNull() || !okLength || !okQty)
+            continue; // hibás sor, eldobható vagy kiemelhető
+
+        result.append({ materialId, length, qty });
+    }
+
+    return result;
+}
+
+// QVector<CuttingRequest> MainWindow::readRequestsFromInputTable() {
+//     QVector<CuttingRequest> result;
+
+//     int rowCount = ui->tableInput->rowCount();
+//     for (int row = 0; row < rowCount; ++row) {
+//         auto* lengthItem   = ui->tableInput->item(row, 0);
+//         auto* quantityItem = ui->tableInput->item(row, 1);
+//         auto* nameItem = ui->tableInput->item(row, 2);
+//         //auto* categoryWidget = ui->tableInput->cellWidget(row, 2); // combobox!
+
+//         if (!lengthItem || !quantityItem || !nameItem)
+//             continue;
+
+//         bool okLen = false, okQty = false;
+//         int length   = lengthItem->text().toInt(&okLen);
+//         int quantity = quantityItem->text().toInt(&okQty);
+//         QString name = nameItem->text().trimmed();
+
+//         if (!okLen || !okQty || length <= 0 || quantity <= 0 || name.isEmpty())
+//             continue;
+
+//         // 🔍 Név alapján keresés a törzsben
+//         const auto& all = MaterialRegistry::instance().all();
+//         auto it = std::find_if(all.begin(), all.end(), [&](const MaterialMaster& m) {
+//             return m.name.compare(name, Qt::CaseInsensitive) == 0;
+//         });
+
+//         if (it == all.end())
+//             continue;
+
+//         CuttingRequest req;
+//         req.materialId     = it->id;
+//         req.requiredLength = length;
+//         req.quantity       = quantity;
+
+//         result.append(req);
+//     }
+
+//     return result;
+// }
 
 void MainWindow::on_btnAddRow_clicked() {
     AddInputDialog dialog(this);
@@ -160,12 +259,12 @@ void MainWindow::on_btnAddRow_clicked() {
     }
 
     presenter->addCutRequest(request);
-    addRowToTableInput(request);
+    addRow_inputTable(request);
 }
 
 
 void MainWindow::on_btnOptimize_clicked() {
-    QVector<CuttingRequest> requestList = readRequestsFromInputTable();
+    QVector<CuttingRequest> requestList = readDataFrom_inputTable();
     QVector<StockEntry> stockList     = readInventoryFromStockTable();
 
     if (requestList.isEmpty()) {
@@ -200,6 +299,15 @@ void MainWindow::initTestStockTable() {
     QStringList categories = { "RollerTube", "BottomBar" };
 
     const auto& materials = MaterialRegistry::instance().all();
+
+    if (materials.isEmpty()) {
+        QMessageBox::warning(this, "Hiba", "Nincs anyag a törzsben.");
+        return;
+    }
+    if (materials.size() < 2) {
+        QMessageBox::warning(this, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
+        return;
+    }
 
     struct StockRow {
         QUuid materialId;
@@ -310,10 +418,19 @@ void MainWindow::updateStockTableFromRegistry() {
     ui->tableStock->resizeColumnsToContents();
 }
 
-void MainWindow::initTestInputTable() {
+void MainWindow::fillTestData_inputTable() {
     ui->tableInput->setRowCount(0);
 
     const auto& materials = MaterialRegistry::instance().all();
+
+    if (materials.isEmpty()) {
+        QMessageBox::warning(this, "Hiba", "Nincs anyag a törzsben.");
+        return;
+    }
+    if (materials.size() < 2) {
+        QMessageBox::warning(this, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
+        return;
+    }
 
     QVector<CuttingRequest> testRequests = {
         { materials[0].id, 1800, 2 },
@@ -322,7 +439,7 @@ void MainWindow::initTestInputTable() {
     };
 
     for (const auto& req : testRequests) {
-        addRowToTableInput(req);
+        addRow_inputTable(req);
     }
 }
 
@@ -392,46 +509,7 @@ QVector<StockEntry> MainWindow::readInventoryFromStockTable() {
 }
 
 
-QVector<CuttingRequest> MainWindow::readRequestsFromInputTable() {
-    QVector<CuttingRequest> result;
 
-    int rowCount = ui->tableInput->rowCount();
-    for (int row = 0; row < rowCount; ++row) {
-        auto* lengthItem   = ui->tableInput->item(row, 0);
-        auto* quantityItem = ui->tableInput->item(row, 1);
-        auto* nameItem = ui->tableInput->item(row, 2);
-        //auto* categoryWidget = ui->tableInput->cellWidget(row, 2); // combobox!
-
-        if (!lengthItem || !quantityItem || !nameItem)
-            continue;
-
-        bool okLen = false, okQty = false;
-        int length   = lengthItem->text().toInt(&okLen);
-        int quantity = quantityItem->text().toInt(&okQty);
-        QString name = nameItem->text().trimmed();
-
-        if (!okLen || !okQty || length <= 0 || quantity <= 0 || name.isEmpty())
-            continue;
-
-        // 🔍 Név alapján keresés a törzsben
-        const auto& all = MaterialRegistry::instance().all();
-        auto it = std::find_if(all.begin(), all.end(), [&](const MaterialMaster& m) {
-            return m.name.compare(name, Qt::CaseInsensitive) == 0;
-        });
-
-        if (it == all.end())
-            continue;
-
-        CuttingRequest req;
-        req.materialId     = it->id;
-        req.requiredLength = length;
-        req.quantity       = quantity;
-
-        result.append(req);
-    }
-
-    return result;
-}
 
 void MainWindow::updatePlanTable(const QVector<CutPlan>& plans) {
     ui->tableResults->clearContents();
@@ -505,7 +583,7 @@ void MainWindow::addCutRow(int rodNumber, const CutPlan& plan) {
 
     auto planCategory = plan.category();
     QString categoryStr = CategoryUtils::categoryToString(planCategory);
-    QString badgeColor = CategoryUtils::badgeColorForCategory(planCategory);
+    QString badgeColor = CategoryUtils::categoryToColorName(planCategory);
 
     // 🏷️ Kategóriacímke QLabel-ként, badge-stílusban
     QLabel *categoryLabel = new QLabel(categoryStr);
@@ -575,7 +653,7 @@ void MainWindow::decorateTableStock() {
 
         QString categoryStr = catItem->text().trimmed();
         ProfileCategory cat = CategoryUtils::categoryFromString(categoryStr);
-        QColor bg = QColor(CategoryUtils::badgeColorForCategory(cat));//.lighter(160); // világosított szín
+        QColor bg = QColor(CategoryUtils::categoryToColorName(cat));//.lighter(160); // világosított szín
 
         // Minden cellát színezzünk meg
         for (int col = 0; col < ui->tableStock->columnCount(); ++col) {
@@ -668,7 +746,7 @@ void MainWindow::initTestLeftoversTable() {
 
 */
 /*
-void MainWindow::addLeftoverRow(int rodId, ProfileCategory category, int originalLength, const QVector<int>& cuts, int leftover) {
+void MainWindow::addRow_tableLeftovers(int rodId, ProfileCategory category, int originalLength, const QVector<int>& cuts, int leftover) {
     int used = originalLength - leftover;
     int cutCount = cuts.size();
 
@@ -708,7 +786,7 @@ void MainWindow::addLeftoverRow(int rodId, ProfileCategory category, int origina
 }
 */
 
-void MainWindow::addLeftoverRow(const CutResult& res, int rodIndex) {
+void MainWindow::addRow_tableLeftovers(const CutResult& res, int rodIndex) {
     int row = ui->tableLeftovers->rowCount();
     ui->tableLeftovers->insertRow(row);
 
@@ -744,7 +822,7 @@ void MainWindow::addLeftoverRow(const CutResult& res, int rodIndex) {
     // 🎨 Kategóriaalapú színezés, ha van hozzá szín
     // 🎨 Törzsadatból színezés
     if (master) {
-        QColor bg = CategoryUtils::badgeColorForCategory(master->category);
+        QColor bg = MaterialUtils::colorForMaterial(*master);
         for (int col = 0; col < ui->tableLeftovers->columnCount(); ++col) {
             if (col == colReusable)
                 continue; // a ✔/✘ oszlop ne kapjon háttért
@@ -770,6 +848,14 @@ void MainWindow::initTestLeftoversTable() {
 */
 
     const auto& materials = MaterialRegistry::instance().all();
+    if (materials.isEmpty()) {
+        QMessageBox::warning(this, "Hiba", "Nincs anyag a törzsben.");
+        return;
+    }
+    if (materials.size() < 2) {
+        QMessageBox::warning(this, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
+        return;
+    }
 
     QVector<CutResult> testLeftovers = {
         { materials[0].id, 3000, {}, 2940, LeftoverSource::Manual, std::nullopt },
@@ -778,7 +864,7 @@ void MainWindow::initTestLeftoversTable() {
     };
 
     for (int i = 0; i < testLeftovers.size(); ++i) {
-        addLeftoverRow(testLeftovers[i], i);
+        addRow_tableLeftovers(testLeftovers[i], i);
     }
 }
 
@@ -787,6 +873,6 @@ void MainWindow::initTestLeftoversTable() {
 void MainWindow::appendLeftovers(const QVector<CutResult>& newResults) {
     int startIndex = ui->tableLeftovers->rowCount();
     for (int i = 0; i < newResults.size(); ++i) {
-        addLeftoverRow(newResults[i], startIndex + i);
+        addRow_tableLeftovers(newResults[i], startIndex + i);
     }
 }

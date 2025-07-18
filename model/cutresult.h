@@ -1,7 +1,7 @@
 #ifndef CUTRESULT_H
 #define CUTRESULT_H
 
-#include "common/common.h"
+//#include "common/common.h"
 #include "model/materialtype.h"
 #include <QColor>
 #include <QString>

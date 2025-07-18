@@ -49,22 +49,22 @@
          </attribute>
          <column>
           <property name="text">
-           <string>Length (mm)</string>
+           <string>Név</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Quantity</string>
+           <string>Hossz</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Category</string>
+           <string>Mennyiség</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Buttons</string>
+           <string>Műveletek</string>
           </property>
          </column>
         </widget>

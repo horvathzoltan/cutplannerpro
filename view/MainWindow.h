@@ -28,7 +28,7 @@ public:
     void addCutRow(int rodNumber, const CutPlan& plan);
 
     QVector<StockEntry> readInventoryFromStockTable();
-    QVector<CuttingRequest> readRequestsFromInputTable();
+    //QVector<CuttingRequest> readRequestsFromInputTable();
 
     void updatePlanTable(const QVector<CutPlan> &plans);
     void appendLeftovers(const QVector<CutResult> &newResults);
@@ -40,16 +40,19 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    CuttingPresenter* presenter;   
+    CuttingPresenter* presenter;
 
-    void initTestInputTable();
+    void fillTestData_inputTable();
     void initTestStockTable();
     void initTestLeftoversTable();
 
     void updateStockTable();
     void decorateTableStock();
 
-    void addRowToTableInput(const CuttingRequest& request);
-    void addLeftoverRow(const CutResult& res, int rodIndex);
+    void addRow_inputTable(const CuttingRequest& request);
+    QVector<CuttingRequest> readDataFrom_inputTable();
+
+    void addRow_tableLeftovers(const CutResult& res, int rodIndex);
+    void applyVisualStyleToInputRow(int row, const MaterialMaster *mat, const CuttingRequest &request);
 };
 #endif // MAINWINDOW_H
