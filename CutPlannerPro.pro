@@ -10,6 +10,7 @@ CONFIG += c++20
 
 SOURCES += \
     common/filenamehelper.cpp \
+    common/startup/startupmanager.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
     model/crosssectionshape.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     common/categoryutils.h \
     common/filenamehelper.h \
     common/materialutils.h \
+    common/startup/startupmanager.h \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
     model/crosssectionshape.h \

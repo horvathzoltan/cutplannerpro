@@ -1,9 +1,11 @@
 #include "view/MainWindow.h"
 
 #include <QApplication>
+#include <QMessageBox>
 #include "common/filenamehelper.h"
 #include <model/materialregistry.h>
 #include <model/materialrepository.h>
+#include <common/startup/startupmanager.h>
 
 
 int main(int argc, char *argv[])
@@ -13,16 +15,31 @@ int main(int argc, char *argv[])
     // itt initelünk mindet
     //FileNameHelper::Init();
 
-    auto& helper = FileNameHelper::instance();
+    //auto& helper = FileNameHelper::instance();
 
-    if(helper.isInited()){
-        QString csvPath = helper.getMaterialCsvFile();
+    StartupManager manager;
+    StartupStatus status = manager.runStartupSequence();
 
-        auto& registry = MaterialRegistry::instance();
-        MaterialRepository::loadFromCSV(registry);
-
-        QString logName = helper.getLogFileName();
+    if (!status.ok) {
+        QMessageBox::critical(nullptr, "Indítási hiba", status.errorMessage);
+        return -1;
     }
+
+    if (!status.warnings.isEmpty()) {
+        QMessageBox::warning(nullptr, "Figyelmeztetés",
+                             "Az alkalmazás elindult, de a következő problémák felmerültek:\n\n" +
+                                 status.warnings.join("\n"));
+    }
+
+
+    // if(helper.isInited()){
+    //     QString csvPath = helper.getMaterialCsvFile();
+
+    //     auto& registry = MaterialRegistry::instance();
+    //     MaterialRepository::loadFromCSV(registry);
+
+    //     QString logName = helper.getLogFileName();
+    // }
 
     MainWindow window;
     window.setWindowTitle("CutPlanner MVP");
