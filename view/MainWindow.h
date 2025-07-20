@@ -29,7 +29,7 @@ public:
     ~MainWindow();
 
     void clearCutTable();
-    void addRow_tableResults(int rodNumber, const CutPlan& plan);
+    void addRow_tableResults(QString rodNumber, const CutPlan& plan);
 
     void update_ResultsTable(const QVector<CutPlan> &plans);
     void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){

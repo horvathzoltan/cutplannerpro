@@ -19,10 +19,10 @@ private:
     QTableWidget* table;
     QWidget* parent;
 
-private:
+public:
     static constexpr int ColName     = 0;
     static constexpr int ColBarcode  = 1;
-    static constexpr int ColShape    = 2;
-    static constexpr int ColLength   = 3;
+    static constexpr int ColShape    = 3;
+    static constexpr int ColLength   = 2;
     static constexpr int ColQuantity = 4;
 };

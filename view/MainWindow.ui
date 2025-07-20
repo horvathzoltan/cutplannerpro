@@ -243,17 +243,17 @@
          </column>
          <column>
           <property name="text">
+           <string>Reusable ID	</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
            <string>Length (mm)</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Shape</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Type</string>
           </property>
          </column>
          <column>

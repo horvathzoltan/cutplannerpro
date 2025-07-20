@@ -15,6 +15,7 @@ struct ReusableStockEntry {
     LeftoverSource source = LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
     std::optional<int> optimizationId = std::nullopt; // 🔍 Csak ha forrás Optimization
 
+    QString reusableBarcode; // 🧾 Egyedi azonosító hulladékdarabra
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const ReusableStockEntry& other) const;
 
@@ -22,8 +23,6 @@ struct ReusableStockEntry {
     QString barcode() const; // 🧾 Vonalkód
     MaterialType type() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;
-
-
 
     QString groupName() const;
     QColor groupColor() const;

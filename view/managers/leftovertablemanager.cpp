@@ -54,22 +54,37 @@ std::optional<ReusableStockEntry> LeftoverTableManager::readRow(int row) const {
     if (!table || row < 0 || row >= table->rowCount())
         return std::nullopt;
 
-    auto* itemName   = table->item(row, 0);
-    auto* itemLength = table->item(row, 2);
+    auto* itemName   = table->item(row, ColName);
+    auto* itemLength = table->item(row, ColLength);
+    auto* itemReuId = table->item(row, ColReusableId);
+    auto* itemSource   = table->item(row, ColSource); // 💡 ha a source is meg van
 
-    if (!itemName || !itemLength)
+    if (!itemName || !itemLength || !itemReuId)
         return std::nullopt;
 
     QUuid materialId = itemName->data(Qt::UserRole).toUuid();
     int length = itemLength->data(Qt::UserRole).toInt();
+    QString reusableId = itemReuId->text();
 
     if (materialId.isNull() || length <= 0)
         return std::nullopt;
 
-    return ReusableStockEntry {
-        materialId,
-        length
-    };
+    LeftoverSource source = LeftoverSource::Undefined;
+    if (itemSource)
+        source = static_cast<LeftoverSource>(itemSource->data(Qt::UserRole).toInt());
+
+    if (materialId.isNull() || length <= 0 || reusableId.isEmpty())
+        return std::nullopt;
+
+    ReusableStockEntry entry;
+
+    entry.materialId = materialId;
+    entry.availableLength_mm = length;
+    entry.source = source;
+    entry.optimizationId = std::nullopt;
+    entry.reusableBarcode = reusableId;
+
+    return entry;
 }
 
 
@@ -106,6 +121,10 @@ void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
     itemBarcode->setTextAlignment(Qt::AlignCenter);
     table->setItem(row, ColBarcode, itemBarcode);
 
+    auto* itemID = new QTableWidgetItem(entry.reusableBarcode);
+    itemID->setTextAlignment(Qt::AlignCenter);
+    table->setItem(row, ColReusableId, itemID);
+
     // 📏 Hossz
     auto* itemLength = new QTableWidgetItem(QString::number(entry.availableLength_mm));
     itemLength->setTextAlignment(Qt::AlignCenter);
@@ -117,11 +136,11 @@ void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
     itemShape->setTextAlignment(Qt::AlignCenter);
     table->setItem(row, ColShape, itemShape);
 
-    // 🧬 Anyagtípus
-    auto* itemType = new QTableWidgetItem(mat ? mat->type.toString() : "-");
-    itemType->setTextAlignment(Qt::AlignCenter);
-    itemType->setData(Qt::UserRole, QVariant::fromValue(mat ? mat->type : MaterialType{}));
-    table->setItem(row, ColType, itemType);
+    // // 🧬 Anyagtípus
+    // auto* itemType = new QTableWidgetItem(mat ? mat->type.toString() : "-");
+    // itemType->setTextAlignment(Qt::AlignCenter);
+    // itemType->setData(Qt::UserRole, QVariant::fromValue(mat ? mat->type : MaterialType{}));
+    // table->setItem(row, ColType, itemType);
 
     // 🛠️ Forrás
     auto* itemSource = new QTableWidgetItem(entry.sourceAsString());
@@ -240,9 +259,9 @@ void LeftoverTableManager::fillTestData() {
 
     QVector<ReusableStockEntry> testLeftovers ={
         {
-            { materials[0].id, 2940, LeftoverSource::Manual, std::nullopt },
-            { materials[0].id, 180, LeftoverSource::Manual, std::nullopt },
-            { materials[1].id, 100, LeftoverSource::Manual, std::nullopt }
+            { materials[0].id, 2940, LeftoverSource::Manual, std::nullopt, "RST-012" },
+            { materials[0].id, 180, LeftoverSource::Manual, std::nullopt, "RST-013" },
+            { materials[1].id, 100, LeftoverSource::Manual, std::nullopt, "RST-014" }
         }
     };
 

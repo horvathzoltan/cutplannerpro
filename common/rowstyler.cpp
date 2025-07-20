@@ -3,6 +3,8 @@
 #include "model/reusablestockentry.h"
 #include <QColor>
 #include <QTableWidgetItem>
+#include <view/managers/leftovertablemanager.h>
+#include <view/managers/stocktablemanager.h>
 
 void RowStyler::applyInputStyle(QTableWidget* table, int row,
                                 const MaterialMaster* mat,
@@ -46,38 +48,43 @@ void RowStyler::applyInputStyle(QTableWidget* table, int row,
 
 void RowStyler::applyStockStyle(QTableWidget* table, int row, const MaterialMaster* mat) {
     if (!table || !mat)
-        return; // 🚫 Ha nincs érvényes táblázat vagy anyag, kilépünk
+        return;
 
-    QColor bgColor;
+    constexpr int ColLength = StockTableManager::ColLength;  // 🔁 Frissítsd, ha eltér
+
+    QColor baseColor = MaterialUtils::colorForMaterial(*mat);
     QColor textColor = Qt::black;
 
-    // 🎨 Háttérszín beállítása a hossz alapján — vizuális kategóriák
-    if (mat->stockLength_mm <= 1000)
-        bgColor = QColor("#fdd");       // 🌕 Rövid (pirosas háttér)
-    else if (mat->stockLength_mm <= 2500)
-        bgColor = QColor("#ffeeba");    // 🌼 Közepes (sárgás háttér)
-    else
-        bgColor = QColor("#d4edda");    // 🍃 Hosszú (zöldes háttér)
-
-    // 🎯 Stílus alkalmazása minden cellára a sorban
     for (int col = 0; col < table->columnCount(); ++col) {
         QTableWidgetItem* item = table->item(row, col);
         if (!item) {
             item = new QTableWidgetItem;
-            table->setItem(row, col, item); // 🧱 Hiányzó cella létrehozása
+            table->setItem(row, col, item);
         }
-        item->setBackground(bgColor);
-        item->setForeground(textColor);
-    }
 
-    // 📝 Tooltip hozzáadása a "Hossz" mezőhöz (például a 3. oszlophoz, index 2)
-    QTableWidgetItem* tooltipItem = table->item(row, 2);
-    if (!tooltipItem) {
-        tooltipItem = new QTableWidgetItem;
-        table->setItem(row, 2, tooltipItem);
+        // 🔎 Speciális színezés csak a hossz oszlopra
+        if (col == ColLength) {
+            QColor lengthColor;
+            int length_mm = mat->stockLength_mm;
+
+            if (length_mm < 6000)
+                lengthColor = QColor("#fff3cd"); // Figyelemreméltó (sárgás)
+            else if (length_mm == 6000)
+                lengthColor = QColor("#d4edda"); // Szabványos (zöld)
+            else
+                lengthColor = QColor("#c3e6cb"); // Nagyon hosszú (szuperzöld)
+
+            item->setBackground(lengthColor);
+            item->setForeground(Qt::black);
+            item->setToolTip(QString("Szálhossz: %1 mm").arg(length_mm));
+        } else {
+            item->setBackground(baseColor);
+            item->setForeground(textColor);
+        }
     }
-    tooltipItem->setToolTip(QString("Hossz: %1 mm").arg(mat->stockLength_mm));
 }
+
+
 
 
 // void RowStyler::applyLeftoverStyle(QTableWidget* table, int row, const MaterialMaster* master, const CutResult& res) {
@@ -117,7 +124,7 @@ void RowStyler::applyReusableStyle(QTableWidget* table, int row, const MaterialM
     if (!table || !master)
         return;
 
-    constexpr int ColReusable = 6;
+    constexpr int ColReusable = LeftoverTableManager::ColReusable; // 🔁 Frissítsd, ha eltér;
 
     // 🎨 Kategóriaalapú háttérszín
     QColor baseColor = MaterialUtils::colorForMaterial(*master);

@@ -55,11 +55,26 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableResults->horizontalHeader()->setStretchLastSection(false);
 
-    ui->tableLeftovers->setColumnWidth(0, 40);
+    ui->tableResults->setColumnWidth(0, 150);
     ui->tableResults->setColumnWidth(1, 150);
     ui->tableResults->setColumnWidth(3, 60);
     ui->tableResults->setColumnWidth(4, 60);
     ui->tableResults->setColumnWidth(5, 40);
+
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColName, 120);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColBarcode, 150);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusableId, 80);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColLength, 60);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColShape, 60);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColSource, 60);
+    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusable, 20);
+
+
+    ui->tableStock->setColumnWidth(StockTableManager::ColName, 120);
+    ui->tableStock->setColumnWidth(StockTableManager::ColBarcode, 120);
+    ui->tableStock->setColumnWidth(StockTableManager::ColLength, 80);
+    ui->tableStock->setColumnWidth(StockTableManager::ColShape, 80);
+    ui->tableStock->setColumnWidth(StockTableManager::ColQuantity, 80);
 
     // 🖼️ Alap ablakbeállítások
     resize(1024, 600);
@@ -130,7 +145,15 @@ void MainWindow::on_btnOptimize_clicked() {
     QVector<ReusableStockEntry> reusableList;
     for (const auto& r : leftoverList) {
         if (r.availableLength_mm >= 300) { // ✅ csak releváns maradékokat vesszük figyelembe
-            reusableList.append({ r.materialId, r.availableLength_mm });
+
+            ReusableStockEntry e;
+            e.materialId = r.materialId;
+            e.availableLength_mm = r.availableLength_mm;
+            e.source = r.source; // 🛠️ Forrás megőrzése
+            e.optimizationId = r.optimizationId; // 🔍 Csak ha van
+            e.reusableBarcode = r.reusableBarcode; // 🧾 Egyedi azonosító
+
+            reusableList.append(e);
         }
     }
 
@@ -159,18 +182,19 @@ void MainWindow::update_ResultsTable(const QVector<CutPlan>& plans) {
 
     for (int i = 0; i < plans.size(); ++i) {
         const CutPlan& plan = plans[i];
-        addRow_tableResults(i, plan);
+        addRow_tableResults(plan.rodId, plan);
     }
 
     //ui->tableResults->resizeColumnsToContents();
 }
 
-void MainWindow::addRow_tableResults(int rodNumber, const CutPlan& plan) {
+void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
     int row = ui->tableResults->rowCount();
     ui->tableResults->insertRow(row);
 
+
     // 1️⃣ Rod #
-    auto* itemRod = new QTableWidgetItem(QString::number(rodNumber));
+    auto* itemRod = new QTableWidgetItem(rodNumber);
     itemRod->setTextAlignment(Qt::AlignCenter);
 
     // 2️⃣ Cuts badge-ek

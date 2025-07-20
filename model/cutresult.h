@@ -10,7 +10,8 @@
 
 enum class LeftoverSource {
     Manual,
-    Optimization
+    Optimization,
+    Undefined
 };
 
 struct CutResult {
@@ -18,8 +19,10 @@ struct CutResult {
     int length = 0;                 // 📏 Eredeti rúd hossza
     QVector<int> cuts;             // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
-    LeftoverSource source = LeftoverSource::Manual;
+    LeftoverSource source = LeftoverSource::Undefined;
     std::optional<int> optimizationId;  // Csak ha source == Optimization
+
+    QString reusableBarcode;
 
     QString cutsAsString() const;
     QString sourceAsString() const;

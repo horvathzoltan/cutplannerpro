@@ -55,7 +55,8 @@ void CuttingOptimizerModel::optimize() {
         bool usedReusable = false;
 
         // ♻️ Megpróbálunk találni hullóból újravágható rudat
-        auto candidate = findBestReusableFit(reusableInventory, pieces, target.materialId);
+        std::optional<ReusableCandidate> candidate =
+            findBestReusableFit(reusableInventory, pieces, target.materialId);
         if (candidate.has_value()) {
             const auto& best = *candidate;
 
@@ -112,7 +113,16 @@ void CuttingOptimizerModel::optimize() {
         int used = totalCut + kerfTotal;
         int waste = selectedLength - used;
 
-        plans.append({ ++rodId, selectedCombo, kerfTotal, waste, selectedMaterialId });
+        QString barcode;
+        if (usedReusable && candidate.has_value()) {
+            barcode = candidate->stock.reusableBarcode; // 🧾 egyedi azonosító a reusable darabra
+        } else {
+            const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
+            barcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
+        }
+
+        CutPlan p{ ++rodId, selectedCombo, kerfTotal, waste, selectedMaterialId, barcode };
+        plans.append(p);
 
         // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
         if (waste >= 300) {
@@ -123,6 +133,7 @@ void CuttingOptimizerModel::optimize() {
             result.waste          = waste;
             result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
             result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
+            result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
 
             leftoverResults.append(result);
         }

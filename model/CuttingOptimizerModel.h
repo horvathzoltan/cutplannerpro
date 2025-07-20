@@ -22,6 +22,8 @@ struct CutPlan {
     int waste;                  // ♻️ Használatlan anyag
     QUuid materialId;           // 🔗 Anyagtörzsbeli azonosító (helyettesíti a category-t)
 
+    QString rodId;
+
     // Kényelmi metódus (opcionális)
     QString name() const {
         auto opt = MaterialRegistry::instance().findById(materialId);

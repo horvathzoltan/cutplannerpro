@@ -4,7 +4,7 @@
 #include <model/cutresult.h>
 #include "../model/materialmaster.h"
 #include "../model/cuttingrequest.h"
-#include "grouputils.h"
+//#include "grouputils.h"
 #include "model/reusablestockentry.h"
 
 // 🎨 Táblázatsor stíluskezelő – közös utility

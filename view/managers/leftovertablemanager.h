@@ -20,12 +20,13 @@ private:
     QTableWidget* table;
     QWidget* parent;  // 🔍 UI-hoz, hibajelzéshez, stb.
 
+public:
     // 🏷️ Oszlopindexek (UI: tableLeftovers)
     static constexpr int ColName      = 0;
     static constexpr int ColBarcode   = 1;
-    static constexpr int ColLength    = 2;
-    static constexpr int ColShape     = 3;
-    static constexpr int ColType      = 4;
+    static constexpr int ColReusableId   = 2;
+    static constexpr int ColLength    = 3;
+    static constexpr int ColShape     = 4;
     static constexpr int ColSource    = 5;
     static constexpr int ColReusable  = 6;
 };
