@@ -2,6 +2,13 @@
 #include "../../model/materialrepository.h"
 #include "../../model/materialregistry.h"
 #include "../../model/materialmaster.h"
+#include "model/stockentry.h"
+
+#include <model/materialgrouprepository.h>
+#include <model/stockregistry.h>
+#include <model/stockrepository.h>
+
+#include <QSet>
 //#include "ProfileCategory.h"
 
 StartupStatus StartupManager::runStartupSequence() {
@@ -11,7 +18,20 @@ StartupStatus StartupManager::runStartupSequence() {
 
     // Jövőbeli bővítéshez: initMachineRegistry(), initConfig(), stb.
 
-    return StartupStatus::success();
+    StartupStatus groupStatus = initMaterialGroupRegistry(); // ✅ új név!
+    if (!groupStatus.ok)
+        return groupStatus;
+
+    StartupStatus stockStatus = initStockRegistry(); // ✅ új név!
+    if (!stockStatus.ok)
+        return stockStatus;
+
+    StartupStatus finalStatus = StartupStatus::success();
+    finalStatus.warnings += materialStatus.warnings;
+    finalStatus.warnings += groupStatus.warnings;
+    finalStatus.warnings += stockStatus.warnings;
+
+    return finalStatus;
 }
 
 StartupStatus StartupManager::initMaterialRegistry() {
@@ -20,23 +40,89 @@ StartupStatus StartupManager::initMaterialRegistry() {
         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagtörzset a CSV fájlból.");
 
     const auto& all = MaterialRegistry::instance().all();
+
     if (!hasMinimumMaterials(2))
         return StartupStatus::failure(
             QString("⚠️ Túl kevés anyag található a törzsben (%1 db). Legalább 2 szükséges.")
                 .arg(all.size()));
 
-    int unknowns = std::count_if(all.begin(), all.end(), [](const MaterialMaster& m) {
-        return m.category == ProfileCategory::Unknown;
-    });
-
     StartupStatus status = StartupStatus::success();
-    if (unknowns > 0) {
+
+    // 🔎 Validáció: csoportban szereplő ismeretlen anyagok
+    QSet<QUuid> knownMaterials;
+    for (const auto& mat : all)
+        knownMaterials.insert(mat.id);
+
+    const auto& groupList = MaterialGroupRegistry::instance().all();
+    QStringList invalidGroups;
+
+    for (const auto& group : groupList) {
+        for (const auto& mid : group.materialIds) {
+            if (!knownMaterials.contains(mid)) {
+                invalidGroups << group.name;
+                break;
+            }
+        }
+    }
+
+    if (!invalidGroups.isEmpty()) {
         status.addWarning(
-            QString("⚠️ %1 anyag ismeretlen kategóriájú (Unknown). Ellenőrizd a CSV fájlt.")
-                .arg(unknowns));
+            QString("⚠️ %1 csoport olyan anyagot tartalmaz, ami nincs a törzsben.\nEllenőrizd a groups.csv fájlt: %2")
+                .arg(invalidGroups.size())
+                .arg(invalidGroups.join(", "))
+            );
     }
 
     return status;
+}
+
+StartupStatus StartupManager::initStockRegistry() {
+    bool loaded = StockRepository::loadFromCSV(StockRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni a készletet a CSV fájlból).");
+
+    const auto& all = MaterialRegistry::instance().all();
+
+    if (all.isEmpty())
+        return StartupStatus::failure("⚠️ A készlet üres. Legalább 1 tétel szükséges a működéshez.");
+
+    StartupStatus status = StartupStatus::success();
+
+    // 🔎 Validáció: minden stock-entry ismert anyagra hivatkozzon
+    QSet<QUuid> knownMaterials;
+    for (const auto& mat : all)
+        knownMaterials.insert(mat.id);
+
+    QStringList invalidStockItems;
+
+    for (const auto& entry : all) {
+        if (!knownMaterials.contains(entry.id)) {
+            invalidStockItems << entry.id.toString();
+        }
+    }
+
+    if (!invalidStockItems.isEmpty()) {
+        status.addWarning(
+            QString("⚠️ %1 készletelem nem létező anyagra hivatkozik.\nEllenőrizd a stock.csv fájlt.\nÉrintett azonosítók:\n%2")
+                .arg(invalidStockItems.size())
+                .arg(invalidStockItems.join(", "))
+            );
+    }
+
+    return status;
+}
+
+
+StartupStatus StartupManager::initMaterialGroupRegistry() {
+    bool loaded = MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni az anyagcsoportokat a groups.csv fájlból.");
+
+    int count = MaterialGroupRegistry::instance().all().size();
+    if (count == 0)
+        return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
+
+    return StartupStatus::success();
 }
 
 bool StartupManager::hasMinimumMaterials(int minCount) {

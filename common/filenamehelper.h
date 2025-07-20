@@ -24,9 +24,11 @@ public:
     void setTestMode(bool v) { _isTest = v; }
 
     // 📁 Elérési utak
-    QString getTestFolderPath() const;
+    //QString getTestFolderPath() const;
     QString getWorkingFolder() const;
-    QString getMaterialCsvFile() const;
+    QString getMaterialCsvFile() const; // 📁 Anyag törzs CSV útvonal
+    QString getGroupCsvFile() const; // 📁 Csoportdefiníciós CSV útvonal
+    QString getStockCsvFile() const; // 📁 Készlet CSV útvonal
 
     // 📓 Naplófájl név
     QString getLogFileName() const;

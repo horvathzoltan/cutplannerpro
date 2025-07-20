@@ -26,6 +26,9 @@ public:
     // Készlet
     void setStockInventory(const QVector<StockEntry> &list);
 
+    // Úrafelhasználható - hulló anyagok készlete
+    void setReusableInventory(const QVector<ReusableStockEntry> &list);
+
     // Paraméterek
     void setKerf(int kerf);
 

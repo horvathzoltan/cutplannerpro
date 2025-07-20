@@ -2,12 +2,12 @@
 
 #include <QColor>
 #include "../model/materialmaster.h"
-#include "common/categoryutils.h"
+#include "common/grouputils.h"
 
 namespace MaterialUtils {
 
 static inline QColor colorForMaterial(const MaterialMaster& mat) {
-    auto colorName = CategoryUtils::categoryToColorName(mat.category);
+    auto colorName = GroupUtils::colorForGroup(mat.id);
     return QColor(colorName);
 }
 
@@ -26,14 +26,23 @@ static inline QString badgeStyleSheet(const MaterialMaster& mat) {
 }
 
 static inline QString generateBadgeLabel(const MaterialMaster& mat) {
-    return QString("%1 (%2)")
-    .arg(mat.name, CategoryUtils::categoryToString(mat.category));
+    return QString("%1 (%2)").arg(mat.name, GroupUtils::groupName(mat.id));
 }
 
 static inline QString tooltipForMaterial(const MaterialMaster& mat) {
-    return QString("Anyag: %1\nKategória: %2")
-        .arg(mat.name, CategoryUtils::categoryToString(mat.category));
+    return QString("Anyag: %1\nCsoport: %2")
+    .arg(mat.name, GroupUtils::groupName(mat.id));
 }
 
+static inline QString formatShapeText(const MaterialMaster& mat) {
+    const auto shapeEnum = mat.shape.value;
 
+    if (shapeEnum == CrossSectionShape::Shape::Round)
+        return QString("Ø%1 mm").arg(mat.diameter_mm);
+
+    if (shapeEnum == CrossSectionShape::Shape::Rectangular)
+        return QString("%1×%2 mm").arg(mat.size_mm.width()).arg(mat.size_mm.height());
+
+    return "(ismeretlen forma)";
+}
 }

@@ -1,19 +1,19 @@
 #include "stockentry.h"
 #include "materialregistry.h"
 
+#include "common/grouputils.h" // biztosan benne van
+
 const MaterialMaster* StockEntry::master() const {
-    auto opt = MaterialRegistry::instance().findById(materialId);
-    return opt ? &(*opt) : nullptr;
+    if (materialId.isNull())
+        return nullptr;
+
+    const MaterialMaster *opt = MaterialRegistry::instance().findById(materialId);
+    return opt;
 }
 
 QString StockEntry::name() const {
     const auto* m = master();
     return m ? m->name : "(?)";
-}
-
-ProfileCategory StockEntry::category() const {
-    const auto* m = master();
-    return m ? m->category : ProfileCategory::Unknown;
 }
 
 QString StockEntry::barcode() const {
@@ -24,4 +24,12 @@ QString StockEntry::barcode() const {
 MaterialType StockEntry::type() const {
     const auto* m = master();
     return m ? m->type : MaterialType(MaterialType::Type::Unknown);
+}
+
+QString StockEntry::groupName() const {
+    return GroupUtils::groupName(materialId);
+}
+
+QColor StockEntry::groupColor() const {
+    return GroupUtils::colorForGroup(materialId);
 }

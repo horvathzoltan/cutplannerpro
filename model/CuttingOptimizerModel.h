@@ -3,9 +3,11 @@
 #include <QObject>
 #include <QVector>
 #include <QMap>
+#include "common/grouputils.h"
 #include "cutresult.h"
 #include "cuttingrequest.h"
 #include "materialregistry.h"
+#include "reusablestockentry.h"
 #include "stockentry.h"
 
 // struct CutRequest {
@@ -26,9 +28,8 @@ struct CutPlan {
         return opt ? opt->name : "(ismeretlen)";
     }
 
-    ProfileCategory category() const {
-        auto opt = MaterialRegistry::instance().findById(materialId);
-        return opt ? opt->category : ProfileCategory::Unknown;
+    QString groupName() const {
+        return GroupUtils::groupName(materialId);
     }
 };
 
@@ -68,13 +69,12 @@ public:
 
     void setRequests(const QVector<CuttingRequest>& list);
     void setStockInventory(const QVector<StockEntry> &list);
-
-    void setReusableInventory(const QVector<StockEntry> &reusable);
+    void setReusableInventory(const QVector<ReusableStockEntry> &reusable);
 private:
     QVector<CuttingRequest> requests;
     //QVector<int> allPieces;
     QVector<StockEntry> profileInventory;
-    QVector<StockEntry> reusableInventory;
+    QVector<ReusableStockEntry> reusableInventory;
     QVector<CutPlan> plans;
     QVector<CutResult> leftoverResults;
     //int stockLength = 6000; // mm
@@ -86,13 +86,13 @@ private:
 
     struct ReusableCandidate {
         int indexInInventory;
-        StockEntry stock;
+        ReusableStockEntry stock;
         QVector<int> combo;
         int totalWaste;
     };
 
     std::optional<ReusableCandidate> findBestReusableFit(
-        const QVector<StockEntry>& reusableInventory,
+        const QVector<ReusableStockEntry>& reusableInventory,
         const QVector<PieceWithMaterial>& pieces,
         QUuid materialId
         ) const;

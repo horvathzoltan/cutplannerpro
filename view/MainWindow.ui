@@ -209,12 +209,17 @@
          </column>
          <column>
           <property name="text">
-           <string>Category</string>
+           <string>Barcode</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Length (mm)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Shape</string>
           </property>
          </column>
          <column>
@@ -228,12 +233,12 @@
         <widget class="QTableWidget" name="tableLeftovers">
          <column>
           <property name="text">
-           <string>Rod#</string>
+           <string>Name</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Category</string>
+           <string>Barcode</string>
           </property>
          </column>
          <column>
@@ -243,17 +248,22 @@
          </column>
          <column>
           <property name="text">
-           <string>Cuts</string>
+           <string>Shape</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Reusable</string>
+           <string>Type</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Source</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Reusable</string>
           </property>
          </column>
         </widget>

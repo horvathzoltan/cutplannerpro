@@ -1,17 +1,17 @@
 #include "materialregistry.h"
 
-std::optional<MaterialMaster> MaterialRegistry::findById(const QUuid& id) const {
+const MaterialMaster* MaterialRegistry::findById(const QUuid& id) const {
     for (const auto& m : materials)
         if (m.id == id)
-            return m;
-    return std::nullopt;
+            return &m;
+    return nullptr;
 }
 
-std::optional<MaterialMaster> MaterialRegistry::findByBarcode(const QString& barcode) const {
+const MaterialMaster* MaterialRegistry::findByBarcode(const QString& barcode) const {
     for (const auto& m : materials)
         if (m.barcode == barcode)
-            return m;
-    return std::nullopt;
+            return &m;
+    return nullptr;
 }
 
 bool MaterialRegistry::isBarcodeUnique(const QString& barcode) const {

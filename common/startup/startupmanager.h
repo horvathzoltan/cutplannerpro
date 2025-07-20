@@ -29,5 +29,8 @@ public:
 
 private:
     StartupStatus initMaterialRegistry();
+    StartupStatus initMaterialGroupRegistry();
+    StartupStatus initStockRegistry();
+
     bool hasMinimumMaterials(int minCount);
 };

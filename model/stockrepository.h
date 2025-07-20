@@ -1,22 +1,16 @@
 #pragma once
 
+#include <QString>
 #include <QVector>
-#include <QUuid>
 #include "stockentry.h"
+#include "stockregistry.h"
 
 class StockRepository {
 public:
-    static StockRepository& instance();
-
-    void add(const StockEntry& entry);
-    void clear();
-    QVector<StockEntry> all() const;
-    bool removeByMaterialId(const QUuid& id);
-
-    QVector<StockEntry> findByCategory(ProfileCategory cat) const;
+    /// 📥 Betöltés fájlból és feltöltés a regisztrációba
+    static bool loadFromCSV(StockRegistry& registry);
 
 private:
-    QVector<StockEntry> _stock;
-
-    StockRepository() = default;
+    /// 🔒 Private parser, visszaad egy lista objektumot
+    static QVector<StockEntry> loadFromCSV_private(const QString& filepath);
 };

@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <QUuid>
 
-#include "common/categoryutils.h"
+//#include "common/categoryutils.h"
 #include "materialrepository.h"
 #include "materialmaster.h"
 #include "materialtype.h"
@@ -56,7 +56,7 @@ QVector<MaterialMaster> MaterialRepository::loadFromCSV_private(const QString& f
         if (isFirstLine) { isFirstLine = false; continue; }
 
         const QStringList columns = line.split(';');
-        if (columns.size() < 9) continue;
+        if (columns.size() < 8) continue;
 
         MaterialMaster m;  // automatikusan generált QUuid, shape és type default
 
@@ -68,7 +68,7 @@ QVector<MaterialMaster> MaterialRepository::loadFromCSV_private(const QString& f
         m.defaultMachineId = columns[6];          // ⚙️ Gépid
         m.type = MaterialType::fromString(columns[7]); // 🧪 Típus
 
-        m.category = CategoryUtils::categoryFromString(columns[8]);
+        //m.category = CategoryUtils::categoryFromString(columns[8]);
 
         // 🔍 Forma felismerés
         m.shape = CrossSectionShape::fromString(columns[5]);

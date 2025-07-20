@@ -18,24 +18,28 @@ bool FileNameHelper::init(const char* file) {
         if (path.endsWith("/helpers/filenamehelper.cpp") || path.endsWith("/common/filenamehelper.cpp")) {
             QDir dir = QFileInfo(path).absoluteDir();
             dir.cdUp(); // 🔙 projekt gyökér
-            _projectPath = dir.absolutePath();
+            auto applicationPath = dir.absolutePath();
+            _projectPath = QDir(applicationPath).filePath("testdata");
             return true;
         }
     }
     // ❌ Hiba logolható itt, ha szükséges
 
-    _projectPath = QCoreApplication::applicationDirPath();
 
-    QDir fallbackTestDir(_projectPath);
+    auto applicationPath = QCoreApplication::applicationDirPath();
+
+    _projectPath = QDir(applicationPath).filePath("testdata");
+
+    QDir fallbackTestDir(applicationPath);
     if (!fallbackTestDir.exists("testdata")) {
-        qWarning("Fallback aktiválva, de nincs 'testdata' mappa a bináris mappában: %s", qUtf8Printable(_projectPath));
+        qWarning("Fallback aktiválva, de nincs 'testdata' mappa a bináris mappában: %s", qUtf8Printable(applicationPath));
 
-            qWarning("Aktuális bináris mappa: %s", qUtf8Printable(_projectPath));
+            qWarning("Aktuális bináris mappa: %s", qUtf8Printable(applicationPath));
         return false;
     }
 
     // ✅ fallback sikeres és valid
-    qDebug("✅ Fallback init sikeres, használjuk: %s", qUtf8Printable(_projectPath));
+    qDebug("✅ Fallback init sikeres, használjuk: %s", qUtf8Printable(applicationPath));
     return true;
 #endif
 }
@@ -46,18 +50,25 @@ FileNameHelper& FileNameHelper::instance(const char* file) {
     return helper;
 }
 
-QString FileNameHelper::getTestFolderPath() const {
-    return QDir(_projectPath).filePath("testdata");
-}
-
 QString FileNameHelper::getWorkingFolder() const {
-    return _isTest ? getTestFolderPath() : QCoreApplication::applicationDirPath();
-}
-
-QString FileNameHelper::getMaterialCsvFile() const {
-    return QDir(getTestFolderPath()).filePath("materials.csv");
+    return _isTest ? _projectPath : QCoreApplication::applicationDirPath();
 }
 
 QString FileNameHelper::getLogFileName() const {
     return QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+}
+
+QString FileNameHelper::getMaterialCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("materials.csv");
+    return fn;
+}
+
+QString FileNameHelper::getGroupCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("groups.csv"); // vagy ahová ténylegesen rakod
+    return fn;
+}
+
+QString FileNameHelper::getStockCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("stock.csv"); // vagy ahová ténylegesen rakod
+    return fn;
 }

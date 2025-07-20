@@ -2,11 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../model/cuttingrequest.h"
+//#include "../model/cuttingrequest.h"
 #include "../model/cutresult.h"
-#include "../model/stockentry.h"
+//#include "../model/stockentry.h"
 #include "../model/CuttingOptimizerModel.h"
-#include "../model/materialregistry.h"
+
+#include "view/managers/inputtablemanager.h"
+#include "view/managers/leftovertablemanager.h"
+#include "view/managers/stocktablemanager.h"
+//#include "../model/materialregistry.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,14 +29,17 @@ public:
     ~MainWindow();
 
     void clearCutTable();
-    void addCutRow(int rodNumber, const CutPlan& plan);
+    void addRow_tableResults(int rodNumber, const CutPlan& plan);
 
-    QVector<StockEntry> readInventoryFromStockTable();
-    //QVector<CuttingRequest> readRequestsFromInputTable();
+    void update_ResultsTable(const QVector<CutPlan> &plans);
+    void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){
+        leftoverTableManager->appendRows(newResults);
+    }
 
-    void updatePlanTable(const QVector<CutPlan> &plans);
-    void appendLeftovers(const QVector<CutResult> &newResults);
-    void updateStockTableFromRegistry();
+    void update_stockTable(){
+        stockTableManager->updateTableFromRepository();
+    }
+
 
 private slots:
     void on_btnAddRow_clicked();
@@ -42,17 +49,11 @@ private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter;
 
-    void fillTestData_inputTable();
-    void initTestStockTable();
-    void initTestLeftoversTable();
-
-    void updateStockTable();
-    void decorateTableStock();
-
-    void addRow_inputTable(const CuttingRequest& request);
-    QVector<CuttingRequest> readDataFrom_inputTable();
-
-    void addRow_tableLeftovers(const CutResult& res, int rodIndex);
-    void applyVisualStyleToInputRow(int row, const MaterialMaster *mat, const CuttingRequest &request);
+    // input tábla - vágási terv
+    std::unique_ptr<InputTableManager> inputTableManager;
+    // stock tábla - anyagkészlet - alapanyag raktárkészlet
+    std::unique_ptr<StockTableManager> stockTableManager;
+    // ♻️ Hullókezelő
+    std::unique_ptr<LeftoverTableManager> leftoverTableManager;
 };
 #endif // MAINWINDOW_H

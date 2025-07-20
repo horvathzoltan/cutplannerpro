@@ -1,7 +1,8 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
+#include "common/cutresultutils.h"
 
-#include <model/stockrepository.h>
+#include <model/stockregistry.h>
 
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
@@ -19,6 +20,10 @@ void CuttingPresenter::setStockInventory(const QVector<StockEntry>& list) {
     model.setStockInventory(list);
 }
 
+void CuttingPresenter::setReusableInventory(const QVector<ReusableStockEntry>& list) {
+    model.setReusableInventory(list);
+}
+
 void CuttingPresenter::setKerf(int kerf) {
     model.setKerf(kerf);
 }
@@ -32,9 +37,16 @@ void CuttingPresenter::runOptimization() {
 
     // ✨ Ha készen állsz rá, itt frissíthetjük a View táblákat:
     if (view) {
-        view->updatePlanTable(model.getPlans());
-        view->appendLeftovers(model.getLeftoverResults());
-        view->updateStockTableFromRegistry(); // ha a készlet változik
+        // ez a közéspső - eredmény tábla
+        view->update_ResultsTable(model.getPlans());
+        // ez a készlet
+        view->update_stockTable(); // ha a készlet változik
+        // ez a maradék
+
+        QVector<CutResult> l = model.getLeftoverResults();
+        QVector<ReusableStockEntry> e = CutResultUtils::toReusableEntries(l);
+        view->update_leftoversTable(e);
+
     }
 }
 

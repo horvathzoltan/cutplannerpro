@@ -21,14 +21,14 @@ public:
     }
 
     // 🔍 Keresés technikai azonosító szerint (id)
-    std::optional<MaterialMaster> findById(const QUuid& id) const;
+    const MaterialMaster* findById(const QUuid& id) const;
 
     const QVector<MaterialMaster>& all() const { return materials;}
 
     bool isBarcodeUnique(const QString& barcode) const;
 
     // 🔍 Keresés vonalkód alapján
-    std::optional<MaterialMaster> findByBarcode(const QString& barcode) const;
+    const MaterialMaster* findByBarcode(const QString& barcode) const;
 
     // ➕ Új anyag hozzáadása, csak ha code egyedi
     bool insert(const MaterialMaster& material);
