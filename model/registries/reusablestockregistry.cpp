@@ -32,3 +32,15 @@ QVector<ReusableStockEntry> ReusableStockRegistry::findByGroupName(const QString
     }
     return result;
 }
+
+void ReusableStockRegistry::consume(const QString& barcode)
+{
+    auto it = std::remove_if(_stock.begin(), _stock.end(),
+                             [&](const ReusableStockEntry& entry) {
+                                 return entry.barcode == barcode;
+                             });
+
+    if (it != _stock.end()) {
+        _stock.erase(it, _stock.end()); // 🧹 Törlés a készletből
+    }
+}

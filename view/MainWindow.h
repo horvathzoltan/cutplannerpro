@@ -33,7 +33,7 @@ public:
 
     void update_ResultsTable(const QVector<CutPlan> &plans);
     void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){
-        leftoverTableManager->appendRows(newResults);
+        leftoverTableManager->updateTableFromRepository();
     }
 
     void update_stockTable(){
@@ -44,6 +44,8 @@ public:
 private slots:
     void on_btnAddRow_clicked();
     void on_btnOptimize_clicked();
+
+    void on_btnFinalize_clicked();
 
 private:
     Ui::MainWindow *ui;

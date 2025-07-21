@@ -4,6 +4,8 @@
 
 #include <model/registries/stockregistry.h>
 
+#include <common/cuttingplanfinalizer.h>
+
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -60,6 +62,93 @@ QVector<CutResult> CuttingPresenter::getLeftoverResults()
     return model.getLeftoverResults();
 }
 
+/*finalize*/
+
+void CuttingPresenter::finalizePlans()
+{
+    QVector<CutPlan> plans     = model.getPlans();
+    QVector<CutResult> results = model.getLeftoverResults();
+
+    qDebug() << "✅ VÁGÁSI TERVEK — CutPlan-ek:";
+    for (const CutPlan& plan : plans) {
+        qDebug() << "  → #" << plan.rodNumber
+                 << "| Azonosító:" << (plan.usedReusable() ? plan.rodId : plan.name())
+                 << "| Darabok:" << plan.cuts
+                 << "| Kerf összesen:" << plan.kerfTotal << "mm"
+                 << "| Hulladék:" << plan.waste << "mm"
+                 << "| Forrás:" << (plan.source == CutPlanSource::Reusable ? "REUSABLE" : "STOCK")
+                 << "| Státusz:" << static_cast<int>(plan.getStatus())
+                 << "| Barcode:" << plan.rodId;
+            ;
+    }
+
+    qDebug() << "♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:";
+    for (const CutResult& result : results) {
+        qDebug() << "  - Hulladék:" << result.waste << "mm"
+                 << "| Forrás:" << result.sourceAsString()
+                 << "| MaterialId:" << result.materialId
+                 << "| Barcode:" << result.reusableBarcode;
+    }
+
+    int totalKerf = 0;
+    int totalWaste = 0;
+    int totalCuts = 0;
+
+    for (const CutPlan& plan : plans) {
+        totalKerf += plan.kerfTotal;
+        totalWaste += plan.waste;
+        totalCuts += plan.cuts.size();
+    }
+
+    qDebug() << "📈 Összesítés: "
+             << "Darabolások:" << totalCuts
+             << "| Kerf összesen:" << totalKerf << "mm"
+             << "| Hulladék összesen:" << totalWaste << "mm";
+
+    qDebug() << "***";
+
+
+    qDebug() << "🧱 STOCK — finalize előtt:";
+    for (const StockEntry& entry : StockRegistry::instance().all()) {
+        qDebug() << "  MaterialId:" << entry.materialId << " | Quantity:" << entry.quantity;
+    }
+
+    qDebug() << "♻️ REUSABLE — finalize előtt:";
+    for (const ReusableStockEntry& entry : ReusableStockRegistry::instance().all()) {
+        qDebug() << "  Barcode:" << entry.barcode
+                 << " | Length:" << entry.availableLength_mm
+                 << " | Group:" << entry.groupName();
+    }
+
+
+    CuttingPlanFinalizer::finalize(plans, results);
+
+    qDebug() << "***";
+
+    qDebug() << "🧱 STOCK — finalize után:";
+    for (const StockEntry& entry : StockRegistry::instance().all()) {
+        qDebug() << "  MaterialId:" << entry.materialId << " | Quantity:" << entry.quantity;
+    }
+
+    qDebug() << "♻️ REUSABLE — finalize után:";
+    for (const ReusableStockEntry& entry : ReusableStockRegistry::instance().all()) {
+        qDebug() << "  Barcode:" << entry.barcode
+                 << " | Length:" << entry.availableLength_mm
+                 << " | Group:" << entry.groupName();
+    }
+
+
+    for (CutPlan& plan : plans) {
+        plan.setStatus(CutPlanStatus::Completed);
+    }
+
+    // 🎯 Ha szeretnéd: visszafrissítés View felé is
+    if (view) {
+        view->update_stockTable();
+        view->update_leftoversTable(CutResultUtils::toReusableEntries(results));
+        view->update_ResultsTable(plans);
+    }
+}
 
 
 

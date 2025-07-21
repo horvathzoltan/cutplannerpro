@@ -23,4 +23,6 @@ public:
     bool removeByMaterialId(const QUuid& id);
 
     QVector<StockEntry> findByGroupName(const QString& name) const;
+
+    void consume(const QUuid& materialId); // 🧱 Levon egy darabot a készletből az adott anyaghoz
 };

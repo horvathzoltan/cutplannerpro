@@ -3,47 +3,43 @@
 #include <QObject>
 #include <QVector>
 #include <QMap>
-#include "common/grouputils.h"
+//#include "common/grouputils.h"
+#include "cutplan.h"
 #include "cutresult.h"
 #include "cuttingrequest.h"
-#include "registries/materialregistry.h"
+//#include "registries/materialregistry.h"
 #include "reusablestockentry.h"
 #include "stockentry.h"
 
-// struct CutRequest {
-//     int length;
-//     int quantity;
+// // struct CutRequest {
+// //     int length;
+// //     int quantity;
+// // };
+
+// struct CutPlan {
+//     int rodNumber;              // ➕ Sorszám vagy index
+//     QVector<int> cuts;          // ✂️ A darabolt hosszok
+//     int kerfTotal;              // 🔧 Vágásonkénti veszteségek összege
+//     int waste;                  // ♻️ Használatlan anyag
+//     QUuid materialId;           // 🔗 Anyagtörzsbeli azonosító (helyettesíti a category-t)
+
+//     QString rodId;
+
+//     // Kényelmi metódus (opcionális)
+//     QString name() const {
+//         auto opt = MaterialRegistry::instance().findById(materialId);
+//         return opt ? opt->name : "(ismeretlen)";
+//     }
+
+//     QString groupName() const {
+//         return GroupUtils::groupName(materialId);
+//     }
 // };
-
-struct CutPlan {
-    int rodNumber;              // ➕ Sorszám vagy index
-    QVector<int> cuts;          // ✂️ A darabolt hosszok
-    int kerfTotal;              // 🔧 Vágásonkénti veszteségek összege
-    int waste;                  // ♻️ Használatlan anyag
-    QUuid materialId;           // 🔗 Anyagtörzsbeli azonosító (helyettesíti a category-t)
-
-    QString rodId;
-
-    // Kényelmi metódus (opcionális)
-    QString name() const {
-        auto opt = MaterialRegistry::instance().findById(materialId);
-        return opt ? opt->name : "(ismeretlen)";
-    }
-
-    QString groupName() const {
-        return GroupUtils::groupName(materialId);
-    }
-};
 
 struct PieceWithMaterial {
     int length;
     QUuid materialId;
 };
-
-// struct PieceWithCategory {
-//     int length;
-//     ProfileCategory category;
-// };
 
 // 💡 C++20 előtt: globális operator==
 inline bool operator==(const PieceWithMaterial& a, const PieceWithMaterial& b) {

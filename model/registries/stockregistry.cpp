@@ -34,3 +34,18 @@ QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
 //             result.append(s);
 //     return result;
 // }
+
+void StockRegistry::consume(const QUuid& materialId)
+{
+    for (StockEntry& entry : _stock) {
+        if (entry.materialId == materialId) {
+            if (entry.quantity > 0) {
+                entry.quantity -= 1; // 🧮 Levonunk egy darabot
+            } else {
+                // ⚠️ Nincs már darab ebből az anyagból — opcionálisan logolható
+            }
+            break; // ✅ Csak az első egyezőre reagálunk
+        }
+    }
+}
+

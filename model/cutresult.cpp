@@ -11,13 +11,17 @@ QString CutResult::cutsAsString() const {
 }
 
 QString CutResult::sourceAsString() const {
-    if (source == LeftoverSource::Manual)
-        return "Manuális";
-    if (source == LeftoverSource::Optimization)
+    switch (source) {
+    case CutResultSource::FromStock:
         return optimizationId.has_value()
-                   ? QString("Op:%1").arg(*optimizationId)
-                   : "Op:?";
-    return "Ismeretlen";
+                   ? QString("Stock:Op%1").arg(*optimizationId)
+                   : "Stock";
+    case CutResultSource::FromReusable:
+        return "Reusable";
+    case CutResultSource::Unknown:
+    default:
+        return "Ismeretlen";
+    }
 }
 
 QString CutResult::materialName() const {

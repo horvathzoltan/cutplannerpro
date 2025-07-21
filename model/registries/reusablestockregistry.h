@@ -24,4 +24,6 @@ public:
     bool removeByMaterialId(const QUuid& id);
 
     QVector<ReusableStockEntry> findByGroupName(const QString& name) const;
+
+    void consume(const QString& barcode);  // ♻️ Egy reusable darabot levon (töröl) a registry-ből
 };

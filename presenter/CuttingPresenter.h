@@ -38,6 +38,7 @@ public:
     // Eredmények lekérése
     QVector<CutPlan> getPlans();
     QVector<CutResult> getLeftoverResults();
+    void finalizePlans();
 private:
     MainWindow* view;
     CuttingOptimizerModel model; 

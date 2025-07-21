@@ -9,12 +9,14 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/cuttingplanfinalizer.cpp \
     common/filenamehelper.cpp \
     common/rowstyler.cpp \
     common/startup/startupmanager.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
     model/crosssectionshape.cpp \
+    model/cutplan.cpp \
     model/cutresult.cpp \
     model/cuttingmachine.cpp \
     model/cuttingrequest.cpp \
@@ -42,6 +44,7 @@ SOURCES += \
 HEADERS += \
     common/colorutils.h \
     common/cutresultutils.h \
+    common/cuttingplanfinalizer.h \
     common/filenamehelper.h \
     common/grouputils.h \
     common/materialutils.h \
@@ -50,6 +53,7 @@ HEADERS += \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
     model/crosssectionshape.h \
+    model/cutplan.h \
     model/cutresult.h \
     model/cuttingmachine.h \
     model/cuttingrequest.h \

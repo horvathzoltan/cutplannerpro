@@ -1,8 +1,11 @@
 #include "CuttingOptimizerModel.h"
+#include "common/grouputils.h"
 //#include "model/profilestock.h"
 #include <numeric>
 #include <algorithm>
 #include <QSet>
+
+#include <model/registries/materialregistry.h>
 
 CuttingOptimizerModel::CuttingOptimizerModel(QObject *parent) : QObject(parent) {}
 
@@ -122,6 +125,7 @@ void CuttingOptimizerModel::optimize() {
         }
 
         CutPlan p{ ++rodId, selectedCombo, kerfTotal, waste, selectedMaterialId, barcode };
+        p.source = usedReusable ? CutPlanSource::Reusable : CutPlanSource::Stock;
         plans.append(p);
 
         // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
@@ -131,7 +135,8 @@ void CuttingOptimizerModel::optimize() {
             result.length         = selectedLength;
             result.cuts           = selectedCombo;
             result.waste          = waste;
-            result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
+            //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
+            result.source = usedReusable ? CutResultSource::FromReusable : CutResultSource::FromStock;
             result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
 

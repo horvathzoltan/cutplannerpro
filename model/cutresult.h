@@ -14,12 +14,19 @@ enum class LeftoverSource {
     Undefined
 };
 
+enum class CutResultSource {
+    FromStock,      // 🧱 Szálanyagból jött hulladék
+    FromReusable,   // ♻️ Használt reusable darabból jött
+    Unknown          // ❓ Ha nem egyértelmű
+};
+
 struct CutResult {
     QUuid materialId;               // 🔗 Törzsből visszakereshető anyag
     int length = 0;                 // 📏 Eredeti rúd hossza
     QVector<int> cuts;             // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
-    LeftoverSource source = LeftoverSource::Undefined;
+    //LeftoverSource source = LeftoverSource::Undefined;
+    CutResultSource source;
     std::optional<int> optimizationId;  // Csak ha source == Optimization
 
     QString reusableBarcode;

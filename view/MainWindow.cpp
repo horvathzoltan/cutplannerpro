@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 //#include "common/materialutils.h"
+#include "common/grouputils.h"
 #include "ui_MainWindow.h"
 
 #include "../presenter/CuttingPresenter.h"
@@ -15,6 +16,7 @@
 //#include "../model/cutresult.h"
 #include "../model/CuttingOptimizerModel.h"
 
+#include <model/registries/reusablestockregistry.h>
 #include <model/registries/stockregistry.h>
 
 #include <common/rowstyler.h>
@@ -276,6 +278,21 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
     ui->tableResults->setCellWidget(row, 2, cutsWidget);
     ui->tableResults->setItem(row, 3, itemKerf);
     ui->tableResults->setItem(row, 4, itemWaste);
+}
+
+
+
+void MainWindow::on_btnFinalize_clicked()
+{
+    const auto confirm = QMessageBox::question(this, "Terv lezárása",
+                                               "Biztosan lezárod ezt a vágási tervet? Ez módosítja a készletet.",
+                                               QMessageBox::Yes | QMessageBox::No);
+
+    if (confirm == QMessageBox::Yes) {
+        presenter->finalizePlans();
+        update_stockTable();
+        update_leftoversTable(ReusableStockRegistry::instance().all()); // frissítjük új hullókkal
+    }
 }
 
 
