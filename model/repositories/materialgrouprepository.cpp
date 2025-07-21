@@ -1,8 +1,8 @@
 #include "materialgrouprepository.h"
 #include "common/colorutils.h"
-#include "materialgroup.h"
-#include "materialregistry.h"
-#include "materialmaster.h"
+#include "../materialgroup.h"
+#include "../registries/materialregistry.h"
+#include "../materialmaster.h"
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>

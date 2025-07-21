@@ -3,8 +3,8 @@
 #include <QApplication>
 #include <QMessageBox>
 #include "common/filenamehelper.h"
-#include <model/materialregistry.h>
-#include <model/materialrepository.h>
+#include <model/registries/materialregistry.h>
+#include <model/repositories/materialrepository.h>
 #include <common/startup/startupmanager.h>
 
 

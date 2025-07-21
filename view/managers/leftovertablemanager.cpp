@@ -2,7 +2,8 @@
 #include "common/materialutils.h"
 #include <QMessageBox>
 #include <common/rowstyler.h>
-#include <model/materialregistry.h>
+#include <model/registries/reusablestockregistry.h>
+#include "model/registries/materialregistry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
     : table(table), parent(parent)
@@ -82,7 +83,7 @@ std::optional<ReusableStockEntry> LeftoverTableManager::readRow(int row) const {
     entry.availableLength_mm = length;
     entry.source = source;
     entry.optimizationId = std::nullopt;
-    entry.reusableBarcode = reusableId;
+    entry.barcode = reusableId;
 
     return entry;
 }
@@ -121,7 +122,7 @@ void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
     itemBarcode->setTextAlignment(Qt::AlignCenter);
     table->setItem(row, ColBarcode, itemBarcode);
 
-    auto* itemID = new QTableWidgetItem(entry.reusableBarcode);
+    auto* itemID = new QTableWidgetItem(entry.barcode);
     itemID->setTextAlignment(Qt::AlignCenter);
     table->setItem(row, ColReusableId, itemID);
 
@@ -243,29 +244,51 @@ void LeftoverTableManager::clear() {
     table->setRowCount(0);
 }
 
-void LeftoverTableManager::fillTestData() {
-    if (!table || !parent)
+void LeftoverTableManager::updateTableFromRepository() {
+    if (!table)
         return;
 
-    const auto& materials = MaterialRegistry::instance().all();
-    if (materials.isEmpty()) {
-        QMessageBox::warning(parent, "Hiba", "Nincs anyag a törzsben.");
-        return;
+    table->clearContents();
+    table->setRowCount(0);
+
+    const auto& stockEntries = ReusableStockRegistry::instance().all();
+    const MaterialRegistry& materialReg = MaterialRegistry::instance();
+
+    for (const auto& entry : stockEntries) {
+        const MaterialMaster* master = materialReg.findById(entry.materialId);
+        if (!master)
+            continue;
+
+        addRow(entry);
     }
-    if (materials.size() < 2) {
-        QMessageBox::warning(parent, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
-        return;
-    }   
 
-    QVector<ReusableStockEntry> testLeftovers ={
-        {
-            { materials[0].id, 2940, LeftoverSource::Manual, std::nullopt, "RST-012" },
-            { materials[0].id, 180, LeftoverSource::Manual, std::nullopt, "RST-013" },
-            { materials[1].id, 100, LeftoverSource::Manual, std::nullopt, "RST-014" }
-        }
-    };
-
-    for (const auto& e : testLeftovers)
-        addRow(e);
+    table->resizeColumnsToContents();
 }
+
+
+// void LeftoverTableManager::fillTestData() {
+//     if (!table || !parent)
+//         return;
+
+//     const auto& materials = MaterialRegistry::instance().all();
+//     if (materials.isEmpty()) {
+//         QMessageBox::warning(parent, "Hiba", "Nincs anyag a törzsben.");
+//         return;
+//     }
+//     if (materials.size() < 2) {
+//         QMessageBox::warning(parent, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
+//         return;
+//     }
+
+//     QVector<ReusableStockEntry> testLeftovers ={
+//         {
+//             { materials[0].id, 2940, LeftoverSource::Manual, std::nullopt, "RST-012" },
+//             { materials[0].id, 180, LeftoverSource::Manual, std::nullopt, "RST-013" },
+//             { materials[1].id, 100, LeftoverSource::Manual, std::nullopt, "RST-014" }
+//         }
+//     };
+
+//     for (const auto& e : testLeftovers)
+//         addRow(e);
+// }
 

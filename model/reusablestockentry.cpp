@@ -1,5 +1,5 @@
 #include "reusablestockentry.h"
-#include "materialregistry.h"
+#include "registries/materialregistry.h"
 #include "common/grouputils.h"
 
 const MaterialMaster* ReusableStockEntry::master() const {
@@ -14,9 +14,13 @@ QString ReusableStockEntry::name() const {
     return m ? m->name : "(?)";
 }
 
-QString ReusableStockEntry::barcode() const {
+QString ReusableStockEntry::materialBarcode() const {
     const auto* m = master();
     return m ? m->barcode : "(?)";
+}
+
+QString ReusableStockEntry::reusableBarcode() const {
+    return barcode.isEmpty()? "(?)" : barcode;
 }
 
 MaterialType ReusableStockEntry::type() const {

@@ -1,12 +1,13 @@
 #include "startupmanager.h"
-#include "../../model/materialrepository.h"
-#include "../../model/materialregistry.h"
+#include "../../model/repositories/materialrepository.h"
+#include "../../model/registries/materialregistry.h"
 #include "../../model/materialmaster.h"
-#include "model/stockentry.h"
+//#include "model/stockentry.h"
 
-#include <model/materialgrouprepository.h>
-#include <model/stockregistry.h>
-#include <model/stockrepository.h>
+#include <model/repositories/materialgrouprepository.h>
+#include <model/registries//stockregistry.h>
+#include <model/repositories/reusablestockrepository.h>
+#include <model/repositories/stockrepository.h>
 
 #include <QSet>
 //#include "ProfileCategory.h"
@@ -26,10 +27,15 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!stockStatus.ok)
         return stockStatus;
 
+    StartupStatus reusableStockStatus = initReusableStockRegistry();
+    if (!reusableStockStatus.ok)
+        return reusableStockStatus;
+
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.warnings += materialStatus.warnings;
     finalStatus.warnings += groupStatus.warnings;
-    finalStatus.warnings += stockStatus.warnings;
+    finalStatus.warnings += stockStatus.warnings;    
+    finalStatus.warnings += reusableStockStatus.warnings;
 
     return finalStatus;
 }
@@ -128,3 +134,41 @@ StartupStatus StartupManager::initMaterialGroupRegistry() {
 bool StartupManager::hasMinimumMaterials(int minCount) {
     return MaterialRegistry::instance().all().size() >= minCount;
 }
+
+StartupStatus StartupManager::initReusableStockRegistry() {
+    bool loaded = ReusableStockRepository::loadFromCSV(ReusableStockRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni a maradék készletet a leftovers.csv fájlból.");
+
+    const auto& all = ReusableStockRegistry::instance().all();
+
+    if (all.isEmpty())
+        return StartupStatus::failure("⚠️ A maradék készlet üres. Legalább 1 tétel szükséges a működéshez.");
+
+    StartupStatus status = StartupStatus::success();
+
+    // 🔎 Validáció: minden reusable-stock-entry ismert anyagra hivatkozzon
+    QSet<QUuid> knownMaterials;
+    for (const auto& mat : MaterialRegistry::instance().all())
+        knownMaterials.insert(mat.id);
+
+    QStringList invalidReusableStockItems;
+
+    for (const auto& entry : all) {
+        if (!knownMaterials.contains(entry.materialId)) {
+            invalidReusableStockItems << entry.barcode;
+        }
+    }
+
+    if (!invalidReusableStockItems.isEmpty()) {
+        status.addWarning(
+            QString("⚠️ %1 maradék készletelem nem létező anyagra hivatkozik.Ellenőrizd a leftovers.csv fájlt.Érintett vonalkódok:%2")
+                .arg(invalidReusableStockItems.size())
+                .arg(invalidReusableStockItems.join(", "))
+            );
+    }
+
+    return status;
+}
+
+

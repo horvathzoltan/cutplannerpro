@@ -115,7 +115,7 @@ void CuttingOptimizerModel::optimize() {
 
         QString barcode;
         if (usedReusable && candidate.has_value()) {
-            barcode = candidate->stock.reusableBarcode; // 🧾 egyedi azonosító a reusable darabra
+            barcode = candidate->stock.reusableBarcode(); // 🧾 egyedi azonosító a reusable darabra
         } else {
             const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
             barcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";

@@ -1,6 +1,6 @@
 #include "cutresult.h"
 
-#include "materialregistry.h"
+#include "registries/materialregistry.h"
 #include "../common/materialutils.h"
 
 QString CutResult::cutsAsString() const {

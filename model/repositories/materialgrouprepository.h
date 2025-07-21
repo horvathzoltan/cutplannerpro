@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QString>
-#include "materialgroupregistry.h"
+#include "../registries/materialgroupregistry.h"
 
 class MaterialGroupRepository {
 public:

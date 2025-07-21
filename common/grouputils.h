@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QUuid>
 #include <QSet>
-#include "../model/materialgroupregistry.h"
+#include "../model/registries/materialgroupregistry.h"
 #include "../model/materialgroup.h"
 #include "common/colorutils.h"
 

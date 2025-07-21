@@ -12,10 +12,10 @@
 //#include "../model/materialregistry.h"
 #include "../model/stockentry.h"
 #include "../model/cuttingrequest.h"
-#include "../model/cutresult.h"
+//#include "../model/cutresult.h"
 #include "../model/CuttingOptimizerModel.h"
 
-#include <model/stockregistry.h>
+#include <model/registries/stockregistry.h>
 
 #include <common/rowstyler.h>
 
@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //stockTableManager->initCustomTestStock(); // Feltölti a tableStock-ot tesztadattal
     stockTableManager->updateTableFromRepository();  // Frissíti a tableStock a StockRepository alapján
-    leftoverTableManager->fillTestData();  // Feltölti a maradékokat tesztadatokkal
+    leftoverTableManager->updateTableFromRepository();  // Feltölti a maradékokat tesztadatokkal
 }
 
 
@@ -143,15 +143,16 @@ void MainWindow::on_btnOptimize_clicked() {
 
     // ♻️ Hullók konvertálása újrafelhasználható készletté
     QVector<ReusableStockEntry> reusableList;
-    for (const auto& r : leftoverList) {
-        if (r.availableLength_mm >= 300) { // ✅ csak releváns maradékokat vesszük figyelembe
+    for (const ReusableStockEntry &r : leftoverList) {
+        if (r.availableLength_mm >=
+            300) { // ✅ csak releváns maradékokat vesszük figyelembe
 
             ReusableStockEntry e;
             e.materialId = r.materialId;
             e.availableLength_mm = r.availableLength_mm;
-            e.source = r.source; // 🛠️ Forrás megőrzése
+            e.source = r.source;                 // 🛠️ Forrás megőrzése
             e.optimizationId = r.optimizationId; // 🔍 Csak ha van
-            e.reusableBarcode = r.reusableBarcode; // 🧾 Egyedi azonosító
+            e.barcode = r.barcode;               // 🧾 Egyedi azonosító
 
             reusableList.append(e);
         }

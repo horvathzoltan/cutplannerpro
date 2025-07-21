@@ -72,3 +72,9 @@ QString FileNameHelper::getStockCsvFile() const {
     auto fn = QDir(_projectPath).filePath("stock.csv"); // vagy ahová ténylegesen rakod
     return fn;
 }
+
+QString FileNameHelper::getLeftoversCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("leftovers.csv"); // vagy ahová ténylegesen rakod
+    return fn;
+}
+

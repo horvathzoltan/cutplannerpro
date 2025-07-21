@@ -1,8 +1,8 @@
 #include "addinputdialog.h"
 
-#include "qpushbutton.h"
+//#include "qpushbutton.h"
 #include "ui_addinputdialog.h"
-#include "model/materialregistry.h"
+#include "model/registries/materialregistry.h"
 
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)

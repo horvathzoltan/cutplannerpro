@@ -27,6 +27,7 @@ class StartupManager {
 public:
     StartupStatus runStartupSequence();
 
+    StartupStatus initReusableStockRegistry();
 private:
     StartupStatus initMaterialRegistry();
     StartupStatus initMaterialGroupRegistry();

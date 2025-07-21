@@ -1,6 +1,6 @@
 #pragma once
 
-#include "materialgroup.h"
+#include "../materialgroup.h"
 #include <QUuid>
 #include <QMap>
 #include <QList>

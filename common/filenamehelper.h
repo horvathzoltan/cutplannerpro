@@ -32,4 +32,5 @@ public:
 
     // 📓 Naplófájl név
     QString getLogFileName() const;
+    QString getLeftoversCsvFile() const;
 };

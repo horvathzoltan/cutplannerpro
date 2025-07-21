@@ -2,8 +2,8 @@
 
 #include <QString>
 #include <QVector>
-#include "materialmaster.h"
-#include "materialregistry.h"
+#include "../materialmaster.h"
+#include "../registries/materialregistry.h"
 
 class MaterialRepository {
 public:

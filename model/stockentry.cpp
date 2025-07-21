@@ -1,5 +1,5 @@
 #include "stockentry.h"
-#include "materialregistry.h"
+#include "registries/materialregistry.h"
 
 #include "common/grouputils.h" // biztosan benne van
 

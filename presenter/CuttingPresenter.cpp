@@ -2,7 +2,7 @@
 #include "../view/MainWindow.h"
 #include "common/cutresultutils.h"
 
-#include <model/stockregistry.h>
+#include <model/registries/stockregistry.h>
 
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)

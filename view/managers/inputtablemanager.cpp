@@ -1,5 +1,5 @@
 #include "inputtablemanager.h"
-#include "model/materialregistry.h"
+#include "model/registries/materialregistry.h"
 #include "common/rowstyler.h"
 #include <QPushButton>
 #include <QMessageBox>

@@ -5,10 +5,10 @@
 
 //#include "common/categoryutils.h"
 #include "materialrepository.h"
-#include "materialmaster.h"
-#include "materialtype.h"
-#include "crosssectionshape.h"
-#include "materialregistry.h"
+#include "../materialmaster.h"
+#include "../materialtype.h"
+#include "../crosssectionshape.h"
+#include "../registries/materialregistry.h"
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>

@@ -20,16 +20,18 @@ SOURCES += \
     model/cuttingrequest.cpp \
     model/identifiableentity.cpp \
     model/materialgroup.cpp \
-    model/materialgroupregistry.cpp \
-    model/materialgrouprepository.cpp \
     model/materialmaster.cpp \
-    model/materialregistry.cpp \
-    model/materialrepository.cpp \
     model/materialtype.cpp \
+    model/registries/materialgroupregistry.cpp \
+    model/registries/materialregistry.cpp \
+    model/registries/reusablestockregistry.cpp \
+    model/registries/stockregistry.cpp \
+    model/repositories/materialgrouprepository.cpp \
+    model/repositories/materialrepository.cpp \
+    model/repositories/reusablestockrepository.cpp \
+    model/repositories/stockrepository.cpp \
     model/reusablestockentry.cpp \
     model/stockentry.cpp \
-    model/stockregistry.cpp \
-    model/stockrepository.cpp \
     presenter/CuttingPresenter.cpp \
     view/MainWindow.cpp \
     view/dialog/addinputdialog.cpp \
@@ -53,16 +55,18 @@ HEADERS += \
     model/cuttingrequest.h \
     model/identifiableentity.h \
     model/materialgroup.h \
-    model/materialgroupregistry.h \
-    model/materialgrouprepository.h \
     model/materialmaster.h \
-    model/materialregistry.h \
-    model/materialrepository.h \
     model/materialtype.h \
+    model/registries/materialgroupregistry.h \
+    model/registries/materialregistry.h \
+    model/registries/reusablestockregistry.h \
+    model/registries/stockregistry.h \
+    model/repositories/materialgrouprepository.h \
+    model/repositories/materialrepository.h \
+    model/repositories/reusablestockrepository.h \
+    model/repositories/stockrepository.h \
     model/reusablestockentry.h \
     model/stockentry.h \
-    model/stockregistry.h \
-    model/stockrepository.h \
     presenter/CuttingPresenter.h \
     view/MainWindow.h \
     view/dialog/addinputdialog.h \
@@ -82,5 +86,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     README.md \
     testdata/groups.csv \
+    testdata/leftovers.csv \
     testdata/materials.csv \
     testdata/stock.csv

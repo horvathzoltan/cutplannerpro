@@ -2,9 +2,9 @@
 #include "common/materialutils.h"
 #include "common/rowstyler.h"
 //#include "common/grouputils.h"
-#include "model/materialregistry.h"
+#include "model/registries/materialregistry.h"
 #include <QMessageBox>
-#include <model/stockregistry.h>
+#include "model/registries/stockregistry.h"
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : table(table), parent(parent) {}

@@ -2,8 +2,8 @@
 
 #include <QString>
 #include <QVector>
-#include "stockentry.h"
-#include "stockregistry.h"
+#include "../stockentry.h"
+#include "../registries/stockregistry.h"
 
 class StockRepository {
 public:

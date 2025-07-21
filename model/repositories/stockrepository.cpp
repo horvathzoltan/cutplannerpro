@@ -1,4 +1,4 @@
-#include "materialregistry.h"
+#include "../registries/materialregistry.h"
 #include "stockrepository.h"
 #include <QFile>
 #include <QTextStream>

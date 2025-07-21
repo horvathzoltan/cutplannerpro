@@ -2,7 +2,7 @@
 
 #include <QVector>
 #include <QUuid>
-#include "stockentry.h"
+#include "../stockentry.h"
 
 class StockRegistry {
 private:

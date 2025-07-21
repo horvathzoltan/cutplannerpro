@@ -12,7 +12,7 @@ public:
     QVector<ReusableStockEntry> readAll() const;                 // 🔍 Beolvasás optimalizáláshoz
     void clear();                                       // 🧹 Tábla ürítése
 
-    void fillTestData();
+    //void fillTestData();
     void addRow(const ReusableStockEntry &res);
     void appendRows(const QVector<ReusableStockEntry> &newResults);
     std::optional<ReusableStockEntry> readRow(int row) const;
@@ -29,4 +29,5 @@ public:
     static constexpr int ColShape     = 4;
     static constexpr int ColSource    = 5;
     static constexpr int ColReusable  = 6;
+    void updateTableFromRepository();
 };

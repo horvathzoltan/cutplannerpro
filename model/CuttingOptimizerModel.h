@@ -6,7 +6,7 @@
 #include "common/grouputils.h"
 #include "cutresult.h"
 #include "cuttingrequest.h"
-#include "materialregistry.h"
+#include "registries/materialregistry.h"
 #include "reusablestockentry.h"
 #include "stockentry.h"
 

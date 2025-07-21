@@ -4,7 +4,7 @@
 #include <QUuid>
 #include <QString>
 #include <optional>
-#include "materialmaster.h"
+#include "../materialmaster.h"
 
 class MaterialRegistry {
 private:
