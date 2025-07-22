@@ -6,16 +6,6 @@
 #include "../model/cutresult.h"              // Vágás eredménye — tartalmaz hulladék adatokat
 #include "../model/cutplan.h"                // Egyedi vágási terv — anyag, hossz, reusable info
 
-// 🔽 Készletregiszterek — stock és reusable kezelése
-#include "../model/registries/stockregistry.h"
-#include "../model/registries/reusablestockregistry.h"
-
-// 🔽 Hulladék reprezentáció
-#include "../model/reusablestockentry.h"
-
-// 🔽 Konverziós logika: CutResult → ReusableStockEntry
-#include "../common/cutresultutils.h"
-
 /**
  * @brief Statikus finalizer osztály, ami lezárja a vágási tervet.
  * Feladatai:

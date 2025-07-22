@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "../model/CuttingOptimizerModel.h"
+#include "model/archivedwasteentry.h"
 
 /*
 Értelmezi és kezeli a felhasználói interakciókat
@@ -39,6 +40,8 @@ public:
     QVector<CutPlan> getPlans();
     QVector<CutResult> getLeftoverResults();
     void finalizePlans();
+    void scrapShortLeftovers();
+    void exportArchivedWasteToCSV(const QVector<ArchivedWasteEntry> &entries);
 private:
     MainWindow* view;
     CuttingOptimizerModel model; 

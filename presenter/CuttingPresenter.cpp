@@ -1,7 +1,11 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 #include "common/cutresultutils.h"
+#include "common/optimizationexporter.h"
+#include "model/archivedwasteentry.h"
+#include "common/archivedwasteutils.h"
 
+#include <model/registries/reusablestockregistry.h>
 #include <model/registries/stockregistry.h>
 
 #include <common/cuttingplanfinalizer.h>
@@ -50,6 +54,8 @@ void CuttingPresenter::runOptimization() {
         view->update_leftoversTable(e);
 
     }
+    OptimizationExporter::exportPlansToCSV(model.getPlans());
+    OptimizationExporter::exportPlansAsWorkSheetTXT(model.getPlans());
 }
 
 QVector<CutPlan> CuttingPresenter::getPlans()
@@ -72,6 +78,7 @@ void CuttingPresenter::finalizePlans()
     qDebug() << "✅ VÁGÁSI TERVEK — CutPlan-ek:";
     for (const CutPlan& plan : plans) {
         qDebug() << "  → #" << plan.rodNumber
+                 << "| PlanId:" << plan.planId.toString()
                  << "| Azonosító:" << (plan.usedReusable() ? plan.rodId : plan.name())
                  << "| Darabok:" << plan.cuts
                  << "| Kerf összesen:" << plan.kerfTotal << "mm"
@@ -150,6 +157,35 @@ void CuttingPresenter::finalizePlans()
     }
 }
 
+void CuttingPresenter::scrapShortLeftovers()
+{
+    auto& reusableRegistry = ReusableStockRegistry::instance();
+    QVector<ArchivedWasteEntry> archivedEntries;
+    QVector<ReusableStockEntry> toBeScrapped;
+
+    for (const ReusableStockEntry &entry : reusableRegistry.all()) {
+        if (entry.availableLength_mm < 300) {
+            ArchivedWasteEntry archived;
+            archived.materialId = entry.materialId;
+            archived.wasteLength_mm = entry.availableLength_mm;
+            archived.sourceDescription = "Selejtezés reusable készletből";
+            archived.createdAt = QDateTime::currentDateTime();
+            archived.group = entry.groupName();
+            archived.originBarcode = entry.barcode;
+            archived.note = "Nem használható → archiválva";
+            archived.cutPlanId = QUuid(); // ha nincs konkrét terv
+
+            archivedEntries.append(archived);
+            toBeScrapped.append(entry);
+        }
+    }
+
+    for (const auto& e : toBeScrapped)
+        reusableRegistry.consume(e.barcode);
+
+    if (!archivedEntries.isEmpty())
+        ArchivedWasteUtils::exportToCSV(archivedEntries);
+}
 
 
 

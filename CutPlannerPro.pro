@@ -9,12 +9,15 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/archivedwasteutils.cpp \
     common/cuttingplanfinalizer.cpp \
     common/filenamehelper.cpp \
+    common/optimizationexporter.cpp \
     common/rowstyler.cpp \
     common/startup/startupmanager.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
+    model/archivedwasteentry.cpp \
     model/crosssectionshape.cpp \
     model/cutplan.cpp \
     model/cutresult.cpp \
@@ -42,16 +45,19 @@ SOURCES += \
     view/managers/stocktablemanager.cpp
 
 HEADERS += \
+    common/archivedwasteutils.h \
     common/colorutils.h \
     common/cutresultutils.h \
     common/cuttingplanfinalizer.h \
     common/filenamehelper.h \
     common/grouputils.h \
     common/materialutils.h \
+    common/optimizationexporter.h \
     common/rowstyler.h \
     common/startup/startupmanager.h \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
+    model/archivedwasteentry.h \
     model/crosssectionshape.h \
     model/cutplan.h \
     model/cutresult.h \

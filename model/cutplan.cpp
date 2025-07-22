@@ -36,3 +36,10 @@ void CutPlan::setStatus(CutPlanStatus newStatus)
 {
     status = newStatus;
 }
+
+QString CutPlan::cutsAsString() const {
+    QStringList out;
+    for (int c : cuts)
+        out << QString::number(c);
+    return out.join(";");
+}

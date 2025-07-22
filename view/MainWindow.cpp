@@ -296,3 +296,23 @@ void MainWindow::on_btnFinalize_clicked()
 }
 
 
+
+void MainWindow::on_btnDisposal_clicked()
+{
+    const auto confirm = QMessageBox::question(this, "Selejtezés",
+                                               "Biztosan eltávolítod a túl rövid reusable darabokat? Ezek archiválásra kerülnek és kikerülnek a készletből.",
+                                               QMessageBox::Yes | QMessageBox::No);
+
+    if (confirm == QMessageBox::Yes) {
+        presenter->scrapShortLeftovers(); // 🔧 Selejtezési logika átkerül Presenterbe
+
+        update_stockTable(); // ha a reusable a készletben is megjelenik
+        update_leftoversTable(ReusableStockRegistry::instance().all());
+        // updateArchivedWasteTable(); → ha van külön nézet hozzá
+
+        QMessageBox::information(this, "Selejtezés kész",
+                                 "A túl rövid reusable darabok selejtezése megtörtént.");
+    }
+}
+
+

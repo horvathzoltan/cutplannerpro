@@ -126,11 +126,13 @@ void CuttingOptimizerModel::optimize() {
 
         CutPlan p{ ++rodId, selectedCombo, kerfTotal, waste, selectedMaterialId, barcode };
         p.source = usedReusable ? CutPlanSource::Reusable : CutPlanSource::Stock;
+        p.planId = QUuid::createUuid(); // vagy: p.planId = QUuid::fromString(...); ha külső kapcsolat van
         plans.append(p);
 
         // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
-        if (waste >= 300) {
+        //if (waste >= 300) {
             CutResult result;
+            result.cutPlanId = p.planId;
             result.materialId     = selectedMaterialId;
             result.length         = selectedLength;
             result.cuts           = selectedCombo;
@@ -141,7 +143,7 @@ void CuttingOptimizerModel::optimize() {
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
 
             leftoverResults.append(result);
-        }
+        //}
     }
 }
 

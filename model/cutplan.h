@@ -39,6 +39,8 @@ public:
     // 🔁 Állapotkezelés
     CutPlanStatus status = CutPlanStatus::NotStarted;
 
+    QUuid planId = QUuid::createUuid(); // ✅ automatikus UUID, egyedi tervazonosító
+
     // 🧠 Viselkedésalapú metódusok
     bool usedReusable() const;
     bool isFinalized() const;
@@ -48,4 +50,6 @@ public:
 
     CutPlanStatus getStatus() const;
     void setStatus(CutPlanStatus newStatus);
+
+    QString cutsAsString() const;
 };

@@ -47,6 +47,8 @@ private slots:
 
     void on_btnFinalize_clicked();
 
+    void on_btnDisposal_clicked();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter;
