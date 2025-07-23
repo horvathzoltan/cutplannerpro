@@ -14,6 +14,7 @@ SOURCES += \
     common/filenamehelper.cpp \
     common/optimizationexporter.cpp \
     common/rowstyler.cpp \
+    common/segmentutils.cpp \
     common/startup/startupmanager.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
@@ -36,9 +37,11 @@ SOURCES += \
     model/repositories/reusablestockrepository.cpp \
     model/repositories/stockrepository.cpp \
     model/reusablestockentry.cpp \
+    model/segment.cpp \
     model/stockentry.cpp \
     presenter/CuttingPresenter.cpp \
     view/MainWindow.cpp \
+    view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
@@ -54,6 +57,7 @@ HEADERS += \
     common/materialutils.h \
     common/optimizationexporter.h \
     common/rowstyler.h \
+    common/segmentutils.h \
     common/startup/startupmanager.h \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
@@ -76,9 +80,11 @@ HEADERS += \
     model/repositories/reusablestockrepository.h \
     model/repositories/stockrepository.h \
     model/reusablestockentry.h \
+    model/segment.h \
     model/stockentry.h \
     presenter/CuttingPresenter.h \
     view/MainWindow.h \
+    view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \

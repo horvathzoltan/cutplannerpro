@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QMessageBox>
 
+#include "cutanalyticspanel.h" // vagy ahova tetted
 
 //#include "../model/materialregistry.h"
 #include "../model/stockentry.h"
@@ -90,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent)
     //stockTableManager->initCustomTestStock(); // Feltölti a tableStock-ot tesztadattal
     stockTableManager->updateTableFromRepository();  // Frissíti a tableStock a StockRepository alapján
     leftoverTableManager->updateTableFromRepository();  // Feltölti a maradékokat tesztadatokkal
+
+    analyticsPanel = new CutAnalyticsPanel(this);
+    ui->midLayout->addWidget(analyticsPanel);
 }
 
 
@@ -175,6 +179,11 @@ void MainWindow::on_btnOptimize_clicked() {
     presenter->runOptimization();
 }
 
+void MainWindow::updateStats(const QVector<CutPlan>& plans, const QVector<CutResult>& results) {
+    analyticsPanel->updateStats(plans, results);
+}
+
+
 void MainWindow::clearCutTable() {
     ui->tableResults->setRowCount(0);
 }
@@ -206,16 +215,40 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(6);
 
-    for (int cut : plan.cuts) {
-        QString color;
-        if (cut < 300)
-            color = "#e74c3c";
-        else if (cut > 2000)
-            color = "#f39c12";
-        else
-            color = "#27ae60";
+    // for (int cut : plan.cuts) {
+    //     QString color;
+    //     if (cut < 300)
+    //         color = "#e74c3c";
+    //     else if (cut > 2000)
+    //         color = "#f39c12";
+    //     else
+    //         color = "#27ae60";
 
-        QLabel* label = new QLabel(QString::number(cut));
+    //     QLabel* label = new QLabel(QString::number(cut));
+    //     label->setAlignment(Qt::AlignCenter);
+    //     label->setStyleSheet(QString(
+    //                              "QLabel {"
+    //                              " border-radius: 6px;"
+    //                              " padding: 3px 8px;"
+    //                              " color: white;"
+    //                              " background-color: %1;"
+    //                              " font-weight: bold;"
+    //                              "}").arg(color));
+    //     layout->addWidget(label);
+    // }
+
+    for (const Segment& s : plan.segments) {
+        QString color;
+        switch (s.type) {
+        case SegmentType::Piece:
+            color = s.length_mm < 300     ? "#e74c3c" :
+                        s.length_mm > 2000    ? "#f39c12" :
+                        "#27ae60"; break;
+        case SegmentType::Kerf:   color = "#34495e"; break;
+        case SegmentType::Waste:  color = "#bdc3c7"; break;
+        }
+
+        QLabel* label = new QLabel(s.toLabelString());
         label->setAlignment(Qt::AlignCenter);
         label->setStyleSheet(QString(
                                  "QLabel {"
@@ -227,6 +260,7 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
                                  "}").arg(color));
         layout->addWidget(label);
     }
+
 
     // 3️⃣ Kerf + Waste
     auto* itemKerf = new QTableWidgetItem(QString::number(plan.kerfTotal));

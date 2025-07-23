@@ -18,6 +18,7 @@ public:
     QString originBarcode;
     QString note;
     QUuid cutPlanId;
+    bool isFinalWaste = false; // ✅ új mező: jelzi, hogy a hulló a záró vágásból keletkezett
 
     QString toCSVLine() const;
 };

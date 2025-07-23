@@ -1,5 +1,6 @@
 #include "CuttingOptimizerModel.h"
 #include "common/grouputils.h"
+#include "common/segmentutils.h"
 //#include "model/profilestock.h"
 #include <numeric>
 #include <algorithm>
@@ -112,7 +113,7 @@ void CuttingOptimizerModel::optimize() {
 
         // 📦 Vágási terv mentése
         int totalCut = std::accumulate(selectedCombo.begin(), selectedCombo.end(), 0);
-        int kerfTotal = (selectedCombo.size() - 1) * kerf; // vágási veszteség
+        int kerfTotal = (selectedCombo.size() ) * kerf; // vágási veszteség
         int used = totalCut + kerfTotal;
         int waste = selectedLength - used;
 
@@ -127,6 +128,7 @@ void CuttingOptimizerModel::optimize() {
         CutPlan p{ ++rodId, selectedCombo, kerfTotal, waste, selectedMaterialId, barcode };
         p.source = usedReusable ? CutPlanSource::Reusable : CutPlanSource::Stock;
         p.planId = QUuid::createUuid(); // vagy: p.planId = QUuid::fromString(...); ha külső kapcsolat van
+        p.generateSegments(kerf, selectedLength);
         plans.append(p);
 
         // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
@@ -141,6 +143,7 @@ void CuttingOptimizerModel::optimize() {
             result.source = usedReusable ? CutResultSource::FromReusable : CutResultSource::FromStock;
             result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
+            result.isFinalWaste = SegmentUtils::isTrailingWaste(result.waste, p.segments);
 
             leftoverResults.append(result);
         //}
@@ -179,7 +182,7 @@ QVector<int> CuttingOptimizerModel::findBestFit(const QVector<int>& available, i
         if (count == 0)
             continue;
 
-        int kerfTotal = (count - 1) * kerf;
+        int kerfTotal = combo.size()*kerf;// (count - 1) * kerf;
         int used = total + kerfTotal;
 
         if (used <= lengthLimit) {
@@ -229,7 +232,7 @@ std::optional<CuttingOptimizerModel::ReusableCandidate> CuttingOptimizerModel::f
             continue;
 
         int totalCut = std::accumulate(combo.begin(), combo.end(), 0);
-        int kerfTotal = (combo.size() - 1) * kerf;
+        int kerfTotal = (combo.size() ) * kerf;
         int used = totalCut + kerfTotal;
         int waste = stock.availableLength_mm - used;
 

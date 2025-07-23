@@ -32,6 +32,7 @@ struct CutResult {
     QString reusableBarcode;
 
     QUuid cutPlanId; // 🔗 Az eredeti vágási terv azonosítója
+    bool isFinalWaste = false; // ✅ új mező
 
     QString cutsAsString() const;
     QString sourceAsString() const;

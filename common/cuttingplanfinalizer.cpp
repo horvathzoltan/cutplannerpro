@@ -9,46 +9,70 @@
 
 // 🔽 Exportáló modul
 #include "../common/archivedwasteutils.h"
+#include "common/segmentutils.h"
 
 void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
                                     const QVector<CutResult>& leftovers)
 {
-    // 1️⃣ Vágási tervek lezárása, alapanyagok fogyása
+    // 1️⃣ A vágási tervek lezárása, és az alapanyag „fogyasztása” készletből
     for (CutPlan& plan : plans) {
         if (plan.usedReusable()) {
+            // ♻️ Ha hullóból vágtunk → annak eltávolítása
             ReusableStockRegistry::instance().consume(plan.rodId);
         } else {
+            // 🧱 Ha eredeti profilból vágtunk → készlet csökkentése
             StockRegistry::instance().consume(plan.materialId);
         }
-        plan.setStatus(CutPlanStatus::Completed);
+
+        plan.setStatus(CutPlanStatus::Completed); // ✅ Állapot frissítése: kész
     }
 
-    // 2️⃣ Hulladékok feldolgozása
+    // 2️⃣ Hulladékok feldolgozása → újrahasználat vagy archiválás
     QVector<ArchivedWasteEntry> archivedBatch;
 
     for (const CutResult& result : leftovers) {
         if (result.waste >= 300 && !result.reusableBarcode.isEmpty()) {
-            // Használható darab → bekerül a reusable stockba
-            ReusableStockEntry entry = CutResultUtils::toReusableEntry(result);
-            ReusableStockRegistry::instance().add(entry);
+            // ✅ Elég hosszú → bekerül az újrahasználható rúdlistába
+            ReusableStockEntry reusable = CutResultUtils::toReusableEntry(result);
+            ReusableStockRegistry::instance().add(reusable);
         } else {
-            // Túl rövid → archiválásra kerül
+            // 🗂️ Rövid → archiválandó hulladékként tároljuk
+
+            // 🔍 Eredeti CutPlan előkeresése planId alapján
+            auto it = std::find_if(plans.begin(), plans.end(), [&](const CutPlan& p) {
+                return p.planId == result.cutPlanId;
+            });
+
+            // 📜 Megállapítjuk, hogy ez valóban végmaradék volt-e
+            bool trailingWaste = false;
+            if (it != plans.end()) {
+                trailingWaste = SegmentUtils::isTrailingWaste(result.waste, it->segments);
+            }
+
+            // 📝 Archivált selejt felépítése
             ArchivedWasteEntry archived;
             archived.materialId        = result.materialId;
             archived.wasteLength_mm    = result.waste;
-            archived.sourceDescription = result.sourceAsString(); // enum → string konverzió
+            archived.sourceDescription = result.sourceAsString(); // pl. „FromStock”
             archived.createdAt         = QDateTime::currentDateTime();
-            archived.group             = QString();               // nincs group → üres
+            archived.group             = QString();               // Nincs csoportozás
             archived.originBarcode     = result.reusableBarcode;
-            archived.note              = "Finalize: túl rövid hulló → archiválva";
-            archived.cutPlanId         = result.cutPlanId;                // nincs cutPlanId → üres UUID
+            archived.cutPlanId         = result.cutPlanId;
+
+            archived.isFinalWaste = trailingWaste;
+
+            // 🗒️ Pontos megjegyzés generálása
+            archived.note = trailingWaste
+                                ? "Finalize: végmaradék a záró vágásból"
+                                : "Finalize: túl rövid hulló → archiválva";
 
             archivedBatch.append(archived);
         }
     }
 
-    // 3️⃣ Archiválás fájlba, ha van selejt
+    // 3️⃣ Exportálás CSV fájlba, ha történt archiválás
     if (!archivedBatch.isEmpty()) {
         ArchivedWasteUtils::exportToCSV(archivedBatch);
     }
 }
+

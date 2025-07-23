@@ -10,6 +10,8 @@
 #include "view/managers/inputtablemanager.h"
 #include "view/managers/leftovertablemanager.h"
 #include "view/managers/stocktablemanager.h"
+
+#include "cutanalyticspanel.h"
 //#include "../model/materialregistry.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +43,7 @@ public:
     }
 
 
+    void updateStats(const QVector<CutPlan> &plans, const QVector<CutResult> &results);
 private slots:
     void on_btnAddRow_clicked();
     void on_btnOptimize_clicked();
@@ -52,6 +55,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter;
+    CutAnalyticsPanel* analyticsPanel;
 
     // input tábla - vágási terv
     std::unique_ptr<InputTableManager> inputTableManager;

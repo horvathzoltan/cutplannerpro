@@ -1,4 +1,5 @@
 #include "cutplan.h"
+#include "common/segmentutils.h"
 #include "registries/materialregistry.h"
 #include "../common/grouputils.h"
 
@@ -42,4 +43,9 @@ QString CutPlan::cutsAsString() const {
     for (int c : cuts)
         out << QString::number(c);
     return out.join(";");
+}
+
+void CutPlan::generateSegments(int kerf_mm, int totalLength_mm)
+{
+    this->segments = SegmentUtils::generateSegments(this->cuts, kerf_mm, totalLength_mm);
 }

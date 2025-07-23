@@ -1,5 +1,7 @@
 #pragma once  // 👑 Modern include guard
 
+#include "segment.h"
+
 #include <QString>
 #include <QVector>
 #include <QUuid>
@@ -41,6 +43,8 @@ public:
 
     QUuid planId = QUuid::createUuid(); // ✅ automatikus UUID, egyedi tervazonosító
 
+    QVector<Segment> segments; // 🧱 Vágási szakaszlista
+
     // 🧠 Viselkedésalapú metódusok
     bool usedReusable() const;
     bool isFinalized() const;
@@ -52,4 +56,7 @@ public:
     void setStatus(CutPlanStatus newStatus);
 
     QString cutsAsString() const;
+
+    // 📐 Szakaszgenerálás helper
+    void generateSegments(int kerf_mm, int totalLength_mm);
 };
