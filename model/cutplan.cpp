@@ -1,5 +1,6 @@
 #include "cutplan.h"
 #include "common/segmentutils.h"
+#include <QDebug>
 #include "registries/materialregistry.h"
 #include "../common/grouputils.h"
 
@@ -38,14 +39,15 @@ void CutPlan::setStatus(CutPlanStatus newStatus)
     status = newStatus;
 }
 
-QString CutPlan::cutsAsString() const {
+QString CutPlan::pieceLengthsAsString() const {
     QStringList out;
-    for (int c : cuts)
-        out << QString::number(c);
+    for (const Segment& s : segments) {
+        if (s.type == SegmentType::Piece)
+            out << QString::number(s.length_mm);
+    }
     return out.join(";");
 }
 
-void CutPlan::generateSegments(int kerf_mm, int totalLength_mm)
-{
-    this->segments = SegmentUtils::generateSegments(this->cuts, kerf_mm, totalLength_mm);
-}
+
+
+

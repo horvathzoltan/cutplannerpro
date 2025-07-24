@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 //#include "common/materialutils.h"
 #include "common/grouputils.h"
+#include "common/materialutils.h"
 #include "ui_MainWindow.h"
 
 #include "../presenter/CuttingPresenter.h"
@@ -21,6 +22,8 @@
 #include <model/registries/stockregistry.h>
 
 #include <common/rowstyler.h>
+
+#include <model/repositories/materialrepository.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -202,7 +205,8 @@ void MainWindow::update_ResultsTable(const QVector<CutPlan>& plans) {
 
 void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
     int row = ui->tableResults->rowCount();
-    ui->tableResults->insertRow(row);
+    ui->tableResults->insertRow(row);       // metaadat sor
+    ui->tableResults->insertRow(row + 1);   // badge sor
 
 
     // 1️⃣ Rod #
@@ -259,6 +263,20 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
                                  " font-weight: bold;"
                                  "}").arg(color));
         layout->addWidget(label);
+
+        if(s.type == SegmentType::Kerf) {
+            label->setMinimumWidth(60);
+            label->setMaximumWidth(60);
+
+        } /*else if (s.type == SegmentType::Piece) {
+            int baseWidth = s.length_mm / 10; // Példa: 1000 mm → 100px
+
+            // De minimum 40px legyen, különben olvashatatlan
+            int labelWidth = qMax(baseWidth, 80);
+
+            label->setMinimumWidth(labelWidth);
+            label->setMaximumWidth(labelWidth);
+        }*/
     }
 
 
@@ -277,10 +295,21 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
     else
         bgColor = QColor(245, 245, 245);
 
-    for (auto* item : { itemRod, itemKerf, itemWaste }) {
+    // for (auto* item : { itemRod, itemKerf, itemWaste }) {
+    //     item->setBackground(bgColor);
+    //     item->setForeground(Qt::black);
+    // }
+
+    for (int col = 0; col < ui->tableResults->columnCount(); ++col) {
+        QTableWidgetItem* item = ui->tableResults->item(row, col);
+        if (!item) {
+            item = new QTableWidgetItem();
+            ui->tableResults->setItem(row, col, item);
+        }
         item->setBackground(bgColor);
         item->setForeground(Qt::black);
     }
+
     cutsWidget->setAutoFillBackground(true);
     cutsWidget->setStyleSheet(QString("background-color: %1").arg(bgColor.name()));
 
@@ -297,21 +326,45 @@ void MainWindow::addRow_tableResults(QString rodNumber, const CutPlan& plan) {
                                   " font-weight: bold;"
                                   " font-family: 'Segoe UI';"
                                   " border-radius: 6px;"
-                                  " padding: 3px 10px;"
+                                  " padding-top: 6px;"
+                                  " padding-bottom: 6px;"
                                   " margin-left: 6px; margin-right: 6px;"
                                   "}").arg(groupColor.name()));
+
+    layout->setContentsMargins(0, 4, 0, 4); // felül/alul margó
 
     // 5️⃣ Beillesztés a sorba
     ui->tableResults->setItem(row, 0, itemRod);
     ui->tableResults->setCellWidget(row, 1, groupLabel);
+    ui->tableResults->setItem(row, 2, itemKerf);
+    ui->tableResults->setItem(row, 3, itemWaste);
 
-    if (!ui->tableResults->item(row, 1))
-        ui->tableResults->setItem(row, 1, new QTableWidgetItem());
-    ui->tableResults->item(row, 1)->setBackground(bgColor);
 
-    ui->tableResults->setCellWidget(row, 2, cutsWidget);
-    ui->tableResults->setItem(row, 3, itemKerf);
-    ui->tableResults->setItem(row, 4, itemWaste);
+    if (ui->tableResults->columnCount() > 0) {
+        ui->tableResults->setSpan(row + 1, 0, 1, ui->tableResults->columnCount());
+        ui->tableResults->setCellWidget(row + 1, 0, cutsWidget);
+    }
+
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
+    RowStyler::applyResultStyle(ui->tableResults, row, mat, plan);
+    QColor bg = MaterialUtils::colorForMaterial(*mat);
+    RowStyler::applyBadgeBackground(cutsWidget, bg);
+
+    // ui->tableResults->setSpan(row + 1, 0, 1, ui->tableResults->columnCount());
+    // ui->tableResults->setCellWidget(row + 1, 0, cutsWidget);
+
+    // for (int col = 0; col < ui->tableResults->columnCount(); ++col)
+    //     ui->tableResults->item(row, col)->setBackground(bgColor);
+
+    // cutsWidget->setStyleSheet(QString("background-color: %1").arg(bgColor.name()));
+
+
+    // if (!ui->tableResults->item(row, 1))
+    //     ui->tableResults->setItem(row, 1, new QTableWidgetItem());
+    // ui->tableResults->item(row, 1)->setBackground(bgColor);
+
+    // ui->tableResults->setCellWidget(row, 2, cutsWidget);
+
 }
 
 

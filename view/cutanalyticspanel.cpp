@@ -40,56 +40,61 @@ void CutAnalyticsPanel::setupLayout()
 
 void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector<CutResult>& leftovers)
 {
-    int totalCuts = 0;
-    int totalKerf = 0;
-    int totalWaste = 0;
-    int segmentCount = 0;
-    int pieceCount = 0;
-    int kerfCount = 0;
-    int wasteCount = 0;
+    // 🔢 Inicializálás
+    int totalCuts          = 0;
+    int segmentCount       = 0;
+    int pieceCount         = 0;
+    int kerfCount          = 0;
+    int wasteCount         = 0;
+    int totalPieceLength   = 0;
+    int totalKerfLength    = 0;
+    int totalWasteLength   = 0;
 
+    // 📊 Tervek bejárása
     for (const CutPlan& plan : plans) {
-        totalCuts += plan.cuts.size();
-        totalKerf += plan.kerfTotal;
-        totalWaste += plan.waste;
+        totalCuts += plan.cuts.size();          // vágások száma
+        segmentCount += plan.segments.size();   // teljes szakaszszám
 
-        segmentCount += plan.segments.size();
         for (const Segment& s : plan.segments) {
             switch (s.type) {
-            case SegmentType::Piece: pieceCount++; break;
-            case SegmentType::Kerf:  kerfCount++;  break;
-            case SegmentType::Waste: wasteCount++; break;
+            case SegmentType::Piece:
+                pieceCount++;
+                totalPieceLength += s.length_mm;
+                break;
+            case SegmentType::Kerf:
+                kerfCount++;
+                totalKerfLength += s.length_mm;
+                break;
+            case SegmentType::Waste:
+                wasteCount++;
+                totalWasteLength += s.length_mm;
+                break;
             }
         }
     }
 
+    // ♻️ Újrahasznosítható maradékok száma (min. 300mm)
     int reusableWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const CutResult& r) {
         return r.waste >= 300;
     });
 
+    // 🗃️ Végleges hulladékok száma
     int finalWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const CutResult& r) {
         return r.isFinalWaste;
     });
 
-    // double efficiency = plans.isEmpty() ? 0.0 :
-    //                         static_cast<double>(pieceCount * 1000 - totalKerf - totalWaste) /
-    //                             static_cast<double>(pieceCount * 1000) * 100.0;
+    // 🚦 Hatékonyság: darabok / (darab + kerf + hulladék)
+    double efficiency = (totalPieceLength == 0) ? 0.0
+                                                : static_cast<double>(totalPieceLength) /
+                                                      static_cast<double>(totalPieceLength + totalKerfLength + totalWasteLength) * 100.0;
 
-    int totalPieceLength = 0;
-    for (const CutPlan& plan : plans) {
-        for (int len : plan.cuts)
-            totalPieceLength += len;
-    }
-
-    double efficiency = (totalPieceLength * 1.0) / (totalPieceLength + totalKerf + totalWaste) * 100.0;
-
-    // 🧾 Összesített szövegek
+    // 🖥️ GUI címkék frissítése
     lblSummary->setText(QString("📊 Darabolás: %1 darab, %2 kerf (%3 mm), %4 hulladék (%5 mm)")
                             .arg(pieceCount)
                             .arg(kerfCount)
-                            .arg(totalKerf)
+                            .arg(totalKerfLength)
                             .arg(wasteCount)
-                            .arg(totalWaste));
+                            .arg(totalWasteLength));
 
     lblSegments->setText(QString("📐 Szakaszok összesen: %1 (%2 darab + %3 kerf + %4 hulladék)")
                              .arg(segmentCount)
@@ -104,3 +109,4 @@ void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector
     lblEfficiency->setText(QString("🚦 Hatékonysági mutató: %1%")
                                .arg(QString::number(efficiency, 'f', 1)));
 }
+

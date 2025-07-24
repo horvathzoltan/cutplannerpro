@@ -19,6 +19,9 @@ public:
     int length() const;
     int quantity() const;
 
+    QString ownerName() const;
+    QString externalReference() const;
+
 private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből

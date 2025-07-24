@@ -2,6 +2,7 @@
 #define CUTRESULT_H
 
 //#include "common/common.h"
+#include "model/cutting/piecewithmaterial.h"
 #include "model/materialtype.h"
 #include <QColor>
 #include <QString>
@@ -23,7 +24,7 @@ enum class CutResultSource {
 struct CutResult {
     QUuid materialId;               // 🔗 Törzsből visszakereshető anyag
     int length = 0;                 // 📏 Eredeti rúd hossza
-    QVector<int> cuts;             // ✂️ Levágott darabok
+    QVector<PieceWithMaterial> cuts;             // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
     //LeftoverSource source = LeftoverSource::Undefined;
     CutResultSource source;

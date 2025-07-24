@@ -17,21 +17,26 @@ void OptimizationExporter::exportPlansToCSV(const QVector<CutPlan>& plans, const
         return;
 
     QTextStream out(&file);
+    out.setEncoding(QStringConverter::Utf8);
 
     // 🧱 Fejléc: új oszlop → Segments
     out << "PlanId,RodNumber,Barcode,MaterialId,Cuts,KerfTotal,Waste,Source,Segments\n";
 
     // 🔁 Minden vágási terv kiírása
     for (const auto& plan : plans) {
+        QStringList cutLabels;
+        for (const PieceWithMaterial& pwm : plan.cuts)
+            cutLabels.append(pwm.info.displayText()); // pl. "Kovács BT • MEGR-4022 • 1800 mm"
+
         QStringList segmentLabels;
         for (const Segment& s : plan.segments)
-            segmentLabels.append(s.toLabelString()); // pl. [1800], [K3], [W194]
+            segmentLabels.append(s.toLabelString());
 
         out << plan.planId.toString() << ","
             << plan.rodNumber << ","
             << "\"" << plan.rodId << "\","
             << plan.materialId.toString() << ","
-            << "\"" << plan.cutsAsString() << "\","
+            << "\"" << cutLabels.join(" | ") << "\","
             << plan.kerfTotal << ","
             << plan.waste << ","
             << (plan.source == CutPlanSource::Reusable ? "Reusable" : "Stock") << ","
@@ -54,6 +59,7 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<CutPlan>& pla
         return;
 
     QTextStream out(&file);
+    out.setEncoding(QStringConverter::Utf8);
 
     // 📄 Fejléc
     out << "🔧 MUNKALAP — Vágási tervek\n";
@@ -65,7 +71,19 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<CutPlan>& pla
         out << QString("Terv #%1 — PlanId: %2\n").arg(plan.rodNumber).arg(plan.planId.toString());
         out << QString("Anyag Barcode: %1\n").arg(plan.rodId);
         out << QString("Forrás: %1\n").arg(plan.source == CutPlanSource::Reusable ? "REUSABLE" : "STOCK");
-        out << QString("Darabolások: %1\n").arg(plan.cuts.isEmpty() ? "-" : plan.cutsAsString() + " mm");
+        //out << QString("Darabolások: %1\n").arg(plan.cuts.isEmpty() ? "-" : plan.cutsAsString() + " mm");
+
+        out << QString("Darabolások:\n");
+
+        if (plan.cuts.isEmpty()) {
+            out << "-\n";
+        } else {
+            for (int i = 0; i < plan.cuts.size(); ++i) {
+                const auto& pwm = plan.cuts[i];
+                out << QString("  %1. %2\n").arg(i + 1).arg(pwm.info.displayText());
+            }
+        }
+
         out << QString("Kerf összesen: %1 mm\n").arg(plan.kerfTotal);
         out << QString("Hulladék: %1 mm\n").arg(plan.waste);
 

@@ -50,4 +50,11 @@ int AddInputDialog::quantity() const
     return ui->spinQuantity->value();
 }
 
+QString AddInputDialog::ownerName() const {
+    return ui->editOwner->text().trimmed();
+}
+
+QString AddInputDialog::externalReference() const {
+    return ui->editReference->text().trimmed();
+}
 

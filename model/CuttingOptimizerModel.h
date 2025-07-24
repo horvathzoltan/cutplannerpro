@@ -3,11 +3,14 @@
 #include <QObject>
 #include <QVector>
 #include <QMap>
+
+#include <model/cutting/piecewithmaterial.h>
 //#include "common/grouputils.h"
 #include "cutplan.h"
 #include "cutresult.h"
 #include "cuttingrequest.h"
 //#include "registries/materialregistry.h"
+//#include "model/cutting/piecewithmaterial.h"
 #include "reusablestockentry.h"
 #include "stockentry.h"
 
@@ -36,15 +39,13 @@
 //     }
 // };
 
-struct PieceWithMaterial {
-    int length;
-    QUuid materialId;
-};
+// struct PieceWithMaterial {
+//      int length;
+//      QUuid materialId;
+// };
 
 // 💡 C++20 előtt: globális operator==
-inline bool operator==(const PieceWithMaterial& a, const PieceWithMaterial& b) {
-    return a.length == b.length && a.materialId == b.materialId;
-}
+
 
 class CuttingOptimizerModel : public QObject {
     Q_OBJECT
@@ -68,6 +69,7 @@ public:
     void setRequests(const QVector<CuttingRequest>& list);
     void setStockInventory(const QVector<StockEntry> &list);
     void setReusableInventory(const QVector<ReusableStockEntry> &reusable);
+    QVector<CutPlan> &getPlansRef();
 private:
     QVector<CuttingRequest> requests;
     //QVector<int> allPieces;
@@ -80,12 +82,14 @@ private:
 
     int nextOptimizationId = 1;
 
-    QVector<int> findBestFit(const QVector<int> &available, int lengthLimit) const;
+    //QVector<int> findBestFit(const QVector<int> &available, int lengthLimit) const;
+    QVector<PieceWithMaterial> findBestFit(const QVector<PieceWithMaterial>& available, int lengthLimit) const;
+
 
     struct ReusableCandidate {
         int indexInInventory;
         ReusableStockEntry stock;
-        QVector<int> combo;
+        QVector<PieceWithMaterial> combo;
         int totalWaste;
     };
 

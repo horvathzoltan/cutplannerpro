@@ -1,5 +1,8 @@
 #pragma once  // 👑 Modern include guard
 
+#include "common/segmentutils.h"
+#include "model/cutting/piecewithmaterial.h"
+#include "pieceinfo.h"
 #include "segment.h"
 
 #include <QString>
@@ -30,7 +33,7 @@ class CutPlan
 public:
     // 📦 Mezők – az eredeti struct-nak megfelelően
     int rodNumber = -1;              // ➕ Sorszám / index
-    QVector<int> cuts;               // ✂️ Darabolások mm-ben
+    //QVector<int> cuts;               // ✂️ Darabolások mm-ben
     int kerfTotal = 0;               // 🔧 Vágások során vesztett anyag összesen
     int waste = 0;                   // ♻️ Maradék mm
     QUuid materialId;                // 🔗 Az anyag azonosítója (UUID)
@@ -45,6 +48,10 @@ public:
 
     QVector<Segment> segments; // 🧱 Vágási szakaszlista
 
+    //QVector<PieceInfo> piecesInfo;
+
+    QVector<PieceWithMaterial> cuts;
+
     // 🧠 Viselkedésalapú metódusok
     bool usedReusable() const;
     bool isFinalized() const;
@@ -55,8 +62,13 @@ public:
     CutPlanStatus getStatus() const;
     void setStatus(CutPlanStatus newStatus);
 
-    QString cutsAsString() const;
+    QString pieceLengthsAsString() const;
 
     // 📐 Szakaszgenerálás helper
-    void generateSegments(int kerf_mm, int totalLength_mm);
+    void generateSegments(int kerf_mm, int totalLength_mm){
+        this->segments = SegmentUtils::generateSegments(this->cuts
+                                                        /* PieceWithMaterial-ek */,
+                                                        kerf_mm, totalLength_mm);
+
+    }
 };

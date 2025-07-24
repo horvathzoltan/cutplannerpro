@@ -22,12 +22,14 @@ SOURCES += \
     model/crosssectionshape.cpp \
     model/cutplan.cpp \
     model/cutresult.cpp \
+    model/cutting/piecewithmaterial.cpp \
     model/cuttingmachine.cpp \
     model/cuttingrequest.cpp \
     model/identifiableentity.cpp \
     model/materialgroup.cpp \
     model/materialmaster.cpp \
     model/materialtype.cpp \
+    model/pieceinfo.cpp \
     model/registries/materialgroupregistry.cpp \
     model/registries/materialregistry.cpp \
     model/registries/reusablestockregistry.cpp \
@@ -65,12 +67,14 @@ HEADERS += \
     model/crosssectionshape.h \
     model/cutplan.h \
     model/cutresult.h \
+    model/cutting/piecewithmaterial.h \
     model/cuttingmachine.h \
     model/cuttingrequest.h \
     model/identifiableentity.h \
     model/materialgroup.h \
     model/materialmaster.h \
     model/materialtype.h \
+    model/pieceinfo.h \
     model/registries/materialgroupregistry.h \
     model/registries/materialregistry.h \
     model/registries/reusablestockregistry.h \

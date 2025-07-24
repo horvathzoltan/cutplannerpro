@@ -5,10 +5,15 @@
 
 QString CutResult::cutsAsString() const {
     QStringList list;
-    for (int c : cuts)
-        list << QString::number(c);
-    return list.join(" + ");
+    for (const PieceWithMaterial& piece : cuts) {
+        list << QString::number(piece.info.length_mm);
+    }
+    return list.join(";");
 }
+
+
+
+
 
 QString CutResult::sourceAsString() const {
     switch (source) {

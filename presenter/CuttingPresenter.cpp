@@ -70,114 +70,113 @@ QVector<CutResult> CuttingPresenter::getLeftoverResults()
     return model.getLeftoverResults();
 }
 
+namespace CuttingUtils {
+void logStockStatus(const QString& title, const QVector<StockEntry>& entries) {
+    qDebug() << title;
+    for (const StockEntry& e : entries)
+        qDebug() << "  MaterialId:" << e.materialId << "| Quantity:" << e.quantity;
+}
+
+void logReusableStatus(const QString& title, const QVector<ReusableStockEntry>& entries) {
+    qDebug() << title;
+    for (const ReusableStockEntry& e : entries)
+        qDebug() << "  Barcode:" << e.barcode << "| Length:" << e.availableLength_mm << "| Group:" << e.groupName();
+}
+}
+
 /*finalize*/
 
 void CuttingPresenter::finalizePlans()
 {
-    QVector<CutPlan> plans     = model.getPlans();
-    QVector<CutResult> results = model.getLeftoverResults();
+    //const QVector<CutPlan> plans = model.getPlans();
+    QVector<CutPlan>& plans = model.getPlansRef(); // vagy getMutablePlans()
+    const QVector<CutResult> results = model.getLeftoverResults();
 
     qDebug() << "✅ VÁGÁSI TERVEK — CutPlan-ek:";
     for (const CutPlan& plan : plans) {
-        // 🎨 Szakaszok összegyűjtése stringként
-        QStringList segmentLabels;
-        for (const Segment& s : plan.segments)
-            segmentLabels << s.toLabelString();
+        QStringList pieceLabels, kerfLabels, wasteLabels;
 
-        qDebug() << "  → #" << plan.rodNumber
-                 << "| PlanId:" << plan.planId.toString()
-                 << "| Azonosító:" << (plan.usedReusable() ? plan.rodId : plan.name())
-                 << "| Darabok:" << plan.cuts
-                 << "| Kerf összesen:" << plan.kerfTotal << "mm"
-                 << "| Hulladék:" << plan.waste << "mm"
-                 << "| Forrás:" << (plan.source == CutPlanSource::Reusable ? "REUSABLE" : "STOCK")
-                 << "| Státusz:" << static_cast<int>(plan.getStatus())
-                 << "| Barcode:" << plan.rodId
-                 << "| Szakaszok:" << segmentLabels.join(" ");
+        for (const Segment& s : plan.segments) {
+            switch (s.type) {
+            case SegmentType::Piece:  pieceLabels << s.toLabelString(); break;
+            case SegmentType::Kerf:   kerfLabels  << s.toLabelString(); break;
+            case SegmentType::Waste:  wasteLabels << s.toLabelString(); break;
+            }
+        }
+
+        qDebug().nospace()
+            << "  → #" << plan.rodNumber
+            << " | PlanId: " << plan.planId
+            << " | Forrás: " << (plan.source == CutPlanSource::Reusable ? "♻️ REUSABLE" : "🧱 STOCK")
+            << "\n     Azonosító: " << (plan.usedReusable() ? plan.rodId : plan.name())
+            << " | Vágások száma: " << plan.cuts.size()
+            << " | Kerf: " << plan.kerfTotal << " mm"
+            << " | Hulladék: " << plan.waste << " mm"
+            << "\n     Darabok: " << pieceLabels.join(" ")
+            << "\n     Kerf-ek: " << kerfLabels.join(" ")
+            << "\n     Hulladék szakaszok: " << wasteLabels.join(" ");
     }
 
     qDebug() << "♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:";
     for (const CutResult& result : results) {
-        qDebug() << "  - Hulladék:" << result.waste << "mm"
-                 << "| Forrás:" << result.sourceAsString()
-                 << "| MaterialId:" << result.materialId
-                 << "| Barcode:" << result.reusableBarcode;
+        qDebug().nospace()
+        << "  - Hulladék: " << result.waste << " mm"
+        << " | Forrás: " << result.sourceAsString()
+        << " | MaterialId: " << result.materialId
+        << " | Barcode: " << result.reusableBarcode
+        << "\n    Darabok: " << result.cutsAsString();
     }
 
     // 📊 Összesítés
-    int totalKerf = 0;
-    int totalWaste = 0;
-    int totalCuts = 0;
-    int totalSegments = 0;
-    int totalKerfSegments = 0;
-    int totalWasteSegments = 0;
+    int totalKerf = 0, totalWaste = 0, totalCuts = 0;
+    int totalSegments = 0, kerfSegs = 0, wasteSegs = 0;
 
     for (const CutPlan& plan : plans) {
         totalKerf += plan.kerfTotal;
         totalWaste += plan.waste;
         totalCuts += plan.cuts.size();
-
         totalSegments += plan.segments.size();
 
         for (const Segment& s : plan.segments) {
-            if (s.type == SegmentType::Kerf) totalKerfSegments++;
-            if (s.type == SegmentType::Waste) totalWasteSegments++;
+            if (s.type == SegmentType::Kerf)  kerfSegs++;
+            if (s.type == SegmentType::Waste) wasteSegs++;
         }
     }
 
-    qDebug() << "📈 Összesítés: "
-             << "Darabolások:" << totalCuts
-             << "| Kerf összesen:" << totalKerf << "mm"
-             << "| Hulladék összesen:" << totalWaste << "mm"
-             << "| Szakaszok száma:" << totalSegments
-             << "| Kerf szakaszok:" << totalKerfSegments
-             << "| Hulladék szakaszok:" << totalWasteSegments;
+    qDebug().nospace() << "📈 Összesítés:\n"
+                       << "  Vágások összesen:         " << totalCuts << "\n"
+                       << "  Kerf összesen:            " << totalKerf << " mm (" << kerfSegs << " szakasz)\n"
+                       << "  Hulladék összesen:        " << totalWaste << " mm (" << wasteSegs << " szakasz)\n"
+                       << "  Teljes szakaszszám:       " << totalSegments;
 
     qDebug() << "***";
 
-    // 🧱 Készlet állapot finalize előtt
-    qDebug() << "🧱 STOCK — finalize előtt:";
-    for (const StockEntry& entry : StockRegistry::instance().all()) {
-        qDebug() << "  MaterialId:" << entry.materialId << " | Quantity:" << entry.quantity;
-    }
-
-    qDebug() << "♻️ REUSABLE — finalize előtt:";
-    for (const ReusableStockEntry& entry : ReusableStockRegistry::instance().all()) {
-        qDebug() << "  Barcode:" << entry.barcode
-                 << " | Length:" << entry.availableLength_mm
-                 << " | Group:" << entry.groupName();
-    }
+    CuttingUtils::logStockStatus("🧱 STOCK — finalize előtt:", StockRegistry::instance().all());
+    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize előtt:", ReusableStockRegistry::instance().all());
 
     // ✂️ Finalizálás → készletfogyás + hulladékkezelés
     CuttingPlanFinalizer::finalize(plans, results);
 
     qDebug() << "***";
 
-    // 🧱 Készlet állapot finalize után
-    qDebug() << "🧱 STOCK — finalize után:";
-    for (const StockEntry& entry : StockRegistry::instance().all()) {
-        qDebug() << "  MaterialId:" << entry.materialId << " | Quantity:" << entry.quantity;
-    }
+    CuttingUtils::logStockStatus("🧱 STOCK — finalize után:", StockRegistry::instance().all());
+    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize után:", ReusableStockRegistry::instance().all());
 
-    qDebug() << "♻️ REUSABLE — finalize után:";
-    for (const ReusableStockEntry& entry : ReusableStockRegistry::instance().all()) {
-        qDebug() << "  Barcode:" << entry.barcode
-                 << " | Length:" << entry.availableLength_mm
-                 << " | Group:" << entry.groupName();
-    }
-
-    // ✅ Állapot lezárása a tervekben is
-    for (CutPlan& plan : plans) {
+    // ✅ Állapot lezárása
+    for (CutPlan& plan : model.getPlansRef())
         plan.setStatus(CutPlanStatus::Completed);
-    }
 
-    // 🔁 View frissítése, ha van hozzáférés
+    // 🔁 View frissítése
     if (view) {
         view->update_stockTable();
         view->update_leftoversTable(CutResultUtils::toReusableEntries(results));
         view->update_ResultsTable(plans);
     }
 }
+
+// CuttingPresenter.cpp
+
+
 
 
 void CuttingPresenter::scrapShortLeftovers()

@@ -175,11 +175,6 @@
          </column>
          <column>
           <property name="text">
-           <string>Cuts</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
            <string>Kerf</string>
           </property>
          </column>

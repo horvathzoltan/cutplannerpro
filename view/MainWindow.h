@@ -5,7 +5,7 @@
 //#include "../model/cuttingrequest.h"
 #include "../model/cutresult.h"
 //#include "../model/stockentry.h"
-#include "../model/CuttingOptimizerModel.h"
+//#include "../model/CuttingOptimizerModel.h"
 
 #include "view/managers/inputtablemanager.h"
 #include "view/managers/leftovertablemanager.h"
@@ -35,6 +35,7 @@ public:
 
     void update_ResultsTable(const QVector<CutPlan> &plans);
     void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){
+        Q_UNUSED(newResults);
         leftoverTableManager->updateTableFromRepository();
     }
 
