@@ -2,10 +2,12 @@
 #include "../../model/repositories/materialrepository.h"
 #include "../../model/registries/materialregistry.h"
 #include "../../model/materialmaster.h"
+#include "model/registries/cuttingrequestregistry.h"
 //#include "model/stockentry.h"
 
 #include <model/repositories/materialgrouprepository.h>
 #include <model/registries//stockregistry.h>
+#include <model/repositories/cuttingrequestrepository.h>
 #include <model/repositories/reusablestockrepository.h>
 #include <model/repositories/stockrepository.h>
 
@@ -31,11 +33,18 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!reusableStockStatus.ok)
         return reusableStockStatus;
 
+    //CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry::instance());
+    StartupStatus cuttingReqStatus = initCuttingRequestRegistry();
+    if (!cuttingReqStatus.ok)
+        return cuttingReqStatus;
+
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.warnings += materialStatus.warnings;
     finalStatus.warnings += groupStatus.warnings;
     finalStatus.warnings += stockStatus.warnings;    
     finalStatus.warnings += reusableStockStatus.warnings;
+
+    finalStatus.warnings += cuttingReqStatus.warnings;
 
     return finalStatus;
 }
@@ -165,6 +174,42 @@ StartupStatus StartupManager::initReusableStockRegistry() {
             QString("⚠️ %1 maradék készletelem nem létező anyagra hivatkozik.Ellenőrizd a leftovers.csv fájlt.Érintett vonalkódok:%2")
                 .arg(invalidReusableStockItems.size())
                 .arg(invalidReusableStockItems.join(", "))
+            );
+    }
+
+    return status;
+}
+
+StartupStatus StartupManager::initCuttingRequestRegistry() {
+    bool loaded = CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
+
+    const auto& all = CuttingRequestRegistry::instance().readAll();
+
+    if (all.isEmpty())
+        return StartupStatus::failure("⚠️ A vágási igény lista üres. Legalább 1 tétel szükséges.");
+
+    StartupStatus status = StartupStatus::success();
+
+    // 🔎 Validáció: minden request ismert anyagra hivatkozzon
+    QSet<QUuid> knownMaterials;
+    for (const auto& mat : MaterialRegistry::instance().all())
+        knownMaterials.insert(mat.id);
+
+    QStringList invalidRequests;
+    for (const CuttingRequest &req : all) {
+        if (!knownMaterials.contains(req.materialId)) {
+            QString desc = req.toString();
+            invalidRequests << desc; // vagy req.id.toString() ha azonosító kell
+        }
+    }
+
+    if (!invalidRequests.isEmpty()) {
+        status.addWarning(
+            QString("⚠️ %1 vágási igény nem létező anyagra hivatkozik.\nEllenőrizd a cuttingrequests.csv fájlt.\nÉrintett azonosítók:\n%2")
+                .arg(invalidRequests.size())
+                .arg(invalidRequests.join(", "))
             );
     }
 

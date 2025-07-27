@@ -1,8 +1,11 @@
 #include "addinputdialog.h"
 
 //#include "qpushbutton.h"
+#include "model/cuttingrequest.h"
 #include "ui_addinputdialog.h"
 #include "model/registries/materialregistry.h"
+
+#include <QMessageBox>
 
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)
@@ -57,4 +60,55 @@ QString AddInputDialog::ownerName() const {
 QString AddInputDialog::externalReference() const {
     return ui->editReference->text().trimmed();
 }
+
+CuttingRequest AddInputDialog::getModel() const {
+    CuttingRequest req;
+
+    // 🔗 Anyag ID kinyerése a comboBox-ból
+    QVariant matData = ui->comboMaterial->currentData();
+    if (matData.isValid())
+        req.materialId = matData.toUuid();
+
+    // 📏 Vágási hossz kiolvasása
+    bool okLen = false;
+    req.requiredLength = ui->editLength->text().toInt(&okLen);
+    if (!okLen)
+        req.requiredLength = -1; // Hibás hossz
+
+    // 🔢 Darabszám
+    req.quantity = quantity(); // <- ha már van quantity() metódusod
+
+    // 👤 Megrendelő neve
+    req.ownerName = ownerName(); // <- ha már van ownerName() getter
+
+    // 🧾 Külső tételszám
+    req.externalReference = externalReference(); // <- ha van ilyen getter
+
+    return req;
+}
+
+
+bool AddInputDialog::validateInputs() {
+    CuttingRequest req = getModel(); // <- új metódusod, lásd korábban
+
+    QStringList errors = req.invalidReasons(); // <- centralizált validáció
+
+    if (!errors.isEmpty()) {
+        QMessageBox::warning(this,
+                             "Adatellenőrzés",
+                             "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
+        return false;
+    }
+
+    return true;
+}
+
+
+void AddInputDialog::accept() {
+    if (!validateInputs())
+        return;
+
+    QDialog::accept(); // csak ha minden oké
+}
+
 

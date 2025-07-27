@@ -1,0 +1,4 @@
+materialBarCode;requiredLength;quantity;ownerName;externalReference
+MAT-BAR22-3000;1800;2;Alfa Kft.;EXT-001
+MAT-BAR22-3000;2200;1;Beta Zrt.;EXT-002
+MAT-BAR22-4000;2900;1;Gamma Bt.;EXT-003

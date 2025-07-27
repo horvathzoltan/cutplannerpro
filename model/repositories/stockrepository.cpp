@@ -3,7 +3,9 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <common/filehelper.h>
 #include <common/filenamehelper.h>
+#include <common/csvimporter.h>
 
 bool StockRepository::loadFromCSV(StockRegistry& registry) {
     auto& helper = FileNameHelper::instance();
@@ -28,43 +30,136 @@ bool StockRepository::loadFromCSV(StockRegistry& registry) {
     return true;
 }
 
-QVector<StockEntry> StockRepository::loadFromCSV_private(const QString& filepath) {
-    QVector<StockEntry> result;
-    QFile file(filepath);
+// QVector<StockEntry> StockRepository::loadFromCSV_private(const QString& filepath) {
+//     QVector<StockEntry> result;
 
+//     QFile file(filepath);
+//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//         qWarning() << "❌ Nem sikerült megnyitni a stock fájlt:" << filepath;
+//         return result;
+//     }
+
+//     QTextStream in(&file);
+//     in.setEncoding(QStringConverter::Utf8);
+
+//     const QList<QVector<QString>> rows = FileHelper::parseCSV(&in, ';');
+//     if (rows.isEmpty()) {
+//         qWarning() << "⚠️ A stock.csv fájl üres vagy hibás.";
+//         return result;
+//     }
+
+//     for (int i = 0; i < rows.size(); ++i) {
+//         // ✅ Fejléc sor kihagyása
+//         if (i == 0) continue;
+
+//         const QVector<QString>& parts = rows[i];
+//         auto maybeEntry = convertRowToStockEntry(parts, i + 1);
+//         if (maybeEntry.has_value())
+//             result.append(maybeEntry.value());
+//     }
+
+//     return result;
+// }
+
+QVector<StockEntry>
+StockRepository::loadFromCSV_private(const QString& filepath) {
+    QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "❌ Nem sikerült megnyitni a stock fájlt:" << filepath;
-        return result;
+        qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
+        return {};
     }
 
     QTextStream in(&file);
-    bool firstLine = true;
+    in.setEncoding(QStringConverter::Utf8);
 
-    while (!in.atEnd()) {
-        QString line = in.readLine().trimmed();
-        if (line.isEmpty()) continue;
-        if (firstLine) { firstLine = false; continue; }
+    const auto rows = FileHelper::parseCSV(&in, ';');
+    return CsvImporter::processCsvRows<StockEntry>(rows, convertRowToStockEntry);
+}
 
-        const QStringList cols = line.split(';');
-        if (cols.size() < 2) continue;
 
-        QString barcode = cols[0].trimmed();
-        bool okQty = false;
-        int quantity = cols[1].toInt(&okQty);
-        if (!okQty || quantity <= 0) continue;
 
-        const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(barcode);
-        if (!mat) {
-            qWarning() << "⚠️ Hiányzó anyag barcode alapján:" << barcode;
-            continue;
-        }
-
-        StockEntry entry;
-        entry.materialId = mat->id;
-        entry.quantity   = quantity;
-        result.append(entry);
+std::optional<StockRepository::StockEntryRow>
+StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int lineIndex) {
+    if (parts.size() < 2) {
+        qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(lineIndex);
+        return std::nullopt;
     }
 
-    file.close();
-    return result;
+    StockEntryRow row;
+    row.barcode = parts[0].trimmed();
+    const QString qtyStr = parts[1].trimmed();
+
+    bool okQty = false;
+    row.quantity = qtyStr.toInt(&okQty);
+    if (row.barcode.isEmpty() || !okQty || row.quantity <= 0) {
+        qWarning() << QString("⚠️ Sor %1: hibás barcode vagy mennyiség").arg(lineIndex);
+        return std::nullopt;
+    }
+
+    return row;
 }
+
+std::optional<StockEntry>
+StockRepository::buildStockEntryFromRow(const StockEntryRow& row, int lineIndex) {
+    const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
+    if (!mat) {
+        qWarning() << QString("⚠️ Sor %1: ismeretlen anyag barcode '%2'")
+                          .arg(lineIndex).arg(row.barcode);
+        return std::nullopt;
+    }
+
+    StockEntry entry;
+    entry.materialId = mat->id;
+    entry.quantity   = row.quantity;
+    return entry;
+}
+
+std::optional<StockEntry>
+StockRepository::convertRowToStockEntry(const QVector<QString>& parts, int lineIndex) {
+    const auto rowOpt = convertRowToStockEntryRow(parts, lineIndex);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildStockEntryFromRow(rowOpt.value(), lineIndex);
+}
+
+
+// QVector<StockEntry> StockRepository::loadFromCSV_private(const QString& filepath) {
+//     QVector<StockEntry> result;
+//     QFile file(filepath);
+
+//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//         qWarning() << "❌ Nem sikerült megnyitni a stock fájlt:" << filepath;
+//         return result;
+//     }
+
+//     QTextStream in(&file);
+//     bool firstLine = true;
+
+//     while (!in.atEnd()) {
+//         QString line = in.readLine().trimmed();
+//         if (line.isEmpty()) continue;
+//         if (firstLine) { firstLine = false; continue; }
+
+//         const QStringList cols = line.split(';');
+//         if (cols.size() < 2) continue;
+
+//         QString barcode = cols[0].trimmed();
+//         bool okQty = false;
+//         int quantity = cols[1].toInt(&okQty);
+//         if (!okQty || quantity <= 0) continue;
+
+//         const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(barcode);
+//         if (!mat) {
+//             qWarning() << "⚠️ Hiányzó anyag barcode alapján:" << barcode;
+//             continue;
+//         }
+
+//         StockEntry entry;
+//         entry.materialId = mat->id;
+//         entry.quantity   = quantity;
+//         result.append(entry);
+//     }
+
+//     file.close();
+//     return result;
+// }

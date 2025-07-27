@@ -1,4 +1,5 @@
 #include "filenamehelper.h"
+#include "settingsmanager.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QCoreApplication>
@@ -54,10 +55,6 @@ QString FileNameHelper::getWorkingFolder() const {
     return _isTest ? _projectPath : QCoreApplication::applicationDirPath();
 }
 
-QString FileNameHelper::getLogFileName() const {
-    return QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
-}
-
 QString FileNameHelper::getMaterialCsvFile() const {
     auto fn = QDir(_projectPath).filePath("materials.csv");
     return fn;
@@ -76,5 +73,53 @@ QString FileNameHelper::getStockCsvFile() const {
 QString FileNameHelper::getLeftoversCsvFile() const {
     auto fn = QDir(_projectPath).filePath("leftovers.csv"); // vagy ahová ténylegesen rakod
     return fn;
+}
+
+QString FileNameHelper::getSettingsFilePath() const {
+    QString exeDir = QCoreApplication::applicationDirPath();
+    QDir dir(exeDir);
+    return dir.filePath("settings.ini");
+}
+
+
+QString FileNameHelper::generateTimestamp() const {
+    return QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss");
+}
+
+
+QString FileNameHelper::combinePath(const QString& folder, const QString& fileName) const {
+    return QDir(folder).filePath(fileName);
+}
+
+
+/*log*/
+
+QString FileNameHelper::getNew_LogFileName() const {
+    QString fn0 = QStringLiteral("log_%1.txt").arg(generateTimestamp());
+    return fn0;
+}
+
+QString FileNameHelper::getLogFolder() const {
+    auto fn = QDir(_projectPath).filePath("logs");
+    return fn;
+}
+
+QString FileNameHelper::getLogFilePath(const QString& fn) const {
+    return combinePath(getLogFolder(), fn);
+}
+
+/*cuttingplan*/
+QString FileNameHelper::getNew_CuttingPlanFileName() const {
+    QString fn0 = QStringLiteral("cuttingplan_%1.txt").arg(generateTimestamp());
+    return fn0;
+}
+
+QString FileNameHelper::getCuttingPlanFolder() const {
+    auto fn = QDir(_projectPath).filePath("cutting_plans");
+    return fn;
+}
+
+QString FileNameHelper::getCuttingPlanFilePath(const QString fn) const {
+    return combinePath(getCuttingPlanFolder(), fn);
 }
 

@@ -12,7 +12,7 @@ public:
 
     void addRow(const StockEntry& entry);
 
-    void updateTableFromRepository();
+    void updateTableFromRegistry();
 
     std::optional<StockEntry> readRow(int row) const;
 private:

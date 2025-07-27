@@ -55,6 +55,7 @@ public:
 
     void clearRequests();
     void addRequest(const CuttingRequest& req);
+    void removeRequest(const QUuid& id);
     void setKerf(int kerf);
     void optimize();
 

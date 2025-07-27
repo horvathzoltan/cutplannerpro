@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cuttingrequest.h"
 #include <QDialog>
 #include <QUuid>
 
@@ -22,8 +23,15 @@ public:
     QString ownerName() const;
     QString externalReference() const;
 
+    ;
+
+    // ❗️Ide jön az override metódus
+    void accept() override;
+    CuttingRequest getModel() const;
+
 private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből
+    bool validateInputs();
 };
 

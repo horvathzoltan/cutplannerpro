@@ -29,5 +29,5 @@ public:
     static constexpr int ColShape     = 4;
     static constexpr int ColSource    = 5;
     static constexpr int ColReusable  = 6;
-    void updateTableFromRepository();
+    void updateTableFromRegistry();
 };

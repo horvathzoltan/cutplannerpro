@@ -11,6 +11,18 @@ public:
     static bool loadFromCSV(ReusableStockRegistry& registry);
 
 private:
+    struct ReusableStockRow {
+        QString materialBarcode;
+        int availableLength_mm;
+        LeftoverSource source;
+        std::optional<int> optimizationId;
+        QString barcode;
+    };
+
     /// 🔒 Private parser, visszaad egy lista objektumot
     static QVector<ReusableStockEntry> loadFromCSV_private(const QString& filepath);
+
+    static std::optional<ReusableStockRow>convertRowToReusableRow(const QVector<QString>& parts, int lineIndex);
+    static std::optional<ReusableStockEntry>buildReusableEntryFromRow(const ReusableStockRow& row, int lineIndex);
+    static std::optional<ReusableStockEntry>convertRowToReusableEntry(const QVector<QString>& parts, int lineIndex);
 };

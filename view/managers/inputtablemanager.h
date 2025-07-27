@@ -1,19 +1,37 @@
 #pragma once
 
 #include <QTableWidget>
-#include <optional>
+//#include <optional>
 #include "model/cuttingrequest.h"
 
-class InputTableManager {
+class InputTableManager: public QObject {  // 🔧 QObject öröklés!
+    Q_OBJECT                              // ✨ Qt metaobjektum makró!
+
 public:
     explicit InputTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const CuttingRequest& request);
-    std::optional<CuttingRequest> readRow(int row) const;
-    QVector<CuttingRequest> readAll() const;
-    void fillTestData();
+    void removeRowByRequestId(const QUuid &requestId);
+
+    void updateTableFromRegistry();
+
+signals:
+    void deleteRequested(const QUuid& requestId);
 
 private:
     QTableWidget* table;
     QWidget* parent;
+
+    static constexpr int CuttingRequestIdRole = Qt::UserRole + 1;
+
+public:    
+
+    static constexpr int ColName     = 0; // Anyag neve
+    static constexpr int ColLength   = 1; // Hossz
+    static constexpr int ColQty      = 2; // Mennyiség
+    static constexpr int ColAction   = 3; // Művelet (pl. törlés gomb)
+    static constexpr int ColMetaRowSpanStart = 0; // Alsó összefoglaló sor – kiterjesztés kezdete
+
 };
+
+

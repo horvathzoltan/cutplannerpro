@@ -44,3 +44,15 @@ void ReusableStockRegistry::consume(const QString& barcode)
         _stock.erase(it, _stock.end()); // 🧹 Törlés a készletből
     }
 }
+
+
+QVector<ReusableStockEntry> ReusableStockRegistry::filtered(int minLength_mm) const {
+    QVector<ReusableStockEntry> result;
+
+    for (const auto& entry : _stock) {
+        if (entry.availableLength_mm >= minLength_mm)
+            result.append(entry);
+    }
+
+    return result;
+}

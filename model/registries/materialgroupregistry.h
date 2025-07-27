@@ -19,5 +19,5 @@ public:
 
 private:
     QMap<QUuid, MaterialGroup> _groups;          // groupId → csoport
-    QMap<QUuid, QUuid> _materialToGroup;         // materialId → groupId
+    QMap<QUuid, QUuid> _materialToGroup;         // materialId → groupId        
 };

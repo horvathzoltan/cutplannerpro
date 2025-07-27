@@ -244,7 +244,7 @@ void LeftoverTableManager::clear() {
     table->setRowCount(0);
 }
 
-void LeftoverTableManager::updateTableFromRepository() {
+void LeftoverTableManager::updateTableFromRegistry() {
     if (!table)
         return;
 

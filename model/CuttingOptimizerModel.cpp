@@ -21,6 +21,13 @@ void CuttingOptimizerModel::addRequest(const CuttingRequest& req) {
     requests.append(req);
 }
 
+void CuttingOptimizerModel::removeRequest(const QUuid& id) {
+    requests.erase(
+        std::remove_if(requests.begin(), requests.end(),
+                       [&](const CuttingRequest& r) { return r.requestId == id; }),
+        requests.end());
+}
+
 void CuttingOptimizerModel::setKerf(int value) {
     kerf = value;
 }

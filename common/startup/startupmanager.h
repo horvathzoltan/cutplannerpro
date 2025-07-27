@@ -29,9 +29,11 @@ public:
 
     StartupStatus initReusableStockRegistry();
 private:
+
+    bool hasMinimumMaterials(int minCount);
+
     StartupStatus initMaterialRegistry();
     StartupStatus initMaterialGroupRegistry();
     StartupStatus initStockRegistry();
-
-    bool hasMinimumMaterials(int minCount);
+    StartupStatus initCuttingRequestRegistry();
 };

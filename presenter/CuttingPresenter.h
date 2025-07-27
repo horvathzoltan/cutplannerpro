@@ -21,6 +21,7 @@ public:
 
     // Vágási igények
     void addCutRequest(const CuttingRequest& req);
+
     void setCuttingRequests(const QVector<CuttingRequest> &list);
     void clearRequests();
 
@@ -42,8 +43,9 @@ public:
     void finalizePlans();
     void scrapShortLeftovers();
     void exportArchivedWasteToCSV(const QVector<ArchivedWasteEntry> &entries);
-private:
+    void removeCutRequest(const QUuid &id);
+    private:
     MainWindow* view;
-    CuttingOptimizerModel model; 
+    CuttingOptimizerModel model;
 };
 

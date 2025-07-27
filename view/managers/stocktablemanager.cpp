@@ -79,7 +79,7 @@ std::optional<StockEntry> StockTableManager::readRow(int row) const {
     return StockEntry { materialId, quantity };
 }
 
-void StockTableManager::updateTableFromRepository()
+void StockTableManager::updateTableFromRegistry()
 {
     if (!table)
         return;

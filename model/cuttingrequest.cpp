@@ -1,23 +1,61 @@
 #include "cuttingrequest.h"
+#include <QRegularExpression>
 
-//CuttingRequest::CuttingRequest() {}
+QStringList CuttingRequest::invalidReasons() const {
+    QStringList errors;
 
-bool CuttingRequest::isValid() const {
-    if(materialId.isNull()) return false;
-    if(requiredLength <= 0) return false;
-    if(quantity <= 0) return false;
-    return true;
-}
-
-QString CuttingRequest::invalidReason() const {
     if (materialId.isNull())
-        return "Anyag ID hiányzik vagy érvénytelen.";
+        errors << "• Anyag ID hiányzik vagy érvénytelen.";
 
     if (requiredLength <= 0)
-        return "A vágáshossz nem lehet nulla vagy negatív.";
+        errors << "• A vágáshossz nem lehet nulla vagy negatív.";
 
     if (quantity <= 0)
-        return "A darabszám nem lehet nulla vagy negatív.";
+        errors << "• A darabszám nem lehet nulla vagy negatív.";
 
-    return {}; // Érvényes esetben üres string
+    if (quantity > 500)
+        errors << "• A darabszám túl magas (max. 500).";
+
+    if (ownerName.trimmed().isEmpty())
+        errors << "• A megrendelő neve nem lett megadva.";
+
+    if (externalReference.trimmed().isEmpty())
+        errors << "• A külső hivatkozás nem lehet üres.";
+
+    if (externalReference.length() > 64)
+        errors << "• A külső hivatkozás túl hosszú (max. 64 karakter).";
+
+    QRegularExpression unsafe("[\"';]+");
+    if (unsafe.match(externalReference).hasMatch())
+        errors << "• A külső hivatkozás veszélyes karaktert tartalmaz.";
+
+
+    return errors;
 }
+
+bool CuttingRequest::isValid() const {
+    return invalidReasons().isEmpty();
+}
+
+QString CuttingRequest::toString() const {
+    QStringList parts;
+
+    // 🧾 Külső hivatkozás
+    if (!externalReference.isEmpty())
+        parts << QString("Azonosító: \"%1\"").arg(externalReference);
+
+    // 👤 Megrendelő neve
+    if (!ownerName.isEmpty())
+        parts << QString("Megrendelő: \"%1\"").arg(ownerName);
+
+    // 📏 Hossz és mennyiség
+    parts << QString("%1 mm × %2 db").arg(requiredLength).arg(quantity);
+
+    // 🔗 Anyag UUID (mindig legyen benne)
+    parts << QString("Anyag ID: %1").arg(materialId.toString());
+
+    // 💡 Végső összefűzés
+    return parts.join(" | ");
+}
+
+

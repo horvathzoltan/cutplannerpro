@@ -13,6 +13,8 @@ private:
     // 🛡️ Privát konstruktor
     FileNameHelper();
     bool init(const char* file);
+    QString generateTimestamp() const;
+    QString combinePath(const QString &folder, const QString &fileName) const;
 public:
     // 🔁 Példány elérése
     static FileNameHelper& instance(const char* file = __FILE__);
@@ -31,6 +33,21 @@ public:
     QString getStockCsvFile() const; // 📁 Készlet CSV útvonal
 
     // 📓 Naplófájl név
-    QString getLogFileName() const;
+    QString getNew_LogFileName() const;
+    QString getLogFolder() const;
+    QString getLogFilePath(const QString& fn) const;
+
+    //vágási terv
+    QString getNew_CuttingPlanFileName() const;
+    QString getCuttingPlanFolder() const;
+    QString getCuttingPlanFilePath(const QString fn) const;
+
+    //QString getCuttingCsvFile() const; // ✂️ ÚJ
+
+    // maradékék stock fájlnév
     QString getLeftoversCsvFile() const;
+
+    //Settings fájlnév bin/exe mellett, vagy testfolderben
+    QString getSettingsFilePath() const;
+
 };

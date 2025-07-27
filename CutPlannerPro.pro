@@ -10,11 +10,15 @@ CONFIG += c++20
 
 SOURCES += \
     common/archivedwasteutils.cpp \
+    common/csvimporter.cpp \
     common/cuttingplanfinalizer.cpp \
+    common/filehelper.cpp \
     common/filenamehelper.cpp \
     common/optimizationexporter.cpp \
+    common/planautosavemanager.cpp \
     common/rowstyler.cpp \
     common/segmentutils.cpp \
+    common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
@@ -30,10 +34,12 @@ SOURCES += \
     model/materialmaster.cpp \
     model/materialtype.cpp \
     model/pieceinfo.cpp \
+    model/registries/cuttingrequestregistry.cpp \
     model/registries/materialgroupregistry.cpp \
     model/registries/materialregistry.cpp \
     model/registries/reusablestockregistry.cpp \
     model/registries/stockregistry.cpp \
+    model/repositories/cuttingrequestrepository.cpp \
     model/repositories/materialgrouprepository.cpp \
     model/repositories/materialrepository.cpp \
     model/repositories/reusablestockrepository.cpp \
@@ -52,14 +58,18 @@ SOURCES += \
 HEADERS += \
     common/archivedwasteutils.h \
     common/colorutils.h \
+    common/csvimporter.h \
     common/cutresultutils.h \
     common/cuttingplanfinalizer.h \
+    common/filehelper.h \
     common/filenamehelper.h \
     common/grouputils.h \
     common/materialutils.h \
     common/optimizationexporter.h \
+    common/planautosavemanager.h \
     common/rowstyler.h \
     common/segmentutils.h \
+    common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
     model/CuttingOptimizerModel.h \
@@ -75,10 +85,12 @@ HEADERS += \
     model/materialmaster.h \
     model/materialtype.h \
     model/pieceinfo.h \
+    model/registries/cuttingrequestregistry.h \
     model/registries/materialgroupregistry.h \
     model/registries/materialregistry.h \
     model/registries/reusablestockregistry.h \
     model/registries/stockregistry.h \
+    model/repositories/cuttingrequestrepository.h \
     model/repositories/materialgrouprepository.h \
     model/repositories/materialrepository.h \
     model/repositories/reusablestockrepository.h \
@@ -105,6 +117,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     README.md \
+    testdata/cutting_plans/cutting_plan_1.csv \
     testdata/groups.csv \
     testdata/leftovers.csv \
     testdata/materials.csv \

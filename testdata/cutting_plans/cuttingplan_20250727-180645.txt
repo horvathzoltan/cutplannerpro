@@ -1,0 +1,3 @@
+materialBarCode;requiredLength;quantity;ownerName;externalReference
+MAT-ROLL60-6000;2211;2;"aaa";"123"
+MAT-BAR12-4000;3311;4;"asdf";"1123"

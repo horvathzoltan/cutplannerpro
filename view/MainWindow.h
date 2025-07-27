@@ -36,11 +36,11 @@ public:
     void update_ResultsTable(const QVector<CutPlan> &plans);
     void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){
         Q_UNUSED(newResults);
-        leftoverTableManager->updateTableFromRepository();
+        leftoverTableManager->updateTableFromRegistry();
     }
 
     void update_stockTable(){
-        stockTableManager->updateTableFromRepository();
+        stockTableManager->updateTableFromRegistry();
     }
 
 
@@ -64,5 +64,7 @@ private:
     std::unique_ptr<StockTableManager> stockTableManager;
     // ♻️ Hullókezelő
     std::unique_ptr<LeftoverTableManager> leftoverTableManager;
+
+    void closeEvent(QCloseEvent *event) override;
 };
 #endif // MAINWINDOW_H

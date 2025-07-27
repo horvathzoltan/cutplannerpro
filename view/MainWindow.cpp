@@ -2,6 +2,7 @@
 //#include "common/materialutils.h"
 #include "common/grouputils.h"
 #include "common/materialutils.h"
+#include "common/settingsmanager.h"
 #include "ui_MainWindow.h"
 
 #include "../presenter/CuttingPresenter.h"
@@ -18,6 +19,7 @@
 //#include "../model/cutresult.h"
 #include "../model/CuttingOptimizerModel.h"
 
+#include <model/registries/cuttingrequestregistry.h>
 #include <model/registries/reusablestockregistry.h>
 #include <model/registries/stockregistry.h>
 
@@ -25,78 +27,107 @@
 
 #include <model/repositories/materialrepository.h>
 
+#include <QObject>      // connect() miatt
+#include <QCloseEvent>
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+
+
+
+
+    ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableResults->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableStock->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableLeftovers->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
 
+    connect(inputTableManager.get(), &InputTableManager::deleteRequested,
+            this, [this](const QUuid& id) {
+                presenter->removeCutRequest(id);
+                inputTableManager->removeRowByRequestId(id);
+            });
+
       // 🟢 Vágási kérés tábla – fix méretek, alternáló sorok
-    ui->tableInput->setColumnWidth(0, 120); // Anyag
-    ui->tableInput->setColumnWidth(1, 70); // Hossz
-    ui->tableInput->setColumnWidth(2, 70); // Darabszám
-    ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    ui->tableInput->horizontalHeader()->setStretchLastSection(false);
-    ui->tableInput->setAlternatingRowColors(true);
+    // ui->tableInput->setColumnWidth(0, 120); // Anyag
+    // ui->tableInput->setColumnWidth(1, 70); // Hossz
+    // ui->tableInput->setColumnWidth(2, 70); // Darabszám
+    //ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    // ui->tableInput->horizontalHeader()->setStretchLastSection(false);
+    // ui->tableInput->setAlternatingRowColors(true);
 
     // 🟡 tableResults – fix oszlopszélesség, jól olvasható
-    ui->tableResults->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    ui->tableResults->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-    ui->tableResults->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    ui->tableResults->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-    ui->tableResults->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+    // ui->tableResults->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    // ui->tableResults->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+    // ui->tableResults->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    // ui->tableResults->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
+    // ui->tableResults->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
 
-    ui->tableResults->setColumnWidth(0, 80);   // Rod #
-    ui->tableResults->setColumnWidth(1, 120);  // Anyag
-    ui->tableResults->setColumnWidth(2, 200);  // Vágások
-    ui->tableResults->setColumnWidth(3, 60);   // Kerf
-    ui->tableResults->setColumnWidth(4, 60);   // Hulladék
+    // ui->tableResults->setColumnWidth(0, 80);   // Rod #
+    // ui->tableResults->setColumnWidth(1, 120);  // Anyag
+    // ui->tableResults->setColumnWidth(2, 200);  // Vágások
+    // ui->tableResults->setColumnWidth(3, 60);   // Kerf
+    // ui->tableResults->setColumnWidth(4, 60);   // Hulladék
 
     ui->tableResults->setAlternatingRowColors(true);
     ui->tableResults->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableResults->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableResults->horizontalHeader()->setStretchLastSection(false);
+    //ui->tableResults->horizontalHeader()->setStretchLastSection(false);
 
-    ui->tableResults->setColumnWidth(0, 150);
-    ui->tableResults->setColumnWidth(1, 150);
-    ui->tableResults->setColumnWidth(3, 60);
-    ui->tableResults->setColumnWidth(4, 60);
-    ui->tableResults->setColumnWidth(5, 40);
+    // ui->tableResults->setColumnWidth(0, 150);
+    // ui->tableResults->setColumnWidth(1, 150);
+    // ui->tableResults->setColumnWidth(3, 60);
+    // ui->tableResults->setColumnWidth(4, 60);
+    // ui->tableResults->setColumnWidth(5, 40);
 
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColName, 120);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColBarcode, 150);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusableId, 80);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColLength, 60);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColShape, 60);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColSource, 60);
-    ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusable, 20);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColName, 120);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColBarcode, 150);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusableId, 80);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColLength, 60);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColShape, 60);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColSource, 60);
+    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusable, 20);
 
 
-    ui->tableStock->setColumnWidth(StockTableManager::ColName, 120);
-    ui->tableStock->setColumnWidth(StockTableManager::ColBarcode, 120);
-    ui->tableStock->setColumnWidth(StockTableManager::ColLength, 80);
-    ui->tableStock->setColumnWidth(StockTableManager::ColShape, 80);
-    ui->tableStock->setColumnWidth(StockTableManager::ColQuantity, 80);
+    // ui->tableStock->setColumnWidth(StockTableManager::ColName, 120);
+    // ui->tableStock->setColumnWidth(StockTableManager::ColBarcode, 120);
+    // ui->tableStock->setColumnWidth(StockTableManager::ColLength, 80);
+    // ui->tableStock->setColumnWidth(StockTableManager::ColShape, 80);
+    // ui->tableStock->setColumnWidth(StockTableManager::ColQuantity, 80);
+
 
     // 🖼️ Alap ablakbeállítások
-    resize(1024, 600);
+    // Szélesség: ~920–960 px
+    // Magasság: ~640–700 px
+    setMinimumSize(920, 680);
+    resize(920, 680); // vagy akár kisebb: (880, 640)
     setWindowTitle("CutPlanner MVP");
 
     presenter = new CuttingPresenter(this, this);
 
-    // 📥 Tesztadatok betöltése
-    inputTableManager->fillTestData();         // Feltölti a tableInput-ot
-
-    //stockTableManager->initCustomTestStock(); // Feltölti a tableStock-ot tesztadattal
-    stockTableManager->updateTableFromRepository();  // Frissíti a tableStock a StockRepository alapján
-    leftoverTableManager->updateTableFromRepository();  // Feltölti a maradékokat tesztadatokkal
+    // 📥 betöltött adatok megjelenítése
+    inputTableManager->updateTableFromRegistry();         // Feltölti a tableInput-ot
+    stockTableManager->updateTableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
+    leftoverTableManager->updateTableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
 
     analyticsPanel = new CutAnalyticsPanel(this);
     ui->midLayout->addWidget(analyticsPanel);
+
+    // Betöltés
+    ui->tableInput->horizontalHeader()->restoreState(SettingsManager::instance().inputTableHeaderState());
+    ui->tableResults->horizontalHeader()->restoreState(SettingsManager::instance().resultsTableHeaderState());
+    ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
+    ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
+
 }
 
 
@@ -105,7 +136,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // 🔄 Fejléc állapot mentése
+    // Mentés
+    SettingsManager::instance().setInputTableHeaderState(ui->tableInput->horizontalHeader()->saveState());
+    SettingsManager::instance().setResultsTableHeaderState(ui->tableResults->horizontalHeader()->saveState());
+    SettingsManager::instance().setStockTableHeaderState(ui->tableStock->horizontalHeader()->saveState());
+    SettingsManager::instance().setLeftoversTableHeaderState(ui->tableLeftovers->horizontalHeader()->saveState());
+    SettingsManager::instance().save();
 
+    // ✅ Bezárás engedélyezése
+    event->accept();
+}
 
 void MainWindow::on_btnAddRow_clicked() {
     AddInputDialog dialog(this);
@@ -113,31 +156,20 @@ void MainWindow::on_btnAddRow_clicked() {
     if (dialog.exec() != QDialog::Accepted)
         return;
 
-    CuttingRequest request;
-    request.materialId = dialog.selectedMaterialId();
-    request.requiredLength = dialog.length();
-    request.quantity = dialog.quantity();
-
-    if (!request.isValid()) {
-        QMessageBox::warning(this, "Hibás adat", request.invalidReason());
-        return;
-    }
+    CuttingRequest request = dialog.getModel();
 
     presenter->addCutRequest(request);
     inputTableManager->addRow(request);
 }
 
 
+
 void MainWindow::on_btnOptimize_clicked() {
     // 📥 Bemenetek beolvasása a UI táblákból
-    //QVector<CuttingRequest> requestList  = inputTableManager->readAll();
-    //QVector<StockEntry>     stockList    = stockTableManager->readAll();
-    QVector<ReusableStockEntry> leftoverList = leftoverTableManager->readAll(); // ♻️ hullók
-
-    QVector<CuttingRequest> requestList  = inputTableManager->readAll();       // továbbra is UI-ból
+    QVector<CuttingRequest> requestList  = CuttingRequestRegistry::instance().readAll(); // 🔁 repo-ból
     QVector<StockEntry>     stockList    = StockRegistry::instance().all();    // 🔁 repo-ból
-    //QVector<CutResult>      leftoverList = LeftoverRegistry::instance().all(); // 🔁 repo-ból
-
+    QVector<ReusableStockEntry> reusableList =
+        ReusableStockRegistry::instance().filtered(300);
 
     // ⚠️ Validáció
     if (requestList.isEmpty()) {
@@ -150,28 +182,10 @@ void MainWindow::on_btnOptimize_clicked() {
         return;
     }
 
-    // ♻️ Hullók konvertálása újrafelhasználható készletté
-    QVector<ReusableStockEntry> reusableList;
-    for (const ReusableStockEntry &r : leftoverList) {
-        if (r.availableLength_mm >=
-            300) { // ✅ csak releváns maradékokat vesszük figyelembe
-
-            ReusableStockEntry e;
-            e.materialId = r.materialId;
-            e.availableLength_mm = r.availableLength_mm;
-            e.source = r.source;                 // 🛠️ Forrás megőrzése
-            e.optimizationId = r.optimizationId; // 🔍 Csak ha van
-            e.barcode = r.barcode;               // 🧾 Egyedi azonosító
-
-            reusableList.append(e);
-        }
-    }
-
-    if (leftoverList.isEmpty()) {
+    if (reusableList.isEmpty()) {
         QMessageBox::warning(this, "Hiba", "Nincs hulló készlet megadva.");
         return;
     }
-
 
     // 🧠 Modell frissítése
     presenter->setCuttingRequests(requestList);

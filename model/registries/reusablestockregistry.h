@@ -26,4 +26,7 @@ public:
     QVector<ReusableStockEntry> findByGroupName(const QString& name) const;
 
     void consume(const QString& barcode);  // ♻️ Egy reusable darabot levon (töröl) a registry-ből
+
+    QVector<ReusableStockEntry> filtered(int minLength_mm) const;
+
 };

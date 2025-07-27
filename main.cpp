@@ -2,20 +2,19 @@
 
 #include <QApplication>
 #include <QMessageBox>
-#include "common/filenamehelper.h"
+
 #include <model/registries/materialregistry.h>
 #include <model/repositories/materialrepository.h>
 #include <common/startup/startupmanager.h>
+#include <common/settingsmanager.h>
 
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // itt initelünk mindet
-    //FileNameHelper::Init();
-
-    //auto& helper = FileNameHelper::instance();
+    // itt initelünk mindet        
+    SettingsManager::instance().load();
 
     StartupManager manager;
     StartupStatus status = manager.runStartupSequence();
@@ -31,16 +30,6 @@ int main(int argc, char *argv[])
                                  status.warnings.join("\n"));
     }
 
-
-    // if(helper.isInited()){
-    //     QString csvPath = helper.getMaterialCsvFile();
-
-    //     auto& registry = MaterialRegistry::instance();
-    //     MaterialRepository::loadFromCSV(registry);
-
-    //     QString logName = helper.getLogFileName();
-    // }
-
     MainWindow window;
     window.setWindowTitle("CutPlanner MVP");
     window.resize(1000, 600); // Opcionális kezdeti méret
@@ -49,14 +38,3 @@ int main(int argc, char *argv[])
     return app.exec();
 }
 
-/*
-src/
-├── model/
-│   └── CuttingOptimizerModel.h/.cpp
-├── presenter/
-│   └── CuttingPresenter.h/.cpp
-├── view/
-│   └── MainWindow.ui
-│   └── MainWindow.h/.cpp
-└── main.cpp
-*/

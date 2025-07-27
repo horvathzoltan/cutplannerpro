@@ -4,6 +4,8 @@
 #include <QVector>
 #include "../stockentry.h"
 #include "../registries/stockregistry.h"
+#include "model/cutresult.h"
+#include "model/reusablestockentry.h"
 
 class StockRepository {
 public:
@@ -11,6 +13,14 @@ public:
     static bool loadFromCSV(StockRegistry& registry);
 
 private:
+    struct StockEntryRow {
+        QString barcode;
+        int quantity;
+    };
+
     /// 🔒 Private parser, visszaad egy lista objektumot
-    static QVector<StockEntry> loadFromCSV_private(const QString& filepath);
+    static QVector<StockEntry> loadFromCSV_private(const QString& filepath);    
+    static std::optional<StockEntryRow>convertRowToStockEntryRow(const QVector<QString>& parts, int lineIndex);
+    static std::optional<StockEntry> buildStockEntryFromRow(const StockEntryRow &row, int lineIndex);
+    static std::optional<StockEntry> convertRowToStockEntry(const QVector<QString> &parts, int lineIndex);
 };

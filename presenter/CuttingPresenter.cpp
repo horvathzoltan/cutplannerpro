@@ -5,17 +5,38 @@
 #include "model/archivedwasteentry.h"
 #include "common/archivedwasteutils.h"
 
+#include <model/registries/cuttingrequestregistry.h>
 #include <model/registries/reusablestockregistry.h>
 #include <model/registries/stockregistry.h>
 
 #include <common/cuttingplanfinalizer.h>
+#include <common/filenamehelper.h>
+#include <common/settingsmanager.h>
 
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
 
+// void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
+//     model.addRequest(req);
+//     CuttingRequestRegistry::instance().registerRequest(req); // 🔗 Mentés az adatmátrixba
+// }
+
 void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
+    if (CuttingRequestRegistry::instance().readAll().isEmpty()) {
+        QString fn = FileNameHelper::instance().getNew_CuttingPlanFileName();
+        QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
+        SettingsManager::instance().setCuttingPlanFileName(fn);
+    }
+
     model.addRequest(req);
+    CuttingRequestRegistry::instance().registerRequest(req);
+}
+
+
+void CuttingPresenter::removeCutRequest(const QUuid& requestId) {
+    CuttingRequestRegistry::instance().removeRequest(requestId);  // ✅ Globális törlés
+    model.removeRequest(requestId);                               // 🧠 Lokális törlés a modellből
 }
 
 void CuttingPresenter::setCuttingRequests(const QVector<CuttingRequest>& list) {
