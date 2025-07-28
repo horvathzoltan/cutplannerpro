@@ -76,3 +76,12 @@ void CuttingRequestRegistry::clear() {
     _requests.clear();
     persist();
 }
+
+std::optional<CuttingRequest> CuttingRequestRegistry::findById(const QUuid& requestId) const {
+    for (const auto& r : _requests) {
+        if (r.requestId == requestId)
+            return r;
+    }
+    return std::nullopt;
+}
+

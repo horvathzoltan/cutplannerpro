@@ -22,8 +22,10 @@ public:
         void clear(); // 🔄 ÚJ: teljes törlés
     void removeRequest(const QUuid &requestId);
 
-        bool updateRequest(const CuttingRequest &updated);
-    private:
+    bool updateRequest(const CuttingRequest &updated);
+    std::optional<CuttingRequest> findById(const QUuid& requestId) const; // ⬅️ új
+
+private:
     void persist() const;
     CuttingRequestRegistry() = default;
     CuttingRequestRegistry(const CuttingRequestRegistry&) = delete;

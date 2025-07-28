@@ -33,6 +33,24 @@ void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
     CuttingRequestRegistry::instance().registerRequest(req);
 }
 
+void CuttingPresenter::updateCutRequest(const CuttingRequest& updated) {
+    bool ok = CuttingRequestRegistry::instance().updateRequest(updated); // 🔁 adatbázis update
+
+    if (!ok) {
+        qWarning() << "❌ Sikertelen frissítés: nincs ilyen requestId:" << updated.requestId;
+        return;
+    }
+
+    model.updateRequest(updated); // 🧠 modell update
+
+    // if (view) {
+    //     view->update_inputTableRow(updated); // 🔄 ha van ilyen metódusod → view update
+    //     view->updateStats(model.getPlans(), model.getLeftoverResults()); // 📊 stat frissítés
+    // }
+
+    //qDebug() << "✅ Sikeres frissítés a presenter-ben:" << updated.requestId;
+}
+
 
 void CuttingPresenter::removeCutRequest(const QUuid& requestId) {
     CuttingRequestRegistry::instance().removeRequest(requestId);  // ✅ Globális törlés

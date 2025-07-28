@@ -17,7 +17,7 @@
 #include "../model/stockentry.h"
 #include "../model/cuttingrequest.h"
 //#include "../model/cutresult.h"
-#include "../model/CuttingOptimizerModel.h"
+//#include "../model/CuttingOptimizerModel.h"
 
 #include <model/registries/cuttingrequestregistry.h>
 #include <model/registries/reusablestockregistry.h>
@@ -29,7 +29,8 @@
 
 #include <QObject>      // connect() miatt
 #include <QCloseEvent>
-
+#include <QTimer>
+#include "common/qteventutil.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,15 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
-
-
     ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableResults->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableStock->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableLeftovers->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-
 
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
@@ -57,59 +53,29 @@ MainWindow::MainWindow(QWidget *parent)
                 inputTableManager->removeRowByRequestId(id);
             });
 
-      // 🟢 Vágási kérés tábla – fix méretek, alternáló sorok
-    // ui->tableInput->setColumnWidth(0, 120); // Anyag
-    // ui->tableInput->setColumnWidth(1, 70); // Hossz
-    // ui->tableInput->setColumnWidth(2, 70); // Darabszám
-    //ui->tableInput->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    // ui->tableInput->horizontalHeader()->setStretchLastSection(false);
-    // ui->tableInput->setAlternatingRowColors(true);
+    connect(inputTableManager.get(), &InputTableManager::editRequested,
+            this, [this](const QUuid& id) {
+                auto opt = CuttingRequestRegistry::instance().findById(id);
+                if (!opt) return;
 
-    // 🟡 tableResults – fix oszlopszélesség, jól olvasható
-    // ui->tableResults->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    // ui->tableResults->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-    // ui->tableResults->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    // ui->tableResults->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-    // ui->tableResults->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+                CuttingRequest original = *opt;
 
-    // ui->tableResults->setColumnWidth(0, 80);   // Rod #
-    // ui->tableResults->setColumnWidth(1, 120);  // Anyag
-    // ui->tableResults->setColumnWidth(2, 200);  // Vágások
-    // ui->tableResults->setColumnWidth(3, 60);   // Kerf
-    // ui->tableResults->setColumnWidth(4, 60);   // Hulladék
+                AddInputDialog dialog(this);
+                dialog.setModel(original);
+
+                if (dialog.exec() != QDialog::Accepted)
+                    return;
+
+                CuttingRequest updated = dialog.getModel();
+                presenter->updateCutRequest(updated);
+                inputTableManager->updateRow(updated);
+            });
+
 
     ui->tableResults->setAlternatingRowColors(true);
     ui->tableResults->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableResults->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //ui->tableResults->horizontalHeader()->setStretchLastSection(false);
 
-    // ui->tableResults->setColumnWidth(0, 150);
-    // ui->tableResults->setColumnWidth(1, 150);
-    // ui->tableResults->setColumnWidth(3, 60);
-    // ui->tableResults->setColumnWidth(4, 60);
-    // ui->tableResults->setColumnWidth(5, 40);
-
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColName, 120);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColBarcode, 150);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusableId, 80);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColLength, 60);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColShape, 60);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColSource, 60);
-    // ui->tableLeftovers->setColumnWidth(LeftoverTableManager::ColReusable, 20);
-
-
-    // ui->tableStock->setColumnWidth(StockTableManager::ColName, 120);
-    // ui->tableStock->setColumnWidth(StockTableManager::ColBarcode, 120);
-    // ui->tableStock->setColumnWidth(StockTableManager::ColLength, 80);
-    // ui->tableStock->setColumnWidth(StockTableManager::ColShape, 80);
-    // ui->tableStock->setColumnWidth(StockTableManager::ColQuantity, 80);
-
-
-    // 🖼️ Alap ablakbeállítások
-    // Szélesség: ~920–960 px
-    // Magasság: ~640–700 px
-    setMinimumSize(920, 680);
-    resize(920, 680); // vagy akár kisebb: (880, 640)
     setWindowTitle("CutPlanner MVP");
 
     presenter = new CuttingPresenter(this, this);
@@ -122,12 +88,44 @@ MainWindow::MainWindow(QWidget *parent)
     analyticsPanel = new CutAnalyticsPanel(this);
     ui->midLayout->addWidget(analyticsPanel);
 
-    // Betöltés
+    // 🔄 Fejléc állapot betöltése
+
+    // oszlopszélesség
     ui->tableInput->horizontalHeader()->restoreState(SettingsManager::instance().inputTableHeaderState());
     ui->tableResults->horizontalHeader()->restoreState(SettingsManager::instance().resultsTableHeaderState());
     ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
     ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
 
+
+    // splitter
+    ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
+
+    // ablakméret
+    //restoreGeometry(SettingsManager::instance().windowGeometry());
+    // QTimer::singleShot(0, this, [this]() {
+    //     restoreGeometry(SettingsManager::instance().windowGeometry());
+    //     ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
+    // });
+
+    // Restore esemény időzítve (Qt event queue-ban)
+    QtEventUtil::post(this, [this]() {
+        restoreGeometry(SettingsManager::instance().windowGeometry());
+        ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
+    });
+
+}
+
+bool MainWindow::event(QEvent* e)
+{
+    // 🎯 Ha ez egy LambdaEvent, akkor futtatjuk a benne levő lambdát
+    if (e->type() == QEvent::User) {
+        auto* lambdaEvent = static_cast<LambdaEvent*>(e);
+        lambdaEvent->execute();
+        return true;
+    }
+
+    // 🔄 Egyéb események átadása az alapkezelésnek
+    return QMainWindow::event(e);
 }
 
 
@@ -139,11 +137,17 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     // 🔄 Fejléc állapot mentése
-    // Mentés
+    // oszlopszélesség
     SettingsManager::instance().setInputTableHeaderState(ui->tableInput->horizontalHeader()->saveState());
     SettingsManager::instance().setResultsTableHeaderState(ui->tableResults->horizontalHeader()->saveState());
     SettingsManager::instance().setStockTableHeaderState(ui->tableStock->horizontalHeader()->saveState());
     SettingsManager::instance().setLeftoversTableHeaderState(ui->tableLeftovers->horizontalHeader()->saveState());
+    // ablakméret
+    SettingsManager::instance().setWindowGeometry(saveGeometry());
+    // splitter
+    SettingsManager::instance().setMainSplitterState(ui->mainSplitter->saveState());
+
+
     SettingsManager::instance().save();
 
     // ✅ Bezárás engedélyezése

@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QLabel>
+#include <QHBoxLayout>
 #include <model/registries/cuttingrequestregistry.h>
 
 InputTableManager::InputTableManager(QTableWidget* table, QWidget* parent)
@@ -41,6 +42,12 @@ void InputTableManager::addRow(const CuttingRequest& request) {
     btnDelete->setFixedSize(28, 28);
     btnDelete->setStyleSheet("QPushButton { border: none; }");
 
+    // ✏️ Update gomb
+    QPushButton* btnUpdate = new QPushButton("✏️");
+    btnUpdate->setToolTip("Sor szerkesztése");
+    btnUpdate->setFixedSize(28, 28);
+    btnUpdate->setStyleSheet("QPushButton { border: none; }");
+
     // QObject::connect(btnDelete, &QPushButton::clicked, btnDelete, [this, btnDelete]() {
     //     QModelIndex index = this->table->indexAt(btnDelete->pos());
     //     int row = index.row();
@@ -67,11 +74,36 @@ void InputTableManager::addRow(const CuttingRequest& request) {
         emit deleteRequested(requestId);
     });
 
+    QObject::connect(btnUpdate, &QPushButton::clicked, btnUpdate, [this, btnUpdate]() {
+        QModelIndex index = this->table->indexAt(btnUpdate->pos());
+        int row = index.row();
+
+        QTableWidgetItem* itemName = this->table->item(row, ColName);
+        QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
+
+        emit editRequested(requestId); // 🔔 Új signal
+    });
+
+
     // 📋 Fő adatsor beállítása
     table->setItem(row, ColName, itemName);
     table->setItem(row, ColLength, itemLength);
     table->setItem(row, ColQty, itemQty);
-    table->setCellWidget(row, ColAction, btnDelete);
+    //table->setCellWidget(row, ColAction, btnDelete);
+
+    // 🎛️ Gombpanel
+    auto* btnPanel = new QWidget();
+    auto* layout = new QHBoxLayout(btnPanel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(6);
+
+    // 🗑️ Delete gomb (már megvan)
+    layout->addWidget(btnDelete);
+
+
+    layout->addWidget(btnUpdate);
+
+    table->setCellWidget(row, ColAction, btnPanel);
 
     RowStyler::applyInputStyle(table, row, mat, request);
 
@@ -115,6 +147,55 @@ void InputTableManager::updateTableFromRegistry() {
     }
 
     table->resizeColumnsToContents();  // 📐 automatikus oszlopméretezés
+}
+
+void InputTableManager::updateRow(const CuttingRequest& updated) {
+    for (int row = 0; row < table->rowCount(); ++row) {
+        QTableWidgetItem* itemName = table->item(row, ColName);
+        if (!itemName)
+            continue;
+
+        QUuid id = itemName->data(CuttingRequestIdRole).toUuid();
+        if (id == updated.requestId) {
+            const auto opt = MaterialRegistry::instance().findById(updated.materialId);
+            const MaterialMaster* mat = opt ? &(*opt) : nullptr;
+            QString materialName = mat ? mat->name : "(ismeretlen)";
+
+            // 🔁 Frissített cellák
+            itemName->setText(materialName);
+            itemName->setData(Qt::UserRole, QVariant::fromValue(updated.materialId));
+            itemName->setData(CuttingRequestIdRole, updated.requestId);
+
+            QTableWidgetItem* itemLength = table->item(row, ColLength);
+            if (itemLength) {
+                itemLength->setText(QString::number(updated.requiredLength));
+                itemLength->setData(Qt::UserRole, updated.requiredLength);
+            }
+
+            QTableWidgetItem* itemQty = table->item(row, ColQty);
+            if (itemQty) {
+                itemQty->setText(QString::number(updated.quantity));
+                itemQty->setData(Qt::UserRole, updated.quantity);
+            }
+
+            // 🔁 Frissítés a meta sorra is (feltételezzük, hogy mindig közvetlenül alatta van)
+            int metaRow = row + 1;
+            QLabel* metaLabel = qobject_cast<QLabel*>(table->cellWidget(metaRow, ColMetaRowSpanStart));
+            if (metaLabel) {
+                metaLabel->setText(
+                    QString("<span style='color:#555'>Megrendelő: <b>%1</b> &nbsp;&nbsp;•&nbsp;&nbsp; Tételszám: <i>%2</i></span>")
+                        .arg(updated.ownerName, updated.externalReference)
+                    );
+            }
+
+            // 🎨 Stílus újraalkalmazása
+            RowStyler::applyInputStyle(table, row, mat, updated);
+
+            return;
+        }
+    }
+
+    qWarning() << "⚠️ updateRow: Nem található sor a következő azonosítóval:" << updated.requestId;
 }
 
 

@@ -66,5 +66,6 @@ private:
     std::unique_ptr<LeftoverTableManager> leftoverTableManager;
 
     void closeEvent(QCloseEvent *event) override;
+    bool event(QEvent *e) override;
 };
 #endif // MAINWINDOW_H

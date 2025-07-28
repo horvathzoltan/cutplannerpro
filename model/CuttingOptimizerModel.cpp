@@ -28,6 +28,17 @@ void CuttingOptimizerModel::removeRequest(const QUuid& id) {
         requests.end());
 }
 
+void CuttingOptimizerModel::updateRequest(const CuttingRequest& updated) {
+    for (CuttingRequest& r : requests) {
+        if (r.requestId == updated.requestId) {
+            r = updated;
+            return;
+        }
+    }
+    //qWarning() << "❌ Modell frissítés sikertelen – nincs ilyen requestId:" << updated.requestId;
+}
+
+
 void CuttingOptimizerModel::setKerf(int value) {
     kerf = value;
 }

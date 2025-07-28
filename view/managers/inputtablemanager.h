@@ -15,8 +15,11 @@ public:
 
     void updateTableFromRegistry();
 
+    void updateRow(const CuttingRequest& updated); // ⬅️ új metódus
+
 signals:
     void deleteRequested(const QUuid& requestId);
+    void editRequested(const QUuid& requestId);
 
 private:
     QTableWidget* table;

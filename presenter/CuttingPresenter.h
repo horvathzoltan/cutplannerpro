@@ -21,6 +21,8 @@ public:
 
     // Vágási igények
     void addCutRequest(const CuttingRequest& req);
+    void updateCutRequest(const CuttingRequest& updated);
+
 
     void setCuttingRequests(const QVector<CuttingRequest> &list);
     void clearRequests();

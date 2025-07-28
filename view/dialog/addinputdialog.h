@@ -29,9 +29,14 @@ public:
     void accept() override;
     CuttingRequest getModel() const;
 
+    void setModel(const CuttingRequest& request); // ⬅️ új metódus
+
 private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből
     bool validateInputs();
+
+    QUuid currentRequestId; // 🔒 Megőrzi az eredeti ID-t
+
 };
 

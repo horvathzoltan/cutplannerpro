@@ -4,10 +4,15 @@
 
 namespace SettingsKeys {
 inline constexpr auto CuttingPlanFileName    = "cutting_plan_file_name";
+// oszlopméret
 inline constexpr auto TableInputHeader       = "table_input_header";
 inline constexpr auto TableResultsHeader     = "table_results_header";
 inline constexpr auto TableStockHeader       = "table_stock_header";
 inline constexpr auto TableLeftoversHeader   = "table_leftovers_header";
+// ablakméret
+inline constexpr auto WindowGeometry = "window_geometry";
+// splitter
+inline constexpr auto MainSplitterState = "main_splitter_state";
 }
 
 
@@ -35,6 +40,13 @@ public:
     void setLeftoversTableHeaderState(const QByteArray& state);
     QByteArray leftoversTableHeaderState() const;
 
+    // ablakmléret
+    void setWindowGeometry(const QByteArray& state);
+    QByteArray windowGeometry() const;
+
+    //splitter
+    void setMainSplitterState(const QByteArray& state);
+    QByteArray mainSplitterState() const;
 
     void save();
     void load();

@@ -6,312 +6,331 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1589</width>
-    <height>654</height>
+    <width>920</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QGroupBox" name="leftBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QSplitter" name="mainSplitter">
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>430</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>350</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Cutting Requests</string>
-      </property>
-      <layout class="QVBoxLayout" name="leftLayout">
-       <item>
-        <widget class="QTableWidget" name="tableInput">
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>100</number>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Név</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Hossz</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Mennyiség</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Műveletek</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="btnAddRow">
+      <widget class="QGroupBox" name="leftBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Cutting Requests</string>
+       </property>
+       <layout class="QVBoxLayout" name="leftLayout">
+        <item>
+         <widget class="QTableWidget" name="tableInput">
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>100</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <column>
            <property name="text">
-            <string>Add Row</string>
+            <string>Név</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spinKerf">
-           <property name="suffix">
-            <string notr="true" comment="mm"/>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>10</number>
-           </property>
-           <property name="singleStep">
-            <number>0</number>
-           </property>
-           <property name="value">
-            <number>3</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="midBox">
-      <property name="minimumSize">
-       <size>
-        <width>500</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Results</string>
-      </property>
-      <layout class="QVBoxLayout" name="midLayout">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QPushButton" name="btnOptimize">
+          </column>
+          <column>
            <property name="text">
-            <string>Optimize</string>
+            <string>Hossz</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnFinalize">
+          </column>
+          <column>
            <property name="text">
-            <string>Finalize</string>
+            <string>Mennyiség</string>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTableWidget" name="tableResults">
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Rod#</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Category</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Kerf</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Waste</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="rightBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>600</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>500</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Leftovers</string>
-      </property>
-      <layout class="QVBoxLayout" name="rightLayout">
-       <item>
-        <widget class="QLabel" name="labelLeftovers">
-         <property name="text">
-          <string>Material Stock and Waster Summary</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTableWidget" name="tableStock">
-         <column>
-          <property name="text">
-           <string>Name</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Barcode</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Length (mm)</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Shape</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Quantity</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTableWidget" name="tableLeftovers">
-         <column>
-          <property name="text">
-           <string>Name</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Barcode</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Reusable ID	</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Length (mm)</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Shape</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Source</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Reusable</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QPushButton" name="btnDisposal">
+          </column>
+          <column>
            <property name="text">
-            <string>Selejtezés</string>
+            <string>Műveletek</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="btnAddRow">
+            <property name="text">
+             <string>Add Row</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinKerf">
+            <property name="suffix">
+             <string notr="true" comment="mm"/>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="singleStep">
+             <number>0</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="midBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Results</string>
+       </property>
+       <layout class="QVBoxLayout" name="midLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="btnOptimize">
+            <property name="text">
+             <string>Optimize</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnFinalize">
+            <property name="text">
+             <string>Finalize</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableResults">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Rod#</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
+          </column>
+          <column>
+           <property name="text">
+            <string>Category</string>
            </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-      </layout>
+          </column>
+          <column>
+           <property name="text">
+            <string>Kerf</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Waste</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="rightBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>700</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Leftovers</string>
+       </property>
+       <layout class="QVBoxLayout" name="rightLayout">
+        <item>
+         <widget class="QLabel" name="labelLeftovers">
+          <property name="text">
+           <string>Material Stock and Waster Summary</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableStock">
+          <column>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Barcode</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (mm)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Shape</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Quantity</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableLeftovers">
+          <column>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Barcode</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Reusable ID	</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Length (mm)</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Shape</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Reusable</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="btnDisposal">
+            <property name="text">
+             <string>Selejtezés</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -321,7 +340,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1589</width>
+     <width>920</width>
      <height>23</height>
     </rect>
    </property>

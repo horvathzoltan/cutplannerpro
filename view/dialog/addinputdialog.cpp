@@ -63,7 +63,7 @@ QString AddInputDialog::externalReference() const {
 
 CuttingRequest AddInputDialog::getModel() const {
     CuttingRequest req;
-
+    req.requestId = currentRequestId; // ✅ ez volt a hiányzó láncszem
     // 🔗 Anyag ID kinyerése a comboBox-ból
     QVariant matData = ui->comboMaterial->currentData();
     if (matData.isValid())
@@ -109,6 +109,27 @@ void AddInputDialog::accept() {
         return;
 
     QDialog::accept(); // csak ha minden oké
+}
+
+void AddInputDialog::setModel(const CuttingRequest& request) {
+    currentRequestId = request.requestId; // ⬅️ ID mentése
+
+    // 🔗 Anyag beállítása comboBox-ban
+    int index = ui->comboMaterial->findData(request.materialId);
+    if (index >= 0)
+        ui->comboMaterial->setCurrentIndex(index);
+
+    // 📏 Hossz
+    ui->editLength->setText(QString::number(request.requiredLength));
+
+    // 🔢 Darabszám
+    ui->spinQuantity->setValue(request.quantity);
+
+    // 👤 Megrendelő
+    ui->editOwner->setText(request.ownerName);
+
+    // 🧾 Külső azonosító
+    ui->editReference->setText(request.externalReference);
 }
 
 

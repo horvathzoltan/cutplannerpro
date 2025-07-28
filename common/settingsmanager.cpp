@@ -80,3 +80,22 @@ void SettingsManager::setLeftoversTableHeaderState(const QByteArray& state) {
 QByteArray SettingsManager::leftoversTableHeaderState() const {
     return _settings.value(SettingsKeys::TableLeftoversHeader).toByteArray();
 }
+
+// ablakméret
+void SettingsManager::setWindowGeometry(const QByteArray& state) {
+    _settings.setValue(SettingsKeys::WindowGeometry, state);
+}
+
+QByteArray SettingsManager::windowGeometry() const {
+    return _settings.value(SettingsKeys::WindowGeometry).toByteArray();
+}
+
+// splitter
+void SettingsManager::setMainSplitterState(const QByteArray& state) {
+    _settings.setValue(SettingsKeys::MainSplitterState, state);
+}
+
+QByteArray SettingsManager::mainSplitterState() const {
+    return _settings.value(SettingsKeys::MainSplitterState).toByteArray();
+}
+

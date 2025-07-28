@@ -67,6 +67,7 @@ HEADERS += \
     common/materialutils.h \
     common/optimizationexporter.h \
     common/planautosavemanager.h \
+    common/qteventutil.h \
     common/rowstyler.h \
     common/segmentutils.h \
     common/settingsmanager.h \

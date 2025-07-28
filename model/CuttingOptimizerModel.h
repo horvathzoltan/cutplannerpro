@@ -71,6 +71,8 @@ public:
     void setStockInventory(const QVector<StockEntry> &list);
     void setReusableInventory(const QVector<ReusableStockEntry> &reusable);
     QVector<CutPlan> &getPlansRef();
+    void updateRequest(const CuttingRequest& updated); // ⬅️ új metódus
+
 private:
     QVector<CuttingRequest> requests;
     //QVector<int> allPieces;
