@@ -45,6 +45,7 @@ public:
 
 
     void updateStats(const QVector<CutPlan> &plans, const QVector<CutResult> &results);
+    void setInputFileLabel(const QString &label, const QString &tooltip);
 private slots:
     void on_btnAddRow_clicked();
     void on_btnOptimize_clicked();

@@ -99,11 +99,10 @@ void InputTableManager::addRow(const CuttingRequest& request) {
 
     // 🗑️ Delete gomb (már megvan)
     layout->addWidget(btnDelete);
-
-
     layout->addWidget(btnUpdate);
 
     table->setCellWidget(row, ColAction, btnPanel);
+    table->setColumnWidth(ColAction, 64); // 2 gomb + spacing
 
     RowStyler::applyInputStyle(table, row, mat, request);
 

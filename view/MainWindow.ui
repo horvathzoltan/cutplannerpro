@@ -44,11 +44,21 @@
        </property>
        <layout class="QVBoxLayout" name="leftLayout">
         <item>
+         <widget class="QLabel" name="inputFileLabel">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTableWidget" name="tableInput">
           <attribute name="horizontalHeaderDefaultSectionSize">
            <number>100</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
            <bool>false</bool>
           </attribute>
           <column>

@@ -23,6 +23,7 @@
 #include <model/registries/reusablestockregistry.h>
 #include <model/registries/stockregistry.h>
 
+#include <common/filenamehelper.h>
 #include <common/rowstyler.h>
 
 #include <model/repositories/materialrepository.h>
@@ -85,6 +86,14 @@ MainWindow::MainWindow(QWidget *parent)
     stockTableManager->updateTableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
     leftoverTableManager->updateTableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
 
+    //inputFileName
+    QString currentFileName = SettingsManager::instance().cuttingPlanFileName();
+    QString fullPath = FileNameHelper::instance().getCuttingPlanFilePath(currentFileName);
+
+    if (!currentFileName.isEmpty()) {
+        setInputFileLabel(currentFileName, fullPath);
+    }
+
     analyticsPanel = new CutAnalyticsPanel(this);
     ui->midLayout->addWidget(analyticsPanel);
 
@@ -95,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->horizontalHeader()->restoreState(SettingsManager::instance().resultsTableHeaderState());
     ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
     ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
-
 
     // splitter
     ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
@@ -166,7 +174,10 @@ void MainWindow::on_btnAddRow_clicked() {
     inputTableManager->addRow(request);
 }
 
-
+void MainWindow::setInputFileLabel(const QString& label, const QString& tooltip) {
+    ui->inputFileLabel->setText(label);
+    ui->inputFileLabel->setToolTip(tooltip);
+}
 
 void MainWindow::on_btnOptimize_clicked() {
     // 📥 Bemenetek beolvasása a UI táblákból

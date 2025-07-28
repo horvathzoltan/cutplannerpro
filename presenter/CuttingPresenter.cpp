@@ -27,6 +27,10 @@ void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
         QString fn = FileNameHelper::instance().getNew_CuttingPlanFileName();
         QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
         SettingsManager::instance().setCuttingPlanFileName(fn);
+
+        if(view){
+            view->setInputFileLabel(fn,filePath);
+        }
     }
 
     model.addRequest(req);
