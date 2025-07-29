@@ -44,44 +44,28 @@
        </property>
        <layout class="QVBoxLayout" name="leftLayout">
         <item>
-         <widget class="QLabel" name="inputFileLabel">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableInput">
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>100</number>
-          </attribute>
-          <attribute name="horizontalHeaderStretchLastSection">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Név</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Hossz</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Mennyiség</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Műveletek</string>
-           </property>
-          </column>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="btnNewPlan">
+            <property name="text">
+             <string>New Plan</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -124,7 +108,60 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <widget class="QPushButton" name="btnClearPlan">
+            <property name="text">
+             <string>clear</string>
+            </property>
+           </widget>
+          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="inputFileLabel">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableInput">
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>100</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Név</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Hossz</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Mennyiség</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Műveletek</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </widget>

@@ -197,6 +197,14 @@ void InputTableManager::updateRow(const CuttingRequest& updated) {
     qWarning() << "⚠️ updateRow: Nem található sor a következő azonosítóval:" << updated.requestId;
 }
 
+void InputTableManager::clearTable() {
+    if (!table)
+        return;
+
+    table->setRowCount(0);        // 💣 Teljes sorállomány törlése
+    table->clearContents();       // 🧹 Cellák tartalmának kiürítése (nem kötelező, de biztosra megyünk)
+}
+
 
 // void InputTableManager::addRow(const CuttingRequest& request) {
 //     int row = table->rowCount();

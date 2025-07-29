@@ -17,9 +17,14 @@ public:
     /// Elmenti a vágási igényeket CSV formátumban
     static bool saveToFile(const CuttingRequestRegistry& registry, const QString& filePath);
 
+    static bool wasLastFileEffectivelyEmpty() {
+        return lastFileWasEffectivelyEmpty;
+    }
 private:
+    inline static bool lastFileWasEffectivelyEmpty = false;
+
     /// Segédmetódus a CSV-ből CuttingRequest-ek létrehozásához
-    static QVector<CuttingRequest> loadFromCsv(const QString& filepath);
+    static QVector<CuttingRequest> loadFromCsv_private(const QString& filepath);
 
     struct CuttingRequestRow {
         QString barcode;

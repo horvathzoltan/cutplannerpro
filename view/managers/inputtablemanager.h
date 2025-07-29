@@ -17,6 +17,7 @@ public:
 
     void updateRow(const CuttingRequest& updated); // ⬅️ új metódus
 
+    void clearTable();
 signals:
     void deleteRequested(const QUuid& requestId);
     void editRequested(const QUuid& requestId);

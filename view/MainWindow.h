@@ -43,6 +43,9 @@ public:
         stockTableManager->updateTableFromRegistry();
     }
 
+    void  clear_InputTable(){
+        inputTableManager->clearTable();
+    }
 
     void updateStats(const QVector<CutPlan> &plans, const QVector<CutResult> &results);
     void setInputFileLabel(const QString &label, const QString &tooltip);
@@ -53,6 +56,10 @@ private slots:
     void on_btnFinalize_clicked();
 
     void on_btnDisposal_clicked();
+
+    void on_btnNewPlan_clicked();
+
+    void on_btnClearPlan_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -67,6 +74,6 @@ private:
     std::unique_ptr<LeftoverTableManager> leftoverTableManager;
 
     void closeEvent(QCloseEvent *event) override;
-    bool event(QEvent *e) override;
+    bool event(QEvent *e) override;    
 };
 #endif // MAINWINDOW_H

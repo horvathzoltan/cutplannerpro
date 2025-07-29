@@ -1,5 +1,7 @@
 #include "filehelper.h"
 
+#include <QFile>
+
 // Megjegyzés: a parser automatikusan kihagyja az üres sorokat a fájl feldolgozása során.
 QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
 {
@@ -94,4 +96,21 @@ QString FileHelper::parseCell(const QString& rawCell) {
     }
 
     return result.trimmed(); // Felesleges whitespace-ek eltávolítása
+}
+
+bool FileHelper::isCsvWithOnlyHeader(const QString& filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
+
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8);
+
+    int lineCount = 0;
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (!line.isEmpty()) lineCount++;
+        if (lineCount > 1) break;
+    }
+
+    return lineCount == 1; // csak a fejléc
 }

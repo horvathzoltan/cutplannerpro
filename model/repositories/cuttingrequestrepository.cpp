@@ -1,6 +1,7 @@
 #include "cuttingrequestrepository.h"
 #include "../cuttingrequest.h"
 #include "../registries/cuttingrequestregistry.h"
+#include "common/logger.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -24,15 +25,24 @@ bool CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry& regis
 
 bool CuttingRequestRepository::loadFromFile(CuttingRequestRegistry& registry, const QString& filePath) {
     if (filePath.isEmpty() || !QFile::exists(filePath)) {
-        qWarning() << "❌ Nem található vagy üres fájl: " << filePath;
+        qWarning() << "❌ Nem található vagy üres fájlnév: " << filePath;
         return false;
     }
 
-    QVector<CuttingRequest> requests = loadFromCsv(filePath);
+    QVector<CuttingRequest> requests = loadFromCsv_private(filePath);
+
+    lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
+    if (lastFileWasEffectivelyEmpty) {
+        zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");
+        registry.clear();
+        return true;
+    }
+
     if (requests.isEmpty()) {
-        qWarning() << "⚠️ A fájl üres vagy hibás: " << filePath;
+        zWarning("⚠️ Cutting plan file is invalid or improperly formatted");
         return false;
     }
+
 
     registry.clear();
     for (const CuttingRequest& req : requests)
@@ -42,7 +52,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingRequestRegistry& registry, co
 }
 
 QVector<CuttingRequest>
-CuttingRequestRepository::loadFromCsv(const QString& filepath) {
+CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;

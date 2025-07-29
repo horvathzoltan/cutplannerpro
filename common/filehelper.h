@@ -11,6 +11,7 @@ public:
     // Fő CSV parser metódus: escape karakterekkel, többsoros cellákkal
     static QList<QVector<QString>> parseCSV(QTextStream *st, const QChar& separator = ';');
 
+    static bool isCsvWithOnlyHeader(const QString &filePath);
 private:
     // Egyetlen cella értelmezése: escape karakterek feldolgozása
     static QString parseCell(const QString& rawCell);

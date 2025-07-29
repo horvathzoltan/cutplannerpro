@@ -7,10 +7,13 @@
 #include <model/repositories/materialrepository.h>
 #include <common/startup/startupmanager.h>
 #include <common/settingsmanager.h>
-
+#include "common/logger.h"
 
 int main(int argc, char *argv[])
 {
+    Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, true);
+
+
     QApplication app(argc, argv);
 
     // itt initelünk mindet        

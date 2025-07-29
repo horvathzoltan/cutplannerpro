@@ -432,3 +432,15 @@ void MainWindow::on_btnDisposal_clicked()
 }
 
 
+
+void MainWindow::on_btnNewPlan_clicked()
+{
+    presenter->createNewCuttingPlan();
+}
+
+
+void MainWindow::on_btnClearPlan_clicked()
+{
+    presenter->clearCuttingPlan();
+}
+

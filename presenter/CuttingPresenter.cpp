@@ -22,19 +22,51 @@ CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
 //     CuttingRequestRegistry::instance().registerRequest(req); // 🔗 Mentés az adatmátrixba
 // }
 
+// void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
+//     if (CuttingRequestRegistry::instance().readAll().isEmpty()) {
+//         QString fn = FileNameHelper::instance().getNew_CuttingPlanFileName();
+//         QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
+//         SettingsManager::instance().setCuttingPlanFileName(fn);
+
+//         if(view){
+//             view->setInputFileLabel(fn,filePath);
+//         }
+//     }
+
+//     model.addRequest(req);
+//     CuttingRequestRegistry::instance().registerRequest(req);
+// }
+
 void CuttingPresenter::addCutRequest(const CuttingRequest& req) {
-    if (CuttingRequestRegistry::instance().readAll().isEmpty()) {
-        QString fn = FileNameHelper::instance().getNew_CuttingPlanFileName();
-        QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
-        SettingsManager::instance().setCuttingPlanFileName(fn);
-
-        if(view){
-            view->setInputFileLabel(fn,filePath);
-        }
-    }
-
     model.addRequest(req);
     CuttingRequestRegistry::instance().registerRequest(req);
+    // 💾 Automatikus persistálás továbbra is működik
+}
+
+
+void CuttingPresenter::createNewCuttingPlan() {
+    QString newFileName = FileNameHelper::instance().getNew_CuttingPlanFileName();
+    QString newFilePath = FileNameHelper::instance().getCuttingPlanFilePath(newFileName);
+
+    // 🔄 Állapot frissítése
+    SettingsManager::instance().setCuttingPlanFileName(newFileName);
+
+    clearCuttingPlan();
+
+    // 🧹 GUI frissítés
+    if (view) {
+        view->setInputFileLabel(newFileName, newFilePath);
+    }
+}
+
+void CuttingPresenter::clearCuttingPlan() {
+    // 🧹 Táblázat törlése a GUI-ban
+    if (view) {
+        view->clear_InputTable();
+    }
+
+    // 🗃️ Registry kiürítése
+    CuttingRequestRegistry::instance().clear();
 }
 
 void CuttingPresenter::updateCutRequest(const CuttingRequest& updated) {
@@ -46,13 +78,6 @@ void CuttingPresenter::updateCutRequest(const CuttingRequest& updated) {
     }
 
     model.updateRequest(updated); // 🧠 modell update
-
-    // if (view) {
-    //     view->update_inputTableRow(updated); // 🔄 ha van ilyen metódusod → view update
-    //     view->updateStats(model.getPlans(), model.getLeftoverResults()); // 📊 stat frissítés
-    // }
-
-    //qDebug() << "✅ Sikeres frissítés a presenter-ben:" << updated.requestId;
 }
 
 

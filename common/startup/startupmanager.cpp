@@ -2,6 +2,7 @@
 #include "../../model/repositories/materialrepository.h"
 #include "../../model/registries/materialregistry.h"
 #include "../../model/materialmaster.h"
+#include "common/logger.h"
 #include "model/registries/cuttingrequestregistry.h"
 //#include "model/stockentry.h"
 
@@ -186,6 +187,12 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
         return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
 
     const auto& all = CuttingRequestRegistry::instance().readAll();
+
+    // 💡 Check: file might be valid but intentionally empty (just header)
+    if (all.isEmpty() && CuttingRequestRepository::wasLastFileEffectivelyEmpty()) {
+        zInfo("ℹ️ Nincsenek vágási igények — új terv indítása vagy adat még nem érkezett");
+        return StartupStatus::success();
+    }
 
     if (all.isEmpty())
         return StartupStatus::failure("⚠️ A vágási igény lista üres. Legalább 1 tétel szükséges.");
