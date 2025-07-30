@@ -51,33 +51,43 @@ void StockTableManager::addRow(const StockEntry& entry) {
     RowStyler::applyStockStyle(table, row, mat);
 }
 
-std::optional<StockEntry> StockTableManager::readRow(int row) const {
+void StockTableManager::updateRow(int row, const StockEntry& entry) {
     if (!table || row < 0 || row >= table->rowCount())
-        return std::nullopt;
+        return;
 
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(entry.materialId);
+    if (!mat)
+        return;
+
+    // 📛 Név
     auto* itemName = table->item(row, ColName);
-    auto* itemQty  = table->item(row, ColQuantity);
+    if (itemName) itemName->setText(mat->name);
 
-    if (!itemName || !itemQty)
-        return std::nullopt;
+    // 🧾 Barcode
+    auto* itemBarcode = table->item(row, ColBarcode);
+    if (itemBarcode) itemBarcode->setText(mat->barcode);
 
-    QUuid materialId;
-    int quantity = 0;
+    // 📐 Shape
+    auto* itemShape = table->item(row, ColShape);
+    if (itemShape) itemShape->setText(MaterialUtils::formatShapeText(*mat));
 
-    const QVariant idData  = itemName->data(Qt::UserRole);
-    const QVariant qtyData = itemQty->data(Qt::UserRole);
+    // 📏 Length
+    auto* itemLength = table->item(row, ColLength);
+    if (itemLength) {
+        itemLength->setText(QString::number(mat->stockLength_mm));
+        itemLength->setData(Qt::UserRole, mat->stockLength_mm);
+    }
 
-    if (idData.canConvert<QUuid>())
-        materialId = idData.toUuid();
+    // 🔢 Quantity
+    auto* itemQty = table->item(row, ColQuantity);
+    if (itemQty) {
+        itemQty->setText(QString::number(entry.quantity));
+        itemQty->setData(Qt::UserRole, entry.quantity);
+    }
 
-    if (qtyData.canConvert<int>())
-        quantity = qtyData.toInt();
-
-    if (materialId.isNull() || quantity <= 0)
-        return std::nullopt;
-
-    return StockEntry { materialId, quantity };
+    RowStyler::applyStockStyle(table, row, mat);
 }
+
 
 void StockTableManager::updateTableFromRegistry()
 {

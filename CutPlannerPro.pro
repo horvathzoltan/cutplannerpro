@@ -52,6 +52,7 @@ SOURCES += \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
+    view/dialog/addstockdialog.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
     view/managers/stocktablemanager.cpp
@@ -105,13 +106,15 @@ HEADERS += \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
+    view/dialog/addstockdialog.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \
     view/managers/stocktablemanager.h
 
 FORMS += \
     view/MainWindow.ui \
-    view/dialog/addinputdialog.ui
+    view/dialog/addinputdialog.ui \
+    view/dialog/addstockdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

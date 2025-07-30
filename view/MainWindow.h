@@ -61,6 +61,8 @@ private slots:
 
     void on_btnClearPlan_clicked();
 
+    void on_btnAddStockEntry_clicked();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter;

@@ -32,6 +32,7 @@
 #include <QCloseEvent>
 #include <QTimer>
 #include "common/qteventutil.h"
+#include "view/dialog/addstockdialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -442,5 +443,23 @@ void MainWindow::on_btnNewPlan_clicked()
 void MainWindow::on_btnClearPlan_clicked()
 {
     presenter->clearCuttingPlan();
+}
+
+
+void MainWindow::on_btnAddStockEntry_clicked()
+{
+    AddStockDialog dlg(this);
+    if (dlg.exec() == QDialog::Accepted) {
+        StockEntry entry = dlg.getModel();
+
+        // 🌟 Itt jöhet a készlettábla frissítése:
+        StockRegistry::instance().add(entry);
+
+        // ✨ Opcionálisan GUI frissítése:
+        stockTableManager->addRow(entry); // <- ha van ilyen metódusod
+
+        // QMessageBox::information(this, "Sikeres rögzítés",
+        //                          "A készlettétel sikeresen fel lett véve.");
+    }
 }
 

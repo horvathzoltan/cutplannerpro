@@ -14,7 +14,6 @@ public:
 
     void updateTableFromRegistry();
 
-    std::optional<StockEntry> readRow(int row) const;
 private:
     QTableWidget* table;
     QWidget* parent;
@@ -25,4 +24,5 @@ public:
     static constexpr int ColShape    = 3;
     static constexpr int ColLength   = 2;
     static constexpr int ColQuantity = 4;
+    void updateRow(int row, const StockEntry &entry);
 };
