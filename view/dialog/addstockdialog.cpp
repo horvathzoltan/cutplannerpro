@@ -7,6 +7,7 @@
 AddStockDialog::AddStockDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddStockDialog)
+    , currentEntryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
 {
     ui->setupUi(this);
     populateMaterialCombo();
@@ -31,28 +32,39 @@ QUuid AddStockDialog::selectedMaterialId() const {
 }
 
 int AddStockDialog::quantity() const {
-    return ui->spinQuantity->value();
+    int value = 0;
+    int mode = parsedQuantityDelta(value);
+
+    if (mode == 0)
+        return value;
+    else if (mode == 1)
+        return currentQuantity + value;
+    else
+        return -1; // hibás input
 }
 
 QString AddStockDialog::comment() const {
     return ui->editComment->text().trimmed();
 }
 
-StockEntry AddStockDialog::getModel() const {
+StockEntry AddStockDialog::getModel() const {   
     StockEntry entry;
+    entry.entryId = currentEntryId;
     entry.materialId = selectedMaterialId();
     entry.quantity = quantity();
     return entry;
 }
 
 void AddStockDialog::setModel(const StockEntry& entry) {
-    currentMaterialId = entry.materialId;
+
+    currentEntryId = entry.entryId;
+    currentQuantity = entry.quantity; // Megőrizzük az eredeti quantityt
 
     int index = ui->comboMaterial->findData(entry.materialId);
     if (index >= 0)
         ui->comboMaterial->setCurrentIndex(index);
 
-    ui->spinQuantity->setValue(entry.quantity);
+    ui->lineEditQuantity->setText(QString::number(currentQuantity));
     ui->editComment->setText(""); // opcionálisan beállítható
 }
 
@@ -62,7 +74,7 @@ bool AddStockDialog::validateInputs() {
         return false;
     }
 
-    if (quantity() <= 0) {
+    if (quantity() < 0) {
         QMessageBox::warning(this, "Hibás mennyiség", "A mennyiségnek pozitívnak kell lennie.");
         return false;
     }
@@ -75,4 +87,34 @@ void AddStockDialog::accept() {
         return;
 
     QDialog::accept();
+}
+
+int AddStockDialog::parsedQuantityDelta(int& resultValue) const {
+    QString input = ui->lineEditQuantity->text().trimmed();
+
+    if (input.startsWith("+") || input.startsWith("-")) {
+        QRegularExpression re("^\\s*([+-])\\s*(\\d+)\\s*$");
+        QRegularExpressionMatch match = re.match(input);
+
+        if (match.hasMatch()) {
+            QString op = match.captured(1);
+            int delta = match.captured(2).toInt();
+
+            resultValue = (op == "+") ? delta : -delta;
+            return 1; // relatív delta
+        }
+
+        return -1; // hibás relatív formátum
+    }
+
+    // Ha nincs +/- prefix, akkor abszolút érték
+    bool ok = false;
+    int value = input.toInt(&ok);
+    if (ok) {
+        resultValue = value;
+        return 0; // abszolút érték
+    }
+
+    return -1; // sehogy se értelmezhető
+
 }

@@ -4,14 +4,16 @@
 #include <QVector>
 #include "../stockentry.h"
 #include "../registries/stockregistry.h"
-#include "model/cutresult.h"
-#include "model/reusablestockentry.h"
+//#include "model/cutresult.h"
+//#include "model/reusablestockentry.h"
 
 class StockRepository {
 public:
     /// 📥 Betöltés fájlból és feltöltés a regisztrációba
     static bool loadFromCSV(StockRegistry& registry);
 
+    static bool saveToCSV(const StockRegistry &registry, const QString &filePath);
+    static bool saveToSettingsPath(const StockRegistry &registry);
 private:
     struct StockEntryRow {
         QString barcode;

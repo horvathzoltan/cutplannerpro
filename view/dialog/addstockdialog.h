@@ -29,5 +29,7 @@ private:
     void populateMaterialCombo();
     bool validateInputs();
 
-    QUuid currentMaterialId;
+    QUuid currentEntryId;
+    int currentQuantity;
+    int parsedQuantityDelta(int& resultValue) const;
 };

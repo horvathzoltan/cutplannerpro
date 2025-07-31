@@ -9,7 +9,7 @@
 #include <common/settingsmanager.h>
 #include <model/registries/materialregistry.h>
 #include <common/filehelper.h>
-#include <common/csvimporter.h>.h>
+#include <common/csvimporter.h>
 
 bool CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry& registry) {
     QString fn = SettingsManager::instance().cuttingPlanFileName();

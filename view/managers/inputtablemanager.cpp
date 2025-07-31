@@ -41,48 +41,45 @@ void InputTableManager::addRow(const CuttingRequest& request) {
     btnDelete->setToolTip("Sor törlése");
     btnDelete->setFixedSize(28, 28);
     btnDelete->setStyleSheet("QPushButton { border: none; }");
+    btnDelete->setProperty("entryId", request.requestId);
 
     // ✏️ Update gomb
     QPushButton* btnUpdate = new QPushButton("✏️");
     btnUpdate->setToolTip("Sor szerkesztése");
     btnUpdate->setFixedSize(28, 28);
     btnUpdate->setStyleSheet("QPushButton { border: none; }");
+    btnUpdate->setProperty("entryId", request.requestId);
+
+
+    QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
+        QUuid id = btnDelete->property("entryId").toUuid();
+        emit deleteRequested(id);
+    });
+
+    QObject::connect(btnUpdate, &QPushButton::clicked, this, [btnUpdate, this]() {
+        QUuid id = btnUpdate->property("entryId").toUuid();
+        emit editRequested(id);
+    });
 
     // QObject::connect(btnDelete, &QPushButton::clicked, btnDelete, [this, btnDelete]() {
     //     QModelIndex index = this->table->indexAt(btnDelete->pos());
     //     int row = index.row();
 
-    //     // 🔍 Lekérjük az itemName cellát és abból az azonosítót
     //     QTableWidgetItem* itemName = this->table->item(row, ColName);
     //     QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
 
-    //     // 🗑️ Törlés a táblából
-    //     this->table->removeRow(row);     // fő sor
-    //     this->table->removeRow(row);     // meta sor is lecsúszik, ugyanott
-
-    //     // 🔄 Törlés a registryből
-    //     CuttingRequestRegistry::instance().removeRequest(requestId);
+    //     emit deleteRequested(requestId);
     // });
 
-    QObject::connect(btnDelete, &QPushButton::clicked, btnDelete, [this, btnDelete]() {
-        QModelIndex index = this->table->indexAt(btnDelete->pos());
-        int row = index.row();
+    // QObject::connect(btnUpdate, &QPushButton::clicked, btnUpdate, [this, btnUpdate]() {
+    //     QModelIndex index = this->table->indexAt(btnUpdate->pos());
+    //     int row = index.row();
 
-        QTableWidgetItem* itemName = this->table->item(row, ColName);
-        QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
+    //     QTableWidgetItem* itemName = this->table->item(row, ColName);
+    //     QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
 
-        emit deleteRequested(requestId);
-    });
-
-    QObject::connect(btnUpdate, &QPushButton::clicked, btnUpdate, [this, btnUpdate]() {
-        QModelIndex index = this->table->indexAt(btnUpdate->pos());
-        int row = index.row();
-
-        QTableWidgetItem* itemName = this->table->item(row, ColName);
-        QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
-
-        emit editRequested(requestId); // 🔔 Új signal
-    });
+    //     emit editRequested(requestId); // 🔔 Új signal
+    // });
 
 
     // 📋 Fő adatsor beállítása
@@ -92,16 +89,14 @@ void InputTableManager::addRow(const CuttingRequest& request) {
     //table->setCellWidget(row, ColAction, btnDelete);
 
     // 🎛️ Gombpanel
-    auto* btnPanel = new QWidget();
-    auto* layout = new QHBoxLayout(btnPanel);
+    auto* actionPanel = new QWidget();
+    auto* layout = new QHBoxLayout(actionPanel);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(6);
-
-    // 🗑️ Delete gomb (már megvan)
+    layout->setSpacing(4);
     layout->addWidget(btnDelete);
     layout->addWidget(btnUpdate);
 
-    table->setCellWidget(row, ColAction, btnPanel);
+    table->setCellWidget(row, ColAction, actionPanel);
     table->setColumnWidth(ColAction, 64); // 2 gomb + spacing
 
     RowStyler::applyInputStyle(table, row, mat, request);
@@ -206,107 +201,4 @@ void InputTableManager::clearTable() {
 }
 
 
-// void InputTableManager::addRow(const CuttingRequest& request) {
-//     int row = table->rowCount();
-//     table->insertRow(row);
 
-//     const auto opt = MaterialRegistry::instance().findById(request.materialId);
-//     const MaterialMaster* mat = opt ? &(*opt) : nullptr;
-
-//     // 🧪 Anyag neve
-//     QString name = mat ? mat->name : "(ismeretlen)";
-//     auto* itemName = new QTableWidgetItem(name);
-//     itemName->setTextAlignment(Qt::AlignCenter);
-//     // ⬅️ id-itt tároljuk
-//     itemName->setData(Qt::UserRole, QVariant::fromValue(request.materialId));
-
-//     // 📏 Hossz
-//     auto* itemLength = new QTableWidgetItem(QString::number(request.requiredLength));
-//     itemLength->setTextAlignment(Qt::AlignCenter);
-//     itemLength->setData(Qt::UserRole, request.requiredLength);
-
-//     // 🔢 Mennyiség
-//     auto* itemQty = new QTableWidgetItem(QString::number(request.quantity));
-//     itemQty->setTextAlignment(Qt::AlignCenter);
-//     itemQty->setData(Qt::UserRole, request.quantity);
-
-//     table->setItem(row, 0, itemName);
-//     table->setItem(row, 1, itemLength);
-//     table->setItem(row, 2, itemQty);
-
-//     // 🗑️ Törlésgomb
-//     QPushButton* btnDelete = new QPushButton("🗑️");
-//     btnDelete->setToolTip("Sor törlése");
-//     btnDelete->setFixedSize(28, 28);
-//     btnDelete->setStyleSheet("QPushButton { border: none; }");
-
-//     QObject::connect(btnDelete, &QPushButton::clicked, btnDelete, [this, btnDelete]() {
-//         int currentRow = this->table->indexAt(btnDelete->pos()).row();
-//         this->table->removeRow(currentRow);
-//     });
-
-//     table->setCellWidget(row, 3, btnDelete);
-
-//     RowStyler::applyInputStyle(table, row, mat, request);
-// }
-
-
-// std::optional<CuttingRequest> InputTableManager::readRow(int row) const {
-//     auto* itemName   = table->item(row, ColName);
-//     auto* itemLength = table->item(row, ColLength);
-//     auto* itemQty    = table->item(row, ColQty);
-
-//     QUuid materialId = itemName ? itemName->data(Qt::UserRole).toUuid() : QUuid();
-//     int length       = itemLength ? itemLength->data(Qt::UserRole).toInt() : -1;
-//     int quantity     = itemQty ? itemQty->data(Qt::UserRole).toInt() : -1;
-
-//     CuttingRequest req;
-//     req.materialId     = materialId;
-//     req.requiredLength = length;
-//     req.quantity       = quantity;
-
-//     std::optional<CuttingRequest> result;
-//     if (req.isValid())
-//         result = req;
-
-//     return result;
-// }
-
-// std::optional<CuttingRequest> InputTableManager::readRow(int row) const {
-//     auto it = rowModelMap.find(row);
-//     if (it != rowModelMap.end())
-//         return it.value();
-//     return std::nullopt;
-// }
-
-
-// QVector<CuttingRequest> InputTableManager::readAll() const {
-//     return rowModelMap.values().toVector();
-// }
-
-
-// void InputTableManager::fillTestData() {
-//     table->setRowCount(0);
-
-//     const auto& materials = MaterialRegistry::instance().all();
-
-//     if (materials.isEmpty()) {
-//         QMessageBox::warning(parent, "Hiba", "Nincs anyag a törzsben.");
-//         return;
-//     }
-
-//     if (materials.size() < 2) {
-//         QMessageBox::warning(parent, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
-//         return;
-//     }
-
-//     QVector<CuttingRequest> testRequests = {
-//         { materials[0].id, 1800, 2, "Alfa Kft.", "EXT-001" },
-//         { materials[1].id, 2200, 1, "Beta Zrt.", "EXT-002" },
-//         { materials[0].id, 2900, 1, "Gamma Bt.", "EXT-003" }
-//     };
-
-//     for (const auto& req : testRequests) {
-//         addRow(req);
-//     }
-// }

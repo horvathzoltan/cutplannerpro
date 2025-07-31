@@ -25,6 +25,7 @@ public:
     void removeCutRequest(const QUuid &id);
     void createNewCuttingPlan();
 
+
     void setCuttingRequests(const QVector<CuttingRequest> &list);
     void clearRequests();
 
@@ -48,6 +49,8 @@ public:
     void exportArchivedWasteToCSV(const QVector<ArchivedWasteEntry> &entries);
 
     void clearCuttingPlan();
+    void removeStockEntry(const QUuid &stockId);
+    void updateStockEntry(const StockEntry &updated);
 private:
     MainWindow* view;
     CuttingOptimizerModel model;

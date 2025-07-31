@@ -14,6 +14,7 @@
 #include <common/settingsmanager.h>
 
 
+
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
 
@@ -68,7 +69,7 @@ void CuttingPresenter::clearCuttingPlan() {
     // 🗃️ Registry kiürítése
     CuttingRequestRegistry::instance().clear();
 }
-
+/*input*/
 void CuttingPresenter::updateCutRequest(const CuttingRequest& updated) {
     bool ok = CuttingRequestRegistry::instance().updateRequest(updated); // 🔁 adatbázis update
 
@@ -84,6 +85,20 @@ void CuttingPresenter::updateCutRequest(const CuttingRequest& updated) {
 void CuttingPresenter::removeCutRequest(const QUuid& requestId) {
     CuttingRequestRegistry::instance().removeRequest(requestId);  // ✅ Globális törlés
     model.removeRequest(requestId);                               // 🧠 Lokális törlés a modellből
+}
+/*stock*/
+
+void CuttingPresenter::removeStockEntry(const QUuid& stockId) {
+    StockRegistry::instance().remove(stockId);   // ✅ Globális törlés
+}
+
+void CuttingPresenter::updateStockEntry(const StockEntry& updated) {
+    bool ok = StockRegistry::instance().update(updated); // 🔁 adatbázis update
+
+    if (!ok) {
+        qWarning() << "❌ Sikertelen frissítés: nincs ilyen entryId:" << updated.entryId;
+        return;
+    }
 }
 
 void CuttingPresenter::setCuttingRequests(const QVector<CuttingRequest>& list) {

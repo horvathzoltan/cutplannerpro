@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
                 inputTableManager->removeRowByRequestId(id);
             });
 
+//
     connect(inputTableManager.get(), &InputTableManager::editRequested,
             this, [this](const QUuid& id) {
                 auto opt = CuttingRequestRegistry::instance().findById(id);
@@ -71,6 +72,30 @@ MainWindow::MainWindow(QWidget *parent)
                 CuttingRequest updated = dialog.getModel();
                 presenter->updateCutRequest(updated);
                 inputTableManager->updateRow(updated);
+            });
+//
+    connect(stockTableManager.get(), &StockTableManager::deleteRequested,
+            this, [this](const QUuid& id) {
+                presenter->removeStockEntry(id);
+                stockTableManager->removeRowById(id);
+            });
+
+    connect(stockTableManager.get(), &StockTableManager::editRequested,
+            this, [this](const QUuid& id) {
+                auto opt = StockRegistry::instance().findById(id);
+                if (!opt) return;
+
+                StockEntry original = *opt;
+
+                AddStockDialog dialog(this);
+                dialog.setModel(original);
+
+                if (dialog.exec() != QDialog::Accepted)
+                    return;
+
+                StockEntry updated = dialog.getModel();
+                presenter->updateStockEntry(updated);
+                stockTableManager->updateRow(updated);
             });
 
 

@@ -6,6 +6,8 @@
 #include "model/materialmaster.h"
 
 struct StockEntry {
+    QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
+
     QUuid materialId;                 // 🔗 Kapcsolat az anyagtörzshöz
     int quantity = 0;                // 📦 Elérhető darabszám
 

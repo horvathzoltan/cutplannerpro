@@ -338,6 +338,11 @@
             <string>Quantity</string>
            </property>
           </column>
+          <column>
+           <property name="text">
+            <string>Actions</string>
+           </property>
+          </column>
          </widget>
         </item>
         <item>

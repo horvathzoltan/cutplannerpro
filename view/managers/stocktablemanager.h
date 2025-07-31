@@ -6,7 +6,9 @@
 //#include "model/materialmaster.h"
 #include "model/stockentry.h"
 
-class StockTableManager {
+class StockTableManager: public QObject {  // 🔧 QObject öröklés! {
+    Q_OBJECT                              // ✨ Qt metaobjektum makró!
+
 public:
     StockTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
@@ -14,15 +16,27 @@ public:
 
     void updateTableFromRegistry();
 
+signals:
+    void deleteRequested(const QUuid& requestId);
+    void editRequested(const QUuid& requestId);
+
+
 private:
     QTableWidget* table;
     QWidget* parent;
 
+    static constexpr int StockEntryIdIdRole = Qt::UserRole + 1;
+
+
 public:
     static constexpr int ColName     = 0;
     static constexpr int ColBarcode  = 1;
-    static constexpr int ColShape    = 3;
     static constexpr int ColLength   = 2;
+    static constexpr int ColShape    = 3;
     static constexpr int ColQuantity = 4;
-    void updateRow(int row, const StockEntry &entry);
+    static constexpr int ColAction = 5;  // új oszlop a gomboknak (a Quantity után)
+
+
+    void updateRow(const StockEntry &entry);
+    void removeRowById(const QUuid &stockId);
 };

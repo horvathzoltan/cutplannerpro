@@ -10,6 +10,7 @@
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
+    , currentRequestId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
 {
     ui->setupUi(this);
     populateMaterialCombo();

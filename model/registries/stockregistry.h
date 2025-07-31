@@ -20,9 +20,14 @@ public:
     void clear();
     QVector<StockEntry> all() const { return _stock; }
 
-    bool removeByMaterialId(const QUuid& id);
+    void remove(const QUuid& id);
 
     QVector<StockEntry> findByGroupName(const QString& name) const;
 
     void consume(const QUuid& materialId); // 🧱 Levon egy darabot a készletből az adott anyaghoz
+    void persist() const;
+
+    std::optional<StockEntry> findById(const QUuid& entryId) const; // ⬅️ új
+
+    bool update(const StockEntry &updated);
 };

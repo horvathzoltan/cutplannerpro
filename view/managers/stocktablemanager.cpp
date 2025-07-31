@@ -3,11 +3,13 @@
 #include "common/rowstyler.h"
 //#include "common/grouputils.h"
 #include "model/registries/materialregistry.h"
+#include <QHBoxLayout>
 #include <QMessageBox>
+#include <QPushButton>
 #include "model/registries/stockregistry.h"
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
-    : table(table), parent(parent) {}
+    : QObject(parent), table(table), parent(parent) {}
 
 void StockTableManager::addRow(const StockEntry& entry) {
     if (!table)
@@ -24,6 +26,8 @@ void StockTableManager::addRow(const StockEntry& entry) {
     auto* itemName = new QTableWidgetItem(mat->name);
     itemName->setTextAlignment(Qt::AlignCenter);
     itemName->setData(Qt::UserRole, mat->id);
+    itemName->setData(StockEntryIdIdRole, entry.entryId);
+
     table->setItem(row, ColName, itemName);
 
     // 🧾 BarCode
@@ -48,45 +52,130 @@ void StockTableManager::addRow(const StockEntry& entry) {
     itemQty->setData(Qt::UserRole, entry.quantity);
     table->setItem(row, ColQuantity, itemQty);
 
-    RowStyler::applyStockStyle(table, row, mat);
+    // 🗑️ Törlés gomb
+    QPushButton* btnDelete = new QPushButton("🗑️");
+    btnDelete->setToolTip("Sor törlése");
+    btnDelete->setFixedSize(28, 28);
+    btnDelete->setStyleSheet("QPushButton { border: none; }");
+    btnDelete->setProperty("entryId", entry.entryId);
+
+    // ✏️ Update gomb
+    QPushButton* btnUpdate = new QPushButton("✏️");
+    btnUpdate->setToolTip("Mennyiség módosítása");
+    btnUpdate->setFixedSize(28, 28);
+    btnUpdate->setStyleSheet("QPushButton { border: none; }");
+    btnUpdate->setProperty("entryId", entry.entryId);
+
+    // 🧩 Panelbe csomagolás
+    auto* actionPanel = new QWidget();
+    auto* layout = new QHBoxLayout(actionPanel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(4);
+    layout->addWidget(btnUpdate);
+    layout->addWidget(btnDelete);
+
+    table->setCellWidget(row, ColAction, actionPanel);
+    table->setColumnWidth(ColAction, 64);
+
+    QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
+        QUuid entryId = btnDelete->property("entryId").toUuid();
+        emit deleteRequested(entryId);
+    });
+
+    QObject::connect(btnUpdate, &QPushButton::clicked, this, [btnUpdate, this]() {
+        QUuid id = btnUpdate->property("entryId").toUuid();
+        emit editRequested(id);
+    });
+
+    RowStyler::applyStockStyle(table, row, mat, entry.quantity);
 }
 
-void StockTableManager::updateRow(int row, const StockEntry& entry) {
-    if (!table || row < 0 || row >= table->rowCount())
-        return;
+void StockTableManager::updateRow(const StockEntry& entry) {
+    for (int row = 0; row < table->rowCount(); ++row) {
+        QTableWidgetItem* itemName = table->item(row, ColName);
+        if (!itemName)
+            continue;
 
-    const MaterialMaster* mat = MaterialRegistry::instance().findById(entry.materialId);
-    if (!mat)
-        return;
+        QUuid currentId = itemName->data(StockEntryIdIdRole).toUuid(); // 👈 Saját role
+        if (currentId == entry.entryId) {
+            const MaterialMaster* mat = MaterialRegistry::instance().findById(entry.materialId);
+            QString materialName = mat ? mat->name : "(ismeretlen)";
+            QString barcode = mat ? mat->barcode : "—";
+            QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "—";
 
-    // 📛 Név
-    auto* itemName = table->item(row, ColName);
-    if (itemName) itemName->setText(mat->name);
+            // 📛 Név
+            itemName->setText(materialName);
+            itemName->setData(Qt::UserRole, QVariant::fromValue(entry.materialId));
+            itemName->setData(StockEntryIdIdRole, entry.entryId);
 
-    // 🧾 Barcode
-    auto* itemBarcode = table->item(row, ColBarcode);
-    if (itemBarcode) itemBarcode->setText(mat->barcode);
+            // 🧾 Barcode
+            auto* itemBarcode = table->item(row, ColBarcode);
+            if (itemBarcode) itemBarcode->setText(barcode);
 
-    // 📐 Shape
-    auto* itemShape = table->item(row, ColShape);
-    if (itemShape) itemShape->setText(MaterialUtils::formatShapeText(*mat));
+            // 📐 Shape
+            auto* itemShape = table->item(row, ColShape);
+            if (itemShape) itemShape->setText(shape);
 
-    // 📏 Length
-    auto* itemLength = table->item(row, ColLength);
-    if (itemLength) {
-        itemLength->setText(QString::number(mat->stockLength_mm));
-        itemLength->setData(Qt::UserRole, mat->stockLength_mm);
+            // 📏 Length
+            auto* itemLength = table->item(row, ColLength);
+            if (itemLength && mat) {
+                itemLength->setText(QString::number(mat->stockLength_mm));
+                itemLength->setData(Qt::UserRole, mat->stockLength_mm);
+            }
+
+            // 🔢 Quantity
+            auto* itemQty = table->item(row, ColQuantity);
+            if (itemQty) {
+                itemQty->setText(QString::number(entry.quantity));
+                itemQty->setData(Qt::UserRole, entry.quantity);
+            }
+
+            // 🎨 Stílus újraalkalmazás
+            RowStyler::applyStockStyle(table, row, mat, entry.quantity);
+            return;
+        }
     }
 
-    // 🔢 Quantity
-    auto* itemQty = table->item(row, ColQuantity);
-    if (itemQty) {
-        itemQty->setText(QString::number(entry.quantity));
-        itemQty->setData(Qt::UserRole, entry.quantity);
-    }
-
-    RowStyler::applyStockStyle(table, row, mat);
+    qWarning() << "⚠️ updateRow: Nem található sor a következő azonosítóval:" << entry.entryId;
 }
+
+
+// void StockTableManager::updateRow(int row, const StockEntry& entry) {
+//     if (!table || row < 0 || row >= table->rowCount())
+//         return;
+
+//     const MaterialMaster* mat = MaterialRegistry::instance().findById(entry.materialId);
+//     if (!mat)
+//         return;
+
+//     // 📛 Név
+//     auto* itemName = table->item(row, ColName);
+//     if (itemName) itemName->setText(mat->name);
+
+//     // 🧾 Barcode
+//     auto* itemBarcode = table->item(row, ColBarcode);
+//     if (itemBarcode) itemBarcode->setText(mat->barcode);
+
+//     // 📐 Shape
+//     auto* itemShape = table->item(row, ColShape);
+//     if (itemShape) itemShape->setText(MaterialUtils::formatShapeText(*mat));
+
+//     // 📏 Length
+//     auto* itemLength = table->item(row, ColLength);
+//     if (itemLength) {
+//         itemLength->setText(QString::number(mat->stockLength_mm));
+//         itemLength->setData(Qt::UserRole, mat->stockLength_mm);
+//     }
+
+//     // 🔢 Quantity
+//     auto* itemQty = table->item(row, ColQuantity);
+//     if (itemQty) {
+//         itemQty->setText(QString::number(entry.quantity));
+//         itemQty->setData(Qt::UserRole, entry.quantity);
+//     }
+
+//     RowStyler::applyStockStyle(table, row, mat);
+// }
 
 
 void StockTableManager::updateTableFromRegistry()
@@ -112,4 +201,17 @@ void StockTableManager::updateTableFromRegistry()
     table->resizeColumnsToContents();
 }
 
+void StockTableManager::removeRowById(const QUuid& stockId) {
+    for (int row = 0; row < table->rowCount(); ++row) {
+        QTableWidgetItem* item = table->item(row, ColName);
+        if (!item) continue;
+
+        QUuid id = item->data(StockEntryIdIdRole).toUuid(); // egyedi role, ha van
+        if (id == stockId) {
+            table->removeRow(row);     // fő sor
+            //table->removeRow(row);     // meta sor
+            return;
+        }
+    }
+}
 
