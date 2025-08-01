@@ -10,6 +10,7 @@ public:
     /// 📥 Betöltés fájlból és feltöltés a regisztrációba
     static bool loadFromCSV(ReusableStockRegistry& registry);
 
+    static bool saveToCSV(const ReusableStockRegistry &registry);
 private:
     struct ReusableStockRow {
         QString materialBarcode;

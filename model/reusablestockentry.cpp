@@ -41,7 +41,8 @@ bool ReusableStockEntry::operator==(const ReusableStockEntry& other) const {
            availableLength_mm == other.availableLength_mm;
 }
 
-QString ReusableStockEntry::sourceAsString() const {
+QString ReusableStockEntry::sourceAsString() const
+{
     if (source == LeftoverSource::Manual)
         return "Manuális";
     if (source == LeftoverSource::Optimization)
@@ -50,3 +51,4 @@ QString ReusableStockEntry::sourceAsString() const {
                    : "Op:?";
     return "Ismeretlen";
 }
+

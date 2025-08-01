@@ -29,4 +29,5 @@ public:
 
     QVector<ReusableStockEntry> filtered(int minLength_mm) const;
 
+    void persist() const;
 };

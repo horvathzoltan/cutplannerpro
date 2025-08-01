@@ -1,5 +1,7 @@
 #include "reusablestockregistry.h"
 #include <algorithm>
+#include <common/filenamehelper.h>
+#include <model/repositories/reusablestockrepository.h>
 
 
 void ReusableStockRegistry::add(const ReusableStockEntry& entry) {
@@ -8,8 +10,14 @@ void ReusableStockRegistry::add(const ReusableStockEntry& entry) {
 
 void ReusableStockRegistry::clear() {
     _stock.clear();
+    persist(); // 💾 Mentés a törlés után
 }
 
+void ReusableStockRegistry::persist() const {
+    const QString path = FileNameHelper::instance().getLeftoversCsvFile();
+    if (!path.isEmpty())
+        ReusableStockRepository::saveToCSV(*this);
+}
 
 
 bool ReusableStockRegistry::removeByMaterialId(const QUuid& id) {
@@ -18,6 +26,7 @@ bool ReusableStockRegistry::removeByMaterialId(const QUuid& id) {
     });
     if (it != _stock.end()) {
         _stock.erase(it, _stock.end());
+        persist(); // 💾 Mentés csak akkor, ha történt törlés
         return true;
     }
     return false;
@@ -40,8 +49,9 @@ void ReusableStockRegistry::consume(const QString& barcode)
                                  return entry.barcode == barcode;
                              });
 
-    if (it != _stock.end()) {
+    if (it != _stock.end()) {        
         _stock.erase(it, _stock.end()); // 🧹 Törlés a készletből
+        persist(); // 💾 Mentés, ha tényleg töröltünk
     }
 }
 

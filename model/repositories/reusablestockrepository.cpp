@@ -3,6 +3,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "common/filenamehelper.h"
+#include "common/leftoversourceutils.h"
 #include <model/registries/materialregistry.h>
 #include <common/filehelper.h>
 #include <common/csvimporter.h>
@@ -94,12 +95,18 @@ ReusableStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
         return std::nullopt;
     }
 
-    const QString sourceStr = parts[2].trimmed();
-    if (sourceStr == "Optimization")
-        row.source = LeftoverSource::Optimization;
-    else if (sourceStr == "Manual")
-        row.source = LeftoverSource::Manual;
-    else {
+    // const QString sourceStr = parts[2].trimmed();
+    // if (sourceStr == "Optimization")
+    //     row.source = LeftoverSource::Optimization;
+    // else if (sourceStr == "Manual")
+    //     row.source = LeftoverSource::Manual;
+    // else {
+    //     qWarning() << QString("⚠️ Sor %1: ismeretlen forrástípus").arg(lineIndex);
+    //     return std::nullopt;
+    // }
+
+    row.source= LeftoverSourceUtils::fromString(parts[2].trimmed());
+    if (row.source == LeftoverSource::Undefined) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen forrástípus").arg(lineIndex);
         return std::nullopt;
     }
@@ -150,119 +157,40 @@ ReusableStockRepository::convertRowToReusableEntry(const QVector<QString>& parts
     return buildReusableEntryFromRow(rowOpt.value(), lineIndex);
 }
 
+bool ReusableStockRepository::saveToCSV(const ReusableStockRegistry& registry) {
+    QFile file("leftovers.csv");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return false;
+
+    QTextStream out(&file);
+    // Qt6 alatt automatikusan UTF-8
+
+    out << "materialBarCode;availableLength_mm;source;optimizationId;barcode\n";
+
+    for (const auto& entry : registry.all()) {
+        if (entry.availableLength_mm <= 0 || entry.barcode.trimmed().isEmpty())
+            continue;
+
+        // Forrás és vonalkód már getterből
+        QString sourceStr = LeftoverSourceUtils::toString(entry.source);
+        QString materialCode = entry.materialBarcode();
+        QString barcode = entry.barcode;
+
+        QString optIdStr;
+        if (entry.source == LeftoverSource::Optimization && entry.optimizationId.has_value()) {
+            optIdStr = QString::number(entry.optimizationId.value());
+        }
+
+        out << materialCode << ";"
+            << entry.availableLength_mm << ";"
+            << sourceStr << ";"
+            << optIdStr << ";"
+            << barcode << "\n";
+    }
+
+    return true;
+}
 
 
-// std::optional<ReusableStockEntry> ReusableStockRepository::convertRowToReusableEntry(const QVector<QString>& parts, int lineIndex) {
-//     if (parts.size() < 5) {
-//         qWarning() << QString("⚠️ Sor %1 hibás (kevés oszlop):").arg(lineIndex) << parts;
-//         return std::nullopt;
-//     }
-
-//     const QString materialBarCode = parts[0].trimmed();
-//     const auto* mat = MaterialRegistry::instance().findByBarcode(materialBarCode);
-//     if (!mat) {
-//         qWarning() << QString("⚠️ Ismeretlen anyag sor %1-ben:").arg(lineIndex) << materialBarCode;
-//         return std::nullopt;
-//     }
-
-//     bool okQty = false;
-//     const int availableLength_mm = parts[1].trimmed().toInt(&okQty);
-//     if (!okQty || availableLength_mm <= 0) {
-//         qWarning() << QString("⚠️ Sor %1, oszlop 2: érvénytelen hosszérték").arg(lineIndex);
-//         return std::nullopt;
-//     }
-
-//     const QString sourceStr = parts[2].trimmed();
-//     LeftoverSource source;
-//     if (sourceStr == "Optimization") {
-//         source = LeftoverSource::Optimization;
-//     } else if (sourceStr == "Manual") {
-//         source = LeftoverSource::Manual;
-//     } else {
-//         qWarning() << QString("⚠️ Sor %1, oszlop 3: ismeretlen forrástípus").arg(lineIndex);
-//         return std::nullopt;
-//     }
-
-//     std::optional<int> optimizationId = std::nullopt;
-//     if (source == LeftoverSource::Optimization && parts.size() > 3) {
-//         bool okOptId = false;
-//         const int optId = parts[3].trimmed().toInt(&okOptId);
-//         if (okOptId)
-//             optimizationId = optId;
-//         else {
-//             qWarning() << QString("⚠️ Sor %1, oszlop 4: hibás optimalizáció ID").arg(lineIndex);
-//             return std::nullopt;
-//         }
-//     }
-
-//     const QString barcode = parts[4].trimmed();
-//     if (barcode.isEmpty()) {
-//         qWarning() << QString("⚠️ Sor %1, oszlop 5: hiányzó egyedi barcode").arg(lineIndex);
-//         return std::nullopt;
-//     }
-
-//     ReusableStockEntry entry;
-//     entry.materialId = mat->id;
-//     entry.availableLength_mm = availableLength_mm;
-//     entry.barcode = barcode;
-//     entry.source = source;
-//     entry.optimizationId = optimizationId;
-//     return entry;
-// }
 
 
-// QVector<ReusableStockEntry> ReusableStockRepository::loadFromCSV_private(const QString& filepath) {
-//     QVector<ReusableStockEntry> result;
-//     QFile file(filepath);
-
-//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//         qWarning() << "❌ Nem sikerült megnyitni a leftovers fájlt:" << filepath;
-//         return result;
-//     }
-
-//     QTextStream in(&file);
-//     bool firstLine = true;
-
-//     while (!in.atEnd()) {
-//         QString line = in.readLine().trimmed();
-//         if (line.isEmpty()) continue;
-//         if (firstLine) { firstLine = false; continue; }
-
-//         const QStringList cols = line.split(';');
-//         if (cols.size() < 5) continue;
-
-//         QString materialBarCode = cols[0].trimmed();
-//         bool okQty = false;
-//         int availableLength_mm = cols[1].toInt(&okQty);
-//         if (!okQty || availableLength_mm <= 0) continue;
-
-//         QString sourceStr = cols[2].trimmed();
-//         LeftoverSource source = (sourceStr == "Optimization") ? LeftoverSource::Optimization : LeftoverSource::Manual;
-
-//         std::optional<int> optimizationId = std::nullopt;
-//         if (source == LeftoverSource::Optimization && cols.size() > 3) {
-//             bool okOptId = false;
-//             int optId = cols[3].toInt(&okOptId);
-//             if (okOptId) optimizationId = optId;
-//         }
-
-//         QString barcode = cols[4].trimmed();
-
-//         const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(materialBarCode);
-//         if (!mat) {
-//             qWarning() << "⚠️ Hiányzó anyag barcode alapján:" << materialBarCode;
-//             continue;
-//         }
-
-//         ReusableStockEntry entry;
-//         entry.materialId = mat->id;
-//         entry.availableLength_mm = availableLength_mm;
-//         entry.barcode = barcode;
-//         entry.source = source;
-//         entry.optimizationId = optimizationId;
-//         result.append(entry);
-//     }
-
-//     file.close();
-//     return result;
-// }

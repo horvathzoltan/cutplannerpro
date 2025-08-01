@@ -14,6 +14,7 @@ SOURCES += \
     common/cuttingplanfinalizer.cpp \
     common/filehelper.cpp \
     common/filenamehelper.cpp \
+    common/leftoversourceutils.cpp \
     common/logger.cpp \
     common/optimizationexporter.cpp \
     common/planautosavemanager.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     common/filehelper.h \
     common/filenamehelper.h \
     common/grouputils.h \
+    common/leftoversourceutils.h \
     common/logger.h \
     common/materialutils.h \
     common/optimizationexporter.h \
