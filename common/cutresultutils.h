@@ -1,6 +1,6 @@
 #pragma once
 #include "model/cutresult.h"
-#include "model/reusablestockentry.h"
+#include "model/leftoverstockentry.h"
 
 namespace CutResultUtils
 {
@@ -16,11 +16,11 @@ static inline LeftoverSource convertToLeftoverSource(CutResultSource source) {
 
 
 // 🔁 Több CutResult → reusable készlet
-static inline QVector<ReusableStockEntry> toReusableEntries(const QVector<CutResult>& input) {
-    QVector<ReusableStockEntry> result;
+static inline QVector<LeftoverStockEntry> toReusableEntries(const QVector<CutResult>& input) {
+    QVector<LeftoverStockEntry> result;
 
     for (const CutResult& res : input) {
-        ReusableStockEntry entry;
+        LeftoverStockEntry entry;
         entry.materialId = res.materialId;
         entry.availableLength_mm = res.waste;
         entry.source = convertToLeftoverSource(res.source);
@@ -32,8 +32,8 @@ static inline QVector<ReusableStockEntry> toReusableEntries(const QVector<CutRes
 }
 
 // 🔁 Egyedi CutResult → reusable darab
-static inline ReusableStockEntry toReusableEntry(const CutResult& res) {
-    ReusableStockEntry entry;
+static inline LeftoverStockEntry toReusableEntry(const CutResult& res) {
+    LeftoverStockEntry entry;
     entry.materialId = res.materialId;
     entry.availableLength_mm = res.waste;
     entry.source = convertToLeftoverSource(res.source);;

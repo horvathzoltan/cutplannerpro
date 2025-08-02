@@ -1,6 +1,6 @@
 #include "cuttingrequestrepository.h"
-#include "../cuttingrequest.h"
-#include "../registries/cuttingrequestregistry.h"
+#include "../cuttingplanrequest.h"
+#include "../registries/cuttingplanrequestregistry.h"
 #include "common/logger.h"
 #include <QFile>
 #include <QTextStream>
@@ -11,7 +11,7 @@
 #include <common/filehelper.h>
 #include <common/csvimporter.h>
 
-bool CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry& registry) {
+bool CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry& registry) {
     QString fn = SettingsManager::instance().cuttingPlanFileName();
     const QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
 
@@ -23,13 +23,13 @@ bool CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry& regis
     return loadFromFile(registry, filePath);
 }
 
-bool CuttingRequestRepository::loadFromFile(CuttingRequestRegistry& registry, const QString& filePath) {
+bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry, const QString& filePath) {
     if (filePath.isEmpty() || !QFile::exists(filePath)) {
         qWarning() << "❌ Nem található vagy üres fájlnév: " << filePath;
         return false;
     }
 
-    QVector<CuttingRequest> requests = loadFromCsv_private(filePath);
+    QVector<CuttingPlanRequest> requests = loadFromCsv_private(filePath);
 
     lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
     if (lastFileWasEffectivelyEmpty) {
@@ -45,13 +45,13 @@ bool CuttingRequestRepository::loadFromFile(CuttingRequestRegistry& registry, co
 
 
     registry.clear();
-    for (const CuttingRequest& req : requests)
+    for (const CuttingPlanRequest& req : requests)
         registry.registerRequest(req);
 
     return true;
 }
 
-QVector<CuttingRequest>
+QVector<CuttingPlanRequest>
 CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -63,7 +63,7 @@ CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
     in.setEncoding(QStringConverter::Utf8);
 
     const auto rows = FileHelper::parseCSV(&in, ';');
-    return CsvImporter::processCsvRows<CuttingRequest>(rows, convertRowToCuttingRequest);
+    return CsvImporter::processCsvRows<CuttingPlanRequest>(rows, convertRowToCuttingRequest);
 }
 
 
@@ -89,7 +89,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     return row;
 }
 
-std::optional<CuttingRequest>
+std::optional<CuttingPlanRequest>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, int lineIndex) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
@@ -98,7 +98,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         return std::nullopt;
     }
 
-    CuttingRequest req;
+    CuttingPlanRequest req;
     req.materialId        = mat->id;
     req.requiredLength    = row.requiredLength;
     req.quantity          = row.quantity;
@@ -113,7 +113,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     return req;
 }
 
-std::optional<CuttingRequest>
+std::optional<CuttingPlanRequest>
 CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex) {
     const auto rowOpt = convertRowToCuttingRequestRow(parts, lineIndex);
     if (!rowOpt.has_value()) return std::nullopt;
@@ -123,7 +123,7 @@ CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& par
 
 
 
-bool CuttingRequestRepository::saveToFile(const CuttingRequestRegistry& registry, const QString& filePath) {
+bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& registry, const QString& filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "❌ Nem sikerült megnyitni a fájlt írásra:" << filePath;
@@ -135,7 +135,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingRequestRegistry& registry
     // 📋 CSV fejléc
     out << "materialBarCode;requiredLength;quantity;ownerName;externalReference\n";
 
-    for (const CuttingRequest& req : registry.readAll()) {
+    for (const CuttingPlanRequest& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
         if (!material) {
             qWarning() << "⚠️ Anyag nem található mentéskor:" << req.materialId.toString();

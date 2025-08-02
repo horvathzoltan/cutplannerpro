@@ -1,7 +1,7 @@
 #include "rowstyler.h"
 #include "common/materialutils.h"
 #include "model/cutplan.h"
-#include "model/reusablestockentry.h"
+#include "model/leftoverstockentry.h"
 #include <QColor>
 #include <QTableWidgetItem>
 #include <view/managers/leftovertablemanager.h>
@@ -9,7 +9,7 @@
 
 void RowStyler::applyInputStyle(QTableWidget* table, int row,
                                 const MaterialMaster* mat,
-                                const CuttingRequest& request) {
+                                const CuttingPlanRequest& request) {
     if (!mat) return;
 
     QColor bg = GroupUtils::colorForGroup(mat->id);
@@ -142,7 +142,7 @@ void RowStyler::applyStockStyle(QTableWidget* table, int row, const MaterialMast
 //     table->setItem(row, colReusable, reusableItem);
 // }
 
-void RowStyler::applyReusableStyle(QTableWidget* table, int row, const MaterialMaster* master, const ReusableStockEntry& entry) {
+void RowStyler::applyReusableStyle(QTableWidget* table, int row, const MaterialMaster* master, const LeftoverStockEntry& entry) {
     if (!table || !master)
         return;
 

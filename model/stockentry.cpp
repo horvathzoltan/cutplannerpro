@@ -11,25 +11,25 @@ const MaterialMaster* StockEntry::master() const {
     return opt;
 }
 
-QString StockEntry::name() const {
+QString StockEntry::materialName() const {
     const auto* m = master();
     return m ? m->name : "(?)";
 }
 
-QString StockEntry::barcode() const {
+QString StockEntry::materialBarcode() const {
     const auto* m = master();
     return m ? m->barcode : "(?)";
 }
 
-MaterialType StockEntry::type() const {
+MaterialType StockEntry::materialType() const {
     const auto* m = master();
     return m ? m->type : MaterialType(MaterialType::Type::Unknown);
 }
 
-QString StockEntry::groupName() const {
+QString StockEntry::materialGroupName() const {
     return GroupUtils::groupName(materialId);
 }
 
-QColor StockEntry::groupColor() const {
+QColor StockEntry::materialGroupColor() const {
     return GroupUtils::colorForGroup(materialId);
 }

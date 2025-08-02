@@ -2,7 +2,7 @@
 
 #include <QTableWidget>
 //#include <optional>
-#include "model/cuttingrequest.h"
+#include "model/cuttingplanrequest.h"
 
 class InputTableManager: public QObject {  // 🔧 QObject öröklés!
     Q_OBJECT                              // ✨ Qt metaobjektum makró!
@@ -10,12 +10,12 @@ class InputTableManager: public QObject {  // 🔧 QObject öröklés!
 public:
     explicit InputTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
-    void addRow(const CuttingRequest& request);
+    void addRow(const CuttingPlanRequest& request);
     void removeRowByRequestId(const QUuid &requestId);
 
     void updateTableFromRegistry();
 
-    void updateRow(const CuttingRequest& updated); // ⬅️ új metódus
+    void updateRow(const CuttingPlanRequest& updated); // ⬅️ új metódus
 
     void clearTable();
 signals:

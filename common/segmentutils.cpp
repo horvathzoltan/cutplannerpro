@@ -39,7 +39,7 @@ bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<Segment>& segm
         return false;
 
     const Segment& last = segments.last();
-    return (last.type == SegmentType::Waste && last.length_mm == wasteLength);
+    return (last.type == Segment::Type::Waste && last.length_mm == wasteLength);
 }
 
 QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>& cuts, int kerf_mm, int totalLength_mm)
@@ -55,7 +55,7 @@ QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>
         // ➕ Darab szakasz
         Segment piece;
         piece.length_mm = len;
-        piece.type = SegmentType::Piece;
+        piece.type = Segment::Type::Piece;
         segments.append(piece);
 
         usedLength += len;
@@ -64,7 +64,7 @@ QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>
         if (kerf_mm > 0){// && i != cuts.size() - 1) {
             Segment kerf;
             kerf.length_mm = kerf_mm;
-            kerf.type = SegmentType::Kerf;
+            kerf.type = Segment::Type::Kerf;
             segments.append(kerf);
 
             usedLength += kerf_mm;
@@ -76,7 +76,7 @@ QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>
     if (waste > 0) {
         Segment trailingWaste;
         trailingWaste.length_mm = waste;
-        trailingWaste.type = SegmentType::Waste;
+        trailingWaste.type = Segment::Type::Waste;
         segments.append(trailingWaste);
     } else if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";

@@ -1,4 +1,4 @@
-#include "reusablestockrepository.h"
+#include "leftoverstockrepository.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -8,7 +8,7 @@
 #include <common/filehelper.h>
 #include <common/csvimporter.h>
 
-bool ReusableStockRepository::loadFromCSV(ReusableStockRegistry& registry) {
+bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
     auto& helper = FileNameHelper::instance();
     if (!helper.isInited()) return false;
 
@@ -18,7 +18,7 @@ bool ReusableStockRepository::loadFromCSV(ReusableStockRegistry& registry) {
         return false;
     }
 
-    QVector<ReusableStockEntry> entries = loadFromCSV_private(path);
+    QVector<LeftoverStockEntry> entries = loadFromCSV_private(path);
     if (entries.isEmpty()) {
         qWarning("A leftovers.csv fájl üres vagy hibás sorokat tartalmaz.");
         return false;
@@ -62,8 +62,8 @@ bool ReusableStockRepository::loadFromCSV(ReusableStockRegistry& registry) {
 //     return result;
 // }
 
-QVector<ReusableStockEntry>
-ReusableStockRepository::loadFromCSV_private(const QString& filepath) {
+QVector<LeftoverStockEntry>
+LeftoverStockRepository::loadFromCSV_private(const QString& filepath) {
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "❌ Nem sikerült megnyitni a leftovers fájlt:" << filepath;
@@ -74,12 +74,12 @@ ReusableStockRepository::loadFromCSV_private(const QString& filepath) {
     in.setEncoding(QStringConverter::Utf8);
     const auto rows = FileHelper::parseCSV(&in, ';');
 
-    return CsvImporter::processCsvRows<ReusableStockEntry>(rows, convertRowToReusableEntry);
+    return CsvImporter::processCsvRows<LeftoverStockEntry>(rows, convertRowToReusableEntry);
 }
 
 
-std::optional<ReusableStockRepository::ReusableStockRow>
-ReusableStockRepository::convertRowToReusableRow(const QVector<QString>& parts, int lineIndex) {
+std::optional<LeftoverStockRepository::ReusableStockRow>
+LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, int lineIndex) {
     if (parts.size() < 5) {
         qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(lineIndex);
         return std::nullopt;
@@ -131,15 +131,15 @@ ReusableStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
     return row;
 }
 
-std::optional<ReusableStockEntry>
-ReusableStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, int lineIndex) {
+std::optional<LeftoverStockEntry>
+LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, int lineIndex) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.materialBarcode);
     if (!mat) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen anyag barcode '%2'").arg(lineIndex).arg(row.materialBarcode);
         return std::nullopt;
     }
 
-    ReusableStockEntry entry;
+    LeftoverStockEntry entry;
     entry.materialId         = mat->id;
     entry.availableLength_mm = row.availableLength_mm;
     entry.barcode            = row.barcode;
@@ -149,15 +149,15 @@ ReusableStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
     return entry;
 }
 
-std::optional<ReusableStockEntry>
-ReusableStockRepository::convertRowToReusableEntry(const QVector<QString>& parts, int lineIndex) {
+std::optional<LeftoverStockEntry>
+LeftoverStockRepository::convertRowToReusableEntry(const QVector<QString>& parts, int lineIndex) {
     const auto rowOpt = convertRowToReusableRow(parts, lineIndex);
     if (!rowOpt.has_value()) return std::nullopt;
 
     return buildReusableEntryFromRow(rowOpt.value(), lineIndex);
 }
 
-bool ReusableStockRepository::saveToCSV(const ReusableStockRegistry& registry) {
+bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry) {
     QFile file("leftovers.csv");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return false;

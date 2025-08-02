@@ -39,7 +39,7 @@ MaterialType CutResult::materialType() const {
     return m ? m->type : MaterialType(MaterialType::Type::Unknown);
 }
 
-QColor CutResult::categoryColor() const {
+QColor CutResult::materialGroupColor() const {
     const auto& m = MaterialRegistry::instance().findById(materialId);
     return m ? MaterialUtils::colorForMaterial(*m) : QColor(Qt::gray);
 }

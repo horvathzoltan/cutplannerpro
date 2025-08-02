@@ -9,7 +9,7 @@
  * Tartalmazza az anyag azonosítóját, a kívánt hosszúságot, darabszámot,
  * valamint opcionálisan a megrendelő nevét és a külső hivatkozási azonosítót.
  */
-struct CuttingRequest {
+struct CuttingPlanRequest {
     QUuid requestId = QUuid::createUuid(); // 💡 Automatikus egyedi azonosító
     QUuid materialId;           ///< 🔗 Az anyag egyedi törzsbeli azonosítója
     int requiredLength;         ///< 📏 Vágás hossza (milliméterben)

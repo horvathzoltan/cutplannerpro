@@ -18,7 +18,7 @@ struct PieceInfo
 
     QString displayText() const {
         return QString("%1 • %2 • %3 mm")
-            .arg(ownerName.isEmpty() ? "Ismeretlen" : ownerName)
+            .arg(ownerName.isEmpty() ? "(?)" : ownerName)
             .arg(externalReference.isEmpty() ? "-" : externalReference)
             .arg(length_mm);
     }

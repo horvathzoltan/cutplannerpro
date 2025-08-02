@@ -40,7 +40,7 @@ struct CutResult {
 
     MaterialType materialType() const;      // 🔎 törzsből lekérhető típus
     QString materialName() const;           // 🧪 megjelenítéshez
-    QColor categoryColor() const;           // 🎨 badge háttér (UI-hoz)
+    QColor materialGroupColor() const;           // 🎨 badge háttér (UI-hoz)
 };
 
 #endif // CUTRESULT_H

@@ -39,7 +39,7 @@ void StockRegistry::remove(const QUuid& id) {
 QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
     QVector<StockEntry> result;
     for (const auto& entry : _stock) {
-        if (entry.groupName() == name)
+        if (entry.materialGroupName() == name)
             result.append(entry);
     }
     return result;

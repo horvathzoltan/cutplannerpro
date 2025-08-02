@@ -9,6 +9,7 @@
 
 #include "view/managers/inputtablemanager.h"
 #include "view/managers/leftovertablemanager.h"
+#include "view/managers/resultstablemanager.h"
 #include "view/managers/stocktablemanager.h"
 
 #include "cutanalyticspanel.h"
@@ -30,37 +31,36 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void clearCutTable();
-    void addRow_tableResults(QString rodNumber, const CutPlan& plan);
-
-    void update_ResultsTable(const QVector<CutPlan> &plans);
-    void update_leftoversTable(const QVector<ReusableStockEntry> &newResults){
-        Q_UNUSED(newResults);
-        leftoverTableManager->updateTableFromRegistry();
-    }
-
-    void update_stockTable(){
-        stockTableManager->updateTableFromRegistry();
-    }
-
-    void  clear_InputTable(){
-        inputTableManager->clearTable();
-    }
-
     void updateStats(const QVector<CutPlan> &plans, const QVector<CutResult> &results);
     void setInputFileLabel(const QString &label, const QString &tooltip);
+    void ShowWarningDialog(const QString &msg);
+
+    // input table
+    void addRow_InputTable(const CuttingPlanRequest &v);
+    void updateRow_InputTable(const CuttingPlanRequest &v);
+    void removeRow_InputTable(const QUuid &v);
+    void clear_InputTable();
+    // stock table
+    void removeRow_StockTable(const QUuid &id);
+    void updateRow_StockTable(const StockEntry &v);
+    void update_StockTable();
+    // leftovers table
+    void removeRow_LeftoversTable(const QUuid &id);
+    void updateRow_LeftoversTable(const LeftoverStockEntry &v);
+    void update_LeftoversTable();
+
+    // results table
+    //void addRow_ResultsTable(QString rodNumber, const CutPlan& plan);
+    void update_ResultsTable(const QVector<CutPlan> &plans);
+    void clear_ResultsTable();
+
 private slots:
     void on_btnAddRow_clicked();
     void on_btnOptimize_clicked();
-
     void on_btnFinalize_clicked();
-
     void on_btnDisposal_clicked();
-
     void on_btnNewPlan_clicked();
-
     void on_btnClearPlan_clicked();
-
     void on_btnAddStockEntry_clicked();
 
 private:
@@ -74,8 +74,14 @@ private:
     std::unique_ptr<StockTableManager> stockTableManager;
     // ♻️ Hullókezelő
     std::unique_ptr<LeftoverTableManager> leftoverTableManager;
+    // eredmény
+    std::unique_ptr<ResultsTableManager> resultsTableManager;
 
     void closeEvent(QCloseEvent *event) override;
-    bool event(QEvent *e) override;    
+    bool event(QEvent *e) override;
+
+    void Connect_InputTableManager();
+    void Connect_StockTableManager();
+    void Connect_LeftoverTableManager();
 };
 #endif // MAINWINDOW_H

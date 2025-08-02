@@ -1,0 +1,24 @@
+#pragma once
+
+#include <QObject>
+#include <QTableWidget>
+#include "model/cutplan.h"
+
+class ResultsTableManager : public QObject {
+    Q_OBJECT
+
+public:
+    explicit ResultsTableManager(QTableWidget* table, QWidget* parent = nullptr);
+
+    void addRow(const QString& rodNumber, const CutPlan& plan);
+    void clearTable();
+
+private:
+    QTableWidget* table;
+    QWidget* parent;
+
+    static constexpr int ColRod    = 0;
+    static constexpr int ColGroup  = 1;
+    static constexpr int ColKerf   = 2;
+    static constexpr int ColWaste  = 3;
+};

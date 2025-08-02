@@ -5,47 +5,11 @@
 #include <QMap>
 
 #include <model/cutting/piecewithmaterial.h>
-//#include "common/grouputils.h"
 #include "cutplan.h"
 #include "cutresult.h"
-#include "cuttingrequest.h"
-//#include "registries/materialregistry.h"
-//#include "model/cutting/piecewithmaterial.h"
-#include "reusablestockentry.h"
+#include "cuttingplanrequest.h"
+#include "leftoverstockentry.h"
 #include "stockentry.h"
-
-// // struct CutRequest {
-// //     int length;
-// //     int quantity;
-// // };
-
-// struct CutPlan {
-//     int rodNumber;              // ➕ Sorszám vagy index
-//     QVector<int> cuts;          // ✂️ A darabolt hosszok
-//     int kerfTotal;              // 🔧 Vágásonkénti veszteségek összege
-//     int waste;                  // ♻️ Használatlan anyag
-//     QUuid materialId;           // 🔗 Anyagtörzsbeli azonosító (helyettesíti a category-t)
-
-//     QString rodId;
-
-//     // Kényelmi metódus (opcionális)
-//     QString name() const {
-//         auto opt = MaterialRegistry::instance().findById(materialId);
-//         return opt ? opt->name : "(ismeretlen)";
-//     }
-
-//     QString groupName() const {
-//         return GroupUtils::groupName(materialId);
-//     }
-// };
-
-// struct PieceWithMaterial {
-//      int length;
-//      QUuid materialId;
-// };
-
-// 💡 C++20 előtt: globális operator==
-
 
 class CuttingOptimizerModel : public QObject {
     Q_OBJECT
@@ -53,52 +17,43 @@ class CuttingOptimizerModel : public QObject {
 public:
     explicit CuttingOptimizerModel(QObject *parent = nullptr);
 
-    void clearRequests();
-    void addRequest(const CuttingRequest& req);
-    void removeRequest(const QUuid& id);
     void setKerf(int kerf);
+
+    QVector<CutPlan> &getResult_PlansRef();
+    QVector<CutResult> getResults_Leftovers() const;
+
     void optimize();
 
-    QVector<CutPlan> getPlans() const;
-    QVector<CutResult> getLeftoverResults() const;
-
-    void setLeftovers(const QVector<CutResult> &list);
-    void clearLeftovers();
-
-    // 🔹 Teljes darablista legyártása kategória szerint
-
-    void setRequests(const QVector<CuttingRequest>& list);
+    void setCuttingRequests(const QVector<CuttingPlanRequest>& list);
     void setStockInventory(const QVector<StockEntry> &list);
-    void setReusableInventory(const QVector<ReusableStockEntry> &reusable);
-    QVector<CutPlan> &getPlansRef();
-    void updateRequest(const CuttingRequest& updated); // ⬅️ új metódus
+    void setReusableInventory(const QVector<LeftoverStockEntry> &reusable);
 
 private:
-    QVector<CuttingRequest> requests;
-    //QVector<int> allPieces;
+    QVector<CuttingPlanRequest> requests;
     QVector<StockEntry> profileInventory;
-    QVector<ReusableStockEntry> reusableInventory;
-    QVector<CutPlan> plans;
-    QVector<CutResult> leftoverResults;
-    //int stockLength = 6000; // mm
+    QVector<LeftoverStockEntry> reusableInventory;
+
+    QVector<CutPlan> _result_plans;
+    QVector<CutResult> _result_leftovers;
+
     int kerf = 3; // mm
 
     int nextOptimizationId = 1;
 
-    //QVector<int> findBestFit(const QVector<int> &available, int lengthLimit) const;
     QVector<PieceWithMaterial> findBestFit(const QVector<PieceWithMaterial>& available, int lengthLimit) const;
-
 
     struct ReusableCandidate {
         int indexInInventory;
-        ReusableStockEntry stock;
+        LeftoverStockEntry stock;
         QVector<PieceWithMaterial> combo;
         int totalWaste;
     };
 
     std::optional<ReusableCandidate> findBestReusableFit(
-        const QVector<ReusableStockEntry>& reusableInventory,
+        const QVector<LeftoverStockEntry>& reusableInventory,
         const QVector<PieceWithMaterial>& pieces,
         QUuid materialId
         ) const;
 };
+
+

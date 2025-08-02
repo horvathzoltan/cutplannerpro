@@ -11,12 +11,12 @@ struct StockEntry {
     QUuid materialId;                 // 🔗 Kapcsolat az anyagtörzshöz
     int quantity = 0;                // 📦 Elérhető darabszám
 
-    QString name() const;  // 📛 Anyag neve
-    QString barcode() const; // 🧾 Vonalkód
-    MaterialType type() const; // 🧬 Anyagtípus
+    QString materialName() const;  // 📛 Anyag neve
+    QString materialBarcode() const; // 🧾 Vonalkód
+    MaterialType materialType() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;
 
-    QString groupName() const;
-    QColor groupColor() const;
+    QString materialGroupName() const;
+    QColor materialGroupColor() const;
 };
 

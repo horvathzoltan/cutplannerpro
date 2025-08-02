@@ -1,16 +1,16 @@
-#include "cuttingrequestregistry.h"
+#include "cuttingplanrequestregistry.h"
 
 #include <common/filenamehelper.h>
 #include <common/settingsmanager.h>
 #include <model/repositories/cuttingrequestrepository.h>
 
-CuttingRequestRegistry& CuttingRequestRegistry::instance() {
+CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {
     // 🧵 Singleton implementáció: egyetlen példány az egész programban
-    static CuttingRequestRegistry registry;
+    static CuttingPlanRequestRegistry registry;
     return registry;
 }
 
-void CuttingRequestRegistry::persist() const {
+void CuttingPlanRequestRegistry::persist() const {
     // 💾 Mentés fájlba, ha van megadott útvonal
     const QString fn = SettingsManager::instance().cuttingPlanFileName();
     const QString path = FileNameHelper::instance().getCuttingPlanFilePath(fn);
@@ -19,34 +19,34 @@ void CuttingRequestRegistry::persist() const {
         CuttingRequestRepository::saveToFile(*this, path);
 }
 
-QVector<CuttingRequest> CuttingRequestRegistry::readAll() const {
+QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::readAll() const {
     // 📚 Visszaadja az összes CuttingRequest-et
-    return _requests;
+    return _data;
 }
 
-QVector<CuttingRequest> CuttingRequestRegistry::findByMaterialId(const QUuid& materialId) const {
+QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::findByMaterialId(const QUuid& materialId) const {
     // 🧪 Lekérdezés anyagID alapján — bár a belső tárolás nem csoportosít, ez kiszűri
-    QVector<CuttingRequest> result;
-    for (const auto& r : _requests) {
+    QVector<CuttingPlanRequest> result;
+    for (const auto& r : _data) {
         if (r.materialId == materialId)
             result.append(r);
     }
     return result;
 }
 
-void CuttingRequestRegistry::registerRequest(const CuttingRequest& request) {
+void CuttingPlanRequestRegistry::registerRequest(const CuttingPlanRequest& request) {
     // 🆕 Új CuttingRequest hozzáadása
-    _requests.append(request);
+    _data.append(request);
     persist();
 }
 
-bool CuttingRequestRegistry::updateRequest(const CuttingRequest& updated) {
+bool CuttingPlanRequestRegistry::updateRequest(const CuttingPlanRequest& updated) {
     // 🔍 Érvényesség ellenőrzése
     if (!updated.isValid())
         return false;
 
     // 🔄 Megkeressük a megfelelő requestId-t a vektorban
-    for (auto& r : _requests) {
+    for (auto& r : _data) {
         if (r.requestId == updated.requestId) {
             r = updated; // ✏️ Frissítés
             persist();   // 💾 Mentés
@@ -58,27 +58,27 @@ bool CuttingRequestRegistry::updateRequest(const CuttingRequest& updated) {
     return false;
 }
 
-void CuttingRequestRegistry::removeRequest(const QUuid& requestId) {
+void CuttingPlanRequestRegistry::removeRequest(const QUuid& requestId) {
     // 🗑️ Törlés egyedi azonosító alapján
-    auto it = std::remove_if(_requests.begin(), _requests.end(),
-                             [&](const CuttingRequest& r) {
+    auto it = std::remove_if(_data.begin(), _data.end(),
+                             [&](const CuttingPlanRequest& r) {
                                  return r.requestId == requestId;
                              });
 
-    if (it != _requests.end()) {
-        _requests.erase(it, _requests.end());
+    if (it != _data.end()) {
+        _data.erase(it, _data.end());
         persist(); // 💾 Mentés csak akkor, ha történt törlés
     }
 }
 
-void CuttingRequestRegistry::clear() {
+void CuttingPlanRequestRegistry::clear() {
     // 🔄 Teljes lista törlése
-    _requests.clear();
+    _data.clear();
     persist();
 }
 
-std::optional<CuttingRequest> CuttingRequestRegistry::findById(const QUuid& requestId) const {
-    for (const auto& r : _requests) {
+std::optional<CuttingPlanRequest> CuttingPlanRequestRegistry::findById(const QUuid& requestId) const {
+    for (const auto& r : _data) {
         if (r.requestId == requestId)
             return r;
     }

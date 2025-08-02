@@ -16,7 +16,7 @@ static inline const MaterialGroup* groupForMaterial(const QUuid& id) {
 
 static inline QString groupName(const QUuid& id) {
     const auto* g = groupForMaterial(id);
-    return g ? g->name : QString("Nincs csoport");
+    return g ? g->name : QString("(?)");
 }
 
 static inline QColor colorForGroup(const QUuid& id) {

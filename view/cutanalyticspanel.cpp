@@ -57,15 +57,15 @@ void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector
 
         for (const Segment& s : plan.segments) {
             switch (s.type) {
-            case SegmentType::Piece:
+            case Segment::Type::Piece:
                 pieceCount++;
                 totalPieceLength += s.length_mm;
                 break;
-            case SegmentType::Kerf:
+            case Segment::Type::Kerf:
                 kerfCount++;
                 totalKerfLength += s.length_mm;
                 break;
-            case SegmentType::Waste:
+            case Segment::Type::Waste:
                 wasteCount++;
                 totalWasteLength += s.length_mm;
                 break;

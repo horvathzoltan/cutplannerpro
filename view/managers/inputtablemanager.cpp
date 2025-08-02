@@ -5,13 +5,13 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QHBoxLayout>
-#include <model/registries/cuttingrequestregistry.h>
+#include <model/registries/cuttingplanrequestregistry.h>
 
 InputTableManager::InputTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
 
 
-void InputTableManager::addRow(const CuttingRequest& request) {
+void InputTableManager::addRow(const CuttingPlanRequest& request) {
     int row = table->rowCount();
     table->insertRow(row);           // Fő adatsor
     table->insertRow(row + 1);       // Meta adatsor
@@ -135,7 +135,7 @@ void InputTableManager::updateTableFromRegistry() {
     table->clearContents();
     table->setRowCount(0);
 
-    const auto& requests = CuttingRequestRegistry::instance().readAll();
+    const auto& requests = CuttingPlanRequestRegistry::instance().readAll();
     for (const auto& req : requests) {
         addRow(req);  // ✅ feldolgozás és megjelenítés
     }
@@ -143,7 +143,7 @@ void InputTableManager::updateTableFromRegistry() {
     table->resizeColumnsToContents();  // 📐 automatikus oszlopméretezés
 }
 
-void InputTableManager::updateRow(const CuttingRequest& updated) {
+void InputTableManager::updateRow(const CuttingPlanRequest& updated) {
     for (int row = 0; row < table->rowCount(); ++row) {
         QTableWidgetItem* itemName = table->item(row, ColName);
         if (!itemName)

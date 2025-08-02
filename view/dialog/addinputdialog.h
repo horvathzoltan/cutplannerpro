@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cuttingrequest.h"
+#include "model/cuttingplanrequest.h"
 #include <QDialog>
 #include <QUuid>
 
@@ -27,9 +27,9 @@ public:
 
     // ❗️Ide jön az override metódus
     void accept() override;
-    CuttingRequest getModel() const;
+    CuttingPlanRequest getModel() const;
 
-    void setModel(const CuttingRequest& request); // ⬅️ új metódus
+    void setModel(const CuttingPlanRequest& request); // ⬅️ új metódus
 
 private:
     Ui::AddInputDialog *ui;

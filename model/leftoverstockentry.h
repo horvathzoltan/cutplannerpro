@@ -9,7 +9,10 @@
 
 
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja
-struct ReusableStockEntry {
+struct LeftoverStockEntry {
+    QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
+
+
     QUuid materialId;           // 🔗 Anyag azonosító
     int availableLength_mm;         // 📏 Szálhossz milliméterben
     LeftoverSource source = LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
@@ -17,15 +20,15 @@ struct ReusableStockEntry {
 
     QString barcode; // 🧾 Egyedi azonosító hulladékdarabra
     /// 🧪 Egyenlőség vizsgálat (opcionális)
-    bool operator==(const ReusableStockEntry& other) const;
+    bool operator==(const LeftoverStockEntry& other) const;
 
-    QString name() const;  // 📛 Anyag neve
+    QString materialName() const;  // 📛 Anyag neve
     QString reusableBarcode() const; // 🧾 Saját Vonalkód
     QString materialBarcode() const; // 🧾 Material Vonalkód
-    MaterialType type() const; // 🧬 Anyagtípus
+    MaterialType materialType() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;
 
-    QString groupName() const;
-    QColor groupColor() const;
+    QString materialGroupName() const;
+    QColor materialGroupColor() const;
     QString sourceAsString() const;
 };

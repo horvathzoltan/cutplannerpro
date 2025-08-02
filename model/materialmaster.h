@@ -6,12 +6,6 @@
 #include "materialtype.h"
 #include "crosssectionshape.h"
 
-// enum class ProfileCategory {
-//     RollerTube,  // Tengelyek (csőmotorhoz)
-//     BottomBar,   // Súlyprofilok (redőny, napháló alja)
-//     Unknown
-// };
-
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép
 struct MaterialMaster : public IdentifiableEntity {
     double stockLength_mm = 0.0;       // 📏 Teljes szálhossz mm-ben (pl. 6000)

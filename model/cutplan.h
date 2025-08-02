@@ -56,8 +56,8 @@ public:
     bool usedReusable() const;
     bool isFinalized() const;
 
-    QString name() const;        // Anyag neve — materialId alapján
-    QString groupName() const;   // Anyag csoportneve — helper alapján
+    QString materialName() const;        // Anyag neve — materialId alapján
+    QString materialGroupName() const;   // Anyag csoportneve — helper alapján
 
     CutPlanStatus getStatus() const;
     void setStatus(CutPlanStatus newStatus);

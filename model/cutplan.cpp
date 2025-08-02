@@ -16,14 +16,14 @@ bool CutPlan::isFinalized() const
     return status == CutPlanStatus::Completed || status == CutPlanStatus::Abandoned;
 }
 
-QString CutPlan::name() const
+QString CutPlan::materialName() const
 {
     // MaterialRegistry-ből lekérjük az anyag nevét
     auto opt = MaterialRegistry::instance().findById(materialId);
-    return opt ? opt->name : "(ismeretlen)";
+    return opt ? opt->name : "(?)";
 }
 
-QString CutPlan::groupName() const
+QString CutPlan::materialGroupName() const
 {
     // Csoportnév az anyag ID alapján — helperből
     return GroupUtils::groupName(materialId);
@@ -42,7 +42,7 @@ void CutPlan::setStatus(CutPlanStatus newStatus)
 QString CutPlan::pieceLengthsAsString() const {
     QStringList out;
     for (const Segment& s : segments) {
-        if (s.type == SegmentType::Piece)
+        if (s.type == Segment::Type::Piece)
             out << QString::number(s.length_mm);
     }
     return out.join(";");

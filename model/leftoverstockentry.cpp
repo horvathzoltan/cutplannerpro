@@ -1,47 +1,47 @@
-#include "reusablestockentry.h"
+#include "leftoverstockentry.h"
 #include "registries/materialregistry.h"
 #include "common/grouputils.h"
 
-const MaterialMaster* ReusableStockEntry::master() const {
+const MaterialMaster* LeftoverStockEntry::master() const {
     if (materialId.isNull())
         return nullptr;
 
     return MaterialRegistry::instance().findById(materialId);
 }
 
-QString ReusableStockEntry::name() const {
+QString LeftoverStockEntry::materialName() const {
     const auto* m = master();
     return m ? m->name : "(?)";
 }
 
-QString ReusableStockEntry::materialBarcode() const {
+QString LeftoverStockEntry::materialBarcode() const {
     const auto* m = master();
     return m ? m->barcode : "(?)";
 }
 
-QString ReusableStockEntry::reusableBarcode() const {
+QString LeftoverStockEntry::reusableBarcode() const {
     return barcode.isEmpty()? "(?)" : barcode;
 }
 
-MaterialType ReusableStockEntry::type() const {
+MaterialType LeftoverStockEntry::materialType() const {
     const auto* m = master();
     return m ? m->type : MaterialType(MaterialType::Type::Unknown);
 }
 
-QString ReusableStockEntry::groupName() const {
+QString LeftoverStockEntry::materialGroupName() const {
     return GroupUtils::groupName(materialId);
 }
 
-QColor ReusableStockEntry::groupColor() const {
+QColor LeftoverStockEntry::materialGroupColor() const {
     return GroupUtils::colorForGroup(materialId);
 }
 
-bool ReusableStockEntry::operator==(const ReusableStockEntry& other) const {
+bool LeftoverStockEntry::operator==(const LeftoverStockEntry& other) const {
     return materialId == other.materialId &&
            availableLength_mm == other.availableLength_mm;
 }
 
-QString ReusableStockEntry::sourceAsString() const
+QString LeftoverStockEntry::sourceAsString() const
 {
     if (source == LeftoverSource::Manual)
         return "Manuális";

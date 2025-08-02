@@ -3,13 +3,13 @@
 #include "../../model/registries/materialregistry.h"
 #include "../../model/materialmaster.h"
 #include "common/logger.h"
-#include "model/registries/cuttingrequestregistry.h"
+#include "model/registries/cuttingplanrequestregistry.h"
 //#include "model/stockentry.h"
 
 #include <model/repositories/materialgrouprepository.h>
 #include <model/registries//stockregistry.h>
 #include <model/repositories/cuttingrequestrepository.h>
-#include <model/repositories/reusablestockrepository.h>
+#include <model/repositories/leftoverstockrepository.h>
 #include <model/repositories/stockrepository.h>
 
 #include <QSet>
@@ -146,11 +146,11 @@ bool StartupManager::hasMinimumMaterials(int minCount) {
 }
 
 StartupStatus StartupManager::initReusableStockRegistry() {
-    bool loaded = ReusableStockRepository::loadFromCSV(ReusableStockRegistry::instance());
+    bool loaded = LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry::instance());
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni a maradék készletet a leftovers.csv fájlból.");
 
-    const auto& all = ReusableStockRegistry::instance().all();
+    const auto& all = LeftoverStockRegistry::instance().all();
 
     if (all.isEmpty())
         return StartupStatus::failure("⚠️ A maradék készlet üres. Legalább 1 tétel szükséges a működéshez.");
@@ -182,11 +182,11 @@ StartupStatus StartupManager::initReusableStockRegistry() {
 }
 
 StartupStatus StartupManager::initCuttingRequestRegistry() {
-    bool loaded = CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry::instance());
+    bool loaded = CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry::instance());
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
 
-    const auto& all = CuttingRequestRegistry::instance().readAll();
+    const auto& all = CuttingPlanRequestRegistry::instance().readAll();
 
     // 💡 Check: file might be valid but intentionally empty (just header)
     if (all.isEmpty() && CuttingRequestRepository::wasLastFileEffectivelyEmpty()) {
@@ -205,7 +205,7 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
         knownMaterials.insert(mat.id);
 
     QStringList invalidRequests;
-    for (const CuttingRequest &req : all) {
+    for (const CuttingPlanRequest &req : all) {
         if (!knownMaterials.contains(req.materialId)) {
             QString desc = req.toString();
             invalidRequests << desc; // vagy req.id.toString() ha azonosító kell

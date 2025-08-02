@@ -30,23 +30,23 @@ SOURCES += \
     model/cutresult.cpp \
     model/cutting/piecewithmaterial.cpp \
     model/cuttingmachine.cpp \
-    model/cuttingrequest.cpp \
+    model/cuttingplanrequest.cpp \
     model/identifiableentity.cpp \
+    model/leftoverstockentry.cpp \
     model/materialgroup.cpp \
     model/materialmaster.cpp \
     model/materialtype.cpp \
     model/pieceinfo.cpp \
-    model/registries/cuttingrequestregistry.cpp \
+    model/registries/cuttingplanrequestregistry.cpp \
+    model/registries/leftoverstockregistry.cpp \
     model/registries/materialgroupregistry.cpp \
     model/registries/materialregistry.cpp \
-    model/registries/reusablestockregistry.cpp \
     model/registries/stockregistry.cpp \
     model/repositories/cuttingrequestrepository.cpp \
+    model/repositories/leftoverstockrepository.cpp \
     model/repositories/materialgrouprepository.cpp \
     model/repositories/materialrepository.cpp \
-    model/repositories/reusablestockrepository.cpp \
     model/repositories/stockrepository.cpp \
-    model/reusablestockentry.cpp \
     model/segment.cpp \
     model/stockentry.cpp \
     presenter/CuttingPresenter.cpp \
@@ -54,8 +54,10 @@ SOURCES += \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
     view/dialog/addstockdialog.cpp \
+    view/dialog/addwastedialog.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
+    view/managers/resultstablemanager.cpp \
     view/managers/stocktablemanager.cpp
 
 HEADERS += \
@@ -78,6 +80,7 @@ HEADERS += \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
+    common/tableconnectionhelper.h \
     model/CuttingOptimizerModel.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
@@ -85,23 +88,23 @@ HEADERS += \
     model/cutresult.h \
     model/cutting/piecewithmaterial.h \
     model/cuttingmachine.h \
-    model/cuttingrequest.h \
+    model/cuttingplanrequest.h \
     model/identifiableentity.h \
+    model/leftoverstockentry.h \
     model/materialgroup.h \
     model/materialmaster.h \
     model/materialtype.h \
     model/pieceinfo.h \
-    model/registries/cuttingrequestregistry.h \
+    model/registries/cuttingplanrequestregistry.h \
+    model/registries/leftoverstockregistry.h \
     model/registries/materialgroupregistry.h \
     model/registries/materialregistry.h \
-    model/registries/reusablestockregistry.h \
     model/registries/stockregistry.h \
     model/repositories/cuttingrequestrepository.h \
+    model/repositories/leftoverstockrepository.h \
     model/repositories/materialgrouprepository.h \
     model/repositories/materialrepository.h \
-    model/repositories/reusablestockrepository.h \
     model/repositories/stockrepository.h \
-    model/reusablestockentry.h \
     model/segment.h \
     model/stockentry.h \
     presenter/CuttingPresenter.h \
@@ -109,14 +112,17 @@ HEADERS += \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
     view/dialog/addstockdialog.h \
+    view/dialog/addwastedialog.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \
+    view/managers/resultstablemanager.h \
     view/managers/stocktablemanager.h
 
 FORMS += \
     view/MainWindow.ui \
     view/dialog/addinputdialog.ui \
-    view/dialog/addstockdialog.ui
+    view/dialog/addstockdialog.ui \
+    view/dialog/addwastedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

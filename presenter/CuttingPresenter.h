@@ -20,20 +20,19 @@ public:
     explicit CuttingPresenter(MainWindow* view, QObject *parent = nullptr);
 
     // Vágási igények
-    void addCutRequest(const CuttingRequest& req);
-    void updateCutRequest(const CuttingRequest& updated);
+    void addCutRequest(const CuttingPlanRequest& req);
+    void updateCutRequest(const CuttingPlanRequest& updated);
     void removeCutRequest(const QUuid &id);
+
     void createNewCuttingPlan();
 
-
-    void setCuttingRequests(const QVector<CuttingRequest> &list);
-    void clearRequests();
+    void setCuttingRequests(const QVector<CuttingPlanRequest> &list);
 
     // Készlet
     void setStockInventory(const QVector<StockEntry> &list);
 
     // Úrafelhasználható - hulló anyagok készlete
-    void setReusableInventory(const QVector<ReusableStockEntry> &list);
+    void setReusableInventory(const QVector<LeftoverStockEntry> &list);
 
     // Paraméterek
     void setKerf(int kerf);
@@ -42,17 +41,24 @@ public:
     void runOptimization();
 
     // Eredmények lekérése
-    QVector<CutPlan> getPlans();
+    QVector<CutPlan>& getPlansRef();
     QVector<CutResult> getLeftoverResults();
     void finalizePlans();
     void scrapShortLeftovers();
     void exportArchivedWasteToCSV(const QVector<ArchivedWasteEntry> &entries);
 
     void clearCuttingPlan();
+
     void removeStockEntry(const QUuid &stockId);
     void updateStockEntry(const StockEntry &updated);
+
+    void removeLeftoverEntry(const QUuid &entryId);
+    void updateLeftoverEntry(const LeftoverStockEntry &updated);
+    void syncModelWithRegistries();
 private:
     MainWindow* view;
     CuttingOptimizerModel model;
+
+    bool isModelSynced = false;
 };
 

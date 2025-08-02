@@ -1,13 +1,15 @@
 #include "leftovertablemanager.h"
 #include "common/materialutils.h"
+#include <QHBoxLayout>
 #include <QMessageBox>
+#include <QPushButton>
 #include <common/rowstyler.h>
-#include <model/registries/reusablestockregistry.h>
+#include <model/registries/leftoverstockregistry.h>
 #include "model/registries/materialregistry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
-    : table(table), parent(parent)
-{}
+    : QObject(parent), table(table), parent(parent) {}
+
 /*
 std::optional<CutResult> LeftoverTableManager::readRow(int row) const {
     if (!table || row < 0 || row >= table->rowCount())
@@ -51,7 +53,7 @@ std::optional<CutResult> LeftoverTableManager::readRow(int row) const {
 
 */
 
-std::optional<ReusableStockEntry> LeftoverTableManager::readRow(int row) const {
+std::optional<LeftoverStockEntry> LeftoverTableManager::readRow(int row) const {
     if (!table || row < 0 || row >= table->rowCount())
         return std::nullopt;
 
@@ -77,7 +79,7 @@ std::optional<ReusableStockEntry> LeftoverTableManager::readRow(int row) const {
     if (materialId.isNull() || length <= 0 || reusableId.isEmpty())
         return std::nullopt;
 
-    ReusableStockEntry entry;
+    LeftoverStockEntry entry;
 
     entry.materialId = materialId;
     entry.availableLength_mm = length;
@@ -89,8 +91,8 @@ std::optional<ReusableStockEntry> LeftoverTableManager::readRow(int row) const {
 }
 
 
-QVector<ReusableStockEntry> LeftoverTableManager::readAll() const {
-    QVector<ReusableStockEntry> results;
+QVector<LeftoverStockEntry> LeftoverTableManager::readAll() const {
+    QVector<LeftoverStockEntry> results;
 
     int rowCount = table->rowCount();
     for (int row = 0; row < rowCount; ++row) {
@@ -102,7 +104,7 @@ QVector<ReusableStockEntry> LeftoverTableManager::readAll() const {
     return results;
 }
 
-void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
+void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
 
@@ -114,7 +116,8 @@ void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
     // 📛 Név
     auto* itemName = new QTableWidgetItem(mat ? mat->name : "(ismeretlen)");
     itemName->setTextAlignment(Qt::AlignCenter);
-    itemName->setData(Qt::UserRole, entry.materialId);
+    itemName->setData(Qt::UserRole, entry.materialId);    
+    itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
     table->setItem(row, ColName, itemName);
 
     // 🧾 Vonalkód
@@ -158,79 +161,115 @@ void LeftoverTableManager::addRow(const ReusableStockEntry& entry) {
     itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
     table->setItem(row, ColReusable, itemReusable);
 
+    // 🗑️ Törlés gomb
+    QPushButton* btnDelete = new QPushButton("🗑️");
+    btnDelete->setToolTip("Törlés");
+    btnDelete->setFixedSize(28, 28);
+    btnDelete->setStyleSheet("QPushButton { border: none; }");
+    btnDelete->setProperty("barcode", entry.barcode);
+
+    // ✏️ Szerkesztés gomb
+    QPushButton* btnEdit = new QPushButton("✏️");
+    btnEdit->setToolTip("Szerkesztés");
+    btnEdit->setFixedSize(28, 28);
+    btnEdit->setStyleSheet("QPushButton { border: none; }");
+    btnEdit->setProperty("barcode", entry.barcode);
+
+    // Panelbe helyezés
+    auto* actionPanel = new QWidget();
+    auto* layout = new QHBoxLayout(actionPanel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(4);
+    layout->addWidget(btnEdit);
+    layout->addWidget(btnDelete);
+
+    table->setCellWidget(row, ColActions, actionPanel);
+    table->setColumnWidth(ColActions, 64);
+
+    // 📡 Signal kapcsolás UUID alapú
+    QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
+        QUuid entryId = btnDelete->property("entryId").toUuid();
+        emit deleteRequested(entryId);
+    });
+
+    QObject::connect(btnEdit, &QPushButton::clicked, this, [btnEdit, this]() {
+        QUuid entryId = btnEdit->property("entryId").toUuid();
+        emit editRequested(entryId);
+    });
+
     // 🎨 Stílus
     RowStyler::applyReusableStyle(table, row, mat, entry);
 }
 
-/*
-void LeftoverTableManager::addRow(const CutResult& res) {
+void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
 
-    int row = table->rowCount();
-    table->insertRow(row);
+    for (int row = 0; row < table->rowCount(); ++row) {
+        QTableWidgetItem* itemName = table->item(row, ColName);
+        if (!itemName)
+            continue;
 
-    // ♻️ Újrahasználhatósági jelzés
-    QString reuseMark = (res.waste >= 300) ? "✔" : "✘";
-    auto* itemReusable = new QTableWidgetItem(reuseMark);
-    itemReusable->setTextAlignment(Qt::AlignCenter);
-    itemReusable->setBackground(reuseMark == "✔" ? QColor(144, 238, 144) : QColor(255, 200, 200));
-    itemReusable->setForeground(Qt::black);
-    itemReusable->setData(Qt::UserRole, res.waste);
+        QUuid currentId = itemName->data(ReusableStockEntryIdIdRole).toUuid(); // 🔍 Saját role
+        if (currentId == entry.entryId) {
+            const MaterialMaster* mat = entry.master();
 
-    // 📦 Anyagtörzs név és stílus
-    const auto opt = MaterialRegistry::instance().findById(res.materialId);
-    const MaterialMaster* master = opt ? &*opt : nullptr;
+            QString materialName = mat ? mat->name : "(ismeretlen)";
+            QString barcode = mat ? mat->barcode : "-";
+            QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "-";
 
-    // 🏷️ Oszlopindexek
-    const int colIndex     = 0;
-    const int colMaterial  = 1;
-    const int colLength    = 2;
-    const int colCuts      = 3;
-    const int colReusable  = 4;
-    const int colSource    = 5;
+            // 📛 Név
+            itemName->setText(materialName);
+            itemName->setData(Qt::UserRole, entry.materialId);
+            itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
 
-    // 🔧 Anyag + materialId mentése UserRole-ban
-    auto* itemMaterial = new QTableWidgetItem(master ? master->name : "(ismeretlen)");
-    itemMaterial->setTextAlignment(Qt::AlignCenter);
-    itemMaterial->setData(Qt::UserRole, res.materialId);
-    if (!master)
-        itemMaterial->setToolTip("Ismeretlen anyag azonosító: " + res.materialId.toString());
+            // 🧾 Material vonalkód
+            auto* itemBarcode = table->item(row, ColBarcode);
+            if (itemBarcode) itemBarcode->setText(barcode);
 
-    table->setItem(row, colMaterial, itemMaterial);
+            // 🧾 Maradék vonalkód
+            auto* itemID = table->item(row, ColReusableId);
+            if (itemID) itemID->setText(entry.barcode);
 
+            // 📏 Hossz
+            auto* itemLength = table->item(row, ColLength);
+            if (itemLength) {
+                itemLength->setText(QString::number(entry.availableLength_mm));
+                itemLength->setData(Qt::UserRole, entry.availableLength_mm);
+            }
 
-    // 🔢 Rúd index (1-től induló)
-    auto* itemIndex = new QTableWidgetItem(QString::number(row + 1));
-    itemIndex->setTextAlignment(Qt::AlignCenter);
-    table->setItem(row, colIndex, itemIndex);
+            // 📐 Alak
+            auto* itemShape = table->item(row, ColShape);
+            if (itemShape) itemShape->setText(shape);
 
-    // 📏 Eredeti hossz
-    auto* itemLength = new QTableWidgetItem(QString::number(res.length));
-    itemLength->setTextAlignment(Qt::AlignCenter);
-    itemLength->setData(Qt::UserRole, res.length);
-    table->setItem(row, colLength, itemLength);
+            // 🛠️ Forrás
+            auto* itemSource = table->item(row, ColSource);
+            if (itemSource) {
+                itemSource->setText(entry.sourceAsString());
+                itemSource->setData(Qt::UserRole, static_cast<int>(entry.source));
+            }
 
-    // ✂️ Vágások listája (szöveg + UserRole)
-    auto* itemCuts = new QTableWidgetItem(res.cutsAsString());
-    itemCuts->setTextAlignment(Qt::AlignCenter);
-    itemCuts->setData(Qt::UserRole, QVariant::fromValue(res.cuts));
-    table->setItem(row, colCuts, itemCuts);
+            // ♻️ Újrahasználhatóság
+            auto* itemReusable = table->item(row, ColReusable);
+            if (itemReusable) {
+                QString reuseMark = (entry.availableLength_mm >= 300) ? "✔" : "✘";
+                itemReusable->setText(reuseMark);
+                itemReusable->setBackground(reuseMark == "✔" ? QColor(144, 238, 144) : QColor(255, 200, 200));
+                itemReusable->setForeground(Qt::black);
+                itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
+            }
 
-    // ♻️ Újrahasználhatóság cella
-    table->setItem(row, colReusable, itemReusable);
+            // 🎨 Sor stílus újraalkalmazása
+            RowStyler::applyReusableStyle(table, row, mat, entry);
 
-    // 🛠️ Forrás cella (szöveg + UserRole)
-    auto* itemSource = new QTableWidgetItem(res.sourceAsString());
-    itemSource->setTextAlignment(Qt::AlignCenter);
-    itemSource->setData(Qt::UserRole, static_cast<int>(res.source));
-    table->setItem(row, colSource, itemSource);
+            return;
+        }
+    }
 
-    // 🎨 Stílus alkalmazása
-    RowStyler::applyLeftoverStyle(table, row, master, res);
+    qWarning() << "⚠️ updateRow: Nem található sor azonosítóval:" << entry.entryId;
 }
-*/
-void LeftoverTableManager::appendRows(const QVector<ReusableStockEntry>& newResults) {
+
+void LeftoverTableManager::appendRows(const QVector<LeftoverStockEntry>& newResults) {
     if (!table)
         return;
 
@@ -238,6 +277,17 @@ void LeftoverTableManager::appendRows(const QVector<ReusableStockEntry>& newResu
         addRow(e);
 }
 
+void LeftoverTableManager::removeRowById(const QUuid& id) {
+    for (int row = 0; row < table->rowCount(); ++row) {
+        QVariant data = table->item(row, 0)->data(Qt::UserRole);
+        if (data.canConvert<QUuid>() && data.toUuid() == id) {
+            table->removeRow(row);
+            return;
+        }
+    }
+
+    qWarning() << "❌ Nem található sor ezzel az entryId-vel:" << id;
+}
 
 void LeftoverTableManager::clear() {
     table->clearContents();
@@ -251,7 +301,7 @@ void LeftoverTableManager::updateTableFromRegistry() {
     table->clearContents();
     table->setRowCount(0);
 
-    const auto& stockEntries = ReusableStockRegistry::instance().all();
+    const auto& stockEntries = LeftoverStockRegistry::instance().all();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();
 
     for (const auto& entry : stockEntries) {
@@ -266,29 +316,5 @@ void LeftoverTableManager::updateTableFromRegistry() {
 }
 
 
-// void LeftoverTableManager::fillTestData() {
-//     if (!table || !parent)
-//         return;
 
-//     const auto& materials = MaterialRegistry::instance().all();
-//     if (materials.isEmpty()) {
-//         QMessageBox::warning(parent, "Hiba", "Nincs anyag a törzsben.");
-//         return;
-//     }
-//     if (materials.size() < 2) {
-//         QMessageBox::warning(parent, "Hiba", "Legalább két különböző anyag szükséges a teszthez.");
-//         return;
-//     }
-
-//     QVector<ReusableStockEntry> testLeftovers ={
-//         {
-//             { materials[0].id, 2940, LeftoverSource::Manual, std::nullopt, "RST-012" },
-//             { materials[0].id, 180, LeftoverSource::Manual, std::nullopt, "RST-013" },
-//             { materials[1].id, 100, LeftoverSource::Manual, std::nullopt, "RST-014" }
-//         }
-//     };
-
-//     for (const auto& e : testLeftovers)
-//         addRow(e);
-// }
 

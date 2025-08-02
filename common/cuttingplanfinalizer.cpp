@@ -2,7 +2,7 @@
 
 // 🔽 Készletregiszterek
 #include "../model/registries/stockregistry.h"
-#include "../model/registries/reusablestockregistry.h"
+#include "../model/registries/leftoverstockregistry.h"
 
 // 🔽 Konverziós logika: CutResult → ReusableStockEntry
 #include "../common/cutresultutils.h"
@@ -18,7 +18,7 @@ void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
     for (CutPlan& plan : plans) {
         if (plan.usedReusable()) {
             // ♻️ Ha hullóból vágtunk → annak eltávolítása
-            ReusableStockRegistry::instance().consume(plan.rodId);
+            LeftoverStockRegistry::instance().consume(plan.rodId);
         } else {
             // 🧱 Ha eredeti profilból vágtunk → készlet csökkentése
             StockRegistry::instance().consume(plan.materialId);
@@ -33,8 +33,8 @@ void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
     for (const CutResult& result : leftovers) {
         if (result.waste >= 300 && !result.reusableBarcode.isEmpty()) {
             // ✅ Elég hosszú → bekerül az újrahasználható rúdlistába
-            ReusableStockEntry reusable = CutResultUtils::toReusableEntry(result);
-            ReusableStockRegistry::instance().add(reusable);
+            LeftoverStockEntry reusable = CutResultUtils::toReusableEntry(result);
+            LeftoverStockRegistry::instance().add(reusable);
         } else {
             // 🗂️ Rövid → archiválandó hulladékként tároljuk
 
