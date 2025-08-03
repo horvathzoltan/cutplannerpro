@@ -11,6 +11,9 @@ CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {
 }
 
 void CuttingPlanRequestRegistry::persist() const {
+    // if(!isPersist) {
+    //     return; // 🛑 Ha nem kell perzisztálni, akkor kilépünk
+    // }
     // 💾 Mentés fájlba, ha van megadott útvonal
     const QString fn = SettingsManager::instance().cuttingPlanFileName();
     const QString path = FileNameHelper::instance().getCuttingPlanFilePath(fn);
@@ -24,21 +27,26 @@ QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::readAll() const {
     return _data;
 }
 
-QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::findByMaterialId(const QUuid& materialId) const {
-    // 🧪 Lekérdezés anyagID alapján — bár a belső tárolás nem csoportosít, ez kiszűri
-    QVector<CuttingPlanRequest> result;
-    for (const auto& r : _data) {
-        if (r.materialId == materialId)
-            result.append(r);
-    }
-    return result;
-}
+// QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::findByMaterialId(const QUuid& materialId) const {
+//     // 🧪 Lekérdezés anyagID alapján — bár a belső tárolás nem csoportosít, ez kiszűri
+//     QVector<CuttingPlanRequest> result;
+//     for (const auto& r : _data) {
+//         if (r.materialId == materialId)
+//             result.append(r);
+//     }
+//     return result;
+// }
 
 void CuttingPlanRequestRegistry::registerRequest(const CuttingPlanRequest& request) {
     // 🆕 Új CuttingRequest hozzáadása
     _data.append(request);
     persist();
 }
+
+// void CuttingPlanRequestRegistry::registerRequest_NotPersistant(const CuttingPlanRequest& request) {
+//     // 🆕 Új CuttingRequest hozzáadása
+//     _data.append(request);
+// }
 
 bool CuttingPlanRequestRegistry::updateRequest(const CuttingPlanRequest& updated) {
     // 🔍 Érvényesség ellenőrzése
@@ -71,7 +79,7 @@ void CuttingPlanRequestRegistry::removeRequest(const QUuid& requestId) {
     }
 }
 
-void CuttingPlanRequestRegistry::clear() {
+void CuttingPlanRequestRegistry::clearAll() {
     // 🔄 Teljes lista törlése
     _data.clear();
     persist();

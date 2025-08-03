@@ -5,52 +5,53 @@
 #include "model/archivedwasteentry.h"
 #include "common/archivedwasteutils.h"
 
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/stockregistry.h>
+#include "model/registries/cuttingplanrequestregistry.h"
+#include "model/registries/leftoverstockregistry.h"
+#include "model/registries/stockregistry.h"
 
-#include <common/cuttingplanfinalizer.h>
-#include <common/filenamehelper.h>
-#include <common/settingsmanager.h>
+#include "common/cuttingplanfinalizer.h"
+#include "common/filenamehelper.h"
+#include "common/settingsmanager.h"
 
-
+#include <model/repositories/cuttingrequestrepository.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
 
-void CuttingPresenter::createNewCuttingPlan() {
+// ez új cutting plant csinál és új néven kezdi perzisztálni
+void CuttingPresenter::createNew_CuttingPlanRequests() {
     QString newFileName = FileNameHelper::instance().getNew_CuttingPlanFileName();
     QString newFilePath = FileNameHelper::instance().getCuttingPlanFilePath(newFileName);
 
     // 🔄 Állapot frissítése
     SettingsManager::instance().setCuttingPlanFileName(newFileName);
 
-    clearCuttingPlan();
+    removeAll_CuttingPlanRequests();
 
-    // 🧹 GUI frissítés
+    // 🧹 GUI frissítés - beírjuk az új file nevet a labelbe
     if (view) {
         view->setInputFileLabel(newFileName, newFilePath);
     }
 }
 
-void CuttingPresenter::clearCuttingPlan() {
+void CuttingPresenter::removeAll_CuttingPlanRequests() {
     // 🧹 Táblázat törlése a GUI-ban
     if (view) {
         view->clear_InputTable();
     }
     // 🗃️ Registry kiürítése
-    CuttingPlanRequestRegistry::instance().clear();
+    CuttingPlanRequestRegistry::instance().clearAll();
 }
 
 /*input*/
-void CuttingPresenter::addCutRequest(const CuttingPlanRequest& req) {
+void CuttingPresenter::add_CuttingPlanRequest(const CuttingPlanRequest& req) {
     CuttingPlanRequestRegistry::instance().registerRequest(req);
     if(view){
          view->addRow_InputTable(req);
     }
  }
 
-void CuttingPresenter::updateCutRequest(const CuttingPlanRequest& r) {
+void CuttingPresenter::update_CuttingPlanRequest(const CuttingPlanRequest& r) {
     bool ok = CuttingPlanRequestRegistry::instance().updateRequest(r); // 🔁 adatbázis update
 
     if (ok){
@@ -66,7 +67,7 @@ void CuttingPresenter::updateCutRequest(const CuttingPlanRequest& r) {
 
  }
 
-void CuttingPresenter::removeCutRequest(const QUuid& requestId) {
+void CuttingPresenter::remove_CuttingPlanRequest(const QUuid& requestId) {
     CuttingPlanRequestRegistry::instance().removeRequest(requestId);  // ✅ Globális törlés
     if(view){
         view->removeRow_InputTable(requestId);
@@ -74,14 +75,22 @@ void CuttingPresenter::removeCutRequest(const QUuid& requestId) {
 }
 
 /*stock*/
-void CuttingPresenter::removeStockEntry(const QUuid& stockId) {
-    StockRegistry::instance().remove(stockId);   // ✅ Globális törlés
+void CuttingPresenter::add_StockEntry(const StockEntry& e) {
+    StockRegistry::instance().registerEntry(e);
+    if(view){
+        view->addRow_StockTable(e);
+    }
+}
+
+void CuttingPresenter::remove_StockEntry(const QUuid& stockId) {
+    StockRegistry::instance().removeEntry(stockId);   // ✅ Globális törlés
     if (view) {
         view->removeRow_StockTable(stockId); // ha a készlet változik
-    }}
+    }
+}
 
-void CuttingPresenter::updateStockEntry(const StockEntry& updated) {
-    bool ok = StockRegistry::instance().update(updated); // 🔁 adatbázis update
+void CuttingPresenter::update_StockEntry(const StockEntry& updated) {
+    bool ok = StockRegistry::instance().updateEntry(updated); // 🔁 adatbázis update
 
     if (ok){
         if(view){
@@ -96,8 +105,16 @@ void CuttingPresenter::updateStockEntry(const StockEntry& updated) {
 }
 
 /*waste*/
-void CuttingPresenter::removeLeftoverEntry(const QUuid& entryId) {
-    bool ok = LeftoverStockRegistry::instance().removeByEntryId(entryId);
+
+void CuttingPresenter::add_LeftoverStockEntry(const LeftoverStockEntry& req) {
+    LeftoverStockRegistry::instance().registerEntry(req);
+    if(view){
+        view->addRow_LeftoversTable(req);
+    }
+}
+
+void CuttingPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
+    bool ok = LeftoverStockRegistry::instance().removeEntry(entryId);
 
     if (ok){
         if(view){
@@ -111,8 +128,8 @@ void CuttingPresenter::removeLeftoverEntry(const QUuid& entryId) {
     }
 }
 
-void CuttingPresenter::updateLeftoverEntry(const LeftoverStockEntry& updated) {
-    bool ok = LeftoverStockRegistry::instance().update(updated); // 🔁 Frissítés Registry-ben
+void CuttingPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& updated) {
+    bool ok = LeftoverStockRegistry::instance().updateEntry(updated); // 🔁 Frissítés Registry-ben
 
     if (ok) {
         if (view) {
@@ -174,14 +191,14 @@ void CuttingPresenter::runOptimization() {
         // ez a közéspső - eredmény tábla
         view->update_ResultsTable(plans);
         // ez a készlet
-        view->update_StockTable(); // ha a készlet változik
+        view->refresh_StockTable(); // ha a készlet változik
         // ez a maradék
 
         QVector<CutResult> l = model.getResults_Leftovers();
         QVector<LeftoverStockEntry> e = CutResultUtils::toReusableEntries(l);
 
         // todo 01 nem jó, a stockot kellene frissíteni - illetve opt után kell-e bármit is, hisz majd a finalize frissít - nem?
-        view->update_LeftoversTable();//e);
+        view->refresh_LeftoversTable();//e);
     }
     OptimizationExporter::exportPlansToCSV(plans);
     OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
@@ -270,16 +287,16 @@ void CuttingPresenter::finalizePlans()
 
     qDebug() << "***";
 
-    CuttingUtils::logStockStatus("🧱 STOCK — finalize előtt:", StockRegistry::instance().all());
-    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize előtt:", LeftoverStockRegistry::instance().all());
+    CuttingUtils::logStockStatus("🧱 STOCK — finalize előtt:", StockRegistry::instance().readAll());
+    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize előtt:", LeftoverStockRegistry::instance().readAll());
 
     // ✂️ Finalizálás → készletfogyás + hulladékkezelés
     CuttingPlanFinalizer::finalize(plans, results);
 
     qDebug() << "***";
 
-    CuttingUtils::logStockStatus("🧱 STOCK — finalize után:", StockRegistry::instance().all());
-    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize után:", LeftoverStockRegistry::instance().all());
+    CuttingUtils::logStockStatus("🧱 STOCK — finalize után:", StockRegistry::instance().readAll());
+    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize után:", LeftoverStockRegistry::instance().readAll());
 
     // ✅ Állapot lezárása
     for (CutPlan& plan : model.getResult_PlansRef())
@@ -287,9 +304,9 @@ void CuttingPresenter::finalizePlans()
 
     // 🔁 View frissítése
     if (view) {
-        view->update_StockTable();
+        view->refresh_StockTable();
         // todo 02 : nem jó, nem a táblát kellene frissíteni, hanem a stockot
-        view->update_LeftoversTable();//CutResultUtils::toReusableEntries(results));
+        view->refresh_LeftoversTable();//CutResultUtils::toReusableEntries(results));
         view->update_ResultsTable(plans);
     }
 }
@@ -300,7 +317,7 @@ void CuttingPresenter::scrapShortLeftovers()
     QVector<ArchivedWasteEntry> archivedEntries;
     QVector<LeftoverStockEntry> toBeScrapped;
 
-    for (const LeftoverStockEntry &entry : reusableRegistry.all()) {
+    for (const LeftoverStockEntry &entry : reusableRegistry.readAll()) {
         if (entry.availableLength_mm < 300) {
             ArchivedWasteEntry archived;
             archived.materialId = entry.materialId;
@@ -318,7 +335,7 @@ void CuttingPresenter::scrapShortLeftovers()
     }
 
     for (const auto& e : toBeScrapped)
-        reusableRegistry.consume(e.barcode);
+        reusableRegistry.consumeEntry(e.barcode);
 
     if (!archivedEntries.isEmpty())
         ArchivedWasteUtils::exportToCSV(archivedEntries);
@@ -326,7 +343,7 @@ void CuttingPresenter::scrapShortLeftovers()
 
 void CuttingPresenter::syncModelWithRegistries() {
     auto requestList  = CuttingPlanRequestRegistry::instance().readAll();
-    auto stockList    = StockRegistry::instance().all();
+    auto stockList    = StockRegistry::instance().readAll();
     auto reusableList = LeftoverStockRegistry::instance().filtered(300);
 
     QStringList errors;
@@ -357,7 +374,11 @@ void CuttingPresenter::syncModelWithRegistries() {
     }
 }
 
+bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
+    bool loaded = CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry::instance(), path);
 
+    return loaded;
+}
 
 
 

@@ -26,9 +26,9 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
         return false;
     }
 
-    registry.clear(); // 🔄 Korábbi csoportok törlése
+    registry.clearAll(); // 🔄 Korábbi csoportok törlése
     for (const auto& g : groups)
-        registry.addGroup(g);
+        registry.registerGroup(g);
 
     return true;
 }

@@ -79,7 +79,7 @@ QString Logger::ToString(DbgLevel level, const QString &msg, const QString &loci
 
 QString Logger::ToString(ErrLevel errlevel, const QString &msg, const QString &loci, const QString &st)
 {
-    auto level = ToString(errlevel);
+    //auto level = ToString(errlevel);
     QString msg3 = ToString(errlevel)+":"+msg;
     if(!loci.isEmpty())
     {
@@ -88,33 +88,7 @@ QString Logger::ToString(ErrLevel errlevel, const QString &msg, const QString &l
     if(!st.isEmpty())
     {
         msg3+="\n"+st;
-    }
-    // switch(errlevel)
-    // {
-    // case ErrLevel::ERROR_:
-    //     msg3= level+":"+msg;//+"\n"+loci+"\n"+st;
-    //     if(!loci.isEmpty()){
-    //         msg3+="\n"+loci;
-    //     }
-    //     if(!st.isEmpty()){
-    //         msg3+="\n"+st;
-    //     }
-    //     break;
-    // case ErrLevel::WARNING:
-    //     msg3= level+":"+msg;
-    //     if(!loci.isEmpty()){
-    //         msg3+="\n"+loci;
-    //     }
-    //     break;
-
-    // case ErrLevel::INFO:
-    //     msg3= level+":"+msg;
-    //     if(!loci.isEmpty()){
-    //         msg3+="\n"+loci;
-    //     }
-    //     break;
-    // default: break;
-    // }
+    }  
 
     return msg3;
 }
@@ -193,7 +167,7 @@ QString Logger::zStackTrace()
 {
     QStringList e;
 
-    unsigned int max_frames = 64;
+    const unsigned int max_frames = 64;
 
     e << QStringLiteral("stack trace:");
 
@@ -308,7 +282,7 @@ void Logger::info2(const QString& msg, const LocInfo& locinfo)
     }
 
     auto msg2 = ToString(ErrLevel::INFO, msg, li, nullptr);
-    err_message(ErrLevel::INFO, msg);
+    err_message(ErrLevel::INFO, msg2);
 }
 
 void Logger::info2(const QStringList& msgl, const LocInfo& locinfo)

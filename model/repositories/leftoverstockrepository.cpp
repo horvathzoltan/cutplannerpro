@@ -24,9 +24,13 @@ bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
         return false;
     }
 
-    registry.clear(); // 🔄 Korábbi készlet törlése
-    for (const auto& entry : entries)
-        registry.add(entry);
+    // registry.setPersist(false);
+    // registry.clearAll(); // 🔄 Korábbi készlet törlése
+    // for (const auto& entry : std::as_const(entries))
+    //     registry.registerEntry(entry);
+    // registry.setPersist(true);
+
+    registry.setData(entries); // 🔧 Itt történik a készletregisztráció
 
     return true;
 }
@@ -167,7 +171,7 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry) {
 
     out << "materialBarCode;availableLength_mm;source;optimizationId;barcode\n";
 
-    for (const auto& entry : registry.all()) {
+    for (const auto& entry : registry.readAll()) {
         if (entry.availableLength_mm <= 0 || entry.barcode.trimmed().isEmpty())
             continue;
 

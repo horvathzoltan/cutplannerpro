@@ -7,27 +7,26 @@
 class StockRegistry {
 private:
     StockRegistry() = default;
+    StockRegistry(const StockEntry&) = delete;
 
-    QVector<StockEntry> _stock;
+    QVector<StockEntry> _data;
+    //bool isPersist = true; // 📁 Perzisztálás engedélyezése
+    void persist() const;
 public:
     // 🔁 Singleton elérés
-    static StockRegistry& instance() {
-        static StockRegistry reg;
-        return reg;
-    }
+    static StockRegistry& instance();
 
-    void add(const StockEntry& entry);
-    void clear();
-    QVector<StockEntry> all() const { return _stock; }
+    void registerEntry(const StockEntry& entry);
+    bool updateEntry(const StockEntry &updated);
+    void consumeEntry(const QUuid& materialId); // 🧱 Levon egy darabot a készletből az adott anyaghoz
+    void removeEntry(const QUuid& id);
 
-    void remove(const QUuid& id);
-
-    QVector<StockEntry> findByGroupName(const QString& name) const;
-
-    void consume(const QUuid& materialId); // 🧱 Levon egy darabot a készletből az adott anyaghoz
-    void persist() const;
+    QVector<StockEntry> readAll() const { return _data; }
+    void clearAll();
 
     std::optional<StockEntry> findById(const QUuid& entryId) const; // ⬅️ új
+    QVector<StockEntry> findByGroupName(const QString& name) const;
 
-    bool update(const StockEntry &updated);
+    bool isEmpty() const { return _data.isEmpty(); }
+    void setData(const QVector<StockEntry>& v) { _data = v;}
 };

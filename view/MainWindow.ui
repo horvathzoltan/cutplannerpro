@@ -40,13 +40,13 @@
         </size>
        </property>
        <property name="title">
-        <string>Cutting Requests</string>
+        <string>CuttingPlan</string>
        </property>
        <layout class="QVBoxLayout" name="leftLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QPushButton" name="btnNewPlan">
+           <widget class="QPushButton" name="btn_NewCuttingPlan">
             <property name="text">
              <string>New Plan</string>
             </property>
@@ -65,12 +65,19 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <widget class="QPushButton" name="btn_OpenCuttingPlan">
+            <property name="text">
+             <string>Open Plan</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="btnAddRow">
+           <widget class="QPushButton" name="btn_AddCuttingPlanRequest">
             <property name="text">
              <string>Add Row</string>
             </property>
@@ -109,9 +116,9 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnClearPlan">
+           <widget class="QPushButton" name="btn_ClearCuttingPlan">
             <property name="text">
-             <string>clear</string>
+             <string>Clear</string>
             </property>
            </widget>
           </item>
@@ -191,7 +198,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QPushButton" name="btnOptimize">
+           <widget class="QPushButton" name="btn_Optimize">
             <property name="text">
              <string>Optimize</string>
             </property>
@@ -211,7 +218,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnFinalize">
+           <widget class="QPushButton" name="btn_Finalize">
             <property name="text">
              <string>Finalize</string>
             </property>
@@ -274,13 +281,13 @@
         </size>
        </property>
        <property name="title">
-        <string>Leftovers</string>
+        <string>Material Stock and Waster Summary</string>
        </property>
        <layout class="QVBoxLayout" name="rightLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QPushButton" name="btnAddStockEntry">
+           <widget class="QPushButton" name="btn_AddStockEntry">
             <property name="toolTip">
              <string notr="true" extracomment="Egy meglévő anyag első bevitele a készletbe. Akkor használd, ha az anyag eddig nem szerepelt a raktárban."/>
             </property>
@@ -303,13 +310,6 @@
            </spacer>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelLeftovers">
-          <property name="text">
-           <string>Material Stock and Waster Summary</string>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="QTableWidget" name="tableStock">
@@ -344,6 +344,30 @@
            </property>
           </column>
          </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QPushButton" name="btn_AddLeftoverStockEntry">
+            <property name="text">
+             <string>Új tétel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QTableWidget" name="tableLeftovers">
@@ -392,7 +416,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QPushButton" name="btnDisposal">
+           <widget class="QPushButton" name="btn_LeftoverDisposal">
             <property name="text">
              <string>Selejtezés</string>
             </property>

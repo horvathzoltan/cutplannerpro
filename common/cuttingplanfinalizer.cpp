@@ -18,10 +18,10 @@ void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
     for (CutPlan& plan : plans) {
         if (plan.usedReusable()) {
             // ♻️ Ha hullóból vágtunk → annak eltávolítása
-            LeftoverStockRegistry::instance().consume(plan.rodId);
+            LeftoverStockRegistry::instance().consumeEntry(plan.rodId);
         } else {
             // 🧱 Ha eredeti profilból vágtunk → készlet csökkentése
-            StockRegistry::instance().consume(plan.materialId);
+            StockRegistry::instance().consumeEntry(plan.materialId);
         }
 
         plan.setStatus(CutPlanStatus::Completed); // ✅ Állapot frissítése: kész
@@ -34,7 +34,7 @@ void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
         if (result.waste >= 300 && !result.reusableBarcode.isEmpty()) {
             // ✅ Elég hosszú → bekerül az újrahasználható rúdlistába
             LeftoverStockEntry reusable = CutResultUtils::toReusableEntry(result);
-            LeftoverStockRegistry::instance().add(reusable);
+            LeftoverStockRegistry::instance().registerEntry(reusable);
         } else {
             // 🗂️ Rövid → archiválandó hulladékként tároljuk
 

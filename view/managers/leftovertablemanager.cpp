@@ -166,14 +166,14 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     btnDelete->setToolTip("Törlés");
     btnDelete->setFixedSize(28, 28);
     btnDelete->setStyleSheet("QPushButton { border: none; }");
-    btnDelete->setProperty("barcode", entry.barcode);
+    btnDelete->setProperty("entryId", entry.entryId);
 
     // ✏️ Szerkesztés gomb
     QPushButton* btnEdit = new QPushButton("✏️");
     btnEdit->setToolTip("Szerkesztés");
     btnEdit->setFixedSize(28, 28);
     btnEdit->setStyleSheet("QPushButton { border: none; }");
-    btnEdit->setProperty("barcode", entry.barcode);
+    btnEdit->setProperty("entryId", entry.entryId);
 
     // Panelbe helyezés
     auto* actionPanel = new QWidget();
@@ -294,14 +294,14 @@ void LeftoverTableManager::clear() {
     table->setRowCount(0);
 }
 
-void LeftoverTableManager::updateTableFromRegistry() {
+void LeftoverTableManager::refresh_TableFromRegistry() {
     if (!table)
         return;
 
     table->clearContents();
     table->setRowCount(0);
 
-    const auto& stockEntries = LeftoverStockRegistry::instance().all();
+    const auto& stockEntries = LeftoverStockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();
 
     for (const auto& entry : stockEntries) {
@@ -312,7 +312,7 @@ void LeftoverTableManager::updateTableFromRegistry() {
         addRow(entry);
     }
 
-    table->resizeColumnsToContents();
+    //table->resizeColumnsToContents();
 }
 
 

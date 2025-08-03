@@ -7,7 +7,7 @@
 AddStockDialog::AddStockDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddStockDialog)
-    , currentEntryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
+    , current_entryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
 {
     ui->setupUi(this);
     populateMaterialCombo();
@@ -19,7 +19,7 @@ AddStockDialog::~AddStockDialog()
 }
 
 void AddStockDialog::populateMaterialCombo() {
-    const auto& registry = MaterialRegistry::instance().all();
+    const auto& registry = MaterialRegistry::instance().readAll();
     ui->comboMaterial->clear();
 
     for (const auto& m : registry) {
@@ -49,7 +49,7 @@ QString AddStockDialog::comment() const {
 
 StockEntry AddStockDialog::getModel() const {   
     StockEntry entry;
-    entry.entryId = currentEntryId;
+    entry.entryId = current_entryId;
     entry.materialId = selectedMaterialId();
     entry.quantity = quantity();
     return entry;
@@ -57,7 +57,7 @@ StockEntry AddStockDialog::getModel() const {
 
 void AddStockDialog::setModel(const StockEntry& entry) {
 
-    currentEntryId = entry.entryId;
+    current_entryId = entry.entryId;
     currentQuantity = entry.quantity; // Megőrizzük az eredeti quantityt
 
     int index = ui->comboMaterial->findData(entry.materialId);

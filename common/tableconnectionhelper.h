@@ -1,104 +1,216 @@
 #pragma once
 
-
 #include "view/MainWindow.h"
-
+#include "view/dialog/addstockdialog.h"
+#include "view/dialog/addwastedialog.h"
+#include <model/registries//stockregistry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
-
+#include <model/registries/leftoverstockregistry.h>
 #include <view/dialog/addinputdialog.h>
-
 #include <presenter/CuttingPresenter.h>
-//#include "view/managers/inputtablemanager.h"
-class InputTableConnector{
-public:
-    inline static void Connect(
-        MainWindow *w,
-         std::unique_ptr<InputTableManager>& inputTableManager,
-        CuttingPresenter* presenter)
-    {
-        w->connect(
-            inputTableManager.get(),
-            &InputTableManager::deleteRequested,
-            w,
-            [presenter](const QUuid& id) {
-                    presenter->removeCutRequest(id);
-                });
 
-        //
-        w->connect(
-            inputTableManager.get(),
-            &InputTableManager::editRequested,
-            w,
-            [w, presenter](const QUuid& id) {
-                    auto opt = CuttingPlanRequestRegistry::instance().findById(id);
-                    if (!opt) return;
+namespace InputTableConnector{
+inline static void Connect(
+    MainWindow *w,
+    InputTableManager* manager,
+    CuttingPresenter* presenter)
+{
+    w->connect(
+        manager,
+        &InputTableManager::deleteRequested,
+        w,
+        [presenter](const QUuid& id) {
+            presenter->remove_CuttingPlanRequest(id);
+        });
 
-                    CuttingPlanRequest original = *opt;
+    //
+    w->connect(
+        manager,
+        &InputTableManager::editRequested,
+        w,
+        [w, presenter](const QUuid& id) {
+            auto opt = CuttingPlanRequestRegistry::instance().findById(id);
+            if (!opt) return;
 
-                    AddInputDialog dialog(w);
-                    dialog.setModel(original);
+            CuttingPlanRequest original = *opt;
 
-                    if (dialog.exec() != QDialog::Accepted)
-                        return;
+            AddInputDialog dialog(w);
+            dialog.setModel(original);
 
-                    CuttingPlanRequest updated = dialog.getModel();
-                    presenter->updateCutRequest(updated);
-                });
-    }
-};
+            if (dialog.exec() != QDialog::Accepted)
+                return;
 
-// #include <QDialog>
-// #include <QObject>
-// #include <QUuid>
-// #include <QWidget>
-// #include <optional>
+            CuttingPlanRequest updated = dialog.getModel();
+            presenter->update_CuttingPlanRequest(updated);
+        });
+}
+}; //end namespace InputTableConnector
 
-// namespace tablehelper {
+namespace StockTableConnector{
+inline static void Connect(
+    MainWindow *w,
+    StockTableManager* manager,
+    CuttingPresenter* presenter)
+{
+    w->connect(manager,
+               &StockTableManager::deleteRequested,
+               w,
+               [presenter](const QUuid& id) {
+                   presenter->remove_StockEntry(id);
+               });
 
-// template<typename RegistryType,
-//          typename DialogType,
-//          typename EntryType,
-//          typename PresenterType>
-//     requires requires(QUuid id) {
-//         { RegistryType::instance().findById(id) } -> std::convertible_to<std::optional<EntryType>>;
-//     } && requires(DialogType dialog, EntryType entry) {
-//         { dialog.setModel(entry) } -> std::same_as<void>;
-//         { dialog.getModel() } -> std::convertible_to<EntryType>;
-//     }
-// void connectTableHandlers(QObject* parent,
-//                           QObject* tableManager,
-//                           PresenterType* presenter,
-//                           void (PresenterType::*updateFn)(const EntryType&),
-//                           void (PresenterType::*deleteFn)(const QUuid&))
+    w->connect(
+        manager,
+        &StockTableManager::editRequested,
+        w,
+        [w,presenter](const QUuid& id) {
+            auto opt = StockRegistry::instance().findById(id);
+            if (!opt) return;
+
+            StockEntry original = *opt;
+
+            AddStockDialog dialog(w);
+            dialog.setModel(original);
+
+            if (dialog.exec() != QDialog::Accepted)
+                return;
+
+            StockEntry updated = dialog.getModel();
+            presenter->update_StockEntry(updated);
+        });
+}
+}; // end namespace StockTableConnector
+
+namespace LeftoverTableConnector{
+inline static void Connect(
+    MainWindow *w,
+    LeftoverTableManager* manager,
+    CuttingPresenter* presenter)
+{
+    // 🗑️ Hulló anyagok táblázat kezelése
+    w->connect(manager,
+               &LeftoverTableManager::deleteRequested,
+               w,
+               [presenter](const QUuid& id) {
+                   presenter->remove_LeftoverStockEntry(id);
+               });
+
+    // 📝 Hulló anyagok szerkesztése
+    w->connect(manager,
+               &LeftoverTableManager::editRequested,
+               w,
+               [w,presenter](const QUuid& id) {
+                   auto opt = LeftoverStockRegistry::instance().findById(id);
+                   if (!opt) return;
+
+                   LeftoverStockEntry original = *opt;
+
+                   AddWasteDialog dialog(w);
+                   dialog.setModel(original);
+
+                   if (dialog.exec() != QDialog::Accepted)
+                       return;
+
+                   LeftoverStockEntry updated = dialog.getModel();
+                   presenter->update_LeftoverStockEntry(updated);
+               });
+
+}
+}; // end namespace LeftoverTableConnector
+
+// namespace ButtonConnector{
+
+// inline static void Connect(
+//     Ui::MainWindow *ui, MainWindow* w)
 // {
-//     // Modern Qt-style connect: deleteRequested
-//     QObject::connect(tableManager,
-//                      static_cast<void(QObject::*)(const QUuid&)>(&QObject::deleteRequested),  // Ha ez egy QObject-ból származik
-//                      parent,
-//                      [=](const QUuid& id) {
-//                          if (presenter && deleteFn)
-//                              (presenter->*deleteFn)(id);
-//                      });
-
-//     // Modern Qt-style connect: editRequested
-//     QObject::connect(tableManager,
-//                      static_cast<void(QObject::*)(const QUuid&)>(&QObject::editRequested),
-//                      parent,
-//                      [=](const QUuid& id) {
-//                          auto opt = RegistryType::instance().findById(id);
-//                          if (!opt) return;
-
-//                          EntryType original = *opt;
-//                          DialogType dialog(static_cast<QWidget*>(parent));
-//                          dialog.setModel(original);
-
-//                          if (dialog.exec() != QDialog::Accepted)
-//                              return;
-
-//                          EntryType updated = dialog.getModel();
-//                          if (presenter && updateFn)
-//                              (presenter->*updateFn)(updated);
-//                      });
+//     w->connect(ui->btn_AddCuttingPlanRequest, &QPushButton::clicked,
+//             w, &MainWindow::handle_btn_AddCuttingPlanRequest_clicked);
+//     w->connect(ui->btn_NewCuttingPlan, &QPushButton::clicked,
+//             w, &MainWindow::handle_btn_NewCuttingPlan_clicked);
+//     w->connect(ui->btn_ClearCuttingPlan, &QPushButton::clicked,
+//             w, &MainWindow::handle_btn_ClearCuttingPlan_clicked);
 // }
 
-// } // namespace tablehelper
+// template <typename Func1, typename Func2>
+// inline static void c2(Func1 signal, Func2 &&slot){
+
+// }
+// }
+// void MainWindow::Connect_InputTableManager()
+// {
+//     connect(inputTableManager.get(), &InputTableManager::deleteRequested,
+//             this, [this](const QUuid& id) {
+//                 presenter->removeCutRequest(id);
+//             });
+
+//     //
+//     connect(inputTableManager.get(), &InputTableManager::editRequested,
+//             this, [this](const QUuid& id) {
+//                 auto opt = CuttingPlanRequestRegistry::instance().findById(id);
+//                 if (!opt) return;
+
+//                 CuttingPlanRequest original = *opt;
+
+//                 AddInputDialog dialog(this);
+//                 dialog.setModel(original);
+
+//                 if (dialog.exec() != QDialog::Accepted)
+//                     return;
+
+//                 CuttingPlanRequest updated = dialog.getModel();
+//                 presenter->updateCutRequest(updated);
+//             });
+// }
+
+// void MainWindow::Connect_StockTableManager()
+// {
+//     connect(stockTableManager.get(), &StockTableManager::deleteRequested,
+//             this, [this](const QUuid& id) {
+//                 presenter->removeStockEntry(id);
+//             });
+
+//     connect(stockTableManager.get(), &StockTableManager::editRequested,
+//             this, [this](const QUuid& id) {
+//                 auto opt = StockRegistry::instance().findById(id);
+//                 if (!opt) return;
+
+//                 StockEntry original = *opt;
+
+//                 AddStockDialog dialog(this);
+//                 dialog.setModel(original);
+
+//                 if (dialog.exec() != QDialog::Accepted)
+//                     return;
+
+//                 StockEntry updated = dialog.getModel();
+//                 presenter->updateStockEntry(updated);
+//             });
+// }
+
+// void MainWindow::Connect_LeftoverTableManager()
+// {
+//     // 🗑️ Hulló anyagok táblázat kezelése
+//     connect(leftoverTableManager.get(), &LeftoverTableManager::deleteRequested,
+//             this, [this](const QUuid& id) {
+//                 presenter->removeLeftoverEntry(id);
+//             });
+
+//     // 📝 Hulló anyagok szerkesztése
+//     connect(leftoverTableManager.get(), &LeftoverTableManager::editRequested,
+//             this, [this](const QUuid& id) {
+//                 auto opt = LeftoverStockRegistry::instance().findById(id);
+//                 if (!opt) return;
+
+//                 LeftoverStockEntry original = *opt;
+
+//                 AddWasteDialog dialog(this);
+//                 dialog.setModel(original);
+
+//                 if (dialog.exec() != QDialog::Accepted)
+//                     return;
+
+//                 LeftoverStockEntry updated = dialog.getModel();
+//                 presenter->updateLeftoverEntry(updated);
+//             });
+
+// }

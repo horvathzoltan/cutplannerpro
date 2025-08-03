@@ -23,6 +23,7 @@ bool CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry& r
     return loadFromFile(registry, filePath);
 }
 
+// ha a beolvasás sikeres, törli a registry-t és feltölti az új adatokkal
 bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry, const QString& filePath) {
     if (filePath.isEmpty() || !QFile::exists(filePath)) {
         qWarning() << "❌ Nem található vagy üres fájlnév: " << filePath;
@@ -34,7 +35,10 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
     if (lastFileWasEffectivelyEmpty) {
         zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");
-        registry.clear();
+        //registry.setPersist(false);
+        //registry.clearAll();
+        registry.setData({}); // Clear the registry);
+        //registry.setPersist(true);
         return true;
     }
 
@@ -43,11 +47,14 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
         return false;
     }
 
+    //registry.setPersist(false);
+    // registry.clearAll();
+    // for (const auto &req : std::as_const(requests))
+    //     registry.registerRequest(req);
 
-    registry.clear();
-    for (const CuttingPlanRequest& req : requests)
-        registry.registerRequest(req);
+    registry.setData(requests);
 
+    //registry.setPersist(true);
     return true;
 }
 

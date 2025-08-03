@@ -1,1 +1,2 @@
 materialBarCode;requiredLength;quantity;ownerName;externalReference
+MAT-ROLL60-6000;234;5;"aaa";"2"

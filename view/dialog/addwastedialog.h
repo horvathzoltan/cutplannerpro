@@ -31,5 +31,6 @@ private:
     void populateMaterialCombo();
     bool validateInputs();
 
-    QString currentBarcode;
+    //QString currentBarcode;
+    QUuid current_entryId; // Az aktuális anyag ID, ha szerkesztés módban vagyunk
 };

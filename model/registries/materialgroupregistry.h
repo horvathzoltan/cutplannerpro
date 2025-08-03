@@ -7,17 +7,26 @@
 
 // 🔗 Anyagcsoportok tárolója: lekérdezhető, singleton
 class MaterialGroupRegistry {
+private:
+    MaterialGroupRegistry() = default;
+    MaterialGroupRegistry(const MaterialGroup&) = delete;
+
+    // QMap használata a gyors és kulcs-alapú elérés érdekében (groupId → MaterialGroup).
+    // Ez lehetővé teszi az anyagcsoportok és anyagok hatékony keresését UUID alapján.
+    // A sorrend nem számít, az adatintegritás és a lekérdezhetőség a prioritás.
+
+    QMap<QUuid, MaterialGroup> _data;     // groupId → group
+    QMap<QUuid, QUuid> _materialToGroup;  // materialId → groupId
+
 public:
     static MaterialGroupRegistry& instance();
 
-    void addGroup(const MaterialGroup& group);
-    void clear();
+    void registerGroup(const MaterialGroup& group);
+    void clearAll();
 
-    const MaterialGroup* findByGroupId(const QUuid& groupId) const;
+    QList<MaterialGroup> readAll() const;
+    const MaterialGroup* findById(const QUuid& groupId) const;
     const MaterialGroup* findByMaterialId(const QUuid& materialId) const;
-    QList<MaterialGroup> all() const;
 
-private:
-    QMap<QUuid, MaterialGroup> _groups;          // groupId → csoport
-    QMap<QUuid, QUuid> _materialToGroup;         // materialId → groupId        
+    bool isEmpty() const { return _data.isEmpty(); }
 };

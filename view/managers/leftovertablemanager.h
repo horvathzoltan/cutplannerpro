@@ -41,7 +41,7 @@ public:
     static constexpr int ColReusable  = 6;
     static constexpr int ColActions = 7;
 
-    void updateTableFromRegistry();
+    void refresh_TableFromRegistry();
     void updateRow(const LeftoverStockEntry &entry);
     void removeRowById(const QUuid &id);
 };

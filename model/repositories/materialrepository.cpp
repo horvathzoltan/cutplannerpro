@@ -34,8 +34,10 @@ bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
     }
 
 
-    registry.setMaterials(loaded); // 🔧 Itt történik az anyagregisztráció
+    registry.setData(loaded); // 🔧 Itt történik az anyagregisztráció
 
+    /*for (const auto& m : std::as_const(loaded))
+        registry.registerData(m);*/
 
     return true;
 }

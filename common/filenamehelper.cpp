@@ -1,5 +1,5 @@
 #include "filenamehelper.h"
-#include "settingsmanager.h"
+//#include "settingsmanager.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QCoreApplication>

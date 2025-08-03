@@ -2,18 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include "../model/cuttingrequest.h"
-#include "../model/cutresult.h"
-//#include "../model/stockentry.h"
-//#include "../model/CuttingOptimizerModel.h"
+//#include "common/tableconnectionhelper.h"
+#include "model/cutresult.h"
 
-#include "view/managers/inputtablemanager.h"
-#include "view/managers/leftovertablemanager.h"
-#include "view/managers/resultstablemanager.h"
-#include "view/managers/stocktablemanager.h"
-
+#include "managers/inputtablemanager.h"
+#include "managers/leftovertablemanager.h"
+#include "managers/resultstablemanager.h"
+#include "managers/stocktablemanager.h"
 #include "cutanalyticspanel.h"
-//#include "../model/materialregistry.h"
+#include "presenter/CuttingPresenter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,13 +18,14 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class CuttingPresenter;
+//class CuttingPresenter;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -41,13 +39,15 @@ public:
     void removeRow_InputTable(const QUuid &v);
     void clear_InputTable();
     // stock table
+    void addRow_StockTable(const StockEntry &v);
     void removeRow_StockTable(const QUuid &id);
     void updateRow_StockTable(const StockEntry &v);
-    void update_StockTable();
+    void refresh_StockTable();
     // leftovers table
     void removeRow_LeftoversTable(const QUuid &id);
+    void addRow_LeftoversTable(const LeftoverStockEntry &v);
     void updateRow_LeftoversTable(const LeftoverStockEntry &v);
-    void update_LeftoversTable();
+    void refresh_LeftoversTable();
 
     // results table
     //void addRow_ResultsTable(QString rodNumber, const CutPlan& plan);
@@ -55,33 +55,34 @@ public:
     void clear_ResultsTable();
 
 private slots:
-    void on_btnAddRow_clicked();
-    void on_btnOptimize_clicked();
-    void on_btnFinalize_clicked();
-    void on_btnDisposal_clicked();
-    void on_btnNewPlan_clicked();
-    void on_btnClearPlan_clicked();
-    void on_btnAddStockEntry_clicked();
+    void handle_btn_NewCuttingPlan_clicked();
+    void handle_btn_AddCuttingPlanRequest_clicked();
+    void handle_btn_ClearCuttingPlan_clicked();
+    void handle_btn_OpenCuttingPlan_clicked();
+
+    void handle_btn_Optimize_clicked();
+    void handle_btn_Finalize_clicked();
+    void handle_btn_AddStockEntry_clicked();
+
+    void handle_btn_LeftoverDisposal_clicked();
+    void handle_btn_AddLeftoverStockEntry_clicked();
 
 private:
     Ui::MainWindow *ui;
-    CuttingPresenter* presenter;
-    CutAnalyticsPanel* analyticsPanel;
+    CuttingPresenter* presenter = nullptr;
+    CutAnalyticsPanel* analyticsPanel = nullptr;
 
     // input tábla - vágási terv
-    std::unique_ptr<InputTableManager> inputTableManager;
+    std::unique_ptr<InputTableManager> inputTableManager = nullptr;
     // stock tábla - anyagkészlet - alapanyag raktárkészlet
-    std::unique_ptr<StockTableManager> stockTableManager;
+    std::unique_ptr<StockTableManager> stockTableManager = nullptr;
     // ♻️ Hullókezelő
-    std::unique_ptr<LeftoverTableManager> leftoverTableManager;
+    std::unique_ptr<LeftoverTableManager> leftoverTableManager = nullptr;
     // eredmény
-    std::unique_ptr<ResultsTableManager> resultsTableManager;
+    std::unique_ptr<ResultsTableManager> resultsTableManager = nullptr;
 
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;
-
-    void Connect_InputTableManager();
-    void Connect_StockTableManager();
-    void Connect_LeftoverTableManager();
+    void ButtonConnector_Connect();
 };
 #endif // MAINWINDOW_H

@@ -50,7 +50,18 @@ void InputTableManager::addRow(const CuttingPlanRequest& request) {
     btnUpdate->setStyleSheet("QPushButton { border: none; }");
     btnUpdate->setProperty("entryId", request.requestId);
 
+    // 🎛️ Gombpanel
+    auto* actionPanel = new QWidget();
+    auto* layout = new QHBoxLayout(actionPanel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(4);
+    layout->addWidget(btnUpdate);
+    layout->addWidget(btnDelete);
 
+    table->setCellWidget(row, ColAction, actionPanel);
+    table->setColumnWidth(ColAction, 64); // 2 gomb + spacing
+
+    // 📡 Signal kapcsolás UUID alapú
     QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
         QUuid id = btnDelete->property("entryId").toUuid();
         emit deleteRequested(id);
@@ -61,43 +72,12 @@ void InputTableManager::addRow(const CuttingPlanRequest& request) {
         emit editRequested(id);
     });
 
-    // QObject::connect(btnDelete, &QPushButton::clicked, btnDelete, [this, btnDelete]() {
-    //     QModelIndex index = this->table->indexAt(btnDelete->pos());
-    //     int row = index.row();
-
-    //     QTableWidgetItem* itemName = this->table->item(row, ColName);
-    //     QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
-
-    //     emit deleteRequested(requestId);
-    // });
-
-    // QObject::connect(btnUpdate, &QPushButton::clicked, btnUpdate, [this, btnUpdate]() {
-    //     QModelIndex index = this->table->indexAt(btnUpdate->pos());
-    //     int row = index.row();
-
-    //     QTableWidgetItem* itemName = this->table->item(row, ColName);
-    //     QUuid requestId = itemName->data(CuttingRequestIdRole).toUuid();
-
-    //     emit editRequested(requestId); // 🔔 Új signal
-    // });
-
 
     // 📋 Fő adatsor beállítása
     table->setItem(row, ColName, itemName);
     table->setItem(row, ColLength, itemLength);
     table->setItem(row, ColQty, itemQty);
     //table->setCellWidget(row, ColAction, btnDelete);
-
-    // 🎛️ Gombpanel
-    auto* actionPanel = new QWidget();
-    auto* layout = new QHBoxLayout(actionPanel);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(4);
-    layout->addWidget(btnDelete);
-    layout->addWidget(btnUpdate);
-
-    table->setCellWidget(row, ColAction, actionPanel);
-    table->setColumnWidth(ColAction, 64); // 2 gomb + spacing
 
     RowStyler::applyInputStyle(table, row, mat, request);
 
@@ -114,7 +94,7 @@ void InputTableManager::addRow(const CuttingPlanRequest& request) {
     table->setRowHeight(row + 1, 24);
 }
 
-void InputTableManager::removeRowByRequestId(const QUuid& requestId) {
+void InputTableManager::removeRowById(const QUuid& requestId) {
     for (int row = 0; row < table->rowCount(); ++row) {
         QTableWidgetItem* item = table->item(row, ColName);
         if (!item) continue;
@@ -128,7 +108,7 @@ void InputTableManager::removeRowByRequestId(const QUuid& requestId) {
     }
 }
 
-void InputTableManager::updateTableFromRegistry() {
+void InputTableManager::refresh_TableFromRegistry() {
     if (!table)
         return;
 
@@ -140,7 +120,7 @@ void InputTableManager::updateTableFromRegistry() {
         addRow(req);  // ✅ feldolgozás és megjelenítés
     }
 
-    table->resizeColumnsToContents();  // 📐 automatikus oszlopméretezés
+    //table->resizeColumnsToContents();  // 📐 automatikus oszlopméretezés
 }
 
 void InputTableManager::updateRow(const CuttingPlanRequest& updated) {

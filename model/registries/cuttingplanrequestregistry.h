@@ -12,24 +12,28 @@
  * Egyedi anyagID-k alapján tárolja az igényeket, támogatja több igény kezelését egy anyaghoz.
  */
 class CuttingPlanRequestRegistry {
-public:
-    static CuttingPlanRequestRegistry& instance();
-
-    void registerRequest(const CuttingPlanRequest& request);
-    QVector<CuttingPlanRequest> findByMaterialId(const QUuid& materialId) const;
-    QVector<CuttingPlanRequest> readAll() const;
-
-        void clear(); // 🔄 ÚJ: teljes törlés
-    void removeRequest(const QUuid &requestId);
-
-    bool updateRequest(const CuttingPlanRequest &updated);
-    std::optional<CuttingPlanRequest> findById(const QUuid& requestId) const; // ⬅️ új
-    bool isEmpty() const { return _data.isEmpty(); }
 private:
-    void persist() const;
     CuttingPlanRequestRegistry() = default;
     CuttingPlanRequestRegistry(const CuttingPlanRequestRegistry&) = delete;
-    CuttingPlanRequestRegistry& operator=(const CuttingPlanRequestRegistry&) = delete;
 
     QVector<CuttingPlanRequest> _data;
+    //bool isPersist= true;
+
+    void persist() const;
+    CuttingPlanRequestRegistry& operator=(const CuttingPlanRequestRegistry&) = delete;
+public:
+    // 🔁 Singleton elérés
+    static CuttingPlanRequestRegistry& instance();
+
+    void registerRequest(const CuttingPlanRequest& request);        
+    bool updateRequest(const CuttingPlanRequest &updated);
+    void removeRequest(const QUuid &requestId);
+
+    QVector<CuttingPlanRequest> readAll() const;
+    std::optional<CuttingPlanRequest> findById(const QUuid& requestId) const; // ⬅️ új
+    //QVector<CuttingPlanRequest> findByMaterialId(const QUuid& materialId) const;
+    void clearAll(); // 🔄 ÚJ: teljes törlés
+
+    bool isEmpty() const { return _data.isEmpty(); }
+    void setData(const QVector<CuttingPlanRequest>& v) { _data = v;}
 };

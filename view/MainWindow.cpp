@@ -1,47 +1,32 @@
 #include "MainWindow.h"
-//#include "common/materialutils.h"
-#include "common/grouputils.h"
-#include "common/materialutils.h"
-#include "common/settingsmanager.h"
-#include "common/tableconnectionhelper.h"
-#include "ui_MainWindow.h"
 
-#include "../presenter/CuttingPresenter.h"
-#include "view/dialog/addinputdialog.h"
+#include "ui_MainWindow.h"
 
 #include <QComboBox>
 #include <QMessageBox>
 
-#include "cutanalyticspanel.h" // vagy ahova tetted
-
-//#include "../model/materialregistry.h"
-#include "../model/stockentry.h"
-#include "../model/cuttingplanrequest.h"
-//#include "../model/cutresult.h"
-//#include "../model/CuttingOptimizerModel.h"
-
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/stockregistry.h>
-
-#include <common/filenamehelper.h>
-#include <common/rowstyler.h>
-
-#include <model/repositories/materialrepository.h>
+//#include "cutanalyticspanel.h"
+#include "model/stockentry.h"
+#include "model/cuttingplanrequest.h"
+#include "common/filenamehelper.h"
+#include "common/settingsmanager.h"
+#include "common/tableconnectionhelper.h"
 
 #include <QObject>      // connect() miatt
 #include <QCloseEvent>
 #include <QTimer>
 #include "common/qteventutil.h"
-#include "view/dialog/addstockdialog.h"
-#include "view/dialog/addwastedialog.h"
-#include "view/managers/resultstablemanager.h"
+#include "dialog/addstockdialog.h"
+#include "dialog/addinputdialog.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
 
     setWindowTitle("CutPlanner MVP");
 
@@ -57,21 +42,19 @@ MainWindow::MainWindow(QWidget *parent)
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
     resultsTableManager = std::make_unique<ResultsTableManager>(ui->tableResults, this);
 
-    InputTableConnector::Connect(this, inputTableManager,  presenter);
-    //Connect_InputTableManager();
-    Connect_StockTableManager();
-    Connect_LeftoverTableManager();
+    InputTableConnector::Connect(this, inputTableManager.get(), presenter);
+    StockTableConnector::Connect(this, stockTableManager.get(), presenter);
+    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), presenter);
+    ButtonConnector_Connect();//::Connect(ui, this);
 
     ui->tableResults->setAlternatingRowColors(true);
     ui->tableResults->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableResults->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-
-
     // 📥 betöltött adatok megjelenítése
-    inputTableManager->updateTableFromRegistry();         // Feltölti a tableInput-ot
-    stockTableManager->updateTableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
-    leftoverTableManager->updateTableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
+    inputTableManager->refresh_TableFromRegistry();         // Feltölti a tableInput-ot
+    stockTableManager->refresh_TableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
+    leftoverTableManager->refresh_TableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
 
     //inputFileName
     QString currentFileName = SettingsManager::instance().cuttingPlanFileName();
@@ -100,14 +83,45 @@ MainWindow::MainWindow(QWidget *parent)
         restoreGeometry(SettingsManager::instance().windowGeometry());
         ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
     });
+
+    ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColBarcode, true);
+    ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColShape, true);
+}
+
+void MainWindow::ButtonConnector_Connect()
+{
+    //cutting plan requests
+    connect(ui->btn_AddCuttingPlanRequest, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_AddCuttingPlanRequest_clicked);
+    connect(ui->btn_NewCuttingPlan, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_NewCuttingPlan_clicked);
+    connect(ui->btn_ClearCuttingPlan, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_ClearCuttingPlan_clicked);
+
+    // stock table
+    connect(ui->btn_AddStockEntry, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_AddStockEntry_clicked);
+
+    // leftover table
+    connect(ui->btn_AddLeftoverStockEntry, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_AddLeftoverStockEntry_clicked);
+
+    connect(ui->btn_LeftoverDisposal, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_LeftoverDisposal_clicked);
+
+    // cutting plan
+    connect(ui->btn_Finalize, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_Finalize_clicked);
+    connect(ui->btn_Optimize, &QPushButton::clicked,
+               this, &MainWindow::handle_btn_Optimize_clicked);
+    connect(ui->btn_OpenCuttingPlan, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
 
 bool MainWindow::event(QEvent* e)
 {
@@ -120,85 +134,6 @@ bool MainWindow::event(QEvent* e)
 
     // 🔄 Egyéb események átadása az alapkezelésnek
     return QMainWindow::event(e);
-}
-
-// void MainWindow::Connect_InputTableManager()
-// {
-//     connect(inputTableManager.get(), &InputTableManager::deleteRequested,
-//             this, [this](const QUuid& id) {
-//                 presenter->removeCutRequest(id);
-//             });
-
-//     //
-//     connect(inputTableManager.get(), &InputTableManager::editRequested,
-//             this, [this](const QUuid& id) {
-//                 auto opt = CuttingPlanRequestRegistry::instance().findById(id);
-//                 if (!opt) return;
-
-//                 CuttingPlanRequest original = *opt;
-
-//                 AddInputDialog dialog(this);
-//                 dialog.setModel(original);
-
-//                 if (dialog.exec() != QDialog::Accepted)
-//                     return;
-
-//                 CuttingPlanRequest updated = dialog.getModel();
-//                 presenter->updateCutRequest(updated);
-//             });
-// }
-
-void MainWindow::Connect_StockTableManager()
-{
-    connect(stockTableManager.get(), &StockTableManager::deleteRequested,
-            this, [this](const QUuid& id) {
-                presenter->removeStockEntry(id);
-            });
-
-    connect(stockTableManager.get(), &StockTableManager::editRequested,
-            this, [this](const QUuid& id) {
-                auto opt = StockRegistry::instance().findById(id);
-                if (!opt) return;
-
-                StockEntry original = *opt;
-
-                AddStockDialog dialog(this);
-                dialog.setModel(original);
-
-                if (dialog.exec() != QDialog::Accepted)
-                    return;
-
-                StockEntry updated = dialog.getModel();
-                presenter->updateStockEntry(updated);
-            });
-}
-
-void MainWindow::Connect_LeftoverTableManager()
-{
-    // 🗑️ Hulló anyagok táblázat kezelése
-    connect(leftoverTableManager.get(), &LeftoverTableManager::deleteRequested,
-            this, [this](const QUuid& id) {
-                presenter->removeLeftoverEntry(id);
-            });
-
-    // 📝 Hulló anyagok szerkesztése
-    connect(leftoverTableManager.get(), &LeftoverTableManager::editRequested,
-            this, [this](const QUuid& id) {
-                auto opt = LeftoverStockRegistry::instance().findById(id);
-                if (!opt) return;
-
-                LeftoverStockEntry original = *opt;
-
-                AddWasteDialog dialog(this);
-                dialog.setModel(original);
-
-                if (dialog.exec() != QDialog::Accepted)
-                    return;
-
-                LeftoverStockEntry updated = dialog.getModel();
-                presenter->updateLeftoverEntry(updated);
-            });
-
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -234,27 +169,82 @@ void MainWindow::updateStats(const QVector<CutPlan>& plans, const QVector<CutRes
     analyticsPanel->updateStats(plans, results);
 }
 
-
-
-
-
-void MainWindow::on_btnFinalize_clicked()
+/*cuttingplan*/
+void MainWindow::handle_btn_NewCuttingPlan_clicked()
 {
-    const auto confirm = QMessageBox::question(this, "Terv lezárása",
-                                               "Biztosan lezárod ezt a vágási tervet? Ez módosítja a készletet.",
-                                               QMessageBox::Yes | QMessageBox::No);
+    presenter->createNew_CuttingPlanRequests();
+}
 
-    if (confirm == QMessageBox::Yes) {
-        presenter->finalizePlans();
-        update_StockTable();
-        //ReusableStockRegistry::instance().all());
-        update_LeftoversTable();// frissítjük új hullókkal
+void MainWindow::handle_btn_OpenCuttingPlan_clicked()
+{
+
+    const QString folder = FileNameHelper::instance().getCuttingPlanFolder();
+
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Vágási terv betöltése",
+        folder,
+        "Vágási tervek (*.csv *.txt)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    // 2️⃣ Beolvasás
+    if (!presenter->loadCuttingPlanFromFile(filePath)) {
+        QMessageBox::warning(this, tr("Hiba"), tr("Nem sikerült betölteni a vágási tervet."));
+        return;
     }
+
+    // 3️⃣ Fájlnév mentése a settingsbe
+    QString fileName = QFileInfo(filePath).fileName();
+    SettingsManager::instance().setCuttingPlanFileName(fileName);
+    setInputFileLabel(fileName, filePath);
+
+    // 4️⃣ Táblázat frissítése
+    inputTableManager->refresh_TableFromRegistry(); // Feltölti a tableInput-ot a CuttingPlanRequestRegistry alapján
 }
 
 
+void MainWindow::handle_btn_ClearCuttingPlan_clicked()
+{
+    presenter->removeAll_CuttingPlanRequests();
+}
 
-void MainWindow::on_btnDisposal_clicked()
+/*cuttingplanrequests*/
+void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
+    AddInputDialog dialog(this);
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    CuttingPlanRequest request = dialog.getModel();
+    presenter->add_CuttingPlanRequest(request);
+}
+
+/*stock*/
+void MainWindow::handle_btn_AddStockEntry_clicked()
+{
+    AddStockDialog dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    StockEntry entry = dlg.getModel();
+    presenter->add_StockEntry(entry);
+}
+
+/*leftover stock*/
+void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
+    AddWasteDialog dialog(this);
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    LeftoverStockEntry request = dialog.getModel();
+    presenter->add_LeftoverStockEntry(request);
+}
+
+void MainWindow::handle_btn_LeftoverDisposal_clicked()
 {
     const auto confirm = QMessageBox::question(this, "Selejtezés",
                                                "Biztosan eltávolítod a túl rövid reusable darabokat? Ezek archiválásra kerülnek és kikerülnek a készletből.",
@@ -263,9 +253,9 @@ void MainWindow::on_btnDisposal_clicked()
     if (confirm == QMessageBox::Yes) {
         presenter->scrapShortLeftovers(); // 🔧 Selejtezési logika átkerül Presenterbe
 
-        update_StockTable(); // ha a reusable a készletben is megjelenik
+        refresh_StockTable(); // ha a reusable a készletben is megjelenik
         //ReusableStockRegistry::instance().all());
-        update_LeftoversTable();
+        refresh_LeftoversTable();
         // updateArchivedWasteTable(); → ha van külön nézet hozzá
 
         QMessageBox::information(this, "Selejtezés kész",
@@ -273,51 +263,26 @@ void MainWindow::on_btnDisposal_clicked()
     }
 }
 
-void MainWindow::on_btnNewPlan_clicked()
-{
-    presenter->createNewCuttingPlan();
-}
-
-void MainWindow::on_btnClearPlan_clicked()
-{
-    presenter->clearCuttingPlan();
-}
-
-void MainWindow::on_btnAddRow_clicked() {
-    AddInputDialog dialog(this);
-
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    CuttingPlanRequest request = dialog.getModel();
-
-    presenter->addCutRequest(request);
-}
-
-void MainWindow::on_btnOptimize_clicked() {
+void MainWindow::handle_btn_Optimize_clicked() {
     // 🧠 Modell frissítése
     presenter->syncModelWithRegistries();
     // 🚀 Optimalizálás elindítása
     presenter->runOptimization();
 }
 
-void MainWindow::on_btnAddStockEntry_clicked()
+void MainWindow::handle_btn_Finalize_clicked()
 {
-    AddStockDialog dlg(this);
-    if (dlg.exec() == QDialog::Accepted) {
-        StockEntry entry = dlg.getModel();
+    const auto confirm = QMessageBox::question(this, "Terv lezárása",
+                                               "Biztosan lezárod ezt a vágási tervet? Ez módosítja a készletet.",
+                                               QMessageBox::Yes | QMessageBox::No);
 
-        // 🌟 Itt jöhet a készlettábla frissítése:
-        StockRegistry::instance().add(entry);
-
-        // ✨ Opcionálisan GUI frissítése:
-        stockTableManager->addRow(entry); // <- ha van ilyen metódusod
-
-        // QMessageBox::information(this, "Sikeres rögzítés",
-        //                          "A készlettétel sikeresen fel lett véve.");
+    if (confirm == QMessageBox::Yes) {
+        presenter->finalizePlans();
+        refresh_StockTable();
+        //ReusableStockRegistry::instance().all());
+        refresh_LeftoversTable();// frissítjük új hullókkal
     }
 }
-
 
 // input table
 void MainWindow::addRow_InputTable(const CuttingPlanRequest& v)
@@ -332,7 +297,7 @@ void MainWindow::updateRow_InputTable(const CuttingPlanRequest& v)
 
 void MainWindow::removeRow_InputTable(const QUuid& id)
 {
-    inputTableManager->removeRowByRequestId(id);
+    inputTableManager->removeRowById(id);
 }
 
 void MainWindow::clear_InputTable(){
@@ -340,6 +305,11 @@ void MainWindow::clear_InputTable(){
 }
 
 // stock table
+void MainWindow::addRow_StockTable(const StockEntry& v)
+{
+    stockTableManager->addRow(v);
+}
+
 void MainWindow::updateRow_StockTable(const StockEntry& v)
 {
     stockTableManager->updateRow(v);
@@ -349,14 +319,15 @@ void MainWindow::removeRow_StockTable(const QUuid& id)
 {
     stockTableManager->removeRowById(id);
 }
-void MainWindow::update_StockTable(){
-    stockTableManager->updateTableFromRegistry();
+
+void MainWindow::refresh_StockTable(){
+    stockTableManager->refresh_TableFromRegistry();
 }
 
 // leftovers table
-void MainWindow::removeRow_LeftoversTable(const QUuid& id)
+void MainWindow::addRow_LeftoversTable(const LeftoverStockEntry& v)
 {
-    stockTableManager->removeRowById(id);
+    leftoverTableManager->addRow(v);
 }
 
 void MainWindow::updateRow_LeftoversTable(const LeftoverStockEntry& v)
@@ -364,9 +335,16 @@ void MainWindow::updateRow_LeftoversTable(const LeftoverStockEntry& v)
     leftoverTableManager->updateRow(v);
 }
 
-void MainWindow::update_LeftoversTable(){
-    leftoverTableManager->updateTableFromRegistry();
+void MainWindow::removeRow_LeftoversTable(const QUuid& id)
+{
+    stockTableManager->removeRowById(id);
 }
+
+
+void MainWindow::refresh_LeftoversTable(){
+    leftoverTableManager->refresh_TableFromRegistry();
+}
+
 
 // restults table
 void MainWindow::clear_ResultsTable() {
@@ -385,7 +363,6 @@ void MainWindow::update_ResultsTable(const QVector<CutPlan>& plans) {
 
     //ui->tableResults->resizeColumnsToContents();
 }
-
 // void MainWindow::addRow_ResultsTable(QString rodNumber, const CutPlan& plan) {
 //     int row = ui->tableResults->rowCount();
 //     ui->tableResults->insertRow(row);       // metaadat sor
@@ -548,4 +525,7 @@ void MainWindow::update_ResultsTable(const QVector<CutPlan>& plans) {
 //     // ui->tableResults->setCellWidget(row, 2, cutsWidget);
 
 // }
+
+
+
 

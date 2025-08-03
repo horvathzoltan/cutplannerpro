@@ -24,10 +24,13 @@ bool StockRepository::loadFromCSV(StockRegistry& registry) {
         return false;
     }
 
-    registry.clear(); // 🔄 Korábbi készlet törlése
-    for (const auto& entry : entries)
-        registry.add(entry);
+    // registry.setPersist(false);
+    // registry.clearAll(); // 🔄 Korábbi készlet törlése
+    // for (const auto& entry : entries)
+    //     registry.registerEntry(entry);
 
+    // registry.setPersist(true);
+    registry.setData(entries); // 🔧 Itt történik a készletregisztráció
     return true;
 }
 
@@ -105,7 +108,7 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
     // 🏷️ CSV fejléc
     out << "materialBarcode;quantity\n";
 
-    for (const StockEntry& entry : registry.all()) {
+    for (const StockEntry& entry : registry.readAll()) {
         const auto* mat = MaterialRegistry::instance().findById(entry.materialId);
         if (!mat) {
             qWarning() << "⚠️ Hiányzó anyag mentéskor:" << entry.materialId.toString();

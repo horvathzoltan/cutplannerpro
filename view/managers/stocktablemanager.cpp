@@ -178,7 +178,7 @@ void StockTableManager::updateRow(const StockEntry& entry) {
 // }
 
 
-void StockTableManager::updateTableFromRegistry()
+void StockTableManager::refresh_TableFromRegistry()
 {
     if (!table)
         return;
@@ -186,7 +186,7 @@ void StockTableManager::updateTableFromRegistry()
     table->clearContents();
     table->setRowCount(0);
 
-    const auto& stockEntries = StockRegistry::instance().all();
+    const auto& stockEntries = StockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();
 
     for (const auto& entry : stockEntries)
@@ -198,7 +198,7 @@ void StockTableManager::updateTableFromRegistry()
         addRow(entry);  // 🔄 új metódus, ami az egész StockEntry-t feldolgozza
     }
 
-    table->resizeColumnsToContents();
+    //table->resizeColumnsToContents();
 }
 
 void StockTableManager::removeRowById(const QUuid& stockId) {

@@ -3,36 +3,29 @@
 #include <QVector>
 #include <QUuid>
 #include <QString>
-#include <optional>
+//#include <optional>
 #include "../materialmaster.h"
 
 class MaterialRegistry {
 private:
     MaterialRegistry() = default;  // 🔐 Privát konstruktor a singletonhoz
+    MaterialRegistry(const MaterialMaster&) = delete;
 
-    QVector<MaterialMaster> materials;  // 📦 Betöltött anyagtörzs lista
+    QVector<MaterialMaster> _data;  // 📦 Betöltött anyagtörzs lista
 public:
 
-
     // 🔁 Singleton elérés
-    static MaterialRegistry& instance() {
-        static MaterialRegistry reg;
-        return reg;
-    }
+    static MaterialRegistry& instance();
 
-    // 🔍 Keresés technikai azonosító szerint (id)
+    // ➕ Új anyag hozzáadása, csak ha code egyedi
+    bool registerData(const MaterialMaster& material);
+
+    const QVector<MaterialMaster>& readAll() const { return _data;}
     const MaterialMaster* findById(const QUuid& id) const;
-
-    const QVector<MaterialMaster>& all() const { return materials;}
+    const MaterialMaster* findByBarcode(const QString& barcode) const;
 
     bool isBarcodeUnique(const QString& barcode) const;
 
-    // 🔍 Keresés vonalkód alapján
-    const MaterialMaster* findByBarcode(const QString& barcode) const;
-
-    // ➕ Új anyag hozzáadása, csak ha code egyedi
-    bool insert(const MaterialMaster& material);
-
-    // 📥 Betöltés külső adatokból (pl. CSV, JSON után)
-    void setMaterials(const QVector<MaterialMaster>& newMaterials);
+    bool isEmpty() const { return _data.isEmpty(); }
+    void setData(const QVector<MaterialMaster>& v) { _data = v;}
 };

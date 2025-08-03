@@ -55,7 +55,7 @@ StartupStatus StartupManager::initMaterialRegistry() {
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagtörzset a CSV fájlból.");
 
-    const auto& all = MaterialRegistry::instance().all();
+    const auto& all = MaterialRegistry::instance().readAll();
 
     if (!hasMinimumMaterials(2))
         return StartupStatus::failure(
@@ -69,7 +69,7 @@ StartupStatus StartupManager::initMaterialRegistry() {
     for (const auto& mat : all)
         knownMaterials.insert(mat.id);
 
-    const auto& groupList = MaterialGroupRegistry::instance().all();
+    const auto& groupList = MaterialGroupRegistry::instance().readAll();
     QStringList invalidGroups;
 
     for (const auto& group : groupList) {
@@ -97,7 +97,7 @@ StartupStatus StartupManager::initStockRegistry() {
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni a készletet a CSV fájlból).");
 
-    const auto& all = MaterialRegistry::instance().all();
+    const auto& all = MaterialRegistry::instance().readAll();
 
     if (all.isEmpty())
         return StartupStatus::failure("⚠️ A készlet üres. Legalább 1 tétel szükséges a működéshez.");
@@ -134,7 +134,7 @@ StartupStatus StartupManager::initMaterialGroupRegistry() {
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagcsoportokat a groups.csv fájlból.");
 
-    int count = MaterialGroupRegistry::instance().all().size();
+    int count = MaterialGroupRegistry::instance().readAll().size();
     if (count == 0)
         return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
 
@@ -142,7 +142,7 @@ StartupStatus StartupManager::initMaterialGroupRegistry() {
 }
 
 bool StartupManager::hasMinimumMaterials(int minCount) {
-    return MaterialRegistry::instance().all().size() >= minCount;
+    return MaterialRegistry::instance().readAll().size() >= minCount;
 }
 
 StartupStatus StartupManager::initReusableStockRegistry() {
@@ -150,7 +150,7 @@ StartupStatus StartupManager::initReusableStockRegistry() {
     if (!loaded)
         return StartupStatus::failure("❌ Nem sikerült betölteni a maradék készletet a leftovers.csv fájlból.");
 
-    const auto& all = LeftoverStockRegistry::instance().all();
+    const auto& all = LeftoverStockRegistry::instance().readAll();
 
     if (all.isEmpty())
         return StartupStatus::failure("⚠️ A maradék készlet üres. Legalább 1 tétel szükséges a működéshez.");
@@ -159,7 +159,7 @@ StartupStatus StartupManager::initReusableStockRegistry() {
 
     // 🔎 Validáció: minden reusable-stock-entry ismert anyagra hivatkozzon
     QSet<QUuid> knownMaterials;
-    for (const auto& mat : MaterialRegistry::instance().all())
+    for (const auto& mat : MaterialRegistry::instance().readAll())
         knownMaterials.insert(mat.id);
 
     QStringList invalidReusableStockItems;
@@ -201,7 +201,7 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
 
     // 🔎 Validáció: minden request ismert anyagra hivatkozzon
     QSet<QUuid> knownMaterials;
-    for (const auto& mat : MaterialRegistry::instance().all())
+    for (const auto& mat : MaterialRegistry::instance().readAll())
         knownMaterials.insert(mat.id);
 
     QStringList invalidRequests;

@@ -36,7 +36,7 @@ private:
     void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből
     bool validateInputs();
 
-    QUuid currentRequestId; // 🔒 Megőrzi az eredeti ID-t
+    QUuid current_requestId; // 🔒 Megőrzi az eredeti ID-t
 
 };
 

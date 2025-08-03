@@ -10,7 +10,7 @@
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
-    , currentRequestId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
+    , current_requestId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
 {
     ui->setupUi(this);
     populateMaterialCombo();
@@ -32,7 +32,7 @@ AddInputDialog::~AddInputDialog()
 
 
 void AddInputDialog::populateMaterialCombo() {
-    const auto& registry = MaterialRegistry::instance().all();
+    const auto& registry = MaterialRegistry::instance().readAll();
 
     ui->comboMaterial->clear();
     for (const auto& m : registry) {
@@ -64,7 +64,7 @@ QString AddInputDialog::externalReference() const {
 
 CuttingPlanRequest AddInputDialog::getModel() const {
     CuttingPlanRequest req;
-    req.requestId = currentRequestId; // ✅ ez volt a hiányzó láncszem
+    req.requestId = current_requestId; // ✅ ez volt a hiányzó láncszem
     // 🔗 Anyag ID kinyerése a comboBox-ból
     QVariant matData = ui->comboMaterial->currentData();
     if (matData.isValid())
@@ -113,7 +113,7 @@ void AddInputDialog::accept() {
 }
 
 void AddInputDialog::setModel(const CuttingPlanRequest& request) {
-    currentRequestId = request.requestId; // ⬅️ ID mentése
+    current_requestId = request.requestId; // ⬅️ ID mentése
 
     // 🔗 Anyag beállítása comboBox-ban
     int index = ui->comboMaterial->findData(request.materialId);

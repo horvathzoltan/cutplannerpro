@@ -3,34 +3,39 @@
 #include <common/filenamehelper.h>
 #include <model/repositories/stockrepository.h>
 
-void StockRegistry::add(const StockEntry& entry) {
-    _stock.append(entry);
+StockRegistry &StockRegistry::instance() {
+    static StockRegistry reg;
+    return reg;
+}
+
+void StockRegistry::registerEntry(const StockEntry& entry) {
+    _data.append(entry);
     persist(); // 💾 Automatikus mentés
 }
 
-void StockRegistry::clear() {
-    _stock.clear();
+void StockRegistry::clearAll() {
+    _data.clear();
     persist(); // 💾 Állapot mentés törlés után
 }
 
 // bool StockRegistry::removeByMaterialId(const QUuid& id) {
-//     const int index = std::ranges::find_if(_stock, [&](const auto& s) { return s.materialId == id; }) - _stock.begin();
-//     if (index >= 0 && index < _stock.size()) {
-//         _stock.remove(index);
+//     const int index = std::ranges::find_if(_data, [&](const auto& s) { return s.materialId == id; }) - _data.begin();
+//     if (index >= 0 && index < _data.size()) {
+//         _data.removeEntry(index);
 //         persist(); // 💾 Mentés csak ha történt törlés
 //         return true;
 //     }
 //     return false;
 // }
-void StockRegistry::remove(const QUuid& id) {
+void StockRegistry::removeEntry(const QUuid& id) {
     // 🗑️ Törlés egyedi azonosító alapján
-    auto it = std::remove_if(_stock.begin(), _stock.end(),
+    auto it = std::remove_if(_data.begin(), _data.end(),
                              [&](const StockEntry& r) {
                                  return r.entryId == id;
                              });
 
-    if (it != _stock.end()) {
-        _stock.erase(it, _stock.end());
+    if (it != _data.end()) {
+        _data.erase(it, _data.end());
         persist(); // 💾 Mentés csak akkor, ha történt törlés
     }
 }
@@ -38,7 +43,7 @@ void StockRegistry::remove(const QUuid& id) {
 
 QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
     QVector<StockEntry> result;
-    for (const auto& entry : _stock) {
+    for (const auto& entry : _data) {
         if (entry.materialGroupName() == name)
             result.append(entry);
     }
@@ -46,14 +51,19 @@ QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
 }
 
 void StockRegistry::persist() const {
+    // if(!isPersist){
+    //     return; // 🛑 Ha nem kell perzisztálni, akkor kilépünk
+    // }
     const QString path = FileNameHelper::instance().getStockCsvFile(); // 🔧 Fix útvonal
     if (!path.isEmpty())
         StockRepository::saveToCSV(*this, path);
 }
 
-void StockRegistry::consume(const QUuid& materialId)
+
+
+void StockRegistry::consumeEntry(const QUuid& materialId)
 {
-    for (StockEntry& entry : _stock) {
+    for (StockEntry& entry : _data) {
         if (entry.materialId == materialId) {
             if (entry.quantity > 0) {
                 entry.quantity -= 1; // 🧮 Levonunk egy darabot
@@ -65,20 +75,20 @@ void StockRegistry::consume(const QUuid& materialId)
 }
 
 std::optional<StockEntry> StockRegistry::findById(const QUuid& entryId) const {
-    for (const auto& r : _stock) {
+    for (const auto& r : _data) {
         if (r.entryId == entryId)
             return r;
     }
     return std::nullopt;
 }
 
-bool StockRegistry::update(const StockEntry& updated) {
+bool StockRegistry::updateEntry(const StockEntry& updated) {
     // 🔍 Érvényesség ellenőrzése
     //if (!updated.isValid())
     //    return false;
 
     // 🔄 Megkeressük a megfelelő requestId-t a vektorban
-    for (auto& r : _stock) {
+    for (auto& r : _data) {
         if (r.entryId == updated.entryId) {
             r = updated; // ✏️ Frissítés
             persist();   // 💾 Mentés

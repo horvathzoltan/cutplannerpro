@@ -6,6 +6,7 @@
 AddWasteDialog::AddWasteDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddWasteDialog)
+    , current_entryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
 {
     ui->setupUi(this);
     populateMaterialCombo();
@@ -17,7 +18,7 @@ AddWasteDialog::~AddWasteDialog()
 }
 
 void AddWasteDialog::populateMaterialCombo() {
-    const auto& registry = MaterialRegistry::instance().all();
+    const auto& registry = MaterialRegistry::instance().readAll();
     ui->comboMaterial->clear();
 
     for (const auto& m : registry) {
@@ -47,6 +48,7 @@ LeftoverSource AddWasteDialog::source() const {
 
 LeftoverStockEntry AddWasteDialog::getModel() const {
     LeftoverStockEntry entry;
+    entry.entryId = current_entryId;
     entry.materialId = selectedMaterialId();
     entry.availableLength_mm = availableLength();
     entry.barcode = barcode();
@@ -56,7 +58,8 @@ LeftoverStockEntry AddWasteDialog::getModel() const {
 }
 
 void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
-    currentBarcode = entry.barcode;
+    //currentBarcode = entry.barcode;
+    current_entryId = entry.entryId; // ha szerkesztés módban vagyunk
     ui->editBarcode->setText(entry.barcode);
     ui->editLength->setText(QString::number(entry.availableLength_mm));
     ui->editSourceValue->setText(entry.sourceAsString());

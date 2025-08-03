@@ -14,7 +14,7 @@ public:
 
     void addRow(const StockEntry& entry);
 
-    void updateTableFromRegistry();
+    void refresh_TableFromRegistry();
 
 signals:
     void deleteRequested(const QUuid& requestId);

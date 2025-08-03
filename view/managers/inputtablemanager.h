@@ -11,9 +11,9 @@ public:
     explicit InputTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const CuttingPlanRequest& request);
-    void removeRowByRequestId(const QUuid &requestId);
+    void removeRowById(const QUuid &requestId);
 
-    void updateTableFromRegistry();
+    void refresh_TableFromRegistry();
 
     void updateRow(const CuttingPlanRequest& updated); // ⬅️ új metódus
 
