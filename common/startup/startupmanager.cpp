@@ -11,16 +11,19 @@
 #include <model/repositories/cuttingrequestrepository.h>
 #include <model/repositories/leftoverstockrepository.h>
 #include <model/repositories/stockrepository.h>
+#include <model/repositories/storagerepository.h>
 
 #include <QSet>
 //#include "ProfileCategory.h"
 
-StartupStatus StartupManager::runStartupSequence() {
+StartupStatus StartupManager::runStartupSequence() {      
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.ok)
         return materialStatus;
 
-    // Jövőbeli bővítéshez: initMachineRegistry(), initConfig(), stb.
+    StartupStatus storageStatus = initStorageRegistry();
+    if (!storageStatus.ok)
+        return storageStatus;
 
     StartupStatus groupStatus = initMaterialGroupRegistry(); // ✅ új név!
     if (!groupStatus.ok)
@@ -91,6 +94,41 @@ StartupStatus StartupManager::initMaterialRegistry() {
 
     return status;
 }
+
+StartupStatus StartupManager::initStorageRegistry() {
+    bool loaded = StorageRepository::loadFromCSV(StorageRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni a storage.csv fájlból a raktári törzset.");
+
+    const auto& entries = StorageRegistry::instance().readAll();
+    if (entries.isEmpty())
+        return StartupStatus::failure("⚠️ A storage törzs üres. Legalább 1 raktári bejegyzés szükséges.");
+
+    StartupStatus status = StartupStatus::success();
+
+    // 🔎 Validáció: parentId mezők csak létező bejegyzésre mutassanak
+    QSet<QUuid> knownIds;
+    for (const auto& entry : entries)
+        knownIds.insert(entry.id);
+
+    QStringList invalidParentRefs;
+    for (const auto& entry : entries) {
+        if (!entry.parentId.isNull() && !knownIds.contains(entry.parentId)) {
+            invalidParentRefs << entry.name;
+        }
+    }
+
+    if (!invalidParentRefs.isEmpty()) {
+        status.addWarning(
+            QString("⚠️ %1 storage elem nem létező szülőre hivatkozik.\nÉrintett bejegyzések: %2")
+                .arg(invalidParentRefs.size())
+                .arg(invalidParentRefs.join(", "))
+            );
+    }
+
+    return status;
+}
+
 
 StartupStatus StartupManager::initStockRegistry() {
     bool loaded = StockRepository::loadFromCSV(StockRegistry::instance());

@@ -7,6 +7,7 @@
 #include <common/filenamehelper.h>
 #include <common/csvimporter.h>
 #include <common/settingsmanager.h>
+#include <model/registries/storageregistry.h>
 
 bool StockRepository::loadFromCSV(StockRegistry& registry) {
     auto& helper = FileNameHelper::instance();
@@ -53,7 +54,7 @@ StockRepository::loadFromCSV_private(const QString& filepath) {
 
 std::optional<StockRepository::StockEntryRow>
 StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int lineIndex) {
-    if (parts.size() < 2) {
+    if (parts.size() < 3) {
         qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(lineIndex);
         return std::nullopt;
     }
@@ -61,6 +62,7 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int li
     StockEntryRow row;
     row.barcode = parts[0].trimmed();
     const QString qtyStr = parts[1].trimmed();
+    row.storageBarcode = parts[2].trimmed(); // 🆕 új mező
 
     bool okQty = false;
     row.quantity = qtyStr.toInt(&okQty);
@@ -81,9 +83,18 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, int lineIndex)
         return std::nullopt;
     }
 
+    const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
+    if (!storage) {
+        qWarning() << QString("⚠️ Sor %1: ismeretlen tároló barcode '%2'")
+                          .arg(lineIndex).arg(row.storageBarcode);
+        return std::nullopt;
+    }
+
     StockEntry entry;
     entry.materialId = mat->id;
     entry.quantity   = row.quantity;
+    entry.storageId  = storage->id; // 🔗 Tároló UUID beállítása
+
     return entry;
 }
 
@@ -106,7 +117,7 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
     out.setEncoding(QStringConverter::Utf8);
 
     // 🏷️ CSV fejléc
-    out << "materialBarcode;quantity\n";
+    out << "materialBarcode;quantity;storageBarcode\n";
 
     for (const StockEntry& entry : registry.readAll()) {
         const auto* mat = MaterialRegistry::instance().findById(entry.materialId);
@@ -115,7 +126,16 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
             continue;
         }
 
-        out << mat->barcode << ";" << entry.quantity << "\n";
+        QString storageBarcode;
+        const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+        if (!storage) {
+            storageBarcode = storage->barcode;
+        } else {
+            qWarning() << "⚠️ Hiányzó tároló mentéskor:" << entry.storageId.toString();
+            storageBarcode = ""; // vagy "UNKNOWN"
+        }
+
+        out << mat->barcode << ";" << entry.quantity << ";" << storageBarcode << "\n";
     }
 
     file.close();

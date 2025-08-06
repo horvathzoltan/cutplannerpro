@@ -42,13 +42,17 @@ SOURCES += \
     model/registries/materialgroupregistry.cpp \
     model/registries/materialregistry.cpp \
     model/registries/stockregistry.cpp \
+    model/registries/storageregistry.cpp \
     model/repositories/cuttingrequestrepository.cpp \
     model/repositories/leftoverstockrepository.cpp \
     model/repositories/materialgrouprepository.cpp \
     model/repositories/materialrepository.cpp \
     model/repositories/stockrepository.cpp \
+    model/repositories/storagerepository.cpp \
     model/segment.cpp \
     model/stockentry.cpp \
+    model/storageentry.cpp \
+    model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
@@ -100,13 +104,17 @@ HEADERS += \
     model/registries/materialgroupregistry.h \
     model/registries/materialregistry.h \
     model/registries/stockregistry.h \
+    model/registries/storageregistry.h \
     model/repositories/cuttingrequestrepository.h \
     model/repositories/leftoverstockrepository.h \
     model/repositories/materialgrouprepository.h \
     model/repositories/materialrepository.h \
     model/repositories/stockrepository.h \
+    model/repositories/storagerepository.h \
     model/segment.h \
     model/stockentry.h \
+    model/storageentry.h \
+    model/storagetype.h \
     presenter/CuttingPresenter.h \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
@@ -135,4 +143,5 @@ DISTFILES += \
     testdata/groups.csv \
     testdata/leftovers.csv \
     testdata/materials.csv \
-    testdata/stock.csv
+    testdata/stock.csv \
+    testdata/storages.csv

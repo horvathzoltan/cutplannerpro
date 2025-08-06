@@ -27,7 +27,6 @@ class StartupManager {
 public:
     StartupStatus runStartupSequence();
 
-    StartupStatus initReusableStockRegistry();
 private:
 
     bool hasMinimumMaterials(int minCount);
@@ -36,4 +35,6 @@ private:
     StartupStatus initMaterialGroupRegistry();
     StartupStatus initStockRegistry();
     StartupStatus initCuttingRequestRegistry();
+    StartupStatus initReusableStockRegistry();
+    StartupStatus initStorageRegistry();
 };

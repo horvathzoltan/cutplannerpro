@@ -55,6 +55,11 @@ QString FileNameHelper::getWorkingFolder() const {
     return _isTest ? _projectPath : QCoreApplication::applicationDirPath();
 }
 
+QString FileNameHelper::getStorageCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("storages.csv");
+    return fn;
+}
+
 QString FileNameHelper::getMaterialCsvFile() const {
     auto fn = QDir(_projectPath).filePath("materials.csv");
     return fn;

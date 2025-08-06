@@ -5,104 +5,11 @@
 #include <QPushButton>
 #include <common/rowstyler.h>
 #include <model/registries/leftoverstockregistry.h>
+#include <model/registries/storageregistry.h>
 #include "model/registries/materialregistry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
-
-/*
-std::optional<CutResult> LeftoverTableManager::readRow(int row) const {
-    if (!table || row < 0 || row >= table->rowCount())
-        return std::nullopt;
-
-    auto* itemMaterial = table->item(row, 1);
-    auto* itemLength   = table->item(row, 2);
-    auto* itemCuts     = table->item(row, 3);
-    auto* itemWaste  = table->item(row, 4);
-    auto* itemSource   = table->item(row, 5);
-
-    if (!itemMaterial || !itemLength || !itemSource || !itemWaste)
-        return std::nullopt;
-
-    QUuid materialId = itemMaterial->data(Qt::UserRole).toUuid();
-
-    if (materialId.isNull())
-        return std::nullopt;
-
-    int length = itemLength->data(Qt::UserRole).toInt();
-    int waste = itemWaste->data(Qt::UserRole).toInt();
-
-    int sourceVal = itemSource->data(Qt::UserRole).toInt();
-    auto source = static_cast<LeftoverSource>(sourceVal);
-
-    // Cuts lista lekérése — UserRole-ból (ha el van mentve)
-    QVector<int> cuts;
-    QVariant cutsData = itemCuts->data(Qt::UserRole);
-    if (cutsData.canConvert<QVector<int>>())
-        cuts = cutsData.value<QVector<int>>();
-
-    return CutResult {
-        materialId,
-        length,
-        cuts,
-        waste,
-        source,
-        std::nullopt // ha van optimizationId, azt itt is be lehet tölteni
-    };
-}
-
-*/
-
-std::optional<LeftoverStockEntry> LeftoverTableManager::readRow(int row) const {
-    if (!table || row < 0 || row >= table->rowCount())
-        return std::nullopt;
-
-    auto* itemName   = table->item(row, ColName);
-    auto* itemLength = table->item(row, ColLength);
-    auto* itemReuId = table->item(row, ColReusableId);
-    auto* itemSource   = table->item(row, ColSource); // 💡 ha a source is meg van
-
-    if (!itemName || !itemLength || !itemReuId)
-        return std::nullopt;
-
-    QUuid materialId = itemName->data(Qt::UserRole).toUuid();
-    int length = itemLength->data(Qt::UserRole).toInt();
-    QString reusableId = itemReuId->text();
-
-    if (materialId.isNull() || length <= 0)
-        return std::nullopt;
-
-    LeftoverSource source = LeftoverSource::Undefined;
-    if (itemSource)
-        source = static_cast<LeftoverSource>(itemSource->data(Qt::UserRole).toInt());
-
-    if (materialId.isNull() || length <= 0 || reusableId.isEmpty())
-        return std::nullopt;
-
-    LeftoverStockEntry entry;
-
-    entry.materialId = materialId;
-    entry.availableLength_mm = length;
-    entry.source = source;
-    entry.optimizationId = std::nullopt;
-    entry.barcode = reusableId;
-
-    return entry;
-}
-
-
-QVector<LeftoverStockEntry> LeftoverTableManager::readAll() const {
-    QVector<LeftoverStockEntry> results;
-
-    int rowCount = table->rowCount();
-    for (int row = 0; row < rowCount; ++row) {
-        auto maybe = readRow(row);
-        if (maybe.has_value())
-            results.append(*maybe);
-    }
-
-    return results;
-}
 
 void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     if (!table)
@@ -160,6 +67,15 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     itemReusable->setForeground(Qt::black);
     itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
     table->setItem(row, ColReusable, itemReusable);
+
+    // 🏷️ Storage name
+    auto* storageOpt = StorageRegistry::instance().findById(entry.storageId);
+    QString storageName = storageOpt ? storageOpt->name : "—";
+
+    auto* itemStorage = new QTableWidgetItem(storageName);
+    itemStorage->setTextAlignment(Qt::AlignCenter);
+    itemStorage->setData(Qt::UserRole, entry.storageId);
+    table->setItem(row, ColStorageName, itemStorage);
 
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = new QPushButton("🗑️");
@@ -259,6 +175,16 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
                 itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
             }
 
+            // 🏷️ Storage name
+            auto* itemStorage = table->item(row, ColStorageName);
+            if (itemStorage) {
+                const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+                QString storageName = storage ? storage->name : "—";
+                itemStorage->setText(storageName);
+                itemStorage->setData(Qt::UserRole, entry.storageId);
+                itemStorage->setTextAlignment(Qt::AlignCenter);
+            }
+
             // 🎨 Sor stílus újraalkalmazása
             RowStyler::applyReusableStyle(table, row, mat, entry);
 
@@ -314,7 +240,99 @@ void LeftoverTableManager::refresh_TableFromRegistry() {
 
     //table->resizeColumnsToContents();
 }
+/*
+std::optional<CutResult> LeftoverTableManager::readRow(int row) const {
+    if (!table || row < 0 || row >= table->rowCount())
+        return std::nullopt;
+
+    auto* itemMaterial = table->item(row, 1);
+    auto* itemLength   = table->item(row, 2);
+    auto* itemCuts     = table->item(row, 3);
+    auto* itemWaste  = table->item(row, 4);
+    auto* itemSource   = table->item(row, 5);
+
+    if (!itemMaterial || !itemLength || !itemSource || !itemWaste)
+        return std::nullopt;
+
+    QUuid materialId = itemMaterial->data(Qt::UserRole).toUuid();
+
+    if (materialId.isNull())
+        return std::nullopt;
+
+    int length = itemLength->data(Qt::UserRole).toInt();
+    int waste = itemWaste->data(Qt::UserRole).toInt();
+
+    int sourceVal = itemSource->data(Qt::UserRole).toInt();
+    auto source = static_cast<LeftoverSource>(sourceVal);
+
+    // Cuts lista lekérése — UserRole-ból (ha el van mentve)
+    QVector<int> cuts;
+    QVariant cutsData = itemCuts->data(Qt::UserRole);
+    if (cutsData.canConvert<QVector<int>>())
+        cuts = cutsData.value<QVector<int>>();
+
+    return CutResult {
+        materialId,
+        length,
+        cuts,
+        waste,
+        source,
+        std::nullopt // ha van optimizationId, azt itt is be lehet tölteni
+    };
+}
+
+*/
+/*
+std::optional<LeftoverStockEntry> LeftoverTableManager::readRow(int row) const {
+    if (!table || row < 0 || row >= table->rowCount())
+        return std::nullopt;
+
+    auto* itemName   = table->item(row, ColName);
+    auto* itemLength = table->item(row, ColLength);
+    auto* itemReuId = table->item(row, ColReusableId);
+    auto* itemSource   = table->item(row, ColSource); // 💡 ha a source is meg van
+
+    if (!itemName || !itemLength || !itemReuId)
+        return std::nullopt;
+
+    QUuid materialId = itemName->data(Qt::UserRole).toUuid();
+    int length = itemLength->data(Qt::UserRole).toInt();
+    QString reusableId = itemReuId->text();
+
+    if (materialId.isNull() || length <= 0)
+        return std::nullopt;
+
+    LeftoverSource source = LeftoverSource::Undefined;
+    if (itemSource)
+        source = static_cast<LeftoverSource>(itemSource->data(Qt::UserRole).toInt());
+
+    if (materialId.isNull() || length <= 0 || reusableId.isEmpty())
+        return std::nullopt;
+
+    LeftoverStockEntry entry;
+
+    entry.materialId = materialId;
+    entry.availableLength_mm = length;
+    entry.source = source;
+    entry.optimizationId = std::nullopt;
+    entry.barcode = reusableId;
+
+    return entry;
+}
 
 
+QVector<LeftoverStockEntry> LeftoverTableManager::readAll() const {
+    QVector<LeftoverStockEntry> results;
+
+    int rowCount = table->rowCount();
+    for (int row = 0; row < rowCount; ++row) {
+        auto maybe = readRow(row);
+        if (maybe.has_value())
+            results.append(*maybe);
+    }
+
+    return results;
+}
+*/
 
 

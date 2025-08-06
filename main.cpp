@@ -11,13 +11,13 @@
 
 int main(int argc, char *argv[])
 {
-    Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, true);
+    // itt initelünk mindet
+    Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, true);    
+    SettingsManager::instance().load();
 
+    // elvileg ha gond van, akkor itt nem nyitjuk megh a főablakot
 
     QApplication app(argc, argv);
-
-    // itt initelünk mindet        
-    SettingsManager::instance().load();
 
     StartupManager manager;
     StartupStatus status = manager.runStartupSequence();
@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     }
 
     MainWindow window;
-    window.setWindowTitle("CutPlanner MVP");
-    window.resize(1000, 600); // Opcionális kezdeti méret
+//    window.setWindowTitle("CutPlanner MVP");
+//    window.resize(1000, 600); // Opcionális kezdeti méret
     window.show();
 
     return app.exec();

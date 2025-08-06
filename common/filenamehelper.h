@@ -28,6 +28,7 @@ public:
     // 📁 Elérési utak
     //QString getTestFolderPath() const;
     QString getWorkingFolder() const;
+    QString getStorageCsvFile() const; // 📁 Tároló CSV útvonal
     QString getMaterialCsvFile() const; // 📁 Anyag törzs CSV útvonal
     QString getGroupCsvFile() const; // 📁 Csoportdefiníciós CSV útvonal
     QString getStockCsvFile() const; // 📁 Készlet CSV útvonal

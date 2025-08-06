@@ -34,7 +34,9 @@ public:
     static constexpr int ColLength   = 2;
     static constexpr int ColShape    = 3;
     static constexpr int ColQuantity = 4;
-    static constexpr int ColAction = 5;  // új oszlop a gomboknak (a Quantity után)
+    static constexpr int ColStorageName = 5;
+
+    static constexpr int ColAction = 6;  // új oszlop a gomboknak (a Quantity után)
 
 
     void updateRow(const StockEntry &entry);

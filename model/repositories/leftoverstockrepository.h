@@ -18,6 +18,7 @@ private:
         LeftoverSource source;
         std::optional<int> optimizationId;
         QString barcode;
+        QString storageBarcode; // 🆕 új mező
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

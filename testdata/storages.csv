@@ -1,0 +1,6 @@
+uuid;name;type;parent_id;barcode;comment
+d472c9e2-f382-4b6e-b412-22de88dd9ab7;Raktár 4;Warehouse;;WH04;"Debreceni telephely"
+f6a1b34c-2e78-45b3-b256-bb739df4e0d2;Állvány 6;Shelf;d472c9e2-f382-4b6e-b412-22de88dd9ab7;SHELF06;"Főbejárat mellett"
+feab7fdd-66da-4a7d-af7d-81b7d4979dd6;Polc 4;Shelf;f6a1b34c-2e78-45b3-b256-bb739df4e0d2;RACK64;"Nehézáruk tárolása"
+e31c5052-b4df-42c0-bb3a-fbd4e8edb1fb;Polc 5;Shelf;f6a1b34c-2e78-45b3-b256-bb739df4e0d2;RACK65;"Könnyű termékek"
+e31c5052-b4df-42c0-bb3a-fbd4e8edb1fc;Hullo;Shelf;f6a1b34c-2e78-45b3-b256-bb739df4e0d2;RACK66;"Hullóanyag tároló"

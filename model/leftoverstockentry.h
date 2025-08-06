@@ -17,6 +17,7 @@ struct LeftoverStockEntry {
     int availableLength_mm;         // 📏 Szálhossz milliméterben
     LeftoverSource source = LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
     std::optional<int> optimizationId = std::nullopt; // 🔍 Csak ha forrás Optimization
+    QUuid storageId;                // 📦 Tárolási hely azonosítója
 
     QString barcode; // 🧾 Egyedi azonosító hulladékdarabra
     /// 🧪 Egyenlőség vizsgálat (opcionális)

@@ -11,13 +11,13 @@ class LeftoverTableManager : public QObject {  // 🔧 QObject öröklés!
 public:
     explicit LeftoverTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
-    QVector<LeftoverStockEntry> readAll() const;                 // 🔍 Beolvasás optimalizáláshoz
+    //QVector<LeftoverStockEntry> readAll() const;                 // 🔍 Beolvasás optimalizáláshoz
     void clear();                                       // 🧹 Tábla ürítése
 
     //void fillTestData();
     void addRow(const LeftoverStockEntry &res);
     void appendRows(const QVector<LeftoverStockEntry> &newResults);
-    std::optional<LeftoverStockEntry> readRow(int row) const;
+    //std::optional<LeftoverStockEntry> readRow(int row) const;
 
 signals:
     void deleteRequested(const QUuid& requestId);
@@ -39,7 +39,9 @@ public:
     static constexpr int ColShape     = 4;
     static constexpr int ColSource    = 5;
     static constexpr int ColReusable  = 6;
-    static constexpr int ColActions = 7;
+    static constexpr int ColStorageName  = 7;
+
+    static constexpr int ColActions = 8;
 
     void refresh_TableFromRegistry();
     void updateRow(const LeftoverStockEntry &entry);

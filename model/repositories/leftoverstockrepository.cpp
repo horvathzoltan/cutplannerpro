@@ -5,6 +5,7 @@
 #include "common/filenamehelper.h"
 #include "common/leftoversourceutils.h"
 #include <model/registries/materialregistry.h>
+#include <model/registries/storageregistry.h>
 #include <common/filehelper.h>
 #include <common/csvimporter.h>
 
@@ -84,7 +85,7 @@ LeftoverStockRepository::loadFromCSV_private(const QString& filepath) {
 
 std::optional<LeftoverStockRepository::ReusableStockRow>
 LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, int lineIndex) {
-    if (parts.size() < 5) {
+    if (parts.size() < 6) {
         qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(lineIndex);
         return std::nullopt;
     }
@@ -132,6 +133,12 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
         return std::nullopt;
     }
 
+    row.storageBarcode = parts[5].trimmed();
+    if (row.storageBarcode.isEmpty()) {
+        qWarning() << QString("⚠️ Sor %1: hiányzó tároló barcode").arg(lineIndex);
+        return std::nullopt;
+    }
+
     return row;
 }
 
@@ -143,12 +150,20 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
         return std::nullopt;
     }
 
+    const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
+    if (!storage) {
+        qWarning() << QString("⚠️ Sor %1: ismeretlen tároló barcode '%2'")
+                          .arg(lineIndex).arg(row.storageBarcode);
+        return std::nullopt;
+    }
+
     LeftoverStockEntry entry;
     entry.materialId         = mat->id;
     entry.availableLength_mm = row.availableLength_mm;
     entry.barcode            = row.barcode;
     entry.source             = row.source;
     entry.optimizationId     = row.optimizationId;
+    entry.storageId = storage->id;
 
     return entry;
 }
@@ -169,7 +184,7 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry) {
     QTextStream out(&file);
     // Qt6 alatt automatikusan UTF-8
 
-    out << "materialBarCode;availableLength_mm;source;optimizationId;barcode\n";
+    out << "materialBarCode;availableLength_mm;source;optimizationId;barcode;storageBarcode\n";
 
     for (const auto& entry : registry.readAll()) {
         if (entry.availableLength_mm <= 0 || entry.barcode.trimmed().isEmpty())
@@ -185,11 +200,15 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry) {
             optIdStr = QString::number(entry.optimizationId.value());
         }
 
+        const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+        QString storageBarcode = storage ? storage->barcode : "";
+
         out << materialCode << ";"
             << entry.availableLength_mm << ";"
             << sourceStr << ";"
             << optIdStr << ";"
-            << barcode << "\n";
+            << barcode << ";"
+            << storageBarcode << "\n";
     }
 
     return true;

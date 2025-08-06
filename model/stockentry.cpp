@@ -16,7 +16,7 @@ QString StockEntry::materialName() const {
     return m ? m->name : "(?)";
 }
 
-QString StockEntry::materialBarcode() const {
+QString StockEntry::mterialBarcode() const {
     const auto* m = master();
     return m ? m->barcode : "(?)";
 }

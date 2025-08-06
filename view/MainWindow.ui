@@ -276,7 +276,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>700</width>
+         <width>800</width>
          <height>16777215</height>
         </size>
        </property>
@@ -336,6 +336,11 @@
           <column>
            <property name="text">
             <string>Quantity</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Storage</string>
            </property>
           </column>
           <column>
@@ -404,6 +409,11 @@
           <column>
            <property name="text">
             <string>Reusable</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Storage</string>
            </property>
           </column>
           <column>

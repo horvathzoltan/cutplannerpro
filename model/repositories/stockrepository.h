@@ -18,6 +18,7 @@ private:
     struct StockEntryRow {
         QString barcode;
         int quantity;
+        QString storageBarcode;
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

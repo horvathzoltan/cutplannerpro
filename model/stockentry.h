@@ -10,9 +10,10 @@ struct StockEntry {
 
     QUuid materialId;                 // 🔗 Kapcsolat az anyagtörzshöz
     int quantity = 0;                // 📦 Elérhető darabszám
+    QUuid storageId;                // 📦 Tárolási hely azonosítója
 
     QString materialName() const;  // 📛 Anyag neve
-    QString materialBarcode() const; // 🧾 Vonalkód
+    QString mterialBarcode() const; // 🧾 Vonalkód
     MaterialType materialType() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;
 

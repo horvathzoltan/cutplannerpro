@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include "model/registries/stockregistry.h"
+#include <model/registries/storageregistry.h>
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
@@ -51,6 +52,15 @@ void StockTableManager::addRow(const StockEntry& entry) {
     itemQty->setTextAlignment(Qt::AlignCenter);
     itemQty->setData(Qt::UserRole, entry.quantity);
     table->setItem(row, ColQuantity, itemQty);
+
+    // 🏷️ Storage name
+    const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+    QString storageName = storage ? storage->name : "—";
+
+    auto* itemStorage = new QTableWidgetItem(storageName);
+    itemStorage->setTextAlignment(Qt::AlignCenter);
+    itemStorage->setData(Qt::UserRole, entry.storageId);
+    table->setItem(row, ColStorageName, itemStorage);
 
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = new QPushButton("🗑️");
@@ -128,6 +138,16 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             if (itemQty) {
                 itemQty->setText(QString::number(entry.quantity));
                 itemQty->setData(Qt::UserRole, entry.quantity);
+            }
+
+            // 🏷️ Storage name
+            auto* itemStorage = table->item(row, ColStorageName);
+            if (itemStorage) {
+                const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+                QString storageName = storage ? storage->name : "—";
+                itemStorage->setText(storageName);
+                itemStorage->setData(Qt::UserRole, entry.storageId);
+                itemStorage->setTextAlignment(Qt::AlignCenter);
             }
 
             // 🎨 Stílus újraalkalmazás
