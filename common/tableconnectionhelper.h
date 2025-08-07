@@ -78,6 +78,26 @@ inline static void Connect(
             StockEntry updated = dialog.getModel();
             presenter->update_StockEntry(updated);
         });
+
+    w->connect(
+        manager,
+        &StockTableManager::editQtyRequested,
+        w,
+        [w,presenter](const QUuid& id) {
+            auto opt = StockRegistry::instance().findById(id);
+            if (!opt) return;
+
+            StockEntry original = *opt;
+
+            AddStockDialog dialog(w);
+            dialog.setModel(original);
+
+            if (dialog.exec() != QDialog::Accepted)
+                return;
+
+            StockEntry updated = dialog.getModel();
+            presenter->update_StockEntry(updated);
+        });
 }
 }; // end namespace StockTableConnector
 

@@ -85,6 +85,7 @@ HEADERS += \
     common/startup/startupmanager.h \
     common/stringify.h \
     common/tableconnectionhelper.h \
+    common/tableutils.h \
     model/CuttingOptimizerModel.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \

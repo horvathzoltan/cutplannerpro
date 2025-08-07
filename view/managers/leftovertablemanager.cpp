@@ -1,4 +1,5 @@
 #include "leftovertablemanager.h"
+#include "common/tableutils.h"
 #include "common/materialutils.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -224,8 +225,7 @@ void LeftoverTableManager::refresh_TableFromRegistry() {
     if (!table)
         return;
 
-    table->clearContents();
-    table->setRowCount(0);
+    TableUtils::clearSafely(table);
 
     const auto& stockEntries = LeftoverStockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();

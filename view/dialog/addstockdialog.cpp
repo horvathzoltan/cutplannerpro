@@ -49,7 +49,8 @@ QString AddStockDialog::comment() const {
 
 StockEntry AddStockDialog::getModel() const {   
     StockEntry entry;
-    entry.entryId = current_entryId;
+    entry.entryId = current_entryId; //visszaállítjuk az aktuális entryId-t
+    entry.storageId = current_storageId; // visszaállítjuk a tároló ID-t
     entry.materialId = selectedMaterialId();
     entry.quantity = quantity();
     return entry;
@@ -59,6 +60,7 @@ void AddStockDialog::setModel(const StockEntry& entry) {
 
     current_entryId = entry.entryId;
     currentQuantity = entry.quantity; // Megőrizzük az eredeti quantityt
+    current_storageId = entry.storageId; // Megőrizzük a tároló ID-t
 
     int index = ui->comboMaterial->findData(entry.materialId);
     if (index >= 0)

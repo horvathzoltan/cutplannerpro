@@ -1,4 +1,5 @@
 #include "inputtablemanager.h"
+#include "common/tableutils.h"
 #include "model/registries/materialregistry.h"
 #include "common/rowstyler.h"
 #include <QPushButton>
@@ -112,8 +113,7 @@ void InputTableManager::refresh_TableFromRegistry() {
     if (!table)
         return;
 
-    table->clearContents();
-    table->setRowCount(0);
+    TableUtils::clearSafely(table);
 
     const auto& requests = CuttingPlanRequestRegistry::instance().readAll();
     for (const auto& req : requests) {

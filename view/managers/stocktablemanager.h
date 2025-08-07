@@ -19,7 +19,7 @@ public:
 signals:
     void deleteRequested(const QUuid& requestId);
     void editRequested(const QUuid& requestId);
-
+    void editQtyRequested(const QUuid& requestId);
 
 private:
     QTableWidget* table;

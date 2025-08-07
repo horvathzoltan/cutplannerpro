@@ -126,14 +126,16 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
             continue;
         }
 
-        QString storageBarcode;
+        //QString storageBarcode;
         const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-        if (!storage) {
-            storageBarcode = storage->barcode;
-        } else {
-            qWarning() << "⚠️ Hiányzó tároló mentéskor:" << entry.storageId.toString();
-            storageBarcode = ""; // vagy "UNKNOWN"
-        }
+        QString storageBarcode = storage ? storage->barcode : "";
+
+        // if (storage) {
+        //     storageBarcode = storage->barcode;
+        // } else {
+        //     qWarning() << "⚠️ Hiányzó tároló mentéskor:" << entry.storageId.toString();
+        //     storageBarcode = ""; // vagy "UNKNOWN"
+        // }
 
         out << mat->barcode << ";" << entry.quantity << ";" << storageBarcode << "\n";
     }

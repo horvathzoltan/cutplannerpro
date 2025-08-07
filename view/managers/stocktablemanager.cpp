@@ -1,9 +1,11 @@
 #include "stocktablemanager.h"
+#include "common/tableutils.h"
 #include "common/materialutils.h"
 #include "common/rowstyler.h"
 //#include "common/grouputils.h"
 #include "model/registries/materialregistry.h"
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
 #include "model/registries/stockregistry.h"
@@ -47,11 +49,11 @@ void StockTableManager::addRow(const StockEntry& entry) {
     itemLength->setData(Qt::UserRole, mat->stockLength_mm);
     table->setItem(row, ColLength, itemLength);
 
-    // 🔢 Quantity
-    auto* itemQty = new QTableWidgetItem(QString::number(entry.quantity));
-    itemQty->setTextAlignment(Qt::AlignCenter);
-    itemQty->setData(Qt::UserRole, entry.quantity);
-    table->setItem(row, ColQuantity, itemQty);
+    // // 🏷️ Mennyiség panel
+    auto* quantityPanel = TableUtils::createQuantityCell(entry.quantity, entry.entryId, this, [this, entry]() {
+        emit editQtyRequested(entry.entryId);
+    });
+    table->setCellWidget(row, ColQuantity, quantityPanel);
 
     // 🏷️ Storage name
     const auto* storage = StorageRegistry::instance().findById(entry.storageId);
@@ -63,18 +65,9 @@ void StockTableManager::addRow(const StockEntry& entry) {
     table->setItem(row, ColStorageName, itemStorage);
 
     // 🗑️ Törlés gomb
-    QPushButton* btnDelete = new QPushButton("🗑️");
-    btnDelete->setToolTip("Sor törlése");
-    btnDelete->setFixedSize(28, 28);
-    btnDelete->setStyleSheet("QPushButton { border: none; }");
-    btnDelete->setProperty("entryId", entry.entryId);
-
+    QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);
     // ✏️ Update gomb
-    QPushButton* btnUpdate = new QPushButton("✏️");
-    btnUpdate->setToolTip("Mennyiség módosítása");
-    btnUpdate->setFixedSize(28, 28);
-    btnUpdate->setStyleSheet("QPushButton { border: none; }");
-    btnUpdate->setProperty("entryId", entry.entryId);
+    QPushButton* btnUpdate = TableUtils::createIconButton("✏️", "Sor módosítása", entry.entryId);
 
     // 🧩 Panelbe csomagolás
     auto* actionPanel = new QWidget();
@@ -131,14 +124,11 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             if (itemLength && mat) {
                 itemLength->setText(QString::number(mat->stockLength_mm));
                 itemLength->setData(Qt::UserRole, mat->stockLength_mm);
-            }
+            }         
 
-            // 🔢 Quantity
-            auto* itemQty = table->item(row, ColQuantity);
-            if (itemQty) {
-                itemQty->setText(QString::number(entry.quantity));
-                itemQty->setData(Qt::UserRole, entry.quantity);
-            }
+            // 🧾 Mennyiség panel
+            auto* quantityPanel = table->cellWidget(row, ColQuantity);
+            TableUtils::updateQuantityCell(quantityPanel, entry.quantity, entry.entryId);
 
             // 🏷️ Storage name
             auto* itemStorage = table->item(row, ColStorageName);
@@ -203,8 +193,8 @@ void StockTableManager::refresh_TableFromRegistry()
     if (!table)
         return;
 
-    table->clearContents();
-    table->setRowCount(0);
+    // 🧹 Tábla törlése
+    TableUtils::clearSafely(table);
 
     const auto& stockEntries = StockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();

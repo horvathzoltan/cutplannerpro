@@ -30,6 +30,7 @@ private:
     bool validateInputs();
 
     QUuid current_entryId;
+    QUuid current_storageId; // Új mező a tárolóhoz
     int currentQuantity;
     int parsedQuantityDelta(int& resultValue) const;
 };
