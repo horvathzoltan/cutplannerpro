@@ -64,12 +64,17 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int li
     const QString qtyStr = parts[1].trimmed();
     row.storageBarcode = parts[2].trimmed(); // 🆕 új mező
 
+    // 💬 opcionális 4. oszlop: comment
+    row.comment = (parts.size() >= 4) ? parts[3].trimmed() : QString();
+
     bool okQty = false;
     row.quantity = qtyStr.toInt(&okQty);
     if (row.barcode.isEmpty() || !okQty || row.quantity <= 0) {
         qWarning() << QString("⚠️ Sor %1: hibás barcode vagy mennyiség").arg(lineIndex);
         return std::nullopt;
     }
+
+
 
     return row;
 }
@@ -94,6 +99,7 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, int lineIndex)
     entry.materialId = mat->id;
     entry.quantity   = row.quantity;
     entry.storageId  = storage->id; // 🔗 Tároló UUID beállítása
+    entry.comment = row.comment; // 🆕 új mező
 
     return entry;
 }
@@ -116,31 +122,31 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
 
-    // 🏷️ CSV fejléc
-    out << "materialBarcode;quantity;storageBarcode\n";
+    auto csvEscape = [](const QString& s) {
+        QString v = s;
+        v.replace("\"", "\"\"");     // idézőjelek duplázása
+        return "\"" + v + "\"";      // teljes mező idézőjelezése
+    };
 
-    for (const StockEntry& entry : registry.readAll()) {
+    out << "materialBarcode;quantity;storageBarcode;comment\n";
+
+    const auto entries = registry.readAll(); // ha lehet, érdemes const&-re váltani a readAll() visszatérési típusát
+    for (const StockEntry& entry : entries) {
         const auto* mat = MaterialRegistry::instance().findById(entry.materialId);
         if (!mat) {
             qWarning() << "⚠️ Hiányzó anyag mentéskor:" << entry.materialId.toString();
             continue;
         }
 
-        //QString storageBarcode;
         const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-        QString storageBarcode = storage ? storage->barcode : "";
+        const QString storageBarcode = storage ? storage->barcode : QString();
 
-        // if (storage) {
-        //     storageBarcode = storage->barcode;
-        // } else {
-        //     qWarning() << "⚠️ Hiányzó tároló mentéskor:" << entry.storageId.toString();
-        //     storageBarcode = ""; // vagy "UNKNOWN"
-        // }
-
-        out << mat->barcode << ";" << entry.quantity << ";" << storageBarcode << "\n";
+        out << mat->barcode << ';'
+            << entry.quantity << ';'
+            << storageBarcode << ';'
+            << csvEscape(entry.comment) << '\n';
     }
 
-    file.close();
     return true;
 }
 

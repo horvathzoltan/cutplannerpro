@@ -47,64 +47,6 @@ void RowStyler::applyInputStyle(QTableWidget* table, int row,
     }
 }
 
-//void RowStyler::applyStockStyle(QTableWidget* table, int row, const MaterialMaster* mat) {
-void RowStyler::applyStockStyle(QTableWidget* table, int row, const MaterialMaster* mat, int quantity)
-{
-    if (!table || !mat)
-        return;
-
-    constexpr int ColLength = StockTableManager::ColLength;  // 🔁 Frissítsd, ha eltér
-    constexpr int ColQuantity = StockTableManager::ColQuantity; // például 3
-
-    QColor baseColor = MaterialUtils::colorForMaterial(*mat);
-    QColor textColor = Qt::black;
-
-    for (int col = 0; col < table->columnCount(); ++col) {
-        QTableWidgetItem* item = table->item(row, col);
-        if (!item) {
-            item = new QTableWidgetItem;
-            table->setItem(row, col, item);
-        }
-
-        // 🔎 Speciális színezés csak a hossz oszlopra
-        if (col == ColLength) {
-            QColor lengthColor;
-            int length_mm = mat->stockLength_mm;
-
-            if (length_mm < 6000)
-                lengthColor = QColor("#fff3cd"); // Figyelemreméltó (sárgás)
-            else if (length_mm == 6000)
-                lengthColor = QColor("#d4edda"); // Szabványos (zöld)
-            else
-                lengthColor = QColor("#c3e6cb"); // Nagyon hosszú (szuperzöld)
-
-            item->setBackground(lengthColor);
-            item->setForeground(Qt::black);
-            item->setToolTip(QString("Szálhossz: %1 mm").arg(length_mm));
-        } else {
-            item->setBackground(baseColor);
-            item->setForeground(textColor);
-        }
-
-
-        if (col == ColQuantity) {
-            QColor qtyColor;
-
-            if (quantity == 0)
-                qtyColor = Qt::red; // 🔴 Elfogyott
-            else if (quantity <= 5)
-                qtyColor = QColor("#FFA500"); // 🟠 Narancssárga – Alacsony készlet
-            else
-                qtyColor = QColor("#d4edda"); // 🟢 Zöld – Rendben
-
-            item->setBackground(qtyColor);
-            item->setForeground(Qt::black);
-            item->setToolTip(QString("Készlet: %1 egység").arg(quantity));
-        }
-
-
-    }
-}
 
 
 

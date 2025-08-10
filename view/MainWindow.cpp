@@ -1,24 +1,27 @@
 #include "MainWindow.h"
-
 #include "ui_MainWindow.h"
 
 #include <QComboBox>
 #include <QMessageBox>
+//#include <QObject>
+#include <QCloseEvent>
+#include <QTimer>
+#include <QFileDialog>
 
 //#include "cutanalyticspanel.h"
 #include "model/stockentry.h"
 #include "model/cuttingplanrequest.h"
+
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
-#include "common/tableconnectionhelper.h"
-
-#include <QObject>      // connect() miatt
-#include <QCloseEvent>
-#include <QTimer>
+#include "common/tableutils/leftovertableconnector.h"
+#include "common/tableutils/inputtableconnector.h"
+#include "common/tableutils/stocktableconnector.h"
 #include "common/qteventutil.h"
-#include "dialog/addstockdialog.h"
+
+#include "dialog/stock/addstockdialog.h"
 #include "dialog/addinputdialog.h"
-#include <QFileDialog>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

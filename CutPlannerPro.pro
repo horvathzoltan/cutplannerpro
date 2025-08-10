@@ -18,6 +18,7 @@ SOURCES += \
     common/logger.cpp \
     common/optimizationexporter.cpp \
     common/planautosavemanager.cpp \
+    common/quantityparser.cpp \
     common/rowstyler.cpp \
     common/segmentutils.cpp \
     common/settingsmanager.cpp \
@@ -57,8 +58,11 @@ SOURCES += \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
-    view/dialog/addstockdialog.cpp \
     view/dialog/addwastedialog.cpp \
+    view/dialog/stock/addstockdialog.cpp \
+    view/dialog/stock/editcommentdialog.cpp \
+    view/dialog/stock/editquantitydialog.cpp \
+    view/dialog/stock/editstoragedialog.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
     view/managers/resultstablemanager.cpp \
@@ -79,13 +83,20 @@ HEADERS += \
     common/optimizationexporter.h \
     common/planautosavemanager.h \
     common/qteventutil.h \
+    common/quantityparser.h \
     common/rowstyler.h \
     common/segmentutils.h \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
-    common/tableconnectionhelper.h \
-    common/tableutils.h \
+    common/tableutils/colorconstants.h \
+    common/tableutils/colorlogicutils.h \
+    common/tableutils/inputtableconnector.h \
+    common/tableutils/leftovertableconnector.h \
+    common/tableutils/stocktable_rowstyler.h \
+    common/tableutils/stocktableconnector.h \
+    common/tableutils/tablestyleutils.h \
+    common/tableutils/tableutils.h \
     model/CuttingOptimizerModel.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
@@ -120,8 +131,11 @@ HEADERS += \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
-    view/dialog/addstockdialog.h \
     view/dialog/addwastedialog.h \
+    view/dialog/stock/addstockdialog.h \
+    view/dialog/stock/editcommentdialog.h \
+    view/dialog/stock/editquantitydialog.h \
+    view/dialog/stock/editstoragedialog.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \
     view/managers/resultstablemanager.h \
@@ -130,8 +144,11 @@ HEADERS += \
 FORMS += \
     view/MainWindow.ui \
     view/dialog/addinputdialog.ui \
-    view/dialog/addstockdialog.ui \
-    view/dialog/addwastedialog.ui
+    view/dialog/addwastedialog.ui \
+    view/dialog/stock/addstockdialog.ui \
+    view/dialog/stock/editcommentdialog.ui \
+    view/dialog/stock/editquantitydialog.ui \
+    view/dialog/stock/editstoragedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

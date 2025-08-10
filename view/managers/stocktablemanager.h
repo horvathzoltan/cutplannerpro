@@ -20,7 +20,8 @@ signals:
     void deleteRequested(const QUuid& requestId);
     void editRequested(const QUuid& requestId);
     void editQtyRequested(const QUuid& requestId);
-
+    void editStorageRequested(const QUuid& requestId);   // 🆕
+    void editCommentRequested(const QUuid& requestId);   // 🆕
 private:
     QTableWidget* table;
     QWidget* parent;

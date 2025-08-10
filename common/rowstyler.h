@@ -8,11 +8,13 @@
 #include "model/cutplan.h"
 #include "model/leftoverstockentry.h"
 
+
+
 // 🎨 Táblázatsor stíluskezelő – közös utility
 class RowStyler {
 public:
     static void applyInputStyle(QTableWidget* table, int row, const MaterialMaster* mat, const CuttingPlanRequest& request);
-    static void applyStockStyle(QTableWidget* table, int row, const MaterialMaster* mat, int quantity) ;
+    //static void applyStockStyle(QTableWidget* table, int row, const MaterialMaster* mat, int quantity) ;
 //    static void applyLeftoverStyle(QTableWidget* table, int row, const MaterialMaster* master, const CutResult& res);
     static void applyReusableStyle(QTableWidget *table, int row, const MaterialMaster *master, const LeftoverStockEntry &entry);
     static void applyResultStyle(QTableWidget *table, int row, const MaterialMaster *mat, const CutPlan &plan);

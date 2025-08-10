@@ -19,6 +19,7 @@ private:
         QString barcode;
         int quantity;
         QString storageBarcode;
+        QString comment;
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

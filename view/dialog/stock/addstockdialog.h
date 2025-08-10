@@ -27,10 +27,13 @@ public:
 private:
     Ui::AddStockDialog *ui;
     void populateMaterialCombo();
+    void populateStorageCombo();
+
     bool validateInputs();
 
     QUuid current_entryId;
     QUuid current_storageId; // Új mező a tárolóhoz
     int currentQuantity;
-    int parsedQuantityDelta(int& resultValue) const;
+    //int parsedQuantityDelta(int& resultValue) const;
+    QUuid selectedStorageId() const;
 };

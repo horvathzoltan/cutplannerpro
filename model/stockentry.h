@@ -12,6 +12,8 @@ struct StockEntry {
     int quantity = 0;                // 📦 Elérhető darabszám
     QUuid storageId;                // 📦 Tárolási hely azonosítója
 
+    QString comment; // 💬 Felhasználói megjegyzés
+
     QString materialName() const;  // 📛 Anyag neve
     QString mterialBarcode() const; // 🧾 Vonalkód
     MaterialType materialType() const; // 🧬 Anyagtípus
