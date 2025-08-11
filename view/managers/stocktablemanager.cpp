@@ -72,6 +72,12 @@ void StockTableManager::addRow(const StockEntry& entry) {
     table->setCellWidget(row, ColStorageName, storagePanel);
     //storagePanel->setToolTip(QString("Tároló: %1").arg(storageName));
 
+    // 🏷️ Komment panel
+    auto* commentPanel = TableUtils::createCommentCell(entry.comment, entry.entryId, this, [this, entry]() {
+        emit editCommentRequested(entry.entryId);
+    });
+    table->setCellWidget(row, ColComment, commentPanel);
+
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);
     // ✏️ Update gomb
@@ -144,14 +150,24 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             TableUtils::updateQuantityCell(quantityPanel, entry.quantity, entry.entryId);
 
             // 🏷️ Storage name
-            auto* itemStorage = table->item(row, ColStorageName);
-            if (itemStorage) {
-                const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-                QString storageName = storage ? storage->name : "—";
-                itemStorage->setText(storageName);
-                itemStorage->setData(Qt::UserRole, entry.storageId);
-                itemStorage->setTextAlignment(Qt::AlignCenter);
-            }
+            // auto* itemStorage = table->item(row, ColStorageName);
+            // if (itemStorage) {
+            //     const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+            //     QString storageName = storage ? storage->name : "—";
+            //     itemStorage->setText(storageName);
+            //     itemStorage->setData(Qt::UserRole, entry.storageId);
+            //     itemStorage->setTextAlignment(Qt::AlignCenter);
+            // }
+
+            auto* storagePanel = table->cellWidget(row, ColStorageName);
+            const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+            QString storageName = storage ? storage->name : "—";
+            TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
+
+
+            auto* commentPanel = table->cellWidget(row, ColComment);
+            TableUtils::updateCommentCell(commentPanel, entry.comment, entry.entryId);
+
 
             // 🎨 Stílus újraalkalmazás
             StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, MaterialUtils::colorForMaterial(*mat));

@@ -24,7 +24,7 @@ void LeftoverStockRegistry::persist() const {
     // }
     const QString path = FileNameHelper::instance().getLeftoversCsvFile();
     if (!path.isEmpty())
-        LeftoverStockRepository::saveToCSV(*this);
+        LeftoverStockRepository::saveToCSV(*this, path);
 }
 
 

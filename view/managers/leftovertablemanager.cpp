@@ -73,10 +73,14 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     auto* storageOpt = StorageRegistry::instance().findById(entry.storageId);
     QString storageName = storageOpt ? storageOpt->name : "—";
 
-    auto* itemStorage = new QTableWidgetItem(storageName);
-    itemStorage->setTextAlignment(Qt::AlignCenter);
-    itemStorage->setData(Qt::UserRole, entry.storageId);
-    table->setItem(row, ColStorageName, itemStorage);
+    // auto* itemStorage = new QTableWidgetItem(storageName);
+    // itemStorage->setTextAlignment(Qt::AlignCenter);
+    // itemStorage->setData(Qt::UserRole, entry.storageId);
+    // table->setItem(row, ColStorageName, itemStorage);
+    auto* storagePanel = TableUtils::createStorageCell(storageName, entry.entryId, this, [this, entry]() {
+        emit editStorageRequested(entry.entryId);  // 🔔 új signal
+    });
+    table->setCellWidget(row, ColStorageName, storagePanel);
 
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = new QPushButton("🗑️");
@@ -177,14 +181,22 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
             }
 
             // 🏷️ Storage name
-            auto* itemStorage = table->item(row, ColStorageName);
-            if (itemStorage) {
+            // auto* itemStorage = table->item(row, ColStorageName);
+            // if (itemStorage) {
+            //     const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+            //     QString storageName = storage ? storage->name : "—";
+            //     itemStorage->setText(storageName);
+            //     itemStorage->setData(Qt::UserRole, entry.storageId);
+            //     itemStorage->setTextAlignment(Qt::AlignCenter);
+            // }
+
+            auto* storagePanel = table->cellWidget(row, ColStorageName);
+            if (storagePanel) {
                 const auto* storage = StorageRegistry::instance().findById(entry.storageId);
                 QString storageName = storage ? storage->name : "—";
-                itemStorage->setText(storageName);
-                itemStorage->setData(Qt::UserRole, entry.storageId);
-                itemStorage->setTextAlignment(Qt::AlignCenter);
+                TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
             }
+
 
             // 🎨 Sor stílus újraalkalmazása
             RowStyler::applyReusableStyle(table, row, mat, entry);

@@ -17,6 +17,10 @@ public:
     void setModel(const QString& comment);
     QString comment() const;
 
+    void accept() override;
+
 private:
     Ui::EditCommentDialog* ui;
+    QString _originalComment;
+    QString _comment;
 };

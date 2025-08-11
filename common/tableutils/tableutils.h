@@ -120,5 +120,48 @@ inline void updateStorageCell(QWidget* storagePanel, const QString& newStorageNa
         qWarning() << "⚠️ QPushButton 'btnEditStorage' nem található a storagePanel-ben.";
 }
 
+/*CommentCell*/
+inline QWidget* createCommentCell(const QString& commentText, const QUuid& entryId, QObject* receiver, std::function<void()> onEdit) {
+    auto* panel = new QWidget();
+    auto* layout = new QHBoxLayout(panel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(4);
+
+    auto* label = new QLabel(commentText);
+    label->setWordWrap(true);
+    label->setMinimumWidth(100);
+    label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    auto* btnEdit = createIconButton("✏️", "Megjegyzés módosítása", entryId);
+
+    layout->addWidget(label);
+    layout->addWidget(btnEdit);
+
+    label->setObjectName("lblComment");
+    btnEdit->setObjectName("btnEditComment");
+
+    QObject::connect(btnEdit, &QPushButton::clicked, receiver, [entryId, onEdit]() {
+        onEdit();
+    });
+
+    return panel;
+}
+
+inline void updateCommentCell(QWidget* commentPanel, const QString& newComment, const QUuid& entryId) {
+    if (!commentPanel)
+        return;
+
+    auto* lblComment = commentPanel->findChild<QLabel*>("lblComment");
+    if (lblComment)
+        lblComment->setText(newComment);
+    else
+        qWarning() << "⚠️ QLabel 'lblComment' nem található a commentPanel-ben.";
+
+    auto* btnEdit = commentPanel->findChild<QPushButton*>("btnEditComment");
+    if (btnEdit)
+        btnEdit->setProperty("entryId", entryId);
+    else
+        qWarning() << "⚠️ QPushButton 'btnEditComment' nem található a commentPanel-ben.";
+}
 
 } //end namespace TableUtils

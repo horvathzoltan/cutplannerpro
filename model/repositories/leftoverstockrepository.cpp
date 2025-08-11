@@ -176,10 +176,14 @@ LeftoverStockRepository::convertRowToReusableEntry(const QVector<QString>& parts
     return buildReusableEntryFromRow(rowOpt.value(), lineIndex);
 }
 
-bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry) {
-    QFile file("leftovers.csv");
+bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry, const QString& filePath) {
+    QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qWarning() << "❌ Nem sikerült megnyitni a leftover stock fájlt írásra:" << filePath;
+
         return false;
+    }
 
     QTextStream out(&file);
     // Qt6 alatt automatikusan UTF-8

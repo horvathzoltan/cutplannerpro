@@ -36,9 +36,9 @@ void EditStorageDialog::setInitialStorageId(const QUuid& id)
 
 QUuid EditStorageDialog::selectedStorageId() const
 {
-    QVariant data = ui->comboStorage->currentData();
-    return data.isValid() ? data.toUuid() : QUuid{};
+    return selectedStorageId_;
 }
+
 
 void EditStorageDialog::populateStorageCombo() {
     ui->comboStorage->clear();
@@ -50,7 +50,8 @@ void EditStorageDialog::populateStorageCombo() {
 
 bool EditStorageDialog::validateInputs()
 {
-    if (!selectedStorageId().isNull()) {
+    QVariant data = ui->comboStorage->currentData();
+    if (data.isValid() && !data.toUuid().isNull()) {
         return true;
     }
 
@@ -58,11 +59,13 @@ bool EditStorageDialog::validateInputs()
     return false;
 }
 
+
 void EditStorageDialog::accept()
 {
     if (!validateInputs()) {
-        return;  // Ne zárjuk be a dialógust hibás input esetén
+        return;
     }
 
+    selectedStorageId_ = ui->comboStorage->currentData().toUuid();  // 🔒 Mentés
     QDialog::accept();
 }
