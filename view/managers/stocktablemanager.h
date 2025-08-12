@@ -20,14 +20,15 @@ signals:
     void deleteRequested(const QUuid& requestId);
     void editRequested(const QUuid& requestId);
     void editQtyRequested(const QUuid& requestId);
-    void editStorageRequested(const QUuid& requestId);   // 🆕
-    void editCommentRequested(const QUuid& requestId);   // 🆕
+    void editStorageRequested(const QUuid& requestId);
+    void editCommentRequested(const QUuid& requestId);
+    void moveRequested(const QUuid& requestId);
+
 private:
     QTableWidget* table;
     QWidget* parent;
 
     static constexpr int StockEntryIdIdRole = Qt::UserRole + 1;
-
 
 public:
     static constexpr int ColName     = 0;

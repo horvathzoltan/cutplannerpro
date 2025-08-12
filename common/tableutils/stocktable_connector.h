@@ -1,6 +1,7 @@
 #pragma once
 
 #include "view/MainWindow.h"
+#include "view/dialog/movement/movementdialog.h"
 #include "view/dialog/stock/addstockdialog.h"
 #include "view/dialog/stock/addstockdialog.h"
 #include "view/dialog/stock/editstoragedialog.h"
@@ -9,6 +10,7 @@
 #include <model/registries/stockregistry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <model/registries/leftoverstockregistry.h>
+#include <model/registries/storageregistry.h>
 #include <view/dialog/addinputdialog.h>
 #include <presenter/CuttingPresenter.h>
 
@@ -93,6 +95,45 @@ inline static void Connect(
                    original.comment = dlg.comment();
                    presenter->update_StockEntry(original);
                });
+
+    // Mozgatás dialógus
+    w->connect(manager, &StockTableManager::moveRequested, w,
+               [w, presenter](const QUuid& id) {
+                   auto opt = StockRegistry::instance().findById(id);
+                   if (!opt) return;
+
+                   const StockEntry& original = *opt;
+
+                   MovementDialog dlg(w);
+                   const auto* storage = StorageRegistry::instance().findById(original.storageId);
+                   QString storageName = storage ? storage->name : "—";
+
+                   dlg.setSource(storageName, original.entryId, original.quantity);
+                   if (dlg.exec() != QDialog::Accepted) return;
+
+                   MovementData data = dlg.getMovementData();
+                   if (data.toStorageId.isNull() || data.quantity <= 0) return;
+
+                   // 🔄 Létrehozás új bejegyzésként
+                   StockEntry movedEntry = original;
+                   movedEntry.entryId = QUuid::createUuid();  // új ID
+                   movedEntry.storageId = data.toStorageId;
+                   movedEntry.quantity = data.quantity;
+                   movedEntry.comment = data.comment;
+
+                   presenter->add_StockEntry(movedEntry);
+
+                   // 🔁 Maradék frissítése
+                   int remainingQty = original.quantity - data.quantity;
+                   if (remainingQty > 0) {
+                       StockEntry updatedOriginal = original;
+                       updatedOriginal.quantity = remainingQty;
+                       presenter->update_StockEntry(updatedOriginal);
+                   } else {
+                       presenter->remove_StockEntry(original.entryId);  // ha elfogyott
+                   }
+               });
+
 }
 } // end namespace StockTableConnector
 

@@ -37,6 +37,7 @@ SOURCES += \
     model/materialgroup.cpp \
     model/materialmaster.cpp \
     model/materialtype.cpp \
+    model/movementdata.cpp \
     model/pieceinfo.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
@@ -59,6 +60,7 @@ SOURCES += \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
     view/dialog/addwastedialog.cpp \
+    view/dialog/movement/movementdialog.cpp \
     view/dialog/stock/addstockdialog.cpp \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
@@ -112,6 +114,7 @@ HEADERS += \
     model/materialgroup.h \
     model/materialmaster.h \
     model/materialtype.h \
+    model/movementdata.h \
     model/pieceinfo.h \
     model/registries/cuttingplanrequestregistry.h \
     model/registries/leftoverstockregistry.h \
@@ -134,6 +137,7 @@ HEADERS += \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
     view/dialog/addwastedialog.h \
+    view/dialog/movement/movementdialog.h \
     view/dialog/stock/addstockdialog.h \
     view/dialog/stock/editcommentdialog.h \
     view/dialog/stock/editquantitydialog.h \
@@ -147,6 +151,7 @@ FORMS += \
     view/MainWindow.ui \
     view/dialog/addinputdialog.ui \
     view/dialog/addwastedialog.ui \
+    view/dialog/movement/movementdialog.ui \
     view/dialog/stock/addstockdialog.ui \
     view/dialog/stock/editcommentdialog.ui \
     view/dialog/stock/editquantitydialog.ui \

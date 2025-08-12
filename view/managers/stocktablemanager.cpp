@@ -79,14 +79,8 @@ void StockTableManager::addRow(const StockEntry& entry) {
     table->setCellWidget(row, ColComment, commentPanel);
 
     // 🗑️ Törlés gomb
-    QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);
-    // ✏️ Update gomb
-    //QPushButton* btnUpdate = TableUtils::createIconButton("✏️", "Sor módosítása", entry.entryId);
-
- //   QPushButton* btnEditQty = TableUtils::createIconButton("🔢", "Mennyiség szerkesztése", entry.entryId);
- //   QPushButton* btnEditStorage = TableUtils::createIconButton("📦", "Tároló módosítása", entry.entryId);
- //   QPushButton* btnEditComment = TableUtils::createIconButton("💬", "Megjegyzés szerkesztése", entry.entryId);
-
+    QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);    
+    QPushButton* btnMove = TableUtils::createIconButton("➡️", "Mozgatás", entry.entryId);
 
     // 🧩 Panelbe csomagolás
     auto* actionPanel = new QWidget();
@@ -94,7 +88,9 @@ void StockTableManager::addRow(const StockEntry& entry) {
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(4);
     //layout->addWidget(btnUpdate);
-    layout->addWidget(btnDelete);
+    layout->addWidget(btnDelete);    
+    layout->addWidget(btnMove);
+
 
     table->setCellWidget(row, ColAction, actionPanel);
     table->setColumnWidth(ColAction, 64);
@@ -102,6 +98,11 @@ void StockTableManager::addRow(const StockEntry& entry) {
     QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
         QUuid entryId = btnDelete->property("entryId").toUuid();
         emit deleteRequested(entryId);
+    });
+
+    QObject::connect(btnMove, &QPushButton::clicked, this, [btnMove, this]() {
+        QUuid entryId = btnMove->property("entryId").toUuid();
+        emit moveRequested(entryId);  // vagy akár külön signal: moveRequested(entryId);
     });
 
     // QObject::connect(btnUpdate, &QPushButton::clicked, this, [btnUpdate, this]() {

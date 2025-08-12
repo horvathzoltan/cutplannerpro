@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MovementDialog</class>
+ <widget class="QDialog" name="MovementDialog">
+  <property name="windowTitle">
+   <string>Készletmozgatás</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="formContainer">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblSourceStorage">
+        <property name="text">
+         <string>Forrás tároló:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="lblSourceStorageValue"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblTargetStorage">
+        <property name="text">
+         <string>Cél tároló:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboTargetStorage"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblQuantity">
+        <property name="text">
+         <string>Mennyiség:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="spinQuantity"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblComment">
+        <property name="text">
+         <string>Megjegyzés:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QTextEdit" name="editComment"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>MovementDialog</receiver>
+   <slot>accept()</slot>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>MovementDialog</receiver>
+   <slot>reject()</slot>
+  </connection>
+ </connections>
+</ui>
