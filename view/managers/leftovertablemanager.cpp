@@ -4,7 +4,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
-#include <common/rowstyler.h>
+#include <common/tableutils/leftovertable_rowstyler.h>
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
 #include "model/registries/materialregistry.h"
@@ -119,7 +119,7 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     });
 
     // 🎨 Stílus
-    RowStyler::applyReusableStyle(table, row, mat, entry);
+    LeftoverTable::RowStyler::applyStyle(table, row, mat, entry);
 }
 
 void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
@@ -199,7 +199,7 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
 
 
             // 🎨 Sor stílus újraalkalmazása
-            RowStyler::applyReusableStyle(table, row, mat, entry);
+            LeftoverTable::RowStyler::applyStyle(table, row, mat, entry);
 
             return;
         }

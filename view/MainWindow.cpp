@@ -14,9 +14,9 @@
 
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
-#include "common/tableutils/leftovertableconnector.h"
-#include "common/tableutils/inputtableconnector.h"
-#include "common/tableutils/stocktableconnector.h"
+#include "common/tableutils/leftovertable_connector.h"
+#include "common/tableutils/inputtable_connector.h"
+#include "common/tableutils/stocktable_connector.h"
 #include "common/qteventutil.h"
 
 #include "dialog/stock/addstockdialog.h"

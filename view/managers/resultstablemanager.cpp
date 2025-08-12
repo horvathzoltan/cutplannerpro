@@ -1,7 +1,8 @@
 #include "resultstablemanager.h"
 #include "common/materialutils.h"
+#include "common/tableutils/colorlogicutils.h"
 #include "model/registries/materialregistry.h"
-#include "common/rowstyler.h"
+#include "common/tableutils/resulttable_rowstyler.h"
 #include "common/grouputils.h"
 #include "common/materialutils.h"
 #include <QLabel>
@@ -85,8 +86,8 @@ void ResultsTableManager::addRow(const QString& rodNumber, const CutPlan& plan) 
     table->setCellWidget(row + 1, 0, cutsWidget);
 
     const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
-    RowStyler::applyResultStyle(table, row, mat, plan);
-    RowStyler::applyBadgeBackground(cutsWidget, MaterialUtils::colorForMaterial(*mat));
+    ResultTable::RowStyler::applyStyle(table, row, mat, plan);
+    ColorLogicUtils::applyBadgeBackground(cutsWidget, MaterialUtils::colorForMaterial(*mat));
 }
 
 void ResultsTableManager::clearTable() {

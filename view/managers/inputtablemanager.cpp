@@ -1,7 +1,8 @@
 #include "inputtablemanager.h"
+#include "common/tableutils/inputtable_rowstyler.h"
 #include "common/tableutils/tableutils.h"
 #include "model/registries/materialregistry.h"
-#include "common/rowstyler.h"
+//#include "common/tableutils/resulttable_rowstyler.h"
 #include <QPushButton>
 #include <QMessageBox>
 #include <QLabel>
@@ -80,7 +81,7 @@ void InputTableManager::addRow(const CuttingPlanRequest& request) {
     table->setItem(row, ColQty, itemQty);
     //table->setCellWidget(row, ColAction, btnDelete);
 
-    RowStyler::applyInputStyle(table, row, mat, request);
+    InputTable::RowStyler::applyStyle(table, row, mat, request);
 
     // 🧾 Alsó meta sor – 1 cella, 4 oszlopra kiterjesztve
     QLabel* metaLabel = new QLabel(
@@ -163,7 +164,7 @@ void InputTableManager::updateRow(const CuttingPlanRequest& updated) {
             }
 
             // 🎨 Stílus újraalkalmazása
-            RowStyler::applyInputStyle(table, row, mat, updated);
+            InputTable::RowStyler::applyStyle(table, row, mat, updated);
 
             return;
         }

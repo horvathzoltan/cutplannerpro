@@ -19,10 +19,10 @@ SOURCES += \
     common/optimizationexporter.cpp \
     common/planautosavemanager.cpp \
     common/quantityparser.cpp \
-    common/rowstyler.cpp \
     common/segmentutils.cpp \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
+    common/tableutils/resulttable_rowstyler.cpp \
     main.cpp \
     model/CuttingOptimizerModel.cpp \
     model/archivedwasteentry.cpp \
@@ -84,17 +84,19 @@ HEADERS += \
     common/planautosavemanager.h \
     common/qteventutil.h \
     common/quantityparser.h \
-    common/rowstyler.h \
     common/segmentutils.h \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
     common/tableutils/colorconstants.h \
     common/tableutils/colorlogicutils.h \
-    common/tableutils/inputtableconnector.h \
-    common/tableutils/leftovertableconnector.h \
+    common/tableutils/inputtable_connector.h \
+    common/tableutils/inputtable_rowstyler.h \
+    common/tableutils/leftovertable_connector.h \
+    common/tableutils/leftovertable_rowstyler.h \
+    common/tableutils/resulttable_rowstyler.h \
+    common/tableutils/stocktable_connector.h \
     common/tableutils/stocktable_rowstyler.h \
-    common/tableutils/stocktableconnector.h \
     common/tableutils/tablestyleutils.h \
     common/tableutils/tableutils.h \
     model/CuttingOptimizerModel.h \

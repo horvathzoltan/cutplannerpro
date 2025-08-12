@@ -2,7 +2,7 @@
 #include "common/tableutils/stocktable_rowstyler.h"
 #include "common/tableutils/tableutils.h"
 #include "common/materialutils.h"
-#include "common/rowstyler.h"
+//#include "common/tableutils/resulttable_rowstyler.h"
 #include "model/registries/materialregistry.h"
 #include <QHBoxLayout>
 #include <QLabel>

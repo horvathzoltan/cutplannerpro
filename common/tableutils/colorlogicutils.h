@@ -1,6 +1,7 @@
 #pragma once
 #include "common/tableutils/colorconstants.h"
 #include <QColor>
+#include <QWidget>
 
 namespace ColorLogicUtils {
 
@@ -23,4 +24,13 @@ inline QColor colorForQuantity(int quantity) {
     else
         return ColorConstants::ColorGreenStandard; // zöld
 }
+
+inline void applyBadgeBackground(QWidget* widget, const QColor& base) {
+    widget->setAutoFillBackground(true);
+    widget->setStyleSheet(QString(
+                              "background-color: %1;"
+                              "padding-top: 6px; padding-bottom: 6px;"
+                              ).arg(base.name()));
 }
+
+} // endof namespace ColorLogicUtils
