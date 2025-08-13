@@ -1,4 +1,5 @@
 QT       += core gui
+#network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,7 +38,6 @@ SOURCES += \
     model/materialgroup.cpp \
     model/materialmaster.cpp \
     model/materialtype.cpp \
-    model/movementdata.cpp \
     model/pieceinfo.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
@@ -73,6 +73,7 @@ SOURCES += \
 HEADERS += \
     common/archivedwasteutils.h \
     common/colorutils.h \
+    common/csvhelper.h \
     common/csvimporter.h \
     common/cutresultutils.h \
     common/cuttingplanfinalizer.h \
@@ -81,7 +82,10 @@ HEADERS += \
     common/grouputils.h \
     common/leftoversourceutils.h \
     common/logger.h \
+    common/logmeta.h \
     common/materialutils.h \
+    common/movementlogger.h \
+    common/movementlogmodel.h \
     common/optimizationexporter.h \
     common/planautosavemanager.h \
     common/qteventutil.h \

@@ -128,3 +128,14 @@ QString FileNameHelper::getCuttingPlanFilePath(const QString fn) const {
     return combinePath(getCuttingPlanFolder(), fn);
 }
 
+/*movement*/
+
+QString FileNameHelper::getMovementLogFileNameForDate(const QDate& date) const {
+    return date.toString("yyyy-MM-dd") + ".log";
+}
+
+QString FileNameHelper::getMovementLogFilePathForDate(const QDate& date) const {
+    return combinePath(getLogFolder(), getMovementLogFileNameForDate(date));
+}
+
+

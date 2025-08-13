@@ -1,4 +1,5 @@
 #include "../registries/materialregistry.h"
+#include "common/csvhelper.h"
 #include "stockrepository.h"
 #include <QFile>
 #include <QTextStream>
@@ -122,12 +123,6 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
 
-    auto csvEscape = [](const QString& s) {
-        QString v = s;
-        v.replace("\"", "\"\"");     // idézőjelek duplázása
-        return "\"" + v + "\"";      // teljes mező idézőjelezése
-    };
-
     out << "materialBarcode;quantity;storageBarcode;comment\n";
 
     const auto entries = registry.readAll(); // ha lehet, érdemes const&-re váltani a readAll() visszatérési típusát
@@ -144,7 +139,7 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
         out << mat->barcode << ';'
             << entry.quantity << ';'
             << storageBarcode << ';'
-            << csvEscape(entry.comment) << '\n';
+            << CsvHelper::escape(entry.comment) << '\n';
     }
 
     return true;

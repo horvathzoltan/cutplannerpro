@@ -1,18 +1,12 @@
 #pragma once
 
+#include "model/movementdata.h"
 #include <QDialog>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MovementDialog; }
 QT_END_NAMESPACE
-
-struct MovementData {
-    QUuid fromEntryId;
-    QUuid toStorageId;
-    int quantity;
-    QString comment;
-};
 
 class MovementDialog : public QDialog {
     Q_OBJECT

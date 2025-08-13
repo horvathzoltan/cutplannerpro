@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QDate>
 #include <QString>
 
 //3. 🧠 Lehetőség singletonná alakításra
@@ -51,4 +52,6 @@ public:
     //Settings fájlnév bin/exe mellett, vagy testfolderben
     QString getSettingsFilePath() const;
 
+    QString getMovementLogFilePathForDate(const QDate &date) const;
+    QString getMovementLogFileNameForDate(const QDate &date) const;
 };
