@@ -3,11 +3,15 @@
 #pragma once
 
 #include <QUuid>
-#include "model/pieceinfo.h"
+#include "pieceinfo.h"
 
 /**
  * @brief Egy darab + anyagkapcsolat optimalizáláshoz
  */
+
+namespace Cutting {
+namespace Piece {
+
 class PieceWithMaterial
 {
 public:
@@ -20,3 +24,5 @@ public:
     bool operator==(const PieceWithMaterial& other) const;
 };
 
+} //endof namespace Piece
+} // endof namespace Cutting

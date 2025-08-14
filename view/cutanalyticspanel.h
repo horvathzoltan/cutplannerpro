@@ -3,8 +3,8 @@
 #include <QFrame>
 #include <QLabel>
 #include <QVector>
-#include "../model/cutplan.h"
-#include "../model/cutresult.h"
+#include "../model/cutting/plan/cutplan.h"
+#include "../model/cutting/result/resultmodel.h"
 
 /**
  * @brief Vágási statisztikák megjelenítő panel
@@ -19,7 +19,7 @@ public:
     /**
      * @brief Frissíti a panel tartalmát a vágási tervek és hulladékok alapján
      */
-    void updateStats(const QVector<CutPlan>& plans, const QVector<CutResult>& leftovers);
+    void updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const QVector<Cutting::Result::ResultModel>& leftovers);
 
 private:
     QLabel* lblSummary;

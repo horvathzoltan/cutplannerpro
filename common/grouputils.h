@@ -6,7 +6,7 @@
 #include <QSet>
 #include "../model/registries/materialgroupregistry.h"
 #include "../model/materialgroup.h"
-#include "common/colorutils.h"
+#include "common/tableutils/colorutils.h"
 
 namespace GroupUtils {
 

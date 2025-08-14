@@ -20,7 +20,7 @@ public:
     QString barcode() const;
     int availableLength() const;
     QString comment() const;
-    LeftoverSource source() const;
+    Cutting::Result::LeftoverSource source() const;
 
     void accept() override;
     LeftoverStockEntry getModel() const;

@@ -3,13 +3,19 @@
 #include <QUuid>
 #include <QString>
 
+
 /**
  * @brief Egy vágási igényt reprezentáló adatstruktúra.
  *
  * Tartalmazza az anyag azonosítóját, a kívánt hosszúságot, darabszámot,
  * valamint opcionálisan a megrendelő nevét és a külső hivatkozási azonosítót.
  */
-struct CuttingPlanRequest {
+
+namespace Cutting {
+namespace Plan {
+
+
+struct Request {
     QUuid requestId = QUuid::createUuid(); // 💡 Automatikus egyedi azonosító
     QUuid materialId;           ///< 🔗 Az anyag egyedi törzsbeli azonosítója
     int requiredLength;         ///< 📏 Vágás hossza (milliméterben)
@@ -35,3 +41,5 @@ struct CuttingPlanRequest {
 
     QString toString() const;
 };
+} //endof namespace Plan
+} //endof namespace Cutting

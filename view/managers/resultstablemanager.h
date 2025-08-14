@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QTableWidget>
-#include "model/cutplan.h"
+#include "model/cutting/plan/cutplan.h"
 
 class ResultsTableManager : public QObject {
     Q_OBJECT
@@ -10,7 +10,7 @@ class ResultsTableManager : public QObject {
 public:
     explicit ResultsTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
-    void addRow(const QString& rodNumber, const CutPlan& plan);
+    void addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
     void clearTable();
 
 private:

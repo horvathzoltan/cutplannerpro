@@ -10,7 +10,11 @@
 /**
  * @brief Egy szakasz a vágási tervben (darab, kerf, hulladék)
  */
-struct Segment {
+
+namespace Cutting{
+namespace Segment{
+
+struct SegmentModel {
 
     enum class Type {
         Piece,   // ✂️ Kért darab
@@ -45,5 +49,6 @@ struct Segment {
         return QString("[?%1]").arg(length_mm);
     }
 
-    QVector<Segment> generateSegments(int kerf_mm, int totalLength_mm) const;
+    QVector<SegmentModel> generateSegments(int kerf_mm, int totalLength_mm) const;
 };
+}} //end namespace Cutting::Segment

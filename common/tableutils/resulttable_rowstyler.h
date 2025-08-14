@@ -1,10 +1,10 @@
 #pragma once
 
 #include <QTableWidget>
-#include <model/cutresult.h>
+//#include "model/cutting/result/cutresult.h"
 #include "../../model/materialmaster.h"
 #include "common/materialutils.h"
-#include "model/cutplan.h"
+#include "model/cutting/plan/cutplan.h"
 
 // 🎨 Táblázatsor stíluskezelő – közös utility
 namespace ResultTable {
@@ -12,7 +12,7 @@ namespace RowStyler {
 
 inline void applyStyle(QTableWidget* table, int row,
                                  const MaterialMaster* mat,
-                                 const CutPlan& plan) {
+                                 const Cutting::Plan::CutPlan& plan) {
     if (!table || !mat)
         return;
 

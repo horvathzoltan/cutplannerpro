@@ -4,7 +4,7 @@
 #include <QDateTime>
 #include <QDir>
 
-void OptimizationExporter::exportPlansToCSV(const QVector<CutPlan>& plans, const QString& folderPath)
+void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan>& plans, const QString& folderPath)
 {
     // 📁 Export mappa előkészítése
     const QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss");
@@ -25,11 +25,11 @@ void OptimizationExporter::exportPlansToCSV(const QVector<CutPlan>& plans, const
     // 🔁 Minden vágási terv kiírása
     for (const auto& plan : plans) {
         QStringList cutLabels;
-        for (const PieceWithMaterial& pwm : plan.cuts)
+        for (const Cutting::Piece::PieceWithMaterial& pwm : plan.cuts)
             cutLabels.append(pwm.info.displayText()); // pl. "Kovács BT • MEGR-4022 • 1800 mm"
 
         QStringList segmentLabels;
-        for (const Segment& s : plan.segments)
+        for (const Cutting::Segment::SegmentModel& s : plan.segments)
             segmentLabels.append(s.toLabelString());
 
         out << plan.planId.toString() << ","
@@ -39,7 +39,7 @@ void OptimizationExporter::exportPlansToCSV(const QVector<CutPlan>& plans, const
             << "\"" << cutLabels.join(" | ") << "\","
             << plan.kerfTotal << ","
             << plan.waste << ","
-            << (plan.source == CutPlanSource::Reusable ? "Reusable" : "Stock") << ","
+            << (plan.source == Cutting::Plan::Source::Reusable ? "Reusable" : "Stock") << ","
             << "\"" << segmentLabels.join(" ") << "\"\n";
     }
 
@@ -47,7 +47,7 @@ void OptimizationExporter::exportPlansToCSV(const QVector<CutPlan>& plans, const
 }
 
 
-void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<CutPlan>& plans, const QString& folderPath)
+void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan::CutPlan>& plans, const QString& folderPath)
 {
     // 📁 Export mappa létrehozása
     const QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss");
@@ -70,7 +70,7 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<CutPlan>& pla
     for (const auto& plan : plans) {
         out << QString("Terv #%1 — PlanId: %2\n").arg(plan.rodNumber).arg(plan.planId.toString());
         out << QString("Anyag Barcode: %1\n").arg(plan.rodId);
-        out << QString("Forrás: %1\n").arg(plan.source == CutPlanSource::Reusable ? "REUSABLE" : "STOCK");
+        out << QString("Forrás: %1\n").arg(plan.source == Cutting::Plan::Source::Reusable ? "REUSABLE" : "STOCK");
         //out << QString("Darabolások: %1\n").arg(plan.cuts.isEmpty() ? "-" : plan.cutsAsString() + " mm");
 
         out << QString("Darabolások:\n");
@@ -89,7 +89,7 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<CutPlan>& pla
 
         // 🔍 Újdonság: szakaszlista (darabok + kerf-ek + hulladék)
         QStringList segmentLabels;
-        for (const Segment& s : plan.segments)
+        for (const Cutting::Segment::SegmentModel& s : plan.segments)
             segmentLabels.append(s.toLabelString());
         out << QString("Szakaszok: %1\n").arg(segmentLabels.join(" "));
 

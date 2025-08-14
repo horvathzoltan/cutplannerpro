@@ -1,5 +1,5 @@
 #include "materialgrouprepository.h"
-#include "common/colorutils.h"
+#include "common/tableutils/colorutils.h"
 #include "../materialgroup.h"
 #include "../registries/materialregistry.h"
 #include "../materialmaster.h"

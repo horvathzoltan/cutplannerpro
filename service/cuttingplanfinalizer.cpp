@@ -5,17 +5,17 @@
 #include "../model/registries/leftoverstockregistry.h"
 
 // 🔽 Konverziós logika: CutResult → ReusableStockEntry
-#include "../common/cutresultutils.h"
+#include "../common/../model/cutting/result/utils.h"
 
 // 🔽 Exportáló modul
-#include "../common/archivedwasteutils.h"
-#include "common/segmentutils.h"
+#include "service/archivedwasteutils.h"
+#include "model/cutting/segment/segmentutils.h"
 
-void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
-                                    const QVector<CutResult>& leftovers)
+void CuttingPlanFinalizer::finalize(QVector<Cutting::Plan::CutPlan>& plans,
+                                    const QVector<Cutting::Result::ResultModel>& leftovers)
 {
     // 1️⃣ A vágási tervek lezárása, és az alapanyag „fogyasztása” készletből
-    for (CutPlan& plan : plans) {
+    for (Cutting::Plan::CutPlan& plan : plans) {
         if (plan.usedReusable()) {
             // ♻️ Ha hullóból vágtunk → annak eltávolítása
             LeftoverStockRegistry::instance().consumeEntry(plan.rodId);
@@ -24,29 +24,29 @@ void CuttingPlanFinalizer::finalize(QVector<CutPlan>& plans,
             StockRegistry::instance().consumeEntry(plan.materialId);
         }
 
-        plan.setStatus(CutPlanStatus::Completed); // ✅ Állapot frissítése: kész
+        plan.setStatus(Cutting::Plan::Status::Completed); // ✅ Állapot frissítése: kész
     }
 
     // 2️⃣ Hulladékok feldolgozása → újrahasználat vagy archiválás
     QVector<ArchivedWasteEntry> archivedBatch;
 
-    for (const CutResult& result : leftovers) {
+    for (const Cutting::Result::ResultModel& result : leftovers) {
         if (result.waste >= 300 && !result.reusableBarcode.isEmpty()) {
             // ✅ Elég hosszú → bekerül az újrahasználható rúdlistába
-            LeftoverStockEntry reusable = CutResultUtils::toReusableEntry(result);
+            LeftoverStockEntry reusable = Cutting::Result::Utils::toReusableEntry(result);
             LeftoverStockRegistry::instance().registerEntry(reusable);
         } else {
             // 🗂️ Rövid → archiválandó hulladékként tároljuk
 
             // 🔍 Eredeti CutPlan előkeresése planId alapján
-            auto it = std::find_if(plans.begin(), plans.end(), [&](const CutPlan& p) {
+            auto it = std::find_if(plans.begin(), plans.end(), [&](const Cutting::Plan::CutPlan& p) {
                 return p.planId == result.cutPlanId;
             });
 
             // 📜 Megállapítjuk, hogy ez valóban végmaradék volt-e
             bool trailingWaste = false;
             if (it != plans.end()) {
-                trailingWaste = SegmentUtils::isTrailingWaste(result.waste, it->segments);
+                trailingWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, it->segments);
             }
 
             // 📝 Archivált selejt felépítése

@@ -31,40 +31,41 @@
 
 //     return segments;
 // }
+namespace Cutting{
+namespace Segment{
 
-
-bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<Segment>& segments)
+bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>& segments)
 {
     if (segments.isEmpty())
         return false;
 
-    const Segment& last = segments.last();
-    return (last.type == Segment::Type::Waste && last.length_mm == wasteLength);
+    const SegmentModel& last = segments.last();
+    return (last.type == SegmentModel::Type::Waste && last.length_mm == wasteLength);
 }
 
-QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>& cuts, int kerf_mm, int totalLength_mm)
+QVector<SegmentModel> SegmentUtils::generateSegments(const QVector<Cutting::Piece::PieceWithMaterial>& cuts, int kerf_mm, int totalLength_mm)
 {
-    QVector<Segment> segments;
+    QVector<SegmentModel> segments;
 
     int usedLength = 0;
 
     for (int i = 0; i < cuts.size(); ++i) {
-        const PieceWithMaterial& pwm = cuts[i];
+        const Cutting::Piece::PieceWithMaterial& pwm = cuts[i];
         int len = pwm.info.length_mm;
 
         // ➕ Darab szakasz
-        Segment piece;
+        SegmentModel piece;
         piece.length_mm = len;
-        piece.type = Segment::Type::Piece;
+        piece.type = SegmentModel::Type::Piece;
         segments.append(piece);
 
         usedLength += len;
 
     // ➕ Kerf szakasz – az utolsó után is!
         if (kerf_mm > 0){// && i != cuts.size() - 1) {
-            Segment kerf;
+            SegmentModel kerf;
             kerf.length_mm = kerf_mm;
-            kerf.type = Segment::Type::Kerf;
+            kerf.type = SegmentModel::Type::Kerf;
             segments.append(kerf);
 
             usedLength += kerf_mm;
@@ -74,9 +75,9 @@ QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>
     // 🧺 Végmaradék, ha van
     int waste = totalLength_mm - usedLength;
     if (waste > 0) {
-        Segment trailingWaste;
+        SegmentModel trailingWaste;
         trailingWaste.length_mm = waste;
-        trailingWaste.type = Segment::Type::Waste;
+        trailingWaste.type = SegmentModel::Type::Waste;
         segments.append(trailingWaste);
     } else if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
@@ -84,4 +85,4 @@ QVector<Segment> SegmentUtils::generateSegments(const QVector<PieceWithMaterial>
 
     return segments;
 }
-
+}} // endof namespace Cutting::Segment

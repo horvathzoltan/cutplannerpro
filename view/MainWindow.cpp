@@ -10,7 +10,7 @@
 
 //#include "cutanalyticspanel.h"
 #include "model/stockentry.h"
-#include "model/cuttingplanrequest.h"
+#include "model/cutting/plan/request.h"
 
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
@@ -168,7 +168,7 @@ void MainWindow::ShowWarningDialog(const QString& msg) {
     QMessageBox::warning(this, "Hiba", msg);
 }
 
-void MainWindow::updateStats(const QVector<CutPlan>& plans, const QVector<CutResult>& results) {
+void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const QVector<Cutting::Result::ResultModel>& results) {
     analyticsPanel->updateStats(plans, results);
 }
 
@@ -221,7 +221,7 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
     if (dialog.exec() != QDialog::Accepted)
         return;
 
-    CuttingPlanRequest request = dialog.getModel();
+    Cutting::Plan::Request request = dialog.getModel();
     presenter->add_CuttingPlanRequest(request);
 }
 
@@ -288,12 +288,12 @@ void MainWindow::handle_btn_Finalize_clicked()
 }
 
 // input table
-void MainWindow::addRow_InputTable(const CuttingPlanRequest& v)
+void MainWindow::addRow_InputTable(const Cutting::Plan::Request& v)
 {
     inputTableManager->addRow(v);
 }
 
-void MainWindow::updateRow_InputTable(const CuttingPlanRequest& v)
+void MainWindow::updateRow_InputTable(const Cutting::Plan::Request& v)
 {
     inputTableManager->updateRow(v);
 }
@@ -354,12 +354,12 @@ void MainWindow::clear_ResultsTable() {
     ui->tableResults->setRowCount(0);
 }
 
-void MainWindow::update_ResultsTable(const QVector<CutPlan>& plans) {
+void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plans) {
     ui->tableResults->clearContents();
     ui->tableResults->setRowCount(0);
 
     for (int i = 0; i < plans.size(); ++i) {
-        const CutPlan& plan = plans[i];
+        const Cutting::Plan::CutPlan& plan = plans[i];
         //addRow_ResultsTable(plan.rodId, plan);
         resultsTableManager->addRow(plan.rodId, plan); // Rod #1, Rod #2, stb.
     }

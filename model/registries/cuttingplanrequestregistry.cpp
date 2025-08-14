@@ -22,14 +22,14 @@ void CuttingPlanRequestRegistry::persist() const {
         CuttingRequestRepository::saveToFile(*this, path);
 }
 
-QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::readAll() const {
+QVector<Cutting::Plan::Request> CuttingPlanRequestRegistry::readAll() const {
     // 📚 Visszaadja az összes CuttingRequest-et
     return _data;
 }
 
-// QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::findByMaterialId(const QUuid& materialId) const {
+// QVector<Request> CuttingPlanRequestRegistry::findByMaterialId(const QUuid& materialId) const {
 //     // 🧪 Lekérdezés anyagID alapján — bár a belső tárolás nem csoportosít, ez kiszűri
-//     QVector<CuttingPlanRequest> result;
+//     QVector<Request> result;
 //     for (const auto& r : _data) {
 //         if (r.materialId == materialId)
 //             result.append(r);
@@ -37,18 +37,18 @@ QVector<CuttingPlanRequest> CuttingPlanRequestRegistry::readAll() const {
 //     return result;
 // }
 
-void CuttingPlanRequestRegistry::registerRequest(const CuttingPlanRequest& request) {
+void CuttingPlanRequestRegistry::registerRequest(const Cutting::Plan::Request& request) {
     // 🆕 Új CuttingRequest hozzáadása
     _data.append(request);
     persist();
 }
 
-// void CuttingPlanRequestRegistry::registerRequest_NotPersistant(const CuttingPlanRequest& request) {
+// void CuttingPlanRequestRegistry::registerRequest_NotPersistant(const Request& request) {
 //     // 🆕 Új CuttingRequest hozzáadása
 //     _data.append(request);
 // }
 
-bool CuttingPlanRequestRegistry::updateRequest(const CuttingPlanRequest& updated) {
+bool CuttingPlanRequestRegistry::updateRequest(const Cutting::Plan::Request& updated) {
     // 🔍 Érvényesség ellenőrzése
     if (!updated.isValid())
         return false;
@@ -69,7 +69,7 @@ bool CuttingPlanRequestRegistry::updateRequest(const CuttingPlanRequest& updated
 void CuttingPlanRequestRegistry::removeRequest(const QUuid& requestId) {
     // 🗑️ Törlés egyedi azonosító alapján
     auto it = std::remove_if(_data.begin(), _data.end(),
-                             [&](const CuttingPlanRequest& r) {
+                             [&](const Cutting::Plan::Request& r) {
                                  return r.requestId == requestId;
                              });
 
@@ -85,7 +85,7 @@ void CuttingPlanRequestRegistry::clearAll() {
     persist();
 }
 
-std::optional<CuttingPlanRequest> CuttingPlanRequestRegistry::findById(const QUuid& requestId) const {
+std::optional<Cutting::Plan::Request> CuttingPlanRequestRegistry::findById(const QUuid& requestId) const {
     for (const auto& r : _data) {
         if (r.requestId == requestId)
             return r;

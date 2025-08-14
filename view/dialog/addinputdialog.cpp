@@ -1,7 +1,7 @@
 #include "addinputdialog.h"
 
 //#include "qpushbutton.h"
-#include "model/cuttingplanrequest.h"
+#include "model/cutting/plan/request.h"
 #include "ui_addinputdialog.h"
 #include "model/registries/materialregistry.h"
 
@@ -62,8 +62,8 @@ QString AddInputDialog::externalReference() const {
     return ui->editReference->text().trimmed();
 }
 
-CuttingPlanRequest AddInputDialog::getModel() const {
-    CuttingPlanRequest req;
+Cutting::Plan::Request AddInputDialog::getModel() const {
+    Cutting::Plan::Request req;
     req.requestId = current_requestId; // ✅ ez volt a hiányzó láncszem
     // 🔗 Anyag ID kinyerése a comboBox-ból
     QVariant matData = ui->comboMaterial->currentData();
@@ -90,7 +90,7 @@ CuttingPlanRequest AddInputDialog::getModel() const {
 
 
 bool AddInputDialog::validateInputs() {
-    CuttingPlanRequest req = getModel(); // <- új metódusod, lásd korábban
+    Cutting::Plan::Request req = getModel(); // <- új metódusod, lásd korábban
 
     QStringList errors = req.invalidReasons(); // <- centralizált validáció
 
@@ -112,7 +112,7 @@ void AddInputDialog::accept() {
     QDialog::accept(); // csak ha minden oké
 }
 
-void AddInputDialog::setModel(const CuttingPlanRequest& request) {
+void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
     current_requestId = request.requestId; // ⬅️ ID mentése
 
     // 🔗 Anyag beállítása comboBox-ban

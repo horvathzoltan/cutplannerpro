@@ -13,7 +13,7 @@ InputTableManager::InputTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
 
 
-void InputTableManager::addRow(const CuttingPlanRequest& request) {
+void InputTableManager::addRow(const Cutting::Plan::Request& request) {
     int row = table->rowCount();
     table->insertRow(row);           // Fő adatsor
     table->insertRow(row + 1);       // Meta adatsor
@@ -124,7 +124,7 @@ void InputTableManager::refresh_TableFromRegistry() {
     //table->resizeColumnsToContents();  // 📐 automatikus oszlopméretezés
 }
 
-void InputTableManager::updateRow(const CuttingPlanRequest& updated) {
+void InputTableManager::updateRow(const Cutting::Plan::Request& updated) {
     for (int row = 0; row < table->rowCount(); ++row) {
         QTableWidgetItem* itemName = table->item(row, ColName);
         if (!itemName)

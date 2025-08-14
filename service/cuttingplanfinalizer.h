@@ -3,8 +3,8 @@
 #include <QVector> // Qt-típus a vágási tervek és hulladéklista kezelésére
 
 // 🔽 Model osztályok, amikkel dolgozunk
-#include "../model/cutresult.h"              // Vágás eredménye — tartalmaz hulladék adatokat
-#include "../model/cutplan.h"                // Egyedi vágási terv — anyag, hossz, reusable info
+#include "../model/cutting/result/resultmodel.h"              // Vágás eredménye — tartalmaz hulladék adatokat
+#include "../model/cutting/plan/cutplan.h"                // Egyedi vágási terv — anyag, hossz, reusable info
 
 /**
  * @brief Statikus finalizer osztály, ami lezárja a vágási tervet.
@@ -22,7 +22,7 @@ public:
      * @param plans A vágási tervek listája
      * @param leftovers A vágások során keletkezett hulladékdarabok
      */
-    static void finalize(QVector<CutPlan>& plans,
-                         const QVector<CutResult>& leftovers);
+    static void finalize(QVector<Cutting::Plan::CutPlan>& plans,
+                         const QVector<Cutting::Result::ResultModel>& leftovers);
 };
 

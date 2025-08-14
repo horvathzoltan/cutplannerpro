@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QVector>
-#include "materialtype.h"
-#include "identifiableentity.h"
+#include "../materialtype.h"
+#include "../identifiableentity.h"
 
 // 🔧 Gépdefiníció a vágáshoz: kerf, anyagkompatibilitás, hely, megjegyzés
 struct CuttingMachine : public IdentifiableEntity {

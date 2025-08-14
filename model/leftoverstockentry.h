@@ -5,7 +5,8 @@
 #include <QColor>
 
 #include "materialmaster.h"
-#include "model/cutresult.h"
+//#include "model/cutting/result/cutresult.h"
+#include "model/cutting/result/leftoversource.h"
 
 
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja
@@ -15,7 +16,7 @@ struct LeftoverStockEntry {
 
     QUuid materialId;           // 🔗 Anyag azonosító
     int availableLength_mm;         // 📏 Szálhossz milliméterben
-    LeftoverSource source = LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
+    Cutting::Result::LeftoverSource source = Cutting::Result::LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
     std::optional<int> optimizationId = std::nullopt; // 🔍 Csak ha forrás Optimization
     QUuid storageId;                // 📦 Tárolási hely azonosítója
 

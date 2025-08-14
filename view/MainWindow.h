@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 //#include "common/tableconnectionhelper.h"
-#include "model/cutresult.h"
+#include "model/cutting/result/resultmodel.h"
 
 #include "managers/inputtablemanager.h"
 #include "managers/leftovertablemanager.h"
@@ -29,13 +29,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void updateStats(const QVector<CutPlan> &plans, const QVector<CutResult> &results);
+    void updateStats(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &results);
     void setInputFileLabel(const QString &label, const QString &tooltip);
     void ShowWarningDialog(const QString &msg);
 
     // input table
-    void addRow_InputTable(const CuttingPlanRequest &v);
-    void updateRow_InputTable(const CuttingPlanRequest &v);
+    void addRow_InputTable(const Cutting::Plan::Request &v);
+    void updateRow_InputTable(const Cutting::Plan::Request &v);
     void removeRow_InputTable(const QUuid &v);
     void clear_InputTable();
     // stock table
@@ -51,7 +51,7 @@ public:
 
     // results table
     //void addRow_ResultsTable(QString rodNumber, const CutPlan& plan);
-    void update_ResultsTable(const QVector<CutPlan> &plans);
+    void update_ResultsTable(const QVector<Cutting::Plan::CutPlan> &plans);
     void clear_ResultsTable();
 
 private slots:

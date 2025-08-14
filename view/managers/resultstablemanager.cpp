@@ -11,7 +11,7 @@
 ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
 
-void ResultsTableManager::addRow(const QString& rodNumber, const CutPlan& plan) {
+void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan) {
     int row = table->rowCount();
     table->insertRow(row);
     table->insertRow(row + 1);  // Badge sor
@@ -35,12 +35,12 @@ void ResultsTableManager::addRow(const QString& rodNumber, const CutPlan& plan) 
     layout->setContentsMargins(0, 4, 0, 4);
     layout->setSpacing(6);
 
-    for (const Segment& s : plan.segments) {
+    for (const Cutting::Segment::SegmentModel& s : plan.segments) {
         QString color;
         switch (s.type) {
-        case Segment::Type::Piece:  color = s.length_mm < 300 ? "#e74c3c" : s.length_mm > 2000 ? "#f39c12" : "#27ae60"; break;
-        case Segment::Type::Kerf:   color = "#34495e"; break;
-        case Segment::Type::Waste:  color = "#bdc3c7"; break;
+        case Cutting::Segment::SegmentModel::Type::Piece:  color = s.length_mm < 300 ? "#e74c3c" : s.length_mm > 2000 ? "#f39c12" : "#27ae60"; break;
+        case Cutting::Segment::SegmentModel::Type::Kerf:   color = "#34495e"; break;
+        case Cutting::Segment::SegmentModel::Type::Waste:  color = "#bdc3c7"; break;
         }
 
         QLabel* label = new QLabel(s.toLabelString());
@@ -49,7 +49,7 @@ void ResultsTableManager::addRow(const QString& rodNumber, const CutPlan& plan) 
                                  "QLabel { background-color: %1; color: white; font-weight: bold; padding: 3px 8px; border-radius: 6px; }"
                                  ).arg(color));
 
-        if (s.type == Segment::Type::Kerf)
+        if (s.type == Cutting::Segment::SegmentModel::Type::Kerf)
             label->setFixedWidth(60);
 
         layout->addWidget(label);

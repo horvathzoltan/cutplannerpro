@@ -1,28 +1,20 @@
 #pragma once  // 👑 Modern include guard
 
-#include "common/segmentutils.h"
-#include "model/cutting/piecewithmaterial.h"
-#include "pieceinfo.h"
-#include "segment.h"
+#include "status.h"
+#include "source.h"
+#include "model/cutting/segment/segmentutils.h"
+#include "model/cutting/piece/piecewithmaterial.h"
+//#include "../piece/pieceinfo.h"
+#include "../segment/segmentmodel.h"
 
 #include <QString>
 #include <QVector>
 #include <QUuid>
 
-/**
- * @brief Vágási terv státusza — a teljesülés vagy elakadás lekövetésére
- */
-enum class CutPlanStatus {
-    NotStarted,   // 🔹 Még nincs vágás
-    InProgress,   // ✂️ Már történt vágás
-    Completed,    // ✅ Teljesen befejezett terv
-    Abandoned     // ❌ Félbemaradt, kézzel lezárt terv
-};
 
-enum class CutPlanSource {
-    Stock,     // 🧱 Normál profilkészlet
-    Reusable   // ♻️ Hulladékból újravágás
-};
+
+namespace Cutting {
+namespace Plan {
 
 
 /**
@@ -39,18 +31,18 @@ public:
     QUuid materialId;                // 🔗 Az anyag azonosítója (UUID)
     QString rodId;                   // 📄 Reusable barcode, ha van
 
-    CutPlanSource source = CutPlanSource::Stock;
+    Cutting::Plan::Source source = Cutting::Plan::Source::Stock;
 
     // 🔁 Állapotkezelés
-    CutPlanStatus status = CutPlanStatus::NotStarted;
+    Status status = Status::NotStarted;
 
     QUuid planId = QUuid::createUuid(); // ✅ automatikus UUID, egyedi tervazonosító
 
-    QVector<Segment> segments; // 🧱 Vágási szakaszlista
+    QVector<Cutting::Segment::SegmentModel> segments; // 🧱 Vágási szakaszlista
 
     //QVector<PieceInfo> piecesInfo;
 
-    QVector<PieceWithMaterial> cuts;
+    QVector<Cutting::Piece::PieceWithMaterial> cuts;
 
     // 🧠 Viselkedésalapú metódusok
     bool usedReusable() const;
@@ -59,16 +51,19 @@ public:
     QString materialName() const;        // Anyag neve — materialId alapján
     QString materialGroupName() const;   // Anyag csoportneve — helper alapján
 
-    CutPlanStatus getStatus() const;
-    void setStatus(CutPlanStatus newStatus);
+    Status getStatus() const;
+    void setStatus(Status newStatus);
 
     QString pieceLengthsAsString() const;
 
     // 📐 Szakaszgenerálás helper
     void generateSegments(int kerf_mm, int totalLength_mm){
-        this->segments = SegmentUtils::generateSegments(this->cuts
+        this->segments = Cutting::Segment::SegmentUtils::generateSegments(this->cuts
                                                         /* PieceWithMaterial-ek */,
                                                         kerf_mm, totalLength_mm);
 
     }
 };
+}  //endof namespace Plan
+}  //endof namespace Cutting
+

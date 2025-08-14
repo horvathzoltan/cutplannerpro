@@ -38,7 +38,7 @@ void CutAnalyticsPanel::setupLayout()
     }
 }
 
-void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector<CutResult>& leftovers)
+void CutAnalyticsPanel::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const QVector<Cutting::Result::ResultModel>& leftovers)
 {
     // 🔢 Inicializálás
     int totalCuts          = 0;
@@ -51,21 +51,21 @@ void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector
     int totalWasteLength   = 0;
 
     // 📊 Tervek bejárása
-    for (const CutPlan& plan : plans) {
+    for (const Cutting::Plan::CutPlan& plan : plans) {
         totalCuts += plan.cuts.size();          // vágások száma
         segmentCount += plan.segments.size();   // teljes szakaszszám
 
-        for (const Segment& s : plan.segments) {
+        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
             switch (s.type) {
-            case Segment::Type::Piece:
+            case Cutting::Segment::SegmentModel::Type::Piece:
                 pieceCount++;
                 totalPieceLength += s.length_mm;
                 break;
-            case Segment::Type::Kerf:
+            case Cutting::Segment::SegmentModel::Type::Kerf:
                 kerfCount++;
                 totalKerfLength += s.length_mm;
                 break;
-            case Segment::Type::Waste:
+            case Cutting::Segment::SegmentModel::Type::Waste:
                 wasteCount++;
                 totalWasteLength += s.length_mm;
                 break;
@@ -74,12 +74,12 @@ void CutAnalyticsPanel::updateStats(const QVector<CutPlan>& plans, const QVector
     }
 
     // ♻️ Újrahasznosítható maradékok száma (min. 300mm)
-    int reusableWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const CutResult& r) {
+    int reusableWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const Cutting::Result::ResultModel& r) {
         return r.waste >= 300;
     });
 
     // 🗃️ Végleges hulladékok száma
-    int finalWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const CutResult& r) {
+    int finalWasteCount = std::count_if(leftovers.begin(), leftovers.end(), [](const Cutting::Result::ResultModel& r) {
         return r.isFinalWaste;
     });
 

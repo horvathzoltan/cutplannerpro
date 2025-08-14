@@ -1,33 +1,24 @@
-#ifndef CUTRESULT_H
-#define CUTRESULT_H
+#pragma once
 
 //#include "common/common.h"
-#include "model/cutting/piecewithmaterial.h"
+#include "../piece/piecewithmaterial.h"
+#include "model/cutting/result/source.h"
 #include "model/materialtype.h"
 #include <QColor>
 #include <QString>
 #include <QUuid>
 #include <QVector>
 
-enum class LeftoverSource {
-    Manual,
-    Optimization,
-    Undefined
-};
+namespace Cutting{
+namespace Result{
 
-enum class CutResultSource {
-    FromStock,      // 🧱 Szálanyagból jött hulladék
-    FromReusable,   // ♻️ Használt reusable darabból jött
-    Unknown          // ❓ Ha nem egyértelmű
-};
-
-struct CutResult {
+struct ResultModel {
     QUuid materialId;               // 🔗 Törzsből visszakereshető anyag
     int length = 0;                 // 📏 Eredeti rúd hossza
-    QVector<PieceWithMaterial> cuts;             // ✂️ Levágott darabok
+    QVector<Cutting::Piece::PieceWithMaterial> cuts;             // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
     //LeftoverSource source = LeftoverSource::Undefined;
-    CutResultSource source;
+    Source source;
     std::optional<int> optimizationId;  // Csak ha source == Optimization
 
     QString reusableBarcode;
@@ -43,4 +34,4 @@ struct CutResult {
     QColor materialGroupColor() const;           // 🎨 badge háttér (UI-hoz)
 };
 
-#endif // CUTRESULT_H
+}}

@@ -30,7 +30,7 @@ inline static void Connect(
             auto opt = CuttingPlanRequestRegistry::instance().findById(id);
             if (!opt) return;
 
-            CuttingPlanRequest original = *opt;
+            Cutting::Plan::Request original = *opt;
 
             AddInputDialog dialog(w);
             dialog.setModel(original);
@@ -38,7 +38,7 @@ inline static void Connect(
             if (dialog.exec() != QDialog::Accepted)
                 return;
 
-            CuttingPlanRequest updated = dialog.getModel();
+            Cutting::Plan::Request updated = dialog.getModel();
             presenter->update_CuttingPlanRequest(updated);
         });
 }

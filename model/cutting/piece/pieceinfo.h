@@ -5,6 +5,10 @@
 /**
  * @brief Egy darabolási munkadarab részletes információi
  */
+
+namespace Cutting {
+namespace Piece {
+
 struct PieceInfo
 {
     int length_mm = 0;                // 📏 Hossz milliméterben
@@ -23,3 +27,6 @@ struct PieceInfo
             .arg(length_mm);
     }
 };
+
+} // endof namespace Piece
+} // endof namespace Cutting

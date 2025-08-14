@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cuttingplanrequest.h"
+#include "model/cutting/plan/request.h"
 #include <QString>
 #include <QVector>
 
@@ -23,8 +23,8 @@ public:
 private:
     inline static bool lastFileWasEffectivelyEmpty = false;
 
-    /// Segédmetódus a CSV-ből CuttingPlanRequest-ek létrehozásához
-    static QVector<CuttingPlanRequest> loadFromCsv_private(const QString& filepath);
+    /// Segédmetódus a CSV-ből Request-ek létrehozásához
+    static QVector<Cutting::Plan::Request> loadFromCsv_private(const QString& filepath);
 
     struct CuttingRequestRow {
         QString barcode;
@@ -35,6 +35,6 @@ private:
     };
 
     static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<CuttingPlanRequest> buildCuttingRequestFromRow(const CuttingRequestRow &row, int lineIndex);
-    static std::optional<CuttingPlanRequest> convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex);
+    static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, int lineIndex);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex);
 };

@@ -42,8 +42,8 @@ QString AddWasteDialog::comment() const {
     return ui->editComment->text().trimmed();
 }
 
-LeftoverSource AddWasteDialog::source() const {
-    return static_cast<LeftoverSource>(ui->editSourceValue->text().toInt()); // vagy szöveges → értelmezés
+Cutting::Result::LeftoverSource AddWasteDialog::source() const {
+    return static_cast<Cutting::Result::LeftoverSource>(ui->editSourceValue->text().toInt()); // vagy szöveges → értelmezés
 }
 
 LeftoverStockEntry AddWasteDialog::getModel() const {

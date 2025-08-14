@@ -43,9 +43,9 @@ bool LeftoverStockEntry::operator==(const LeftoverStockEntry& other) const {
 
 QString LeftoverStockEntry::sourceAsString() const
 {
-    if (source == LeftoverSource::Manual)
+    if (source == Cutting::Result::LeftoverSource::Manual)
         return "Manuális";
-    if (source == LeftoverSource::Optimization)
+    if (source == Cutting::Result::LeftoverSource::Optimization)
         return optimizationId.has_value()
                    ? QString("Op:%1").arg(*optimizationId)
                    : "Op:?";

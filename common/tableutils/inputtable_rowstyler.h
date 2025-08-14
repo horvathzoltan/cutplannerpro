@@ -3,7 +3,7 @@
 #include "common/grouputils.h"
 //#include "common/tableutils/colorlogicutils.h"
 //#include "common/tableutils/tablestyleutils.h"
-#include "model/cuttingplanrequest.h"
+#include "model/cutting/plan/request.h"
 #include "model/materialmaster.h"
 
 #include <QTableWidgetItem>
@@ -14,7 +14,7 @@ namespace RowStyler{
 
 inline void applyStyle(QTableWidget* table, int row,
                                 const MaterialMaster* mat,
-                                const CuttingPlanRequest& request) {
+                                const Cutting::Plan::Request& request) {
     if (!mat) return;
 
     QColor bg = GroupUtils::colorForGroup(mat->id);

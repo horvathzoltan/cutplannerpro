@@ -243,7 +243,7 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
         knownMaterials.insert(mat.id);
 
     QStringList invalidRequests;
-    for (const CuttingPlanRequest &req : all) {
+    for (const Cutting::Plan::Request &req : all) {
         if (!knownMaterials.contains(req.materialId)) {
             QString desc = req.toString();
             invalidRequests << desc; // vagy req.id.toString() ha azonosító kell

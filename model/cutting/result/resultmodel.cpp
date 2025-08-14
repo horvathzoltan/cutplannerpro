@@ -1,11 +1,14 @@
-#include "cutresult.h"
+#include "resultmodel.h"
 
-#include "registries/materialregistry.h"
-#include "../common/materialutils.h"
+#include "../../registries/materialregistry.h"
+#include "../../../common/materialutils.h"
 
-QString CutResult::cutsAsString() const {
+namespace Cutting{
+namespace Result{
+
+QString ResultModel::cutsAsString() const {
     QStringList list;
-    for (const PieceWithMaterial& piece : cuts) {
+    for (const Cutting::Piece::PieceWithMaterial& piece : cuts) {
         list << QString::number(piece.info.length_mm);
     }
     return list.join(";");
@@ -15,32 +18,32 @@ QString CutResult::cutsAsString() const {
 
 
 
-QString CutResult::sourceAsString() const {
+QString ResultModel::sourceAsString() const {
     switch (source) {
-    case CutResultSource::FromStock:
+    case Source::FromStock:
         return optimizationId.has_value()
                    ? QString("Stock:Op%1").arg(*optimizationId)
                    : "Stock";
-    case CutResultSource::FromReusable:
+    case Source::FromReusable:
         return "Reusable";
-    case CutResultSource::Unknown:
+    case Source::Unknown:
     default:
         return "Ismeretlen";
     }
 }
 
-QString CutResult::materialName() const {
+QString ResultModel::materialName() const {
     const auto& m = MaterialRegistry::instance().findById(materialId);
     return m? m->name : "(ismeretlen)";
 }
 
-MaterialType CutResult::materialType() const {
+MaterialType ResultModel::materialType() const {
     const auto& m = MaterialRegistry::instance().findById(materialId);
     return m ? m->type : MaterialType(MaterialType::Type::Unknown);
 }
 
-QColor CutResult::materialGroupColor() const {
+QColor ResultModel::materialGroupColor() const {
     const auto& m = MaterialRegistry::instance().findById(materialId);
     return m ? MaterialUtils::colorForMaterial(*m) : QColor(Qt::gray);
 }
-
+}} //end of namespace Cutting::Result

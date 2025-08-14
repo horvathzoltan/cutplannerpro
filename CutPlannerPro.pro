@@ -10,35 +10,30 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    common/archivedwasteutils.cpp \
     common/csvimporter.cpp \
-    common/cuttingplanfinalizer.cpp \
     common/filehelper.cpp \
     common/filenamehelper.cpp \
-    common/leftoversourceutils.cpp \
     common/logger.cpp \
-    common/optimizationexporter.cpp \
-    common/planautosavemanager.cpp \
     common/quantityparser.cpp \
-    common/segmentutils.cpp \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
     common/tableutils/resulttable_rowstyler.cpp \
     main.cpp \
-    model/CuttingOptimizerModel.cpp \
     model/archivedwasteentry.cpp \
     model/crosssectionshape.cpp \
-    model/cutplan.cpp \
-    model/cutresult.cpp \
-    model/cutting/piecewithmaterial.cpp \
-    model/cuttingmachine.cpp \
-    model/cuttingplanrequest.cpp \
+    model/cutting/cuttingmachine.cpp \
+    model/cutting/optimizer/optimizermodel.cpp \
+    model/cutting/piece/pieceinfo.cpp \
+    model/cutting/piece/piecewithmaterial.cpp \
+    model/cutting/plan/cutplan.cpp \
+    model/cutting/plan/request.cpp \
+    model/cutting/result/resultmodel.cpp \
+    model/cutting/segment/segmentutils.cpp \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
     model/materialgroup.cpp \
     model/materialmaster.cpp \
     model/materialtype.cpp \
-    model/pieceinfo.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
     model/registries/materialgroupregistry.cpp \
@@ -51,11 +46,15 @@ SOURCES += \
     model/repositories/materialrepository.cpp \
     model/repositories/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
-    model/segment.cpp \
     model/stockentry.cpp \
     model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
+    service/archivedwasteutils.cpp \
+    service/cuttingplanfinalizer.cpp \
+    service/leftoversourceutils.cpp \
+    service/optimizationexporter.cpp \
+    service/planautosavemanager.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
@@ -71,26 +70,35 @@ SOURCES += \
     view/managers/stocktablemanager.cpp
 
 HEADERS += \
-    common/archivedwasteutils.h \
-    common/colorutils.h \
     common/csvhelper.h \
     common/csvimporter.h \
-    common/cutresultutils.h \
-    common/cuttingplanfinalizer.h \
     common/filehelper.h \
     common/filenamehelper.h \
     common/grouputils.h \
-    common/leftoversourceutils.h \
     common/logger.h \
     common/logmeta.h \
     common/materialutils.h \
-    common/movementlogger.h \
-    common/movementlogmodel.h \
-    common/optimizationexporter.h \
-    common/planautosavemanager.h \
     common/qteventutil.h \
     common/quantityparser.h \
-    common/segmentutils.h \
+    common/tableutils/colorutils.h \
+    model/cutting/cuttingmachine.h \
+    model/cutting/optimizer/optimizermodel.h \
+    model/cutting/piece/pieceinfo.h \
+    model/cutting/piece/piecewithmaterial.h \
+    model/cutting/plan/cutplan.h \
+    model/cutting/plan/request.h \
+    model/cutting/plan/source.h \
+    model/cutting/plan/status.h \
+    model/cutting/result/leftoversource.h \
+    model/cutting/result/resultmodel.h \
+    model/cutting/result/source.h \
+    model/cutting/result/utils.h \
+    model/cutting/segment/segmentmodel.h \
+    model/cutting/segment/segmentutils.h \
+    service/archivedwasteutils.h \
+    service/cuttingplanfinalizer.h \
+    service/leftoversourceutils.h \
+    service/movementlogger.h \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
@@ -105,21 +113,14 @@ HEADERS += \
     common/tableutils/stocktable_rowstyler.h \
     common/tableutils/tablestyleutils.h \
     common/tableutils/tableutils.h \
-    model/CuttingOptimizerModel.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
-    model/cutplan.h \
-    model/cutresult.h \
-    model/cutting/piecewithmaterial.h \
-    model/cuttingmachine.h \
-    model/cuttingplanrequest.h \
     model/identifiableentity.h \
     model/leftoverstockentry.h \
     model/materialgroup.h \
     model/materialmaster.h \
     model/materialtype.h \
     model/movementdata.h \
-    model/pieceinfo.h \
     model/registries/cuttingplanrequestregistry.h \
     model/registries/leftoverstockregistry.h \
     model/registries/materialgroupregistry.h \
@@ -132,11 +133,14 @@ HEADERS += \
     model/repositories/materialrepository.h \
     model/repositories/stockrepository.h \
     model/repositories/storagerepository.h \
-    model/segment.h \
     model/stockentry.h \
     model/storageentry.h \
     model/storagetype.h \
     presenter/CuttingPresenter.h \
+    service/movementlogmodel.h \
+    service/optimizationexporter.h \
+    service/planautosavemanager.h \
+    service/stockmovementservice.h \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \

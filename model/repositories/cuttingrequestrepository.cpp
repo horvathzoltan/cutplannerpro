@@ -1,5 +1,5 @@
 #include "cuttingrequestrepository.h"
-#include "../cuttingplanrequest.h"
+#include "../cutting/plan/request.h"
 #include "../registries/cuttingplanrequestregistry.h"
 #include "common/logger.h"
 #include <QFile>
@@ -30,7 +30,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
         return false;
     }
 
-    QVector<CuttingPlanRequest> requests = loadFromCsv_private(filePath);
+    QVector<Cutting::Plan::Request> requests = loadFromCsv_private(filePath);
 
     lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
     if (lastFileWasEffectivelyEmpty) {
@@ -58,7 +58,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     return true;
 }
 
-QVector<CuttingPlanRequest>
+QVector<Cutting::Plan::Request>
 CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -70,7 +70,7 @@ CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
     in.setEncoding(QStringConverter::Utf8);
 
     const auto rows = FileHelper::parseCSV(&in, ';');
-    return CsvImporter::processCsvRows<CuttingPlanRequest>(rows, convertRowToCuttingRequest);
+    return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
 }
 
 
@@ -96,7 +96,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     return row;
 }
 
-std::optional<CuttingPlanRequest>
+std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, int lineIndex) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
@@ -105,7 +105,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         return std::nullopt;
     }
 
-    CuttingPlanRequest req;
+    Cutting::Plan::Request req;
     req.materialId        = mat->id;
     req.requiredLength    = row.requiredLength;
     req.quantity          = row.quantity;
@@ -120,7 +120,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     return req;
 }
 
-std::optional<CuttingPlanRequest>
+std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex) {
     const auto rowOpt = convertRowToCuttingRequestRow(parts, lineIndex);
     if (!rowOpt.has_value()) return std::nullopt;
@@ -142,7 +142,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     // 📋 CSV fejléc
     out << "materialBarCode;requiredLength;quantity;ownerName;externalReference\n";
 
-    for (const CuttingPlanRequest& req : registry.readAll()) {
+    for (const Cutting::Plan::Request& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
         if (!material) {
             qWarning() << "⚠️ Anyag nem található mentéskor:" << req.materialId.toString();

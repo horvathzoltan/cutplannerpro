@@ -15,7 +15,7 @@ private:
     struct ReusableStockRow {
         QString materialBarcode;
         int availableLength_mm;
-        LeftoverSource source;
+        Cutting::Result::LeftoverSource source;
         std::optional<int> optimizationId;
         QString barcode;
         QString storageBarcode; // 🆕 új mező

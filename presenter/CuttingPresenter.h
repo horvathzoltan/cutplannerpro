@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include "../model/CuttingOptimizerModel.h"
+#include "../model/cutting/optimizer/optimizermodel.h"
 #include "model/archivedwasteentry.h"
 
 /*
@@ -20,15 +20,15 @@ public:
     explicit CuttingPresenter(MainWindow* view, QObject *parent = nullptr);
 
     // Vágási igények
-    void add_CuttingPlanRequest(const CuttingPlanRequest& req);
-    void update_CuttingPlanRequest(const CuttingPlanRequest& updated);
+    void add_CuttingPlanRequest(const Cutting::Plan::Request& req);
+    void update_CuttingPlanRequest(const Cutting::Plan::Request& updated);
     void remove_CuttingPlanRequest(const QUuid &id);
     //
     void removeAll_CuttingPlanRequests();
 
     void createNew_CuttingPlanRequests();
 
-    void setCuttingRequests(const QVector<CuttingPlanRequest> &list);
+    void setCuttingRequests(const QVector<Cutting::Plan::Request> &list);
 
     // Készlet
     void setStockInventory(const QVector<StockEntry> &list);
@@ -50,8 +50,8 @@ public:
     void runOptimization();
 
     // Eredmények lekérése
-    QVector<CutPlan>& getPlansRef();
-    QVector<CutResult> getLeftoverResults();
+    QVector<Cutting::Plan::CutPlan>& getPlansRef();
+    QVector<Cutting::Result::ResultModel> getLeftoverResults();
     void finalizePlans();
     void scrapShortLeftovers();
     void exportArchivedWasteToCSV(const QVector<ArchivedWasteEntry> &entries);
@@ -60,7 +60,7 @@ public:
     bool loadCuttingPlanFromFile(const QString &path);
 private:
     MainWindow* view;
-    CuttingOptimizerModel model;
+    Cutting::Optimizer::OptimizerModel model;
 
     bool isModelSynced = false;
 };

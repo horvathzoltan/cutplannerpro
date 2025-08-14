@@ -15,7 +15,7 @@
 #include <view/dialog/addinputdialog.h>
 #include <presenter/CuttingPresenter.h>
 
-#include "common/movementlogger.h"   // a namespace-es inline log() miatt
+#include "service/movementlogger.h"   // a namespace-es inline log() miatt
 
 namespace StockTableConnector {
 inline static void Connect(
@@ -101,9 +101,9 @@ inline static void Connect(
 
     w->connect(manager, &StockTableManager::moveRequested, w,
                [w, presenter](const QUuid& id) {
+
                    auto opt = StockRegistry::instance().findById(id);
                    if (!opt) return;
-
                    const StockEntry& original = *opt;
 
                    // Forrás raktár információk a UI-hoz és a loghoz

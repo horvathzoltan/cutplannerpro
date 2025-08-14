@@ -1,7 +1,9 @@
-#include "cuttingplanrequest.h"
+#include "request.h"
 #include <QRegularExpression>
 
-QStringList CuttingPlanRequest::invalidReasons() const {
+namespace Cutting {
+namespace Plan {
+QStringList Request::invalidReasons() const {
     QStringList errors;
 
     if (materialId.isNull())
@@ -33,11 +35,11 @@ QStringList CuttingPlanRequest::invalidReasons() const {
     return errors;
 }
 
-bool CuttingPlanRequest::isValid() const {
+bool Request::isValid() const {
     return invalidReasons().isEmpty();
 }
 
-QString CuttingPlanRequest::toString() const {
+QString Request::toString() const {
     QStringList parts;
 
     // 🧾 Külső hivatkozás
@@ -59,3 +61,5 @@ QString CuttingPlanRequest::toString() const {
 }
 
 
+} //endof namespace Plan
+} //endof namespace Cutting

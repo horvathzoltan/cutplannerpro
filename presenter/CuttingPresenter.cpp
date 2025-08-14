@@ -1,15 +1,16 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
-#include "common/cutresultutils.h"
-#include "common/optimizationexporter.h"
-#include "model/archivedwasteentry.h"
-#include "common/archivedwasteutils.h"
 
+#include "model/cutting/result/utils.h"
+#include "model/archivedwasteentry.h"
 #include "model/registries/cuttingplanrequestregistry.h"
 #include "model/registries/leftoverstockregistry.h"
 #include "model/registries/stockregistry.h"
 
-#include "common/cuttingplanfinalizer.h"
+#include "service/cuttingplanfinalizer.h"
+#include "service/optimizationexporter.h"
+#include "service/archivedwasteutils.h"
+
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
 
@@ -44,14 +45,14 @@ void CuttingPresenter::removeAll_CuttingPlanRequests() {
 }
 
 /*input*/
-void CuttingPresenter::add_CuttingPlanRequest(const CuttingPlanRequest& req) {
+void CuttingPresenter::add_CuttingPlanRequest(const Cutting::Plan::Request& req) {
     CuttingPlanRequestRegistry::instance().registerRequest(req);
     if(view){
          view->addRow_InputTable(req);
     }
  }
 
-void CuttingPresenter::update_CuttingPlanRequest(const CuttingPlanRequest& r) {
+void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r) {
     bool ok = CuttingPlanRequestRegistry::instance().updateRequest(r); // 🔁 adatbázis update
 
     if (ok){
@@ -144,7 +145,7 @@ void CuttingPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& updat
 }
 
 
-void CuttingPresenter::setCuttingRequests(const QVector<CuttingPlanRequest>& list) {
+void CuttingPresenter::setCuttingRequests(const QVector<Cutting::Plan::Request>& list) {
     model.setCuttingRequests(list);
 }
 
@@ -160,12 +161,12 @@ void CuttingPresenter::setKerf(int kerf) {
     model.setKerf(kerf);
 }
 
-QVector<CutPlan>& CuttingPresenter::getPlansRef()
+QVector<Cutting::Plan::CutPlan>& CuttingPresenter::getPlansRef()
 {
     return model.getResult_PlansRef();
 }
 
-QVector<CutResult> CuttingPresenter::getLeftoverResults()
+QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
 {
     return model.getResults_Leftovers();
 }
@@ -184,7 +185,7 @@ void CuttingPresenter::runOptimization() {
     model.optimize();
     isModelSynced = false; // újra false az állapot, ha később újra hívnák
 
-    QVector<CutPlan> &plans = model.getResult_PlansRef();
+    QVector<Cutting::Plan::CutPlan> &plans = model.getResult_PlansRef();
 
     // ✨ Ha készen állsz rá, itt frissíthetjük a View táblákat:
     if (view) {
@@ -194,8 +195,8 @@ void CuttingPresenter::runOptimization() {
         view->refresh_StockTable(); // ha a készlet változik
         // ez a maradék
 
-        QVector<CutResult> l = model.getResults_Leftovers();
-        QVector<LeftoverStockEntry> e = CutResultUtils::toReusableEntries(l);
+        QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
+        QVector<LeftoverStockEntry> e = Cutting::Result::Utils::toReusableEntries(l);
 
         // todo 01 nem jó, a stockot kellene frissíteni - illetve opt után kell-e bármit is, hisz majd a finalize frissít - nem?
         view->refresh_LeftoversTable();//e);
@@ -225,25 +226,25 @@ void logReusableStatus(const QString& title, const QVector<LeftoverStockEntry>& 
 void CuttingPresenter::finalizePlans()
 {
     //const QVector<CutPlan> plans = model.getPlans();
-    QVector<CutPlan>& plans = model.getResult_PlansRef(); // vagy getMutablePlans()
-    const QVector<CutResult> results = model.getResults_Leftovers();
+    QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef(); // vagy getMutablePlans()
+    const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
 
     qDebug() << "✅ VÁGÁSI TERVEK — CutPlan-ek:";
-    for (const CutPlan& plan : plans) {
+    for (const Cutting::Plan::CutPlan& plan : plans) {
         QStringList pieceLabels, kerfLabels, wasteLabels;
 
-        for (const Segment& s : plan.segments) {
+        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
             switch (s.type) {
-            case Segment::Type::Piece:  pieceLabels << s.toLabelString(); break;
-            case Segment::Type::Kerf:   kerfLabels  << s.toLabelString(); break;
-            case Segment::Type::Waste:  wasteLabels << s.toLabelString(); break;
+            case Cutting::Segment::SegmentModel::Type::Piece:  pieceLabels << s.toLabelString(); break;
+            case Cutting::Segment::SegmentModel::Type::Kerf:   kerfLabels  << s.toLabelString(); break;
+            case Cutting::Segment::SegmentModel::Type::Waste:  wasteLabels << s.toLabelString(); break;
             }
         }
 
         qDebug().nospace()
             << "  → #" << plan.rodNumber
             << " | PlanId: " << plan.planId
-            << " | Forrás: " << (plan.source == CutPlanSource::Reusable ? "♻️ REUSABLE" : "🧱 STOCK")
+            << " | Forrás: " << (plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK")
             << "\n     Azonosító: " << (plan.usedReusable() ? plan.rodId : plan.materialName())
             << " | Vágások száma: " << plan.cuts.size()
             << " | Kerf: " << plan.kerfTotal << " mm"
@@ -254,7 +255,7 @@ void CuttingPresenter::finalizePlans()
     }
 
     qDebug() << "♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:";
-    for (const CutResult& result : results) {
+    for (const Cutting::Result::ResultModel& result : results) {
         qDebug().nospace()
         << "  - Hulladék: " << result.waste << " mm"
         << " | Forrás: " << result.sourceAsString()
@@ -267,15 +268,15 @@ void CuttingPresenter::finalizePlans()
     int totalKerf = 0, totalWaste = 0, totalCuts = 0;
     int totalSegments = 0, kerfSegs = 0, wasteSegs = 0;
 
-    for (const CutPlan& plan : plans) {
+    for (const Cutting::Plan::CutPlan& plan : plans) {
         totalKerf += plan.kerfTotal;
         totalWaste += plan.waste;
         totalCuts += plan.cuts.size();
         totalSegments += plan.segments.size();
 
-        for (const Segment& s : plan.segments) {
-            if (s.type == Segment::Type::Kerf)  kerfSegs++;
-            if (s.type == Segment::Type::Waste) wasteSegs++;
+        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+            if (s.type == Cutting::Segment::SegmentModel::Type::Kerf)  kerfSegs++;
+            if (s.type == Cutting::Segment::SegmentModel::Type::Waste) wasteSegs++;
         }
     }
 
@@ -299,8 +300,8 @@ void CuttingPresenter::finalizePlans()
     CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize után:", LeftoverStockRegistry::instance().readAll());
 
     // ✅ Állapot lezárása
-    for (CutPlan& plan : model.getResult_PlansRef())
-        plan.setStatus(CutPlanStatus::Completed);
+    for (Cutting::Plan::CutPlan& plan : model.getResult_PlansRef())
+        plan.setStatus(Cutting::Plan::Status::Completed);
 
     // 🔁 View frissítése
     if (view) {

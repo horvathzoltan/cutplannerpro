@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "common/filenamehelper.h"
-#include "common/leftoversourceutils.h"
+#include "service/leftoversourceutils.h"
 #include <model/registries/materialregistry.h>
 #include <model/registries/storageregistry.h>
 #include <common/filehelper.h>
@@ -111,12 +111,12 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
     // }
 
     row.source= LeftoverSourceUtils::fromString(parts[2].trimmed());
-    if (row.source == LeftoverSource::Undefined) {
+    if (row.source == Cutting::Result::LeftoverSource::Undefined) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen forrástípus").arg(lineIndex);
         return std::nullopt;
     }
 
-    if (row.source == LeftoverSource::Optimization && parts.size() > 3) {
+    if (row.source == Cutting::Result::LeftoverSource::Optimization && parts.size() > 3) {
         bool okOpt = false;
         const int optId = parts[3].trimmed().toInt(&okOpt);
         if (okOpt)
@@ -200,7 +200,7 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry, c
         QString barcode = entry.barcode;
 
         QString optIdStr;
-        if (entry.source == LeftoverSource::Optimization && entry.optimizationId.has_value()) {
+        if (entry.source == Cutting::Result::LeftoverSource::Optimization && entry.optimizationId.has_value()) {
             optIdStr = QString::number(entry.optimizationId.value());
         }
 
