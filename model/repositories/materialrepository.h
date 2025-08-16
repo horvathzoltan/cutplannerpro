@@ -2,7 +2,7 @@
 
 #include <QString>
 #include <QVector>
-#include "../materialmaster.h"
+#include "../material/materialmaster.h"
 #include "../registries/materialregistry.h"
 
 class MaterialRepository {

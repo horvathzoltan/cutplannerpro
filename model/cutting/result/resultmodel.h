@@ -3,7 +3,7 @@
 //#include "common/common.h"
 #include "../piece/piecewithmaterial.h"
 #include "model/cutting/result/source.h"
-#include "model/materialtype.h"
+#include "model/material/materialtype.h"
 #include <QColor>
 #include <QString>
 #include <QUuid>

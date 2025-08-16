@@ -4,7 +4,7 @@
 #include <QString>
 #include <QColor>
 
-#include "materialmaster.h"
+#include "material/materialmaster.h"
 //#include "model/cutting/result/cutresult.h"
 #include "model/cutting/result/leftoversource.h"
 

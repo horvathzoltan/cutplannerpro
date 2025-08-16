@@ -54,4 +54,5 @@ public:
 
     QString getMovementLogFilePathForDate(const QDate &date) const;
     QString getMovementLogFileNameForDate(const QDate &date) const;
+    QString getGroupMembersCsvFile() const;
 };

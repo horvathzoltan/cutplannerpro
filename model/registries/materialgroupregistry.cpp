@@ -6,9 +6,9 @@ MaterialGroupRegistry& MaterialGroupRegistry::instance() {
 }
 
 void MaterialGroupRegistry::registerGroup(const MaterialGroup& group) {
-    _data[group.groupId] = group;
+    _data[group.id] = group;
     for (const auto& id : group.materialIds) {
-        _materialToGroup[id] = group.groupId;
+        _materialToGroup[id] = group.id;
     }
 }
 

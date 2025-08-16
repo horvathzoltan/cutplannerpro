@@ -69,17 +69,18 @@ bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
 
 QVector<LeftoverStockEntry>
 LeftoverStockRepository::loadFromCSV_private(const QString& filepath) {
-    QFile file(filepath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "❌ Nem sikerült megnyitni a leftovers fájlt:" << filepath;
-        return {};
-    }
+    // QFile file(filepath);
+    // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    //     qWarning() << "❌ Nem sikerült megnyitni a leftovers fájlt:" << filepath;
+    //     return {};
+    // }
 
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
-    const auto rows = FileHelper::parseCSV(&in, ';');
+    // QTextStream in(&file);
+    // in.setEncoding(QStringConverter::Utf8);
+    // const auto rows = FileHelper::parseCSV(&in, ';');
 
-    return CsvImporter::processCsvRows<LeftoverStockEntry>(rows, convertRowToReusableEntry);
+    //return CsvImporter::processCsvRows<LeftoverStockEntry>(rows, convertRowToReusableEntry);
+    return CsvReader::readAndConvert<LeftoverStockEntry>(filepath, convertRowToReusableEntry, true);
 }
 
 

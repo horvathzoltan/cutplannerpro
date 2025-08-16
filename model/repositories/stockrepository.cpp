@@ -38,17 +38,18 @@ bool StockRepository::loadFromCSV(StockRegistry& registry) {
 
 QVector<StockEntry>
 StockRepository::loadFromCSV_private(const QString& filepath) {
-    QFile file(filepath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
-        return {};
-    }
+    // QFile file(filepath);
+    // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
+    //     return {};
+    // }
 
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
+    // QTextStream in(&file);
+    // in.setEncoding(QStringConverter::Utf8);
 
-    const auto rows = FileHelper::parseCSV(&in, ';');
-    return CsvImporter::processCsvRows<StockEntry>(rows, convertRowToStockEntry);
+    // const auto rows = FileHelper::parseCSV(&in, ';');
+    // return CsvImporter::processCsvRows<StockEntry>(rows, convertRowToStockEntry);
+    return CsvReader::readAndConvert<StockEntry>(filepath, convertRowToStockEntry, true);
 }
 
 

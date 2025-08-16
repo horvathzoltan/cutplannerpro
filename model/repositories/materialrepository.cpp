@@ -5,8 +5,8 @@
 
 //#include "common/categoryutils.h"
 #include "materialrepository.h"
-#include "../materialmaster.h"
-#include "../materialtype.h"
+#include "../material/materialmaster.h"
+#include "../material/materialtype.h"
 #include "../crosssectionshape.h"
 #include "../registries/materialregistry.h"
 #include <QFile>
@@ -71,17 +71,19 @@ bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 
 QVector<MaterialMaster>
 MaterialRepository::loadFromCSV_private(const QString& filePath) {
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "❌ Nem sikerült megnyitni a CSV fájlt:" << filePath;
-        return {};
-    }
+    // QFile file(filePath);
+    // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    //     qWarning() << "❌ Nem sikerült megnyitni a CSV fájlt:" << filePath;
+    //     return {};
+    // }
 
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
+    // QTextStream in(&file);
+    // in.setEncoding(QStringConverter::Utf8);
 
-    const auto rows = FileHelper::parseCSV(&in, ';');
-    return CsvImporter::processCsvRows<MaterialMaster>(rows, convertRowToMaterial);
+    // const auto rows = FileHelper::parseCSV(&in, ';');
+    // return CsvImporter::processCsvRows<MaterialMaster>(rows, convertRowToMaterial);
+
+    return CsvReader::readAndConvert<MaterialMaster>(filePath, convertRowToMaterial, true);
 }
 
 std::optional<MaterialMaster>

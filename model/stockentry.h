@@ -3,7 +3,7 @@
 #include <QColor>
 #include <QString>
 #include <QUuid>
-#include "model/materialmaster.h"
+#include "model/material/materialmaster.h"
 
 struct StockEntry {
     QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás

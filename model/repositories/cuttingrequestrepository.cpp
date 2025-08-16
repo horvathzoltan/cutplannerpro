@@ -60,17 +60,18 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
 
 QVector<Cutting::Plan::Request>
 CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
-    QFile file(filepath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
-        return {};
-    }
+    // QFile file(filepath);
+    // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
+    //     return {};
+    // }
 
-    QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
+    // QTextStream in(&file);
+    // in.setEncoding(QStringConverter::Utf8);
 
-    const auto rows = FileHelper::parseCSV(&in, ';');
-    return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
+    //const auto rows = FileHelper::parseCSV(&in, ';');
+    //return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
+    return CsvReader::readAndConvert<Cutting::Plan::Request>(filepath, convertRowToCuttingRequest, true);
 }
 
 

@@ -2,9 +2,9 @@
 
 #include <QString>
 #include <QSizeF>
-#include "identifiableentity.h"
+#include "../identifiableentity.h"
 #include "materialtype.h"
-#include "crosssectionshape.h"
+#include "../crosssectionshape.h"
 
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép
 struct MaterialMaster : public IdentifiableEntity {

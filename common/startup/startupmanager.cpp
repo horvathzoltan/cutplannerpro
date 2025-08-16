@@ -1,7 +1,7 @@
 #include "startupmanager.h"
 #include "../../model/repositories/materialrepository.h"
 #include "../../model/registries/materialregistry.h"
-#include "../../model/materialmaster.h"
+#include "../../model/material/materialmaster.h"
 #include "common/logger.h"
 #include "model/registries/cuttingplanrequestregistry.h"
 //#include "model/stockentry.h"

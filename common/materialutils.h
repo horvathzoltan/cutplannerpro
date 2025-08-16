@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QColor>
-#include "../model/materialmaster.h"
+#include "../model/material/materialmaster.h"
 #include "common/grouputils.h"
 
 namespace MaterialUtils {

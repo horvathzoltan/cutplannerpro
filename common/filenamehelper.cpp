@@ -66,7 +66,12 @@ QString FileNameHelper::getMaterialCsvFile() const {
 }
 
 QString FileNameHelper::getGroupCsvFile() const {
-    auto fn = QDir(_projectPath).filePath("groups.csv"); // vagy ahová ténylegesen rakod
+    auto fn = QDir(_projectPath).filePath("materialgroups.csv"); // vagy ahová ténylegesen rakod
+    return fn;
+}
+
+QString FileNameHelper::getGroupMembersCsvFile() const {
+    auto fn = QDir(_projectPath).filePath("materialgroup_members.csv"); // vagy ahová ténylegesen rakod
     return fn;
 }
 

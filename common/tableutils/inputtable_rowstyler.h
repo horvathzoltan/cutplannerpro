@@ -4,7 +4,7 @@
 //#include "common/tableutils/colorlogicutils.h"
 //#include "common/tableutils/tablestyleutils.h"
 #include "model/cutting/plan/request.h"
-#include "model/materialmaster.h"
+#include "model/material/materialmaster.h"
 
 #include <QTableWidgetItem>
 //#include <view/managers/stocktablemanager.h>

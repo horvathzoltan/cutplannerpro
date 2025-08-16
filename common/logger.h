@@ -3,6 +3,7 @@
 
 #include <QString>
 
+#define L(msg) QStringLiteral(msg)
 //#if defined(Q_OS_LINUX)
 //#define getLocInfo LocInfo(static_cast<const char*>(__PRETTY_FUNCTION__),__FILE__,__LINE__)
 //#elif defined(Q_OS_WIN)

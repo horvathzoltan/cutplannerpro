@@ -2,7 +2,7 @@
 
 #include <QTableWidget>
 //#include "model/cutting/result/cutresult.h"
-#include "../../model/materialmaster.h"
+#include "../../model/material/materialmaster.h"
 #include "common/materialutils.h"
 #include "model/cutting/plan/cutplan.h"
 

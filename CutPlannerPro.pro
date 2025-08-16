@@ -31,9 +31,9 @@ SOURCES += \
     model/cutting/segment/segmentutils.cpp \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
-    model/materialgroup.cpp \
-    model/materialmaster.cpp \
-    model/materialtype.cpp \
+    model/material/materialgroup.cpp \
+    model/material/materialmaster.cpp \
+    model/material/materialtype.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
     model/registries/materialgroupregistry.cpp \
@@ -95,6 +95,9 @@ HEADERS += \
     model/cutting/result/utils.h \
     model/cutting/segment/segmentmodel.h \
     model/cutting/segment/segmentutils.h \
+    model/material/materialgroup.h \
+    model/material/materialmaster.h \
+    model/material/materialtype.h \
     service/archivedwasteutils.h \
     service/cuttingplanfinalizer.h \
     service/leftoversourceutils.h \
@@ -117,9 +120,6 @@ HEADERS += \
     model/crosssectionshape.h \
     model/identifiableentity.h \
     model/leftoverstockentry.h \
-    model/materialgroup.h \
-    model/materialmaster.h \
-    model/materialtype.h \
     model/movementdata.h \
     model/registries/cuttingplanrequestregistry.h \
     model/registries/leftoverstockregistry.h \
@@ -173,8 +173,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     README.md \
     testdata/cutting_plans/cutting_plan_1.csv \
-    testdata/groups.csv \
     testdata/leftovers.csv \
+    testdata/materialgroup_members.csv \
+    testdata/materialgroups.csv \
     testdata/materials.csv \
     testdata/stock.csv \
     testdata/storages.csv
