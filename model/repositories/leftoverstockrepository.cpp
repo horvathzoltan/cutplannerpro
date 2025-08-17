@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "common/filenamehelper.h"
-#include "service/leftoversourceutils.h"
+#include "service/cutting/result/leftoversourceutils.h"
 #include <model/registries/materialregistry.h>
 #include <model/registries/storageregistry.h>
 #include <common/filehelper.h>

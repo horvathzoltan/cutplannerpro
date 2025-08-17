@@ -2,7 +2,7 @@
 
 //#include "common/common.h"
 #include "../piece/piecewithmaterial.h"
-#include "model/cutting/result/source.h"
+#include "model/cutting/result/resultsource.h"
 #include "model/material/materialtype.h"
 #include <QColor>
 #include <QString>
@@ -18,7 +18,7 @@ struct ResultModel {
     QVector<Cutting::Piece::PieceWithMaterial> cuts;             // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
     //LeftoverSource source = LeftoverSource::Undefined;
-    Source source;
+    ResultSource source;
     std::optional<int> optimizationId;  // Csak ha source == Optimization
 
     QString reusableBarcode;

@@ -28,7 +28,6 @@ SOURCES += \
     model/cutting/plan/cutplan.cpp \
     model/cutting/plan/request.cpp \
     model/cutting/result/resultmodel.cpp \
-    model/cutting/segment/segmentutils.cpp \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
     model/material/materialgroup.cpp \
@@ -50,11 +49,12 @@ SOURCES += \
     model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
-    service/archivedwasteutils.cpp \
-    service/cuttingplanfinalizer.cpp \
-    service/leftoversourceutils.cpp \
-    service/optimizationexporter.cpp \
-    service/planautosavemanager.cpp \
+    service/cutting/optimizer/exporter.cpp \
+    service/cutting/plan/autosavemanager.cpp \
+    service/cutting/plan/finalizer.cpp \
+    service/cutting/result/archivedwasteutils.cpp \
+    service/cutting/result/leftoversourceutils.cpp \
+    service/cutting/segment/segmentutils.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
@@ -91,16 +91,18 @@ HEADERS += \
     model/cutting/plan/status.h \
     model/cutting/result/leftoversource.h \
     model/cutting/result/resultmodel.h \
-    model/cutting/result/source.h \
-    model/cutting/result/utils.h \
+    model/cutting/result/resultsource.h \
     model/cutting/segment/segmentmodel.h \
-    model/cutting/segment/segmentutils.h \
     model/material/materialgroup.h \
     model/material/materialmaster.h \
     model/material/materialtype.h \
-    service/archivedwasteutils.h \
-    service/cuttingplanfinalizer.h \
-    service/leftoversourceutils.h \
+    service/cutting/optimizer/exporter.h \
+    service/cutting/plan/autosavemanager.h \
+    service/cutting/plan/finalizer.h \
+    service/cutting/result/archivedwasteutils.h \
+    service/cutting/result/leftoversourceutils.h \
+    service/cutting/result/resultutils.h \
+    service/cutting/segment/segmentutils.h \
     service/movementlogger.h \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
@@ -138,8 +140,6 @@ HEADERS += \
     model/storagetype.h \
     presenter/CuttingPresenter.h \
     service/movementlogmodel.h \
-    service/optimizationexporter.h \
-    service/planautosavemanager.h \
     service/stockmovementservice.h \
     view/MainWindow.h \
     view/cutanalyticspanel.h \

@@ -1,20 +1,20 @@
 #pragma once
 #include "model/cutting/result/resultmodel.h"
-#include "model/cutting/result/source.h"
+#include "model/cutting/result/resultsource.h"
 #include "model/cutting/result/leftoversource.h"
 #include "model/leftoverstockentry.h"
 
 namespace Cutting{
 namespace Result{
 
-namespace Utils
+namespace ResultUtils
 {
 
-static inline LeftoverSource convertToLeftoverSource(Source source) {
+static inline LeftoverSource convertToLeftoverSource(ResultSource source) {
     switch (source) {
-    case Source::FromStock: return LeftoverSource::Optimization;
-    case Source::FromReusable: return LeftoverSource::Manual;
-    case Source::Unknown:
+    case ResultSource::FromStock: return LeftoverSource::Optimization;
+    case ResultSource::FromReusable: return LeftoverSource::Manual;
+    case ResultSource::Unknown:
     default: return LeftoverSource::Undefined;
     }
 }

@@ -1,6 +1,6 @@
 #include "optimizermodel.h"
 #include "common/grouputils.h"
-#include "model/cutting/segment/segmentutils.h"
+#include "service/cutting/segment/segmentutils.h"
 //#include "model/profilestock.h"
 #include <numeric>
 #include <algorithm>
@@ -167,7 +167,7 @@ void OptimizerModel::optimize() {
             result.cuts           = selectedCombo;
             result.waste          = waste;
             //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
-            result.source = usedReusable ? Cutting::Result::Source::FromReusable : Cutting::Result::Source::FromStock;
+            result.source = usedReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
             result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
             result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);

@@ -1,15 +1,15 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
-#include "model/cutting/result/utils.h"
+#include "service/cutting/result/resultutils.h"
 #include "model/archivedwasteentry.h"
 #include "model/registries/cuttingplanrequestregistry.h"
 #include "model/registries/leftoverstockregistry.h"
 #include "model/registries/stockregistry.h"
 
-#include "service/cuttingplanfinalizer.h"
-#include "service/optimizationexporter.h"
-#include "service/archivedwasteutils.h"
+#include "service/cutting/plan/finalizer.h"
+#include "service/cutting/optimizer/exporter.h"
+#include "service/cutting/result/archivedwasteutils.h"
 
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
@@ -196,7 +196,7 @@ void CuttingPresenter::runOptimization() {
         // ez a maradék
 
         QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
-        QVector<LeftoverStockEntry> e = Cutting::Result::Utils::toReusableEntries(l);
+        QVector<LeftoverStockEntry> e = Cutting::Result::ResultUtils::toReusableEntries(l);
 
         // todo 01 nem jó, a stockot kellene frissíteni - illetve opt után kell-e bármit is, hisz majd a finalize frissít - nem?
         view->refresh_LeftoversTable();//e);

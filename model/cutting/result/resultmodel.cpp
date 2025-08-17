@@ -20,13 +20,13 @@ QString ResultModel::cutsAsString() const {
 
 QString ResultModel::sourceAsString() const {
     switch (source) {
-    case Source::FromStock:
+    case ResultSource::FromStock:
         return optimizationId.has_value()
                    ? QString("Stock:Op%1").arg(*optimizationId)
                    : "Stock";
-    case Source::FromReusable:
+    case ResultSource::FromReusable:
         return "Reusable";
-    case Source::Unknown:
+    case ResultSource::Unknown:
     default:
         return "Ismeretlen";
     }

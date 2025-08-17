@@ -1,7 +1,7 @@
 #pragma once
 
 #include "model/cutting/piece/piecewithmaterial.h"
-#include "segmentmodel.h"
+#include "../../../model/cutting/segment/segmentmodel.h"
 #include <QVector>
 
 namespace Cutting{

@@ -1,15 +1,15 @@
-#include "cuttingplanfinalizer.h"
+#include "finalizer.h"
 
 // 🔽 Készletregiszterek
-#include "../model/registries/stockregistry.h"
-#include "../model/registries/leftoverstockregistry.h"
+#include "../../../model/registries/stockregistry.h"
+#include "../../../model/registries/leftoverstockregistry.h"
 
 // 🔽 Konverziós logika: CutResult → ReusableStockEntry
-#include "../common/../model/cutting/result/utils.h"
+#include "service/cutting/result/resultutils.h"
 
 // 🔽 Exportáló modul
-#include "service/archivedwasteutils.h"
-#include "model/cutting/segment/segmentutils.h"
+#include "service/cutting/result/archivedwasteutils.h"
+#include "service/cutting/segment/segmentutils.h"
 
 void CuttingPlanFinalizer::finalize(QVector<Cutting::Plan::CutPlan>& plans,
                                     const QVector<Cutting::Result::ResultModel>& leftovers)
@@ -33,7 +33,7 @@ void CuttingPlanFinalizer::finalize(QVector<Cutting::Plan::CutPlan>& plans,
     for (const Cutting::Result::ResultModel& result : leftovers) {
         if (result.waste >= 300 && !result.reusableBarcode.isEmpty()) {
             // ✅ Elég hosszú → bekerül az újrahasználható rúdlistába
-            LeftoverStockEntry reusable = Cutting::Result::Utils::toReusableEntry(result);
+            LeftoverStockEntry reusable = Cutting::Result::ResultUtils::toReusableEntry(result);
             LeftoverStockRegistry::instance().registerEntry(reusable);
         } else {
             // 🗂️ Rövid → archiválandó hulladékként tároljuk

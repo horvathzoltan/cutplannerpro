@@ -1,7 +1,7 @@
 #include "segmentutils.h"
 //#include "model/cutting/piecewithmaterial.h"
 #include "qdebug.h"
-#include <numeric>
+//#include <numeric>
 
 // QVector<Segment> SegmentUtils::generateSegments(const QVector<int>& cuts, int kerf_mm, int totalLength_mm)
 // {
