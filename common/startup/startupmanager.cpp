@@ -14,7 +14,9 @@
 #include <model/repositories/storagerepository.h>
 
 #include <QSet>
-//#include "ProfileCategory.h"
+
+#include <model/repositories/cuttingmachinerepository.h>
+#include <model/registries/cuttingmachineregistry.h>
 
 StartupStatus StartupManager::runStartupSequence() {      
     StartupStatus materialStatus = initMaterialRegistry();
@@ -42,13 +44,17 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!cuttingReqStatus.ok)
         return cuttingReqStatus;
 
+    StartupStatus cuttingMachineStatus = initCuttingMachineRegistry();
+    if (!cuttingMachineStatus.ok)
+        return cuttingMachineStatus;
+
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.warnings += materialStatus.warnings;
     finalStatus.warnings += groupStatus.warnings;
     finalStatus.warnings += stockStatus.warnings;    
     finalStatus.warnings += reusableStockStatus.warnings;
-
     finalStatus.warnings += cuttingReqStatus.warnings;
+    finalStatus.warnings += cuttingMachineStatus.warnings;
 
     return finalStatus;
 }
@@ -261,4 +267,32 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
     return status;
 }
 
+StartupStatus StartupManager::initCuttingMachineRegistry() {
+    bool loaded = CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry::instance());
+    if (!loaded)
+        return StartupStatus::failure("❌ Nem sikerült betölteni a vágógépeket a cuttingmachines.csv fájlból.");
+
+    const auto& machines = CuttingMachineRegistry::instance().readAll();
+    if (machines.isEmpty())
+        return StartupStatus::failure("⚠️ A vágógép törzs üres. Legalább 1 gép szükséges a működéshez.");
+
+    StartupStatus status = StartupStatus::success();
+
+    // 🔎 Validáció: minden géphez legyen legalább 1 kompatibilis anyagtípus
+    QStringList machinesWithoutMaterials;
+    for (const auto& machine : machines) {
+        if (machine.compatibleMaterials.isEmpty())
+            machinesWithoutMaterials << machine.name;
+    }
+
+    if (!machinesWithoutMaterials.isEmpty()) {
+        status.addWarning(
+            QString("⚠️ %1 vágógéphez nincs megadva kompatibilis anyagtípus.\nÉrintett gépek: %2")
+                .arg(machinesWithoutMaterials.size())
+                .arg(machinesWithoutMaterials.join(", "))
+            );
+    }
+
+    return status;
+}
 

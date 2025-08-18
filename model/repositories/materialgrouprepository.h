@@ -58,6 +58,6 @@ private:
     // --- Stage 3: Load & Assemble ---
     static QVector<MaterialGroupRow> loadGroupRows(const QString& filepath);
     static QVector<MaterialGroupMemberRow> loadMemberRows(const QString& filepath);
-    static void buildIntoMaterialGroup(MaterialGroup* groupOpt, const QUuid& materialId);
+    static void addMaterialToGroup(MaterialGroup* group, const QUuid& materialId);
 };
 

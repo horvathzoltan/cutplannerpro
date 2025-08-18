@@ -18,7 +18,8 @@ QString MaterialType::toString() const {
 MaterialType MaterialType::fromString(const QString& str) {
     const QString normalized = str.trimmed().toLower();
 
-    if (normalized == "aluminium") return MaterialType(Type::Aluminium);
+    if (normalized == "aluminium") return MaterialType(Type::Aluminium); // British
+    if (normalized == "aluminum") return MaterialType(Type::Aluminium); // American
     if (normalized == "steel")     return MaterialType(Type::Steel);
     if (normalized == "plastic")   return MaterialType(Type::Plastic);
     if (normalized == "composite") return MaterialType(Type::Composite);

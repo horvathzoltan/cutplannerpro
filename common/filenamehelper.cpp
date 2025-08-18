@@ -143,4 +143,13 @@ QString FileNameHelper::getMovementLogFilePathForDate(const QDate& date) const {
     return combinePath(getLogFolder(), getMovementLogFileNameForDate(date));
 }
 
+/*CuttingMachines*/
+
+QString FileNameHelper::getCuttingMachineCsvFile() const {
+    return QDir(_projectPath).filePath("cuttingmachines.csv");
+}
+
+QString FileNameHelper::getCuttingMachineMaterialsCsvFile() const {
+    return QDir(_projectPath).filePath("cuttingmachine_materials.csv");
+}
 

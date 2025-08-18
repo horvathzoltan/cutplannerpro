@@ -12,6 +12,7 @@ public:
     static QList<QVector<QString>> parseCSV(QTextStream *st, const QChar& separator = ';');
 
     static bool isCsvWithOnlyHeader(const QString &filePath);
+    static QChar detectSeparatorSmart(QTextStream *st);
 private:
     // Egyetlen cella értelmezése: escape karakterek feldolgozása
     static QString parseCell(const QString& rawCell);

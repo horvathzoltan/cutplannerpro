@@ -6,6 +6,8 @@
 
 // 🔧 Gépdefiníció a vágáshoz: kerf, anyagkompatibilitás, hely, megjegyzés
 struct CuttingMachine : public IdentifiableEntity {
+    CuttingMachine() = default;
+
     QString name;
     QString location;
 
@@ -13,20 +15,18 @@ struct CuttingMachine : public IdentifiableEntity {
     double stellerMaxLength_mm = 0.0;       // 📏 Max hossz stellerrel
     double stellerCompensation_mm = 0.0;    // ⚖️ Kompenzáció érték mm-ben
 
-
     QVector<MaterialType> compatibleMaterials; // ⚙️ Alkalmas anyagtípusok (pl. Aluminium, Steel)
 
-    QString comment;                        // 🗒️ Opcionális megjegyzés / karbantartási információ
-
-    QUuid rootStorageId; // 🗂️ A géphez tartozó tárolófa gyökér StorageEntry ID-je
-
-    CuttingMachine();
+    QUuid rootStorageId;    // 🗂️ A géphez tartozó tárolófa gyökér StorageEntry ID-je    
+    QString comment;        // 🗒️ Opcionális megjegyzés / karbantartási információ
+    
+    void addMaterialType(const MaterialType& v);
 };
 
-struct CuttingMachineMaterialRow {
-    QString machineName;
-    QString materialTypeStr;
-};
+// struct CuttingMachineMaterialRow {
+//     QString machineName;
+//     QString materialTypeStr;
+// };
 
 /*
 cuttingmachines.csv

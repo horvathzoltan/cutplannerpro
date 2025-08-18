@@ -17,6 +17,7 @@ public:
     // 🔁 Singleton elérés
     static MaterialRegistry& instance();
 
+    void setData(const QVector<MaterialMaster>& v) { _data = v;}
     // ➕ Új anyag hozzáadása, csak ha code egyedi
     bool registerData(const MaterialMaster& material);
 
@@ -27,5 +28,5 @@ public:
     bool isBarcodeUnique(const QString& barcode) const;
 
     bool isEmpty() const { return _data.isEmpty(); }
-    void setData(const QVector<MaterialMaster>& v) { _data = v;}
+
 };

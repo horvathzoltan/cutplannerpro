@@ -1,3 +1,8 @@
 #include "cuttingmachine.h"
 
-CuttingMachine::CuttingMachine() {}
+// CuttingMachine::CuttingMachine() {}
+
+void CuttingMachine::addMaterialType(const MaterialType &v)
+{
+    compatibleMaterials.append(v);
+}

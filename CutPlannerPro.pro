@@ -33,12 +33,14 @@ SOURCES += \
     model/material/materialgroup.cpp \
     model/material/materialmaster.cpp \
     model/material/materialtype.cpp \
+    model/registries/cuttingmachineregistry.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
     model/registries/materialgroupregistry.cpp \
     model/registries/materialregistry.cpp \
     model/registries/stockregistry.cpp \
     model/registries/storageregistry.cpp \
+    model/repositories/cuttingmachinerepository.cpp \
     model/repositories/cuttingrequestrepository.cpp \
     model/repositories/leftoverstockrepository.cpp \
     model/repositories/materialgrouprepository.cpp \
@@ -96,6 +98,8 @@ HEADERS += \
     model/material/materialgroup.h \
     model/material/materialmaster.h \
     model/material/materialtype.h \
+    model/registries/cuttingmachineregistry.h \
+    model/repositories/cuttingmachinerepository.h \
     service/cutting/optimizer/exporter.h \
     service/cutting/plan/autosavemanager.h \
     service/cutting/plan/finalizer.h \
@@ -173,6 +177,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     README.md \
     testdata/cutting_plans/cutting_plan_1.csv \
+    testdata/cuttingmachine_materialtypes.csv \
+    testdata/cuttingmachines.csv \
     testdata/leftovers.csv \
     testdata/materialgroup_members.csv \
     testdata/materialgroups.csv \

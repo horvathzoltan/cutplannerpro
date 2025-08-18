@@ -55,4 +55,8 @@ public:
     QString getMovementLogFilePathForDate(const QDate &date) const;
     QString getMovementLogFileNameForDate(const QDate &date) const;
     QString getGroupMembersCsvFile() const;
+
+    //
+    QString getCuttingMachineCsvFile() const;
+    QString getCuttingMachineMaterialsCsvFile() const;
 };

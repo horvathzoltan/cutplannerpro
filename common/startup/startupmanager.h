@@ -37,4 +37,5 @@ private:
     StartupStatus initCuttingRequestRegistry();
     StartupStatus initReusableStockRegistry();
     StartupStatus initStorageRegistry();
+    StartupStatus initCuttingMachineRegistry(); // ✂️ Vágógépek betöltése
 };

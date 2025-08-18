@@ -85,7 +85,7 @@ MaterialGroupRepository::loadMemberRows(const QString& filepath) {
     return CsvReader::readAndConvert<MaterialGroupMemberRow>(filepath, convertRowToMaterialGroupMemberRow);
 }
 
-void MaterialGroupRepository::buildIntoMaterialGroup(MaterialGroup* group, const QUuid& materialId) {
+void MaterialGroupRepository::addMaterialToGroup(MaterialGroup* group, const QUuid& materialId) {
     if (! group) return;
     if (materialId.isNull()) {
         qWarning() << "Invalid material ID for group";
@@ -138,7 +138,7 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
         }
 
         MaterialGroup& group = groupMap[row.groupKey];
-        buildIntoMaterialGroup(&group, materialId.value());
+        addMaterialToGroup(&group, materialId.value());
     }
 
     for (auto it = groupMap.constBegin(); it != groupMap.constEnd(); ++it) {

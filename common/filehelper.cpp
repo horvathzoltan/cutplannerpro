@@ -1,4 +1,5 @@
 #include "filehelper.h"
+#include "common/logger.h"
 
 #include <QFile>
 
@@ -113,4 +114,43 @@ bool FileHelper::isCsvWithOnlyHeader(const QString& filePath) {
     }
 
     return lineCount == 1; // csak a fejléc
+}
+
+QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
+    QList<QChar> candidates = { ',', ';', '\t', '|' };
+
+    QStringList lines;
+    while (!st->atEnd() && lines.size() < 2) {
+        QString line = st->readLine().trimmed();
+        if (!line.isEmpty()) lines.append(line);
+    }
+
+    if (lines.size() < 2) return QChar(); // ❌ Nem elég sor
+
+    for (const QChar& sep : candidates) {
+        QTextStream testStream(lines.join("\n").toUtf8());
+        QList<QVector<QString>> rows = FileHelper::parseCSV(&testStream, sep);
+
+        int headerFieldCount = std::count_if(rows[0].begin(), rows[0].end(), [](const QString& s) {
+            return !s.trimmed().isEmpty();
+        });
+
+        int dataFieldCount = rows[1].size();
+
+        bool ok = headerFieldCount >= 2 &&
+                  dataFieldCount >= 2 &&
+                  dataFieldCount == headerFieldCount;
+
+        // bool ok = rows.size() >= 2 &&
+        //           rows[0].size() == rows[1].size() &&
+        //           rows[0].size() >= 2; // 🔍 legalább 2 mező legyen
+        if (ok) {
+            //QString msg = QStringLiteral("✅ Szeparátor detektálva:%1 -> mezők:%2").arg(sep).arg(rows[0].size());
+            //zInfo(msg);
+            return sep; // 🎯 Találtunk jó szeparátort
+        }
+    }
+
+    zWarning("❌ Nem sikerült szeparátort detektálni a fejléc alapján.");
+    return QChar(); // ❌ Nem sikerült detektálni
 }
