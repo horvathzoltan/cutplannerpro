@@ -10,6 +10,7 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/color/namedcolor.cpp \
     common/csvimporter.cpp \
     common/filehelper.cpp \
     common/filenamehelper.cpp \
@@ -72,6 +73,7 @@ SOURCES += \
     view/managers/stocktablemanager.cpp
 
 HEADERS += \
+    common/color/namedcolor.h \
     common/csvhelper.h \
     common/csvimporter.h \
     common/filehelper.h \
@@ -183,5 +185,9 @@ DISTFILES += \
     testdata/materialgroup_members.csv \
     testdata/materialgroups.csv \
     testdata/materials.csv \
+    testdata/ral_colors/classic.csv \
+    testdata/ral_colors/design.csv \
+    testdata/ral_colors/p1.csv \
+    testdata/ral_colors/p2.csv \
     testdata/stock.csv \
     testdata/storages.csv

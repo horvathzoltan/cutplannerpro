@@ -153,3 +153,28 @@ QString FileNameHelper::getCuttingMachineMaterialsCsvFile() const {
     return QDir(_projectPath).filePath("cuttingmachine_materials.csv");
 }
 
+/*RAL colors*/
+
+/* RAL Colors */
+
+QString FileNameHelper::getRalColorsFolder() const {
+    auto fn = QDir(_projectPath).filePath("ral_colors");
+    return fn;
+}
+
+QString FileNameHelper::getRalClassicCsvFile() const {
+    return combinePath(getRalColorsFolder(), "classic.csv");
+}
+
+QString FileNameHelper::getRalDesignCsvFile() const {
+    return combinePath(getRalColorsFolder(), "design.csv");
+}
+
+QString FileNameHelper::getRalPlastic1CsvFile() const {
+    return combinePath(getRalColorsFolder(), "p1.csv");
+}
+
+QString FileNameHelper::getRalPlastic2CsvFile() const {
+    return combinePath(getRalColorsFolder(), "p2.csv");
+}
+

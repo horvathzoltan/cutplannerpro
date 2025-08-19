@@ -16,6 +16,7 @@ private:
     bool init(const char* file);
     QString generateTimestamp() const;
     QString combinePath(const QString &folder, const QString &fileName) const;
+    QString getRalColorsFolder() const;
 public:
     // 🔁 Példány elérése
     static FileNameHelper& instance(const char* file = __FILE__);
@@ -59,4 +60,9 @@ public:
     //
     QString getCuttingMachineCsvFile() const;
     QString getCuttingMachineMaterialsCsvFile() const;
+    QString getRalClassicCsvFile() const;
+    QString getRalDesignCsvFile() const;
+    QString getRalPlastic1CsvFile() const;
+    QString getRalPlastic2CsvFile() const;
+    //QString getRalEffectCsvFile() const;
 };

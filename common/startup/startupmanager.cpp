@@ -17,8 +17,22 @@
 
 #include <model/repositories/cuttingmachinerepository.h>
 #include <model/registries/cuttingmachineregistry.h>
+#include <common/filenamehelper.h>
 
-StartupStatus StartupManager::runStartupSequence() {      
+#include "common/color/namedcolor.h"
+
+StartupStatus StartupManager::runStartupSequence() {
+    auto fnh = FileNameHelper::instance();
+
+    QList<RalSource> ralSources = {
+        { RalSystem::Classic, fnh.getRalClassicCsvFile() },
+        { RalSystem::Design,  fnh.getRalDesignCsvFile() },
+        { RalSystem::Plastic1,  fnh.getRalPlastic1CsvFile() },
+        { RalSystem::Plastic2,  fnh.getRalPlastic2CsvFile() }
+    };
+
+    NamedColor::initRalColors(ralSources);
+
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.ok)
         return materialStatus;

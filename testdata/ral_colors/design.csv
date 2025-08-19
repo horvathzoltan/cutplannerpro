@@ -1,0 +1,810 @@
+RALcode;name;hex
+000 15 00;Ink Black;#262626
+000 20 00;Slate Black;#2E2E2E
+000 25 00;Onyx Black;#363636
+000 30 00;Medium Black;#474747
+000 35 00;Briquette Grey;#4F4F4F
+000 40 00;Dark Grey;#595959
+000 45 00;Architecture Grey;#6A6A6A
+000 50 00;Steel Grey;#737373
+000 55 00;Medium Grey;#7D7D7D
+000 60 00;Ash Grey;#919191
+000 65 00;Mortar Grey;#9B9B9B
+000 70 00;Light Grey;#A5A5A5
+000 75 00;Marble Grey;#BABABA
+000 80 00;Foggy Grey;#C4C4C4
+000 85 00;Shadow White;#DCDCDC
+000 90 00;Winter White;#E2E2E2
+001 20 10;Black Red;#3A2A2F
+001 30 20;Dark Wine;#5C3A45
+001 40 30;Mahogany Red;#7D4A5B
+001 50 40;Ruby Red;#9F5A71
+001 60 50;Rosewood;#C16A87
+001 70 60;Blush Pink;#E37A9D
+001 80 70;Pastel Rose;#F59AB1
+001 90 80;Light Rose;#FFBACC
+002 20 10;Black Brown;#3A2F2A
+002 30 20;Dark Chestnut;#5C453A
+002 40 30;Walnut Brown;#7D5B4A
+002 50 40;Cocoa Brown;#9F715A
+002 60 50;Soft Brown;#C1876A
+002 70 60;Warm Beige;#E39D7A
+002 80 70;Pastel Beige;#F5B38A
+002 90 80;Light Beige;#FFD99A
+003 20 10;Black Olive;#2F3A2A
+003 30 20;Dark Olive;#455C3A
+003 40 30;Olive Green;#5B7D4A
+003 50 40;Leaf Green;#71A05A
+003 60 50;Spring Green;#87C16A
+003 70 60;Mint Green;#9DE37A
+003 80 70;Pastel Mint;#B1F59A
+003 90 80;Light Mint;#CCFFB2
+004 20 10;Black Blue;#2A2F3A
+004 30 20;Dark Navy;#3A455C
+004 40 30;Midnight Blue;#4A5B7D
+004 50 40;Royal Blue;#5A71A0
+004 60 50;Sky Blue;#6A87C1
+004 70 60;Pastel Blue;#7AA3E3
+004 80 70;Light Blue;#8ABCF5
+004 90 80;Ice Blue;#9AD4FF
+005 20 10;Black Violet;#3A2A3A
+005 30 20;Dark Purple;#5C3A5C
+005 40 30;Plum;#7D4A7D
+005 50 40;Orchid;#9F5A9F
+005 60 50;Lilac;#C16AC1
+005 70 60;Pastel Lilac;#E37AE3
+005 80 70;Light Lilac;#F59AF5
+005 90 80;Lavender Mist;#FFBAFF
+006 20 10;Black Yellow;#3A3A2A
+006 30 20;Dark Ochre;#5C5C3A
+006 40 30;Golden Brown;#7D7D4A
+006 50 40;Amber;#9F9F5A
+006 60 50;Honey Yellow;#C1C16A
+006 70 60;Pastel Yellow;#E3E37A
+006 80 70;Light Yellow;#F5F59A
+006 90 80;Cream;#FFFFB2
+007 20 10;Black Orange;#3A2F1F
+007 30 20;Dark Terracotta;#5C4531
+007 40 30;Clay Red;#7D5B43
+007 50 40;Brick Red;#9F7155
+007 60 50;Coral;#C18767
+007 70 60;Peach;#E39D79
+007 80 70;Pastel Peach;#F5B38B
+007 90 80;Light Peach;#FFD99D
+008 20 10;Black Green;#2A3A2F
+008 30 20;Dark Forest;#3A5C45
+008 40 30;Pine Green;#4A7D5B
+008 50 40;Emerald;#5AA071
+008 60 50;Jade;#6AC187
+008 70 60;Mint;#7AE39D
+008 80 70;Pastel Green;#8AF5B3
+008 90 80;Light Green;#9CFFC9
+009 20 10;Black Cyan;#2A3A3A
+009 30 20;Dark Teal;#3A5C5C
+009 40 30;Teal Blue;#4A7D7D
+009 50 40;Turquoise;#5AA09F
+009 60 50;Aqua;#6AC1C1
+009 70 60;Pastel Aqua;#7AE3E3
+009 80 70;Light Aqua;#8AF5F5
+009 90 80;Ice Aqua;#9CFFFF
+010 20 10;Dark Mahogany;#4B242C
+010 30 30;Leather Red;#713240
+010 40 40;Algae Red;#994055
+010 50 50;Vibrant Red;#C24E6B
+010 60 30;Japanese Coral;#C37C89
+010 70 20;Silver Rose;#CF9EA6
+010 80 10;Mud Pink;#DAC0C4
+010 90 05;Rose Cream;#ECDFE1
+020 20 20;Dark Red Brown;#5C2A2A
+020 30 30;Crystal Dark Red;#703338
+020 40 40;Clay Red;#98414A
+020 50 50;Soft Crimson;#C2505D
+020 60 30;Dusty Coral;#C37D80
+020 70 10;Warm Rose;#BFA6A6
+020 80 20;Pastel Crimson;#ECBABB
+020 90 10;Light Coral;#F5DADA
+030 20 20;Burnt Terracotta;#4B2A24
+030 30 30;Terracotta Red Brown;#703B35
+030 40 40;Clay Brown;#964440
+030 50 50;Bright Coral;#C25C61
+030 60 30;Warm Coral;#BA7F81
+030 70 20;Light Coral Rose;#CDA3A1
+030 80 10;Powder Coral;#E3C1BF
+030 90 05;White Coral;#F3E3E1
+040 20 20;Dark Brick Red;#4B2F2A
+040 30 30;Brick Red;#703F35
+040 40 40;Rust Red;#964F40
+040 50 50;Bright Rust;#C25F4B
+040 60 30;Warm Rust;#BA816C
+040 70 20;Light Rust;#CDA38D
+040 80 10;Powder Rust;#E3C1AD
+040 90 05;White Rust;#F3E3D1
+050 20 20;Dark Terracotta Red;#4B2F2F
+050 30 30;Terracotta Red;#703F3F
+050 40 40;Clay Terracotta;#964F4F
+050 50 50;Bright Terracotta;#C25F5F
+050 60 30;Warm Terracotta;#BA8181
+050 70 20;Light Terracotta;#CDA3A3
+050 80 10;Powder Terracotta;#E3C1C1
+050 90 05;White Terracotta;#F3E3E3
+060 20 20;Dark Coral Red;#4B2F35
+060 30 30;Coral Red;#703F4A
+060 40 40;Clay Coral;#964F60
+060 50 50;Bright Coral Red;#C25F76
+060 60 30;Warm Coral Red;#BA8193
+060 70 20;Light Coral Red;#CDA3B5
+060 80 10;Powder Coral Red;#E3C1D3
+060 90 05;White Coral Red;#F3E3ED
+070 20 20;Dark Blush Red;#4B2F3A
+070 30 30;Blush Red;#703F55
+070 40 40;Clay Blush;#964F70
+070 50 50;Bright Blush;#C25F8C
+070 60 30;Warm Blush;#BA81A9
+070 70 20;Light Blush;#CDA3C7
+070 80 10;Powder Blush;#E3C1E3
+070 90 05;White Blush;#F3E3F3
+080 20 20;Dark Rose Red;#4B2F3F
+080 30 30;Rose Red;#703F5C
+080 40 40;Clay Rose;#964F7A
+080 50 50;Bright Rose;#C25F97
+080 60 30;Warm Rose Red;#BA81B5
+080 70 20;Light Rose Red;#CDA3D3
+080 80 10;Powder Rose Red;#E3C1F1
+080 90 05;White Rose Red;#F3E3FF
+090 20 20;Dark Crimson;#4B2F44
+090 30 30;Crimson;#703F66
+090 40 40;Clay Crimson;#964F88
+090 50 50;Bright Crimson;#C25FA9
+090 60 30;Warm Crimson;#BA81C7
+090 70 20;Light Crimson;#CDA3E5
+090 80 10;Powder Crimson;#E3C1FF
+090 90 05;White Crimson;#F3E3FF
+091 20 20;Dark Violet Red;#4B2F49
+091 30 30;Violet Red;#703F70
+091 40 40;Clay Violet;#964F97
+091 50 50;Bright Violet;#C25FBF
+091 60 30;Warm Violet;#BA81D7
+091 70 20;Light Violet;#CDA3EF
+091 80 10;Powder Violet;#E3C1FF
+091 90 05;White Violet;#F3E3FF
+092 20 20;Dark Magenta;#4B2F4E
+092 30 30;Magenta;#703F7B
+092 40 40;Clay Magenta;#964FA8
+092 50 50;Bright Magenta;#C25FD5
+092 60 30;Warm Magenta;#BA81ED
+092 70 20;Light Magenta;#CDA3FF
+092 80 10;Powder Magenta;#E3C1FF
+092 90 05;White Magenta;#F3E3FF
+093 20 20;Dark Lavender;#4B2F53
+093 30 30;Lavender;#703F85
+093 40 40;Clay Lavender;#964FB7
+093 50 50;Bright Lavender;#C25FE9
+093 60 30;Warm Lavender;#BA81FF
+093 70 20;Light Lavender;#CDA3FF
+093 80 10;Powder Lavender;#E3C1FF
+093 90 05;White Lavender;#F3E3FF
+094 20 20;Dark Plum;#4B2F58
+094 30 30;Plum;#703F90
+094 40 40;Clay Plum;#964FC0
+094 50 50;Bright Plum;#C25FFF
+094 60 30;Warm Plum;#BA81FF
+094 70 20;Light Plum;#CDA3FF
+094 80 10;Powder Plum;#E3C1FF
+094 90 05;White Plum;#F3E3FF
+095 20 20;Dark Orchid;#4B2F5D
+095 30 30;Orchid;#703F9B
+095 40 40;Clay Orchid;#964FC9
+095 50 50;Bright Orchid;#C25FFF
+095 60 30;Warm Orchid;#BA81FF
+095 70 20;Light Orchid;#CDA3FF
+095 80 10;Powder Orchid;#E3C1FF
+095 90 05;White Orchid;#F3E3FF  
+100 30 30;Terracotta Orange;#7C3B30
+100 40 40;Sunset Amber;#A84A43
+100 50 50;Vivid Coral Ochre;#D3625D
+100 60 30;Dusty Apricot;#C37C6C
+100 70 20;Light Apricot;#CF9E8D
+100 80 10;Powder Apricot;#DAC0AD
+100 90 05;White Apricot;#ECDFD1
+110 30 30;Earth Orange;#7C4B30
+110 40 40;Clay Orange;#A85C43
+110 50 50;Bright Clay;#D36D5D
+110 60 30;Warm Clay;#C38F6C
+110 70 20;Light Clay;#CFB18D
+110 80 10;Powder Clay;#DAC3AD
+110 90 05;White Clay;#ECDFD1
+120 30 30;Burnt Orange;#7C4B3A
+120 40 40;Rust Orange;#A85C4F
+120 50 50;Bright Rust;#D36D64
+120 60 30;Warm Rust;#C38F7A
+120 70 20;Light Rust;#CFB18F
+120 80 10;Powder Rust;#DAC3B1
+120 90 05;White Rust;#ECDFD6
+130 30 30;Copper Orange;#7C4B44
+130 40 40;Copper Red;#A85C5A
+130 50 50;Bright Copper;#D36D70
+130 60 30;Warm Copper;#C38F8F
+130 70 20;Light Copper;#CFB1A3
+130 80 10;Powder Copper;#DAC3C3
+130 90 05;White Copper;#ECDFE3
+140 30 30;Rosewood Orange;#7C4B4E
+140 40 40;Rosewood Red;#A85C65
+140 50 50;Bright Rosewood;#D36D7B
+140 60 30;Warm Rosewood;#C38F9F
+140 70 20;Light Rosewood;#CFB1B7
+140 80 10;Powder Rosewood;#DAC3D3
+140 90 05;White Rosewood;#ECDFEF
+150 30 30;Blush Orange;#7C4B58
+150 40 40;Blush Red;#A85C70
+150 50 50;Bright Blush;#D36D91
+150 60 30;Warm Blush;#C38FAF
+150 70 20;Light Blush;#CFB1CB
+150 80 10;Powder Blush;#DAC3E3
+150 90 05;White Blush;#ECDFF3
+160 30 30;Muted Orange;#7C4B62
+160 40 40;Muted Red;#A85C7A
+160 50 50;Bright Muted;#D36DA7
+160 60 30;Warm Muted;#C38FC3
+160 70 20;Light Muted;#CFB1E1
+160 80 10;Powder Muted;#DAC3FF
+160 90 05;White Muted;#ECDFFF
+170 30 30;Dusty Orange;#7C4B6C
+170 40 40;Dusty Red;#A85C90
+170 50 50;Bright Dusty;#D36DC3
+170 60 30;Warm Dusty;#C38FE1
+170 70 20;Light Dusty;#CFB1FF
+170 80 10;Powder Dusty;#DAC3FF
+170 90 05;White Dusty;#ECDFFF
+180 30 30;Soft Orange;#7C4B76
+180 40 40;Soft Red;#A85CA5
+180 50 50;Bright Soft;#D36DDF
+180 60 30;Warm Soft;#C38FFF
+180 70 20;Light Soft;#CFB1FF
+180 80 10;Powder Soft;#DAC3FF
+180 90 05;White Soft;#ECDFFF
+190 30 30;Pale Orange;#7C4B80
+190 40 40;Pale Red;#A85CBA
+190 50 50;Bright Pale;#D36DFF
+190 60 30;Warm Pale;#C38FFF
+190 70 20;Light Pale;#CFB1FF
+190 80 10;Powder Pale;#DAC3FF
+190 90 05;White Pale;#ECDFFF
+200 30 30;Forest Green;#417358
+200 40 40;Olive Green;#5A8C4F
+200 50 50;Bright Olive;#73A546
+200 60 30;Warm Olive;#8CBF3D
+200 70 20;Light Olive;#A5D833
+200 80 10;Powder Olive;#BEEF29
+200 90 05;White Olive;#D7FF1F
+210 30 30;Sea Green;#2F6B5C
+210 40 40;Marine Green;#3F8C73
+210 50 50;Bright Marine;#4FA58A
+210 60 30;Warm Marine;#5FBFA1
+210 70 20;Light Marine;#6FD8B8
+210 80 10;Powder Marine;#7FEFCF
+210 90 05;White Marine;#8FFFFF
+220 30 30;Teal Green;#2F5C6B
+220 40 40;Teal Blue;#3F738C
+220 50 50;Bright Teal;#4F8AA5
+220 60 30;Warm Teal;#5FA1BF
+220 70 20;Light Teal;#6FB8D8
+220 80 10;Powder Teal;#7FCFF1
+220 90 05;White Teal;#8FE7FF
+230 30 30;Azure Blue;#2F4C6B
+230 40 40;Deep Azure;#3F5C8C
+230 50 50;Bright Azure;#4F6CA5
+230 60 30;Warm Azure;#5F7CBF
+230 70 20;Light Azure;#6F8CD8
+230 80 10;Powder Azure;#7F9CF1
+230 90 05;White Azure;#8FACFF
+240 30 30;Royal Blue;#2F3C6B
+240 40 40;Deep Royal;#3F4C8C
+240 50 50;Bright Royal;#4F5CA5
+240 60 30;Warm Royal;#5F6CBF
+240 70 20;Light Royal;#6F7CD8
+240 80 10;Powder Royal;#7F8CF1
+240 90 05;White Royal;#8F9CFF
+250 30 30;Sky Blue;#2F2C6B
+250 40 40;Deep Sky;#3F3C8C
+250 50 50;Bright Sky;#4F4CA5
+250 60 30;Warm Sky;#5F5CBF
+250 70 20;Light Sky;#6F6CD8
+250 80 10;Powder Sky;#7F7CF1
+250 90 05;White Sky;#8F8CFF
+260 30 30;Lavender Blue;#3A2F6B
+260 40 40;Deep Lavender;#4A3F8C
+260 50 50;Bright Lavender;#5A4FA5
+260 60 30;Warm Lavender;#6A5FBF
+260 70 20;Light Lavender;#7A6FD8
+260 80 10;Powder Lavender;#8A7FF1
+260 90 05;White Lavender;#9A8FFF
+270 30 30;Violet Blue;#3A2F5C
+270 40 40;Deep Violet;#4A3F73
+270 50 50;Bright Violet;#5A4F8A
+270 60 30;Warm Violet;#6A5FA1
+270 70 20;Light Violet;#7A6FB8
+270 80 10;Powder Violet;#8A7FCF
+270 90 05;White Violet;#9A8FE7
+280 30 30;Magenta Blue;#3A2F4C
+280 40 40;Deep Magenta;#4A3F62
+280 50 50;Bright Magenta;#5A4F78
+280 60 30;Warm Magenta;#6A5F8E
+280 70 20;Light Magenta;#7A6FA4
+280 80 10;Powder Magenta;#8A7FBA
+280 90 05;White Magenta;#9A8FD0
+290 30 30;Plum Blue;#3A2F3C
+290 40 40;Deep Plum;#4A3F50
+290 50 50;Bright Plum;#5A4F64
+290 60 30;Warm Plum;#6A5F78
+290 70 20;Light Plum;#7A6F8C
+290 80 10;Powder Plum;#8A7FA0
+290 90 05;White Plum;#9A8FB4
+300 30 30;Muted Pink;#543A54
+300 40 40;Dusty Rose;#6A4F6A
+300 50 50;Bright Dusty Rose;#806580
+300 60 30;Warm Dusty Rose;#967A96
+300 70 20;Light Dusty Rose;#AC90AC
+300 80 10;Powder Dusty Rose;#C2A5C2
+300 90 05;White Dusty Rose;#D8BAD8
+310 30 30;Lavender Rose;#706670
+310 40 40;Dusty Lavender;#857C85
+310 50 50;Bright Lavender Rose;#9A929A
+310 60 30;Warm Lavender Rose;#AFA7AF
+310 70 20;Light Lavender Rose;#C4BDC4
+310 80 10;Powder Lavender Rose;#D9D2D9
+310 90 05;White Lavender Rose;#EEE7EE
+320 30 30;Soft Apricot;#8C828C
+320 40 40;Dusty Apricot;#A198A1
+320 50 50;Bright Soft Apricot;#B6AEB6
+320 60 30;Warm Soft Apricot;#CBC3CB
+320 70 20;Light Soft Apricot;#E0D9E0
+320 80 10;Powder Soft Apricot;#F5EEF5
+320 90 05;White Soft Apricot;#FFFFFF
+330 30 30;Pastel Peach;#A88EAC
+330 40 40;Dusty Peach;#BFA3C1
+330 50 50;Bright Pastel Peach;#D6B8D6
+330 60 30;Warm Pastel Peach;#EDCDF1
+330 70 20;Light Pastel Peach;#FFE2FF
+330 80 10;Powder Pastel Peach;#FFF7FF
+330 90 05;White Pastel Peach;#FFFFFF
+340 30 30;Light Cream;#BBA3C1
+340 40 40;Dusty Cream;#D1B8D6
+340 50 50;Bright Light Cream;#E7CDF1
+340 60 30;Warm Light Cream;#FCE2FF
+340 70 20;Light Light Cream;#FFF7FF
+340 80 10;Powder Light Cream;#FFFFFF
+340 90 05;White Light Cream;#FFFFFF
+350 30 30;Sand Brown;#5C3A2F
+350 40 40;Dusty Sand;#735047
+350 50 50;Bright Sand Brown;#8A665F
+350 60 30;Warm Sand Brown;#A17C77
+350 70 20;Light Sand Brown;#B8928F
+350 80 10;Powder Sand Brown;#CFA8A7
+350 90 05;White Sand Brown;#E6BEBF
+360 30 30;Earth Brown;#6F4F3F
+360 40 40;Dusty Earth;#866557
+360 50 50;Bright Earth Brown;#9D7B6F
+360 60 30;Warm Earth Brown;#B49187
+360 70 20;Light Earth Brown;#CBA79F
+360 80 10;Powder Earth Brown;#E2BDB7
+360 90 05;White Earth Brown;#F9D3CF
+400 30 30;Muted Olive;#5C5C3F
+400 40 40;Dusty Olive;#737355
+400 50 50;Bright Olive;#8A8A6B
+400 60 30;Warm Olive;#A1A181
+400 70 20;Light Olive;#B8B897
+400 80 10;Powder Olive;#CFCFAD
+400 90 05;White Olive;#E6E6C3
+410 30 30;Muted Moss;#5C6B3F
+410 40 40;Dusty Moss;#738255
+410 50 50;Bright Moss;#8A996B
+410 60 30;Warm Moss;#A1B081
+410 70 20;Light Moss;#B8C797
+410 80 10;Powder Moss;#CFDEAD
+410 90 05;White Moss;#E6F5C3
+420 30 30;Muted Lime;#5C7B3F
+420 40 40;Dusty Lime;#739255
+420 50 50;Bright Lime;#8AA96B
+420 60 30;Warm Lime;#A1C081
+420 70 20;Light Lime;#B8D797
+420 80 10;Powder Lime;#CFEFAD
+420 90 05;White Lime;#E6FFC3
+430 30 30;Muted Mint;#3F7B5C
+430 40 40;Dusty Mint;#559273
+430 50 50;Bright Mint;#6BA98A
+430 60 30;Warm Mint;#81C0A1
+430 70 20;Light Mint;#97D7B8
+430 80 10;Powder Mint;#ADFECF
+430 90 05;White Mint;#C3FFE6
+440 30 30;Muted Turquoise;#3F6B7B
+440 40 40;Dusty Turquoise;#557392
+440 50 50;Bright Turquoise;#6B8AA9
+440 60 30;Warm Turquoise;#81A1C0
+440 70 20;Light Turquoise;#97B8D7
+440 80 10;Powder Turquoise;#ADCFEE
+440 90 05;White Turquoise;#C3E6FF
+450 30 30;Muted Cyan;#3F5C7B
+450 40 40;Dusty Cyan;#556C92
+450 50 50;Bright Cyan;#6B7CA9
+450 60 30;Warm Cyan;#819CC0
+450 70 20;Light Cyan;#97BBD7
+450 80 10;Powder Cyan;#ADCBEF
+450 90 05;White Cyan;#C3E3FF
+460 30 30;Muted Sky;#3F4C7B
+460 40 40;Dusty Sky;#555C92
+460 50 50;Bright Sky;#6B6CA9
+460 60 30;Warm Sky;#818CBF
+460 70 20;Light Sky;#97ABD7
+460 80 10;Powder Sky;#ADCBEF
+460 90 05;White Sky;#C3E3FF
+470 30 30;Muted Lavender;#4C3F7B
+470 40 40;Dusty Lavender;#625592
+470 50 50;Bright Lavender;#786BA9
+470 60 30;Warm Lavender;#8E81BF
+470 70 20;Light Lavender;#A497D7
+470 80 10;Powder Lavender;#BAADF1
+470 90 05;White Lavender;#D0C3FF
+480 30 30;Muted Violet;#8A6BA9
+480 60 30;Warm Violet;#A181BF
+480 70 20;Light Violet;#B897D7
+480 80 10;Powder Violet;#CFADF1
+480 90 05;White Violet;#E6C3FF
+490 30 30;Muted Magenta;#6B3F7B
+490 40 40;Dusty Magenta;#825592
+490 50 50;Bright Magenta;#996BA9
+490 60 30;Warm Magenta;#B081BF
+490 70 20;Light Magenta;#C797D7
+490 80 10;Powder Magenta;#DEADF1
+490 90 05;White Magenta;#F5C3FF
+500 30 30;Muted Blue Grey;#3F4F5C
+500 40 40;Dusty Blue Grey;#556675
+500 50 50;Bright Blue Grey;#6B7D8E
+500 60 30;Warm Blue Grey;#8194A7
+500 70 20;Light Blue Grey;#97ABBF
+500 80 10;Powder Blue Grey;#ADC2D7
+500 90 05;White Blue Grey;#C3D9EF
+510 30 30;Muted Steel Blue;#3F4F6B
+510 40 40;Dusty Steel Blue;#55678C
+510 50 50;Bright Steel Blue;#6B7FA5
+510 60 30;Warm Steel Blue;#8197BF
+510 70 20;Light Steel Blue;#97AFD8
+510 80 10;Powder Steel Blue;#ADC7F1
+510 90 05;White Steel Blue;#C3DFFF
+520 30 30;Muted Indigo;#3F3F6B
+520 40 40;Dusty Indigo;#55558C
+520 50 50;Bright Indigo;#6B6BA5
+520 60 30;Warm Indigo;#8181BF
+520 70 20;Light Indigo;#9797D8
+520 80 10;Powder Indigo;#ADADF1
+520 90 05;White Indigo;#C3C3FF
+530 30 30;Muted Purple;#4F3F6B
+530 40 40;Dusty Purple;#65558C
+530 50 50;Bright Purple;#7B6BA5
+530 60 30;Warm Purple;#9181BF
+530 70 20;Light Purple;#A797D8
+530 80 10;Powder Purple;#BDADF1
+530 90 05;White Purple;#D3C3FF
+540 30 30;Muted Lilac;#5C3F6B
+540 40 40;Dusty Lilac;#73558C
+540 50 50;Bright Lilac;#8A6BA5
+540 60 30;Warm Lilac;#A181BF
+540 70 20;Light Lilac;#B897D8
+540 80 10;Powder Lilac;#CFADF1
+540 90 05;White Lilac;#E6C3FF
+550 30 30;Muted Rose Violet;#6B3F6B
+550 40 40;Dusty Rose Violet;#82558C
+550 50 50;Bright Rose Violet;#996BA5
+550 60 30;Warm Rose Violet;#B081BF
+550 70 20;Light Rose Violet;#C797D8
+550 80 10;Powder Rose Violet;#DEADF1
+550 90 05;White Rose Violet;#F5C3FF
+560 30 30;Muted Warm Grey;#5C5C5C
+560 40 40;Dusty Warm Grey;#737373
+560 50 50;Bright Warm Grey;#8A8A8A
+560 60 30;Warm Warm Grey;#A1A1A1
+560 70 20;Light Warm Grey;#B8B8B8
+560 80 10;Powder Warm Grey;#CFCFCF
+560 90 05;White Warm Grey;#E6E6E6
+570 30 30;Muted Cool Grey;#4F5C6B
+570 40 40;Dusty Cool Grey;#65738C
+570 50 50;Bright Cool Grey;#7B8AA5
+570 60 30;Warm Cool Grey;#91A1BF
+570 70 20;Light Cool Grey;#A7B8D7
+570 80 10;Powder Cool Grey;#BDCFEE
+570 90 05;White Cool Grey;#D3E6FF
+580 30 30;Muted Neutral Grey;#5C5C6B
+580 40 40;Dusty Neutral Grey;#73738C
+580 50 50;Bright Neutral Grey;#8A8AA5
+580 60 30;Warm Neutral Grey;#A1A1BF
+580 70 20;Light Neutral Grey;#B8B8D7
+580 80 10;Powder Neutral Grey;#CFCFEE
+580 90 05;White Neutral Grey;#E6E6FF
+590 30 30;Muted Graphite;#3F3F3F
+590 40 40;Dusty Graphite;#555555
+590 50 50;Bright Graphite;#6B6B6B
+590 60 30;Warm Graphite;#818181
+590 70 20;Light Graphite;#979797
+590 80 10;Powder Graphite;#ADADAD
+590 90 05;White Graphite;#C3C3C3
+600 30 30;Muted Olive Green;#4F5C3F
+600 40 40;Dusty Olive Green;#657355
+600 50 50;Bright Olive Green;#7B8A6B
+600 60 30;Warm Olive Green;#91A181
+600 70 20;Light Olive Green;#A7B897
+600 80 10;Powder Olive Green;#BDCFAD
+600 90 05;White Olive Green;#D3E6C3
+610 30 30;Muted Fern Green;#3F5C4F
+610 40 40;Dusty Fern Green;#557365
+610 50 50;Bright Fern Green;#6B8A7B
+610 60 30;Warm Fern Green;#81A191
+610 70 20;Light Fern Green;#97B8A7
+610 80 10;Powder Fern Green;#ADCFBD
+610 90 05;White Fern Green;#C3E6D3
+620 30 30;Muted Leaf Green;#3F6B4F
+620 40 40;Dusty Leaf Green;#557B65
+620 50 50;Bright Leaf Green;#6B8B7B
+620 60 30;Warm Leaf Green;#81A291
+620 70 20;Light Leaf Green;#97B9A7
+620 80 10;Powder Leaf Green;#ADD0BD
+620 90 05;White Leaf Green;#C3E7D3
+630 30 30;Muted Grass Green;#3F7B4F
+630 40 40;Dusty Grass Green;#558C65
+630 50 50;Bright Grass Green;#6BAA7B
+630 60 30;Warm Grass Green;#81C191
+630 70 20;Light Grass Green;#97D8A7
+630 80 10;Powder Grass Green;#ADFEC3
+630 90 05;White Grass Green;#C3FFD9
+640 30 30;Muted Spring Green;#3F7B6B
+640 40 40;Dusty Spring Green;#559285
+640 50 50;Bright Spring Green;#6BA99F
+640 60 30;Warm Spring Green;#81C0B9
+640 70 20;Light Spring Green;#97D7D3
+640 80 10;Powder Spring Green;#ADFEEF
+640 90 05;White Spring Green;#C3FFFF
+650 30 30;Muted Aqua;#3F6B7B
+650 40 40;Dusty Aqua;#557392
+650 50 50;Bright Aqua;#6B8AA9
+650 60 30;Warm Aqua;#81A1C0
+650 70 20;Light Aqua;#97B8D7
+650 80 10;Powder Aqua;#ADCFEE
+650 90 05;White Aqua;#C3E6FF
+660 30 30;Muted Sky Blue;#3F5C7B
+660 40 40;Dusty Sky Blue;#556C92
+660 50 50;Bright Sky Blue;#6B7CA9
+660 60 30;Warm Sky Blue;#819CC0
+660 70 20;Light Sky Blue;#97BBD7
+660 80 10;Powder Sky Blue;#ADCBEF
+660 90 05;White Sky Blue;#C3E3FF
+670 30 30;Muted Azure;#3F4C7B
+670 40 40;Dusty Azure;#555C92
+670 50 50;Bright Azure;#6B6CA9
+670 60 30;Warm Azure;#818CBF
+670 70 20;Light Azure;#97ABD7
+670 80 10;Powder Azure;#ADCBEF
+670 90 05;White Azure;#C3E3FF
+680 30 30;Muted Indigo Blue;#4C3F7B
+680 40 40;Dusty Indigo Blue;#625592
+680 50 50;Bright Indigo Blue;#786BA9
+680 60 30;Warm Indigo Blue;#8E81BF
+680 70 20;Light Indigo Blue;#A497D7
+680 80 10;Powder Indigo Blue;#BAADF1
+680 90 05;White Indigo Blue;#D0C3FF
+690 30 30;Muted Violet Blue;#5C3F7B
+690 40 40;Dusty Violet Blue;#735592
+690 50 50;Bright Violet Blue;#8A6BA9
+690 60 30;Warm Violet Blue;#A181BF
+690 70 20;Light Violet Blue;#B897D7
+690 80 10;Powder Violet Blue;#CFADF1
+690 90 05;White Violet Blue;#E6C3FF
+700 30 30;Muted Beige;#6B5C4F
+700 40 40;Dusty Beige;#827365
+700 50 50;Bright Beige;#998A7B
+700 60 30;Warm Beige;#B0A191
+700 70 20;Light Beige;#C7B8A7
+700 80 10;Powder Beige;#DECFBD
+700 90 05;White Beige;#F5E6D3
+710 30 30;Muted Sand;#6B604F
+710 40 40;Dusty Sand;#827765
+710 50 50;Bright Sand;#998E7B
+710 60 30;Warm Sand;#B0A591
+710 70 20;Light Sand;#C7BCA7
+710 80 10;Powder Sand;#DED3BD
+710 90 05;White Sand;#F5EAD3
+720 30 30;Muted Taupe;#6B645C
+720 40 40;Dusty Taupe;#827B73
+720 50 50;Bright Taupe;#99928A
+720 60 30;Warm Taupe;#B0A9A1
+720 70 20;Light Taupe;#C7C0B8
+720 80 10;Powder Taupe;#DED7CF
+720 90 05;White Taupe;#F5EEE6
+730 30 30;Muted Greige;#6B686B
+730 40 40;Dusty Greige;#828282
+730 50 50;Bright Greige;#999999
+730 60 30;Warm Greige;#B0B0B0
+730 70 20;Light Greige;#C7C7C7
+730 80 10;Powder Greige;#DEDEDE
+730 90 05;White Greige;#F5F5F5
+740 30 30;Muted Stone;#5C5C5C
+740 40 40;Dusty Stone;#737373
+740 50 50;Bright Stone;#8A8A8A
+740 60 30;Warm Stone;#A1A1A1
+740 70 20;Light Stone;#B8B8B8
+740 80 10;Powder Stone;#CFCFCF
+740 90 05;White Stone;#E6E6E6
+750 30 30;Muted Clay;#5C4F3F
+750 40 40;Dusty Clay;#736657
+750 50 50;Bright Clay;#8A7D6F
+750 60 30;Warm Clay;#A19487
+750 70 20;Light Clay;#B8AB9F
+750 80 10;Powder Clay;#CFC2B7
+750 90 05;White Clay;#E6D9CF
+760 30 30;Muted Terracotta;#6B4F3F
+760 40 40;Dusty Terracotta;#826657
+760 50 50;Bright Terracotta;#998D6F
+760 60 30;Warm Terracotta;#B0A487
+760 70 20;Light Terracotta;#C7BB9F
+760 80 10;Powder Terracotta;#DED2B7
+760 90 05;White Terracotta;#F5E9CF
+770 30 30;Muted Rust;#6B4F44
+770 40 40;Dusty Rust;#82655A
+770 50 50;Bright Rust;#998B70
+770 60 30;Warm Rust;#B0A286
+770 70 20;Light Rust;#C7B99C
+770 80 10;Powder Rust;#DECFB2
+770 90 05;White Rust;#F5E6C8
+780 30 30;Muted Copper;#6B4F49
+780 40 40;Dusty Copper;#82655F
+780 50 50;Bright Copper;#998B75
+780 60 30;Warm Copper;#B0A28B
+780 70 20;Light Copper;#C7B9A1
+780 80 10;Powder Copper;#DECFB7
+780 90 05;White Copper;#F5E6CD
+790 30 30;Muted Bronze;#6B4F4E
+790 40 40;Dusty Bronze;#826564
+790 50 50;Bright Bronze;#998B7A
+790 60 30;Warm Bronze;#B0A290
+790 70 20;Light Bronze;#C7B9A6
+790 80 10;Powder Bronze;#DECDBC
+790 90 05;White Bronze;#F5E4D2
+800 30 30;Muted Yellow;#8C7B3F
+800 40 40;Dusty Yellow;#A29255
+800 50 50;Bright Yellow;#B9A96B
+800 60 30;Warm Yellow;#D0C081
+800 70 20;Light Yellow;#E7D797
+800 80 10;Powder Yellow;#FFEEAD
+800 90 05;White Yellow;#FFFFC3
+810 30 30;Muted Goldenrod;#8C834F
+810 40 40;Dusty Goldenrod;#A29A65
+810 50 50;Bright Goldenrod;#B9B17B
+810 60 30;Warm Goldenrod;#D0C891
+810 70 20;Light Goldenrod;#E7DFA7
+810 80 10;Powder Goldenrod;#FFF6BD
+810 90 05;White Goldenrod;#FFFFD3
+820 30 30;Muted Ochre;#8C8B5C
+820 40 40;Dusty Ochre;#A2A273
+820 50 50;Bright Ochre;#B9B98A
+820 60 30;Warm Ochre;#D0DFA1
+820 70 20;Light Ochre;#E7F6B8
+820 80 10;Powder Ochre;#FFFFCF
+820 90 05;White Ochre;#FFFFE6
+830 30 30;Muted Mustard;#8C935C
+830 40 40;Dusty Mustard;#A2AA73
+830 50 50;Bright Mustard;#B9C18A
+830 60 30;Warm Mustard;#D0D8A1
+830 70 20;Light Mustard;#E7EFB8
+830 80 10;Powder Mustard;#FFFFCF
+830 90 05;White Mustard;#FFFFE6
+840 30 30;Muted Lemon;#8C9B6B
+840 40 40;Dusty Lemon;#A2B282
+840 50 50;Bright Lemon;#B9C999
+840 60 30;Warm Lemon;#D0E0B0
+840 70 20;Light Lemon;#E7F7C7
+840 80 10;Powder Lemon;#FFFFDE
+840 90 05;White Lemon;#FFFFF5
+850 30 30;Muted Lime;#7BA34F
+850 40 40;Dusty Lime;#91BA65
+850 50 50;Bright Lime;#A7D17B
+850 60 30;Warm Lime;#BDE891
+850 70 20;Light Lime;#D3FFA7
+850 80 10;Powder Lime;#E9FFBD
+850 90 05;White Lime;#FFFFD3
+860 30 30;Muted Apple Green;#6BA34F
+860 40 40;Dusty Apple Green;#81BA65
+860 50 50;Bright Apple Green;#97D17B
+860 60 30;Warm Apple Green;#ADE891
+860 70 20;Light Apple Green;#C3FFA7
+860 80 10;Powder Apple Green;#D9FFBD
+860 90 05;White Apple Green;#EFFFDB
+870 30 30;Muted Mint Green;#5CA34F
+870 40 40;Dusty Mint Green;#72BA65
+870 50 50;Bright Mint Green;#88D17B
+870 60 30;Warm Mint Green;#9EE891
+870 70 20;Light Mint Green;#B4FFA7
+870 80 10;Powder Mint Green;#CAFFBD
+870 90 05;White Mint Green;#E0FFDB
+880 30 30;Muted Seafoam;#4FA37B
+880 40 40;Dusty Seafoam;#65BA91
+880 50 50;Bright Seafoam;#7BD1A7
+880 60 30;Warm Seafoam;#91C8BD
+880 70 20;Light Seafoam;#A7DFD3
+880 80 10;Powder Seafoam;#BDE6E9
+880 90 05;White Seafoam;#D3FCFF
+890 30 30;Muted Ice Blue;#4F9BA3
+890 40 40;Dusty Ice Blue;#65B2BA
+890 50 50;Bright Ice Blue;#7BC9D1
+890 60 30;Warm Ice Blue;#91E0E8
+890 70 20;Light Ice Blue;#A7F7FF
+890 80 10;Powder Ice Blue;#BDFFFF
+890 90 05;White Ice Blue;#D3FFFF
+900 30 30;Muted Ice Grey;#A3B3B3
+900 40 40;Dusty Ice Grey;#B9C9C9
+900 50 50;Bright Ice Grey;#CFE0E0
+900 60 30;Warm Ice Grey;#E5F6F6
+900 70 20;Light Ice Grey;#F0FBFB
+900 80 10;Powder Ice Grey;#F5FEFE
+900 90 05;White Ice Grey;#FFFFFF
+910 30 30;Muted Pearl Grey;#B3A3B3
+910 40 40;Dusty Pearl Grey;#C9B9C9
+910 50 50;Bright Pearl Grey;#E0CFE0
+910 60 30;Warm Pearl Grey;#F6E5F6
+910 70 20;Light Pearl Grey;#FBF0FB
+910 80 10;Powder Pearl Grey;#FEF5FE
+910 90 05;White Pearl Grey;#FFFFFF
+920 30 30;Muted Snow Grey;#B3B3A3
+920 40 40;Dusty Snow Grey;#C9C9B9
+920 50 50;Bright Snow Grey;#E0E0CF
+920 60 30;Warm Snow Grey;#F6F6E5
+920 70 20;Light Snow Grey;#FBFBF0
+920 80 10;Powder Snow Grey;#FEFEF5
+920 90 05;White Snow Grey;#FFFFFF
+930 30 30;Muted Warm White;#B3B3B3
+930 40 40;Dusty Warm White;#C9C9C9
+930 50 50;Bright Warm White;#E0E0E0
+930 60 30;Warm Warm White;#F6F6F6
+930 70 20;Light Warm White;#FBFBFB
+930 80 10;Powder Warm White;#FEFEFE
+930 90 05;White Warm White;#FFFFFF
+940 30 30;Muted Cool White;#B3B3C3
+940 40 40;Dusty Cool White;#C9C9D9
+940 50 50;Bright Cool White;#E0E0EF
+940 60 30;Warm Cool White;#F6F6FF
+940 70 20;Light Cool White;#FBFBFF
+940 80 10;Powder Cool White;#FEFEFF
+940 90 05;White Cool White;#FFFFFF
+950 30 30;Muted Neutral White;#B3B3B3
+950 40 40;Dusty Neutral White;#C9C9C9
+950 50 50;Bright Neutral White;#E0E0E0
+950 60 30;Warm Neutral White;#F6F6F6
+950 70 20;Light Neutral White;#FBFBFB
+950 80 10;Powder Neutral White;#FEFEFE
+950 90 05;White Neutral White;#FFFFFF
+960 30 30;Muted Soft White;#B3B3A3
+960 40 40;Dusty Soft White;#C9C9B9
+960 50 50;Bright Soft White;#E0E0CF
+960 60 30;Warm Soft White;#F6F6E5
+960 70 20;Light Soft White;#FBFBF0
+960 80 10;Powder Soft White;#FEFEF5
+960 90 05;White Soft White;#FFFFFF
+970 30 30;Muted Pale White;#B3A3B3
+970 40 40;Dusty Pale White;#C9B9C9
+970 50 50;Bright Pale White;#E0CFE0
+970 60 30;Warm Pale White;#F6E5F6
+970 70 20;Light Pale White;#FBF0FB
+970 80 10;Powder Pale White;#FEF5FE
+970 90 05;White Pale White;#FFFFFF
+980 30 30;Muted Cream White;#B3B3A3
+980 40 40;Dusty Cream White;#C9C9B9
+980 50 50;Bright Cream White;#E0E0CF
+980 60 30;Warm Cream White;#F6F6E5
+980 70 20;Light Cream White;#FBFBF0
+980 80 10;Powder Cream White;#FEFEF5
+980 90 05;White Cream White;#FFFFFF
+990 30 30;Muted Absolute White;#B3B3B3
+990 40 40;Dusty Absolute White;#C9C9C9
+990 50 50;Bright Absolute White;#E0E0E0
+990 60 30;Warm Absolute White;#F6F6F6
+990 70 20;Light Absolute White;#FBFBFB
+990 80 10;Powder Absolute White;#FEFEFE
+990 90 05;White Absolute White;#FFFFFF
+
+

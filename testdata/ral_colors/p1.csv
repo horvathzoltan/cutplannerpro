@@ -1,0 +1,175 @@
+RALcode;name;hex
+P1 010 90 10;Pastel White;#F6F6F6
+P1 020 80 20;Pastel Grey;#D9D9D9
+P1 030 70 30;Pastel Blue Grey;#BFCFD9
+P1 040 60 20;Pastel Ice Blue;#A3C9E0
+P1 050 50 30;Pastel Sky Blue;#8FB3D9
+P1 060 40 40;Pastel Azure;#6F9FD9
+P1 070 30 30;Pastel Indigo;#4F7FB3
+P1 080 20 20;Pastel Navy;#3F5F99
+P1 090 10 10;Pastel Midnight;#2F3F66
+P1 100 90 10;Pastel Mint;#D9F6F6
+P1 110 80 20;Pastel Aqua;#B3E0E0
+P1 120 70 30;Pastel Turquoise;#8FD9D9
+P1 130 60 20;Pastel Teal;#6FC9C9
+P1 140 50 30;Pastel Sea Green;#4FB3B3
+P1 150 40 40;Pastel Jade;#3F9999
+P1 160 30 30;Pastel Forest;#2F7F7F
+P1 170 20 20;Pastel Deep Green;#1F6666
+P1 180 10 10;Pastel Black Green;#0F4C4C
+P1 190 90 05;Pastel Snow White;#FFFFFF
+P1 200 80 10;Pastel Cream;#FFF0E0
+P1 210 70 20;Pastel Apricot;#FFD9B3
+P1 220 60 30;Pastel Peach;#FFC999
+P1 230 50 40;Pastel Coral;#FFB380
+P1 240 40 50;Pastel Salmon;#FF9966
+P1 250 30 60;Pastel Orange;#FF804D
+P1 260 20 70;Pastel Tangerine;#FF6633
+P1 270 10 80;Pastel Flame;#FF4D1A
+P1 280 90 10;Pastel Rose;#FFE6E6
+P1 290 80 20;Pastel Pink;#FFCCCC
+P1 300 70 30;Pastel Blush;#FFB3B3
+P1 310 60 40;Pastel Light Red;#FF9999
+P1 320 50 50;Pastel Soft Red;#FF8080
+P1 330 40 60;Pastel Warm Red;#FF6666
+P1 340 30 70;Pastel Crimson;#FF4D4D
+P1 350 20 80;Pastel Ruby;#FF3333
+P1 360 10 90;Pastel Scarlet;#FF1A1A
+P1 370 90 10;Pastel Lilac;#F6E6F6
+P1 380 80 20;Pastel Lavender;#E0B3E0
+P1 390 70 30;Pastel Orchid;#D98FD9
+P1 400 60 40;Pastel Violet;#C96FC9
+P1 410 50 50;Pastel Purple;#B34FB3
+P1 420 40 60;Pastel Plum;#993F99
+P1 430 30 70;Pastel Grape;#7F2F7F
+P1 440 20 80;Pastel Aubergine;#662066
+P1 450 10 90;Pastel Deep Purple;#4C0F4C
+P1 460 90 10;Pastel Beige;#F6F0E6
+P1 470 80 20;Pastel Sand;#E0D9B3
+P1 480 70 30;Pastel Tan;#D9C999
+P1 490 60 40;Pastel Camel;#C9B380
+P1 500 50 50;Pastel Brown;#B39966
+P1 510 40 60;Pastel Walnut;#99664D
+P1 520 30 70;Pastel Chestnut;#804D3F
+P1 530 20 80;Pastel Mahogany;#663326
+P1 540 10 90;Pastel Deep Brown;#4C1A0F
+P1 550 90 10;Pastel Olive;#E6F6E6
+P1 560 80 20;Pastel Sage;#CCE0CC
+P1 570 70 30;Pastel Moss;#B3D9B3
+P1 580 60 40;Pastel Fern;#99C999
+P1 590 50 50;Pastel Leaf;#80B380
+P1 600 40 60;Pastel Grass;#669966
+P1 610 30 70;Pastel Meadow;#4D804D
+P1 620 20 80;Pastel Forest;#336633
+P1 630 10 90;Pastel Deep Green;#1A4C1A
+P1 640 90 10;Pastel Lemon;#F6FFE6
+P1 650 80 20;Pastel Lime;#E0FFCC
+P1 660 70 30;Pastel Apple;#D9FFB3
+P1 670 60 40;Pastel Pear;#C9FF99
+P1 680 50 50;Pastel Pistachio;#B3FF80
+P1 690 40 60;Pastel Avocado;#99FF66
+P1 700 30 70;Pastel Kiwi;#80FF4D
+P1 710 20 80;Pastel Chartreuse;#66FF33
+P1 720 10 90;Pastel Neon Green;#4DFF1A
+P1 730 90 10;Pastel Sky;#E6F6FF
+P1 740 80 20;Pastel Ice;#CCE0FF
+P1 750 70 30;Pastel Glacier;#B3D9FF
+P1 760 60 40;Pastel Arctic;#99C9FF
+P1 770 50 50;Pastel Horizon;#80B3FF
+P1 780 40 60;Pastel Ocean;#6699FF
+P1 790 30 70;Pastel Deep Sky;#4D80FF
+P1 800 20 80;Pastel Sapphire;#3366FF
+P1 810 10 90;Pastel Royal Blue;#1A4CFF
+P1 820 90 10;Pastel Lilac Grey;#F6F0F6
+P1 830 80 20;Pastel Lavender Grey;#E0D9E0
+P1 840 70 30;Pastel Violet Grey;#D9C9D9
+P1 850 60 40;Pastel Plum Grey;#C9B3C9
+P1 860 50 50;Pastel Grape Grey;#B399B3
+P1 870 40 60;Pastel Aubergine Grey;#996699
+P1 880 30 70;Pastel Deep Violet Grey;#804D80
+P1 890 20 80;Pastel Eggplant;#663366
+P1 900 10 90;Pastel Black Violet;#4C1A4C
+P1 910 90 10;Pastel Cream Grey;#F6F6F0
+P1 920 80 20;Pastel Beige Grey;#E0E0D9
+P1 930 70 30;Pastel Sand Grey;#D9D9C9
+P1 940 60 40;Pastel Taupe Grey;#C9C9B3
+P1 950 50 50;Pastel Stone Grey;#B3B399
+P1 960 40 60;Pastel Earth Grey;#999980
+P1 970 30 70;Pastel Clay Grey;#808066
+P1 980 20 80;Pastel Mud Grey;#66664D
+P1 990 10 90;Pastel Deep Grey;#4C4C33
+P1 1000 90 10;Pastel White;#F6F6F6
+P1 1010 80 20;Pastel Light Grey;#E0E0E0
+P1 1020 70 30;Pastel Grey;#D9D9D9
+P1 1030 60 40;Pastel Medium Grey;#C9C9C9
+P1 1040 50 50;Pastel Stone;#B3B3B3
+P1 1050 40 60;Pastel Graphite;#999999
+P1 1060 30 70;Pastel Charcoal;#808080
+P1 1070 20 80;Pastel Iron;#666666
+P1 1080 10 90;Pastel Deep Grey;#4C4C4C
+P1 1090 00 100;Pastel Black;#333333
+P1 1100 90 10;Pastel Cream;#FFF6E6
+P1 1110 80 20;Pastel Apricot;#FFE0CC
+P1 1120 70 30;Pastel Peach;#FFD9B3
+P1 1130 60 40;Pastel Coral;#FFC999
+P1 1140 50 50;Pastel Salmon;#FFB380
+P1 1150 40 60;Pastel Tangerine;#FF9966
+P1 1160 30 70;Pastel Orange;#FF804D
+P1 1170 20 80;Pastel Flame;#FF6633
+P1 1180 10 90;Pastel Vermilion;#FF4C1A
+P1 1190 00 100;Pastel Red Orange;#FF3300
+P1 1200 90 10;Pastel Rose Mist;#FFF0F6
+P1 1210 80 20;Pastel Pink Cloud;#FFD9E0
+P1 1220 70 30;Pastel Blush;#FFC9D9
+P1 1230 60 40;Pastel Petal;#FFB3C9
+P1 1240 50 50;Pastel Rose;#FF99B3
+P1 1250 40 60;Pastel Fuchsia;#FF6699
+P1 1260 30 70;Pastel Raspberry;#FF4D80
+P1 1270 20 80;Pastel Magenta;#FF3366
+P1 1280 10 90;Pastel Hot Pink;#FF1A4C
+P1 1290 00 100;Pastel Neon Pink;#FF0033
+P1 1300 90 10;Pastel Mint Mist;#F0FFF6
+P1 1310 80 20;Pastel Mint;#D9FFE0
+P1 1320 70 30;Pastel Light Green;#C9FFD9
+P1 1330 60 40;Pastel Spring Green;#B3FFC9
+P1 1340 50 50;Pastel Meadow Green;#99FFB3
+P1 1350 40 60;Pastel Bright Green;#66FF99
+P1 1360 30 70;Pastel Lime Green;#4DFF80
+P1 1370 20 80;Pastel Neon Green;#33FF66
+P1 1380 10 90;Pastel Electric Green;#1AFF4C
+P1 1390 00 100;Pastel Signal Green;#00FF33
+P1 1400 90 10;Pastel Ice Blue;#F0F0FF
+P1 1410 80 20;Pastel Light Blue;#D9D9FF
+P1 1420 70 30;Pastel Sky Blue;#C9C9FF
+P1 1430 60 40;Pastel Azure;#B3B3FF
+P1 1440 50 50;Pastel Periwinkle;#9999FF
+P1 1450 40 60;Pastel Cobalt;#6666FF
+P1 1460 30 70;Pastel Royal Blue;#4D4DFF
+P1 1470 20 80;Pastel Deep Blue;#3333FF
+P1 1480 10 90;Pastel Indigo;#1A1AFF
+P1 1490 00 100;Pastel Pure Blue;#0000FF
+P1 1500 90 10;Pastel Violet Mist;#F6E6FF
+P1 1510 80 20;Pastel Lavender;#E0CCFF
+P1 1520 70 30;Pastel Lilac;#D9B3FF
+P1 1530 60 40;Pastel Orchid;#C999FF
+P1 1540 50 50;Pastel Amethyst;#B380FF
+P1 1550 40 60;Pastel Purple;#9966FF
+P1 1560 30 70;Pastel Deep Purple;#804DFF
+P1 1570 20 80;Pastel Indigo Violet;#6633FF
+P1 1580 10 90;Pastel Electric Violet;#4C1AFF
+P1 1590 00 100;Pastel Neon Violet;#3300FF
+P1 1600 90 10;Pastel Beige White;#FFF9F0
+P1 1610 80 20;Pastel Ivory;#FFF0D9
+P1 1620 70 30;Pastel Sand;#FFE6C9
+P1 1630 60 40;Pastel Almond;#FFD9B3
+P1 1640 50 50;Pastel Biscuit;#FFC999
+P1 1650 40 60;Pastel Caramel;#FFB380
+P1 1660 30 70;Pastel Honey;#FF9966
+P1 1670 20 80;Pastel Amber;#FF804D
+P1 1680 10 90;Pastel Bronze;#FF6633
+P1 1690 00 100;Pastel Copper;#FF4C1A
+P1 1700 90 10;Pastel Snow;#FFFFFF
+P1 1710 80 20;Pastel Cloud;#F2F2F2
+P1 1720 70 30;Pastel Fog;#E6E6E6
+P1 1730 60 40;Pastel Ash;#D9D9D9
+P1 1740 50 50;Pastel Dust;#CCCCCC
