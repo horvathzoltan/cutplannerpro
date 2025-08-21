@@ -150,7 +150,7 @@ QString FileNameHelper::getCuttingMachineCsvFile() const {
 }
 
 QString FileNameHelper::getCuttingMachineMaterialsCsvFile() const {
-    return QDir(_projectPath).filePath("cuttingmachine_materials.csv");
+    return QDir(_projectPath).filePath("cuttingmachine_materialtypes.csv");
 }
 
 /*RAL colors*/

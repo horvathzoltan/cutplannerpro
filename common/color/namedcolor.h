@@ -39,7 +39,7 @@ public:
     //NamedColor(const QColor &color, const QString &name, const QString &code);
     NamedColor(const QColor& color, const QString& name, const QString& code, RalSystem system);
 
-    static void initRalColors(const QList<RalSource>& sources);
+    static bool initRalColors(const QList<RalSource>& sources);
     //static NamedColor fromRal(const QString& ralCode);
     //static QMap<QString, NamedColor> loadRalDatabase(const QString& filePath);
 
@@ -53,6 +53,7 @@ public:
     static NamedColor fromRal(const QString &ralCode);
 
     QString toString() const;
+    bool isValid() const;
 private:
     QColor m_color;
     QString m_name;
@@ -60,4 +61,5 @@ private:
     RalSystem m_system = RalSystem::Unknown;
 
     static QMap<RalSystem, QMap<QString, NamedColor>> ralColors_;
+    static QString normalizeRalExtended(const QString &raw);
 };

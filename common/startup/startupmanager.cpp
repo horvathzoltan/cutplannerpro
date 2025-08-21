@@ -22,16 +22,9 @@
 #include "common/color/namedcolor.h"
 
 StartupStatus StartupManager::runStartupSequence() {
-    auto fnh = FileNameHelper::instance();
-
-    QList<RalSource> ralSources = {
-        { RalSystem::Classic, fnh.getRalClassicCsvFile() },
-        { RalSystem::Design,  fnh.getRalDesignCsvFile() },
-        { RalSystem::Plastic1,  fnh.getRalPlastic1CsvFile() },
-        { RalSystem::Plastic2,  fnh.getRalPlastic2CsvFile() }
-    };
-
-    NamedColor::initRalColors(ralSources);
+    StartupStatus ralColorStatus = initRalColors();
+    if (!ralColorStatus.ok)
+        return ralColorStatus;
 
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.ok)
@@ -63,6 +56,8 @@ StartupStatus StartupManager::runStartupSequence() {
         return cuttingMachineStatus;
 
     StartupStatus finalStatus = StartupStatus::success();
+    finalStatus.warnings += ralColorStatus.warnings;
+
     finalStatus.warnings += materialStatus.warnings;
     finalStatus.warnings += groupStatus.warnings;
     finalStatus.warnings += stockStatus.warnings;    
@@ -304,6 +299,30 @@ StartupStatus StartupManager::initCuttingMachineRegistry() {
             QString("⚠️ %1 vágógéphez nincs megadva kompatibilis anyagtípus.\nÉrintett gépek: %2")
                 .arg(machinesWithoutMaterials.size())
                 .arg(machinesWithoutMaterials.join(", "))
+            );
+    }
+
+    return status;
+}
+
+StartupStatus StartupManager::initRalColors()
+{
+    auto fnh = FileNameHelper::instance();
+
+    QList<RalSource> ralSources = {
+        { RalSystem::Classic, fnh.getRalClassicCsvFile() },
+        { RalSystem::Design,  fnh.getRalDesignCsvFile() },
+        { RalSystem::Plastic1,  fnh.getRalPlastic1CsvFile() },
+        { RalSystem::Plastic2,  fnh.getRalPlastic2CsvFile() }
+    };
+
+    bool ok = NamedColor::initRalColors(ralSources);
+
+    StartupStatus status = StartupStatus::success();
+
+    if (!ok) {
+        status.addWarning(
+            QString("⚠️ Nem sikerült a RAL színeket initelni.")
             );
     }
 

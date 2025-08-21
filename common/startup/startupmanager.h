@@ -38,4 +38,6 @@ private:
     StartupStatus initReusableStockRegistry();
     StartupStatus initStorageRegistry();
     StartupStatus initCuttingMachineRegistry(); // ✂️ Vágógépek betöltése
+
+    StartupStatus initRalColors();
 };

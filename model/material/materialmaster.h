@@ -3,6 +3,7 @@
 #include <QString>
 #include <QSizeF>
 #include "../identifiableentity.h"
+#include "common/color/namedcolor.h"
 #include "materialtype.h"
 #include "../crosssectionshape.h"
 
@@ -14,14 +15,16 @@ struct MaterialMaster : public IdentifiableEntity {
     double diameter_mm = 0.0;          // ⚪ Kör formánál: átmérő
     QSizeF size_mm;                    // ▭ Téglalapnál: szélesség és magasság mm-ben
 
-    QString ralColorCode;              // 🎨 Szín RAL-kóddal (pl. "RAL 9006")
+    //QString ralColorCode;              // 🎨 Szín RAL-kóddal (pl. "RAL 9006")
     MaterialType type;                 // 🧪 Anyagtípus: Aluminium / Steel / stb.
     //ProfileCategory category = ProfileCategory::Unknown; // 🗂️ Gyártási kategória
 
     double weightPerStock_kg = 0.0;    // ⚖️ Teljes szál súlya kg-ban
     QString defaultMachineId;          // ⚙️ Ajánlott gép az anyaghoz
 
-    QString coating;       // pl. fehér, szürke, szinterezhető
+    //QString coating;       // pl. fehér, szürke, szinterezhető
+    NamedColor color; // 🎨 Anyag színe (RAL vagy HEX kód)
+
     QString comment;       // opcionális, UI-ba is jó
 
     MaterialMaster(); // 🔧 Default konstruktor deklaráció        

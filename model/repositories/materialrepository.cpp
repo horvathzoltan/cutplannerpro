@@ -14,8 +14,8 @@
 #include <QUuid>
 #include <common/filehelper.h>
 #include <common/filenamehelper.h>
-#include <QDebug>
 #include <common/csvimporter.h>
+#include <common/color/namedcolor.h>
 
 bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
     auto& helper = FileNameHelper::instance();
@@ -23,13 +23,13 @@ bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 
     auto fn = helper.getMaterialCsvFile();
     if (fn.isEmpty()) {
-        qWarning("Nem található a tesztadatok CSV fájlja.");
+        zWarning("Nem található a tesztadatok CSV fájlja.");
         return false;
     }
 
     const QVector<MaterialMaster> loaded = loadFromCSV_private(fn);
     if (loaded.isEmpty()) {
-        qWarning("A materials.csv fájl üres vagy hibás formátumú.");
+        zWarning("A materials.csv fájl üres vagy hibás formátumú.");
         return false;
     }
 
@@ -97,8 +97,9 @@ MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, int line
 
 std::optional<MaterialRepository::MaterialRow>
 MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, int lineIndex) {
-    if (parts.size() < 8) {
-        qWarning() << QString("⚠️ Sor %1: kevés mező (legalább 8)").arg(lineIndex);
+    if (parts.size() < 9) {
+        QString msg = L("⚠️ Sor %1: kevés mező (legalább 9)").arg(lineIndex);
+        zWarning(msg);
         return std::nullopt;
     }
 
@@ -110,13 +111,14 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, int l
     row.shapeStr   = parts[5].trimmed();
     row.machineId  = parts[6].trimmed();
     row.typeStr    = parts[7].trimmed();
+    row.colorStr = parts[8].trimmed(); // csak ha van legalább 9 mező
 
     const QString lengthStr = parts[2].trimmed();
     bool okLength = false;
     row.stockLength = lengthStr.toDouble(&okLength);
 
     if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
-        qWarning() << QString("⚠️ Sor %1: érvénytelen barcode vagy hossz").arg(lineIndex);
+        zWarning() << QString("⚠️ Sor %1: érvénytelen barcode vagy hossz").arg(lineIndex);
         return std::nullopt;
     }
 
@@ -140,7 +142,7 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, int lineIndex) 
         double h = row.dim2.toDouble(&okH);
         if (!okW || !okH || w <= 0 || h <= 0) {
             qWarning() << QString("⚠️ Sor %1: érvénytelen szélesség/magasság").arg(lineIndex);
-            return std::nullopt;
+            //return std::nullopt;
         }
         m.size_mm = QSizeF(w, h);
     }
@@ -149,9 +151,20 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, int lineIndex) 
         double d = row.dim1.toDouble(&okD);
         if (!okD || d <= 0) {
             qWarning() << QString("⚠️ Sor %1: érvénytelen átmérő").arg(lineIndex);
-            return std::nullopt;
+            //return std::nullopt;
         }
         m.diameter_mm = d;
+    }
+
+    // 🎨 Szín hozzárendelés – RAL, HEX vagy üres
+    if (!row.colorStr.isEmpty()) {
+        m.color = NamedColor(row.colorStr);
+        if (!m.color.isValid()) {
+            QString msg =  QStringLiteral("⚠️ Sor %1: ismeretlen színformátum: %2").arg(lineIndex).arg( row.colorStr);
+            zWarning(msg);
+        }
+    } else {
+        m.color = NamedColor(); // nincs festve
     }
 
     return m;

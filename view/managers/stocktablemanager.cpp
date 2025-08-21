@@ -78,6 +78,18 @@ void StockTableManager::addRow(const StockEntry& entry) {
     });
     table->setCellWidget(row, ColComment, commentPanel);
 
+    // 🎨 Szín
+    //QColor color = MaterialUtils::colorForMaterial(*mat);
+    //QString colorName = MaterialUtils::colorNameForMaterial(*mat); // ha van ilyen metódusod
+
+    auto* itemColor = new QTableWidgetItem();
+    itemColor->setBackground(mat->color.color());
+    itemColor->setText(mat->color.name()); // vagy csak a kód: mat->ralCode
+    itemColor->setTextAlignment(Qt::AlignCenter);
+    //itemColor->setData(Qt::UserRole, color.name()); // hex kód pl. "#1A1A1A"
+
+    table->setItem(row, ColColor, itemColor);
+
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);    
     QPushButton* btnMove = TableUtils::createIconButton("➡️", "Mozgatás", entry.entryId);
@@ -169,6 +181,20 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             auto* commentPanel = table->cellWidget(row, ColComment);
             TableUtils::updateCommentCell(commentPanel, entry.comment, entry.entryId);
 
+
+            auto* itemColor = table->item(row, ColColor);
+            if (itemColor && mat) {
+                if (mat->color.isValid()) {
+                    itemColor->setText(mat->color.toString());
+                    itemColor->setBackground(mat->color.color());
+                    itemColor->setToolTip(mat->color.toString());
+                } else {
+                    itemColor->setText("—");
+                    itemColor->setBackground(Qt::transparent);
+                    itemColor->setToolTip("Nincs festve");
+                }
+                itemColor->setTextAlignment(Qt::AlignCenter);
+            }
 
             // 🎨 Stílus újraalkalmazás
             StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, MaterialUtils::colorForMaterial(*mat));

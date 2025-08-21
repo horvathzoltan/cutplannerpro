@@ -21,6 +21,7 @@ private:
         QString shapeStr;
         QString machineId;
         QString typeStr;
+        QString colorStr; // 🎨 Opcionális színmező (RAL, HEX vagy üres)
     };
 
     static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, int lineIndex);

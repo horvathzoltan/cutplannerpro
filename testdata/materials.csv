@@ -1,8 +1,19 @@
-name;barcode;length;dim1;dim2;shape;defaultMachineId;type
-Csőtengely Ø60x5000mm;MAT-ROLL60-5000;5000;60;;Round;M1;Steel
-Csőtengely Ø60x6000mm;MAT-ROLL60-6000;6000;60;;Round;M1;Steel
-Csőtengely Ø60x7000mm;MAT-ROLL60-7000;7000;60;;Round;M1;Steel
-Zárósúly Ø12x3000mm;MAT-BAR12-3000;3000;12;;Round;M1;Steel
-Zárósúly Ø12x4000mm;MAT-BAR12-4000;4000;12;;Round;M1;Steel
-Zárósúly Ø22x3000mm;MAT-BAR22-3000;3000;22;;Round;M1;Steel
-Zárósúly Ø22x4000mm;MAT-BAR22-4000;4000;22;;Round;M1;Steel
+name;barcode;length;dim1;dim2;shape;machineBarcode;type;color
+Csőtengely Ø60x5000mm;MAT-ROLL60-5000;5000;60;;Round;CM1;Steel;RAL7016
+Csőtengely Ø60x6000mm;MAT-ROLL60-6000;6000;60;;Round;CM1;Steel;RAL 7016
+Csőtengely Ø60x7000mm;MAT-ROLL60-7000;7000;60;;Round;CM1;Steel;RAL7016
+Zárósúly Ø12x3000mm;MAT-BAR12-3000;3000;12;;Round;CM1;Steel;RAL 7016
+Zárósúly Ø12x4000mm;MAT-BAR12-4000;4000;12;;Round;CM1;Steel;RAL7016
+Zárósúly Ø22x3000mm;MAT-BAR22-3000;3000;22;;Round;CM1;Steel;RAL 7016
+Zárósúly Ø22x4000mm;MAT-BAR22-4000;4000;22;;Round;CM1;Steel;RAL7016
+SávrolóTok;ST-6000;6000;;;;CM2;Aluminum;RAL9016
+SávrolóZáró;SZ-6000;6000;;;;CM2;Aluminum;RAL9016
+SávrolóPálca;SP-6000;6000;;;Round;CM2;Aluminum;RAL9016
+SávrolóTengely;STE-6000;6000;;;Round;CM2;Aluminum;;
+MiniTok;MT-6000;6000;;;;CM2;Aluminum;RAL9016
+MiniZáró;MZ-6000;6000;;;;CM2;Aluminum;RAL9016
+MiniPálca;MP-6000;6000;;;Round;CM2;Aluminum;RAL9016
+MiniTengely;MTE-6000;6000;;;Round;CM2;Aluminum;;
+RolettaTengely;RTE-6000;6000;;;Round;CM2;Aluminum;;
+AlsóPálca;AP-6000;6000;;;Round;CM2;Aluminum;;
+ErősítettZáró;EZ-6000;6000;;;;CM2;Aluminum;RAL9016

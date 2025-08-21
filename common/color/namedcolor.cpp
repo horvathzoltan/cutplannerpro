@@ -2,6 +2,7 @@
 #include <QMap>
 #include <QColor>
 #include <QDebug>
+#include <QRegularExpression>
 #include "../csvimporter.h" //"../../csvreader.h"
 
 // Példa RAL adatbázis (valóságban fájlból vagy globális mapből jönne)
@@ -29,8 +30,8 @@ NamedColor::NamedColor(const QColor& color, const QString& name, const QString& 
 
 NamedColor::NamedColor(const QString& code)
 {
-    if (code.startsWith("RAL", Qt::CaseInsensitive)) {
-        *this = fromRal(code);
+    if (code.startsWith("RAL", Qt::CaseInsensitive)) {       
+        *this = fromRal(code); // RAL kódok "RAL 1001" formátumban);
     } else if(code.startsWith('#')) {
         QColor c(code);
         if (c.isValid()) {
@@ -56,6 +57,41 @@ NamedColor::NamedColor(const QString& code)
     }
 
 }
+
+QString NamedColor::normalizeRalExtended(const QString& raw) {
+    QString code = raw.trimmed().toUpper();
+
+    // Klasszikus elgépelések
+    //code.replace("RASL", "RAL", Qt::CaseInsensitive);
+    //code.replace("RALP", "RAL P", Qt::CaseInsensitive);
+
+    // RAL Classic
+    QRegularExpression classicRe("^RAL\\s?(\\d{4})$");
+    auto match = classicRe.match(code);
+    if (match.hasMatch())
+        return "RAL " + match.captured(1);
+
+    // RAL Design
+    QRegularExpression designRe("^RAL\\s?(\\d{3})\\s?(\\d{2})\\s?(\\d{2})$");
+    match = designRe.match(code);
+    if (match.hasMatch())
+        return QString("RAL %1 %2 %3")
+            .arg(match.captured(1))
+            .arg(match.captured(2))
+            .arg(match.captured(3));
+
+    // RAL Plastics
+    QRegularExpression plasticsRe("^RAL\\s?P1\\s?(\\d{3})\\s?(\\d{2})\\s?(\\d{2})$");
+    match = plasticsRe.match(code);
+    if (match.hasMatch())
+        return QString("RAL P1 %1 %2 %3")
+            .arg(match.captured(1))
+            .arg(match.captured(2))
+            .arg(match.captured(3));
+
+    return code; // ha semmi nem illik, visszaadjuk az eredetit
+}
+
 
 QColor NamedColor::color() const { return m_color; }
 QString NamedColor::name() const { return m_name; }
@@ -85,7 +121,8 @@ NamedColor NamedColor::fromRal(RalSystem system, const QString& ralCode)
 
 NamedColor NamedColor::fromRal(const QString& ralCode)
 {
-    const QString key = ralCode.trimmed().toUpper();
+    //const QString key = ralCode.trimmed().toUpper();
+    const QString key = normalizeRalExtended(ralCode);
 
     for (auto it = ralColors_.constBegin(); it != ralColors_.constEnd(); ++it) {
         const auto& systemMap = it.value();
@@ -112,7 +149,7 @@ NamedColor NamedColor::fromHex(const QString& hexCode)
     return NamedColor(c, name);
 }
 
-void NamedColor::initRalColors(const QList<RalSource>& sources)
+bool NamedColor::initRalColors(const QList<RalSource>& sources)
 {
     // auto converter = [](const QVector<QString>& row, int lineNumber) -> std::optional<std::pair<QString, NamedColor>> {
     //     if (row.size() != 3) {
@@ -163,6 +200,8 @@ void NamedColor::initRalColors(const QList<RalSource>& sources)
         for (const auto& [key, value] : items)
             ralColors_[src.system].insert(key, value);
     }
+
+    return true;
 }
 
 QString NamedColor::toString() const
@@ -171,4 +210,6 @@ QString NamedColor::toString() const
     return QString("%1 (%2) - %3").arg(m_code, systemStr, m_name);
 }
 
-
+bool NamedColor::isValid() const {
+    return m_color.isValid();
+}
