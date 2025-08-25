@@ -118,7 +118,8 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, int l
     row.stockLength = lengthStr.toDouble(&okLength);
 
     if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
-        zWarning() << QString("⚠️ Sor %1: érvénytelen barcode vagy hossz").arg(lineIndex);
+        QString msg = L("⚠️ Sor %1: érvénytelen barcode vagy hossz").arg(lineIndex);
+        zWarning(msg);
         return std::nullopt;
     }
 

@@ -172,7 +172,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QGroupBox" name="midBox">
+      <widget class="QTabWidget" name="midBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -191,77 +191,130 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="title">
-        <string>Results</string>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <layout class="QVBoxLayout" name="midLayout">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QPushButton" name="btn_Optimize">
+       <widget class="QWidget" name="midBoxPage1">
+        <attribute name="title">
+         <string>Optimization</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="midLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="btn_Optimize">
+             <property name="text">
+              <string>Optimize</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_StorageAudit">
+             <property name="text">
+              <string>StorageAudit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_Finalize">
+             <property name="text">
+              <string>Finalize</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="tableResults">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <column>
             <property name="text">
-             <string>Optimize</string>
+             <string>Rod#</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_Finalize">
+           </column>
+           <column>
             <property name="text">
-             <string>Finalize</string>
+             <string>Category</string>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableResults">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <attribute name="horizontalHeaderStretchLastSection">
-           <bool>true</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Rod#</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Category</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Kerf</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Waste</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
+           </column>
+           <column>
+            <property name="text">
+             <string>Kerf</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Waste</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>StorageAudit</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QTableWidget" name="tableStorageAudit">
+           <column>
+            <property name="text">
+             <string>Anyag</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Tárhely</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Elvárt</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Jelen van</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Tényleges</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Hiányzó</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
-      <widget class="QGroupBox" name="rightBox">
+      <widget class="QTabWidget" name="rightBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -280,184 +333,196 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="title">
-        <string>Material Stock and Waster Summary</string>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <layout class="QVBoxLayout" name="rightLayout">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <widget class="QPushButton" name="btn_AddStockEntry">
-            <property name="toolTip">
-             <string notr="true" extracomment="Egy meglévő anyag első bevitele a készletbe. Akkor használd, ha az anyag eddig nem szerepelt a raktárban."/>
-            </property>
+       <widget class="QWidget" name="rightBoxPage1">
+        <attribute name="title">
+         <string>Stock</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="rightLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QPushButton" name="btn_AddStockEntry">
+             <property name="toolTip">
+              <string notr="true" extracomment="Egy meglévő anyag első bevitele a készletbe. Akkor használd, ha az anyag eddig nem szerepelt a raktárban."/>
+             </property>
+             <property name="text">
+              <string>Új Tétel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="tableStock">
+           <column>
             <property name="text">
-             <string>Új Tétel</string>
+             <string>Name</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableStock">
-          <column>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Barcode</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Length (mm)</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Shape</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Quantity</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Storage</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Comment</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Color</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Actions</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QPushButton" name="btn_AddLeftoverStockEntry">
+           </column>
+           <column>
             <property name="text">
-             <string>Új tétel</string>
+             <string>Barcode</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableLeftovers">
-          <column>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Barcode</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Reusable ID	</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Length (mm)</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Shape</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Source</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Reusable</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Storage</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Actions</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QPushButton" name="btn_LeftoverDisposal">
+           </column>
+           <column>
             <property name="text">
-             <string>Selejtezés</string>
+             <string>Length (mm)</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+           </column>
+           <column>
+            <property name="text">
+             <string>Shape</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
+           </column>
+           <column>
+            <property name="text">
+             <string>Quantity</string>
             </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
+           </column>
+           <column>
+            <property name="text">
+             <string>Storage</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Comment</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Actions</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Leftovers</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QPushButton" name="btn_AddLeftoverStockEntry">
+             <property name="text">
+              <string>Új Tétel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="tableLeftovers">
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Barcode</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Reusable ID	</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Length (mm)</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Shape</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Source</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Reusable</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Storage</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Actions</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QPushButton" name="btn_LeftoverDisposal">
+             <property name="text">
+              <string>Selejtezés</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>

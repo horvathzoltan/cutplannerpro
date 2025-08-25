@@ -10,7 +10,9 @@
 #include "managers/resultstablemanager.h"
 #include "managers/stocktablemanager.h"
 #include "cutanalyticspanel.h"
+#include "model/storageaudit/storageauditentry.h"
 #include "presenter/CuttingPresenter.h"
+#include "view/managers/audittablemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -54,6 +56,7 @@ public:
     void update_ResultsTable(const QVector<Cutting::Plan::CutPlan> &plans);
     void clear_ResultsTable();
 
+    void update_StorageAuditTable(const QVector<StorageAuditEntry> &entries);
 private slots:
     void handle_btn_NewCuttingPlan_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -66,6 +69,8 @@ private slots:
 
     void handle_btn_LeftoverDisposal_clicked();
     void handle_btn_AddLeftoverStockEntry_clicked();
+
+    void on_btn_StorageAudit_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -80,6 +85,8 @@ private:
     std::unique_ptr<LeftoverTableManager> leftoverTableManager = nullptr;
     // eredmény
     std::unique_ptr<ResultsTableManager> resultsTableManager = nullptr;
+    // storage_audit
+    std::unique_ptr<StorageAuditTableManager> storageAuditTableManager = nullptr;
 
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;

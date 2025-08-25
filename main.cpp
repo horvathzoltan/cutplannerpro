@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
     // itt initelünk mindet
-    Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, true);    
+    Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, false);
     SettingsManager::instance().load();
 
     // elvileg ha gond van, akkor itt nem nyitjuk megh a főablakot

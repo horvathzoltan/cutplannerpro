@@ -49,6 +49,7 @@ SOURCES += \
     model/repositories/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
     model/stockentry.cpp \
+    model/storageaudit/storageauditentry.cpp \
     model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
@@ -58,6 +59,7 @@ SOURCES += \
     service/cutting/result/archivedwasteutils.cpp \
     service/cutting/result/leftoversourceutils.cpp \
     service/cutting/segment/segmentutils.cpp \
+    service/storageaudit/storageauditservice.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/addinputdialog.cpp \
@@ -67,6 +69,7 @@ SOURCES += \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
     view/dialog/stock/editstoragedialog.cpp \
+    view/managers/audittablemanager.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
     view/managers/resultstablemanager.cpp \
@@ -102,6 +105,7 @@ HEADERS += \
     model/material/materialtype.h \
     model/registries/cuttingmachineregistry.h \
     model/repositories/cuttingmachinerepository.h \
+    model/storageaudit/storageauditentry.h \
     service/cutting/optimizer/exporter.h \
     service/cutting/plan/autosavemanager.h \
     service/cutting/plan/finalizer.h \
@@ -147,6 +151,7 @@ HEADERS += \
     presenter/CuttingPresenter.h \
     service/movementlogmodel.h \
     service/stockmovementservice.h \
+    service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
@@ -156,6 +161,7 @@ HEADERS += \
     view/dialog/stock/editcommentdialog.h \
     view/dialog/stock/editquantitydialog.h \
     view/dialog/stock/editstoragedialog.h \
+    view/managers/audittablemanager.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \
     view/managers/resultstablemanager.h \
@@ -178,6 +184,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     README.md \
+    testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \

@@ -1,6 +1,7 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
+#include "model/storageaudit/storageauditentry.h"
 #include "service/cutting/result/resultutils.h"
 #include "model/archivedwasteentry.h"
 #include "model/registries/cuttingplanrequestregistry.h"
@@ -15,6 +16,8 @@
 #include "common/settingsmanager.h"
 
 #include <model/repositories/cuttingrequestrepository.h>
+
+#include <service/storageaudit/storageauditservice.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -381,8 +384,17 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
     return loaded;
 }
 
+/*StorageAudit*/
 
 
+void CuttingPresenter::runStorageAudit() {
+    QVector<StorageAuditEntry> entries = StorageAuditService::generateAuditEntries();
 
+    if (view) {
+        view->update_StorageAuditTable(entries); // 📋 Audit tábla frissítése
+    }
+
+    // opcionális: export, log, statisztika
+}
 
 

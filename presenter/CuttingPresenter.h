@@ -58,6 +58,7 @@ public:
 
     void syncModelWithRegistries();
     bool loadCuttingPlanFromFile(const QString &path);
+    void runStorageAudit();
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
