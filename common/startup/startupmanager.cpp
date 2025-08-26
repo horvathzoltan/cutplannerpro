@@ -235,9 +235,24 @@ StartupStatus StartupManager::initReusableStockRegistry() {
 }
 
 StartupStatus StartupManager::initCuttingRequestRegistry() {
-    bool loaded = CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry::instance());
-    if (!loaded)
-        return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
+    auto result = CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry::instance());
+    //if (!loaded)
+    //    return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
+
+    switch (result) {
+    case CuttingPlanLoadResult::NoFileConfigured:
+        zInfo("ℹ️ Nincs vágási terv konfigurálva — ez nem hiba.");
+        return StartupStatus::success();
+
+    case CuttingPlanLoadResult::FileMissing:
+        return StartupStatus::failure("❌ A beállított vágási terv fájl nem található.");
+
+    case CuttingPlanLoadResult::LoadError:
+        return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket — fájl hibás vagy olvashatatlan.");
+
+    case CuttingPlanLoadResult::Success:
+        break;
+    }
 
     const auto& all = CuttingPlanRequestRegistry::instance().readAll();
 

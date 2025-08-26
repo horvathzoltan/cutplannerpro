@@ -2,7 +2,6 @@
 
 #include <QString>
 
-
 struct StorageAuditEntry {
     QString storageName;           // 📦 Tárhely neve (pl. CM1WH)
     QString materialName;          // 📛 Anyag neve

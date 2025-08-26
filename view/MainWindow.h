@@ -12,7 +12,7 @@
 #include "cutanalyticspanel.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "presenter/CuttingPresenter.h"
-#include "view/managers/audittablemanager.h"
+#include "view/managers/storageaudit_tablemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

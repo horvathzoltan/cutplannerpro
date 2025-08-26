@@ -3,6 +3,7 @@
 #include <QString>
 #include <QStringList>
 
+
 // 🌱 Indulási állapotot leíró struktúra
 struct StartupStatus {
     bool ok = false;

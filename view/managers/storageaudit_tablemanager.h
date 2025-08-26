@@ -20,8 +20,8 @@ private:
     static constexpr int ColMaterial   = 0;
     static constexpr int ColStorage    = 1;
     static constexpr int ColExpected   = 2;
-    static constexpr int ColPresent    = 3;
-    static constexpr int ColActual     = 4;
-    static constexpr int ColMissing    = 5;
+    static constexpr int ColActual     = 3;
+    static constexpr int ColMissing    = 4;
+    static constexpr int ColStatus = 5;
 };
 

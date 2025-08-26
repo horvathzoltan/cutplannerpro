@@ -1,4 +1,4 @@
-#include "audittablemanager.h"
+#include "storageaudit_tablemanager.h"
 #include "model/storageaudit/storageauditentry.h"
 
 #include <QCheckBox>
@@ -15,10 +15,10 @@ void StorageAuditTableManager::addRow(const StorageAuditEntry& entry) {
     table->setItem(row, ColStorage, new QTableWidgetItem(entry.storageName));
     table->setItem(row, ColExpected, new QTableWidgetItem(QString::number(entry.expectedQuantity)));
 
-    QCheckBox *presentBox = new QCheckBox();
-    presentBox->setChecked(entry.isPresent);
-    presentBox->setEnabled(false); // csak megjelenítés
-    table->setCellWidget(row, ColPresent, presentBox);
+    // QCheckBox *presentBox = new QCheckBox();
+    // presentBox->setChecked(entry.isPresent);
+    // presentBox->setEnabled(false); // csak megjelenítés
+    // table->setCellWidget(row, ColPresent, presentBox);
 
     QSpinBox* actualSpin = new QSpinBox();
     actualSpin->setRange(0, 9999);
@@ -27,6 +27,14 @@ void StorageAuditTableManager::addRow(const StorageAuditEntry& entry) {
     table->setCellWidget(row, ColActual, actualSpin);
 
     table->setItem(row, ColMissing, new QTableWidgetItem(QString::number(entry.missingQuantity)));
+
+    QTableWidgetItem* statusItem = new QTableWidgetItem(entry.status);
+    if (entry.status == "OK") statusItem->setBackground(Qt::green);
+    else if (entry.status == "Hiányzik") statusItem->setBackground(Qt::red);
+    else statusItem->setBackground(Qt::lightGray);
+
+
+    table->setItem(row, ColStatus, statusItem);
 }
 
 void StorageAuditTableManager::clearTable() {

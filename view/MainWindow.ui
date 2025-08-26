@@ -192,7 +192,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="midBoxPage1">
         <attribute name="title">
@@ -291,22 +291,22 @@
            </column>
            <column>
             <property name="text">
-             <string>Elvárt</string>
+             <string>Elvárt (Picking)</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>Jelen van</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Tényleges</string>
+             <string>Tényleges (Audit)</string>
             </property>
            </column>
            <column>
             <property name="text">
              <string>Hiányzó</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Státusz</string>
             </property>
            </column>
           </widget>

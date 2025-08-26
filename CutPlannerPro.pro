@@ -34,6 +34,8 @@ SOURCES += \
     model/material/materialgroup.cpp \
     model/material/materialmaster.cpp \
     model/material/materialtype.cpp \
+    model/picking/pickingcomparisonresult.cpp \
+    model/picking/pickingitem.cpp \
     model/registries/cuttingmachineregistry.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
@@ -69,11 +71,11 @@ SOURCES += \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
     view/dialog/stock/editstoragedialog.cpp \
-    view/managers/audittablemanager.cpp \
     view/managers/inputtablemanager.cpp \
     view/managers/leftovertablemanager.cpp \
     view/managers/resultstablemanager.cpp \
-    view/managers/stocktablemanager.cpp
+    view/managers/stocktablemanager.cpp \
+    view/managers/storageaudit_tablemanager.cpp
 
 HEADERS += \
     common/color/namedcolor.h \
@@ -103,6 +105,8 @@ HEADERS += \
     model/material/materialgroup.h \
     model/material/materialmaster.h \
     model/material/materialtype.h \
+    model/picking/pickingcomparisonresult.h \
+    model/picking/pickingitem.h \
     model/registries/cuttingmachineregistry.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/storageauditentry.h \
@@ -161,11 +165,11 @@ HEADERS += \
     view/dialog/stock/editcommentdialog.h \
     view/dialog/stock/editquantitydialog.h \
     view/dialog/stock/editstoragedialog.h \
-    view/managers/audittablemanager.h \
     view/managers/inputtablemanager.h \
     view/managers/leftovertablemanager.h \
     view/managers/resultstablemanager.h \
-    view/managers/stocktablemanager.h
+    view/managers/stocktablemanager.h \
+    view/managers/storageaudit_tablemanager.h
 
 FORMS += \
     view/MainWindow.ui \

@@ -11,16 +11,22 @@
 #include <common/filehelper.h>
 #include <common/csvimporter.h>
 
-bool CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry& registry) {
+
+// vágási terv nélkül tudunk létezni - mi hozzuk létre őket és ez nem törzsadat
+CuttingPlanLoadResult CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry& registry) {
     QString fn = SettingsManager::instance().cuttingPlanFileName();
+
+    if (fn.isEmpty())
+        return CuttingPlanLoadResult::NoFileConfigured;
+
     const QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
 
-    if (filePath.isEmpty() || !QFile::exists(filePath)) {
-        qWarning() << "⛔ Nincs elérhető vágási terv fájl: " << filePath;
-        return false;
-    }
 
-    return loadFromFile(registry, filePath);
+    if (!QFile::exists(filePath))
+        return CuttingPlanLoadResult::FileMissing;
+
+    bool ok =  loadFromFile(registry, filePath);
+    return ok ? CuttingPlanLoadResult::Success : CuttingPlanLoadResult::LoadError;
 }
 
 // ha a beolvasás sikeres, törli a registry-t és feltölti az új adatokkal

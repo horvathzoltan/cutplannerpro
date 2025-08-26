@@ -6,10 +6,17 @@
 
 class CuttingPlanRequestRegistry;
 
+enum class CuttingPlanLoadResult {
+    Success,
+    NoFileConfigured,
+    FileMissing,
+    LoadError
+};
+
 class CuttingRequestRepository {
 public:
     /// Betölti a vágási tervet a beállításokból lekért fájlból
-    static bool tryLoadFromSettings(CuttingPlanRequestRegistry& registry);
+    static CuttingPlanLoadResult tryLoadFromSettings(CuttingPlanRequestRegistry& registry);
 
     /// Betölti a vágási igényeket a megadott fájlból
     static bool loadFromFile(CuttingPlanRequestRegistry& registry, const QString& filePath);
