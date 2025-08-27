@@ -370,15 +370,16 @@ void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plan
 
 void MainWindow::on_btn_StorageAudit_clicked()
 {
-    presenter->runStorageAudit();             // 🧠 Audit elindítása
+    QMap<QString, int> pickingmap;
+    presenter->runStorageAudit(pickingmap);             // 🧠 Audit elindítása
 }
 
-void MainWindow::update_StorageAuditTable(const QVector<StorageAuditEntry>& entries) {
+void MainWindow::update_StorageAuditTable(const QVector<StorageAuditRow>& rows) {
     ui->tableStorageAudit->clearContents();
-    //ui->tableStorageAudit->setRowCount(entries.size());
+    ui->tableStorageAudit->setRowCount(0);
 
-    for (int i = 0; i < entries.size(); ++i) {
-        const auto& entry = entries[i];
-        storageAuditTableManager->addRow(entry);     // 🧱 Sor hozzáadása
+    for (int i = 0; i < rows.size(); ++i) {
+        const auto& row = rows[i];
+        storageAuditTableManager->addRow(row);     // 🧱 Sor hozzáadása
     }
 }

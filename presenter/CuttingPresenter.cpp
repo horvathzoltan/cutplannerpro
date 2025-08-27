@@ -1,6 +1,8 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
+#include "common/logger.h"
+#include "model/registries/materialregistry.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "service/cutting/result/resultutils.h"
 #include "model/archivedwasteentry.h"
@@ -208,6 +210,15 @@ void CuttingPresenter::runOptimization() {
     OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
 
     view->updateStats(plans, model.getResults_Leftovers());
+
+    auto pickingMap = generatePickingMapFromPlans(plans);
+    for (auto it = pickingMap.begin(); it != pickingMap.end(); ++it) {
+        QString msg = L("📦 Picking: %1 -> %2").arg(it.key()) .arg(it.value());
+        zInfo(msg);
+    }
+
+    QVector<StorageAuditRow> auditRows = StorageAuditService::generateAuditRows(pickingMap);
+    view->update_StorageAuditTable(auditRows);
 }
 
 namespace CuttingUtils {
@@ -387,14 +398,36 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 /*StorageAudit*/
 
 
-void CuttingPresenter::runStorageAudit() {
-    QVector<StorageAuditEntry> entries = StorageAuditService::generateAuditEntries();
+void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
+    QVector<StorageAuditRow> entries = StorageAuditService::generateAuditRows(pickingMap);
 
     if (view) {
         view->update_StorageAuditTable(entries); // 📋 Audit tábla frissítése
     }
 
     // opcionális: export, log, statisztika
+}
+
+/*PickingPlan*/
+
+QMap<QString, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
+    QMap<QString, int> pickingMap;
+
+    for (const auto& plan : plans) {
+        for (const auto& cut : plan.cuts) {
+            auto mid = cut.materialId;
+            auto* mat = MaterialRegistry::instance().findById(mid);
+            if(mat){
+                QString barcode = mat->barcode;
+                int quantity = 1; // Minden darab egy egység – ha van külön mennyiség mező, azt használd
+
+                pickingMap[barcode] += quantity;
+            }
+
+        }
+    }
+
+    return pickingMap;
 }
 
 

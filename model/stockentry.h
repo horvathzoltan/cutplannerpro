@@ -15,7 +15,7 @@ struct StockEntry {
     QString comment; // 💬 Felhasználói megjegyzés
 
     QString materialName() const;  // 📛 Anyag neve
-    QString mterialBarcode() const; // 🧾 Vonalkód
+    QString materialBarcode() const; // 🧾 Vonalkód
     MaterialType materialType() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;
 

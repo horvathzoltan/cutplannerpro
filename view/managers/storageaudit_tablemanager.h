@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QTableWidget>
 #include "model/storageaudit/storageauditentry.h" // vagy ahová az entry kerül
+#include "model/storageaudit/storageauditrow.h"
 
 class StorageAuditTableManager : public QObject {
     Q_OBJECT
@@ -10,7 +11,9 @@ class StorageAuditTableManager : public QObject {
 public:
     explicit StorageAuditTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
-    void addRow(const StorageAuditEntry& entry);
+    void addRow(const StorageAuditRow& entry);
+
+    //void addRow_old(const StorageAuditEntry& entry);
     void clearTable();
 
 private:

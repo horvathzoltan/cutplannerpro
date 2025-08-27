@@ -52,6 +52,7 @@ SOURCES += \
     model/repositories/storagerepository.cpp \
     model/stockentry.cpp \
     model/storageaudit/storageauditentry.cpp \
+    model/storageaudit/storageauditrow.cpp \
     model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
@@ -110,6 +111,7 @@ HEADERS += \
     model/registries/cuttingmachineregistry.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/storageauditentry.h \
+    model/storageaudit/storageauditrow.h \
     service/cutting/optimizer/exporter.h \
     service/cutting/plan/autosavemanager.h \
     service/cutting/plan/finalizer.h \

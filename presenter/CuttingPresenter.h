@@ -58,11 +58,12 @@ public:
 
     void syncModelWithRegistries();
     bool loadCuttingPlanFromFile(const QString &path);
-    void runStorageAudit();
+    void runStorageAudit(const QMap<QString, int>& pickingMap);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
 
     bool isModelSynced = false;
+    QMap<QString, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
 };
 
