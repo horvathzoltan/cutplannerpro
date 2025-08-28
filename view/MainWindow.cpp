@@ -22,6 +22,7 @@
 #include "dialog/stock/addstockdialog.h"
 #include "dialog/addinputdialog.h"
 
+#include "model/relocation/relocationinstruction.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
+    ui->relocateQuickList->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
     setWindowTitle("CutPlanner MVP");
 
@@ -382,4 +384,39 @@ void MainWindow::update_StorageAuditTable(const QVector<StorageAuditRow>& rows) 
         const auto& row = rows[i];
         storageAuditTableManager->addRow(row);     // 🧱 Sor hozzáadása
     }
+}
+
+void MainWindow::on_btn_Relocate_clicked()
+{
+    auto auditRows = presenter->getLastAuditRows();
+    QString cuttingZoneName = "CUT_ZONE"; // vagy akár a GUI-ból választva
+
+    auto relocationPlan = presenter->generateRelocationPlan(auditRows, cuttingZoneName);
+
+    // 1️⃣ Gyors lista feltöltése
+    QString text = format(relocationPlan, 5); // pl. max 5 sor
+    ui->relocateQuickList->setPlainText(text);
+
+    // 2️⃣ Végrehajtás majd egy külön gombból vagy megerősítés után:
+    // presenter->executeRelocation(relocationPlan);
+}
+
+// a sourcematerial annak kéne legyen, ahol az ador row anyaga megtalálható - tehát ez egy tárhely lista
+// nincs benne a material barcode - sem id
+QString MainWindow::format(const QList<RelocationInstruction>& items, int maxRows) {
+    QString out;
+    out += QString("%1 | %2 | %3\n")
+               .arg("Anyag", -12)
+               .arg("Mennyiség", -10)
+               .arg("Forrás", -15);
+    out += QString("-").repeated(40) + "\n";
+
+    for (int i = 0; i < qMin(maxRows, items.size()); ++i) {
+        const auto& it = items[i];
+        out += QString("%1 | %2 | %3\n")
+                   .arg(it.materialCode, -12)
+                   .arg(it.quantity, -10)
+                   .arg(it.sourceLocation, -15);
+    }
+    return out;
 }

@@ -278,6 +278,30 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QPushButton" name="btn_Relocate">
+             <property name="text">
+              <string>ReLocate</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QTableWidget" name="tableStorageAudit">
            <column>
             <property name="text">
@@ -309,6 +333,16 @@
              <string>Státusz</string>
             </property>
            </column>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPlainTextEdit" name="relocateQuickList">
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>

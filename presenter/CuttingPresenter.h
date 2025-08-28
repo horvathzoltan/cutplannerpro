@@ -3,6 +3,8 @@
 #include <QObject>
 #include "../model/cutting/optimizer/optimizermodel.h"
 #include "model/archivedwasteentry.h"
+#include "model/relocation/relocationinstruction.h"
+#include "model/storageaudit/storageauditrow.h"
 
 /*
 Értelmezi és kezeli a felhasználói interakciókat
@@ -59,9 +61,17 @@ public:
     void syncModelWithRegistries();
     bool loadCuttingPlanFromFile(const QString &path);
     void runStorageAudit(const QMap<QString, int>& pickingMap);
+
+    QVector<RelocationInstruction> generateRelocationPlan(
+        const QVector<StorageAuditRow>& auditRows,
+        const QString& cuttingZoneName);
+
+    const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
+
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
+    QVector<StorageAuditRow> lastAuditRows;
 
     bool isModelSynced = false;
     QMap<QString, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);

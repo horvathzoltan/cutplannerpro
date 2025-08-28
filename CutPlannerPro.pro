@@ -43,6 +43,7 @@ SOURCES += \
     model/registries/materialregistry.cpp \
     model/registries/stockregistry.cpp \
     model/registries/storageregistry.cpp \
+    model/relocation/relocationinstruction.cpp \
     model/repositories/cuttingmachinerepository.cpp \
     model/repositories/cuttingrequestrepository.cpp \
     model/repositories/leftoverstockrepository.cpp \
@@ -109,6 +110,7 @@ HEADERS += \
     model/picking/pickingcomparisonresult.h \
     model/picking/pickingitem.h \
     model/registries/cuttingmachineregistry.h \
+    model/relocation/relocationinstruction.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/storageauditentry.h \
     model/storageaudit/storageauditrow.h \

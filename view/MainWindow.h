@@ -72,6 +72,8 @@ private slots:
 
     void on_btn_StorageAudit_clicked();
 
+    void on_btn_Relocate_clicked();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
@@ -91,5 +93,6 @@ private:
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;
     void ButtonConnector_Connect();
+    QString format(const QList<RelocationInstruction> &items, int maxRows);
 };
 #endif // MAINWINDOW_H

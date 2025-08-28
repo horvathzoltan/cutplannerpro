@@ -3,6 +3,7 @@
 
 #include "common/logger.h"
 #include "model/registries/materialregistry.h"
+#include "model/relocation/relocationinstruction.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "service/cutting/result/resultutils.h"
 #include "model/archivedwasteentry.h"
@@ -217,8 +218,9 @@ void CuttingPresenter::runOptimization() {
         zInfo(msg);
     }
 
-    QVector<StorageAuditRow> auditRows = StorageAuditService::generateAuditRows(pickingMap);
-    view->update_StorageAuditTable(auditRows);
+    //QVector<StorageAuditRow> auditRows
+    lastAuditRows= StorageAuditService::generateAuditRows(pickingMap);
+    view->update_StorageAuditTable(lastAuditRows);
 }
 
 namespace CuttingUtils {
@@ -430,4 +432,46 @@ QMap<QString, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<C
     return pickingMap;
 }
 
+/*Relocation*/
 
+QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
+    const QVector<StorageAuditRow>& auditRows,
+    const QString& cuttingZoneName1
+    )
+{
+    QVector<RelocationInstruction> plan;
+
+    // 1. Végigmegyünk minden audit soron, ami a cutting zónához tartozik
+    for (const auto& row : auditRows) {
+        /*if (row.storageName != cuttingZoneName)
+            continue; // csak a célzónában nézzük a hiányt
+*/
+        int needToMove = row.missingQuantity();
+        if (needToMove <= 0)
+            continue; // nincs mit odavinni
+
+        // 2. Keressünk forráshelyet ugyanarra a barcode-ra
+        for (const auto& sourceRow : auditRows) {
+            if (sourceRow.materialBarcode == row.materialBarcode &&
+              //  sourceRow.storageName != cuttingZoneName &&
+                sourceRow.actualQuantity > 0)
+            {
+                int moveQty = qMin(needToMove, sourceRow.actualQuantity);
+
+                plan.push_back({
+                    row.materialBarcode,     // anyag azonosító
+                    sourceRow.storageName,   // honnan
+                    //cuttingZoneName,         // hova
+                    row.storageName,         // hova
+                    moveQty                  // mennyit
+                });
+
+                needToMove -= moveQty;
+                if (needToMove <= 0)
+                    break; // már betelt a hiány
+            }
+        }
+    }
+
+    return plan;
+}
