@@ -1,4 +1,4 @@
-#include "inputtablemanager.h"
+#include "inputtable_manager.h"
 #include "common/tableutils/inputtable_rowstyler.h"
 #include "common/tableutils/tableutils.h"
 #include "model/registries/materialregistry.h"
@@ -22,11 +22,18 @@ void InputTableManager::addRow(const Cutting::Plan::Request& request) {
     const MaterialMaster* mat = opt ? &(*opt) : nullptr;
 
     // 🧪 Anyag név
-    QString name = mat ? mat->name : "(ismeretlen)";
-    auto* itemName = new QTableWidgetItem(name);
-    itemName->setTextAlignment(Qt::AlignCenter);
-    itemName->setData(Qt::UserRole, QVariant::fromValue(request.materialId));
-    itemName->setData(CuttingRequestIdRole, request.requestId);
+    // QString name = mat ? mat->name : "(ismeretlen)";
+    // auto* itemName = new QTableWidgetItem(name);
+    // itemName->setTextAlignment(Qt::AlignCenter);
+    // itemName->setData(Qt::UserRole, QVariant::fromValue(request.materialId));
+    // itemName->setData(CuttingRequestIdRole, request.requestId);
+    TableUtils::setMaterialNameCell(table, row, ColName,
+                                    mat->name,
+                                    mat->color.color(),
+                                    mat->color.name(), // vagy mat->ralCode
+                                    mat->id,
+                                    request.requestId);
+
 
     // 📏 Hossz
     auto* itemLength = new QTableWidgetItem(QString::number(request.requiredLength));
@@ -76,7 +83,7 @@ void InputTableManager::addRow(const Cutting::Plan::Request& request) {
 
 
     // 📋 Fő adatsor beállítása
-    table->setItem(row, ColName, itemName);
+    //table->setItem(row, ColName, itemName);
     table->setItem(row, ColLength, itemLength);
     table->setItem(row, ColQty, itemQty);
     //table->setCellWidget(row, ColAction, btnDelete);

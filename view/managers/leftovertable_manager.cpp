@@ -1,4 +1,4 @@
-#include "leftovertablemanager.h"
+#include "leftovertable_manager.h"
 #include "common/tableutils/tableutils.h"
 #include "common/materialutils.h"
 #include <QHBoxLayout>
@@ -22,11 +22,18 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     const MaterialMaster* mat = entry.master();
 
     // 📛 Név
-    auto* itemName = new QTableWidgetItem(mat ? mat->name : "(ismeretlen)");
-    itemName->setTextAlignment(Qt::AlignCenter);
-    itemName->setData(Qt::UserRole, entry.materialId);    
-    itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
-    table->setItem(row, ColName, itemName);
+    // auto* itemName = new QTableWidgetItem(mat ? mat->name : "(ismeretlen)");
+    // itemName->setTextAlignment(Qt::AlignCenter);
+    // itemName->setData(Qt::UserRole, entry.materialId);
+    // itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
+    // table->setItem(row, ColName, itemName);
+    TableUtils::setMaterialNameCell(table, row, ColName,
+                                    mat->name,
+                                    mat->color.color(),
+                                    mat->color.name(), // vagy mat->ralCode
+                                    mat->id,
+                                    entry.entryId);
+
 
     // 🧾 Vonalkód
     auto* itemBarcode = new QTableWidgetItem(mat ? mat->barcode : "-");
@@ -140,9 +147,15 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
             QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "-";
 
             // 📛 Név
-            itemName->setText(materialName);
-            itemName->setData(Qt::UserRole, entry.materialId);
-            itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
+            // itemName->setText(materialName);
+            // itemName->setData(Qt::UserRole, entry.materialId);
+            // itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
+            TableUtils::setMaterialNameCell(table, row, ColName,
+                                            mat->name,
+                                            mat->color.color(),
+                                            mat->color.name(), // vagy mat->ralCode
+                                            mat->id,
+                                            entry.entryId);
 
             // 🧾 Material vonalkód
             auto* itemBarcode = table->item(row, ColBarcode);

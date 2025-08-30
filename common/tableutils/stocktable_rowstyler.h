@@ -1,13 +1,14 @@
 #pragma once
 
+#include "common/tablerowstyler/materialrowstyler.h"
 #include "common/tableutils/colorlogicutils.h"
-#include "common/tableutils/tablestyleutils.h"
-#include <view/managers/stocktablemanager.h>
+#include "common/tablerowstyler/tablestyleutils.h"
+#include <view/managers/stocktable_manager.h>
 
 namespace StockTable{
 namespace RowStyler{
 
-inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity, QColor baseColor)
+inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity, const MaterialMaster* mat)
 {
     if (!table) return;
 
@@ -15,18 +16,26 @@ inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity
     constexpr int ColQuantity = StockTableManager::ColQuantity;
     QColor textColor = Qt::black;
 
-    for (int col = 0; col < table->columnCount(); ++col) {
+    // for (int col = 0; col < table->columnCount(); ++col) {
 
-        QColor backColor;
-        if (col == ColLength)
-            backColor = ColorLogicUtils::colorForLength(length_mm);
-        else if (col == ColQuantity)
-            backColor = ColorLogicUtils::colorForQuantity(quantity);
-        else
-            backColor = baseColor;
+    //     QColor backColor;
+    //     if (col == ColLength){
+    //         Qcolor backColor1 = ColorLogicUtils::colorForLength(length_mm);
+    //         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
+    //     }
+    //     else if (col == ColQuantity){
+    //         backColor = ColorLogicUtils::colorForQuantity(quantity);
+    //         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
+    //     }
 
-        TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
-    }
+    // }
+
+    QColor backColor1 = ColorLogicUtils::colorForLength(length_mm);
+    TableStyleUtils::setCellStyle(table, row, ColLength, backColor1, textColor);
+    QColor backColor2 = ColorLogicUtils::colorForQuantity(quantity);
+    TableStyleUtils::setCellStyle(table, row, ColQuantity, backColor2, textColor);
+
+    MaterialRowStyler::applyMaterialStyle(table, row, mat,{ColLength, ColQuantity});
 
 }
 } // endof namespace RowStyler

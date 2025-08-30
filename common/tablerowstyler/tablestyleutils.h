@@ -28,4 +28,18 @@ inline void setCellStyle(QTableWidget* table, int row, int col, const QColor& bg
         item->setForeground(fgColor);
     }
 }
+
+inline QTableWidgetItem* ensureStyledItem(QTableWidget* table, int row, int col, const QColor& bg, const QColor& fg, Qt::Alignment align = Qt::AlignCenter, const QString& tooltip = QString()) {
+    QTableWidgetItem* item = table->item(row, col);
+    if (!item) {
+        item = new QTableWidgetItem();
+        table->setItem(row, col, item);
+    }
+    item->setBackground(bg);
+    item->setForeground(fg);
+    item->setTextAlignment(align);
+    if (!tooltip.isEmpty())
+        item->setToolTip(tooltip);
+    return item;
+}
 }

@@ -1,4 +1,4 @@
-#include "stocktablemanager.h"
+#include "stocktable_manager.h"
 #include "common/tableutils/stocktable_rowstyler.h"
 #include "common/tableutils/tableutils.h"
 #include "common/materialutils.h"
@@ -25,13 +25,24 @@ void StockTableManager::addRow(const StockEntry& entry) {
     int row = table->rowCount();
     table->insertRow(row);
 
-    // 📛 Név + id
-    auto* itemName = new QTableWidgetItem(mat->name);
-    itemName->setTextAlignment(Qt::AlignCenter);
-    itemName->setData(Qt::UserRole, mat->id);
-    itemName->setData(StockEntryIdIdRole, entry.entryId);
+    //📛 Név + id
+    // auto* itemName = new QTableWidgetItem(mat->name);
+    // itemName->setTextAlignment(Qt::AlignCenter);
+    // itemName->setData(Qt::UserRole, mat->id);
+    // itemName->setData(StockEntryIdIdRole, entry.entryId);
 
-    table->setItem(row, ColName, itemName);
+    // table->setItem(row, ColName, itemName);
+
+    TableUtils::setMaterialNameCell(table, row, ColName,
+                                    mat->name,
+                                    mat->color.color(),
+                                    mat->color.name(), // vagy mat->ralCode
+                                    mat->id,
+                                    entry.entryId);
+
+    // if (mat->color.isValid()) {
+    //     TableUtils::setMaterialColorCell(table, row, ColColor, mat->color.color(), mat->color.name());
+    // }
 
     // 🧾 BarCode
     auto* itemBarcode = new QTableWidgetItem(mat->barcode);
@@ -82,13 +93,13 @@ void StockTableManager::addRow(const StockEntry& entry) {
     //QColor color = MaterialUtils::colorForMaterial(*mat);
     //QString colorName = MaterialUtils::colorNameForMaterial(*mat); // ha van ilyen metódusod
 
-    auto* itemColor = new QTableWidgetItem();
-    itemColor->setBackground(mat->color.color());
-    itemColor->setText(mat->color.name()); // vagy csak a kód: mat->ralCode
-    itemColor->setTextAlignment(Qt::AlignCenter);
-    //itemColor->setData(Qt::UserRole, color.name()); // hex kód pl. "#1A1A1A"
+    // auto* itemColor = new QTableWidgetItem();
+    // itemColor->setBackground(mat->color.color());
+    // itemColor->setText(mat->color.name()); // vagy csak a kód: mat->ralCode
+    // itemColor->setTextAlignment(Qt::AlignCenter);
+    // //itemColor->setData(Qt::UserRole, color.name()); // hex kód pl. "#1A1A1A"
 
-    table->setItem(row, ColColor, itemColor);
+    // table->setItem(row, ColColor, itemColor);
 
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);    
@@ -122,7 +133,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
     //     emit editRequested(id);
     // });
 
-    StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, MaterialUtils::colorForMaterial(*mat));
+    StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, mat);
 }
 
 void StockTableManager::updateRow(const StockEntry& entry) {
@@ -139,9 +150,16 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "—";
 
             // 📛 Név
-            itemName->setText(materialName);
-            itemName->setData(Qt::UserRole, QVariant::fromValue(entry.materialId));
-            itemName->setData(StockEntryIdIdRole, entry.entryId);
+          //  itemName->setText(materialName);
+          //  itemName->setData(Qt::UserRole, QVariant::fromValue(entry.materialId));
+          //  itemName->setData(StockEntryIdIdRole, entry.entryId);
+
+            TableUtils::setMaterialNameCell(table, row, ColName,
+                                            mat->name,
+                                            mat->color.color(),
+                                            mat->color.name(), // vagy mat->ralCode
+                                            mat->id,
+                                            entry.entryId);
 
             // 🧾 Barcode
             auto* itemBarcode = table->item(row, ColBarcode);
@@ -182,22 +200,22 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             TableUtils::updateCommentCell(commentPanel, entry.comment, entry.entryId);
 
 
-            auto* itemColor = table->item(row, ColColor);
-            if (itemColor && mat) {
-                if (mat->color.isValid()) {
-                    itemColor->setText(mat->color.toString());
-                    itemColor->setBackground(mat->color.color());
-                    itemColor->setToolTip(mat->color.toString());
-                } else {
-                    itemColor->setText("—");
-                    itemColor->setBackground(Qt::transparent);
-                    itemColor->setToolTip("Nincs festve");
-                }
-                itemColor->setTextAlignment(Qt::AlignCenter);
-            }
+            // auto* itemColor = table->item(row, ColColor);
+            // if (itemColor && mat) {
+            //     if (mat->color.isValid()) {
+            //         itemColor->setText(mat->color.toString());
+            //         itemColor->setBackground(mat->color.color());
+            //         itemColor->setToolTip(mat->color.toString());
+            //     } else {
+            //         itemColor->setText("—");
+            //         itemColor->setBackground(Qt::transparent);
+            //         itemColor->setToolTip("Nincs festve");
+            //     }
+            //     itemColor->setTextAlignment(Qt::AlignCenter);
+            // }
 
             // 🎨 Stílus újraalkalmazás
-            StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, MaterialUtils::colorForMaterial(*mat));
+            StockTable::RowStyler::applyStyle(table, row, mat->stockLength_mm, entry.quantity, mat);
             return;
         }
     }

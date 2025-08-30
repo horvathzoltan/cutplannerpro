@@ -443,6 +443,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
     // 1. Végigmegyünk minden audit soron, ami a cutting zónához tartozik
     for (const auto& row : auditRows) {
+        const MaterialMaster* row_mat = MaterialRegistry::instance().findById(row.materialId);
+        if (!row_mat)
+            continue;
         /*if (row.storageName != cuttingZoneName)
             continue; // csak a célzónában nézzük a hiányt
 */
@@ -452,14 +455,18 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
         // 2. Keressünk forráshelyet ugyanarra a barcode-ra
         for (const auto& sourceRow : auditRows) {
-            if (sourceRow.materialBarcode == row.materialBarcode &&
+            const MaterialMaster* source_mat = MaterialRegistry::instance().findById(row.materialId);
+            if (!source_mat)
+                continue;
+            //QString sourceRow_materialBarcode =
+            if (source_mat->barcode == row_mat->barcode &&
               //  sourceRow.storageName != cuttingZoneName &&
                 sourceRow.actualQuantity > 0)
             {
                 int moveQty = qMin(needToMove, sourceRow.actualQuantity);
 
                 plan.push_back({
-                    row.materialBarcode,     // anyag azonosító
+                    row_mat->barcode,     // anyag azonosító
                     sourceRow.storageName,   // honnan
                     //cuttingZoneName,         // hova
                     row.storageName,         // hova

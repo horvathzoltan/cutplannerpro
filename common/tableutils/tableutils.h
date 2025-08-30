@@ -164,4 +164,39 @@ inline void updateCommentCell(QWidget* commentPanel, const QString& newComment, 
         qWarning() << "⚠️ QPushButton 'btnEditComment' nem található a commentPanel-ben.";
 }
 
+/*MaterialNameCell*/
+inline void setMaterialNameCell(QTableWidget* table, int row, int column,
+                                const QString& name, const QColor& color, const QString& colorTooltip,
+                                const QVariant& materialId, const QVariant& entryId)
+{
+    if (!table)
+        return;
+
+    QLabel* nameLabel = new QLabel(name);
+    nameLabel->setAlignment(Qt::AlignVCenter); // függőleges közép
+
+    QWidget* namePanel = new QWidget();
+    QHBoxLayout* layout = new QHBoxLayout(namePanel);
+    layout->setContentsMargins(4, 0, 0, 0);     // kis bal margó
+    layout->setSpacing(4);                      // szorosabb távolság
+    layout->setAlignment(Qt::AlignLeft);        // balra igazítás
+
+    layout->addWidget(nameLabel);               // először a név
+
+    if (color.isValid()) {
+        QLabel* colorBox = new QLabel();
+        colorBox->setFixedSize(10, 10);         // diszkrét méret
+        colorBox->setStyleSheet(QString("background-color: %1; border-radius: 5px; border: 1px solid #888;")
+                                    .arg(color.name()));
+        colorBox->setToolTip(colorTooltip);
+        layout->addWidget(colorBox);            // utána a színminta
+    }
+
+    namePanel->setProperty("materialId", materialId);
+    namePanel->setProperty("entryId", entryId);
+
+    table->setCellWidget(row, column, namePanel);
+}
+
+
 } //end namespace TableUtils

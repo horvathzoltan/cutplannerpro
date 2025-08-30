@@ -1,12 +1,14 @@
 #pragma once
 
 #include <QString>
+#include <QUuid>
 
 struct StorageAuditRow {
+    QUuid materialId; // vagy barcode, amit a MaterialRegistry tud kezelni
     QString storageName;
-    QString materialName;
-    QString materialBarcode;
-    QString colorCode;
+    //QString materialName;
+    //QString materialBarcode;
+    //QString colorCode;
 
     int pickingQuantity = 0;       // Elvárt mennyiség (picking alapján)
     int actualQuantity = 0;        // Audit során talált mennyiség

@@ -94,7 +94,8 @@ StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, con
 
 
     StorageAuditRow row;
-    row.materialName     = stock.materialName();
+    row.materialId      = stock.materialId;
+    //row.materialName     = stock.materialName();
     row.storageName      = storageName;
     //entry.expectedQuantity = 0;
     row.actualQuantity   = stock.quantity;

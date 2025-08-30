@@ -73,11 +73,11 @@ SOURCES += \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
     view/dialog/stock/editstoragedialog.cpp \
-    view/managers/inputtablemanager.cpp \
-    view/managers/leftovertablemanager.cpp \
-    view/managers/resultstablemanager.cpp \
-    view/managers/stocktablemanager.cpp \
-    view/managers/storageaudit_tablemanager.cpp
+    view/managers/inputtable_manager.cpp \
+    view/managers/leftovertable_manager.cpp \
+    view/managers/resultstable_manager.cpp \
+    view/managers/stocktable_manager.cpp \
+    view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
     common/color/namedcolor.h \
@@ -91,7 +91,9 @@ HEADERS += \
     common/materialutils.h \
     common/qteventutil.h \
     common/quantityparser.h \
+    common/tablerowstyler/materialrowstyler.h \
     common/tableutils/colorutils.h \
+    common/tableutils/storageaudittable_rowstyler.h \
     model/cutting/cuttingmachine.h \
     model/cutting/optimizer/optimizermodel.h \
     model/cutting/piece/pieceinfo.h \
@@ -134,7 +136,7 @@ HEADERS += \
     common/tableutils/resulttable_rowstyler.h \
     common/tableutils/stocktable_connector.h \
     common/tableutils/stocktable_rowstyler.h \
-    common/tableutils/tablestyleutils.h \
+    common/tablerowstyler/tablestyleutils.h \
     common/tableutils/tableutils.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
@@ -169,11 +171,11 @@ HEADERS += \
     view/dialog/stock/editcommentdialog.h \
     view/dialog/stock/editquantitydialog.h \
     view/dialog/stock/editstoragedialog.h \
-    view/managers/inputtablemanager.h \
-    view/managers/leftovertablemanager.h \
-    view/managers/resultstablemanager.h \
-    view/managers/stocktablemanager.h \
-    view/managers/storageaudit_tablemanager.h
+    view/managers/inputtable_manager.h \
+    view/managers/leftovertable_manager.h \
+    view/managers/resultstable_manager.h \
+    view/managers/stocktable_manager.h \
+    view/managers/storageaudittable_manager.h
 
 FORMS += \
     view/MainWindow.ui \

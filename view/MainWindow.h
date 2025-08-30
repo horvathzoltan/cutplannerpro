@@ -2,17 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include "common/tableconnectionhelper.h"
 #include "model/cutting/result/resultmodel.h"
-
-#include "managers/inputtablemanager.h"
-#include "managers/leftovertablemanager.h"
-#include "managers/resultstablemanager.h"
-#include "managers/stocktablemanager.h"
+#include "managers/inputtable_manager.h"
+#include "managers/leftovertable_manager.h"
+#include "managers/resultstable_manager.h"
+#include "managers/stocktable_manager.h"
 #include "cutanalyticspanel.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "presenter/CuttingPresenter.h"
-#include "view/managers/storageaudit_tablemanager.h"
+#include "view/managers/storageaudittable_manager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

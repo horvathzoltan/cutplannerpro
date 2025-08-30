@@ -1,34 +1,41 @@
 #pragma once
 
+#include "common/tablerowstyler/materialrowstyler.h"
 #include "model/leftoverstockentry.h"
-#include <view/managers/leftovertablemanager.h>
-#include "common/materialutils.h"
+#include <view/managers/leftovertable_manager.h>
+//#include "common/materialutils.h"
 
 namespace LeftoverTable{
 namespace RowStyler{
 
-inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* master, const LeftoverStockEntry& entry) {
-    if (!table || !master)
+inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* mat, const LeftoverStockEntry& entry) {
+    if (!table || !mat)
         return;
 
     constexpr int ColReusable = LeftoverTableManager::ColReusable; // 🔁 Frissítsd, ha eltér;
 
     // 🎨 Kategóriaalapú háttérszín
-    QColor baseColor = MaterialUtils::colorForMaterial(*master);
+    //QColor baseColor = MaterialUtils::colorForMaterial(*mat);
 
-    for (int col = 0; col < table->columnCount(); ++col) {
-        if (col == ColReusable)
-            continue;
+//     for (int col = 0; col < table->columnCount(); ++col) {
+//         if (col == ColReusable)
+//             continue;
 
-        auto* item = table->item(row, col);
-        if (!item) {
-            item = new QTableWidgetItem();
-            table->setItem(row, col, item);
-        }
+//         // auto* item = table->item(row, col);
+//         // if (!item) {
+//         //     item = new QTableWidgetItem();
+//         //     table->setItem(row, col, item);
+//         // }
 
-        item->setBackground(baseColor);
-        item->setForeground(col == 0 ? Qt::white : Qt::black); // Név oszlop legyen világos betűs
-    }
+//         QString tip;
+
+//         MaterialRowStyler::applyMaterialStyle(table, row, mat, tip);
+
+// //        item->setBackground(baseColor);
+//   //      item->setForeground(col == 0 ? Qt::white : Qt::black); // Név oszlop legyen világos betűs
+//     }
+
+    MaterialRowStyler::applyMaterialStyle(table, row, mat, {ColReusable});
 
     // ♻️ Újrahasználhatóság cella stílusa
     QString reuseMark = (entry.availableLength_mm >= 300) ? "✔" : "✘";
@@ -43,6 +50,7 @@ inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* maste
     itemReuse->setTextAlignment(Qt::AlignCenter);
     itemReuse->setBackground(reuseMark == "✔" ? QColor(144, 238, 144) : QColor(255, 200, 200));
     itemReuse->setForeground(Qt::black);
+
 }
 
 } // endof namespace RowStyler

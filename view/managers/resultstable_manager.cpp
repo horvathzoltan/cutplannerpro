@@ -1,4 +1,4 @@
-#include "resultstablemanager.h"
+#include "resultstable_manager.h"
 #include "common/materialutils.h"
 #include "common/tableutils/colorlogicutils.h"
 #include "model/registries/materialregistry.h"
