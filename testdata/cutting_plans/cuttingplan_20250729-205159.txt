@@ -1,2 +1,3 @@
 materialBarCode;requiredLength;quantity;ownerName;externalReference
 MAT-ROLL60-6000;123;2;"aaa";"222"
+MAT-BAR22-4000;2642;1;"kalamajka bt";"1288"

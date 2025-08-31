@@ -1,0 +1,1 @@
+materialBarCode;requiredLength;quantity;ownerName;externalReference

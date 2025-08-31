@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableStock->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableLeftovers->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableStorageAudit->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     presenter = new CuttingPresenter(this, this);
 
@@ -80,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->horizontalHeader()->restoreState(SettingsManager::instance().resultsTableHeaderState());
     ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
     ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
+    ui->tableStorageAudit->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
 
     // splitter
     ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());

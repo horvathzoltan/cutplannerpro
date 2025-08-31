@@ -82,9 +82,9 @@ CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
 
 
 std::optional<CuttingRequestRepository::CuttingRequestRow>
-CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, int lineIndex) {
+CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 5) {
-        qWarning() << QString("⚠️ Sor %1: kevés adat").arg(lineIndex);
+        qWarning() << QString("⚠️ Sor %1: kevés adat").arg(ctx.lineIndex);
         return std::nullopt;
     }
 
@@ -96,7 +96,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     row.externalReference = parts[4].trimmed();
 
     if (row.barcode.isEmpty() || row.requiredLength <= 0 || row.quantity <= 0) {
-        qWarning() << QString("⚠️ Sor %1: érvénytelen mező").arg(lineIndex);
+        qWarning() << QString("⚠️ Sor %1: érvénytelen mező").arg(ctx.lineIndex);
         return std::nullopt;
     }
 
@@ -104,11 +104,11 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
 }
 
 std::optional<Cutting::Plan::Request>
-CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, int lineIndex) {
+CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::RowContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen barcode '%2'")
-                          .arg(lineIndex).arg(row.barcode);
+                          .arg(ctx.lineIndex).arg(row.barcode);
         return std::nullopt;
     }
 
@@ -120,7 +120,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.externalReference = row.externalReference;
 
     if (!req.isValid()) {
-        qWarning() << QString("⚠️ Sor %1: érvénytelen CuttingRequest").arg(lineIndex);
+        qWarning() << QString("⚠️ Sor %1: érvénytelen CuttingRequest").arg(ctx.lineIndex);
         return std::nullopt;
     }
 
@@ -128,11 +128,11 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
 }
 
 std::optional<Cutting::Plan::Request>
-CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex) {
-    const auto rowOpt = convertRowToCuttingRequestRow(parts, lineIndex);
+CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+    const auto rowOpt = convertRowToCuttingRequestRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 
-    return buildCuttingRequestFromRow(rowOpt.value(), lineIndex);
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
 }
 
 

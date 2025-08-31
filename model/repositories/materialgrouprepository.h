@@ -2,6 +2,7 @@
 
 #include <QString>
 #include "../registries/materialgroupregistry.h"
+#include "common/csvimporter.h"
 
 /*
 📦 Three Phase Import
@@ -48,12 +49,12 @@ private:
 
 
     // --- Stage 1: Convert ---
-    static std::optional<MaterialGroupRow> convertRowToMaterialGroupRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<MaterialGroupMemberRow> convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, int lineIndex);
+    static std::optional<MaterialGroupRow> convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<MaterialGroupMemberRow> convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
 
     // --- Stage 2: Build ---
-    static std::optional<MaterialGroup> buildMaterialGroupFromRow(const MaterialGroupRow& row, int lineIndex);
-    static std::optional<QUuid> buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, int lineIndex);
+    static std::optional<MaterialGroup> buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::RowContext& ctx);
+    static std::optional<QUuid> buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::RowContext& ctx);
 
     // --- Stage 3: Load & Assemble ---
     static QVector<MaterialGroupRow> loadGroupRows(const QString& filepath);

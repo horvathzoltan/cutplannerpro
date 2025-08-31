@@ -150,11 +150,6 @@
           </attribute>
           <column>
            <property name="text">
-            <string>Név</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
             <string>Hossz</string>
            </property>
           </column>
@@ -192,7 +187,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="midBoxPage1">
         <attribute name="title">

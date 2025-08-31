@@ -10,9 +10,9 @@
 // --- Stage 1: Convert ---
 
 std::optional<CuttingMachineRepository::CuttingMachineRow>
-CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, int lineIndex) {
+CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 8) {
-        qWarning() << "❌ Érvénytelen gépsor a sorban:" << lineIndex;
+        qWarning() << "❌ Érvénytelen gépsor a sorban:" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -29,9 +29,9 @@ CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, 
 }
 
 std::optional<CuttingMachineRepository::CuttingMachineMaterialTypeRow>
-CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts, int lineIndex) {
+CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 2) {
-        qWarning() << "❌ Érvénytelen anyagsor a sorban:" << lineIndex;
+        qWarning() << "❌ Érvénytelen anyagsor a sorban:" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -45,14 +45,14 @@ CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts,
 // --- Stage 2: Build ---
 
 std::optional<CuttingMachine>
-CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, int lineIndex) {
+CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, CsvReader::RowContext& ctx) {
     bool ok1, ok2, ok3;
     double kerf = row.kerf.toDouble(&ok1);
     double maxLen = row.stellerMaxLength.toDouble(&ok2);
     double comp = row.stellerCompensation.toDouble(&ok3);
 
     if (!ok1 || !ok2 || !ok3) {
-        qWarning() << "❌ Hibás számformátum a sorban:" << lineIndex;
+        qWarning() << "❌ Hibás számformátum a sorban:" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -70,9 +70,9 @@ CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, int 
 }
 
 std::optional<MaterialType>
-CuttingMachineRepository::buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, int lineIndex) {
+CuttingMachineRepository::buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::RowContext& ctx) {
     if (row.materialTypeStr.isEmpty()) {
-        qWarning() << "❌ Hiányzó anyagtípus a sorban:" << lineIndex;
+        qWarning() << "❌ Hiányzó anyagtípus a sorban:" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -119,7 +119,10 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
     // 🔄 Gépek beolvasása és létrehozása
     for (int i = 0; i < machineRows.size(); ++i) {
         const auto& row = machineRows[i];
-        auto machineOpt = buildMachineFromRow(row, i + 1);
+
+        CsvReader::RowContext ctx(i+1, metaPath);
+
+        auto machineOpt = buildMachineFromRow(row, ctx);
         if (machineOpt.has_value()) {
             if (machineMap.contains(row.barcode)) {
                 qWarning() << "⚠️ Duplikált gép barcode:" << row.barcode << "a sorban:" << i + 1;
@@ -149,7 +152,9 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
             continue;
         }
 
-        auto typeOpt = buildMaterialTypeFromRow(row, i + 1);
+        CsvReader::RowContext ctx(i+1, compatPath);
+
+        auto typeOpt = buildMaterialTypeFromRow(row, ctx);
         if (!typeOpt.has_value()) continue;
 
         CuttingMachine& machine = machineMap[row.machineBarcode];

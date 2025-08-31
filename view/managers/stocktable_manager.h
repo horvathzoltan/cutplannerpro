@@ -1,10 +1,13 @@
 #pragma once
 
-#include <QTableWidget>
+//#include <QTableWidget>
 #include <QWidget>
-#include <QUuid>
-//#include "model/materialmaster.h"
+//#include <QUuid>
+
+#include "common/tableutils/rowid.h"
 #include "model/stockentry.h"
+//#include "model/materialmaster.h"
+
 
 class StockTableManager: public QObject {  // 🔧 QObject öröklés! {
     Q_OBJECT                              // ✨ Qt metaobjektum makró!
@@ -27,10 +30,11 @@ signals:
 private:
     QTableWidget* table;
     QWidget* parent;
-
-    static constexpr int StockEntryIdIdRole = Qt::UserRole + 1;
+    RowId _rowId;
 
 public:
+    static constexpr auto EntryId_Key = "entryId";
+
     static constexpr int ColName     = 0;
     static constexpr int ColBarcode  = 1;
     static constexpr int ColLength   = 2;
@@ -42,7 +46,8 @@ public:
 
     static constexpr int ColAction = 7;  // új oszlop a gomboknak (a Quantity után)
 
-
     void updateRow(const StockEntry &entry);
     void removeRowById(const QUuid &stockId);
 };
+
+

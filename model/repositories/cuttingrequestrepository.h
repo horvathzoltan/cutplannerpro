@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/csvimporter.h"
 #include "model/cutting/plan/request.h"
 #include <QString>
 #include <QVector>
@@ -41,7 +42,7 @@ private:
         QString externalReference;
     };
 
-    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, int lineIndex);
-    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts, int lineIndex);
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::RowContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts,  CsvReader::RowContext& ctx);
 };

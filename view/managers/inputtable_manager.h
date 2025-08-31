@@ -2,6 +2,7 @@
 
 #include <QTableWidget>
 //#include <optional>
+#include "common/tableutils/rowid.h"
 #include "model/cutting/plan/request.h"
 
 class InputTableManager: public QObject {  // 🔧 QObject öröklés!
@@ -25,15 +26,18 @@ signals:
 private:
     QTableWidget* table;
     QWidget* parent;
+    RowId _rowId;
 
-    static constexpr int CuttingRequestIdRole = Qt::UserRole + 1;
+public:
+    static constexpr auto RequestId_Key = "requestId";
 
-public:    
-
+    //row1
     static constexpr int ColName     = 0; // Anyag neve
-    static constexpr int ColLength   = 1; // Hossz
-    static constexpr int ColQty      = 2; // Mennyiség
-    static constexpr int ColAction   = 3; // Művelet (pl. törlés gomb)
+    //row2
+    static constexpr int ColLength   = 0; // Hossz
+    static constexpr int ColQty      = 1; // Mennyiség
+    static constexpr int ColAction   = 2; // Művelet (pl. törlés gomb)
+    //row3
     static constexpr int ColMetaRowSpanStart = 0; // Alsó összefoglaló sor – kiterjesztés kezdete
 
 };

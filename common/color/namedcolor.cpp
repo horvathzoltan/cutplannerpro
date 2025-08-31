@@ -183,7 +183,7 @@ bool NamedColor::initRalColors(const QList<RalSource>& sources)
     // }
 
     for (const RalSource& src : sources) {
-        auto converter = [system = src.system](const QVector<QString>& row, int lineNumber) -> std::optional<std::pair<QString, NamedColor>> {
+        auto converter = [system = src.system](const QVector<QString>& row, CsvReader::RowContext& ctx) -> std::optional<std::pair<QString, NamedColor>> {
             if (row.size() != 3) return std::nullopt;
 
             const QString code = "RAL " + row[0].trimmed();

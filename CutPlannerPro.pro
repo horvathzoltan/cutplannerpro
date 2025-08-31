@@ -93,6 +93,7 @@ HEADERS += \
     common/quantityparser.h \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/colorutils.h \
+    common/tableutils/rowid.h \
     common/tableutils/storageaudittable_rowstyler.h \
     model/cutting/cuttingmachine.h \
     model/cutting/optimizer/optimizermodel.h \

@@ -10,98 +10,78 @@
 #include "model/registries/materialregistry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), table(table), parent(parent) {}
+    : QObject(parent), table(table), parent(parent),
+    _rowId(table, ColName ) {}
 
 void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
 
-    int row = table->rowCount();
-    table->insertRow(row);
-
     const MaterialMaster* mat = entry.master();
+    if (!mat)
+        return;
 
-    // 📛 Név
-    // auto* itemName = new QTableWidgetItem(mat ? mat->name : "(ismeretlen)");
-    // itemName->setTextAlignment(Qt::AlignCenter);
-    // itemName->setData(Qt::UserRole, entry.materialId);
-    // itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
-    // table->setItem(row, ColName, itemName);
-    TableUtils::setMaterialNameCell(table, row, ColName,
+    int rowIx = table->rowCount();
+    table->insertRow(rowIx);
+
+    // 📛 Név + id
+    TableUtils::setMaterialNameCell(table, rowIx, ColName,
                                     mat->name,
                                     mat->color.color(),
-                                    mat->color.name(), // vagy mat->ralCode
-                                    mat->id,
-                                    entry.entryId);
-
+                                    mat->color.name());
+    _rowId.set(rowIx,entry.entryId);
 
     // 🧾 Vonalkód
     auto* itemBarcode = new QTableWidgetItem(mat ? mat->barcode : "-");
     itemBarcode->setTextAlignment(Qt::AlignCenter);
-    table->setItem(row, ColBarcode, itemBarcode);
+    table->setItem(rowIx, ColBarcode, itemBarcode);
 
     auto* itemID = new QTableWidgetItem(entry.barcode);
     itemID->setTextAlignment(Qt::AlignCenter);
-    table->setItem(row, ColReusableId, itemID);
+    table->setItem(rowIx, ColReusableId, itemID);
 
     // 📏 Hossz
     auto* itemLength = new QTableWidgetItem(QString::number(entry.availableLength_mm));
     itemLength->setTextAlignment(Qt::AlignCenter);
-    itemLength->setData(Qt::UserRole, entry.availableLength_mm);
-    table->setItem(row, ColLength, itemLength);
+    table->setItem(rowIx, ColLength, itemLength);
 
     // 📐 Forma
     auto* itemShape = new QTableWidgetItem(mat ? MaterialUtils::formatShapeText(*mat) : "-");
     itemShape->setTextAlignment(Qt::AlignCenter);
-    table->setItem(row, ColShape, itemShape);
-
-    // // 🧬 Anyagtípus
-    // auto* itemType = new QTableWidgetItem(mat ? mat->type.toString() : "-");
-    // itemType->setTextAlignment(Qt::AlignCenter);
-    // itemType->setData(Qt::UserRole, QVariant::fromValue(mat ? mat->type : MaterialType{}));
-    // table->setItem(row, ColType, itemType);
+    table->setItem(rowIx, ColShape, itemShape);
 
     // 🛠️ Forrás
     auto* itemSource = new QTableWidgetItem(entry.sourceAsString());
     itemSource->setTextAlignment(Qt::AlignCenter);
-    itemSource->setData(Qt::UserRole, static_cast<int>(entry.source));
-    table->setItem(row, ColSource, itemSource);
+    table->setItem(rowIx, ColSource, itemSource);
 
     // ♻️ Újrahasználhatóság
-    QString reuseMark = (entry.availableLength_mm >= 300) ? "✔" : "✘";
-    auto* itemReusable = new QTableWidgetItem(reuseMark);
-    itemReusable->setTextAlignment(Qt::AlignCenter);
-    itemReusable->setBackground(reuseMark == "✔" ? QColor(144, 238, 144) : QColor(255, 200, 200));
-    itemReusable->setForeground(Qt::black);
-    itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
-    table->setItem(row, ColReusable, itemReusable);
+    auto* itemReusable = new QTableWidgetItem();
+    TableUtils::setReusableCell(itemReusable, entry.availableLength_mm);
+    table->setItem(rowIx, ColReusable, itemReusable);
 
     // 🏷️ Storage name
     auto* storageOpt = StorageRegistry::instance().findById(entry.storageId);
     QString storageName = storageOpt ? storageOpt->name : "—";
 
-    // auto* itemStorage = new QTableWidgetItem(storageName);
-    // itemStorage->setTextAlignment(Qt::AlignCenter);
-    // itemStorage->setData(Qt::UserRole, entry.storageId);
-    // table->setItem(row, ColStorageName, itemStorage);
     auto* storagePanel = TableUtils::createStorageCell(storageName, entry.entryId, this, [this, entry]() {
         emit editStorageRequested(entry.entryId);  // 🔔 új signal
     });
-    table->setCellWidget(row, ColStorageName, storagePanel);
+    table->setCellWidget(rowIx, ColStorageName, storagePanel);
 
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = new QPushButton("🗑️");
     btnDelete->setToolTip("Törlés");
     btnDelete->setFixedSize(28, 28);
     btnDelete->setStyleSheet("QPushButton { border: none; }");
-    btnDelete->setProperty("entryId", entry.entryId);
+    btnDelete->setProperty(EntryId_Key, entry.entryId);
 
     // ✏️ Szerkesztés gomb
     QPushButton* btnEdit = new QPushButton("✏️");
     btnEdit->setToolTip("Szerkesztés");
     btnEdit->setFixedSize(28, 28);
     btnEdit->setStyleSheet("QPushButton { border: none; }");
-    btnEdit->setProperty("entryId", entry.entryId);
+    btnEdit->setProperty(EntryId_Key, entry.entryId);
 
     // Panelbe helyezés
     auto* actionPanel = new QWidget();
@@ -111,108 +91,85 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     layout->addWidget(btnEdit);
     layout->addWidget(btnDelete);
 
-    table->setCellWidget(row, ColActions, actionPanel);
+    table->setCellWidget(rowIx, ColActions, actionPanel);
     table->setColumnWidth(ColActions, 64);
 
     // 📡 Signal kapcsolás UUID alapú
     QObject::connect(btnDelete, &QPushButton::clicked, this, [btnDelete, this]() {
-        QUuid entryId = btnDelete->property("entryId").toUuid();
+        QUuid entryId = btnDelete->property(EntryId_Key).toUuid();
         emit deleteRequested(entryId);
     });
 
     QObject::connect(btnEdit, &QPushButton::clicked, this, [btnEdit, this]() {
-        QUuid entryId = btnEdit->property("entryId").toUuid();
+        QUuid entryId = btnEdit->property(EntryId_Key).toUuid();
         emit editRequested(entryId);
     });
 
     // 🎨 Stílus
-    LeftoverTable::RowStyler::applyStyle(table, row, mat, entry);
+    LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 }
 
 void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
 
-    for (int row = 0; row < table->rowCount(); ++row) {
-        QTableWidgetItem* itemName = table->item(row, ColName);
-        if (!itemName)
-            continue;
+    for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
+        QUuid currentId = _rowId.get(rowIx);
 
-        QUuid currentId = itemName->data(ReusableStockEntryIdIdRole).toUuid(); // 🔍 Saját role
         if (currentId == entry.entryId) {
             const MaterialMaster* mat = entry.master();
+            if(!mat) continue;
 
             QString materialName = mat ? mat->name : "(ismeretlen)";
             QString barcode = mat ? mat->barcode : "-";
             QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "-";
 
             // 📛 Név
-            // itemName->setText(materialName);
-            // itemName->setData(Qt::UserRole, entry.materialId);
-            // itemName->setData(ReusableStockEntryIdIdRole, entry.entryId);
-            TableUtils::setMaterialNameCell(table, row, ColName,
+            TableUtils::setMaterialNameCell(table, rowIx, ColName,
                                             mat->name,
                                             mat->color.color(),
-                                            mat->color.name(), // vagy mat->ralCode
-                                            mat->id,
-                                            entry.entryId);
+                                            mat->color.name());
+
+            LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 
             // 🧾 Material vonalkód
-            auto* itemBarcode = table->item(row, ColBarcode);
+            auto* itemBarcode = table->item(rowIx, ColBarcode);
             if (itemBarcode) itemBarcode->setText(barcode);
 
             // 🧾 Maradék vonalkód
-            auto* itemID = table->item(row, ColReusableId);
+            auto* itemID = table->item(rowIx, ColReusableId);
             if (itemID) itemID->setText(entry.barcode);
 
             // 📏 Hossz
-            auto* itemLength = table->item(row, ColLength);
+            auto* itemLength = table->item(rowIx, ColLength);
             if (itemLength) {
                 itemLength->setText(QString::number(entry.availableLength_mm));
-                itemLength->setData(Qt::UserRole, entry.availableLength_mm);
             }
 
             // 📐 Alak
-            auto* itemShape = table->item(row, ColShape);
+            auto* itemShape = table->item(rowIx, ColShape);
             if (itemShape) itemShape->setText(shape);
 
             // 🛠️ Forrás
-            auto* itemSource = table->item(row, ColSource);
+            auto* itemSource = table->item(rowIx, ColSource);
             if (itemSource) {
                 itemSource->setText(entry.sourceAsString());
-                itemSource->setData(Qt::UserRole, static_cast<int>(entry.source));
             }
 
             // ♻️ Újrahasználhatóság
-            auto* itemReusable = table->item(row, ColReusable);
-            if (itemReusable) {
-                QString reuseMark = (entry.availableLength_mm >= 300) ? "✔" : "✘";
-                itemReusable->setText(reuseMark);
-                itemReusable->setBackground(reuseMark == "✔" ? QColor(144, 238, 144) : QColor(255, 200, 200));
-                itemReusable->setForeground(Qt::black);
-                itemReusable->setData(Qt::UserRole, entry.availableLength_mm);
-            }
+            auto* itemReusable = table->item(rowIx, ColReusable);
+            TableUtils::setReusableCell(itemReusable, entry.availableLength_mm);
 
             // 🏷️ Storage name
-            // auto* itemStorage = table->item(row, ColStorageName);
-            // if (itemStorage) {
-            //     const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-            //     QString storageName = storage ? storage->name : "—";
-            //     itemStorage->setText(storageName);
-            //     itemStorage->setData(Qt::UserRole, entry.storageId);
-            //     itemStorage->setTextAlignment(Qt::AlignCenter);
-            // }
-
-            auto* storagePanel = table->cellWidget(row, ColStorageName);
+            auto* storagePanel = table->cellWidget(rowIx, ColStorageName);
             if (storagePanel) {
                 const auto* storage = StorageRegistry::instance().findById(entry.storageId);
                 QString storageName = storage ? storage->name : "—";
                 TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
             }
 
-
             // 🎨 Sor stílus újraalkalmazása
-            LeftoverTable::RowStyler::applyStyle(table, row, mat, entry);
+            LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 
             return;
         }
@@ -220,6 +177,8 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
 
     qWarning() << "⚠️ updateRow: Nem található sor azonosítóval:" << entry.entryId;
 }
+
+
 
 void LeftoverTableManager::appendRows(const QVector<LeftoverStockEntry>& newResults) {
     if (!table)
@@ -230,10 +189,11 @@ void LeftoverTableManager::appendRows(const QVector<LeftoverStockEntry>& newResu
 }
 
 void LeftoverTableManager::removeRowById(const QUuid& id) {
-    for (int row = 0; row < table->rowCount(); ++row) {
-        QVariant data = table->item(row, 0)->data(Qt::UserRole);
-        if (data.canConvert<QUuid>() && data.toUuid() == id) {
-            table->removeRow(row);
+    for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
+
+        QUuid currentId = _rowId.get(rowIx);
+        if (currentId == id) {
+            table->removeRow(rowIx);
             return;
         }
     }

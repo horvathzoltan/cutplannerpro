@@ -4,6 +4,7 @@
 #include <QVector>
 #include "../stockentry.h"
 #include "../registries/stockregistry.h"
+#include "common/csvimporter.h"
 //#include "model/cutresult.h"
 //#include "model/reusablestockentry.h"
 
@@ -24,7 +25,7 @@ private:
 
     /// 🔒 Private parser, visszaad egy lista objektumot
     static QVector<StockEntry> loadFromCSV_private(const QString& filepath);    
-    static std::optional<StockEntryRow>convertRowToStockEntryRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<StockEntry> buildStockEntryFromRow(const StockEntryRow &row, int lineIndex);
-    static std::optional<StockEntry> convertRowToStockEntry(const QVector<QString> &parts, int lineIndex);
+    static std::optional<StockEntryRow>convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<StockEntry> buildStockEntryFromRow(const StockEntryRow &row, CsvReader::RowContext& ctx);
+    static std::optional<StockEntry> convertRowToStockEntry(const QVector<QString> &parts, CsvReader::RowContext& ctx);
 };

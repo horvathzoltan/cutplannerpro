@@ -4,6 +4,8 @@
 #include <QVector>
 #include "../material/materialmaster.h"
 #include "../registries/materialregistry.h"
+#include "common/csvimporter.h"
+
 
 class MaterialRepository {
 public:
@@ -24,7 +26,7 @@ private:
         QString colorStr; // 🎨 Opcionális színmező (RAL, HEX vagy üres)
     };
 
-    static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, int lineIndex);
-    static std::optional<MaterialRow>convertRowToMaterialRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<MaterialMaster> buildMaterialFromRow(const MaterialRow &row, int lineIndex);
+    static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<MaterialRow>convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<MaterialMaster> buildMaterialFromRow(const MaterialRow &row, CsvReader::RowContext& ctx);
 };

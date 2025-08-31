@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QTableWidget>
+#include "common/tableutils/rowid.h"
 #include "model/storageaudit/storageauditentry.h" // vagy ahová az entry kerül
 #include "model/storageaudit/storageauditrow.h"
 
@@ -19,6 +20,7 @@ public:
 private:
     QTableWidget* table;
     QWidget* parent;
+    RowId _rowId;
 
     static constexpr int ColMaterial   = 0;
     static constexpr int ColStorage    = 1;

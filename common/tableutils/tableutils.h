@@ -164,10 +164,14 @@ inline void updateCommentCell(QWidget* commentPanel, const QString& newComment, 
         qWarning() << "⚠️ QPushButton 'btnEditComment' nem található a commentPanel-ben.";
 }
 
+// struct CellDataModel {
+//     int key;
+//     QVariant value;
+// };
+
 /*MaterialNameCell*/
 inline void setMaterialNameCell(QTableWidget* table, int row, int column,
-                                const QString& name, const QColor& color, const QString& colorTooltip,
-                                const QVariant& materialId, const QVariant& entryId)
+                                const QString& name, const QColor& color, const QString& colorTooltip)
 {
     if (!table)
         return;
@@ -192,11 +196,22 @@ inline void setMaterialNameCell(QTableWidget* table, int row, int column,
         layout->addWidget(colorBox);            // utána a színminta
     }
 
-    namePanel->setProperty("materialId", materialId);
-    namePanel->setProperty("entryId", entryId);
-
     table->setCellWidget(row, column, namePanel);
 }
 
+inline void setReusableCell(QTableWidgetItem* item, int availableLength_mm) {
+    if (!item)
+        return;
+
+    const bool reusable = availableLength_mm >= 300;
+    const QString mark = reusable ? "✔" : "✘";
+    const QColor bgColor = reusable ? QColor(144, 238, 144) : QColor(255, 200, 200);
+
+    item->setText(mark);
+    item->setTextAlignment(Qt::AlignCenter);
+    item->setBackground(bgColor);
+    item->setForeground(Qt::black);
+    item->setData(Qt::UserRole, availableLength_mm); // opcionális, ha később kell
+}
 
 } //end namespace TableUtils

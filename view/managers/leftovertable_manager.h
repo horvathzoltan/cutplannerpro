@@ -2,6 +2,7 @@
 
 #include <QTableWidget>
 //#include "model/cutresult.h"
+#include "common/tableutils/rowid.h"
 #include "model/leftoverstockentry.h"
 
 /// ♻️ Hullók (maradékok) táblájának kezelése  (vágás utáni maradékanyagok)
@@ -27,11 +28,13 @@ signals:
 private:
     QTableWidget* table;
     QWidget* parent;  // 🔍 UI-hoz, hibajelzéshez, stb.
-
-    static constexpr int ReusableStockEntryIdIdRole = Qt::UserRole + 1;
+    RowId _rowId;
+//    static constexpr int ReusableStockEntryIdIdRole = Qt::UserRole + 1;
 
 
 public:
+    static constexpr auto EntryId_Key = "entryId";
+
     // 🏷️ Oszlopindexek (UI: tableLeftovers)
     static constexpr int ColName      = 0;
     static constexpr int ColBarcode   = 1;

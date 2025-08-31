@@ -10,9 +10,9 @@
 // --- Stage 1: Convert ---
 
 std::optional<MaterialGroupRepository::MaterialGroupRow>
-MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& parts, int lineIndex) {
+MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 3) {
-        qWarning() << "Invalid group row at line" << lineIndex;
+        qWarning() << "Invalid group row at line" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -26,9 +26,9 @@ MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& pa
 }
 
 std::optional<MaterialGroupRepository::MaterialGroupMemberRow>
-MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, int lineIndex) {
+MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 2) {
-        qWarning() << "Invalid member row at line" << lineIndex;
+        qWarning() << "Invalid member row at line" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -43,9 +43,9 @@ MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QStrin
 // --- Stage 2: Build ---
 
 std::optional<MaterialGroup>
-MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, int lineIndex) {
+MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::RowContext& ctx) {
     if (row.groupKey.isEmpty() || row.groupName.isEmpty()) {
-        qWarning() << "Missing fields in group row at line" << lineIndex;
+        qWarning() << "Missing fields in group row at line" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -59,9 +59,9 @@ MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, 
 }
 
 std::optional<QUuid>
-MaterialGroupRepository::buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, int lineIndex) {
+MaterialGroupRepository::buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::RowContext& ctx) {
     if (row.materialBarCode.isEmpty()) {
-        qWarning() << "Missing barcode in member row at line" << lineIndex;
+        qWarning() << "Missing barcode in member row at line" << ctx.lineIndex;
         return std::nullopt;
     }
 
@@ -111,8 +111,9 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
     for (int i = 0; i < groupRows.size(); ++i) {
         const auto& row = groupRows[i];
 
+        CsvReader::RowContext ctx(i+1, metaPath);
         std::optional<MaterialGroup> groupOpt =
-            buildMaterialGroupFromRow(row, i + 1);
+            buildMaterialGroupFromRow(row, ctx);
         if (groupOpt.has_value()) {
             if (groupMap.contains(row.groupKey)) {
                 qWarning() << "⚠️ Duplikált csoport:" << row.groupKey << "a sorban:" << i + 1;
@@ -130,7 +131,8 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
             continue;
         }
 
-        auto materialId = buildMaterialIdFromMemberRow(row, i+1);
+        CsvReader::RowContext ctx(i+1, membersPath);
+        auto materialId = buildMaterialIdFromMemberRow(row, ctx);
 
         if(!materialId.has_value()) {
             qWarning() << "⚠️ Ismeretlen anyag barcode:" << row.materialBarCode << "(csoport:" << row.groupKey << ")";

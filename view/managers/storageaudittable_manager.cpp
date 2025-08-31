@@ -10,7 +10,8 @@
 #include <model/registries/materialregistry.h>
 
 StorageAuditTableManager::StorageAuditTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), table(table), parent(parent) {}
+    : QObject(parent), table(table), parent(parent),
+    _rowId(table, ColMaterial ){}
 
 
 void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
@@ -21,38 +22,40 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     if (!mat)
         return;
 
-    int r = table->rowCount();
-    table->insertRow(r);
+    int rowIx = table->rowCount();
+    table->insertRow(rowIx);
 
     //table->setItem(r, ColMaterial, new QTableWidgetItem(mat->name));
-    TableUtils::setMaterialNameCell(table, r, ColMaterial,
+    TableUtils::setMaterialNameCell(table, rowIx, ColMaterial,
                                     mat->name,
                                     mat->color.color(),
-                                    mat->color.name(), // vagy mat->ralCode
-                                    mat->id,
-                                    row.materialId); // itt nincs egyedi entryId, csak materialId
+                                    mat->color.name()); // itt nincs egyedi entryId, csak materialId
 
-    table->setItem(r, ColStorage, new QTableWidgetItem(row.storageName));
-    table->setItem(r, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
+    _rowId.set(rowIx, mat->id);
+
+    //QTableWidgetItem *itemName = table->item(rowIx, ColMaterial);
+    //itemName->setData(Qt::UserRole, mat->id);
+    //itemName->setData(StockEntryIdIdRole, row.materialId);
+
+    table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName));
+    table->setItem(rowIx, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
 
     QSpinBox* actualSpin = new QSpinBox();
     actualSpin->setRange(0, 9999);
     actualSpin->setValue(row.actualQuantity);
     actualSpin->setEnabled(false);
-    table->setCellWidget(r, ColActual, actualSpin);
+    table->setCellWidget(rowIx, ColActual, actualSpin);
 
-    table->setItem(r, ColMissing, new QTableWidgetItem(QString::number(row.missingQuantity())));
+    table->setItem(rowIx, ColMissing, new QTableWidgetItem(QString::number(row.missingQuantity())));
 
     QTableWidgetItem* statusItem = new QTableWidgetItem(row.status());
     if (row.status() == "OK") statusItem->setBackground(Qt::green);
     else if (row.status() == "Hiányzik") statusItem->setBackground(Qt::red);
     else statusItem->setBackground(Qt::lightGray);
 
-    table->setItem(r, ColStatus, statusItem);
+    table->setItem(rowIx, ColStatus, statusItem);
 
-
-
-    StorageAuditTable::RowStyler::applyStyle(table, r, mat, row);
+    StorageAuditTable::RowStyler::applyStyle(table, rowIx, mat, row);
 }
 
 

@@ -55,9 +55,9 @@ StockRepository::loadFromCSV_private(const QString& filepath) {
 
 
 std::optional<StockRepository::StockEntryRow>
-StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int lineIndex) {
+StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
     if (parts.size() < 3) {
-        qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(lineIndex);
+        qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(ctx.lineIndex);
         return std::nullopt;
     }
 
@@ -72,7 +72,7 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int li
     bool okQty = false;
     row.quantity = qtyStr.toInt(&okQty);
     if (row.barcode.isEmpty() || !okQty || row.quantity <= 0) {
-        qWarning() << QString("⚠️ Sor %1: hibás barcode vagy mennyiség").arg(lineIndex);
+        qWarning() << QString("⚠️ Sor %1: hibás barcode vagy mennyiség").arg(ctx.lineIndex);
         return std::nullopt;
     }
 
@@ -82,18 +82,18 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, int li
 }
 
 std::optional<StockEntry>
-StockRepository::buildStockEntryFromRow(const StockEntryRow& row, int lineIndex) {
+StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::RowContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen anyag barcode '%2'")
-                          .arg(lineIndex).arg(row.barcode);
+                          .arg(ctx.lineIndex).arg(row.barcode);
         return std::nullopt;
     }
 
     const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
     if (!storage) {
         qWarning() << QString("⚠️ Sor %1: ismeretlen tároló barcode '%2'")
-                          .arg(lineIndex).arg(row.storageBarcode);
+                          .arg(ctx.lineIndex).arg(row.storageBarcode);
         return std::nullopt;
     }
 
@@ -107,11 +107,11 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, int lineIndex)
 }
 
 std::optional<StockEntry>
-StockRepository::convertRowToStockEntry(const QVector<QString>& parts, int lineIndex) {
-    const auto rowOpt = convertRowToStockEntryRow(parts, lineIndex);
+StockRepository::convertRowToStockEntry(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+    const auto rowOpt = convertRowToStockEntryRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 
-    return buildStockEntryFromRow(rowOpt.value(), lineIndex);
+    return buildStockEntryFromRow(rowOpt.value(), ctx);
 }
 
 bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& filePath) {

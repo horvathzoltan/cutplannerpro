@@ -2,6 +2,7 @@
 
 #include <QString>
 #include "../registries/cuttingmachineregistry.h"
+#include "common/csvimporter.h"
 
 /*
 ✂️ CuttingMachineRepository – Three Phase Import
@@ -38,12 +39,12 @@ private:
     };
 
     // --- Stage 1: Convert ---
-    static std::optional<CuttingMachineRow> convertRowToMachineRow(const QVector<QString>& parts, int lineIndex);
-    static std::optional<CuttingMachineMaterialTypeRow> convertRowToMaterialRow(const QVector<QString>& parts, int lineIndex);
+    static std::optional<CuttingMachineRow> convertRowToMachineRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<CuttingMachineMaterialTypeRow> convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
 
     // --- Stage 2: Build ---
-    static std::optional<CuttingMachine> buildMachineFromRow(const CuttingMachineRow& row, int lineIndex);
-    static std::optional<MaterialType> buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, int lineIndex);
+    static std::optional<CuttingMachine> buildMachineFromRow(const CuttingMachineRow& row, CsvReader::RowContext& ctx);
+    static std::optional<MaterialType> buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::RowContext& ctx);
 
     // --- Stage 3: Load & Assemble ---
     static QVector<CuttingMachineRow> loadMachineRows(const QString& filepath);
