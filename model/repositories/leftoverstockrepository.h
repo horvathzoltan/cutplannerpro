@@ -23,9 +23,9 @@ private:
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot
-    static QVector<LeftoverStockEntry> loadFromCSV_private(const QString& filepath);
+    static QVector<LeftoverStockEntry> loadFromCSV_private(CsvReader::FileContext& ctx);
 
-    static std::optional<ReusableStockRow>convertRowToReusableRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
-    static std::optional<LeftoverStockEntry>buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::RowContext& ctx);
-    static std::optional<LeftoverStockEntry>convertRowToReusableEntry(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<ReusableStockRow>convertRowToReusableRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<LeftoverStockEntry>buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::FileContext& ctx);
+    static std::optional<LeftoverStockEntry>convertRowToReusableEntry(const QVector<QString>& parts, CsvReader::FileContext& ctx);
 };

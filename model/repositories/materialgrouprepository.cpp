@@ -10,9 +10,11 @@
 // --- Stage 1: Convert ---
 
 std::optional<MaterialGroupRepository::MaterialGroupRow>
-MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 3) {
-        qWarning() << "Invalid group row at line" << ctx.lineIndex;
+        QString msg = L("❌ Invalid group row at line");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -26,9 +28,11 @@ MaterialGroupRepository::convertRowToMaterialGroupRow(const QVector<QString>& pa
 }
 
 std::optional<MaterialGroupRepository::MaterialGroupMemberRow>
-MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 2) {
-        qWarning() << "Invalid member row at line" << ctx.lineIndex;
+        QString msg = L("❌ Invalid member row at line");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -43,9 +47,11 @@ MaterialGroupRepository::convertRowToMaterialGroupMemberRow(const QVector<QStrin
 // --- Stage 2: Build ---
 
 std::optional<MaterialGroup>
-MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::RowContext& ctx) {
+MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::FileContext& ctx) {
     if (row.groupKey.isEmpty() || row.groupName.isEmpty()) {
-        qWarning() << "Missing fields in group row at line" << ctx.lineIndex;
+        QString msg = L("❌ Missing fields in group row at line");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -59,9 +65,11 @@ MaterialGroupRepository::buildMaterialGroupFromRow(const MaterialGroupRow& row, 
 }
 
 std::optional<QUuid>
-MaterialGroupRepository::buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::RowContext& ctx) {
+MaterialGroupRepository::buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::FileContext& ctx) {
     if (row.materialBarCode.isEmpty()) {
-        qWarning() << "Missing barcode in member row at line" << ctx.lineIndex;
+        QString msg = L("Missing barcode in member row at line");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -76,13 +84,13 @@ MaterialGroupRepository::buildMaterialIdFromMemberRow(const MaterialGroupMemberR
 // --- Stage 3: Load & Assemble ---
 
 QVector<MaterialGroupRepository::MaterialGroupRow>
-MaterialGroupRepository::loadGroupRows(const QString& filepath) {
-    return CsvReader::readAndConvert<MaterialGroupRow>(filepath, convertRowToMaterialGroupRow);
+MaterialGroupRepository::loadGroupRows(CsvReader::FileContext& cts) {
+    return CsvReader::readAndConvert<MaterialGroupRow>(cts, convertRowToMaterialGroupRow);
 }
 
 QVector<MaterialGroupRepository::MaterialGroupMemberRow>
-MaterialGroupRepository::loadMemberRows(const QString& filepath) {
-    return CsvReader::readAndConvert<MaterialGroupMemberRow>(filepath, convertRowToMaterialGroupMemberRow);
+MaterialGroupRepository::loadMemberRows(CsvReader::FileContext& ctx) {
+    return CsvReader::readAndConvert<MaterialGroupMemberRow>(ctx, convertRowToMaterialGroupMemberRow);
 }
 
 void MaterialGroupRepository::addMaterialToGroup(MaterialGroup* group, const QUuid& materialId) {
@@ -103,17 +111,21 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
     const QString metaPath = helper.getGroupCsvFile();           // materialgroups.csv
     const QString membersPath = helper.getGroupMembersCsvFile(); // materialgroup_members.csv
 
-    const auto groupRows = loadGroupRows(metaPath);
-    const auto memberRows = loadMemberRows(membersPath);
+    CsvReader::FileContext metaCtx(metaPath);
+    CsvReader::FileContext membersCtx(membersPath);
+
+    const auto groupRows = loadGroupRows(metaCtx);
+    const auto memberRows = loadMemberRows(membersCtx);
 
     QMap<QString, MaterialGroup> groupMap;
 
     for (int i = 0; i < groupRows.size(); ++i) {
         const auto& row = groupRows[i];
 
-        CsvReader::RowContext ctx(i+1, metaPath);
+        //CsvReader::FileContext ctx(i+1, metaPath);
+        metaCtx.setCurrentLineNumber(i + 1);
         std::optional<MaterialGroup> groupOpt =
-            buildMaterialGroupFromRow(row, ctx);
+            buildMaterialGroupFromRow(row, metaCtx);
         if (groupOpt.has_value()) {
             if (groupMap.contains(row.groupKey)) {
                 qWarning() << "⚠️ Duplikált csoport:" << row.groupKey << "a sorban:" << i + 1;
@@ -131,8 +143,10 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
             continue;
         }
 
-        CsvReader::RowContext ctx(i+1, membersPath);
-        auto materialId = buildMaterialIdFromMemberRow(row, ctx);
+        //CsvReader::FileContext ctx(i+1, membersPath);
+        membersCtx.setCurrentLineNumber(i + 1);
+
+        auto materialId = buildMaterialIdFromMemberRow(row, membersCtx);
 
         if(!materialId.has_value()) {
             qWarning() << "⚠️ Ismeretlen anyag barcode:" << row.materialBarCode << "(csoport:" << row.groupKey << ")";
@@ -141,6 +155,18 @@ bool MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry& registry) {
 
         MaterialGroup& group = groupMap[row.groupKey];
         addMaterialToGroup(&group, materialId.value());
+    }
+
+    // 🔍 Hibák loggolása
+    if (metaCtx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(metaCtx.errorsSize()));
+        zWarning(metaCtx.toString());
+    }
+
+    // 🔍 Hibák loggolása
+    if (membersCtx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(membersCtx.errorsSize()));
+        zWarning(membersCtx.toString());
     }
 
     for (auto it = groupMap.constBegin(); it != groupMap.constEnd(); ++it) {

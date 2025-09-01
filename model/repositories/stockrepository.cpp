@@ -9,20 +9,32 @@
 #include <common/csvimporter.h>
 #include <common/settingsmanager.h>
 #include <model/registries/storageregistry.h>
+#include "common/logger.h"
 
 bool StockRepository::loadFromCSV(StockRegistry& registry) {
     auto& helper = FileNameHelper::instance();
-    if (!helper.isInited()) return false;
-
-    QString path = helper.getStockCsvFile();
-    if (path.isEmpty()) {
-        qWarning("Nincs elérhető stock.csv fájl");
+    if (!helper.isInited()) {
+        zWarning("❌ A FileNameHelper nincs inicializálva.");
         return false;
     }
 
-    QVector<StockEntry> entries = loadFromCSV_private(path);
+    QString path = helper.getStockCsvFile();
+    if (path.isEmpty()) {
+        zWarning("❌ Nincs elérhető stock.csv fájl.");
+        return false;
+    }
+
+    CsvReader::FileContext ctx(path);
+    QVector<StockEntry> entries = loadFromCSV_private(ctx);
+
+    // 🔍 Hibák loggolása
+    if (ctx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(ctx.errorsSize()));
+        zWarning(ctx.toString());
+    }
+
     if (entries.isEmpty()) {
-        qWarning("A stock.csv fájl üres vagy hibás sorokat tartalmaz.");
+        zWarning("❌ A stock.csv fájl üres vagy hibás sorokat tartalmaz.");
         return false;
     }
 
@@ -33,11 +45,12 @@ bool StockRepository::loadFromCSV(StockRegistry& registry) {
 
     // registry.setPersist(true);
     registry.setData(entries); // 🔧 Itt történik a készletregisztráció
+    zInfo(L("✅ %1 készletbejegyzés sikeresen importálva a fájlból: %2").arg(entries.size()).arg(path));
     return true;
 }
 
 QVector<StockEntry>
-StockRepository::loadFromCSV_private(const QString& filepath) {
+StockRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
     // QFile file(filepath);
     // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
@@ -49,15 +62,16 @@ StockRepository::loadFromCSV_private(const QString& filepath) {
 
     // const auto rows = FileHelper::parseCSV(&in, ';');
     // return CsvImporter::processCsvRows<StockEntry>(rows, convertRowToStockEntry);
-    return CsvReader::readAndConvert<StockEntry>(filepath, convertRowToStockEntry, true);
+    return CsvReader::readAndConvert<StockEntry>(ctx, convertRowToStockEntry, true);
 }
 
 
 
 std::optional<StockRepository::StockEntryRow>
-StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 3) {
-        qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Kevés oszlop");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -72,28 +86,28 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvRea
     bool okQty = false;
     row.quantity = qtyStr.toInt(&okQty);
     if (row.barcode.isEmpty() || !okQty || row.quantity <= 0) {
-        qWarning() << QString("⚠️ Sor %1: hibás barcode vagy mennyiség").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Sor %1: hibás barcode vagy mennyiség");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
-
-
-
     return row;
 }
 
 std::optional<StockEntry>
-StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::RowContext& ctx) {
+StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen anyag barcode '%2'")
-                          .arg(ctx.lineIndex).arg(row.barcode);
+        QString msg = L("⚠️ Ismeretlen anyag barcode '%1'").arg(row.barcode);
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
     const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
     if (!storage) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen tároló barcode '%2'")
-                          .arg(ctx.lineIndex).arg(row.storageBarcode);
+        QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -107,7 +121,7 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::Row
 }
 
 std::optional<StockEntry>
-StockRepository::convertRowToStockEntry(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+StockRepository::convertRowToStockEntry(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     const auto rowOpt = convertRowToStockEntryRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 

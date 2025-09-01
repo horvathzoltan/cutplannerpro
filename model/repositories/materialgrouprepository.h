@@ -49,16 +49,16 @@ private:
 
 
     // --- Stage 1: Convert ---
-    static std::optional<MaterialGroupRow> convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
-    static std::optional<MaterialGroupMemberRow> convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<MaterialGroupRow> convertRowToMaterialGroupRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<MaterialGroupMemberRow> convertRowToMaterialGroupMemberRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
 
     // --- Stage 2: Build ---
-    static std::optional<MaterialGroup> buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::RowContext& ctx);
-    static std::optional<QUuid> buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::RowContext& ctx);
+    static std::optional<MaterialGroup> buildMaterialGroupFromRow(const MaterialGroupRow& row, CsvReader::FileContext& ctx);
+    static std::optional<QUuid> buildMaterialIdFromMemberRow(const MaterialGroupMemberRow& row, CsvReader::FileContext& ctx);
 
     // --- Stage 3: Load & Assemble ---
-    static QVector<MaterialGroupRow> loadGroupRows(const QString& filepath);
-    static QVector<MaterialGroupMemberRow> loadMemberRows(const QString& filepath);
+    static QVector<MaterialGroupRow> loadGroupRows(CsvReader::FileContext& ctx);
+    static QVector<MaterialGroupMemberRow> loadMemberRows(CsvReader::FileContext& ctx);
     static void addMaterialToGroup(MaterialGroup* group, const QUuid& materialId);
 };
 

@@ -17,33 +17,67 @@
 #include <common/csvimporter.h>
 #include <common/color/namedcolor.h>
 
+// bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
+//     auto& helper = FileNameHelper::instance();
+//     if (!helper.isInited()) return false;
+
+//     auto fn = helper.getMaterialCsvFile();
+//     if (fn.isEmpty()) {
+//         zWarning("Nem található a tesztadatok CSV fájlja.");
+//         return false;
+//     }
+
+//     CsvReader::FileContext ctx(fn);
+//     const QVector<MaterialMaster> loaded = loadFromCSV_private(ctx);
+//     if (loaded.isEmpty()) {
+//         zWarning("A materials.csv fájl üres vagy hibás formátumú.");
+//         return false;
+//     }
+
+//     registry.setData(loaded); // 🔧 Itt történik az anyagregisztráció
+//     return true;
+// }
+
 bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
     auto& helper = FileNameHelper::instance();
-    if (!helper.isInited()) return false;
+    if (!helper.isInited()) {
+        zWarning("❌ A FileNameHelper nincs inicializálva.");
+        return false;
+    }
 
-    auto fn = helper.getMaterialCsvFile();
+    const QString fn = helper.getMaterialCsvFile();
     if (fn.isEmpty()) {
-        zWarning("Nem található a tesztadatok CSV fájlja.");
+        zWarning("❌ Nem található a tesztadatok CSV fájlja.");
         return false;
     }
 
-    const QVector<MaterialMaster> loaded = loadFromCSV_private(fn);
+    CsvReader::FileContext ctx(fn);
+    const QVector<MaterialMaster> loaded = loadFromCSV_private(ctx);
+
+    // 🔍 Hibák loggolása, ha vannak
+    if (ctx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(ctx.errorsSize()));
+        zWarning(ctx.toString());
+    }
+
     if (loaded.isEmpty()) {
-        zWarning("A materials.csv fájl üres vagy hibás formátumú.");
+        zWarning("❌ A materials.csv fájl üres vagy hibás formátumú.");
         return false;
     }
 
-    registry.setData(loaded); // 🔧 Itt történik az anyagregisztráció
+    registry.setData(loaded); // 🔧 Anyagregisztráció
+    zInfo(QString("✅ %1 anyag sikeresen importálva a fájlból: %2").arg(loaded.size()).arg(fn));
     return true;
 }
 
+
 QVector<MaterialMaster>
-MaterialRepository::loadFromCSV_private(const QString& filePath) {
-    return CsvReader::readAndConvert<MaterialMaster>(filePath, convertRowToMaterial, true);
+MaterialRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
+    return CsvReader::readAndConvert<MaterialMaster>(ctx, convertRowToMaterial, true);
 }
 
 std::optional<MaterialMaster>
-MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     const auto rowOpt = convertRowToMaterialRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 
@@ -51,10 +85,10 @@ MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, CsvReade
 }
 
 std::optional<MaterialRepository::MaterialRow>
-MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 9) {
-        QString msg = L("⚠️ Sor %1: kevés mező (legalább 9)").arg(ctx.lineIndex);
-        zWarning(msg);
+        QString msg = L("⚠️ Kevés mező (legalább 9)");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -73,8 +107,8 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     row.stockLength = lengthStr.toDouble(&okLength);
 
     if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
-        QString msg = L("⚠️ Sor %1: érvénytelen barcode vagy hossz").arg(ctx.lineIndex);
-        zWarning(msg);
+        QString msg = L("⚠️ Érvénytelen barcode vagy hossz");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -82,7 +116,7 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
 }
 
 std::optional<MaterialMaster>
-MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::RowContext& ctx) {
+MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::FileContext& ctx) {
     MaterialMaster m;
     m.id = QUuid::createUuid();
     m.name = row.name;
@@ -97,8 +131,8 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::RowC
         double w = row.dim1.toDouble(&okW);
         double h = row.dim2.toDouble(&okH);
         if (!okW || !okH || w <= 0 || h <= 0) {
-            qWarning() << QString("⚠️ Sor %1: érvénytelen szélesség/magasság").arg(ctx.lineIndex);
-            //return std::nullopt;
+            QString msg = L("⚠️ Érvénytelen szélesség/magasság");
+            ctx.addError(ctx.currentLineNumber(), msg);
         }
         m.size_mm = QSizeF(w, h);
     }
@@ -106,8 +140,8 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::RowC
         bool okD = false;
         double d = row.dim1.toDouble(&okD);
         if (!okD || d <= 0) {
-            qWarning() << QString("⚠️ Sor %1: érvénytelen átmérő").arg(ctx.lineIndex);
-            //return std::nullopt;
+            QString msg = L("⚠️ Érvénytelen átmérő");
+            ctx.addError(ctx.currentLineNumber(), msg);
         }
         m.diameter_mm = d;
     }
@@ -116,8 +150,8 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::RowC
     if (!row.colorStr.isEmpty()) {
         m.color = NamedColor(row.colorStr);
         if (!m.color.isValid()) {
-            QString msg =  QStringLiteral("⚠️ Sor %1: ismeretlen színformátum: %2").arg(ctx.lineIndex).arg( row.colorStr);
-            zWarning(msg);
+            QString msg = L("⚠️ Ismeretlen színformátum: %1").arg( row.colorStr);
+            ctx.addError(ctx.currentLineNumber(), msg);
         }
     } else {
         m.color = NamedColor(); // nincs festve

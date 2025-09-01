@@ -15,13 +15,21 @@ bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
 
     QString path = helper.getLeftoversCsvFile();
     if (path.isEmpty()) {
-        qWarning("Nincs elérhető leftovers.csv fájl");
+        zWarning("❌ Nincs elérhető leftovers.csv fájl");
         return false;
     }
 
-    QVector<LeftoverStockEntry> entries = loadFromCSV_private(path);
+    CsvReader::FileContext ctx(path);
+    QVector<LeftoverStockEntry> entries = loadFromCSV_private(ctx);
+
+    // 🔍 Hibák loggolása
+    if (ctx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(ctx.errorsSize()));
+        zWarning(ctx.toString());
+    }
+
     if (entries.isEmpty()) {
-        qWarning("A leftovers.csv fájl üres vagy hibás sorokat tartalmaz.");
+        zWarning("❌ A leftovers.csv fájl üres vagy hibás sorokat tartalmaz.");
         return false;
     }
 
@@ -32,6 +40,7 @@ bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
     // registry.setPersist(true);
 
     registry.setData(entries); // 🔧 Itt történik a készletregisztráció
+    zInfo(L("✅ %1 készletbejegyzés sikeresen importálva a fájlból: %2").arg(entries.size()).arg(path));
 
     return true;
 }
@@ -68,7 +77,7 @@ bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
 // }
 
 QVector<LeftoverStockEntry>
-LeftoverStockRepository::loadFromCSV_private(const QString& filepath) {
+LeftoverStockRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
     // QFile file(filepath);
     // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     //     qWarning() << "❌ Nem sikerült megnyitni a leftovers fájlt:" << filepath;
@@ -80,14 +89,16 @@ LeftoverStockRepository::loadFromCSV_private(const QString& filepath) {
     // const auto rows = FileHelper::parseCSV(&in, ';');
 
     //return CsvImporter::processCsvRows<LeftoverStockEntry>(rows, convertRowToReusableEntry);
-    return CsvReader::readAndConvert<LeftoverStockEntry>(filepath, convertRowToReusableEntry, true);
+    return CsvReader::readAndConvert<LeftoverStockEntry>(ctx, convertRowToReusableEntry, true);
 }
 
 
 std::optional<LeftoverStockRepository::ReusableStockRow>
-LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 6) {
-        qWarning() << QString("⚠️ Sor %1: kevés oszlop").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Kevés oszlop");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -97,7 +108,9 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
     bool okLength = false;
     row.availableLength_mm = parts[1].trimmed().toInt(&okLength);
     if (row.materialBarcode.isEmpty() || !okLength || row.availableLength_mm <= 0) {
-        qWarning() << QString("⚠️ Sor %1: hibás barcode vagy hossz").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Hibás barcode vagy hossz");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -113,7 +126,8 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
 
     row.source= LeftoverSourceUtils::fromString(parts[2].trimmed());
     if (row.source == Cutting::Result::LeftoverSource::Undefined) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen forrástípus").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Ismeretlen forrástípus");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -123,20 +137,23 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
         if (okOpt)
             row.optimizationId = optId;
         else {
-            qWarning() << QString("⚠️ Sor %1: hibás optimalizáció ID").arg(ctx.lineIndex);
+            QString msg = L("⚠️ Hibás optimalizáció ID");
+            ctx.addError(ctx.currentLineNumber(), msg);
             return std::nullopt;
         }
     }
 
     row.barcode = parts[4].trimmed();
-    if (row.barcode.isEmpty()) {
-        qWarning() << QString("⚠️ Sor %1: hiányzó egyedi barcode").arg(ctx.lineIndex);
+    if (row.barcode.isEmpty()) {        
+        QString msg = L("⚠️ Hiányzó egyedi barcode");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
     row.storageBarcode = parts[5].trimmed();
-    if (row.storageBarcode.isEmpty()) {
-        qWarning() << QString("⚠️ Sor %1: hiányzó tároló barcode").arg(ctx.lineIndex);
+    if (row.storageBarcode.isEmpty()) {        
+        QString msg = L("⚠️ Hiányzó tároló barcode");
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -144,17 +161,18 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
 }
 
 std::optional<LeftoverStockEntry>
-LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::RowContext& ctx) {
+LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.materialBarcode);
     if (!mat) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen anyag barcode '%2'").arg(ctx.lineIndex).arg(row.materialBarcode);
+        QString msg = L("⚠️ Ismeretlen anyag barcode '%1'").arg(row.materialBarcode);
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
     const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
     if (!storage) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen tároló barcode '%2'")
-                          .arg(ctx.lineIndex).arg(row.storageBarcode);
+        QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
+        ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
 
@@ -170,7 +188,7 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
 }
 
 std::optional<LeftoverStockEntry>
-LeftoverStockRepository::convertRowToReusableEntry(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+LeftoverStockRepository::convertRowToReusableEntry(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     const auto rowOpt = convertRowToReusableRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 

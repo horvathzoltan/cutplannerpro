@@ -39,15 +39,15 @@ private:
     };
 
     // --- Stage 1: Convert ---
-    static std::optional<CuttingMachineRow> convertRowToMachineRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
-    static std::optional<CuttingMachineMaterialTypeRow> convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
+    static std::optional<CuttingMachineRow> convertRowToMachineRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<CuttingMachineMaterialTypeRow> convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
 
     // --- Stage 2: Build ---
-    static std::optional<CuttingMachine> buildMachineFromRow(const CuttingMachineRow& row, CsvReader::RowContext& ctx);
-    static std::optional<MaterialType> buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::RowContext& ctx);
+    static std::optional<CuttingMachine> buildMachineFromRow(const CuttingMachineRow& row, CsvReader::FileContext& ctx);
+    static std::optional<MaterialType> buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::FileContext& ctx);
 
     // --- Stage 3: Load & Assemble ---
-    static QVector<CuttingMachineRow> loadMachineRows(const QString& filepath);
-    static QVector<CuttingMachineMaterialTypeRow> loadMaterialTypeRows(const QString& filepath);
+    static QVector<CuttingMachineRow> loadMachineRows(CsvReader::FileContext& ctx);
+    static QVector<CuttingMachineMaterialTypeRow> loadMaterialTypeRows(CsvReader::FileContext& ctx);
     static void addMaterialTypeToMachine(CuttingMachine* machine, const MaterialType& material);
 };

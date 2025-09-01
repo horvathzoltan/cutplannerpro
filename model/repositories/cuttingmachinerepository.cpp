@@ -10,9 +10,11 @@
 // --- Stage 1: Convert ---
 
 std::optional<CuttingMachineRepository::CuttingMachineRow>
-CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 8) {
-        qWarning() << "❌ Érvénytelen gépsor a sorban:" << ctx.lineIndex;
+        QString msg = L("❌ Érvénytelen gépsor a sorban:");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -29,9 +31,11 @@ CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, 
 }
 
 std::optional<CuttingMachineRepository::CuttingMachineMaterialTypeRow>
-CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 2) {
-        qWarning() << "❌ Érvénytelen anyagsor a sorban:" << ctx.lineIndex;
+        QString msg = L("❌ Érvénytelen anyagsor a sorban:");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -45,14 +49,16 @@ CuttingMachineRepository::convertRowToMaterialRow(const QVector<QString>& parts,
 // --- Stage 2: Build ---
 
 std::optional<CuttingMachine>
-CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, CsvReader::RowContext& ctx) {
+CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, CsvReader::FileContext& ctx) {
     bool ok1, ok2, ok3;
     double kerf = row.kerf.toDouble(&ok1);
     double maxLen = row.stellerMaxLength.toDouble(&ok2);
     double comp = row.stellerCompensation.toDouble(&ok3);
 
     if (!ok1 || !ok2 || !ok3) {
-        qWarning() << "❌ Hibás számformátum a sorban:" << ctx.lineIndex;
+        QString msg = L("❌ Hibás számformátum a sorban:");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -70,15 +76,19 @@ CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, CsvR
 }
 
 std::optional<MaterialType>
-CuttingMachineRepository::buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::RowContext& ctx) {
+CuttingMachineRepository::buildMaterialTypeFromRow(const CuttingMachineMaterialTypeRow& row, CsvReader::FileContext& ctx) {
     if (row.materialTypeStr.isEmpty()) {
-        qWarning() << "❌ Hiányzó anyagtípus a sorban:" << ctx.lineIndex;
+        QString msg = L("❌ Hiányzó anyagtípus a sorban:");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
     MaterialType type = MaterialType::fromString(row.materialTypeStr);
     if (type.value == MaterialType::Type::Unknown) {
-        qWarning() << "⚠️ Ismeretlen anyagtípus:" << row.materialTypeStr << "(gép barcode:" << row.machineBarcode << ")";
+        QString msg = L("⚠️ Ismeretlen anyagtípus:")+ row.materialTypeStr + "(gép barcode:" + row.machineBarcode + ")";
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -88,13 +98,13 @@ CuttingMachineRepository::buildMaterialTypeFromRow(const CuttingMachineMaterialT
 // --- Stage 3: Load & Assemble ---
 
 QVector<CuttingMachineRepository::CuttingMachineRow>
-CuttingMachineRepository::loadMachineRows(const QString& filepath) {
-    return CsvReader::readAndConvert<CuttingMachineRow>(filepath, convertRowToMachineRow);
+CuttingMachineRepository::loadMachineRows(CsvReader::FileContext& ctx) {
+    return CsvReader::readAndConvert<CuttingMachineRow>(ctx, convertRowToMachineRow);
 }
 
 QVector<CuttingMachineRepository::CuttingMachineMaterialTypeRow>
-CuttingMachineRepository::loadMaterialTypeRows(const QString& filepath) {
-    return CsvReader::readAndConvert<CuttingMachineMaterialTypeRow>(filepath, convertRowToMaterialRow);
+CuttingMachineRepository::loadMaterialTypeRows(CsvReader::FileContext& ctx) {
+    return CsvReader::readAndConvert<CuttingMachineMaterialTypeRow>(ctx, convertRowToMaterialRow);
 }
 
 void CuttingMachineRepository::addMaterialTypeToMachine(CuttingMachine* machine, const MaterialType& materialType) {
@@ -111,8 +121,11 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
     const QString metaPath = helper.getCuttingMachineCsvFile();            // cuttingmachines.csv
     const QString compatPath = helper.getCuttingMachineMaterialsCsvFile(); // cuttingmachine_materials.csv
 
-    const auto machineRows = loadMachineRows(metaPath);
-    const auto materialTypeRows = loadMaterialTypeRows(compatPath);
+    CsvReader::FileContext metaCtx(metaPath);
+    CsvReader::FileContext compatCtx(compatPath);
+
+    const auto machineRows = loadMachineRows(metaCtx);
+    const auto materialTypeRows = loadMaterialTypeRows(compatCtx);
 
     QMap<QString, CuttingMachine> machineMap;
 
@@ -120,9 +133,10 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
     for (int i = 0; i < machineRows.size(); ++i) {
         const auto& row = machineRows[i];
 
-        CsvReader::RowContext ctx(i+1, metaPath);
+        metaCtx.setCurrentLineNumber(i+1);
+        //CsvReader::FileContext ctx(i+1, metaPath);
 
-        auto machineOpt = buildMachineFromRow(row, ctx);
+        auto machineOpt = buildMachineFromRow(row, metaCtx);
         if (machineOpt.has_value()) {
             if (machineMap.contains(row.barcode)) {
                 qWarning() << "⚠️ Duplikált gép barcode:" << row.barcode << "a sorban:" << i + 1;
@@ -137,7 +151,9 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
                 machine.rootStorageId = storage->id;
             } else {
                 // ⚠️ Figyelmeztetés, ha a storageBarcode nem található
-                qWarning() << "⚠️ Storage barcode nem található:" << row.storageBarcode << "a gépnél:" << row.name;
+                QString msg = L("⚠️ Storage barcode nem található:")+ row.storageBarcode + "a gépnél:" + row.name;
+                metaCtx.addError(metaCtx.currentLineNumber(), msg);
+
             }
 
             machineMap.insert(row.barcode, machine);
@@ -152,13 +168,26 @@ bool CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry& registry) {
             continue;
         }
 
-        CsvReader::RowContext ctx(i+1, compatPath);
+        compatCtx.setCurrentLineNumber(i+1);
 
-        auto typeOpt = buildMaterialTypeFromRow(row, ctx);
+        //CsvReader::FileContext ctx(i+1, compatPath);
+
+        auto typeOpt = buildMaterialTypeFromRow(row, compatCtx);
         if (!typeOpt.has_value()) continue;
 
         CuttingMachine& machine = machineMap[row.machineBarcode];
         addMaterialTypeToMachine(&machine, typeOpt.value());
+    }
+
+    // 🔍 Hibák loggolása
+    if (metaCtx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(metaCtx.errorsSize()));
+        zWarning(metaCtx.toString());
+    }
+    // 🔍 Hibák loggolása
+    if (compatCtx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(compatCtx.errorsSize()));
+        zWarning(compatCtx.toString());
     }
 
     // 🧾 Gépek regisztrálása a rendszerbe

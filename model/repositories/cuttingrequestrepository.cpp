@@ -36,12 +36,18 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
         return false;
     }
 
-    QVector<Cutting::Plan::Request> requests = loadFromCsv_private(filePath);
+    CsvReader::FileContext ctx(filePath);
+    QVector<Cutting::Plan::Request> requests = loadFromCsv_private(ctx);
+
+    // 🔍 Hibák loggolása
+    if (ctx.hasErrors()) {
+        zWarning(QString("⚠️ Hibák a vágási terv importálása során (%1 sor):").arg(ctx.errorsSize()));
+        zWarning(ctx.toString());
+    }
 
     lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
     if (lastFileWasEffectivelyEmpty) {
-        zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");
-        //registry.setPersist(false);
+        zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");        //registry.setPersist(false);
         //registry.clearAll();
         registry.setData({}); // Clear the registry);
         //registry.setPersist(true);
@@ -49,7 +55,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     }
 
     if (requests.isEmpty()) {
-        zWarning("⚠️ Cutting plan file is invalid or improperly formatted");
+        zWarning("❌ A cutting plan fájl hibás vagy nem tartalmaz érvényes adatot.");
         return false;
     }
 
@@ -60,31 +66,40 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
 
     registry.setData(requests);
 
+    zInfo(QString("✅ %1 vágási igény sikeresen importálva a fájlból: %2").arg(requests.size()).arg(filePath));        return false;
+
     //registry.setPersist(true);
     return true;
 }
 
 QVector<Cutting::Plan::Request>
-CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
-    // QFile file(filepath);
-    // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
-    //     return {};
-    // }
-
-    // QTextStream in(&file);
-    // in.setEncoding(QStringConverter::Utf8);
-
-    //const auto rows = FileHelper::parseCSV(&in, ';');
-    //return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
-    return CsvReader::readAndConvert<Cutting::Plan::Request>(filepath, convertRowToCuttingRequest, true);
+CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx) {
+    return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest, true);
 }
+
+// QVector<Cutting::Plan::Request>
+// CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
+//     // QFile file(filepath);
+//     // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//     //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
+//     //     return {};
+//     // }
+
+//     // QTextStream in(&file);
+//     // in.setEncoding(QStringConverter::Utf8);
+
+//     //const auto rows = FileHelper::parseCSV(&in, ';');
+//     //return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
+//     return CsvReader::readAndConvert<Cutting::Plan::Request>(filepath, convertRowToCuttingRequest, true);
+// }
 
 
 std::optional<CuttingRequestRepository::CuttingRequestRow>
-CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 5) {
-        qWarning() << QString("⚠️ Sor %1: kevés adat").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Kevés adat");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -96,7 +111,9 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     row.externalReference = parts[4].trimmed();
 
     if (row.barcode.isEmpty() || row.requiredLength <= 0 || row.quantity <= 0) {
-        qWarning() << QString("⚠️ Sor %1: érvénytelen mező").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Érvénytelen mező");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -104,11 +121,12 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
 }
 
 std::optional<Cutting::Plan::Request>
-CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::RowContext& ctx) {
+CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
-        qWarning() << QString("⚠️ Sor %1: ismeretlen barcode '%2'")
-                          .arg(ctx.lineIndex).arg(row.barcode);
+        QString msg = L("⚠️ Ismeretlen barcode '%1'").arg(row.barcode);
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -120,7 +138,9 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.externalReference = row.externalReference;
 
     if (!req.isValid()) {
-        qWarning() << QString("⚠️ Sor %1: érvénytelen CuttingRequest").arg(ctx.lineIndex);
+        QString msg = L("⚠️ Érvénytelen CuttingRequest");
+        ctx.addError(ctx.currentLineNumber(), msg);
+
         return std::nullopt;
     }
 
@@ -128,7 +148,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
 }
 
 std::optional<Cutting::Plan::Request>
-CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, CsvReader::RowContext& ctx) {
+CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     const auto rowOpt = convertRowToCuttingRequestRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 

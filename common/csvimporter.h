@@ -26,22 +26,72 @@ namespace CsvReader{
 // }
 
 //template<typename T>
-struct RowContext {
-    int lineIndex;
-    QString filepath;
- //   T row;
+
+struct RowError{
+private:
+    int _lineIndex;
+    QString _errorMessage;
+public:
+    RowError(int lineIndex, const QString& errorMessage = QString())
+        : _lineIndex(lineIndex), _errorMessage(errorMessage) {}
+
+    QString toString() const {
+        if (_errorMessage.isEmpty())
+            return QString("⚠️ Ismeretlen hiba (Sor: %1)\n").arg(_lineIndex);
+        return QString("%1 (Sor: %2)\n").arg(_errorMessage, QString::number(_lineIndex));
+    }
+
 };
 
-struct ImortError_Line{
-    int lineIndex;
-    QString message;
-};
+struct FileContext {
+private:
+    QString _filepath;
+    QVector<RowError> _errors;
+    int _currentLineNumber = 0;
+public:
 
-struct ImportError {
-    QString fileName;
-    QVector<ImortError_Line> errors;
-};
+    FileContext(const QString& filepath)
+        : _filepath(filepath) {}
 
+    QString filepath() const { return _filepath; }
+
+    void setCurrentLineNumber(int lineNumber) {
+        _currentLineNumber = lineNumber;
+    }
+
+    int currentLineNumber() const {
+        return _currentLineNumber;
+    }
+
+    void addError(int l, const QString& msg) {
+        _errors.append({l, msg});
+    }
+
+    bool hasErrors() const {
+        return !_errors.isEmpty();
+    }
+
+    int errorsSize() const {
+        return _errors.size();
+    }
+
+    QString toString() const {
+        QString result = QString("📄 Fájl: %1\n").arg(_filepath);
+
+        if (_errors.isEmpty()) {
+            result += "✅ Nincs hiba.\n";
+        } else {
+            result += "Hibalista:\n";
+            int idx = 1;
+            for (const auto& err : _errors) {
+                result += QString("  %1. %2").arg(idx++).arg(err.toString());
+            }
+        }
+
+        return result;
+    }
+
+};
 
 inline QList<QVector<QString>> read(const QString& filepath, QChar separator = QChar()) {
     QFile file(filepath);
@@ -71,20 +121,20 @@ inline QList<QVector<QString>> read(const QString& filepath, QChar separator = Q
 }
 
 template<typename T>
-static QVector<T> readAndConvert(const QString& filepath,
-                                 std::function<std::optional<T>(const QVector<QString>&, RowContext&)> converter,
+static QVector<T> readAndConvert(CsvReader::FileContext& ctx,
+                                 std::function<std::optional<T>(const QVector<QString>&, FileContext&)> converter,
                                  bool skipHeader = true)
 {
-    const auto rows = read(filepath);
+    const auto rows = read(ctx.filepath());
     QVector<T> result;
 
     for (int i = 0; i < rows.size(); ++i) {
         if (skipHeader && i == 0) continue;
 
-        const auto& row = rows[i];        
-        int linenumber = i + 1;
+        const auto& row = rows[i];
+        ctx.setCurrentLineNumber(i + 1);
 
-        RowContext ctx(linenumber, filepath);
+        //RowContext ctx(linenumber, filepath);
         auto maybeObj = converter(row, ctx);
         if (maybeObj.has_value())
             result.append(std::move(maybeObj.value()));
@@ -92,56 +142,4 @@ static QVector<T> readAndConvert(const QString& filepath,
 
     return result;
 }
-
-// template<typename T>
-// static QVector<T> readAndConvert(const QString& filepath,
-//                                  std::function<std::optional<T>(const QVector<QString>&, int)> converter,
-//                                  bool skipHeader = true)
-// {
-//     const auto rows = read(filepath);
-//     QVector<T> result;
-
-//     for (int i = 0; i < rows.size(); ++i) {
-//         if (skipHeader && i == 0) continue;
-
-//         const auto& row = rows[i];
-//         auto maybeObj = converter(row, i + 1);
-//         if (maybeObj.has_value())
-//             result.append(std::move(maybeObj.value()));
-//     }
-
-//     return result;
-// }
-}// endof namespace CsvReader
-
-/**
- * @brief Segédosztály CSV sorok feldolgozásához sablonos konverterrel.
- *
- * A sorokat generikusan lehet konvertálni egy kívánt típusra. A fejléc sor automatikusan kihagyásra kerül.
- */
-// class CsvImporter {
-// public:
-//     /**
-//      * @brief Feldolgoz egy CSV-táblázatot és konvertálja a sorokat objektumokká.
-//      *
-//      * @tparam T A cél típus, amit a sorokból szeretnél visszakapni.
-//      * @param rows A parse-olt CSV sorok, már split-elve (például FileHelper::parseCSV eredménye).
-//      * @param converter Függvény, amely egy sorból és fájlbeli sorszámból visszaadja az objektumot, vagy nullopt, ha a konvertálás sikertelen.
-//      * @return QVector<T> A sikeresen konvertált objektumok listája.
-//      */
-//     template<typename T>
-//     static QVector<T> processCsvRows(const QList<QVector<QString>>& rows,
-//                                      std::function<std::optional<T>(const QVector<QString>&, int)> converter)
-//     {
-//         QVector<T> result;
-//         for (int i = 0; i < rows.size(); ++i) {
-//             if (i == 0) continue; // Fejléc sor kihagyása
-
-//             const auto& row = rows[i];
-//             auto maybeObj = converter(row, i + 1); // fájlbeli sorszám = index + 1
-//             if (maybeObj.has_value())
-//                 result.append(std::move(maybeObj.value()));
-//         }
-//         return result;
-//     }
-// };
+}

@@ -182,8 +182,9 @@ bool NamedColor::initRalColors(const QList<RalSource>& sources)
     //         ralColors_.insert(key, value);
     // }
 
+
     for (const RalSource& src : sources) {
-        auto converter = [system = src.system](const QVector<QString>& row, CsvReader::RowContext& ctx) -> std::optional<std::pair<QString, NamedColor>> {
+        auto converter = [system = src.system](const QVector<QString>& row, CsvReader::FileContext& ctx) -> std::optional<std::pair<QString, NamedColor>> {
             if (row.size() != 3) return std::nullopt;
 
             const QString code = "RAL " + row[0].trimmed();
@@ -196,7 +197,13 @@ bool NamedColor::initRalColors(const QList<RalSource>& sources)
             return std::make_pair(code.toUpper(), NamedColor(color, name, code.toUpper(), system));
         };
 
-        const auto items = CsvReader::readAndConvert<std::pair<QString, NamedColor>>(src.filePath, converter);
+        CsvReader::FileContext ctx(src.filePath);
+        const auto items = CsvReader::readAndConvert<std::pair<QString, NamedColor>>(ctx, converter);
+        if (ctx.hasErrors()) {
+            zWarning(QString("⚠️ Hibák az importálás során (%1 sor):").arg(ctx.errorsSize()));
+            zWarning(ctx.toString());
+        }
+
         for (const auto& [key, value] : items)
             ralColors_[src.system].insert(key, value);
     }

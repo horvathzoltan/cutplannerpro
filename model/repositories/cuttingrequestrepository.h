@@ -32,7 +32,7 @@ private:
     inline static bool lastFileWasEffectivelyEmpty = false;
 
     /// Segédmetódus a CSV-ből Request-ek létrehozásához
-    static QVector<Cutting::Plan::Request> loadFromCsv_private(const QString& filepath);
+    static QVector<Cutting::Plan::Request> loadFromCsv_private(CsvReader::FileContext& ctx);
 
     struct CuttingRequestRow {
         QString barcode;
@@ -42,7 +42,7 @@ private:
         QString externalReference;
     };
 
-    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::RowContext& ctx);
-    static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::RowContext& ctx);
-    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts,  CsvReader::RowContext& ctx);
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
 };
