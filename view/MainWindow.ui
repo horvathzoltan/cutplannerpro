@@ -187,7 +187,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="midBoxPage1">
         <attribute name="title">
@@ -251,6 +251,11 @@
            <column>
             <property name="text">
              <string>Category</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Length</string>
             </property>
            </column>
            <column>

@@ -16,7 +16,7 @@ void CuttingPlanFinalizer::finalize(QVector<Cutting::Plan::CutPlan>& plans,
 {
     // 1️⃣ A vágási tervek lezárása, és az alapanyag „fogyasztása” készletből
     for (Cutting::Plan::CutPlan& plan : plans) {
-        if (plan.usedReusable()) {
+        if (plan.isReusable()) {
             // ♻️ Ha hullóból vágtunk → annak eltávolítása
             LeftoverStockRegistry::instance().consumeEntry(plan.rodId);
         } else {

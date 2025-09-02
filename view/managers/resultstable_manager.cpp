@@ -25,6 +25,11 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
                                   "QLabel { background-color: %1; color: white; font-weight: bold; padding: 6px; border-radius: 6px; }"
                                   ).arg(groupColor.name()));
 
+    // auto* itemLength = new QTableWidgetItem(QString::number(mat->stockLength_mm));
+    // itemLength->setTextAlignment(Qt::AlignCenter);
+    // //itemLength->setData(Qt::UserRole, mat->stockLength_mm);
+    // table->setItem(rowIx, ColLength, itemLength);
+
     // 🔢 Rod #
     auto* itemRod = new QTableWidgetItem(rodNumber);
     itemRod->setTextAlignment(Qt::AlignCenter);
@@ -58,8 +63,10 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // 📏 Kerf, Waste
     auto* itemKerf = new QTableWidgetItem(QString::number(plan.kerfTotal));
     auto* itemWaste = new QTableWidgetItem(QString::number(plan.waste));
+    auto* itemLength = new QTableWidgetItem(QString::number(plan.totalLength));
     itemKerf->setTextAlignment(Qt::AlignCenter);
     itemWaste->setTextAlignment(Qt::AlignCenter);
+    itemLength->setTextAlignment(Qt::AlignCenter);
 
     // 🎨 Háttér waste alapján
     QColor bgColor = plan.waste <= 500 ? QColor(144,238,144)
@@ -79,6 +86,7 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // 📋 Cellák beállítása
     table->setItem(row, ColRod, itemRod);
     table->setCellWidget(row, ColGroup, groupLabel);
+    table->setItem(row, ColLength, itemLength);
     table->setItem(row, ColKerf, itemKerf);
     table->setItem(row, ColWaste, itemWaste);
 

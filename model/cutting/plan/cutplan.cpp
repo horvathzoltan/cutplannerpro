@@ -6,7 +6,7 @@
 namespace Cutting {
 namespace Plan {
 
-bool CutPlan::usedReusable() const
+bool CutPlan::isReusable() const
 {
         return source == Cutting::Plan::Source::Reusable;
 }

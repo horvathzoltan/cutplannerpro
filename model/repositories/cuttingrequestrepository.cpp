@@ -66,7 +66,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
 
     registry.setData(requests);
 
-    zInfo(QString("✅ %1 vágási igény sikeresen importálva a fájlból: %2").arg(requests.size()).arg(filePath));        return false;
+    zInfo(QString("✅ %1 vágási igény sikeresen importálva a fájlból: %2").arg(requests.size()).arg(filePath));
 
     //registry.setPersist(true);
     return true;

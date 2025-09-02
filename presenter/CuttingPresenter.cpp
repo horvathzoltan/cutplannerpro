@@ -183,7 +183,7 @@ QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
 
 void CuttingPresenter::runOptimization() {
     if (!isModelSynced) {
-        qWarning() << "⚠️ A modell nem volt szinkronizálva optimalizáció előtt!";
+        zWarning(L("⚠️ A modell nem volt szinkronizálva optimalizáció előtt!"));
         // opcionálisan: return vagy default szinkron
         return;
     }
@@ -261,7 +261,7 @@ void CuttingPresenter::finalizePlans()
             << "  → #" << plan.rodNumber
             << " | PlanId: " << plan.planId
             << " | Forrás: " << (plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK")
-            << "\n     Azonosító: " << (plan.usedReusable() ? plan.rodId : plan.materialName())
+            << "\n     Azonosító: " << (plan.isReusable() ? plan.rodId : plan.materialName())
             << " | Vágások száma: " << plan.cuts.size()
             << " | Kerf: " << plan.kerfTotal << " mm"
             << " | Hulladék: " << plan.waste << " mm"
@@ -412,21 +412,34 @@ void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
 
 /*PickingPlan*/
 
+// a requestben van egy material - ebből az anyagból szeretnénk levágni - requestMaterial
+// a planban van egy material - selectedMaterialId - ezt nem tudjuk hogy mi.
+// De: először a reqMaterial groupjában keresünk hullót
+// és ha nincsen, akkor a groupjából keresünk egy szálat
+// majd elkészülnek a cutok per plan
+// minden cutban van egy material, ez a reqMaterial
+
 QMap<QString, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
     QMap<QString, int> pickingMap;
 
     for (const auto& plan : plans) {
-        for (const auto& cut : plan.cuts) {
-            auto mid = cut.materialId;
-            auto* mat = MaterialRegistry::instance().findById(mid);
-            if(mat){
-                QString barcode = mat->barcode;
-                int quantity = 1; // Minden darab egy egység – ha van külön mennyiség mező, azt használd
+        if(plan.isReusable())
+            continue; // csak a stockból vágott anyagok számítanak
+        QUuid mid = plan.materialId;
+        auto *mat = MaterialRegistry::instance().findById(mid);
+        if (!mat) continue;
+            //for (const auto& cut : plan.cuts) {
 
-                pickingMap[barcode] += quantity;
-            }
+                    QString barcode = mat->barcode;
+                    int quantity = 1; // Minden darab egy egység – ha van külön
+                    // mennyiség mező, azt használd
 
-        }
+                    pickingMap[barcode] += quantity;
+           // }
+    /*    }
+    else {
+            zInfo(L("⚠️ Nem található anyag a picking map generálásához:") + mid.toString());
+        }*/
     }
 
     return pickingMap;

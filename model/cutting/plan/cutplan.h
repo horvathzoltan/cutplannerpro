@@ -27,8 +27,9 @@ public:
     int rodNumber = -1;              // ➕ Sorszám / index
     //QVector<int> cuts;               // ✂️ Darabolások mm-ben
     int kerfTotal = 0;               // 🔧 Vágások során vesztett anyag összesen
-    int waste = 0;                   // ♻️ Maradék mm
+    int waste = 0;                   // ♻️ Maradék mm    
     QUuid materialId;                // 🔗 Az anyag azonosítója (UUID)
+    int totalLength = 0;      // 📏 Anyag hossz (mm)
     QString rodId;                   // 📄 Reusable barcode, ha van
 
     Cutting::Plan::Source source = Cutting::Plan::Source::Stock;
@@ -45,7 +46,7 @@ public:
     QVector<Cutting::Piece::PieceWithMaterial> cuts;
 
     // 🧠 Viselkedésalapú metódusok
-    bool usedReusable() const;
+    bool isReusable() const;
     bool isFinalized() const;
 
     QString materialName() const;        // Anyag neve — materialId alapján

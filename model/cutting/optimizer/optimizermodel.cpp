@@ -60,7 +60,7 @@ void OptimizerModel::optimize() {
         QVector<Cutting::Piece::PieceWithMaterial> selectedCombo;
 
         bool found = false;
-        bool usedReusable = false;
+        bool isReusable = false;
 
         // ♻️ Megpróbálunk találni hullóból újravágható rudat
         std::optional<ReusableCandidate> candidate =
@@ -73,7 +73,7 @@ void OptimizerModel::optimize() {
             selectedCombo      = best.combo;
 
             reusableInventory.remove(best.indexInInventory); // ❌ már nincs darabszám, kihúzzuk
-            usedReusable = true;
+            isReusable = true;
             found = true;
         }
 
@@ -130,7 +130,7 @@ void OptimizerModel::optimize() {
         int waste = selectedLength - used;
 
         QString barcode;
-        if (usedReusable && candidate.has_value()) {
+        if (isReusable && candidate.has_value()) {
             barcode = candidate->stock.reusableBarcode(); // 🧾 egyedi azonosító a reusable darabra
         } else {
             const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
@@ -145,9 +145,10 @@ void OptimizerModel::optimize() {
         p.waste = waste;
         p.materialId = selectedMaterialId;
         p.rodId = barcode;                         // Ha reusable: barcode = reusableBarcode
-        p.source = usedReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
+        p.source = isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
         p.planId = QUuid::createUuid();           // Egyedi azonosító
         p.status = Cutting::Plan::Status::NotStarted;
+        p.totalLength = selectedLength;
 
         // ➕ Ha később `piecesInfo` visszakerül, az így tölthető:
         //for (const auto& pwm : selectedCombo)
@@ -167,8 +168,8 @@ void OptimizerModel::optimize() {
             result.cuts           = selectedCombo;
             result.waste          = waste;
             //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
-            result.source = usedReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
-            result.optimizationId = usedReusable ? std::nullopt : std::make_optional(currentOpId);
+            result.source = isReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
+            result.optimizationId = isReusable ? std::nullopt : std::make_optional(currentOpId);
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
             result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);
 
