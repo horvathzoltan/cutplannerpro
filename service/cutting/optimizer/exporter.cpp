@@ -25,7 +25,7 @@ void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan
     // 🔁 Minden vágási terv kiírása
     for (const auto& plan : plans) {
         QStringList cutLabels;
-        for (const Cutting::Piece::PieceWithMaterial& pwm : plan.cuts)
+        for (const Cutting::Piece::PieceWithMaterial& pwm : plan.piecesWithMaterial)
             cutLabels.append(pwm.info.displayText()); // pl. "Kovács BT • MEGR-4022 • 1800 mm"
 
         QStringList segmentLabels;
@@ -75,11 +75,11 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan
 
         out << QString("Darabolások:\n");
 
-        if (plan.cuts.isEmpty()) {
+        if (plan.piecesWithMaterial.isEmpty()) {
             out << "-\n";
         } else {
-            for (int i = 0; i < plan.cuts.size(); ++i) {
-                const auto& pwm = plan.cuts[i];
+            for (int i = 0; i < plan.piecesWithMaterial.size(); ++i) {
+                const auto& pwm = plan.piecesWithMaterial[i];
                 out << QString("  %1. %2\n").arg(i + 1).arg(pwm.info.displayText());
             }
         }

@@ -43,7 +43,7 @@ public:
 
     //QVector<PieceInfo> piecesInfo;
 
-    QVector<Cutting::Piece::PieceWithMaterial> cuts;
+    QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial;
 
     // 🧠 Viselkedésalapú metódusok
     bool isReusable() const;
@@ -59,7 +59,7 @@ public:
 
     // 📐 Szakaszgenerálás helper
     void generateSegments(int kerf_mm, int totalLength_mm){
-        this->segments = Cutting::Segment::SegmentUtils::generateSegments(this->cuts
+        this->segments = Cutting::Segment::SegmentUtils::generateSegments(this->piecesWithMaterial
                                                         /* PieceWithMaterial-ek */,
                                                         kerf_mm, totalLength_mm);
 

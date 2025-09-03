@@ -2,18 +2,18 @@
 #include "../view/MainWindow.h"
 
 #include "common/logger.h"
-#include "model/registries/materialregistry.h"
-#include "model/relocation/relocationinstruction.h"
+//#include "model/registries/materialregistry.h"
+//#include "model/relocation/relocationinstruction.h"
 #include "model/storageaudit/storageauditentry.h"
+#include "service/cutting/result/archivedwasteutils.h"
 #include "service/cutting/result/resultutils.h"
-#include "model/archivedwasteentry.h"
+//#include "model/archivedwasteentry.h"
 #include "model/registries/cuttingplanrequestregistry.h"
 #include "model/registries/leftoverstockregistry.h"
 #include "model/registries/stockregistry.h"
-
-#include "service/cutting/plan/finalizer.h"
+//#include "service/cutting/plan/finalizer.h"
 #include "service/cutting/optimizer/exporter.h"
-#include "service/cutting/result/archivedwasteutils.h"
+//#include "service/cutting/result/archivedwasteutils.h"
 
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
@@ -21,6 +21,10 @@
 #include <model/repositories/cuttingrequestrepository.h>
 
 #include <service/storageaudit/storageauditservice.h>
+
+#include <service/cutting/plan/finalizer.h>
+
+#include <model/registries/materialregistry.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -191,6 +195,7 @@ void CuttingPresenter::runOptimization() {
     model.optimize();
     isModelSynced = false; // újra false az állapot, ha később újra hívnák
 
+    logPlans();
     QVector<Cutting::Plan::CutPlan> &plans = model.getResult_PlansRef();
 
     // ✨ Ha készen állsz rá, itt frissíthetjük a View táblákat:
@@ -239,13 +244,31 @@ void logReusableStatus(const QString& title, const QVector<LeftoverStockEntry>& 
 
 /*finalize*/
 
-void CuttingPresenter::finalizePlans()
-{
-    //const QVector<CutPlan> plans = model.getPlans();
+void CuttingPresenter::logPlans(){
     QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef(); // vagy getMutablePlans()
     const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
 
-    qDebug() << "✅ VÁGÁSI TERVEK — CutPlan-ek:";
+    zInfo(L("✅ VÁGÁSI TERVEK — CutPlan-ek:"));
+
+    // for (const auto& plan : plans) {
+    //     qDebug() << "✅ VÁGÁSI TERV #" << plan.rodNumber
+    //              << "| Anyag:" << plan.materialId
+    //              << "| Hossz:" << plan.totalLength << "mm"
+    //              << "| Hulló:" << (plan.source == Cutting::Plan::Source::Reusable ? "Igen" : "Nem")
+    //              << "| Veszteség:" << plan.waste << "mm"
+    //              << "| Vágások száma:" << plan.piecesWithMaterial.size();
+
+    //     for (const auto& cut : plan.piecesWithMaterial) {
+    //         const auto& info = cut.info;
+    //         qDebug() << "  ✂️ Darab:" << info.length_mm << "mm"
+    //                  << "| Megrendelő:" << info.ownerName
+    //                  << "| Tételszám:" << info.externalReference
+    //                  << "| Kérelem anyag:" << cut.materialId;
+    //     }
+
+    //     qDebug() << "--------------------------------------------";
+    // }
+
     for (const Cutting::Plan::CutPlan& plan : plans) {
         QStringList pieceLabels, kerfLabels, wasteLabels;
 
@@ -257,28 +280,35 @@ void CuttingPresenter::finalizePlans()
             }
         }
 
-        qDebug().nospace()
-            << "  → #" << plan.rodNumber
-            << " | PlanId: " << plan.planId
-            << " | Forrás: " << (plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK")
-            << "\n     Azonosító: " << (plan.isReusable() ? plan.rodId : plan.materialName())
-            << " | Vágások száma: " << plan.cuts.size()
-            << " | Kerf: " << plan.kerfTotal << " mm"
-            << " | Hulladék: " << plan.waste << " mm"
-            << "\n     Darabok: " << pieceLabels.join(" ")
-            << "\n     Kerf-ek: " << kerfLabels.join(" ")
-            << "\n     Hulladék szakaszok: " << wasteLabels.join(" ");
+        QString msg =
+            L("  → #%1").arg(plan.rodNumber) +
+            L(" | PlanId: %1").arg(plan.planId.toString()) +
+            L(" | Forrás: %1").arg(plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK") +
+            L("\n     Azonosító: %1").arg(plan.isReusable() ? plan.rodId : plan.materialName()) +
+            L(" | Vágások száma: %1").arg(plan.piecesWithMaterial.size()) +
+            L(" | Kerf: %1 mm").arg(plan.kerfTotal) +
+            L(" | Hulladék: %1 mm").arg(plan.waste) +
+            L("\n     Darabok: %1").arg(pieceLabels.join(" ")) +
+            L("\n     Kerf-ek: %1").arg(kerfLabels.join(" ")) +
+            L("\n     Hulladék szakaszok: %1").arg(wasteLabels.join(" "));
+
+        zInfo(msg);
+
     }
 
-    qDebug() << "♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:";
+    zInfo(L("♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:"));
+
     for (const Cutting::Result::ResultModel& result : results) {
-        qDebug().nospace()
-        << "  - Hulladék: " << result.waste << " mm"
-        << " | Forrás: " << result.sourceAsString()
-        << " | MaterialId: " << result.materialId
-        << " | Barcode: " << result.reusableBarcode
-        << "\n    Darabok: " << result.cutsAsString();
+        QString msg =
+            L("  - Hulladék: %1 mm").arg(result.waste) +
+            L(" | Forrás: %1").arg(result.sourceAsString()) +
+            L(" | MaterialId: %1").arg(result.materialId.toString()) +
+            L(" | Barcode: %1").arg(result.reusableBarcode) +
+            L("\n    Darabok: %1").arg(result.cutsAsString());
+
+        zInfo(msg);
     }
+
 
     // 📊 Összesítés
     int totalKerf = 0, totalWaste = 0, totalCuts = 0;
@@ -287,7 +317,7 @@ void CuttingPresenter::finalizePlans()
     for (const Cutting::Plan::CutPlan& plan : plans) {
         totalKerf += plan.kerfTotal;
         totalWaste += plan.waste;
-        totalCuts += plan.cuts.size();
+        totalCuts += plan.piecesWithMaterial.size();
         totalSegments += plan.segments.size();
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
@@ -296,11 +326,23 @@ void CuttingPresenter::finalizePlans()
         }
     }
 
-    qDebug().nospace() << "📈 Összesítés:\n"
-                       << "  Vágások összesen:         " << totalCuts << "\n"
-                       << "  Kerf összesen:            " << totalKerf << " mm (" << kerfSegs << " szakasz)\n"
-                       << "  Hulladék összesen:        " << totalWaste << " mm (" << wasteSegs << " szakasz)\n"
-                       << "  Teljes szakaszszám:       " << totalSegments;
+    QString msg =
+        L("📈 Összesítés:\n") +
+        L("  Vágások összesen:         %1").arg(totalCuts) + "\n" +
+        L("  Kerf összesen:            %1 mm (%2 szakasz)").arg(totalKerf).arg(kerfSegs) + "\n" +
+        L("  Hulladék összesen:        %1 mm (%2 szakasz)").arg(totalWaste).arg(wasteSegs) + "\n" +
+        L("  Teljes szakaszszám:       %1").arg(totalSegments);
+
+    zInfo(msg);
+
+}
+
+void CuttingPresenter::finalizePlans()
+{
+    //logPlans();
+
+    QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef();
+    const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
 
     qDebug() << "***";
 

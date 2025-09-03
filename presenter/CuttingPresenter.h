@@ -75,5 +75,6 @@ private:
 
     bool isModelSynced = false;
     QMap<QString, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
+    void logPlans();
 };
 

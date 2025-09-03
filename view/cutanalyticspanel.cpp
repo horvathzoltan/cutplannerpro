@@ -52,7 +52,7 @@ void CutAnalyticsPanel::updateStats(const QVector<Cutting::Plan::CutPlan>& plans
 
     // 📊 Tervek bejárása
     for (const Cutting::Plan::CutPlan& plan : plans) {
-        totalCuts += plan.cuts.size();          // vágások száma
+        totalCuts += plan.piecesWithMaterial.size();          // vágások száma
         segmentCount += plan.segments.size();   // teljes szakaszszám
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {

@@ -57,7 +57,7 @@ void OptimizerModel::optimize() {
         QUuid selectedMaterialId;
         int selectedLength = 0;
         //QVector<int> selectedCombo;
-        QVector<Cutting::Piece::PieceWithMaterial> selectedCombo;
+        QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial;
 
         bool found = false;
         bool isReusable = false;
@@ -70,7 +70,7 @@ void OptimizerModel::optimize() {
 
             selectedMaterialId = best.stock.materialId;
             selectedLength     = best.stock.availableLength_mm;
-            selectedCombo      = best.combo;
+            piecesWithMaterial = best.combo;
 
             reusableInventory.remove(best.indexInInventory); // ❌ már nincs darabszám, kihúzzuk
             isReusable = true;
@@ -92,7 +92,7 @@ void OptimizerModel::optimize() {
                         if (groupIds.contains(p.materialId))
                             relevant.append(p);
 
-                    selectedCombo = findBestFit(relevant, selectedLength);
+                    piecesWithMaterial = findBestFit(relevant, selectedLength);
                     found = true;
                     break;
                 }
@@ -100,14 +100,14 @@ void OptimizerModel::optimize() {
         }
 
         // 🚫 Ha egyik készletből sem tudunk vágni, eldobjuk az első darabot és folytatjuk
-        if (!found || selectedCombo.isEmpty()) {
+        if (!found || piecesWithMaterial.isEmpty()) {
             pieces.removeOne(target);
             continue;
         }
 
         // ✂️ Kivágott darabokat eltávolítjuk a listából      
 
-        for (const auto& used : selectedCombo) {
+        for (const auto& used : piecesWithMaterial) {
             for (int i = 0; i < pieces.size(); ++i) {
                 if (pieces[i].info.length_mm == used.info.length_mm &&
                     groupIds.contains(pieces[i].materialId)) {
@@ -120,12 +120,12 @@ void OptimizerModel::optimize() {
 
         // 📦 Vágási terv mentése
         //int totalCut = std::accumulate(selectedCombo.begin(), selectedCombo.end(), 0);
-        int totalCut = std::accumulate(selectedCombo.begin(), selectedCombo.end(), 0,
+        int totalCut = std::accumulate(piecesWithMaterial.begin(), piecesWithMaterial.end(), 0,
                                        [](int sum, const Cutting::Piece::PieceWithMaterial& pwm) {
                                            return sum + pwm.info.length_mm;
                                        });
 
-        int kerfTotal = (selectedCombo.size() ) * kerf; // vágási veszteség
+        int kerfTotal = (piecesWithMaterial.size() ) * kerf; // vágási veszteség
         int used = totalCut + kerfTotal;
         int waste = selectedLength - used;
 
@@ -140,7 +140,7 @@ void OptimizerModel::optimize() {
         Cutting::Plan::CutPlan p;
 
         p.rodNumber = ++rodId;
-        p.cuts = selectedCombo;                    // ✅ Minden darab metaadatával
+        p.piecesWithMaterial = piecesWithMaterial;                    // ✅ Minden darab metaadatával
         p.kerfTotal = kerfTotal;
         p.waste = waste;
         p.materialId = selectedMaterialId;
@@ -165,7 +165,7 @@ void OptimizerModel::optimize() {
             result.cutPlanId = p.planId;
             result.materialId     = selectedMaterialId;
             result.length         = selectedLength;
-            result.cuts           = selectedCombo;
+            result.cuts           = piecesWithMaterial;
             result.waste          = waste;
             //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
             result.source = isReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
