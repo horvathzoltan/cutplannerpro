@@ -4,6 +4,7 @@
 #include <QUuid>
 
 struct StorageAuditRow {
+    QUuid entryId = QUuid::createUuid(); // CRUD miatt kell egy azonosító
     QUuid materialId; // vagy barcode, amit a MaterialRegistry tud kezelni
     QString storageName;
     //QString materialName;

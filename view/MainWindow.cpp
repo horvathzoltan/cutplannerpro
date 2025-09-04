@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "common/tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
 
 #include <QComboBox>
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     InputTableConnector::Connect(this, inputTableManager.get(), presenter);
     StockTableConnector::Connect(this, stockTableManager.get(), presenter);
     LeftoverTableConnector::Connect(this, leftoverTableManager.get(), presenter);
+    StorageAuditTableConnector::Connect(this, storageAuditTableManager.get(), presenter);
     ButtonConnector_Connect();//::Connect(ui, this);
 
     ui->tableResults->setAlternatingRowColors(true);
@@ -123,7 +125,7 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_Optimize, &QPushButton::clicked,
                this, &MainWindow::handle_btn_Optimize_clicked);
     connect(ui->btn_OpenCuttingPlan, &QPushButton::clicked,
-            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);
+            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);    
 }
 
 MainWindow::~MainWindow()

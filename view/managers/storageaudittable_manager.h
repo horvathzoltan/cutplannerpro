@@ -17,10 +17,16 @@ public:
     //void addRow_old(const StorageAuditEntry& entry);
     void clearTable();
 
+signals:
+    void auditValueChanged(const QUuid& requestId, int actualQuantity);
+
 private:
     QTableWidget* table;
     QWidget* parent;
     RowId _rowId;
+
+public:
+    static constexpr auto EntryId_Key = "entryId";
 
     static constexpr int ColMaterial   = 0;
     static constexpr int ColStorage    = 1;

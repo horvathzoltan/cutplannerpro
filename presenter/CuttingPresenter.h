@@ -68,6 +68,7 @@ public:
 
     const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
 
+    void update_StorageAuditActualQuantity(const QUuid &entryId, int actualQuantity);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

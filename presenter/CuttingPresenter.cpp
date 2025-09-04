@@ -224,7 +224,7 @@ void CuttingPresenter::runOptimization() {
     }
 
     //QVector<StorageAuditRow> auditRows
-    lastAuditRows= StorageAuditService::generateAuditRows(pickingMap);
+    lastAuditRows = StorageAuditService::generateAuditRows(pickingMap);
     view->update_StorageAuditTable(lastAuditRows);
 }
 
@@ -443,10 +443,10 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 
 
 void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
-    QVector<StorageAuditRow> entries = StorageAuditService::generateAuditRows(pickingMap);
+    lastAuditRows = StorageAuditService::generateAuditRows(pickingMap);
 
     if (view) {
-        view->update_StorageAuditTable(entries); // 📋 Audit tábla frissítése
+        view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
     }
 
     // opcionális: export, log, statisztika
@@ -536,4 +536,21 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     }
 
     return plan;
+}
+
+void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& entryId, int actualQuantity)
+{
+    for (StorageAuditRow &row : lastAuditRows) {
+        if (row.entryId == entryId) {
+            row.actualQuantity = actualQuantity;
+            break;
+        }
+    }
+
+
+    // itt még az kellene, hogy a stockba is beletegye énszerintem
+
+    if (view) {
+        view->update_StorageAuditTable(lastAuditRows);
+    }
 }
