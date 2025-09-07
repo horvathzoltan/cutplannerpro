@@ -10,6 +10,7 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
     common/csvimporter.cpp \
     common/filehelper.cpp \
@@ -80,6 +81,7 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/auditstatemanager.h \
     common/color/namedcolor.h \
     common/csvhelper.h \
     common/csvimporter.h \
@@ -92,6 +94,7 @@ HEADERS += \
     common/qteventutil.h \
     common/quantityparser.h \
     common/tablerowstyler/materialrowstyler.h \
+    common/tableutils/RowTracker.h \
     common/tableutils/colorutils.h \
     common/tableutils/rowid.h \
     common/tableutils/storageaudittable_connector.h \

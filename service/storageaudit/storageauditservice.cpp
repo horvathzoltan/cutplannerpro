@@ -63,7 +63,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
 
     const auto rootStocks = stockByStorage.values(machine.rootStorageId);
     for (const auto& stock : rootStocks) {
-        rows.append(createAuditRow(stock, machine.name + " – műhely zóna", pickingMap));
+        rows.append(createAuditRow(stock, pickingMap));
 
         zInfo(L("Talált készlet [%1], mennyiség: %2")
                   .arg(stock.materialName())
@@ -74,7 +74,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     for (const auto& storage : storageEntries) {
         const auto stocks = stockByStorage.values(storage.id);
         for (const auto& stock : stocks) {
-            rows.append(createAuditRow(stock, storage.name, pickingMap));
+            rows.append(createAuditRow(stock, pickingMap));
 
             zInfo(L("Talált készlet [%1] a tárolóban [%2], mennyiség: %3")
                                    .arg(stock.materialName())
@@ -86,7 +86,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     return rows;
 }
 
-StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, const QString& storageName, const QMap<QString, int>& pickingMap)
+StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, const QMap<QString, int>& pickingMap)
 {
 
     if (stock.materialName().isEmpty() && stock.quantity == 0)
@@ -94,9 +94,11 @@ StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, con
 
 
     StorageAuditRow row;
+    row.rowId           = QUuid::createUuid();         // egyedi audit sor azonosító
+    row.stockEntryId    = stock.entryId;               // 🔗 kapcsolat a StockEntry-hez
     row.materialId      = stock.materialId;
     //row.materialName     = stock.materialName();
-    row.storageName      = storageName;
+    //row.storageName      = storageName;
     //entry.expectedQuantity = 0;
     row.actualQuantity   = stock.quantity;
     row.isPresent        = stock.quantity > 0;

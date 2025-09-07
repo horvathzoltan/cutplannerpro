@@ -81,6 +81,14 @@ QByteArray SettingsManager::leftoversTableHeaderState() const {
     return _settings.value(SettingsKeys::TableLeftoversHeader).toByteArray();
 }
 
+void SettingsManager::setStorageAuditTableHeaderState(const QByteArray& state) {
+    _settings.setValue(SettingsKeys::TableStorageAuditHeader, state);
+}
+
+QByteArray SettingsManager::storageAuditTableHeaderState() const {
+    return _settings.value(SettingsKeys::TableStorageAuditHeader).toByteArray();
+}
+
 // ablakméret
 void SettingsManager::setWindowGeometry(const QByteArray& state) {
     _settings.setValue(SettingsKeys::WindowGeometry, state);

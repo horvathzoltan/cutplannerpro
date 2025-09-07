@@ -19,7 +19,7 @@ public:
     explicit StorageAuditService(QObject* parent = nullptr);
 
     static QVector<StorageAuditRow> generateAuditRows(const QMap<QString, int>& pickingMap);
-    static StorageAuditRow createAuditRow(const StockEntry& stock, const QString& storageName, const QMap<QString, int>& pickingMap);
+    static StorageAuditRow createAuditRow(const StockEntry& stock, const QMap<QString, int>& pickingMap);
 private:
     static AuditMode _mode;
     static QVector<StorageAuditRow> auditMachineStorage(const CuttingMachine& machine, const QMap<QString, int>& pickingMap);

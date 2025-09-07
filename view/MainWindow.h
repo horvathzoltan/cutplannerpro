@@ -55,6 +55,7 @@ public:
     void clear_ResultsTable();
 
     void update_StorageAuditTable(const QVector<StorageAuditRow> &entries);
+    void updateRow_StorageAuditTable(const StorageAuditRow &row);
 private slots:
     void handle_btn_NewCuttingPlan_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();

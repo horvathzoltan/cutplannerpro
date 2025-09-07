@@ -1,12 +1,15 @@
 #pragma once
 
+#include "model/stockentry.h"
 #include <QString>
 #include <QUuid>
+#include <model/registries/stockregistry.h>
 
 struct StorageAuditRow {
-    QUuid entryId = QUuid::createUuid(); // CRUD miatt kell egy azonosító
+    QUuid rowId = QUuid::createUuid(); // CRUD miatt kell egy azonosító
     QUuid materialId; // vagy barcode, amit a MaterialRegistry tud kezelni
-    QString storageName;
+    QUuid stockEntryId;                    // 🔗 Kapcsolat a StockEntry-hez
+    //QString storageName;
     //QString materialName;
     //QString materialBarcode;
     //QString colorCode;
@@ -20,6 +23,14 @@ struct StorageAuditRow {
         if(pickingQuantity < actualQuantity) return 0; // ha több van ott,mint kell, nincs hiány
 
         return pickingQuantity - actualQuantity; // hiányzó
+    }
+
+    QString storageName() const {
+        std::optional<StockEntry> s =
+            StockRegistry::instance().findById(stockEntryId);
+        if(!s.has_value()) return QString("-");
+
+        return s.value().storageName();
     }
 
     QString status() const {

@@ -497,35 +497,39 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     QVector<RelocationInstruction> plan;
 
     // 1. Végigmegyünk minden audit soron, ami a cutting zónához tartozik
-    for (const auto& row : auditRows) {
-        const MaterialMaster* row_mat = MaterialRegistry::instance().findById(row.materialId);
-        if (!row_mat)
+    for (const auto& destRow : auditRows) {
+        const MaterialMaster* destRow_Material = MaterialRegistry::instance().findById(destRow.materialId);
+        if (!destRow_Material)
             continue;
         /*if (row.storageName != cuttingZoneName)
             continue; // csak a célzónában nézzük a hiányt
 */
-        int needToMove = row.missingQuantity();
+        int needToMove = destRow.missingQuantity();
         if (needToMove <= 0)
             continue; // nincs mit odavinni
 
         // 2. Keressünk forráshelyet ugyanarra a barcode-ra
         for (const auto& sourceRow : auditRows) {
-            const MaterialMaster* source_mat = MaterialRegistry::instance().findById(row.materialId);
+            const MaterialMaster* source_mat = MaterialRegistry::instance().findById(destRow.materialId);
             if (!source_mat)
                 continue;
             //QString sourceRow_materialBarcode =
-            if (source_mat->barcode == row_mat->barcode &&
+            if (source_mat->barcode == destRow_Material->barcode &&
               //  sourceRow.storageName != cuttingZoneName &&
                 sourceRow.actualQuantity > 0)
             {
                 int moveQty = qMin(needToMove, sourceRow.actualQuantity);
+                // std::optional<StockEntry> sourceRow_stockEntry =
+                //     StockRegistry::instance().findById(sourceRow.stockEntryId);
+                // std::optional<StockEntry> destRow_stockEntry =
+                //     StockRegistry::instance().findById(row.stockEntryId);
 
                 plan.push_back({
-                    row_mat->barcode,     // anyag azonosító
-                    sourceRow.storageName,   // honnan
+                    destRow_Material->barcode, // anyag azonosító
+                    sourceRow.storageName(),   // honnan
                     //cuttingZoneName,         // hova
-                    row.storageName,         // hova
-                    moveQty                  // mennyit
+                    destRow.storageName(),     // hova
+                    moveQty                    // mennyit
                 });
 
                 needToMove -= moveQty;
@@ -538,19 +542,35 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     return plan;
 }
 
-void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& entryId, int actualQuantity)
+void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int actualQuantity)
 {
     for (StorageAuditRow &row : lastAuditRows) {
-        if (row.entryId == entryId) {
+        if (row.rowId == rowId){
             row.actualQuantity = actualQuantity;
+
+            // 🔄 Stock frissítés
+            std::optional<StockEntry> opt =
+                StockRegistry::instance().findById(row.stockEntryId);
+            if (opt.has_value()) {
+                StockEntry updated = opt.value();
+                updated.quantity = actualQuantity;
+                StockRegistry::instance().updateEntry(updated);
+
+                // frissíteni kell a storage rable row-t is
+                if(view){
+                    view->updateRow_StockTable(updated);
+                }
+
+            } else {
+                qWarning() << "⚠️ Nem található StockEntry a következő ID-val:" << row.stockEntryId;
+            }
+
+            // 🔄 Audit tábla frissítése
+            if (view) {
+                view->updateRow_StorageAuditTable(row);
+            }
+
             break;
         }
-    }
-
-
-    // itt még az kellene, hogy a stockba is beletegye énszerintem
-
-    if (view) {
-        view->update_StorageAuditTable(lastAuditRows);
     }
 }

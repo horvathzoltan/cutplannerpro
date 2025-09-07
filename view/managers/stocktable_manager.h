@@ -1,10 +1,12 @@
 #pragma once
 
-//#include <QTableWidget>
+#include <QTableWidget>
 #include <QWidget>
 //#include <QUuid>
 
-#include "common/tableutils/rowid.h"
+#include "common/tableutils/RowTracker.h"
+//#include "common/tableutils/rowid.h"
+#include "common/tableutils/RowTracker.h"
 #include "model/stockentry.h"
 //#include "model/materialmaster.h"
 
@@ -12,11 +14,17 @@
 class StockTableManager: public QObject {  // 🔧 QObject öröklés! {
     Q_OBJECT                              // ✨ Qt metaobjektum makró!
 
+private:
+    QTableWidget* _table;
+    QWidget* _parent;
+    RowTracker _rows;
+
 public:
     StockTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const StockEntry& entry);
-
+    void updateRow(const StockEntry &entry);
+    void removeRowById(const QUuid &stockId);
     void refresh_TableFromRegistry();
 
 signals:
@@ -27,13 +35,8 @@ signals:
     void editCommentRequested(const QUuid& requestId);
     void moveRequested(const QUuid& requestId);
 
-private:
-    QTableWidget* table;
-    QWidget* parent;
-    RowId _rowId;
-
 public:
-    static constexpr auto EntryId_Key = "entryId";
+    static constexpr auto EntryId_Key = "entryId"; // button eventekhez
 
     static constexpr int ColName     = 0;
     static constexpr int ColBarcode  = 1;
@@ -42,12 +45,9 @@ public:
     static constexpr int ColQuantity = 4;
     static constexpr int ColStorageName = 5;
     static constexpr int ColComment  = 6;
-    //static constexpr int ColColor    = 7;
+    static constexpr int ColAction = 7;  // oszlop a gomboknak - legutolsó
 
-    static constexpr int ColAction = 7;  // új oszlop a gomboknak (a Quantity után)
 
-    void updateRow(const StockEntry &entry);
-    void removeRowById(const QUuid &stockId);
 };
 
 

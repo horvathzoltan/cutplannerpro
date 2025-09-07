@@ -20,8 +20,8 @@ inline static void Connect (
     w->connect(manager,
                &StorageAuditTableManager::auditValueChanged,
                w,
-               [presenter](const QUuid& entryId, int actualQuantity) {
-                   presenter->update_StorageAuditActualQuantity(entryId, actualQuantity);
+               [presenter](const QUuid& rowId, int actualQuantity) {
+                   presenter->update_StorageAuditActualQuantity(rowId, actualQuantity);
                });
 }
 }

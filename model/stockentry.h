@@ -4,6 +4,7 @@
 #include <QString>
 #include <QUuid>
 #include "model/material/materialmaster.h"
+#include "storageentry.h"
 
 struct StockEntry {
     QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
@@ -21,5 +22,9 @@ struct StockEntry {
 
     QString materialGroupName() const;
     QColor materialGroupColor() const;
+
+    QString storageName() const;  // 📛 Anyag neve
+    QString storageBarcode() const; // 🧾 Vonalkód
+    const StorageEntry *storage() const;
 };
 

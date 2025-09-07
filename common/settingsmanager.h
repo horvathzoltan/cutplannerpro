@@ -9,6 +9,8 @@ inline constexpr auto TableInputHeader       = "table_input_header";
 inline constexpr auto TableResultsHeader     = "table_results_header";
 inline constexpr auto TableStockHeader       = "table_stock_header";
 inline constexpr auto TableLeftoversHeader   = "table_leftovers_header";
+inline constexpr auto TableStorageAuditHeader   = "table_storageaudit_header";
+
 // ablakméret
 inline constexpr auto WindowGeometry = "window_geometry";
 // splitter
@@ -39,6 +41,9 @@ public:
     // Leftovers tábla
     void setLeftoversTableHeaderState(const QByteArray& state);
     QByteArray leftoversTableHeaderState() const;
+
+    void setStorageAuditTableHeaderState(const QByteArray &state);
+    QByteArray storageAuditTableHeaderState() const;
 
     // ablakmléret
     void setWindowGeometry(const QByteArray& state);

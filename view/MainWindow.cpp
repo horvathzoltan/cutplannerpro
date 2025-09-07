@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->horizontalHeader()->restoreState(SettingsManager::instance().resultsTableHeaderState());
     ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
     ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
-    ui->tableStorageAudit->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
+    ui->tableStorageAudit->horizontalHeader()->restoreState(SettingsManager::instance().storageAuditTableHeaderState());
 
     // splitter
     ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
@@ -154,6 +154,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
     SettingsManager::instance().setResultsTableHeaderState(ui->tableResults->horizontalHeader()->saveState());
     SettingsManager::instance().setStockTableHeaderState(ui->tableStock->horizontalHeader()->saveState());
     SettingsManager::instance().setLeftoversTableHeaderState(ui->tableLeftovers->horizontalHeader()->saveState());
+
+    SettingsManager::instance().setStorageAuditTableHeaderState(ui->tableStorageAudit->horizontalHeader()->saveState());
+
     // ablakméret
     SettingsManager::instance().setWindowGeometry(saveGeometry());
     // splitter
@@ -389,6 +392,11 @@ void MainWindow::update_StorageAuditTable(const QVector<StorageAuditRow>& rows) 
         storageAuditTableManager->addRow(row);     // 🧱 Sor hozzáadása
     }
 }
+
+void MainWindow::updateRow_StorageAuditTable(const StorageAuditRow& row) {
+    storageAuditTableManager->updateRow(row);
+}
+
 
 void MainWindow::on_btn_Relocate_clicked()
 {
