@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "../model/cutting/optimizer/optimizermodel.h"
+#include "common/auditstatemanager.h"
 #include "model/archivedwasteentry.h"
 #include "model/relocation/relocationinstruction.h"
 #include "model/storageaudit/storageauditrow.h"
@@ -69,6 +70,9 @@ public:
     const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
 
     void update_StorageAuditActualQuantity(const QUuid &rowId, int actualQuantity);
+
+    AuditStateManager* auditStateManager() { return &_auditStateManager;}
+
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
@@ -77,5 +81,7 @@ private:
     bool isModelSynced = false;
     QMap<QString, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
     void logPlans();
+    AuditStateManager _auditStateManager;
+
 };
 

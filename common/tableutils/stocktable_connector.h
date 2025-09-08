@@ -80,7 +80,7 @@ inline static void Connect(
                    if (newStorageId.isNull()) return; // opcionális validáció
 
                    original.storageId = newStorageId;
-                   presenter->update_StockEntry(original);
+                   presenter->update_StockEntry(original); // már benne van az AuditStateManager trigger
                });
 
     // Csak komment szerkesztése
@@ -99,6 +99,7 @@ inline static void Connect(
                    presenter->update_StockEntry(original);
                });
 
+    // mozgatás
     w->connect(manager, &StockTableManager::moveRequested, w,
                [w, presenter](const QUuid& id) {
 
@@ -181,48 +182,4 @@ inline static void Connect(
 }
 } // end namespace StockTableConnector
 
-// Mozgatás dialógus
-// w->connect(manager, &StockTableManager::moveRequested, w,
-//            [w, presenter](const QUuid& id) {
-//                auto opt = StockRegistry::instance().findById(id);
-//                if (!opt) return;
 
-//                const StockEntry& original = *opt;
-
-//                MovementDialog dlg(w);
-//                const auto* storage = StorageRegistry::instance().findById(original.storageId);
-//                QString storageName = storage ? storage->name : "—";
-
-//                dlg.setSource(storageName, original.entryId, original.quantity);
-//                if (dlg.exec() != QDialog::Accepted) return;
-
-//                MovementData data = dlg.getMovementData();
-//                if (data.toStorageId.isNull() || data.quantity <= 0) return;
-
-//                // 🔄 Létrehozás új bejegyzésként
-//                StockEntry movedEntry = original;
-//                movedEntry.entryId = QUuid::createUuid();  // új ID
-//                movedEntry.storageId = data.toStorageId;
-//                movedEntry.quantity = data.quantity;
-//                movedEntry.comment = data.comment;
-
-//                presenter->add_StockEntry(movedEntry);
-
-//                // 🔁 Maradék frissítése
-//                int remainingQty = original.quantity - data.quantity;
-//                if (remainingQty > 0) {
-//                    StockEntry updatedOriginal = original;
-//                    updatedOriginal.quantity = remainingQty;
-//                    presenter->update_StockEntry(updatedOriginal);
-//                } else {
-//                    presenter->remove_StockEntry(original.entryId);  // ha elfogyott
-//                }
-
-//                // 🧾 LOG: csak sikeres művelet után
-//                const auto* destStorage = StorageRegistry::instance().findById(data.toStorageId);
-//                QString destName = destStorage ? destStorage->name : "—";
-
-//                auto logdata = MovementLogModel{data};
-//                MovementLogger::log(logdata);
-
-//            });

@@ -82,6 +82,7 @@ SOURCES += \
 
 HEADERS += \
     common/auditstatemanager.h \
+    common/auditsyncguard.h \
     common/color/namedcolor.h \
     common/csvhelper.h \
     common/csvimporter.h \

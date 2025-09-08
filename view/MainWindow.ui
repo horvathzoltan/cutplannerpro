@@ -299,6 +299,13 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QLabel" name="lblAuditStatus">
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>

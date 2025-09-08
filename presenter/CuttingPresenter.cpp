@@ -1,6 +1,7 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
+#include "common/auditsyncguard.h"
 #include "common/logger.h"
 //#include "model/registries/materialregistry.h"
 //#include "model/relocation/relocationinstruction.h"
@@ -86,11 +87,12 @@ void CuttingPresenter::remove_CuttingPlanRequest(const QUuid& requestId) {
 }
 
 /*stock*/
-void CuttingPresenter::add_StockEntry(const StockEntry& e) {
-    StockRegistry::instance().registerEntry(e);
+void CuttingPresenter::add_StockEntry(const StockEntry& entry) {
+    StockRegistry::instance().registerEntry(entry);
     if(view){
-        view->addRow_StockTable(e);
+        view->addRow_StockTable(entry);
     }
+    _auditStateManager.notifyStockAdded(entry);
 }
 
 void CuttingPresenter::remove_StockEntry(const QUuid& stockId) {
@@ -98,6 +100,7 @@ void CuttingPresenter::remove_StockEntry(const QUuid& stockId) {
     if (view) {
         view->removeRow_StockTable(stockId); // ha a készlet változik
     }
+    _auditStateManager.notifyStockRemoved(stockId);
 }
 
 void CuttingPresenter::update_StockEntry(const StockEntry& updated) {
@@ -107,6 +110,7 @@ void CuttingPresenter::update_StockEntry(const StockEntry& updated) {
         if(view){
             view->updateRow_StockTable(updated);
         }
+        _auditStateManager.notifyStockChanged(updated);
     }
     else
     {
@@ -449,6 +453,7 @@ void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
     }
 
+    _auditStateManager.setActiveAuditRows(lastAuditRows); // 🔄 audit érvényesítése
     // opcionális: export, log, statisztika
 }
 
@@ -544,25 +549,26 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
 void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int actualQuantity)
 {
+    AuditSyncGuard guard(&_auditStateManager); // 🔒 ideiglenesen kikapcsolja a figyelést
+
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId){
             row.actualQuantity = actualQuantity;
 
             // 🔄 Stock frissítés
             std::optional<StockEntry> opt =
-                StockRegistry::instance().findById(row.stockEntryId);
-            if (opt.has_value()) {
+                StockRegistry::instance().findById(row.stockEntryId);            
+            if (opt.has_value()) {                
                 StockEntry updated = opt.value();
                 updated.quantity = actualQuantity;
+
+                // audit alapján frissítünk
                 StockRegistry::instance().updateEntry(updated);
 
                 // frissíteni kell a storage rable row-t is
                 if(view){
                     view->updateRow_StockTable(updated);
                 }
-
-            } else {
-                qWarning() << "⚠️ Nem található StockEntry a következő ID-val:" << row.stockEntryId;
             }
 
             // 🔄 Audit tábla frissítése

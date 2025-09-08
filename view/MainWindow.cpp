@@ -96,6 +96,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColBarcode, true);
     ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColShape, true);
+
+    connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged, this, [this](bool outdated) {
+        ui->lblAuditStatus->setText(outdated
+                                        ? "⚠️ Az audit nem tükrözi a jelenlegi készletet"
+                                        : "✔️ Audit naprakész");
+
+        ui->lblAuditStatus->setStyleSheet(outdated
+                                              ? "background-color: #FFD700; color: black;"
+                                              : "");
+    });
+
 }
 
 void MainWindow::ButtonConnector_Connect()

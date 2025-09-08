@@ -19,13 +19,19 @@ public:
 
     bool isAuditOutdated() const;
 
+    void setTrackingEnabled(bool enabled) { _trackingEnabled = enabled; }
+    bool isTrackingEnabled() const { return _trackingEnabled; }
 signals:
     void auditStateChanged(bool outdated);
 
 private:
     QSet<QUuid> auditedMaterialIds;
     QSet<QUuid> auditedStorageIds;
-    bool auditOutdated = false;
+    QSet<QUuid> auditedStockIds;
+    QSet<QUuid> auditedLeftoverIds;
+
+    bool auditOutdated = false;    
+    bool _trackingEnabled = true;
 
     void checkIfOutdated(const StockEntry& entry);
 };

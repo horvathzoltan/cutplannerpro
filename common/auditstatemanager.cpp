@@ -6,13 +6,23 @@ AuditStateManager::AuditStateManager(QObject* parent)
 void AuditStateManager::setActiveAuditRows(const QVector<StorageAuditRow>& rows) {
     auditedMaterialIds.clear();
     auditedStorageIds.clear();
+    auditedStockIds.clear();
+    auditedLeftoverIds.clear();
     auditOutdated = false;
 
     for (const auto& row : rows) {
+        //auditedStockIds.insert(row.stockEntryId);
+        if (row.sourceType == AuditSourceType::Stock) {
+            auditedStockIds.insert(row.stockEntryId);
+        } else if (row.sourceType == AuditSourceType::Leftover) {
+            auditedLeftoverIds.insert(row.stockEntryId);
+        }
+
         auditedMaterialIds.insert(row.materialId);
-        auditedStorageIds.insert(row.storageId()); // vagy row.storageId, ha van
+        auditedStorageIds.insert(row.storageId());
     }
 
+    auditOutdated = false;
     emit auditStateChanged(false);
 }
 
@@ -25,12 +35,20 @@ void AuditStateManager::notifyStockAdded(const StockEntry& entry) {
 }
 
 void AuditStateManager::notifyStockRemoved(const QUuid& entryId) {
-    // opcionálisan: keresd meg a StockRegistry-ből, és hívd meg checkIfOutdated()
+    if (auditedStockIds.contains(entryId)) {
+        if (!auditOutdated) {
+            auditOutdated = true;
+            emit auditStateChanged(true);
+        }
+    }
 }
 
 void AuditStateManager::checkIfOutdated(const StockEntry& entry) {
+    if (!_trackingEnabled)
+        return;
     if (auditedMaterialIds.contains(entry.materialId) ||
-        auditedStorageIds.contains(entry.storageId)) {
+        auditedStorageIds.contains(entry.storageId) ||
+        auditedStockIds.contains(entry.entryId)) {
         if (!auditOutdated) {
             auditOutdated = true;
             emit auditStateChanged(true);
