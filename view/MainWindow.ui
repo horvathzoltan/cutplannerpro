@@ -204,13 +204,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="btn_StorageAudit">
-             <property name="text">
-              <string>StorageAudit</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
@@ -280,9 +273,16 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
-            <widget class="QPushButton" name="btn_Relocate">
+            <widget class="QPushButton" name="btn_StorageAudit">
              <property name="text">
-              <string>ReLocate</string>
+              <string>Audit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="lblAuditStatus">
+             <property name="text">
+              <string>TextLabel</string>
              </property>
             </widget>
            </item>
@@ -300,9 +300,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="lblAuditStatus">
+            <widget class="QPushButton" name="btn_Relocate">
              <property name="text">
-              <string>TextLabel</string>
+              <string>ReLocate</string>
              </property>
             </widget>
            </item>
@@ -342,22 +342,17 @@
            </column>
           </widget>
          </item>
-         <item>
-          <widget class="QPlainTextEdit" name="relocateQuickList">
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="tab">
         <attribute name="title">
          <string>RelocationOrder</string>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPlainTextEdit" name="relocateQuickList"/>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="tab_3">
         <attribute name="title">

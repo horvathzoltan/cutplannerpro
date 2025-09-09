@@ -14,6 +14,7 @@ inline void applyMaterialStyle(QTableWidget* table, int row, const MaterialMaste
     for (int col = 0; col < table->columnCount(); ++col) {
         if(excols.contains(col))
             continue;
+
         //TableStyleUtils::ensureStyledItem(table, row, col, bg, fg, Qt::AlignCenter, tooltip);
         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
     }

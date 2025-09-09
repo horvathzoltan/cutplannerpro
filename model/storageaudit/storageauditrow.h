@@ -44,6 +44,9 @@ struct StorageAuditRow {
     }
 
     QString status() const {
+        if (sourceType == AuditSourceType::Leftover)
+            return actualQuantity > 0 ? "OK" : "Hiányzik";
+
         if (pickingQuantity > 0) {
             return actualQuantity < pickingQuantity ? "Hiányzik" : "OK";
         }

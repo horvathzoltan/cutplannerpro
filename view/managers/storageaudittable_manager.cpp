@@ -62,7 +62,21 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
         emit auditValueChanged(rowId, actualQuantity);
     });
 
+    if (row.sourceType == AuditSourceType::Leftover) {
+        QCheckBox* presentBox = new QCheckBox("Ott van");
+        presentBox->setChecked(row.actualQuantity > 0);
+        presentBox->setProperty(RowId_Key, row.rowId);
+        _table->setCellWidget(rowIx, ColActual, presentBox);
+
+        connect(presentBox, &QCheckBox::stateChanged, this, [presentBox, this]() {
+            QUuid rowId = presentBox->property(RowId_Key).toUuid();
+            bool isPresent = presentBox->isChecked();
+            emit leftoverPresenceChanged(rowId, isPresent);
+        });
+    }
+
     StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);
+    StorageAuditTable::RowStyler::applyTooltips(_table, rowIx, mat, row);
 }
 
 void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {

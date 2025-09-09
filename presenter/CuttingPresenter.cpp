@@ -21,6 +21,7 @@
 
 #include <model/repositories/cuttingrequestrepository.h>
 
+#include <service/storageaudit/leftoverauditservice.h>
 #include <service/storageaudit/storageauditservice.h>
 
 #include <service/cutting/plan/finalizer.h>
@@ -213,6 +214,9 @@ void CuttingPresenter::runOptimization() {
         QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
         QVector<LeftoverStockEntry> e = Cutting::Result::ResultUtils::toReusableEntries(l);
 
+        // QVector<StorageAuditRow> leftoverAuditRows =
+        //     LeftoverAuditService::instance().generateAudit(e);
+
         // todo 01 nem jó, a stockot kellene frissíteni - illetve opt után kell-e bármit is, hisz majd a finalize frissít - nem?
         view->refresh_LeftoversTable();//e);
     }
@@ -227,8 +231,18 @@ void CuttingPresenter::runOptimization() {
         zInfo(msg);
     }
 
-    //QVector<StorageAuditRow> auditRows
-    lastAuditRows = StorageAuditService::generateAuditRows(pickingMap);
+    QVector<StorageAuditRow> stockAuditRows =
+        StorageAuditService::generateAuditRows(pickingMap);
+
+    QVector<LeftoverStockEntry> leftovers =
+        Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
+
+    QVector<StorageAuditRow> leftoverAuditRows =
+        LeftoverAuditService::instance().generateAudit(leftovers);
+
+    lastAuditRows = stockAuditRows + leftoverAuditRows;
+    view->update_StorageAuditTable(lastAuditRows);
+
     view->update_StorageAuditTable(lastAuditRows);
 }
 
@@ -447,7 +461,10 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 
 
 void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
-    lastAuditRows = StorageAuditService::generateAuditRows(pickingMap);
+    QVector<StorageAuditRow> stockAudit = StorageAuditService::generateAuditRows(pickingMap);
+    QVector<StorageAuditRow> leftoverAudit = LeftoverAuditService::instance().generateAudit();
+
+    lastAuditRows = stockAudit + leftoverAudit;
 
     if (view) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
@@ -580,3 +597,18 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
         }
     }
 }
+
+void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, bool isPresent) {
+    for (StorageAuditRow& row : lastAuditRows) {
+        if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
+            row.actualQuantity = isPresent ? 1 : 0;
+
+            if (view) {
+                view->updateRow_StorageAuditTable(row);
+            }
+
+            break;
+        }
+    }
+}
+

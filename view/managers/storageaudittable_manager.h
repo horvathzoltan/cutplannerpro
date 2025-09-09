@@ -27,7 +27,7 @@ private:
 
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
-
+    void leftoverPresenceChanged(const QUuid& rowId, bool isPresent);
 public:
     static constexpr auto RowId_Key = "entryId"; // button eventekhez
 

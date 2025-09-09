@@ -64,6 +64,7 @@ SOURCES += \
     service/cutting/result/archivedwasteutils.cpp \
     service/cutting/result/leftoversourceutils.cpp \
     service/cutting/segment/segmentutils.cpp \
+    service/storageaudit/leftoverauditservice.cpp \
     service/storageaudit/storageauditservice.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
@@ -167,6 +168,7 @@ HEADERS += \
     presenter/CuttingPresenter.h \
     service/movementlogmodel.h \
     service/stockmovementservice.h \
+    service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
     view/cutanalyticspanel.h \
