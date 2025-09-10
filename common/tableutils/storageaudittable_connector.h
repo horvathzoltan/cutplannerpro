@@ -27,8 +27,8 @@ inline static void Connect (
     w->connect(manager,
                &StorageAuditTableManager::leftoverPresenceChanged,
                w,
-               [presenter](const QUuid& rowId, bool isPresent) {
-                   presenter->update_LeftoverAuditPresence(rowId, isPresent);
+               [presenter](const QUuid& rowId, AuditPresence presence) {
+                   presenter->update_LeftoverAuditPresence(rowId, presence);
                });
 }
 }

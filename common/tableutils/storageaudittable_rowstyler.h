@@ -1,7 +1,9 @@
 #pragma once
 
 #include "common/grouputils.h"
-#include "common/tablerowstyler/materialrowstyler.h"
+#include "common/styleprofiles/auditcolors.h"
+//#include "common/tablerowstyler/materialrowstyler.h"
+#include "common/tablerowstyler/tablestyleutils.h"
 #include "model/material/materialmaster.h"
 #include "model/storageaudit/storageauditrow.h"
 #include <QTableWidget>
@@ -22,61 +24,56 @@ namespace RowStyler {
 inline void applyStyle(QTableWidget* table, int rowIx, const MaterialMaster* mat, const StorageAuditRow& auditRow) {
     if (!table || !mat) return;
 
+    QColor bg, fg;
     QSet<int> excludedCols;
+
     if (auditRow.sourceType == AuditSourceType::Leftover) {
-        excludedCols.insert(StorageAuditTableManager::ColActual);   // checkbox cella
-        excludedCols.insert(StorageAuditTableManager::ColMissing);  // nem releváns
-        excludedCols.insert(StorageAuditTableManager::ColStatus);   // külön színkód
-    }
+        bg = ColorLogicUtils::resolveBaseColor(mat).lighter(120); // halványított csoportszín
+        fg = bg.lightness() < 128 ? Qt::white : Qt::black;
 
-    // Leftover sorok: halványkék háttér
-    if (auditRow.sourceType == AuditSourceType::Leftover) {
-        QColor bg = ColorLogicUtils::resolveBaseColor(mat); // dinamikus szín
-        QColor fg = bg.lightness() < 128 ? Qt::white : Qt::black;
-
-        for (int col = 0; col < table->columnCount(); ++col) {
-            if (excludedCols.contains(col))
-                continue;
-
-            QTableWidgetItem* item = table->item(rowIx, col);
-            if (!item) {
-                item = new QTableWidgetItem();
-                table->setItem(rowIx, col, item);
-            }
-
-            item->setBackground(bg);
-            item->setForeground(fg);
-            item->setTextAlignment(Qt::AlignCenter);
-        }
+        excludedCols.insert(StorageAuditTableManager::ColStatus); // státusz külön kezelve
     } else {
-        // Stock audit sorok: anyag színkód
-        MaterialRowStyler::applyMaterialStyle(table, rowIx, mat, excludedCols);
+        bg = GroupUtils::colorForGroup(mat->id);
+        fg = bg.lightness() < 128 ? Qt::white : Qt::black;
     }
 
-    // Státusz cella színezése külön
-    auto* statusItem = table->item(rowIx, StorageAuditTableManager::ColStatus);
-    if (statusItem) {
-        const QString status = auditRow.status();
-        if (status == "OK")
-            statusItem->setBackground(Qt::green);
-        else if (status == "Hiányzik")
-            statusItem->setBackground(Qt::red);
-        else
-            statusItem->setBackground(Qt::lightGray);
+    for (int col = 0; col < table->columnCount(); ++col) {
+        if (excludedCols.contains(col))
+            continue;
+
+        TableStyleUtils::setCellStyle(table, rowIx, col, bg, fg);
     }
+
+    // 🎯 Státusz cella színezése külön
+    const QString status = auditRow.status();
+
+    QColor statusColor;
+    if (status == "OK")
+        statusColor = AuditColors::ok();
+    else if (status == "Hiányzik")
+        statusColor = AuditColors::missing();
+    else if (status == "Ellenőrzésre vár")
+        statusColor = AuditColors::pending();
+    else
+        statusColor = Qt::lightGray;
+
+
+    TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
 }
+
 
 inline void applyTooltips(QTableWidget* table, int rowIx, const MaterialMaster* mat, const StorageAuditRow& auditRow) {
     if (!table || !mat) return;
 
     for (int col = 0; col < table->columnCount(); ++col) {
-        QTableWidgetItem* item = table->item(rowIx, col);
-        if (!item) continue;
-
         QString tip;
+
         switch (col) {
         case StorageAuditTableManager::ColMaterial:
             tip = QString("Anyag: %1\nBarcode: %2").arg(mat->name, mat->barcode);
+            break;
+        case StorageAuditTableManager::ColBarcode:
+            tip = QString("Vonalkód: %1").arg(mat->barcode);
             break;
         case StorageAuditTableManager::ColStorage:
             tip = QString("Tároló: %1").arg(auditRow.storageName());
@@ -86,50 +83,26 @@ inline void applyTooltips(QTableWidget* table, int rowIx, const MaterialMaster* 
             break;
         case StorageAuditTableManager::ColActual:
             tip = auditRow.sourceType == AuditSourceType::Leftover
-                      ? "Pipáld, ha fizikailag ott van"
+                      ? "Válaszd ki, hogy az anyag fizikailag jelen van-e.\nEz megerősíti vagy elveti a rendszer állapotát."
                       : QString("Tényleges mennyiség: %1").arg(auditRow.actualQuantity);
             break;
         case StorageAuditTableManager::ColMissing:
-            tip = QString("Hiányzó: %1").arg(auditRow.missingQuantity());
+            tip = QString("Hiányzó mennyiség: %1").arg(auditRow.missingQuantity());
             break;
         case StorageAuditTableManager::ColStatus:
-            tip = QString("Státusz: %1").arg(auditRow.status());
+            tip = QString("Státusz: %1\nEz az audit eredménye az adott anyagra.").arg(auditRow.status());
             break;
         }
 
-        item->setToolTip(tip);
+        // 🔍 Tooltip alkalmazása itemre vagy widgetre
+        if (QTableWidgetItem* item = table->item(rowIx, col)) {
+            item->setToolTip(tip);
+        } else if (QWidget* widget = table->cellWidget(rowIx, col)) {
+            widget->setToolTip(tip);
+        }
     }
 }
 
-// inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* mat, const StorageAuditRow& auditRow) {
-//     if (!table || !mat) return;
-
-//     // for (int col = 0; col < table->columnCount(); ++col) {
-//     //     QString tip;
-//     //     // switch (col) {
-//     //     // case ColMaterial:
-//     //     //     tip = QString("Anyag: %1\nBarcode: %2").arg(mat->name, mat->barcode);
-//     //     //     break;
-//     //     // case ColExpected:
-//     //     //     tip = QString("Elvárt mennyiség: %1").arg(auditRow.pickingQuantity);
-//     //     //     break;
-//     //     // case ColActual:
-//     //     //     tip = QString("Tényleges mennyiség: %1").arg(auditRow.actualQuantity);
-//     //     //     break;
-//     //     // case ColMissing:
-//     //     //     tip = QString("Hiányzó: %1").arg(auditRow.missingQuantity());
-//     //     //     break;
-//     //     // case ColStatus:
-//     //     //     tip = QString("Státusz: %1").arg(auditRow.status());
-//     //     //     break;
-//     //     // }
-
-
-//     //     //TableStyleUtils::ensureStyledItem(table, row, col, bg, fg, Qt::AlignCenter, tip);
-//     // }
-
-//     MaterialRowStyler::applyMaterialStyle(table, row, mat, {});
-// }
 
 } // namespace RowStyler
 } // namespace StorageAuditTable

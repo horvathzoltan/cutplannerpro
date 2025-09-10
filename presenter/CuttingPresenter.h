@@ -73,7 +73,7 @@ public:
 
     AuditStateManager* auditStateManager() { return &_auditStateManager;}
 
-    void update_LeftoverAuditPresence(const QUuid &rowId, bool isPresent);
+    void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

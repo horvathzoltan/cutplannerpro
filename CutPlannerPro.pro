@@ -95,6 +95,7 @@ HEADERS += \
     common/materialutils.h \
     common/qteventutil.h \
     common/quantityparser.h \
+    common/styleprofiles/auditcolors.h \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/RowTracker.h \
     common/tableutils/colorutils.h \

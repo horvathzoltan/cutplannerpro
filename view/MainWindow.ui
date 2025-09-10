@@ -317,6 +317,11 @@
            </column>
            <column>
             <property name="text">
+             <string>Vonalkód</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>Tárhely</string>
             </property>
            </column>

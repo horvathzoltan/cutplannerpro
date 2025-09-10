@@ -5,6 +5,7 @@
 #include "model/storageaudit/storageauditrow.h"
 
 #include <QCheckBox>
+#include <QRadioButton>
 #include <QSpinBox>
 
 #include <model/registries/materialregistry.h>
@@ -42,6 +43,19 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     _table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName()));
     _table->setItem(rowIx, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
 
+    //const MaterialMaster* mat = MaterialRegistry::instance().findById(row.materialId);
+    QString barcode = "—";
+
+    if (row.sourceType == AuditSourceType::Leftover) {
+        const auto entry = LeftoverStockRegistry::instance().findById(row.stockEntryId);
+        if (entry)
+            barcode = entry->reusableBarcode(); // vagy entry->barcode
+    } else {
+            barcode = mat->barcode;
+    }
+
+    _table->setItem(rowIx, ColBarcode, new QTableWidgetItem(barcode));
+
     QSpinBox* actualSpin = new QSpinBox();
     actualSpin->setRange(0, 9999);
     actualSpin->setValue(row.actualQuantity);
@@ -63,16 +77,47 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     });
 
     if (row.sourceType == AuditSourceType::Leftover) {
-        QCheckBox* presentBox = new QCheckBox("Ott van");
-        presentBox->setChecked(row.actualQuantity > 0);
-        presentBox->setProperty(RowId_Key, row.rowId);
-        _table->setCellWidget(rowIx, ColActual, presentBox);
+        // QCheckBox* presentBox = new QCheckBox("Ott van");
+        // presentBox->setChecked(row.actualQuantity > 0);
+        // presentBox->setProperty(RowId_Key, row.rowId);
+        // _table->setCellWidget(rowIx, ColActual, presentBox);
 
-        connect(presentBox, &QCheckBox::stateChanged, this, [presentBox, this]() {
-            QUuid rowId = presentBox->property(RowId_Key).toUuid();
-            bool isPresent = presentBox->isChecked();
-            emit leftoverPresenceChanged(rowId, isPresent);
+        // connect(presentBox, &QCheckBox::stateChanged, this, [presentBox, this]() {
+        //     QUuid rowId = presentBox->property(RowId_Key).toUuid();
+        //     bool isPresent = presentBox->isChecked();
+        //     emit leftoverPresenceChanged(rowId, isPresent);
+        // });
+        auto container = new QWidget();
+        auto layout = new QHBoxLayout(container); // vagy QHBoxLayout
+        layout->setContentsMargins(0, 0, 0, 0);
+
+        auto radioPresent = new QRadioButton("Van");
+        auto radioMissing = new QRadioButton("Nincs");
+
+        layout->addWidget(radioPresent);
+        layout->addWidget(radioMissing);
+        container->setLayout(layout);
+
+        _table->setCellWidget(rowIx, ColActual, container);
+
+        radioPresent->setProperty(RowId_Key, row.rowId);
+        radioMissing->setProperty(RowId_Key, row.rowId);
+
+        connect(radioPresent, &QRadioButton::toggled, this, [radioPresent, this]() {
+            if (radioPresent->isChecked()) {
+                QUuid rowId = radioPresent->property(RowId_Key).toUuid();
+                emit leftoverPresenceChanged(rowId, AuditPresence::Present);
+            }
         });
+
+        connect(radioMissing, &QRadioButton::toggled, this, [radioMissing, this]() {
+            if (radioMissing->isChecked()) {
+                QUuid rowId = radioMissing->property(RowId_Key).toUuid();
+                emit leftoverPresenceChanged(rowId, AuditPresence::Missing);
+            }
+        });
+
+
     }
 
     StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);
@@ -127,6 +172,17 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         auto* statusItem = _table->item(rowIx, ColStatus);
         if (statusItem) {
             setStatusCell(statusItem, row.status());
+        }
+
+        auto container = qobject_cast<QWidget*>(_table->cellWidget(rowIx, ColActual));
+        if (container) {
+            auto radios = container->findChildren<QRadioButton*>();
+            for (auto* radio : radios) {
+                if (radio->text() == "Ott van")
+                    radio->setChecked(row.presence == AuditPresence::Present);
+                else if (radio->text() == "Nincs ott")
+                    radio->setChecked(row.presence == AuditPresence::Missing);
+            }
         }
 
         // 🎨 Stílus újraalkalmazás

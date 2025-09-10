@@ -13,7 +13,6 @@
 struct LeftoverStockEntry {
     QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
 
-
     QUuid materialId;           // 🔗 Anyag azonosító
     int availableLength_mm;         // 📏 Szálhossz milliméterben
     Cutting::Result::LeftoverSource source = Cutting::Result::LeftoverSource::Manual; // 🔄 Forrás: Manual vagy Optimization
@@ -33,4 +32,10 @@ struct LeftoverStockEntry {
     QString materialGroupName() const;
     QColor materialGroupColor() const;
     QString sourceAsString() const;
+    QString storageName() const;
+
+    bool isReusable() const {
+        return !barcode.isEmpty(); // vagy más logika, pl. hossz > 0 && nem selejt
+    }
+
 };

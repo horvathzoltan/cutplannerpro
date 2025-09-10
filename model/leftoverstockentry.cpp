@@ -2,6 +2,8 @@
 #include "registries/materialregistry.h"
 #include "common/grouputils.h"
 
+#include <model/registries/storageregistry.h>
+
 const MaterialMaster* LeftoverStockEntry::master() const {
     if (materialId.isNull())
         return nullptr;
@@ -50,5 +52,11 @@ QString LeftoverStockEntry::sourceAsString() const
                    ? QString("Op:%1").arg(*optimizationId)
                    : "Op:?";
     return "Ismeretlen";
+}
+
+QString LeftoverStockEntry::storageName() const {
+    const StorageEntry *storage =
+        StorageRegistry::instance().findById(storageId);
+    return storage ? storage->name : "—";
 }
 

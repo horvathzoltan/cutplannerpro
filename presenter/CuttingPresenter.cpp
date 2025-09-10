@@ -238,12 +238,12 @@ void CuttingPresenter::runOptimization() {
         Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
 
     QVector<StorageAuditRow> leftoverAuditRows =
-        LeftoverAuditService::instance().generateAudit(leftovers);
+        LeftoverAuditService::instance().generateAudit();//leftovers);
 
     lastAuditRows = stockAuditRows + leftoverAuditRows;
     view->update_StorageAuditTable(lastAuditRows);
 
-    view->update_StorageAuditTable(lastAuditRows);
+    //view->update_StorageAuditTable(lastAuditRows);
 }
 
 namespace CuttingUtils {
@@ -598,10 +598,20 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
     }
 }
 
-void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, bool isPresent) {
+void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPresence presence) {
     for (StorageAuditRow& row : lastAuditRows) {
         if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
-            row.actualQuantity = isPresent ? 1 : 0;
+            row.presence = presence;
+
+            switch (presence) {
+            case AuditPresence::Present:
+                row.actualQuantity = 1;
+                break;
+            case AuditPresence::Missing:
+            case AuditPresence::Unknown:
+                row.actualQuantity = 0;
+                break;
+            }
 
             if (view) {
                 view->updateRow_StorageAuditTable(row);
@@ -611,4 +621,5 @@ void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, bool isP
         }
     }
 }
+
 

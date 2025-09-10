@@ -27,16 +27,17 @@ private:
 
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
-    void leftoverPresenceChanged(const QUuid& rowId, bool isPresent);
+    void leftoverPresenceChanged(const QUuid& rowId, AuditPresence presence);
 public:
     static constexpr auto RowId_Key = "entryId"; // button eventekhez
 
     static constexpr int ColMaterial   = 0;
-    static constexpr int ColStorage    = 1;
-    static constexpr int ColExpected   = 2;
-    static constexpr int ColActual     = 3;
-    static constexpr int ColMissing    = 4;
-    static constexpr int ColStatus     = 5;
+    static constexpr int ColBarcode    = 1;
+    static constexpr int ColStorage    = 2;
+    static constexpr int ColExpected   = 3;
+    static constexpr int ColActual     = 4;
+    static constexpr int ColMissing    = 5;
+    static constexpr int ColStatus     = 6;
 
 };
 
