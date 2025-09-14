@@ -28,6 +28,7 @@ struct StorageAuditRow {
     int pickingQuantity = 0;       // Elvárt mennyiség (picking alapján)
     int actualQuantity = 0;        // Audit során talált mennyiség
     bool isPresent = false;
+    bool isInOptimization = false;
 
     // int missingQuantity() const {
     //     if(pickingQuantity==0) return 0; // ha nincs picking quantity, nincs elvárt quantity sem
@@ -59,6 +60,17 @@ struct StorageAuditRow {
     }
 
     QString status() const {
+        if (sourceType == AuditSourceType::Leftover) {
+            if (actualQuantity == 0) {
+                if (isInOptimization)
+                    return "Felhasználás alatt, nincs megerősítve";
+                else
+                    return "Ellenőrzésre vár";
+            } else {
+                return "OK";
+            }
+        }
+
         switch (presence) {
         case AuditPresence::Present: return "OK";
         case AuditPresence::Missing: return "Hiányzik";
@@ -66,27 +78,5 @@ struct StorageAuditRow {
         }
         return "-";
     }
-
-    // QString status() const {
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         const auto entry = LeftoverStockRegistry::instance().findById(stockEntryId);
-    //         if (entry) {
-    //             if (actualQuantity == 0) {
-    //                 return "Ellenőrzésre vár"; // papíron ott van, de nincs megerősítve
-    //             } else {
-    //                 return "OK"; // megerősítve
-    //             }
-    //         } else {
-    //             return "Nem szerepel"; // nincs nyilvántartva, de auditban megjelent
-    //         }
-    //     }
-
-    //     if (pickingQuantity > 0) {
-    //         return actualQuantity < pickingQuantity ? "Hiányzik" : "OK";
-    //     }
-
-    //     return "-";
-    // }
-
 
 };

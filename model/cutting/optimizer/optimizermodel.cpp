@@ -173,6 +173,15 @@ void OptimizerModel::optimize() {
             result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
             result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);
 
+            // if (isReusable && candidate.has_value()) {
+            //     result.reusableBarcode = candidate->stock.reusableBarcode();
+            //     result.leftoverEntryId = candidate->stock.entryId; // 💡 Itt állítjuk be!
+            // } else {
+            //     const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
+            //     result.reusableBarcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
+            //     result.leftoverEntryId = QUuid(); // vagy hagyhatod üresen
+            // }
+
             _result_leftovers.append(result);
         //}
     }

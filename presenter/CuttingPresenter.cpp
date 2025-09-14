@@ -237,13 +237,27 @@ void CuttingPresenter::runOptimization() {
     QVector<LeftoverStockEntry> leftovers =
         Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
 
+
+    for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
+        qDebug() << "Registry barcode:" << entry.barcode << "EntryId:" << entry.entryId;
+    }
+
+    QSet<QUuid> usedLeftoverIds;
+
+    for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
+        if (plan.source == Cutting::Plan::Source::Reusable) {
+            const auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(plan.rodId);
+            if (entryOpt.has_value())
+                usedLeftoverIds.insert(entryOpt->entryId);
+        }
+    }
+
+
     QVector<StorageAuditRow> leftoverAuditRows =
-        LeftoverAuditService::instance().generateAudit();//leftovers);
+        LeftoverAuditService::instance().generateAudit(leftovers, usedLeftoverIds);
 
     lastAuditRows = stockAuditRows + leftoverAuditRows;
     view->update_StorageAuditTable(lastAuditRows);
-
-    //view->update_StorageAuditTable(lastAuditRows);
 }
 
 namespace CuttingUtils {
@@ -462,7 +476,19 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 
 void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
     QVector<StorageAuditRow> stockAudit = StorageAuditService::generateAuditRows(pickingMap);
-    QVector<StorageAuditRow> leftoverAudit = LeftoverAuditService::instance().generateAudit();
+
+    QSet<QUuid> usedLeftoverIds;
+
+    for (const Cutting::Result::ResultModel& result : model.getResults_Leftovers()) {
+        if (result.source == Cutting::Result::ResultSource::FromReusable) {
+            const auto entry = LeftoverStockRegistry::instance().findByBarcode(result.reusableBarcode);
+            if (entry.has_value())
+                usedLeftoverIds.insert(entry->entryId);
+        }
+    }
+
+    auto all = LeftoverStockRegistry::instance().readAll();
+    QVector<StorageAuditRow> leftoverAudit = LeftoverAuditService::instance().generateAudit(all,usedLeftoverIds);
 
     lastAuditRows = stockAudit + leftoverAudit;
 

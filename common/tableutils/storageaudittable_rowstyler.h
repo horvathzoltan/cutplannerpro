@@ -57,8 +57,12 @@ inline void applyStyle(QTableWidget* table, int rowIx, const MaterialMaster* mat
     else
         statusColor = Qt::lightGray;
 
+    if (auditRow.isInOptimization && auditRow.actualQuantity == 0) {
+        TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, QColor("#ffe0b2")); // narancsos
+    }
 
-    TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
+
+    //TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
 }
 
 

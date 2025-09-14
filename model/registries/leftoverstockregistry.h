@@ -33,4 +33,5 @@ public:
     bool isEmpty() const { return _data.isEmpty(); }
     void setData(const QVector<LeftoverStockEntry>& v) { _data = v;}
 
+    std::optional<LeftoverStockEntry> findByBarcode(const QString &barcode) const;
 };

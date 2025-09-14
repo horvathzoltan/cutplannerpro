@@ -27,6 +27,13 @@ void LeftoverStockRegistry::persist() const {
         LeftoverStockRepository::saveToCSV(*this, path);
 }
 
+std::optional<LeftoverStockEntry> LeftoverStockRegistry::findByBarcode(const QString& barcode) const {
+    for (const auto& entry : _data) {
+        if (entry.barcode == barcode)
+            return entry;
+    }
+    return std::nullopt;
+}
 
 
 
