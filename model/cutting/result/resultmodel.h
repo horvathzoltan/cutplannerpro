@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "common/common.h"
 #include "../piece/piecewithmaterial.h"
 #include "model/cutting/result/resultsource.h"
 #include "model/material/materialtype.h"
@@ -12,12 +11,21 @@
 namespace Cutting{
 namespace Result{
 
-// 1. ez azért kell, mert
-// 2. ResultModel = egy darab, a vágás során frissen keletkező hulladékot jelent
+/**
+ * @class ResultModel: egy vágási művelet eredménye
+ * @brief A vágás újonnan keletkezett!! maradékanyagának - hullójának - leírója
+ * - tartalmazza a felhasznált anyagot, a levágott darabokat, és a maradékot
+ * - újrahasznosítás és UI megjelenítés céljából használjuk
+ * - ez alapján auditálni anyagfelhasználást nem lehet,
+ * de be lehet vezetni mint hullót a leftoverstockba pl.
+ * ami azután felhasználható optimalizáláskor.
+ *
+ *  OptimizerModel::_result_leftovers -be kerülnek az eredmények
+*/
 struct ResultModel {
     QUuid materialId;               // 🔗 Törzsből visszakereshető anyag
     int length = 0;                 // 📏 Eredeti rúd hossza
-    QVector<Cutting::Piece::PieceWithMaterial> cuts;             // ✂️ Levágott darabok
+    QVector<Cutting::Piece::PieceWithMaterial> cuts;  // ✂️ Levágott darabok
     int waste = 0;                 // ♻️ Maradék (levágatlan anyag)
     //LeftoverSource source = LeftoverSource::Undefined;
     ResultSource source;

@@ -16,34 +16,42 @@
 namespace Cutting {
 namespace Plan {
 
-
 /**
- * @brief Egy konkrét vágási terv — akár reusable, akár szálanyaghoz
+ * @class CutPlan
+ * @brief Egy adott anyagdarab vágási terve (stock vagy reusable)
+ * az anyagfelhasználást írja le, ami ez alapján auditálható
+ *
+ * Főbb elemek:
+ * - piecesWithMaterial: levágott darabok metaadatokkal
+ * - segments: vizuális és logikai vágási szakaszok
+ * - kerfTotal, waste: anyagveszteség és maradék
+ * - materialId, rodId: azonosítók az anyaghoz
+ *
+ * Használat:
+ * - Az OptimizerModel::_result_plans gyűjti össze
+ * - Auditálás, újrahasznosítás és UI megjelenítés céljából
  */
+
 class CutPlan
 {
 public:
     // 📦 Mezők – az eredeti struct-nak megfelelően
-    int rodNumber = -1;              // ➕ Sorszám / index
-    //QVector<int> cuts;               // ✂️ Darabolások mm-ben
-    int kerfTotal = 0;               // 🔧 Vágások során vesztett anyag összesen
-    int waste = 0;                   // ♻️ Maradék mm    
-    QUuid materialId;                // 🔗 Az anyag azonosítója (UUID)
+    int rodNumber = -1;       // ➕ Sorszám / index
+    //QVector<int> cuts;      // ✂️ Darabolások mm-ben
+    int kerfTotal = 0;        // 🔧 Vágások során vesztett anyag összesen
+    int waste = 0;            // ♻️ Maradék mm
+    QUuid materialId;         // 🔗 Az anyag azonosítója (UUID)
     int totalLength = 0;      // 📏 Anyag hossz (mm)
-    QString rodId;                   // 📄 Reusable barcode, ha van
+    QString rodId;            // 📄 Reusable barcode, ha van
 
-    Cutting::Plan::Source source = Cutting::Plan::Source::Stock;
+    Cutting::Plan::Source source = Cutting::Plan::Source::Stock; // anyag forrásas
 
-    // 🔁 Állapotkezelés
-    Status status = Status::NotStarted;
+    Status status = Status::NotStarted; // tervállapot
 
     QUuid planId = QUuid::createUuid(); // ✅ automatikus UUID, egyedi tervazonosító
 
-    QVector<Cutting::Segment::SegmentModel> segments; // 🧱 Vágási szakaszlista
-
-    //QVector<PieceInfo> piecesInfo;
-
-    QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial;
+    QVector<Cutting::Segment::SegmentModel> segments; // 🧱 Vágási szakaszok — vizuális és logikai bontás
+    QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial; // ✂️ Levágott darabok — anyaggal együtt
 
     // 🧠 Viselkedésalapú metódusok
     bool isReusable() const;
@@ -57,11 +65,18 @@ public:
 
     QString pieceLengthsAsString() const;
 
-    // 📐 Szakaszgenerálás helper
+/**
+ * @brief 📐 Szakaszgenerálás helper - vágási szakaszok generálása a darabok és paraméterek alapján
+ * @param kerf_mm Vágási veszteség mm-ben
+ * @param totalLength_mm Az anyag teljes hossza mm-ben
+ *
+ * A szakaszok a piecesWithMaterial alapján jönnek létre.
+ * A SegmentUtils::generateSegments metódust használja.
+ */
     void generateSegments(int kerf_mm, int totalLength_mm){
         this->segments = Cutting::Segment::SegmentUtils::generateSegments(this->piecesWithMaterial
-                                                        /* PieceWithMaterial-ek */,
-                                                        kerf_mm, totalLength_mm);
+                                                                          /* PieceWithMaterial-ek */,
+                                                                          kerf_mm, totalLength_mm);
 
     }
 };

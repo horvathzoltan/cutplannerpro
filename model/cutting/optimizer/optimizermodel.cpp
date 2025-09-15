@@ -31,8 +31,9 @@ void OptimizerModel::optimize() {
     _result_leftovers.clear();
     int currentOpId = nextOptimizationId++;
 
-    // 🔧 Minden vágandó darabot kigyűjtünk darabonként — külön hosszal
-  ;
+    // 🔧 1. Darabok előkészítése — minden vágandó darabot külön példányban tárolunk — külön hosszal
+
+
     QVector<Cutting::Piece::PieceWithMaterial> pieces;
     for (const Cutting::Plan::Request &req : requests) {
         for (int i = 0; i < req.quantity; ++i) {
@@ -48,7 +49,7 @@ void OptimizerModel::optimize() {
 
     int rodId = 0;
 
-    // 🔁 Addig keresünk rudat, amíg van vágandó darab
+    // 🔁 2. Optimalizációs ciklus — amíg van darab, keresünk rudat és vágunk - addig keresünk, amíg van vágandó darab
     while (!pieces.isEmpty()) {
         Cutting::Piece::PieceWithMaterial target = pieces.front();
         QSet<QUuid> groupIds = GroupUtils::groupMembers(target.materialId);
@@ -62,7 +63,7 @@ void OptimizerModel::optimize() {
         bool found = false;
         bool isReusable = false;
 
-        // ♻️ Megpróbálunk találni hullóból újravágható rudat
+        // ♻️ 2/a. Reusable készlet vizsgálata: Megpróbálunk találni hullóból újravágható rudat
         std::optional<ReusableCandidate> candidate =
             findBestReusableFit(reusableInventory, pieces, target.materialId);
         if (candidate.has_value()) {
@@ -77,7 +78,7 @@ void OptimizerModel::optimize() {
             found = true;
         }
 
-        // 🧱 Ha nem találtunk hullót, akkor keresünk a profilkészletben
+        // 🧱 2/b. Stock készlet vizsgálata:Ha nem találtunk hullót, akkor keresünk a profilkészletben
         if (!found) {
             for (int i = 0; i < profileInventory.size(); ++i) {
                 const auto& stock = profileInventory[i];
@@ -99,13 +100,13 @@ void OptimizerModel::optimize() {
             }
         }
 
-        // 🚫 Ha egyik készletből sem tudunk vágni, eldobjuk az első darabot és folytatjuk
+        // 🚫 3. Ha nem találunk rudat egyik készletből sem, nem tudunk vágni -> eldobjuk az első darabot és folytatjuk
         if (!found || piecesWithMaterial.isEmpty()) {
-            pieces.removeOne(target);
+            pieces.removeOne(target); // 🚫 Nincs megfelelő rúd — darab eldobva
             continue;
         }
 
-        // ✂️ Kivágott darabokat eltávolítjuk a listából      
+        // ✂️ 4. Kivágott darabok eltávolítása a listából
 
         for (const auto& used : piecesWithMaterial) {
             for (int i = 0; i < pieces.size(); ++i) {
@@ -118,7 +119,7 @@ void OptimizerModel::optimize() {
         }
 
 
-        // 📦 Vágási terv mentése
+        // 📦 5. Vágási terv létrehozása és mentése
         //int totalCut = std::accumulate(selectedCombo.begin(), selectedCombo.end(), 0);
         int totalCut = std::accumulate(piecesWithMaterial.begin(), piecesWithMaterial.end(), 0,
                                        [](int sum, const Cutting::Piece::PieceWithMaterial& pwm) {
@@ -150,9 +151,8 @@ void OptimizerModel::optimize() {
         p.status = Cutting::Plan::Status::NotStarted;
         p.totalLength = selectedLength;
 
-        // ➕ Ha később `piecesInfo` visszakerül, az így tölthető:
-        //for (const auto& pwm : selectedCombo)
-        //    p.piecesInfo.append(pwm.info);
+        // ➕ 6. Hulló mentése — audit és újrahasznosítás céljából
+
 
         // 📐 Szakaszgenerálás – vizuális modellezéshez
         p.generateSegments(kerf, selectedLength);
@@ -161,28 +161,28 @@ void OptimizerModel::optimize() {
 
         // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
         //if (waste >= 300) {
-            Cutting::Result::ResultModel result;
-            result.cutPlanId = p.planId;
-            result.materialId     = selectedMaterialId;
-            result.length         = selectedLength;
-            result.cuts           = piecesWithMaterial;
-            result.waste          = waste;
-            //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
-            result.source = isReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
-            result.optimizationId = isReusable ? std::nullopt : std::make_optional(currentOpId);
-            result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
-            result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);
+        Cutting::Result::ResultModel result;
+        result.cutPlanId = p.planId;
+        result.materialId     = selectedMaterialId;
+        result.length         = selectedLength;
+        result.cuts           = piecesWithMaterial;
+        result.waste          = waste;
+        //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
+        result.source = isReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
+        result.optimizationId = isReusable ? std::nullopt : std::make_optional(currentOpId);
+        result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
+        result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);
 
-            // if (isReusable && candidate.has_value()) {
-            //     result.reusableBarcode = candidate->stock.reusableBarcode();
-            //     result.leftoverEntryId = candidate->stock.entryId; // 💡 Itt állítjuk be!
-            // } else {
-            //     const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
-            //     result.reusableBarcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
-            //     result.leftoverEntryId = QUuid(); // vagy hagyhatod üresen
-            // }
+        // if (isReusable && candidate.has_value()) {
+        //     result.reusableBarcode = candidate->stock.reusableBarcode();
+        //     result.leftoverEntryId = candidate->stock.entryId; // 💡 Itt állítjuk be!
+        // } else {
+        //     const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
+        //     result.reusableBarcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
+        //     result.leftoverEntryId = QUuid(); // vagy hagyhatod üresen
+        // }
 
-            _result_leftovers.append(result);
+        _result_leftovers.append(result);
         //}
     }
 }

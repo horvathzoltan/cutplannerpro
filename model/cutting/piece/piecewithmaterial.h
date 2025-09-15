@@ -12,6 +12,8 @@
 namespace Cutting {
 namespace Piece {
 
+// Egy darab-anyag kapcsolat az optimalizáláshoz
+
 class PieceWithMaterial
 {
 public:

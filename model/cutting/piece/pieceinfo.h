@@ -9,6 +9,10 @@
 namespace Cutting {
 namespace Piece {
 
+// Egy darab leíró model
+// darabon itt a vágandó darabot értjük
+// a Cutting::Plan::Request -ben lévő adatokat használjuk mint vágandó darabot
+
 struct PieceInfo
 {
     int length_mm = 0;                // 📏 Hossz milliméterben
