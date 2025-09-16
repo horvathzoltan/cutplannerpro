@@ -61,7 +61,7 @@ public:
 
     void syncModelWithRegistries();
     bool loadCuttingPlanFromFile(const QString &path);
-    void runStorageAudit(const QMap<QString, int>& pickingMap);
+    void runStorageAudit();
 
     QVector<RelocationInstruction> generateRelocationPlan(
         const QVector<StorageAuditRow>& auditRows,

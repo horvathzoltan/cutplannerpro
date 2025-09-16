@@ -2,6 +2,7 @@
 #include "../view/MainWindow.h"
 
 #include "common/auditsyncguard.h"
+#include "common/auditutils.h"
 #include "common/logger.h"
 //#include "model/registries/materialregistry.h"
 //#include "model/relocation/relocationinstruction.h"
@@ -232,33 +233,65 @@ void CuttingPresenter::runOptimization() {
     }
 
     QVector<StorageAuditRow> stockAuditRows =
-        StorageAuditService::generateAuditRows(pickingMap);
-
-    QVector<LeftoverStockEntry> leftovers =
-        Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
-
-
-    for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
-        qDebug() << "Registry barcode:" << entry.barcode << "EntryId:" << entry.entryId;
-    }
-
-    QSet<QUuid> usedLeftoverIds;
-
-    for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
-        if (plan.source == Cutting::Plan::Source::Reusable) {
-            const auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(plan.rodId);
-            if (entryOpt.has_value())
-                usedLeftoverIds.insert(entryOpt->entryId);
-        }
-    }
-
+        StorageAuditService::generateAuditRows_All();
 
     QVector<StorageAuditRow> leftoverAuditRows =
-        LeftoverAuditService::instance().generateAudit(leftovers, usedLeftoverIds);
+        LeftoverAuditService::generateAuditRows_All();
 
     lastAuditRows = stockAuditRows + leftoverAuditRows;
+
+    AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
+
     view->update_StorageAuditTable(lastAuditRows);
 }
+
+/*
+    // QVector<LeftoverStockEntry> leftovers =
+    //     Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
+
+
+    // for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
+    //     qDebug() << "Registry barcode:" << entry.barcode << "EntryId:" << entry.entryId;
+    // }
+
+    // QSet<QUuid> usedMaterialIds;
+    // QSet<QString> usedBarcodes;
+
+    // for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
+    //     usedMaterialIds.insert(plan.materialId);
+    //     usedBarcodes.insert(plan.rodId); // ez lehet reusable barcode is
+    // }
+
+    // // QSet<QUuid> usedLeftoverIds;
+
+    // // for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
+    // //     if (plan.source == Cutting::Plan::Source::Reusable) {
+    // //         const auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(plan.rodId);
+    // //         if (entryOpt.has_value())
+    // //             usedLeftoverIds.insert(entryOpt->entryId);
+    // //     }
+    // // }
+
+    // // QVector<StorageAuditRow> leftoverAuditRows =
+    // //     LeftoverAuditService::instance().generateAudit(leftovers, usedLeftoverIds);
+
+    // QVector<StorageAuditRow> leftoverAuditRows;
+    // for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
+    //     StorageAuditRow row;
+    //     row.rowId = QUuid::createUuid();
+    //     row.materialId = entry.materialId;
+    //     row.stockEntryId = entry.entryId;
+    //     row.sourceType = AuditSourceType::Leftover;
+    //     row.actualQuantity = 0;
+    //     row.presence = AuditPresence::Unknown;
+    //     row.isInOptimization = usedBarcodes.contains(entry.reusableBarcode());
+    //     leftoverAuditRows.append(row);
+    // }
+
+    //lastAuditRows = stockAuditRows + leftoverAuditRows;
+
+    //lastAuditRows = generateAuditRowsFromPlans(plans);
+*/
 
 namespace CuttingUtils {
 void logStockStatus(const QString& title, const QVector<StockEntry>& entries) {
@@ -369,6 +402,8 @@ void CuttingPresenter::logPlans(){
 
 }
 
+
+
 void CuttingPresenter::finalizePlans()
 {
     //logPlans();
@@ -474,23 +509,14 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 /*StorageAudit*/
 
 
-void CuttingPresenter::runStorageAudit(const QMap<QString, int>& pickingMap) {
-    QVector<StorageAuditRow> stockAudit = StorageAuditService::generateAuditRows(pickingMap);
+void CuttingPresenter::runStorageAudit() {
+    QVector<StorageAuditRow> stockAuditRows =
+        StorageAuditService::generateAuditRows_All();
 
-    QSet<QUuid> usedLeftoverIds;
+    QVector<StorageAuditRow> leftoverAuditRows =
+        LeftoverAuditService::generateAuditRows_All();
 
-    for (const Cutting::Result::ResultModel& result : model.getResults_Leftovers()) {
-        if (result.source == Cutting::Result::ResultSource::FromReusable) {
-            const auto entry = LeftoverStockRegistry::instance().findByBarcode(result.reusableBarcode);
-            if (entry.has_value())
-                usedLeftoverIds.insert(entry->entryId);
-        }
-    }
-
-    auto all = LeftoverStockRegistry::instance().readAll();
-    QVector<StorageAuditRow> leftoverAudit = LeftoverAuditService::instance().generateAudit(all,usedLeftoverIds);
-
-    lastAuditRows = stockAudit + leftoverAudit;
+    lastAuditRows = stockAuditRows + leftoverAuditRows;
 
     if (view) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
@@ -574,9 +600,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
                 plan.push_back({
                     destRow_Material->barcode, // anyag azonosító
-                    sourceRow.storageName(),   // honnan
+                    sourceRow.storageName,   // honnan
                     //cuttingZoneName,         // hova
-                    destRow.storageName(),     // hova
+                    destRow.storageName,     // hova
                     moveQty                    // mennyit
                 });
 

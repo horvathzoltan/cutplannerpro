@@ -11,16 +11,16 @@ class StorageAuditService : public QObject {
     Q_OBJECT
 
 public:
-    enum class AuditMode {
-        Passive,   // csak nézelődünk
-        Expected,  // van picking list
-    };
+    // enum class AuditMode {
+    //     Passive,   // csak nézelődünk
+    //     Expected,  // van picking list
+    // };
 
     explicit StorageAuditService(QObject* parent = nullptr);
 
-    static QVector<StorageAuditRow> generateAuditRows(const QMap<QString, int>& pickingMap);
-    static StorageAuditRow createAuditRow(const StockEntry& stock, const QMap<QString, int>& pickingMap);
+    static StorageAuditRow createAuditRow(const StockEntry& stock);
+    static QVector<StorageAuditRow> generateAuditRows_All();
 private:
-    static AuditMode _mode;
-    static QVector<StorageAuditRow> auditMachineStorage(const CuttingMachine& machine, const QMap<QString, int>& pickingMap);
+    //static AuditMode _mode;
+    static QVector<StorageAuditRow> auditMachineStorage(const CuttingMachine& machine);
 };

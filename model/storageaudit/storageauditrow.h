@@ -27,8 +27,11 @@ struct StorageAuditRow {
 
     int pickingQuantity = 0;       // Elvárt mennyiség (picking alapján)
     int actualQuantity = 0;        // Audit során talált mennyiség
-    bool isPresent = false;
+    //bool isPresent = false;
     bool isInOptimization = false;
+
+    QString barcode;
+    QString storageName;
 
     // int missingQuantity() const {
     //     if(pickingQuantity==0) return 0; // ha nincs picking quantity, nincs elvárt quantity sem
@@ -48,16 +51,16 @@ struct StorageAuditRow {
         return s.value().storageId;
     }
 
-    QString storageName() const {
-        if (sourceType == AuditSourceType::Leftover) {
-            const std::optional<LeftoverStockEntry> entry =
-                LeftoverStockRegistry::instance().findById(stockEntryId);
-            return entry ? entry->storageName() : "—";
-        }
+    // QString storageName() const {
+    //     if (sourceType == AuditSourceType::Leftover) {
+    //         const std::optional<LeftoverStockEntry> entry =
+    //             LeftoverStockRegistry::instance().findById(stockEntryId);
+    //         return entry ? entry->storageName() : "—";
+    //     }
 
-        const auto stock = StockRegistry::instance().findById(stockEntryId);
-        return stock ? stock->storageName() : "—";
-    }
+    //     const auto stock = StockRegistry::instance().findById(stockEntryId);
+    //     return stock ? stock->storageName() : "—";
+    // }
 
     QString status() const {
         if (sourceType == AuditSourceType::Leftover) {

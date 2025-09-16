@@ -7,37 +7,37 @@
 
 #include <QMultiMap>
 
-StorageAuditService::AuditMode StorageAuditService::_mode = AuditMode::Passive;
+//StorageAuditService::AuditMode StorageAuditService::_mode = AuditMode::Passive;
 
 StorageAuditService::StorageAuditService(QObject* parent)
     : QObject(parent) {}
 
-QVector<StorageAuditRow> StorageAuditService::generateAuditRows(const QMap<QString, int>& pickingMap)
+QVector<StorageAuditRow> StorageAuditService::generateAuditRows_All()
 {
     QVector<StorageAuditRow> result;
 
     const auto& machines = CuttingMachineRegistry::instance().readAll();
-    zInfo(L("Gépek száma: %1").arg(machines.size()));
+    zInfo(L("🔍 Teljes audit futtatása minden gépre — gépek száma: %1").arg(machines.size()));
 
     for (const auto& machine : machines) {
-        zInfo(L("Auditálás géphez: %1, rootStorageId: %2")
+        zInfo(L("📦 Auditálás géphez: %1, rootStorageId: %2")
                   .arg(machine.name)
                   .arg(machine.rootStorageId.toString()));
 
-        auto machineEntries = auditMachineStorage(machine, pickingMap);
+        auto machineEntries = auditMachineStorage(machine); // minden anyag
 
-        zInfo(L("Audit bejegyzések száma géphez [%1]: %2")
+        zInfo(L("📋 Audit bejegyzések száma géphez [%1]: %2")
                   .arg(machine.name)
                   .arg(machineEntries.size()));
 
         result += machineEntries;
     }
 
-    zInfo(L("Összes audit bejegyzés: %1").arg(result.size()));
+    zInfo(L("✅ Összes audit bejegyzés (stock): %1").arg(result.size()));
     return result;
 }
 
-QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingMachine& machine, const QMap<QString, int>& pickingMap)
+QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingMachine& machine)
 {
     QVector<StorageAuditRow> rows;
 
@@ -61,20 +61,21 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
         stockByStorage.insert(stock.storageId, stock);
     }
 
+    // tároló gyökérelem tartalmának a kigyűjtése
     const auto rootStocks = stockByStorage.values(machine.rootStorageId);
     for (const auto& stock : rootStocks) {
-        rows.append(createAuditRow(stock, pickingMap));
+        rows.append(createAuditRow(stock));
 
         zInfo(L("Talált készlet [%1], mennyiség: %2")
                   .arg(stock.materialName())
                   .arg(stock.quantity));
-
     }
 
+    // tároló gyökérelem alatti tárolók tartalmának a kigyűjtése
     for (const auto& storage : storageEntries) {
         const auto stocks = stockByStorage.values(storage.id);
         for (const auto& stock : stocks) {
-            rows.append(createAuditRow(stock, pickingMap));
+            rows.append(createAuditRow(stock));
 
             zInfo(L("Talált készlet [%1] a tárolóban [%2], mennyiség: %3")
                                    .arg(stock.materialName())
@@ -86,7 +87,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     return rows;
 }
 
-StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, const QMap<QString, int>& pickingMap)
+StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock)
 {
 
     if (stock.materialName().isEmpty() && stock.quantity == 0)
@@ -95,24 +96,17 @@ StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, con
 
     StorageAuditRow row;
     row.rowId           = QUuid::createUuid();         // egyedi audit sor azonosító
+    row.materialId      = stock.materialId;            // Anyag azonosító
     row.stockEntryId    = stock.entryId;               // 🔗 kapcsolat a StockEntry-hez
-    row.materialId      = stock.materialId;
-    //row.materialName     = stock.materialName();
-    //row.storageName      = storageName;
-    //entry.expectedQuantity = 0;
+    row.sourceType = AuditSourceType::Stock;
+
+    row.pickingQuantity = 0;//pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
     row.actualQuantity   = stock.quantity;
-    row.isPresent        = stock.quantity > 0;
-    //entry.missingQuantity  = std::max(0, entry.expectedQuantity - entry.actualQuantity);
+    row.presence = AuditPresence::Unknown;         // Felhasználó fogja beállítani
+    row.isInOptimization = false;                  // Később validálható CutPlan alapján
 
-    row.pickingQuantity = pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
-
-    // if (_mode == AuditMode::Passive) {
-    //     row.expectedQuantity = 0;
-    //     row.missingQuantity  = 0;
-    // } else {
-    //     row.expectedQuantity = 1; // vagy a picking list alapján
-    //     row.missingQuantity  = std::max(0, row.expectedQuantity - stock.quantity);
-    // }
+    row.barcode = stock.materialBarcode();
+    row.storageName = stock.storageName();
 
     return row;
 }

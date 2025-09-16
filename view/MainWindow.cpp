@@ -390,8 +390,7 @@ void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plan
 
 void MainWindow::on_btn_StorageAudit_clicked()
 {
-    QMap<QString, int> pickingmap;
-    presenter->runStorageAudit(pickingmap);             // 🧠 Audit elindítása
+    presenter->runStorageAudit();             // 🧠 Audit elindítása
 }
 
 void MainWindow::update_StorageAuditTable(const QVector<StorageAuditRow>& rows) {

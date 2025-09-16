@@ -1,4 +1,5 @@
 #include "storageaudittable_manager.h"
+#include "common/logger.h"
 #include "common/tableutils/storageaudittable_rowstyler.h"
 #include "common/tableutils/tableutils.h"
 #include "model/storageaudit/storageauditentry.h"
@@ -40,21 +41,23 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     //itemName->setData(Qt::UserRole, mat->id);
     //itemName->setData(StockEntryIdIdRole, row.materialId);
 
-    _table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName()));
+    _table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName));
     _table->setItem(rowIx, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
 
     //const MaterialMaster* mat = MaterialRegistry::instance().findById(row.materialId);
-    QString barcode = "—";
+    //QString barcode = row.barcode;
 
-    if (row.sourceType == AuditSourceType::Leftover) {
-        const auto entry = LeftoverStockRegistry::instance().findById(row.stockEntryId);
-        if (entry)
-            barcode = entry->reusableBarcode(); // vagy entry->barcode
-    } else {
-            barcode = mat->barcode;
-    }
+    // if (row.sourceType == AuditSourceType::Leftover) {
+    //     const auto entry = LeftoverStockRegistry::instance().findById(row.stockEntryId);
+    //     zInfo("Leftover");
+    //     if (entry)
+    //         barcode = entry->reusableBarcode(); // vagy entry->barcode
+    // } else {
+    //     zInfo("Stock");
+    //         barcode = mat->barcode;
+    // }
 
-    _table->setItem(rowIx, ColBarcode, new QTableWidgetItem(barcode));
+    _table->setItem(rowIx, ColBarcode, new QTableWidgetItem(row.barcode));
 
     QSpinBox* actualSpin = new QSpinBox();
     actualSpin->setRange(0, 9999);
@@ -151,7 +154,7 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         // 🏷️ Tároló név
         auto* itemStorage = _table->item(rowIx, ColStorage);
         if (itemStorage)
-            itemStorage->setText(row.storageName());
+            itemStorage->setText(row.storageName);
 
         // 🎯 Elvárt mennyiség
         auto* itemExpected = _table->item(rowIx, ColExpected);

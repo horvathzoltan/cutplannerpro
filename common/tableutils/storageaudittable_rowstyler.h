@@ -80,7 +80,7 @@ inline void applyTooltips(QTableWidget* table, int rowIx, const MaterialMaster* 
             tip = QString("Vonalkód: %1").arg(mat->barcode);
             break;
         case StorageAuditTableManager::ColStorage:
-            tip = QString("Tároló: %1").arg(auditRow.storageName());
+            tip = QString("Tároló: %1").arg(auditRow.storageName);
             break;
         case StorageAuditTableManager::ColExpected:
             tip = QString("Elvárt mennyiség: %1").arg(auditRow.pickingQuantity);
