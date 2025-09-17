@@ -28,6 +28,13 @@ void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plans,
                 if (plan.source == Cutting::Plan::Source::Reusable &&
                     plan.rodId == row.barcode) {
                     row.isInOptimization = true;
+
+                    row.pickingQuantity = 1; // hullók mindig 1 db
+                    row.presence = AuditPresence::Present;
+                    // row.presence = (row.actualQuantity >= 1)
+                    //                    ? AuditPresence::Present
+                    //                    : AuditPresence::Missing;
+
                     break;
                 }
             }
@@ -36,6 +43,10 @@ void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plans,
             if (requiredStockMaterials.contains(row.materialId)) {
                 row.isInOptimization = true;
                 row.pickingQuantity = requiredStockMaterials.value(row.materialId);
+
+                row.presence = (row.actualQuantity >= row.pickingQuantity)
+                                   ? AuditPresence::Present
+                                   : AuditPresence::Missing;
             }
         }
     }

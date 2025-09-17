@@ -48,18 +48,26 @@ inline void applyStyle(QTableWidget* table, int rowIx, const MaterialMaster* mat
     const QString status = auditRow.status();
 
     QColor statusColor;
-    if (status == "OK")
+    if (status == "OK" || status == "Felhasználás alatt, OK")
         statusColor = AuditColors::ok();
-    else if (status == "Hiányzik")
+    else if (status.contains("Hiányzik"))
         statusColor = AuditColors::missing();
     else if (status == "Ellenőrzésre vár")
         statusColor = AuditColors::pending();
     else
         statusColor = Qt::lightGray;
 
+
+    // 🔄 Csak akkor színezzük, ha az audit sor része az optimalizációnak
+    if (auditRow.isInOptimization) {
+        TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
+    }
+
+    // 🔶 Narancsos kiemelés, ha auditált, de nincs tényleges mennyiség
     if (auditRow.isInOptimization && auditRow.actualQuantity == 0) {
         TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, QColor("#ffe0b2")); // narancsos
     }
+
 
 
     //TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);

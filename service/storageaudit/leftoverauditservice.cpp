@@ -21,15 +21,18 @@ QVector<StorageAuditRow> LeftoverAuditService::generateAuditRows_All()
         row.stockEntryId = entry.entryId;              // Kapcsolat a hullóhoz
         row.sourceType = AuditSourceType::Leftover;    // Forrás: hulló
 
-        row.pickingQuantity = 0;//pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
-        row.actualQuantity = 0;                        // Audit során még nincs megerősítve
-        row.presence = AuditPresence::Unknown;         // Felhasználó fogja beállítani
-        row.isInOptimization = false;                  // Később validálható CutPlan alapján
-
-       // row.isPresent        = true;//entry.quantity > 0;    // Ha van mennyiség, akkor jelen van
+        // Példányszintű modell: 1 bejegyzés == 1 darab
+        row.pickingQuantity  = 0;            // globális auditnál nincs elvárt
+        row.actualQuantity   = 1;            // regisztrált -> implicit 1 darab
+        row.presence         = AuditPresence::Present; // implicit jelen
+        row.isInOptimization = false;
 
         row.barcode = entry.reusableBarcode();         // Hulló azonosító
         row.storageName = entry.storageName();         // Tároló neve
+
+        //row.isPresent      = true;           // ha ezt használjátok a UI-ban
+        row.barcode        = entry.reusableBarcode();
+        row.storageName    = entry.storageName();
 
         result.append(row);
     }

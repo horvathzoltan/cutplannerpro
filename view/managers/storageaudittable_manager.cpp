@@ -42,7 +42,14 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     //itemName->setData(StockEntryIdIdRole, row.materialId);
 
     _table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName));
-    _table->setItem(rowIx, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
+    //_table->setItem(rowIx, ColExpected, new QTableWidgetItem(QString::number(row.pickingQuantity)));
+    QString pickingQuantity = row.pickingQuantity > 0
+                      ? QString::number(row.pickingQuantity)
+                      : QString();
+    QString missingQuantity = row.pickingQuantity > 0
+                                  ? QString::number(row.missingQuantity())
+                                  : QString();
+    _table->setItem(rowIx, ColExpected,new QTableWidgetItem(pickingQuantity));
 
     //const MaterialMaster* mat = MaterialRegistry::instance().findById(row.materialId);
     //QString barcode = row.barcode;
@@ -66,7 +73,9 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     actualSpin->setProperty(RowId_Key, row.rowId);
     _table->setCellWidget(rowIx, ColActual, actualSpin);
 
-    _table->setItem(rowIx, ColMissing, new QTableWidgetItem(QString::number(row.missingQuantity())));
+    //_table->setItem(rowIx, ColMissing, new QTableWidgetItem(QString::number(row.missingQuantity())));
+
+    _table->setItem(rowIx, ColMissing,new QTableWidgetItem(missingQuantity));
 
     QTableWidgetItem* statusItem = new QTableWidgetItem();
     setStatusCell(statusItem, row.status());
@@ -105,6 +114,11 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
 
         radioPresent->setProperty(RowId_Key, row.rowId);
         radioMissing->setProperty(RowId_Key, row.rowId);
+
+        // 🔄 Állapot beállítása
+        radioPresent->setChecked(row.actualQuantity > 0);
+        radioMissing->setChecked(row.actualQuantity == 0);
+
 
         connect(radioPresent, &QRadioButton::toggled, this, [radioPresent, this]() {
             if (radioPresent->isChecked()) {
@@ -156,10 +170,17 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         if (itemStorage)
             itemStorage->setText(row.storageName);
 
+        QString pickingQuantity = row.pickingQuantity > 0
+                                      ? QString::number(row.pickingQuantity)
+                                      : QString();
+        QString missingQuantity = row.pickingQuantity > 0
+                                      ? QString::number(row.missingQuantity())
+                                      : QString();
+
         // 🎯 Elvárt mennyiség
         auto* itemExpected = _table->item(rowIx, ColExpected);
         if (itemExpected)
-            itemExpected->setText(QString::number(row.pickingQuantity));
+            itemExpected->setText(pickingQuantity);
 
         // 📦 Tényleges mennyiség (SpinBox)
         auto* actualSpin = qobject_cast<QSpinBox*>(_table->cellWidget(rowIx, ColActual));
@@ -169,7 +190,7 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         // ❌ Hiányzó mennyiség
         auto* itemMissing = _table->item(rowIx, ColMissing);
         if (itemMissing)
-            itemMissing->setText(QString::number(row.missingQuantity()));
+            itemMissing->setText(missingQuantity);
 
         // ✅ Státusz
         auto* statusItem = _table->item(rowIx, ColStatus);
@@ -181,10 +202,10 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         if (container) {
             auto radios = container->findChildren<QRadioButton*>();
             for (auto* radio : radios) {
-                if (radio->text() == "Ott van")
-                    radio->setChecked(row.presence == AuditPresence::Present);
-                else if (radio->text() == "Nincs ott")
-                    radio->setChecked(row.presence == AuditPresence::Missing);
+                if (radio->text() == "Van")
+                    radio->setChecked(row.actualQuantity > 0);
+                else if (radio->text() == "Nincs")
+                    radio->setChecked(row.actualQuantity == 0);
             }
         }
 

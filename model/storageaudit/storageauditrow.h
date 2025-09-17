@@ -62,24 +62,57 @@ struct StorageAuditRow {
     //     return stock ? stock->storageName() : "—";
     // }
 
+    // QString status() const {
+    //     if (sourceType == AuditSourceType::Leftover) {
+    //         if (actualQuantity == 0) {
+    //             if (isInOptimization)
+    //                 return "Felhasználás alatt, nincs megerősítve";
+    //             else
+    //                 return "Ellenőrzésre vár";
+    //         } else {
+    //             return "OK";
+    //         }
+    //     }
+
+    //     switch (presence) {
+    //     case AuditPresence::Present: return "OK";
+    //     case AuditPresence::Missing: return "Hiányzik";
+    //     case AuditPresence::Unknown: return "Ellenőrzésre vár";
+    //     }
+    //     return "-";
+    // }
+
     QString status() const {
+        // 🔍 Hulló audit esetén
         if (sourceType == AuditSourceType::Leftover) {
-            if (actualQuantity == 0) {
-                if (isInOptimization)
-                    return "Felhasználás alatt, nincs megerősítve";
+            if (isInOptimization) {
+                if (actualQuantity > 0)
+                    return "Felhasználás alatt, OK";
                 else
-                    return "Ellenőrzésre vár";
+                    return "Felhasználás alatt, nincs megerősítve";
             } else {
-                return "OK";
+                return "Regisztrált hulló"; // nincs elvárt → semleges státusz
             }
         }
 
-        switch (presence) {
-        case AuditPresence::Present: return "OK";
-        case AuditPresence::Missing: return "Hiányzik";
-        case AuditPresence::Unknown: return "Ellenőrzésre vár";
+        // 📦 Stock audit esetén
+        if (pickingQuantity == 0) {
+            // nincs elvárt mennyiség → nincs viszonyítási alap
+            return "Regisztrált készlet"; // semleges státusz
         }
+
+        // 🎯 Ha van elvárt mennyiség, akkor audit státusz értelmezhető
+        switch (presence) {
+        case AuditPresence::Present:
+            return "OK";
+        case AuditPresence::Missing:
+            return QString("Hiányzó mennyiség: %1").arg(pickingQuantity - actualQuantity);
+        case AuditPresence::Unknown:
+            return "Ellenőrzésre vár";
+        }
+
         return "-";
     }
+
 
 };
