@@ -78,7 +78,7 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     _table->setItem(rowIx, ColMissing,new QTableWidgetItem(missingQuantity));
 
     QTableWidgetItem* statusItem = new QTableWidgetItem();
-    setStatusCell(statusItem, row.status());
+    setStatusCell(statusItem, row.statusText());
     _table->setItem(rowIx, ColStatus, statusItem);
 
     QObject::connect(actualSpin, &QSpinBox::valueChanged, this, [actualSpin, this]() {
@@ -195,7 +195,7 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         // ✅ Státusz
         auto* statusItem = _table->item(rowIx, ColStatus);
         if (statusItem) {
-            setStatusCell(statusItem, row.status());
+            setStatusCell(statusItem, row.statusText());
         }
 
         auto container = qobject_cast<QWidget*>(_table->cellWidget(rowIx, ColActual));

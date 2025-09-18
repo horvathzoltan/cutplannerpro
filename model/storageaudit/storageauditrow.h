@@ -5,6 +5,9 @@
 #include <QUuid>
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/stockregistry.h>
+#include "model/storageaudit/auditcontext.h"
+#include "model/storageaudit/auditstatus.h"
+#include "model/storageaudit/auditstatus_text.h"
 
 enum class AuditSourceType {
     Stock,
@@ -32,6 +35,9 @@ struct StorageAuditRow {
 
     QString barcode;
     QString storageName;
+
+    // új: kontextus pointer
+    std::shared_ptr<AuditContext> context;
 
     // int missingQuantity() const {
     //     if(pickingQuantity==0) return 0; // ha nincs picking quantity, nincs elvárt quantity sem
@@ -112,6 +118,46 @@ struct StorageAuditRow {
         }
 
         return "-";
+    }
+
+    AuditStatus statusType() const {
+        // Optimize kapu: csak optimize után „erős” státuszok érvényesek
+        if (!isInOptimization) {
+            // Optimize előtt nincs elvárás értelmezve → Info
+            return AuditStatus::Info;
+        }
+
+        // Ha nincs kontextus, óvatos default
+        if (!context) {
+            // Fallback: jelenlegi lokális mezők alapján
+            if (pickingQuantity == 0) return AuditStatus::Info;
+            if (actualQuantity == 0)  return AuditStatus::Missing;
+            if (actualQuantity > 0 && actualQuantity < pickingQuantity) return AuditStatus::Pending;
+            return AuditStatus::Ok;
+        }
+
+        // Kontextus szerinti értékelés (anyag+hely csoport)
+        if (context->totalExpected == 0) {
+            return AuditStatus::Info;
+        }
+        if (context->totalActual == 0) {
+            return AuditStatus::Missing;
+        }
+        if (context->totalActual < context->totalExpected) {
+            return AuditStatus::Pending;
+        }
+        return AuditStatus::Ok;
+    }
+
+    QString statusText() const {
+        // Ha szeretnéd, a leftover saját szövegeit finomíthatod itt:
+        if (sourceType == AuditSourceType::Leftover && isInOptimization) {
+            if (actualQuantity > 0) return "Felhasználás alatt, OK";
+            // Részben leftover kontextusnál is mehet a standard:
+            // else → esni fog a Pending feliratra alul
+        }
+
+        return StorageAudit::Status::toText(statusType());
     }
 
 

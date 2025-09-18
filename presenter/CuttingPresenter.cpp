@@ -29,6 +29,8 @@
 
 #include <model/registries/materialregistry.h>
 
+#include <common/auditcontextbuilder.h>
+
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
 
@@ -239,6 +241,11 @@ void CuttingPresenter::runOptimization() {
         LeftoverAuditService::generateAuditRows_All();
 
     lastAuditRows = stockAuditRows + leftoverAuditRows;
+
+    auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
+    for (auto& row : lastAuditRows) {
+        row.context = contextMap.value(row.rowId);
+    }
 
     AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
 
@@ -517,6 +524,11 @@ void CuttingPresenter::runStorageAudit() {
         LeftoverAuditService::generateAuditRows_All();
 
     lastAuditRows = stockAuditRows + leftoverAuditRows;
+
+    auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
+    for (auto& row : lastAuditRows) {
+        row.context = contextMap.value(row.rowId);
+    }
 
     if (view) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése

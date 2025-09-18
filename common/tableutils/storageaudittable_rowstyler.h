@@ -1,15 +1,13 @@
 #pragma once
 
 #include "common/grouputils.h"
-#include "common/styleprofiles/auditcolors.h"
+//#include "common/styleprofiles/auditcolors.h"
 //#include "common/tablerowstyler/materialrowstyler.h"
 #include "common/tablerowstyler/tablestyleutils.h"
 #include "model/material/materialmaster.h"
 #include "model/storageaudit/storageauditrow.h"
 #include <QTableWidget>
 #include <view/managers/storageaudittable_manager.h>
-
-
 
 namespace ColorLogicUtils{
 inline QColor resolveBaseColor(const MaterialMaster* mat) {
@@ -24,54 +22,84 @@ namespace RowStyler {
 inline void applyStyle(QTableWidget* table, int rowIx, const MaterialMaster* mat, const StorageAuditRow& auditRow) {
     if (!table || !mat) return;
 
-    QColor bg, fg;
+    // 🔹 Alapszínek (sor háttér + foreground)
+    QColor bg = (auditRow.sourceType == AuditSourceType::Leftover)
+                    ? ColorLogicUtils::resolveBaseColor(mat).lighter(120)
+                    : GroupUtils::colorForGroup(mat->id);
+    QColor fg = (bg.lightness() < 128) ? Qt::white : Qt::black;
+
+    // 🔹 Státusz oszlop kivétele
     QSet<int> excludedCols;
-
-    if (auditRow.sourceType == AuditSourceType::Leftover) {
-        bg = ColorLogicUtils::resolveBaseColor(mat).lighter(120); // halványított csoportszín
-        fg = bg.lightness() < 128 ? Qt::white : Qt::black;
-
-        excludedCols.insert(StorageAuditTableManager::ColStatus); // státusz külön kezelve
-    } else {
-        bg = GroupUtils::colorForGroup(mat->id);
-        fg = bg.lightness() < 128 ? Qt::white : Qt::black;
-    }
+    excludedCols.insert(StorageAuditTableManager::ColStatus);
 
     for (int col = 0; col < table->columnCount(); ++col) {
-        if (excludedCols.contains(col))
-            continue;
-
+        if (excludedCols.contains(col)) continue;
         TableStyleUtils::setCellStyle(table, rowIx, col, bg, fg);
     }
 
-    // 🎯 Státusz cella színezése külön
-    const QString status = auditRow.status();
 
-    QColor statusColor;
-    if (status == "OK" || status == "Felhasználás alatt, OK")
-        statusColor = AuditColors::ok();
-    else if (status.contains("Hiányzik"))
-        statusColor = AuditColors::missing();
-    else if (status == "Ellenőrzésre vár")
-        statusColor = AuditColors::pending();
-    else
-        statusColor = Qt::lightGray;
+    AuditStatus status = auditRow.statusType();
+    QColor statusBg = auditRow.isInOptimization
+                          ? StorageAudit::Status::toColor(status)
+                          : AuditColors::Info; // halvány szürke, ha nincs optimize alatt
 
-
-    // 🔄 Csak akkor színezzük, ha az audit sor része az optimalizációnak
-    if (auditRow.isInOptimization) {
-        TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
-    }
-
-    // 🔶 Narancsos kiemelés, ha auditált, de nincs tényleges mennyiség
-    if (auditRow.isInOptimization && auditRow.actualQuantity == 0) {
-        TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, QColor("#ffe0b2")); // narancsos
-    }
-
-
-
-    //TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
+    QColor statusFg = (statusBg.lightness() < 128) ? Qt::white : AuditColors::DefaultFg;
+    TableStyleUtils::setCellStyle(table, rowIx, StorageAuditTableManager::ColStatus, statusBg, statusFg);
 }
+
+
+
+// inline void applyStyle(QTableWidget* table, int rowIx, const MaterialMaster* mat, const StorageAuditRow& auditRow) {
+//     if (!table || !mat) return;
+
+//     QColor bg, fg;
+//     QSet<int> excludedCols;
+
+//     if (auditRow.sourceType == AuditSourceType::Leftover) {
+//         bg = ColorLogicUtils::resolveBaseColor(mat).lighter(120); // halványított csoportszín
+//         fg = bg.lightness() < 128 ? Qt::white : Qt::black;
+
+//         excludedCols.insert(StorageAuditTableManager::ColStatus); // státusz külön kezelve
+//     } else {
+//         bg = GroupUtils::colorForGroup(mat->id);
+//         fg = bg.lightness() < 128 ? Qt::white : Qt::black;
+//     }
+
+//     for (int col = 0; col < table->columnCount(); ++col) {
+//         if (excludedCols.contains(col))
+//             continue;
+
+//         TableStyleUtils::setCellStyle(table, rowIx, col, bg, fg);
+//     }
+
+//     // 🎯 Státusz cella színezése külön
+//     const QString status = auditRow.status();
+
+//     QColor statusColor;
+//     if (status == "OK" || status == "Felhasználás alatt, OK")
+//         statusColor = AuditColors::ok();
+//     else if (status.contains("Hiányzik"))
+//         statusColor = AuditColors::missing();
+//     else if (status == "Ellenőrzésre vár")
+//         statusColor = AuditColors::pending();
+//     else
+//         statusColor = Qt::lightGray;
+
+
+//     // 🔄 Csak akkor színezzük, ha az audit sor része az optimalizációnak
+//     if (auditRow.isInOptimization) {
+//         TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
+//     }
+
+//     // 🔶 Narancsos kiemelés, ha auditált, de nincs tényleges mennyiség
+//     if (auditRow.isInOptimization && auditRow.actualQuantity == 0) {
+//         TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, QColor("#ffe0b2")); // narancsos
+//     }
+
+
+
+//     //TableStyleUtils::setCellBackground(table, rowIx, StorageAuditTableManager::ColStatus, statusColor);
+// }
 
 
 inline void applyTooltips(QTableWidget* table, int rowIx, const MaterialMaster* mat, const StorageAuditRow& auditRow) {

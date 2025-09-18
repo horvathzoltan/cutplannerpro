@@ -10,6 +10,7 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    common/auditcontextbuilder.cpp \
     common/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
     common/csvimporter.cpp \
@@ -82,6 +83,7 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/auditcontextbuilder.h \
     common/auditstatemanager.h \
     common/auditsyncguard.h \
     common/auditutils.h \
@@ -123,6 +125,9 @@ HEADERS += \
     model/registries/cuttingmachineregistry.h \
     model/relocation/relocationinstruction.h \
     model/repositories/cuttingmachinerepository.h \
+    model/storageaudit/auditcontext.h \
+    model/storageaudit/auditstatus.h \
+    model/storageaudit/auditstatus_text.h \
     model/storageaudit/storageauditentry.h \
     model/storageaudit/storageauditrow.h \
     service/cutting/optimizer/exporter.h \
