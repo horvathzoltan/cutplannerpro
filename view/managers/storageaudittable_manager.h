@@ -19,7 +19,7 @@ public:
     explicit StorageAuditTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const StorageAuditRow& entry);
-    void updateRow(const StorageAuditRow& row);    
+    void updateRow(const StorageAuditRow& row);
     void clearTable();
 
 private:

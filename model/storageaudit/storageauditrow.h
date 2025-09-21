@@ -22,74 +22,48 @@ enum class AuditPresence {
 
 
 struct StorageAuditRow {
-    QUuid rowId = QUuid::createUuid(); // CRUD miatt kell egy azonosító
-    QUuid materialId; // vagy barcode, amit a MaterialRegistry tud kezelni
-    QUuid stockEntryId;                    // 🔗 Kapcsolat a StockEntry-hez
-    AuditSourceType sourceType = AuditSourceType::Stock;    
+    QUuid rowId = QUuid::createUuid(); // Egyedi azonosító (CRUD műveletekhez is kell)
+    QUuid materialId;                  // Anyag azonosító (UUID)
+    QUuid stockEntryId;                // Kapcsolat a StockEntry-hez
+    AuditSourceType sourceType = AuditSourceType::Stock;
     AuditPresence presence = AuditPresence::Unknown;
 
-    int pickingQuantity = 0;       // Elvárt mennyiség (picking alapján)
+    int pickingQuantity = 0;       // Elvárt mennyiség (soronként, injektálás után)
     int actualQuantity = 0;        // Audit során talált mennyiség
-    //bool isPresent = false;
-    bool isInOptimization = false;
+    bool isInOptimization = false; // Része-e az optimalizációnak
 
-    QString barcode;
-    QString storageName;
+    QString barcode;               // Vonalkód (ha van)
+    QString storageName;           // Tároló neve
+    QUuid rootStorageId; // 🆕 Gépszintű csoportosításhoz szükséges
 
-    // új: kontextus pointer
+    // Kontextus pointer: azonos anyag+hely csoport összesített adatai
     std::shared_ptr<AuditContext> context;
 
-    // int missingQuantity() const {
-    //     if(pickingQuantity==0) return 0; // ha nincs picking quantity, nincs elvárt quantity sem
-    //     if(pickingQuantity < actualQuantity) return 0; // ha több van ott,mint kell, nincs hiány
-
-    //     return pickingQuantity - actualQuantity; // hiányzó
-    // }
+    // Hiányzó mennyiség számítása
+    // ⚠️ Fontos: ha van context, akkor az összesített értékekből számolunk,
+    // nem a sor lokális pickingQuantity-jából.
     int missingQuantity() const {
-        return (pickingQuantity > actualQuantity) ? (pickingQuantity - actualQuantity) : 0;
+        if (context) {
+            return (context->group.totalExpected > context->group.totalActual)
+            ? (context->group.totalExpected - context->group.totalActual)
+            : 0;
+        }
+        return (pickingQuantity > actualQuantity)
+                   ? (pickingQuantity - actualQuantity)
+                   : 0;
     }
 
+    // Tároló UUID lekérése a StockRegistry-ből
     QUuid storageId() const {
         std::optional<StockEntry> s =
             StockRegistry::instance().findById(stockEntryId);
         if(!s.has_value()) return QUuid();
-
         return s.value().storageId;
     }
 
-    // QString storageName() const {
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         const std::optional<LeftoverStockEntry> entry =
-    //             LeftoverStockRegistry::instance().findById(stockEntryId);
-    //         return entry ? entry->storageName() : "—";
-    //     }
-
-    //     const auto stock = StockRegistry::instance().findById(stockEntryId);
-    //     return stock ? stock->storageName() : "—";
-    // }
-
-    // QString status() const {
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         if (actualQuantity == 0) {
-    //             if (isInOptimization)
-    //                 return "Felhasználás alatt, nincs megerősítve";
-    //             else
-    //                 return "Ellenőrzésre vár";
-    //         } else {
-    //             return "OK";
-    //         }
-    //     }
-
-    //     switch (presence) {
-    //     case AuditPresence::Present: return "OK";
-    //     case AuditPresence::Missing: return "Hiányzik";
-    //     case AuditPresence::Unknown: return "Ellenőrzésre vár";
-    //     }
-    //     return "-";
-    // }
-
+    // Szöveges státusz (UI-hoz)
     QString status() const {
-        // 🔍 Hulló audit esetén
+        // Hulló audit esetén külön logika
         if (sourceType == AuditSourceType::Leftover) {
             if (isInOptimization) {
                 if (actualQuantity > 0)
@@ -101,64 +75,65 @@ struct StorageAuditRow {
             }
         }
 
-        // 📦 Stock audit esetén
+        // Stock audit esetén
         if (pickingQuantity == 0) {
             // nincs elvárt mennyiség → nincs viszonyítási alap
-            return "Regisztrált készlet"; // semleges státusz
+            return "Regisztrált készlet";
         }
 
-        // 🎯 Ha van elvárt mennyiség, akkor audit státusz értelmezhető
+        // Ha van elvárt mennyiség, akkor audit státusz értelmezhető
         switch (presence) {
         case AuditPresence::Present:
             return "OK";
         case AuditPresence::Missing:
-            return QString("Hiányzó mennyiség: %1").arg(pickingQuantity - actualQuantity);
+            return QString("Hiányzó mennyiség: %1").arg(missingQuantity());
         case AuditPresence::Unknown:
             return "Ellenőrzésre vár";
         }
-
         return "-";
     }
 
+    // Audit státusz típus (ikonhoz, színezéshez)
     AuditStatus statusType() const {
-        // Optimize kapu: csak optimize után „erős” státuszok érvényesek
+        // Ha nem része az optimalizációnak → csak információ
         if (!isInOptimization) {
-            // Optimize előtt nincs elvárás értelmezve → Info
             return AuditStatus::Info;
         }
 
-        // Ha nincs kontextus, óvatos default
+        // Ha nincs context, fallback a lokális mezőkre
         if (!context) {
-            // Fallback: jelenlegi lokális mezők alapján
-            if (pickingQuantity == 0) return AuditStatus::Info;
-            if (actualQuantity == 0)  return AuditStatus::Missing;
-            if (actualQuantity > 0 && actualQuantity < pickingQuantity) return AuditStatus::Pending;
-            return AuditStatus::Ok;
+            if (pickingQuantity == 0 && actualQuantity > 0)
+                return AuditStatus::Info;
+            if (pickingQuantity == 0)
+                return AuditStatus::Info;
+            if (actualQuantity == 0)
+                return AuditStatus::Missing;
+            if (actualQuantity < pickingQuantity)
+                return AuditStatus::Pending;
+            if (actualQuantity >= pickingQuantity)
+                return AuditStatus::Ok;
+            return AuditStatus::Unknown;
         }
 
-        // Kontextus szerinti értékelés (anyag+hely csoport)
-        if (context->totalExpected == 0) {
-            return AuditStatus::Info;
-        }
-        if (context->totalActual == 0) {
-            return AuditStatus::Missing;
-        }
-        if (context->totalActual < context->totalExpected) {
-            return AuditStatus::Pending;
-        }
-        return AuditStatus::Ok;
+        // Kontextus szerinti értékelés (anyag+hely csoport szinten)
+        const int expected = context->group.totalExpected;
+        const int actual   = context->group.totalActual;
+
+        if (expected == 0 && actual > 0) return AuditStatus::Info;
+        if (expected == 0 && actual == 0) return AuditStatus::Info;
+        if (actual == 0) return AuditStatus::Missing;
+        if (actual < expected) return AuditStatus::Pending;
+        if (actual >= expected) return AuditStatus::Ok;
+
+        return AuditStatus::Unknown;
     }
 
+    // Szöveges státusz (konzisztens a statusType()-pal)
     QString statusText() const {
-        // Ha szeretnéd, a leftover saját szövegeit finomíthatod itt:
         if (sourceType == AuditSourceType::Leftover && isInOptimization) {
             if (actualQuantity > 0) return "Felhasználás alatt, OK";
-            // Részben leftover kontextusnál is mehet a standard:
-            // else → esni fog a Pending feliratra alul
         }
-
         return StorageAudit::Status::toText(statusType());
     }
-
-
 };
+

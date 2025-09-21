@@ -18,7 +18,7 @@ public:
 
     explicit StorageAuditService(QObject* parent = nullptr);
 
-    static StorageAuditRow createAuditRow(const StockEntry& stock);
+    static StorageAuditRow createAuditRow(const StockEntry& stock, const QUuid& rootStorageId);
     static QVector<StorageAuditRow> generateAuditRows_All();
 private:
     //static AuditMode _mode;

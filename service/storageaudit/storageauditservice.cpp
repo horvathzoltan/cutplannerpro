@@ -64,7 +64,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     // tároló gyökérelem tartalmának a kigyűjtése
     const auto rootStocks = stockByStorage.values(machine.rootStorageId);
     for (const auto& stock : rootStocks) {
-        rows.append(createAuditRow(stock));
+        rows.append(createAuditRow(stock, machine.rootStorageId));
 
         zInfo(L("Talált készlet [%1], mennyiség: %2")
                   .arg(stock.materialName())
@@ -75,7 +75,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     for (const auto& storage : storageEntries) {
         const auto stocks = stockByStorage.values(storage.id);
         for (const auto& stock : stocks) {
-            rows.append(createAuditRow(stock));
+            rows.append(createAuditRow(stock, machine.rootStorageId));
 
             zInfo(L("Talált készlet [%1] a tárolóban [%2], mennyiség: %3")
                                    .arg(stock.materialName())
@@ -87,7 +87,7 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     return rows;
 }
 
-StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock)
+StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, const QUuid& rootStorageId)
 {
 
     if (stock.materialName().isEmpty() && stock.quantity == 0)
@@ -107,6 +107,7 @@ StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock)
 
     row.barcode = stock.materialBarcode();
     row.storageName = stock.storageName();
+    row.rootStorageId   = rootStorageId; // 🆕 itt állítjuk be
 
     return row;
 }

@@ -189,68 +189,85 @@ QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
     return model.getResults_Leftovers();
 }
 
-// void CuttingPresenter::clearRequests() {
-//     model.clearRequests();
-// }
-
 void CuttingPresenter::runOptimization() {
+    // 🔒 Ellenőrzés: a modell szinkronizálva van-e a legfrissebb adatokkal
     if (!isModelSynced) {
         zWarning(L("⚠️ A modell nem volt szinkronizálva optimalizáció előtt!"));
-        // opcionálisan: return vagy default szinkron
+        // Itt opcionálisan vissza is térhetnénk, vagy automatikusan szinkronizálhatnánk
         return;
     }
 
+    // 🚀 Optimalizáció futtatása a modellben
     model.optimize();
-    isModelSynced = false; // újra false az állapot, ha később újra hívnák
+    isModelSynced = false; // újra false, hogy ha később újra hívják, akkor ismét szinkron kelljen
 
+    // 📋 Optimalizációs tervek logolása (debug célokra)
     logPlans();
+
+    // 📦 Az optimalizáció eredményeként létrejött vágási tervek
+    // Minden CutPlan egy konkrét rúd (stock vagy hulló) felhasználását írja le
     QVector<Cutting::Plan::CutPlan> &plans = model.getResult_PlansRef();
 
-    // ✨ Ha készen állsz rá, itt frissíthetjük a View táblákat:
+    // ✨ UI frissítése, ha van aktív nézet
     if (view) {
-        // ez a közéspső - eredmény tábla
+        // Középső eredménytábla frissítése a vágási tervekkel
         view->update_ResultsTable(plans);
-        // ez a készlet
-        view->refresh_StockTable(); // ha a készlet változik
-        // ez a maradék
 
+        // Készlet tábla frissítése (ha a készlet változik az optimalizáció hatására)
+        view->refresh_StockTable();
+
+        // Hullók kigyűjtése és konvertálása újrafelhasználható bejegyzésekké
         QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
         QVector<LeftoverStockEntry> e = Cutting::Result::ResultUtils::toReusableEntries(l);
 
-        // QVector<StorageAuditRow> leftoverAuditRows =
-        //     LeftoverAuditService::instance().generateAudit(e);
-
-        // todo 01 nem jó, a stockot kellene frissíteni - illetve opt után kell-e bármit is, hisz majd a finalize frissít - nem?
-        view->refresh_LeftoversTable();//e);
+        // ⚠️ TODO: itt jelenleg nem generálunk külön leftover audit sorokat,
+        // mert a finalize lépés fogja ténylegesen frissíteni a stockot.
+        // Ezért most csak a táblát frissítjük.
+        view->refresh_LeftoversTable(); // paraméter nélkül, csak vizuális frissítés
     }
+
+    // 📤 Export: optimalizációs tervek mentése CSV és TXT formátumban
     OptimizationExporter::exportPlansToCSV(plans);
     OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
 
+    // 📊 Statisztikák frissítése a nézetben
     view->updateStats(plans, model.getResults_Leftovers());
 
+    // 🗺️ PickingMap generálása: anyag → hány rúd kell az optimalizációhoz
     auto pickingMap = generatePickingMapFromPlans(plans);
     for (auto it = pickingMap.begin(); it != pickingMap.end(); ++it) {
-        QString msg = L("📦 Picking: %1 -> %2").arg(it.key()) .arg(it.value());
-        zInfo(msg);
+        QString msg = L("📦 Picking: %1 -> %2").arg(it.key()).arg(it.value());
+        zInfo(msg); // logoljuk, hogy melyik anyagból mennyi kell
     }
 
+    // 📥 Audit sorok legenerálása a teljes stockból és a hullókból
     QVector<StorageAuditRow> stockAuditRows =
         StorageAuditService::generateAuditRows_All();
-
     QVector<StorageAuditRow> leftoverAuditRows =
         LeftoverAuditService::generateAuditRows_All();
 
+    // Egyesített audit sor lista (stock + leftover)
     lastAuditRows = stockAuditRows + leftoverAuditRows;
 
-    auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
-    for (auto& row : lastAuditRows) {
-        row.context = contextMap.value(row.rowId);
-    }
-
+    // 🧩 A vágási tervek injektálása az audit sorokba:
+    // - beállítja a pickingQuantity-t (elvárt mennyiség)
+    // - jelöli, hogy a sor része-e az optimalizációnak
+    // - presence státuszt is frissíti (Present/Missing)
     AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
+    AuditUtils::assignContextsToRows(&lastAuditRows);
+    // 🔗 Kontextus építése: anyag+hely szinten összesítjük az elvárt és tényleges mennyiségeket
 
+    // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
+    // for (auto& row : lastAuditRows) {
+    //     row.context = contextMap.value(row.rowId); // minden sor kap egy context pointert
+    // }
+
+
+
+    // 🖥️ Végül frissítjük az Audit táblát a nézetben
     view->update_StorageAuditTable(lastAuditRows);
 }
+
 
 /*
     // QVector<LeftoverStockEntry> leftovers =
@@ -517,18 +534,20 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 
 
 void CuttingPresenter::runStorageAudit() {
+    // 📥 Audit sorok legenerálása a teljes stockból és a hullókból
     QVector<StorageAuditRow> stockAuditRows =
         StorageAuditService::generateAuditRows_All();
-
     QVector<StorageAuditRow> leftoverAuditRows =
         LeftoverAuditService::generateAuditRows_All();
 
+    // Egyesített audit sor lista (stock + leftover)
     lastAuditRows = stockAuditRows + leftoverAuditRows;
 
-    auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
-    for (auto& row : lastAuditRows) {
-        row.context = contextMap.value(row.rowId);
-    }
+    // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
+    // for (auto& row : lastAuditRows) {
+    //     row.context = contextMap.value(row.rowId);
+    // }
+    AuditUtils::assignContextsToRows(&lastAuditRows);
 
     if (view) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése

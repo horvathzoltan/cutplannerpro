@@ -27,5 +27,6 @@ inline QColor toColor(AuditStatus s) {
     }
 }
 
+
 }
 }

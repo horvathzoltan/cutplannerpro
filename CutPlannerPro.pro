@@ -101,10 +101,12 @@ HEADERS += \
     common/styleprofiles/auditcolors.h \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/RowTracker.h \
+    common/tableutils/auditcellformatter.h \
     common/tableutils/colorutils.h \
     common/tableutils/rowid.h \
     common/tableutils/storageaudittable_connector.h \
     common/tableutils/storageaudittable_rowstyler.h \
+    common/tableutils/tableutils_auditcells.h \
     model/cutting/cuttingmachine.h \
     model/cutting/optimizer/optimizermodel.h \
     model/cutting/piece/pieceinfo.h \
@@ -126,6 +128,8 @@ HEADERS += \
     model/relocation/relocationinstruction.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/auditcontext.h \
+    model/storageaudit/auditcontext_text.h \
+    model/storageaudit/auditgroupinfo.h \
     model/storageaudit/auditstatus.h \
     model/storageaudit/auditstatus_text.h \
     model/storageaudit/storageauditentry.h \

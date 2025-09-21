@@ -19,13 +19,16 @@ inline void setCellForeground(QTableWidget* table, int row, int col, const QColo
 }
 
 inline void setCellStyle(QTableWidget* table, int row, int col, const QColor& bgColor, const QColor& fgColor) {
+
+    QColor fgColor_2 = (bgColor.lightness() < 128) ? Qt::white : fgColor;
+
     if (auto* widget = table->cellWidget(row, col)) {
         widget->setStyleSheet(QString("background-color: %1; color: %2;")
                                   .arg(bgColor.name())
-                                  .arg(fgColor.name()));
+                                  .arg(fgColor_2.name()));
     } else if (auto* item = table->item(row, col)) {
         item->setBackground(bgColor);
-        item->setForeground(fgColor);
+        item->setForeground(fgColor_2);
     }
 }
 
@@ -35,8 +38,11 @@ inline QTableWidgetItem* ensureStyledItem(QTableWidget* table, int row, int col,
         item = new QTableWidgetItem();
         table->setItem(row, col, item);
     }
+
+    QColor fg_2 = (bg.lightness() < 128) ? Qt::white : fg;
+
     item->setBackground(bg);
-    item->setForeground(fg);
+    item->setForeground(fg_2);
     item->setTextAlignment(align);
     if (!tooltip.isEmpty())
         item->setToolTip(tooltip);
