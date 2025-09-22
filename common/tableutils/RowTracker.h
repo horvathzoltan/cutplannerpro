@@ -15,11 +15,14 @@ public:
         QVariant extra; // opcionális: pl. groupId, rowType, stb.
     };
 
+    QMap<QUuid, int> _rowIndexMap;
+
     // Regisztrál egy sort (insertRow után hívd)
     inline void registerRow(int rowIndex, const QUuid& id, const QVariant& extra = {}) {
         RowInfo info{rowIndex, id, extra};
         _byRow.insert(rowIndex, info);
         _byId.insert(id, rowIndex);
+        _rowIndexMap[id] = rowIndex;
     }
 
     // Töröld, ha egy sort eltávolítasz a táblából (removeRow előtt vagy után is jó, lásd sync)
@@ -123,6 +126,10 @@ public:
         _byId[info.id] = newRow;
 
         _byRow = newByRow;
+    }
+
+    inline const QMap<QUuid, int>& rowIndexMap() const {
+        return _rowIndexMap;
     }
 
 private:

@@ -61,8 +61,8 @@ inline void applyTooltips(QTableWidget* table,
 
         switch (col) {
         case StorageAuditTableManager::ColMaterial:
-            tip = QString("Anyag: %1\nVonalkód: %2")
-                      .arg(mat->name, mat->barcode);
+            tip = QString("Anyag: %1\nSzín: %2\nVonalkód: %3")
+                      .arg(mat->name, mat->color.name(), mat->barcode);
             break;
 
         case StorageAuditTableManager::ColBarcode:
@@ -74,27 +74,50 @@ inline void applyTooltips(QTableWidget* table,
             break;
 
         case StorageAuditTableManager::ColExpected:
-            tip = QString("Elvárt mennyiség: %1")
-                      .arg(auditRow.pickingQuantity);
+            if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
+                tip = QString("Elvárt mennyiség (anyagcsoport): %1 db\nEz az anyag egy auditcsoport része.")
+                          .arg(auditRow.context->group.totalExpected);
+            } else if (auditRow.isInOptimization) {
+                tip = QString("Elvárt mennyiség: %1 db").arg(auditRow.pickingQuantity);
+            } else {
+                tip = "Nincs elvárt mennyiség — nem része az optimalizációnak.";
+            }
+
             break;
 
         case StorageAuditTableManager::ColActual:
             tip = (auditRow.sourceType == AuditSourceType::Leftover)
-                      ? "Válaszd ki, hogy az anyag fizikailag jelen van-e.\n"
-                        "Ez megerősíti vagy elveti a rendszer állapotát."
-                      : QString("Tényleges mennyiség: %1")
-                            .arg(auditRow.actualQuantity);
+                      ? "Válaszd ki, hogy az anyag fizikailag jelen van-e.\nEz megerősíti vagy elveti a rendszer állapotát."
+                      : QString("Tényleges mennyiség: %1 db").arg(auditRow.actualQuantity);
+
             break;
 
         case StorageAuditTableManager::ColMissing:
-            tip = QString("Hiányzó mennyiség: %1")
-                      .arg(auditRow.missingQuantity());
+            if (!auditRow.isInOptimization || auditRow.pickingQuantity == 0) {
+                tip = "Nincs hiányzó mennyiség — nincs elvárt.";
+            } else if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
+                int missing = std::max(0, auditRow.context->group.totalExpected - auditRow.context->group.totalActual);
+                tip = QString("Hiányzó mennyiség (anyagcsoport): %1 db\nEz az anyag egy auditcsoport része.")
+                          .arg(missing);
+            } else {
+                int missing = std::max(0, auditRow.missingQuantity());
+                tip = QString("Hiányzó mennyiség: %1 db").arg(missing);
+            }
+
+
             break;
 
         case StorageAuditTableManager::ColStatus:
             // 🔹 Itt már a központi helper dolgozik
             tip = StorageAudit::Context::toTooltip(
                 auditRow.context.get(), mat, &auditRow);
+
+            if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
+                tip += "\nEz az audit sor egy anyagcsoport tagja — a státusz az egész csoportra vonatkozik.";
+            } else if (!auditRow.isInOptimization) {
+                tip += "\nEz az audit sor nem része az optimalizációnak.";
+            }
+
             break;
         }
 

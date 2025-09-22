@@ -42,16 +42,20 @@ struct StorageAuditRow {
     // Hiányzó mennyiség számítása
     // ⚠️ Fontos: ha van context, akkor az összesített értékekből számolunk,
     // nem a sor lokális pickingQuantity-jából.
+    // 🧠 A hiány sosem lehet negatív — auditálás célja a teljesülés ellenőrzése, nem a többlet kimutatása.
     int missingQuantity() const {
         if (context) {
-            return (context->group.totalExpected > context->group.totalActual)
-            ? (context->group.totalExpected - context->group.totalActual)
-            : 0;
+            int expected = context->group.totalExpected;
+            int actual   = context->group.totalActual;
+
+            // 🔒 Védjük a negatív érték ellen
+            return std::max(0, expected - actual);
         }
-        return (pickingQuantity > actualQuantity)
-                   ? (pickingQuantity - actualQuantity)
-                   : 0;
+
+        // 🔹 Egyedi sor esetén: lokális hiány, de szintén védve
+        return std::max(0, pickingQuantity - actualQuantity);
     }
+
 
     // Tároló UUID lekérése a StockRegistry-ből
     QUuid storageId() const {

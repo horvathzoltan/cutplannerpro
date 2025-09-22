@@ -2,10 +2,13 @@
 
 #include <QObject>
 #include <QTableWidget>
+#include <common/tableutils/auditgrouplabeler.h>
 #include "common/tableutils/RowTracker.h"
 //#include "common/tableutils/rowid.h"
 #include "model/storageaudit/storageauditentry.h" // vagy ahová az entry kerül
 #include "model/storageaudit/storageauditrow.h"
+#include "common/tableutils/auditgroupsynchronizer.h"
+
 
 class StorageAuditTableManager : public QObject {
     Q_OBJECT
@@ -14,6 +17,10 @@ private:
     QTableWidget* _table;
     QWidget* _parent;
     RowTracker _rows;
+    QMap<QUuid, StorageAuditRow> _auditRowMap;
+    std::unique_ptr<TableUtils::AuditGroupSynchronizer> _groupSync;
+    TableUtils::AuditGroupLabeler _groupLabeler;
+
 
 public:
     explicit StorageAuditTableManager(QTableWidget* table, QWidget* parent = nullptr);
@@ -25,6 +32,7 @@ public:
 private:
     void setStatusCell(QTableWidgetItem *item, const QString &status);
 
+    //void applyGroupContextToRows(const StorageAuditRow &row);
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
     void leftoverPresenceChanged(const QUuid& rowId, AuditPresence presence);

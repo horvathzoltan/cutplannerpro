@@ -20,6 +20,8 @@ SOURCES += \
     common/quantityparser.cpp \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
+    common/tableutils/auditgrouplabeler.cpp \
+    common/tableutils/auditgroupsynchronizer.cpp \
     common/tableutils/resulttable_rowstyler.cpp \
     main.cpp \
     model/archivedwasteentry.cpp \
@@ -102,6 +104,8 @@ HEADERS += \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/RowTracker.h \
     common/tableutils/auditcellformatter.h \
+    common/tableutils/auditgrouplabeler.h \
+    common/tableutils/auditgroupsynchronizer.h \
     common/tableutils/colorutils.h \
     common/tableutils/rowid.h \
     common/tableutils/storageaudittable_connector.h \

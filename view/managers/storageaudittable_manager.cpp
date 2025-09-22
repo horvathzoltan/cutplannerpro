@@ -15,7 +15,10 @@
 #include "common/tableutils/auditcellformatter.h"
 
 StorageAuditTableManager::StorageAuditTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), _table(table), _parent(parent){}
+    : QObject(parent), _table(table), _parent(parent){
+    _groupSync = std::make_unique<TableUtils::AuditGroupSynchronizer>(_table, _auditRowMap, _rows.rowIndexMap(), &_groupLabeler);
+
+}
 
 void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     if (!_table)
@@ -37,11 +40,14 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
 
     _table->setItem(rowIx, ColStorage, new QTableWidgetItem(row.storageName));
 
-    QString pickingQuantity = AuditCellFormatter::formatExpectedQuantity(row);
+    QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
+    QString pickingQuantity = AuditCellFormatter::formatExpectedQuantity(row, groupLabel);
     QString missingQuantity = AuditCellFormatter::formatMissingQuantity(row);
 
     _table->setItem(rowIx, ColExpected, new QTableWidgetItem(pickingQuantity));
     _table->setItem(rowIx, ColMissing,  new QTableWidgetItem(missingQuantity));
+
+
     _table->setItem(rowIx, ColStatus,   new QTableWidgetItem(TableUtils::AuditCells::statusText(row)));
     //_table->setItem(rowIx, ColExpected,new QTableWidgetItem(pickingQuantity));
 
@@ -104,8 +110,12 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
         });
     }
 
-    StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);
-    StorageAuditTable::RowStyler::applyTooltips(_table, rowIx, mat, row);
+    _auditRowMap[row.rowId] = row;                          // 🔹 Először frissítjük a mapet
+    //_groupSync->syncRow(row);                               // 🔹 Ez már a mapből dolgozik → korrekt
+    _groupSync->syncGroup(*row.context);                    // 🔹 Ez még workaroundos → később kiváltható
+    StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);     // 🎨 Stílus
+    StorageAuditTable::RowStyler::applyTooltips(_table, rowIx, mat, row); // 🧠 Tooltip
+
 
     if (row.context) {
         zInfo(L("AuditContext [%1]: expected=%2, actual=%3, rows=%4")
@@ -149,16 +159,18 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
     if (itemStorage)
         itemStorage->setText(row.storageName);
 
-    QString pickingQuantity = AuditCellFormatter::formatExpectedQuantity(row);
-    QString missingQuantity = AuditCellFormatter::formatMissingQuantity(row);
-
     auto* itemExpected = _table->item(rowIx, ColExpected);
-    if (itemExpected)
-        itemExpected->setText(TableUtils::AuditCells::expectedText(row));
+    if (itemExpected) {
+        QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
+        QString pickingQuantity = AuditCellFormatter::formatExpectedQuantity(row, groupLabel);
+        itemExpected->setText(pickingQuantity);
+    }
 
     auto* itemMissing = _table->item(rowIx, ColMissing);
-    if (itemMissing)
-        itemMissing->setText(TableUtils::AuditCells::missingText(row));
+    if (itemMissing){
+        QString missingQuantity = row.isInOptimization?AuditCellFormatter::formatMissingQuantity(row):"-";
+        itemMissing->setText(missingQuantity);
+    }
 
     // 🎯 Elvárt mennyiség
     // auto* itemExpected = _table->item(rowIx, ColExpected);
@@ -195,12 +207,44 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
     }
 
     // 🎨 Stílus újraalkalmazás
-    StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);
-    StorageAuditTable::RowStyler::applyTooltips(_table, rowIx, mat, row);
+    _auditRowMap[row.rowId] = row;                          // 🔹 Először frissítjük a mapet
+    //_groupSync->syncRow(row);                               // 🔹 Ez már a mapből dolgozik → korrekt
+    _groupSync->syncGroup(*row.context);                           // 🔹 Ez még workaroundos → később kiváltható
+    StorageAuditTable::RowStyler::applyStyle(_table, rowIx, mat, row);     // 🎨 Stílus
+    StorageAuditTable::RowStyler::applyTooltips(_table, rowIx, mat, row); // 🧠 Tooltip
+
 }
 
 void StorageAuditTableManager::clearTable() {
     _table->clearContents();
     _table->setRowCount(0);
     _rows.clear();
+    _groupLabeler.clear();
 }
+
+// void StorageAuditTableManager::applyGroupContextToRows(const StorageAuditRow& row) {
+//     if (!row.context || row.context->group.rowIds.size() <= 1)
+//         return;
+
+//     for (const QUuid& groupRowId : row.context->group.rowIds) {
+//         std::optional<int> rowIxOpt = _rows.rowOf(groupRowId);
+//         if (!rowIxOpt.has_value())
+//             continue;
+
+//         int rowIx = rowIxOpt.value();
+//         const StorageAuditRow& groupRow = /* valahonnan lekérve, pl. auditRowMap[groupRowId] */ row; // ha nincs map, akkor workaround kell
+
+//         QString expectedText = AuditCellFormatter::formatExpectedQuantity(row); // mindig a context alapján
+//         QString missingText  = AuditCellFormatter::formatMissingQuantity(row);
+//         QString statusText   = TableUtils::AuditCells::statusText(row);
+
+//         if (auto* itemExpected = _table->item(rowIx, ColExpected))
+//             itemExpected->setText(expectedText);
+
+//         if (auto* itemMissing = _table->item(rowIx, ColMissing))
+//             itemMissing->setText(missingText);
+
+//         if (auto* itemStatus = _table->item(rowIx, ColStatus))
+//             itemStatus->setText(statusText);
+//     }
+// }
