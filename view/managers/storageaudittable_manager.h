@@ -29,10 +29,13 @@ public:
     void updateRow(const StorageAuditRow& row);
     void clearTable();
 
+    void createAuditRowWidgets(const StorageAuditRow &row, int rowIx);
+    void populateAuditRowContent(const StorageAuditRow &row, int rowIx, const QString &groupLabel);
+
 private:
     void setStatusCell(QTableWidgetItem *item, const QString &status);
 
-    //void applyGroupContextToRows(const StorageAuditRow &row);
+    //void applyGroupContextToRows(const StorageAuditRow &row);    
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
     void leftoverPresenceChanged(const QUuid& rowId, AuditPresence presence);

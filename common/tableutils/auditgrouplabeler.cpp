@@ -6,12 +6,17 @@ QString AuditGroupLabeler::labelFor(const AuditContext* ctx) {
     if (!ctx)
         return "";
 
-    if (_labels.contains(ctx))
-        return _labels.value(ctx);
+    const AuditGroupInfo& group = ctx->group;
 
-    // 🔠 Új betűjel generálása: A, B, C, ...
+    if (!group.isGroup())
+        return ""; // 🔹 nincs címke egyelemű csoportokra
+
+    const QString& key = group.groupKey();
+    if (_labels.contains(key))
+        return _labels.value(key);
+
     QString label = QString(QChar('A' + static_cast<int>(_labels.size())));
-    _labels[ctx] = label;
+    _labels[key] = label;
     return label;
 }
 

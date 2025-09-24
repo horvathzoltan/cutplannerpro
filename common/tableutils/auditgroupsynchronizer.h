@@ -6,6 +6,9 @@
 #include <QMap>
 #include <QUuid>
 
+class StorageAuditTableManager; // előredeklarálás
+
+
 namespace TableUtils {
 
 /**
@@ -16,22 +19,25 @@ namespace TableUtils {
  * - Elvárt, hiányzó és státusz cellák összehangolt értéket kapnak.
  * - A jövőben bővíthető tooltip, szín, aggregált actual kezelésére.
  */
+
 class AuditGroupSynchronizer {
 public:
     AuditGroupSynchronizer(QTableWidget* table,
                            const QMap<QUuid, StorageAuditRow>& rowMap,
                            const QMap<QUuid, int>& rowIndexMap,
-                           AuditGroupLabeler* _labeler);
+                           AuditGroupLabeler* labeler,
+                           StorageAuditTableManager* manager);
 
-    void syncGroup(const AuditContext& ctx);
+    void syncGroup(const AuditContext& ctx, const QUuid& excludeRowId = {});
     void syncRow(const StorageAuditRow& row);
 
 private:
-    QTableWidget* _table;
+    QTableWidget* _table = nullptr;
     const QMap<QUuid, StorageAuditRow>& _rowMap;
     const QMap<QUuid, int>& _rowIndexMap;
     AuditGroupLabeler* _labeler = nullptr;
-
+    StorageAuditTableManager* _manager = nullptr;
 };
+
 
 } // namespace TableUtils

@@ -4,20 +4,35 @@
 #include <QList>
 #include <QUuid>
 
-/**
- * @brief Egy audit csoporthoz tartozó metaadatok
- *        (anyag + tároló + sorok + összesített értékek)
- */
 struct AuditGroupInfo {
-    QUuid materialId;           // 📦 Anyag azonosító
-    QString groupKey;           // 🔑 Csoport kulcs (pl. storageName vagy auditGroup)
-    QList<QUuid> rowIds;        // 📋 Audit sorok azonosítói ebben a csoportban
+private:
+    QString _groupKey;           // 🔑 Csoport kulcs (pl. storageName vagy auditGroup)
+    QList<QUuid> _rowIds;        // 📋 Audit sorok azonosítói ebben a csoportban
 
-    int totalExpected = 0;      // 🎯 Összes elvárt mennyiség a csoportban
-    int totalActual = 0;        // ✅ Összes tényleges mennyiség a csoportban
+public:
+    // --- Konstruktorok ---
+    AuditGroupInfo() = default;
+    explicit AuditGroupInfo(const QString& key) : _groupKey(key) {}
 
-    // 🧠 Bővíthető mezők későbbre:
-    // QString requiredAtMachine;
-    // QString visualLabel;
-    // bool isCritical;
+    // --- Getterek ---
+    const QString& groupKey() const { return _groupKey; }
+    const QList<QUuid>& rowIds() const { return _rowIds; }
+
+    // --- Műveletek ---
+    void addRow(const QUuid& rowId) {
+        if (!_rowIds.contains(rowId))
+            _rowIds.append(rowId);
+    }
+
+    bool isGroup() const {
+        return _rowIds.size() > 1;
+    }
+
+    bool isEmpty() const {
+        return _rowIds.isEmpty();
+    }
+
+    int size() const {
+        return _rowIds.size();
+    }
 };

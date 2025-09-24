@@ -29,7 +29,7 @@ public:
     void clear();
 
 private:
-    QMap<const AuditContext*, QString> _labels;
+    QMap<QString, QString> _labels; // 🔑 groupKey → label
 };
 
 } // namespace TableUtils

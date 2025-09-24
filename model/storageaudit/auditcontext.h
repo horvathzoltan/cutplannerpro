@@ -5,5 +5,9 @@
 #include "auditgroupinfo.h"
 
 struct AuditContext {
-        AuditGroupInfo group; // minden csoporthoz tartozó összesített adat itt van
+    QUuid materialId;           // 📦 Anyag azonosító
+    int totalExpected = 0;      // 🎯 Összes elvárt mennyiség
+    int totalActual = 0;        // ✅ Összes tényleges mennyiség
+
+     AuditGroupInfo group; // Csoport metaadat
 };
