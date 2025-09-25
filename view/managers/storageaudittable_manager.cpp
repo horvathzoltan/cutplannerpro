@@ -52,9 +52,9 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     if (row.context) {
         zInfo(L("AuditContext [%1]: expected=%2, actual=%3, rows=%4")
                    .arg(row.materialId.toString())
-                   .arg(row.context->group.totalExpected)
-                   .arg(row.context->group.totalActual)
-                   .arg(row.context->group.rowIds.size()));
+                   .arg(row.context->totalExpected)
+                   .arg(row.context->totalActual)
+                   .arg(row.context->group.size()));
     }
 
 }
@@ -71,9 +71,9 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
     if (row.context) {
         zInfo(L("🔄 Frissített AuditContext [%1]: expected=%2, actual=%3, rows=%4")
                    .arg(row.materialId.toString())
-                   .arg(row.context->group.totalExpected)
-                   .arg(row.context->group.totalActual)
-                   .arg(row.context->group.rowIds.size()));
+                   .arg(row.context->totalExpected)
+                   .arg(row.context->totalActual)
+                   .arg(row.context->group.size()));
     }
 
     // 🔍 Sorindex lekérése

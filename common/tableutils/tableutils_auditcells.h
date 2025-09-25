@@ -10,8 +10,8 @@ namespace TableUtils::AuditCells {
  *        Ha a sor csoport tagja, akkor a csoport összesített értékét jeleníti meg.
  */
 inline QString expectedText(const StorageAuditRow& row) {
-    if (row.context && row.context->group.rowIds.size() > 1) {
-        return QString("%1 db (anyagcsoport)").arg(row.context->group.totalExpected);
+    if (row.context && row.context->group.isGroup()) {
+        return QString("%1 db (anyagcsoport)").arg(row.context->totalExpected);
     }
     return row.pickingQuantity > 0
                ? QString::number(row.pickingQuantity)
@@ -23,8 +23,8 @@ inline QString expectedText(const StorageAuditRow& row) {
  *        Ha a sor csoport tagja, akkor a csoport szintű hiányt jeleníti meg.
  */
 inline QString missingText(const StorageAuditRow& row) {
-    if (row.context && row.context->group.rowIds.size() > 1) {
-        int missing = row.context->group.totalExpected - row.context->group.totalActual;
+    if (row.context && row.context->group.isGroup()) {
+        int missing = row.context->totalExpected - row.context->totalActual;
         return QString("%1 db (anyagcsoport)").arg(missing);
     }
     return row.pickingQuantity > 0

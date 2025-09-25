@@ -80,7 +80,7 @@ private:
     QVector<StorageAuditRow> lastAuditRows;
 
     bool isModelSynced = false;
-    QMap<QString, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
+    QMap<QUuid, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
     void logPlans();
     AuditStateManager _auditStateManager;
 

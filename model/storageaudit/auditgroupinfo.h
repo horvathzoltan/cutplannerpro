@@ -11,11 +11,11 @@ private:
 
 public:
     // --- Konstruktorok ---
-    AuditGroupInfo() = default;
+    //AuditGroupInfo() = default;
     explicit AuditGroupInfo(const QString& key) : _groupKey(key) {}
 
     // --- Getterek ---
-    const QString& groupKey() const { return _groupKey; }
+    const QString& groupKey() const { return _groupKey; }    
     const QList<QUuid>& rowIds() const { return _rowIds; }
 
     // --- Műveletek ---
@@ -32,7 +32,7 @@ public:
         return _rowIds.isEmpty();
     }
 
-    int size() const {
-        return _rowIds.size();
-    }
+     int size() const {
+         return _rowIds.size();
+     }
 };

@@ -74,16 +74,21 @@ inline void applyTooltips(QTableWidget* table,
             break;
 
         case StorageAuditTableManager::ColExpected:
-            if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
-                tip = QString("Elvárt mennyiség (anyagcsoport): %1 db\nEz az anyag egy auditcsoport része.")
-                          .arg(auditRow.context->group.totalExpected);
+            if (auditRow.context && auditRow.context->group.isGroup()) {
+                if (!auditRow.isInOptimization) {
+                    tip = QString("Elvárt mennyiség: –\nEz az anyag egy auditcsoport része, "
+                                  "de nem része az optimalizációnak.");
+                } else {
+                    tip = QString("Elvárt mennyiség (anyagcsoport): %1 db\nEz az anyag egy auditcsoport része.")
+                              .arg(auditRow.context->totalExpected);
+                }
             } else if (auditRow.isInOptimization) {
                 tip = QString("Elvárt mennyiség: %1 db").arg(auditRow.pickingQuantity);
             } else {
                 tip = "Nincs elvárt mennyiség — nem része az optimalizációnak.";
             }
-
             break;
+
 
         case StorageAuditTableManager::ColActual:
             tip = (auditRow.sourceType == AuditSourceType::Leftover)
@@ -95,8 +100,8 @@ inline void applyTooltips(QTableWidget* table,
         case StorageAuditTableManager::ColMissing:
             if (!auditRow.isInOptimization || auditRow.pickingQuantity == 0) {
                 tip = "Nincs hiányzó mennyiség — nincs elvárt.";
-            } else if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
-                int missing = std::max(0, auditRow.context->group.totalExpected - auditRow.context->group.totalActual);
+            } else if (auditRow.context && auditRow.context->group.isGroup()) {
+                int missing = std::max(0, auditRow.context->totalExpected - auditRow.context->totalActual);
                 tip = QString("Hiányzó mennyiség (anyagcsoport): %1 db\nEz az anyag egy auditcsoport része.")
                           .arg(missing);
             } else {
@@ -112,7 +117,7 @@ inline void applyTooltips(QTableWidget* table,
             tip = StorageAudit::Context::toTooltip(
                 auditRow.context.get(), mat, &auditRow);
 
-            if (auditRow.context && auditRow.context->group.rowIds.size() > 1) {
+            if (auditRow.context && auditRow.context->group.isGroup()) {
                 tip += "\nEz az audit sor egy anyagcsoport tagja — a státusz az egész csoportra vonatkozik.";
             } else if (!auditRow.isInOptimization) {
                 tip += "\nEz az audit sor nem része az optimalizációnak.";

@@ -115,17 +115,30 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
             }
             break;
         }
+        // case AuditSourceType::Stock: {
+        //     if (requiredStockMaterials.contains(row.materialId)) {
+        //         int& remaining = requiredStockMaterials[row.materialId];
+        //         if (remaining > 0) {
+        //             row.pickingQuantity = 1;
+        //             row.isInOptimization = true;
+        //             row.presence = (row.actualQuantity >= 1)
+        //                                ? AuditPresence::Present
+        //                                : AuditPresence::Missing;
+        //             --remaining;
+        //         }
+        //     }
+        //     break;
+        // }
         case AuditSourceType::Stock: {
             if (requiredStockMaterials.contains(row.materialId)) {
-                int& remaining = requiredStockMaterials[row.materialId];
-                if (remaining > 0) {
-                    row.pickingQuantity = 1;
-                    row.isInOptimization = true;
-                    row.presence = (row.actualQuantity >= 1)
-                                       ? AuditPresence::Present
-                                       : AuditPresence::Missing;
-                    --remaining;
-                }
+                // minden sor kapja az "optimalizációban van" jelölést
+                row.isInOptimization = true;
+                row.presence = (row.actualQuantity >= 1)
+                                   ? AuditPresence::Present
+                                   : AuditPresence::Missing;
+                // Ha a tervben szerepel ez az anyag, akkor minden sor kapja meg
+                // pickingQuantity-t hagyhatod 0-n, vagy max 1-en jelzésként
+                row.pickingQuantity = 0;//requiredStockMaterials[row.materialId];//1;
             }
             break;
         }
@@ -148,18 +161,18 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
         if (row.context) {
             zInfo(QString("[AuditContext] matId=%1 | expected=%2 | actual=%3 | rows=%4")
                        .arg(row.materialId.toString())
-                       .arg(row.context->group.totalExpected)
-                       .arg(row.context->group.totalActual)
-                       .arg(row.context->group.rowIds.size()));
+                       .arg(row.context->totalExpected)
+                       .arg(row.context->totalActual)
+                       .arg(row.context->group.size()));
         }
 
         // ⚠️ Warning: hulló sor csoportba került (nem kéne)
         if (row.sourceType == AuditSourceType::Leftover &&
-            row.context && row.context->group.rowIds.size() > 1) {
+            row.context && row.context->group.isGroup()) {
             zWarning(QString("⚠️ Hulló sor csoportba került! rowId=%1 | matId=%2 | groupSize=%3")
                          .arg(row.rowId.toString())
                          .arg(row.materialId.toString())
-                         .arg(row.context->group.rowIds.size()));
+                         .arg(row.context->group.size()));
         }
 
         // ⚠️ Warning: negatív hiány (hibás aggregálás vagy túl sok actual)
@@ -188,20 +201,33 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
  *
  * Ez az alapja a státusz, hiányzó, tooltip és UI megjelenítésnek.
  */
-inline void assignContextsToRows(QVector<StorageAuditRow>* auditRows)
+inline void assignContextsToRows(QVector<StorageAuditRow>* auditRows,
+                                 const QMap<QUuid,int>& requiredStockMaterials)
 {
     if (!auditRows) {
         zWarning(L("⚠️ Kontextus hozzárendelése sikertelen: auditRows=nullptr"));
         return;
     }
 
-    auto contextMap = AuditContextBuilder::buildFromRows(*auditRows);
+    auto contextMap = AuditContextBuilder::buildFromRows(*auditRows, requiredStockMaterials);
     for (auto& row : *auditRows) {
         row.context = contextMap.value(row.rowId);
     }
 
     zInfo(L("🔗 AuditContext hozzárendelve minden sorhoz — összes sor: %1")
               .arg(auditRows->size()));
+
+    for (auto& row : *auditRows) {
+        zInfo(QString("rowId=%1 | matId=%2 | rootStorageId=%3 | groupKey=%4 | expected=%5 | actual=%6 | contextPtr=%7")
+                  .arg(row.rowId.toString())
+                  .arg(row.materialId.toString())
+                  .arg(row.rootStorageId.toString())
+                  .arg(AuditContextBuilder::makeGroupKey(row))
+                  .arg(row.context ? row.context->totalExpected : -1)
+                  .arg(row.context ? row.context->totalActual : -1)
+                  .arg((quintptr)(row.context ? row.context.get() : nullptr), 0, 16));
+    }
+
 }
 
 

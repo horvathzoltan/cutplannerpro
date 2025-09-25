@@ -10,8 +10,8 @@ class AuditContextBuilder {
 public:
     // Map: rowId -> shared_ptr<AuditContext>
     static QHash<QUuid, std::shared_ptr<AuditContext>>
-    buildFromRows(const QList<StorageAuditRow>& rows);
+    buildFromRows(const QList<StorageAuditRow>& rows, const QMap<QUuid,int>& requiredStockMaterials);
 
-private:
+//private:
     static QString makeGroupKey(const StorageAuditRow& r);
 };

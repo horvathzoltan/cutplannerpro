@@ -14,8 +14,8 @@ namespace Context {
 inline QString toTooltip(const AuditContext* ctx) {
     if (!ctx) return {};
     return QString("Elvárt összesen (anyagcsoport): %1\nJelen összesen: %2")
-        .arg(ctx->group.totalExpected)
-        .arg(ctx->group.totalActual);
+        .arg(ctx->totalExpected)
+        .arg(ctx->totalActual);
 }
 
 /**
@@ -46,10 +46,10 @@ inline QString toTooltip(const AuditContext* ctx,
     }
 
     // 📊 Csoportosított értékek (anyag + rootStorage szinten)
-    parts << QString("Elvárt összesen (anyagcsoport): %1").arg(ctx->group.totalExpected);
-    parts << QString("Jelen összesen: %1").arg(ctx->group.totalActual);
+    parts << QString("Elvárt összesen (anyagcsoport): %1").arg(ctx->totalExpected);
+    parts << QString("Jelen összesen: %1").arg(ctx->totalActual);
     parts << QString("Hiányzó összesen: %1")
-                 .arg(std::max(0, ctx->group.totalExpected - ctx->group.totalActual));
+                 .arg(std::max(0, ctx->totalExpected - ctx->totalActual));
 
     return parts.join("\n");
 }

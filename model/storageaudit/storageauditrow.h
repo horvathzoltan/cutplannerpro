@@ -45,8 +45,8 @@ struct StorageAuditRow {
     // 🧠 A hiány sosem lehet negatív — auditálás célja a teljesülés ellenőrzése, nem a többlet kimutatása.
     int missingQuantity() const {
         if (context) {
-            int expected = context->group.totalExpected;
-            int actual   = context->group.totalActual;
+            int expected = context->totalExpected;
+            int actual   = context->totalActual;
 
             // 🔒 Védjük a negatív érték ellen
             return std::max(0, expected - actual);
@@ -120,8 +120,8 @@ struct StorageAuditRow {
         }
 
         // Kontextus szerinti értékelés (anyag+hely csoport szinten)
-        const int expected = context->group.totalExpected;
-        const int actual   = context->group.totalActual;
+        const int expected = context->totalExpected;
+        const int actual   = context->totalActual;
 
         if (expected == 0 && actual > 0) return AuditStatus::Info;
         if (expected == 0 && actual == 0) return AuditStatus::Info;

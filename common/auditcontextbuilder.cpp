@@ -1,5 +1,6 @@
 #include "common/auditcontextbuilder.h"
 #include "common/logger.h" // zInfo, zWarning
+#include <QMap>
 
 /**
  * @brief Csoportkulcs generálása egy audit sorhoz.
@@ -20,27 +21,30 @@ QString AuditContextBuilder::makeGroupKey(const StorageAuditRow& r) {
     return QString("%1|%2").arg(r.materialId.toString(), r.rootStorageId.toString());
 }
 
-
 /**
  * @brief Audit sorok csoportosítása anyag + rootStorage szerint.
  *        Minden sorhoz létrejön egy AuditContext, amely tartalmazza a csoportosított adatokat.
  *
  * A context tartalmazza:
- * - AuditGroupInfo: materialId, groupKey, rowIds, totalExpected, totalActual
+ * - AuditGroupInfo: materialId, groupKey, rowIds
+ * - totalExpected: az adott anyagcsoport teljes elvárt mennyisége (aggregált, nem soronkénti!)
+ * - totalActual: az adott anyagcsoport tényleges mennyisége (összegzett)
  * - Minden sorhoz visszaadjuk a saját context pointerét
  */
 QHash<QUuid, std::shared_ptr<AuditContext>>
-AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows)
+AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
+                                   const QMap<QUuid,int>& requiredStockMaterials)
 {
     // 1️⃣ Csoportosítás kulcsra: materialId + rootStorageId
+    //    → minden anyag+hely kombináció egy csoportot alkot
     QHash<QString, QList<const StorageAuditRow*>> groups;
     groups.reserve(rows.size());
 
     for (const auto& r : rows) {
         groups[makeGroupKey(r)].push_back(&r);
 
-        // 🔍 Sor logolása: rowId, materialId, storageName, rootStorageId, expected, actual
-        zInfo(L("[AuditContextBuilder] Row collected | rowId=%1 | matId=%2 | storage=%3 | rootStorage=%4 | expected=%5 | actual=%6")
+        // Debug log: minden sor bekerül a csoportba
+        zInfo(L("[AuditContextBuilder] Row collected | rowId=%1 | matId=%2 | storage=%3 | rootStorage=%4 | picking=%5 | actual=%6")
                   .arg(r.rowId.toString())
                   .arg(r.materialId.toString())
                   .arg(r.storageName)
@@ -58,37 +62,41 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows)
         const auto& grp = it.value();
         if (grp.isEmpty()) continue;
 
-        // 🧩 Új AuditContext létrehozása a csoporthoz
-        auto ctx = std::make_shared<AuditContext>();
-        ctx->group.groupKey = key;
-        ctx->group.materialId = grp.first()->materialId;
-        ctx->group.totalExpected = 0;
-        ctx->group.totalActual = 0;
+        auto ctx = std::make_shared<AuditContext>(key, grp.first()->materialId);
 
-        // 🔍 Csoport kezdete
+        ctx->totalExpected = 0;
+        ctx->totalActual   = 0;
+
         zInfo(L("[AuditContextBuilder] Building context for groupKey=%1 | rows=%2")
                   .arg(key)
                   .arg(grp.size()));
 
+        // 2/A: tényleges mennyiség összegzése és sorok hozzárendelése
         for (const auto* r : grp) {
-            ctx->group.totalExpected += r->pickingQuantity;
-            ctx->group.totalActual   += r->actualQuantity;
-            ctx->group.rowIds.push_back(r->rowId);
+            ctx->totalActual += r->actualQuantity;
+            ctx->group.addRow(r->rowId);
 
-            // 🔍 Sor hozzáadása a contexthez
-            zInfo(L("   adding rowId=%1 | expected=%2 | actual=%3 | totals → expected=%4, actual=%5")
+            zInfo(L("   adding rowId=%1 | picking=%2 | actual=%3 | runningActual=%4")
                       .arg(r->rowId.toString())
-                      .arg(r->pickingQuantity)
+                      .arg(r->pickingQuantity)   // sor szintű jelző, de nem aggregáljuk
                       .arg(r->actualQuantity)
-                      .arg(ctx->group.totalExpected)
-                      .arg(ctx->group.totalActual));
+                      .arg(ctx->totalActual));
         }
 
-        // 3️⃣ Minden sorhoz hozzárendeljük a context pointert
+        // 2/B: elvárt mennyiség beállítása anyagcsoport szinten a planből
+        ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
+
+        zInfo(L("   >> Context ready: expected=%1 | actual=%2 | rows=%3")
+                  .arg(ctx->totalExpected)
+                  .arg(ctx->totalActual)
+                  .arg(ctx->group.size()));
+
+        // 3️⃣ Minden sorhoz hozzárendeljük a közös context pointert
         for (const auto* r : grp) {
             result.insert(r->rowId, ctx);
         }
     }
+
 
     // ✅ Összegzés
     zInfo(L("📊 AuditContextBuilder kész: %1 csoport, %2 sor")
@@ -97,3 +105,82 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows)
 
     return result;
 }
+
+// /**
+//  * @brief Audit sorok csoportosítása anyag + rootStorage szerint.
+//  *        Minden sorhoz létrejön egy AuditContext, amely tartalmazza a csoportosított adatokat.
+//  *
+//  * A context tartalmazza:
+//  * - AuditGroupInfo: materialId, groupKey, rowIds, totalExpected, totalActual
+//  * - Minden sorhoz visszaadjuk a saját context pointerét
+//  */
+// QHash<QUuid, std::shared_ptr<AuditContext>>
+// AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows)
+// {
+//     // 1️⃣ Csoportosítás kulcsra: materialId + rootStorageId
+//     QHash<QString, QList<const StorageAuditRow*>> groups;
+//     groups.reserve(rows.size());
+
+//     for (const auto& r : rows) {
+//         groups[makeGroupKey(r)].push_back(&r);
+
+//         // 🔍 Sor logolása: rowId, materialId, storageName, rootStorageId, expected, actual
+//         zInfo(L("[AuditContextBuilder] Row collected | rowId=%1 | matId=%2 | storage=%3 | rootStorage=%4 | expected=%5 | actual=%6")
+//                   .arg(r.rowId.toString())
+//                   .arg(r.materialId.toString())
+//                   .arg(r.storageName)
+//                   .arg(r.rootStorageId.toString())
+//                   .arg(r.pickingQuantity)
+//                   .arg(r.actualQuantity));
+//     }
+
+//     // 2️⃣ Kontextus létrehozás és visszacsatolás rowId-hoz
+//     QHash<QUuid, std::shared_ptr<AuditContext>> result;
+//     result.reserve(rows.size());
+
+//     for (auto it = groups.begin(); it != groups.end(); ++it) {
+//         const QString& key = it.key();
+//         const auto& grp = it.value();
+//         if (grp.isEmpty()) continue;
+
+//         // 🧩 Új AuditContext létrehozása a csoporthoz
+//         //auto ctx = std::make_shared<AuditContext>();
+//         auto ctx = std::make_shared<AuditContext>(key, grp.first()->materialId);
+//         //ctx->group.groupKey = key;
+//         //ctx->group = AuditGroupInfo(key);   // ✅ kötelező groupKey konstruktorban
+//         //ctx->materialId = grp.first()->materialId;
+//         ctx->totalExpected = 0;
+//         ctx->totalActual = 0;
+
+//         // 🔍 Csoport kezdete
+//         zInfo(L("[AuditContextBuilder] Building context for groupKey=%1 | rows=%2")
+//                   .arg(key)
+//                   .arg(grp.size()));
+
+//         for (const auto* r : grp) {
+//             ctx->totalExpected += r->pickingQuantity;
+//             ctx->totalActual   += r->actualQuantity;
+//             ctx->group.addRow(r->rowId);
+
+//             // 🔍 Sor hozzáadása a contexthez
+//             zInfo(L("   adding rowId=%1 | expected=%2 | actual=%3 | totals → expected=%4, actual=%5")
+//                       .arg(r->rowId.toString())
+//                       .arg(r->pickingQuantity)
+//                       .arg(r->actualQuantity)
+//                       .arg(ctx->totalExpected)
+//                       .arg(ctx->totalActual));
+//         }
+
+//         // 3️⃣ Minden sorhoz hozzárendeljük a context pointert
+//         for (const auto* r : grp) {
+//             result.insert(r->rowId, ctx);
+//         }
+//     }
+
+//     // ✅ Összegzés
+//     zInfo(L("📊 AuditContextBuilder kész: %1 csoport, %2 sor")
+//               .arg(groups.size())
+//               .arg(rows.size()));
+
+//     return result;
+// }

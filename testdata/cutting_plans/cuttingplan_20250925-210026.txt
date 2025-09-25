@@ -1,0 +1,3 @@
+materialBarCode;requiredLength;quantity;ownerName;externalReference
+MAT-ROLL60-6000;234;2;"aaa";"2650"
+MAT-ROLL60-5000;2650;2;"pele bt.";"2560"

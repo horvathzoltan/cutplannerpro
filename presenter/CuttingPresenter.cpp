@@ -234,9 +234,9 @@ void CuttingPresenter::runOptimization() {
     view->updateStats(plans, model.getResults_Leftovers());
 
     // 🗺️ PickingMap generálása: anyag → hány rúd kell az optimalizációhoz
-    auto pickingMap = generatePickingMapFromPlans(plans);
+    QMap<QUuid, int> pickingMap = generatePickingMapFromPlans(plans);
     for (auto it = pickingMap.begin(); it != pickingMap.end(); ++it) {
-        QString msg = L("📦 Picking: %1 -> %2").arg(it.key()).arg(it.value());
+        QString msg = L("📦 Picking: %1 -> %2").arg(it.key().toString()).arg(it.value());
         zInfo(msg); // logoljuk, hogy melyik anyagból mennyi kell
     }
 
@@ -254,7 +254,9 @@ void CuttingPresenter::runOptimization() {
     // - jelöli, hogy a sor része-e az optimalizációnak
     // - presence státuszt is frissíti (Present/Missing)
     AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
-    AuditUtils::assignContextsToRows(&lastAuditRows);
+
+    // 🔗 Kontextus építése a planből származó igényekkel
+    AuditUtils::assignContextsToRows(&lastAuditRows, pickingMap);
     // 🔗 Kontextus építése: anyag+hely szinten összesítjük az elvárt és tényleges mennyiségeket
 
     // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
@@ -547,7 +549,7 @@ void CuttingPresenter::runStorageAudit() {
     // for (auto& row : lastAuditRows) {
     //     row.context = contextMap.value(row.rowId);
     // }
-    AuditUtils::assignContextsToRows(&lastAuditRows);
+    AuditUtils::assignContextsToRows(&lastAuditRows, {});
 
     if (view) {
         view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
@@ -566,13 +568,15 @@ void CuttingPresenter::runStorageAudit() {
 // majd elkészülnek a cutok per plan
 // minden cutban van egy material, ez a reqMaterial
 
-QMap<QString, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
-    QMap<QString, int> pickingMap;
+QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
+    QMap<QUuid, int> pickingMap;
 
     for (const auto& plan : plans) {
         if(plan.isReusable())
             continue; // csak a stockból vágott anyagok számítanak
-        QUuid mid = plan.materialId;
+
+        pickingMap[plan.materialId] += 1; // minden CutPlan egy rúd
+        /*QUuid mid = plan.materialId;
         auto *mat = MaterialRegistry::instance().findById(mid);
         if (!mat) continue;
             //for (const auto& cut : plan.cuts) {
@@ -582,7 +586,8 @@ QMap<QString, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<C
                     // mennyiség mező, azt használd
 
                     pickingMap[barcode] += quantity;
-           // }
+           // }*/
+
     /*    }
     else {
             zInfo(L("⚠️ Nem található anyag a picking map generálásához:") + mid.toString());

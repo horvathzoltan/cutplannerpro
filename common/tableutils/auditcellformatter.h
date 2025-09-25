@@ -11,9 +11,8 @@ namespace AuditCellFormatter {
  *
  * Logika:
  * - Hulló audit soroknál nincs elvárt mennyiség → visszatér "–".
- * - Ha a sor csoport tagja, és van elvárt mennyiség → csoport szintű érték jelenik meg.
+ * - Ha a sor valódi csoport tagja (group.isGroup()), akkor a context aggregált értékét mutatjuk.
  * - Egyedi sor esetén a lokális pickingQuantity jelenik meg.
- * - Ha nincs elvárt mennyiség → visszatér "–".
  * - Ha nincs optimalizáció → visszatér "–" (vizuálisan semleges).
  * - Ha van csoportazonosító (groupLabel), megjelenik az érték mellett.
  */
@@ -25,10 +24,8 @@ inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString&
               .arg(row.isInOptimization)
               .arg(row.pickingQuantity)
               .arg(row.context ? "yes" : "no")
-              .arg(row.context ? row.context->group.rowIds.size() : -1)
+              .arg(row.context ? row.context->group.size() : -1)
               .arg(groupLabel));
-
-
 
     // 🧩 Hulló audit sor esetén: csak akkor jelenítsünk meg elvárást, ha tényleg van
     if (row.sourceType == AuditSourceType::Leftover) {
@@ -38,21 +35,25 @@ inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString&
     }
 
     // 🧩 Csoportosított stock sor esetén: aggregált elvárt mennyiség
-    if (row.context){// && row.context->group.rowIds.size() > 1) {
-        int expected = row.context->group.totalExpected;
-        if (!row.isInOptimization)
-            return "–"; // nincs optimalizáció → nincs elvárt
-
+    if (row.context && row.context->group.isGroup()) {
+        if (!row.isInOptimization) {
+            return groupLabel.isEmpty()
+            ? "– (anyagcsoport)"
+            : QString("– (anyagcsoport %1)").arg(groupLabel);
+        }
+        int expected = row.context->totalExpected;
         return groupLabel.isEmpty()
                    ? QString("%1 db (anyagcsoport)").arg(expected)
                    : QString("%1 db (anyagcsoport %2)").arg(expected).arg(groupLabel);
     }
+
 
     // 🔹 Egyedi stock sor esetén: lokális elvárt mennyiség
     return row.isInOptimization
                ? QString("%1 db").arg(row.pickingQuantity)
                : "–";
 }
+
 
 
 /**
@@ -77,18 +78,19 @@ inline QString formatMissingQuantity(const StorageAuditRow& row) {
     }
 
     // 🧩 Csoportosított stock sor esetén: aggregált hiány
-    if (row.context && row.context->group.rowIds.size() > 1) {
+    if (row.context && row.context->group.isGroup()) {
         if (!row.isInOptimization)
-            return "–"; // nincs optimalizáció → nincs hiány
-
-        int missing = std::max(0, row.context->group.totalExpected - row.context->group.totalActual);
-        return QString("%1 db (anyagcsoport)").arg(missing); // lehet 0 is
+            return "– (anyagcsoport)";
+        int missing = std::max(0, row.context->totalExpected - row.context->totalActual);
+        return QString("%1 db (anyagcsoport)").arg(missing);
     }
+
 
     // 🔹 Egyedi stock sor esetén: lokális hiány
     return row.isInOptimization
                ? QString("%1 db").arg(std::max(0, row.missingQuantity()))
                : "–";
 }
+
 
 } // namespace AuditCellFormatter
