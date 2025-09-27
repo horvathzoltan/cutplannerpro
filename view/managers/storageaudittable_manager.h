@@ -29,11 +29,11 @@ public:
     void updateRow(const StorageAuditRow& row);
     void clearTable();
 
-    void createAuditRowWidgets(const StorageAuditRow &row, int rowIx);
-    void populateAuditRowContent(const StorageAuditRow &row, int rowIx, const QString &groupLabel);
+    //void createAuditRowWidgets(const StorageAuditRow &row, int rowIx);
+    //void populateAuditRowContent(const StorageAuditRow &row, int rowIx, const QString &groupLabel);
 
 private:
-    void setStatusCell(QTableWidgetItem *item, const QString &status);
+    //void setStatusCell(QTableWidgetItem *item, const QString &status);
 
     //void applyGroupContextToRows(const StorageAuditRow &row);    
 signals:
@@ -42,13 +42,13 @@ signals:
 public:
     static constexpr auto RowId_Key = "entryId"; // button eventekhez
 
-    static constexpr int ColMaterial   = 0;
-    static constexpr int ColBarcode    = 1;
-    static constexpr int ColStorage    = 2;
-    static constexpr int ColExpected   = 3;
-    static constexpr int ColActual     = 4;
-    static constexpr int ColMissing    = 5;
-    static constexpr int ColStatus     = 6;
+    // static constexpr int ColMaterial   = 0;
+    // static constexpr int ColBarcode    = 1;
+    // static constexpr int ColStorage    = 2;
+    // static constexpr int ColExpected   = 3;
+    // static constexpr int ColActual     = 4;
+    // static constexpr int ColMissing    = 5;
+    // static constexpr int ColStatus     = 6;
 
 };
 

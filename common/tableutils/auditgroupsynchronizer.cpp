@@ -1,5 +1,9 @@
 #include "auditgroupsynchronizer.h"
+#include "view/cellgenerators/auditrowviewmodelgenerator.h"
 #include "view/managers/storageaudittable_manager.h" // 🔹 ez kell a metódushíváshoz
+#include "view/tablehelpers/tablerowpopulator.h"
+
+#include <model/registries/materialregistry.h>
 
 namespace TableUtils {
 
@@ -36,8 +40,16 @@ void AuditGroupSynchronizer::syncRow(const StorageAuditRow& row) {
     int rowIx = _rowIndexMap.value(row.rowId);
     QString groupLabel = row.context ? _labeler->labelFor(row.context.get()) : "";
 
-    // 🔹 Delegálás a managernek – egységes tartalomfrissítés
-    _manager->populateAuditRowContent(row, rowIx, groupLabel);
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(row.materialId);
+    if (!mat)
+        return;
+
+    // 🔄 ViewModel újragenerálása
+    TableRowViewModel vm = AuditRowViewModelGenerator::generate(row, mat, groupLabel, _manager);
+
+    // 🧩 Cellák újratöltése
+    TableRowPopulator::populateRow(_table, rowIx, vm);
 }
+
 
 } // namespace TableUtils

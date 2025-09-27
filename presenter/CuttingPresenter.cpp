@@ -536,27 +536,29 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 
 
 void CuttingPresenter::runStorageAudit() {
-    // 📥 Audit sorok legenerálása a teljes stockból és a hullókból
     QVector<StorageAuditRow> stockAuditRows =
         StorageAuditService::generateAuditRows_All();
     QVector<StorageAuditRow> leftoverAuditRows =
         LeftoverAuditService::generateAuditRows_All();
 
-    // Egyesített audit sor lista (stock + leftover)
     lastAuditRows = stockAuditRows + leftoverAuditRows;
 
-    // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
-    // for (auto& row : lastAuditRows) {
-    //     row.context = contextMap.value(row.rowId);
-    // }
-    AuditUtils::assignContextsToRows(&lastAuditRows, {});
+    // 🔁 Ha van optimalizációs terv, injektáljuk vissza
+    if (!model.getResult_PlansRef().isEmpty()) {
+        QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef();
+        AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
 
-    if (view) {
-        view->update_StorageAuditTable(lastAuditRows); // 📋 Audit tábla frissítése
+        QMap<QUuid, int> pickingMap = generatePickingMapFromPlans(plans);
+        AuditUtils::assignContextsToRows(&lastAuditRows, pickingMap);
+    } else {
+        AuditUtils::assignContextsToRows(&lastAuditRows, {});
     }
 
-    _auditStateManager.setActiveAuditRows(lastAuditRows); // 🔄 audit érvényesítése
-    // opcionális: export, log, statisztika
+    if (view) {
+        view->update_StorageAuditTable(lastAuditRows);
+    }
+
+    _auditStateManager.setActiveAuditRows(lastAuditRows);
 }
 
 /*PickingPlan*/

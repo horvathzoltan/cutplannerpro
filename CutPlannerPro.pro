@@ -186,6 +186,9 @@ HEADERS += \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
+    view/cellgenerators/auditrowviewmodelgenerator.h \
+    view/cellhelpers/auditcellcolors.h \
+    view/cellhelpers/auditcelltooltips.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
     view/dialog/addwastedialog.h \
@@ -198,7 +201,10 @@ HEADERS += \
     view/managers/leftovertable_manager.h \
     view/managers/resultstable_manager.h \
     view/managers/stocktable_manager.h \
-    view/managers/storageaudittable_manager.h
+    view/managers/storageaudittable_manager.h \
+    view/tablehelpers/tablerowpopulator.h \
+    view/viewmodels/tablecellviewmodel.h \
+    view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
     view/MainWindow.ui \

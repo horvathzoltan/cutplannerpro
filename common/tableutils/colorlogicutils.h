@@ -1,5 +1,7 @@
 #pragma once
+#include "common/grouputils.h"
 #include "common/tableutils/colorconstants.h"
+#include "model/material/materialmaster.h"
 #include <QColor>
 #include <QWidget>
 
@@ -31,6 +33,11 @@ inline void applyBadgeBackground(QWidget* widget, const QColor& base) {
                               "background-color: %1;"
                               "padding-top: 6px; padding-bottom: 6px;"
                               ).arg(base.name()));
+}
+
+inline QColor resolveBaseColor(const MaterialMaster* mat) {
+    if (!mat) return QColor(Qt::lightGray);
+    return GroupUtils::colorForGroup(mat->id); // vagy MaterialUtils::colorForMaterial(*mat)
 }
 
 } // endof namespace ColorLogicUtils
