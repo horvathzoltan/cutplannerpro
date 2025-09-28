@@ -56,6 +56,7 @@ public:
 
     void update_StorageAuditTable(const QVector<StorageAuditRow> &entries);
     void updateRow_StorageAuditTable(const StorageAuditRow &row);
+    void showAuditCheckbox(const QUuid &rowId);
 private slots:
     void handle_btn_NewCuttingPlan_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -92,6 +93,6 @@ private:
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;
     void ButtonConnector_Connect();
-    QString format(const QList<RelocationInstruction> &items, int maxRows);
+    QString format(const QList<RelocationInstruction> &items);
 };
 #endif // MAINWINDOW_H

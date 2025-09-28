@@ -21,6 +21,7 @@ private:
     std::unique_ptr<TableUtils::AuditGroupSynchronizer> _groupSync;
     TableUtils::AuditGroupLabeler _groupLabeler;
 
+    static bool _isVerbose;
 
 public:
     explicit StorageAuditTableManager(QTableWidget* table, QWidget* parent = nullptr);
@@ -29,26 +30,20 @@ public:
     void updateRow(const StorageAuditRow& row);
     void clearTable();
 
+    void showAuditCheckbox(const QUuid& rowId);
     //void createAuditRowWidgets(const StorageAuditRow &row, int rowIx);
     //void populateAuditRowContent(const StorageAuditRow &row, int rowIx, const QString &groupLabel);
 
-private:
+private:    
     //void setStatusCell(QTableWidgetItem *item, const QString &status);
 
     //void applyGroupContextToRows(const StorageAuditRow &row);    
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
     void leftoverPresenceChanged(const QUuid& rowId, AuditPresence presence);
+    void auditCheckboxToggled(const QUuid& rowId, bool checked);
+
 public:
     static constexpr auto RowId_Key = "entryId"; // button eventekhez
-
-    // static constexpr int ColMaterial   = 0;
-    // static constexpr int ColBarcode    = 1;
-    // static constexpr int ColStorage    = 2;
-    // static constexpr int ColExpected   = 3;
-    // static constexpr int ColActual     = 4;
-    // static constexpr int ColMissing    = 5;
-    // static constexpr int ColStatus     = 6;
-
 };
 

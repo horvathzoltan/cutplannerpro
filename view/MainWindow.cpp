@@ -8,6 +8,7 @@
 #include <QCloseEvent>
 #include <QTimer>
 #include <QFileDialog>
+#include <QCheckBox>
 
 //#include "cutanalyticspanel.h"
 #include "model/stockentry.h"
@@ -410,13 +411,14 @@ void MainWindow::updateRow_StorageAuditTable(const StorageAuditRow& row) {
 
 void MainWindow::on_btn_Relocate_clicked()
 {
+    auto cutPlans = presenter->getPlansRef(); // vagy getActiveCutPlans(), ha szűrt
     auto auditRows = presenter->getLastAuditRows();
-    QString cuttingZoneName = "CUT_ZONE"; // vagy akár a GUI-ból választva
+    //QString cuttingZoneName = "CUT_ZONE"; // vagy akár a GUI-ból választva
 
-    auto relocationPlan = presenter->generateRelocationPlan(auditRows, cuttingZoneName);
+    auto relocationPlan = presenter->generateRelocationPlan(cutPlans, auditRows);
 
     // 1️⃣ Gyors lista feltöltése
-    QString text = format(relocationPlan, 5); // pl. max 5 sor
+    QString text = format(relocationPlan); // pl. max 5 sor
     ui->relocateQuickList->setPlainText(text);
 
     // 2️⃣ Végrehajtás majd egy külön gombból vagy megerősítés után:
@@ -425,20 +427,36 @@ void MainWindow::on_btn_Relocate_clicked()
 
 // a sourcematerial annak kéne legyen, ahol az ador row anyaga megtalálható - tehát ez egy tárhely lista
 // nincs benne a material barcode - sem id
-QString MainWindow::format(const QList<RelocationInstruction>& items, int maxRows) {
+QString MainWindow::format(const QList<RelocationInstruction>& items) {
     QString out;
-    out += QString("%1 | %2 | %3\n")
-               .arg("Anyag", -12)
+    out += QString("%1 | %2 | %3 | %4\n")
+               .arg("Anyag", -24)
                .arg("Mennyiség", -10)
-               .arg("Forrás", -15);
-    out += QString("-").repeated(40) + "\n";
+               .arg("Forrás", -15)
+               .arg("Vonalkód", -20);
+    out += QString("-").repeated(75) + "\n";
 
-    for (int i = 0; i < qMin(maxRows, items.size()); ++i) {
-        const auto& it = items[i];
-        out += QString("%1 | %2 | %3\n")
-                   .arg(it.materialCode, -12)
-                   .arg(it.quantity, -10)
-                   .arg(it.sourceLocation, -15);
+    for (const auto& it : items) {
+        if (it.isSatisfied) {
+            out += QString("%1 | %2 | %3 | %4\n")
+            .arg(it.materialCode, -24)
+                .arg("✔ Megvan", -10)
+                .arg(it.targetLocation, -15)
+                .arg(it.barcode, -20);
+        } else {
+            out += QString("%1 | %2 | %3 | %4\n")
+            .arg(it.materialCode, -24)
+                .arg(QString::number(it.quantity), -10)
+                .arg(it.sourceLocation, -15)
+                .arg(it.barcode, -20);
+        }
     }
+
     return out;
+}
+
+
+void MainWindow::showAuditCheckbox(const QUuid& rowId)
+{
+   storageAuditTableManager->showAuditCheckbox(rowId);
 }

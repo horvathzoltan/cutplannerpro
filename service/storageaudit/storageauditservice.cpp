@@ -102,6 +102,7 @@ StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, con
 
     row.pickingQuantity = 0;//pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
     row.actualQuantity   = stock.quantity;
+    row.originalQuantity = stock.quantity;
     row.presence = AuditPresence::Unknown;         // Felhasználó fogja beállítani
     row.isInOptimization = false;                  // Később validálható CutPlan alapján
 

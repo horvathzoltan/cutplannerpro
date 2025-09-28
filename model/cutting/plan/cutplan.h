@@ -79,6 +79,7 @@ public:
                                                                           kerf_mm, totalLength_mm);
 
     }
+    QString materialBarcode() const;
 };
 }  //endof namespace Plan
 }  //endof namespace Cutting

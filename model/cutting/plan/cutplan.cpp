@@ -24,6 +24,13 @@ QString CutPlan::materialName() const
     return opt ? opt->name : "(?)";
 }
 
+QString CutPlan::materialBarcode() const
+{
+    // MaterialRegistry-ből lekérjük az anyag nevét
+    auto opt = MaterialRegistry::instance().findById(materialId);
+    return opt ? opt->barcode : "(?)";
+}
+
 QString CutPlan::materialGroupName() const
 {
     // Csoportnév az anyag ID alapján — helperből

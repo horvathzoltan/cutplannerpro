@@ -64,8 +64,8 @@ public:
     void runStorageAudit();
 
     QVector<RelocationInstruction> generateRelocationPlan(
-        const QVector<StorageAuditRow>& auditRows,
-        const QString& cuttingZoneName);
+        const QVector<Cutting::Plan::CutPlan>& cutPlans,
+        const QVector<StorageAuditRow>& auditRows);
 
     const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
 
@@ -74,6 +74,7 @@ public:
     AuditStateManager* auditStateManager() { return &_auditStateManager;}
 
     void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
+    void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

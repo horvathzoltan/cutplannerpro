@@ -599,54 +599,160 @@ QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cut
     return pickingMap;
 }
 
-/*Relocation*/
+
 
 QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
-    const QVector<StorageAuditRow>& auditRows,
-    const QString& cuttingZoneName1
-    )
+    const QVector<Cutting::Plan::CutPlan>& cutPlans,
+    const QVector<StorageAuditRow>& auditRows)
 {
     QVector<RelocationInstruction> plan;
 
-    // 1. Végigmegyünk minden audit soron, ami a cutting zónához tartozik
-    for (const auto& destRow : auditRows) {
-        const MaterialMaster* destRow_Material = MaterialRegistry::instance().findById(destRow.materialId);
-        if (!destRow_Material)
+    // 1️⃣ Auditálatlan sorok figyelmeztetése
+    bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(), [](const StorageAuditRow& row) {
+        return row.wasModified && !row.isAuditConfirmed;
+    });
+
+    if (hasUnaudited) {
+        zWarning("⚠️ Auditálatlan sorok találhatók – a relocation terv nem teljesen megbízható!");
+    }
+
+    // 2️⃣ Auditált mennyiségek aggregálása anyag szinten
+    QMap<QUuid, int> availableByMaterial;
+    QMap<QUuid, QStringList> locationsByMaterial;
+
+    for (const auto& row : auditRows) {
+        if (!row.isAuditConfirmed)
             continue;
-        /*if (row.storageName != cuttingZoneName)
-            continue; // csak a célzónában nézzük a hiányt
-*/
-        int needToMove = destRow.missingQuantity();
-        if (needToMove <= 0)
-            continue; // nincs mit odavinni
 
-        // 2. Keressünk forráshelyet ugyanarra a barcode-ra
+        if (row.sourceType != AuditSourceType::Stock)
+            continue;
+
+        availableByMaterial[row.materialId] += row.actualQuantity;
+        locationsByMaterial[row.materialId].append(row.storageName);
+    }
+
+    // 3️⃣ CutPlan-ek szétválasztása forrás szerint
+    QMap<QUuid, int> requiredStockByMaterial;
+    QMap<QUuid, QString> materialCodeById;
+    QMap<QUuid, QString> materialNameById;
+    QVector<const Cutting::Plan::CutPlan*> reusablePlans;
+
+    for (const auto& planItem : cutPlans) {
+        if (planItem.source == Cutting::Plan::Source::Stock) {
+            requiredStockByMaterial[planItem.materialId] += 1;
+            materialCodeById[planItem.materialId] = planItem.materialBarcode();
+            materialNameById[planItem.materialId] = planItem.materialName();
+        } else if (planItem.source == Cutting::Plan::Source::Reusable) {
+            reusablePlans.append(&planItem);
+        }
+    }
+
+    // 4️⃣ Stock anyagok relokációja (aggregált)
+    for (auto it = requiredStockByMaterial.begin(); it != requiredStockByMaterial.end(); ++it) {
+        QUuid materialId = it.key();
+        int requiredQty = it.value();
+        QString materialCode = materialCodeById.value(materialId);
+        QString materialName = materialNameById.value(materialId);
+
+        int availableQty = availableByMaterial.value(materialId, 0);
+        int missingQty = requiredQty - availableQty;
+
+        if (missingQty <= 0) {
+            QStringList locations = locationsByMaterial.value(materialId);
+            QString locationText = locations.isEmpty() ? "—" : locations.join(", ");
+            plan.push_back({
+                materialName,
+                "—",
+                locationText,
+                0,
+                true,
+                materialCode // barcode = materialCode for stock
+            });
+            continue;
+        }
+
         for (const auto& sourceRow : auditRows) {
-            const MaterialMaster* source_mat = MaterialRegistry::instance().findById(destRow.materialId);
-            if (!source_mat)
+            if (!sourceRow.isAuditConfirmed)
                 continue;
-            //QString sourceRow_materialBarcode =
-            if (source_mat->barcode == destRow_Material->barcode &&
-              //  sourceRow.storageName != cuttingZoneName &&
-                sourceRow.actualQuantity > 0)
-            {
-                int moveQty = qMin(needToMove, sourceRow.actualQuantity);
-                // std::optional<StockEntry> sourceRow_stockEntry =
-                //     StockRegistry::instance().findById(sourceRow.stockEntryId);
-                // std::optional<StockEntry> destRow_stockEntry =
-                //     StockRegistry::instance().findById(row.stockEntryId);
+            if (sourceRow.materialId != materialId)
+                continue;
+            if (sourceRow.actualQuantity <= 0)
+                continue;
 
+            int moveQty = qMin(missingQty, sourceRow.actualQuantity);
+
+            plan.push_back({
+                materialName,
+                sourceRow.storageName,
+                "—",
+                moveQty,
+                false,
+                sourceRow.barcode
+            });
+
+            missingQty -= moveQty;
+            if (missingQty <= 0)
+                break;
+        }
+
+        if (missingQty > 0) {
+            plan.push_back({
+                materialName,
+                "—",
+                "—",
+                0,
+                false,
+                materialCode
+            });
+        }
+    }
+
+    // 5️⃣ Hullók (Reusable) egyedi kezelése vonalkód alapján
+    for (const auto* planItem : reusablePlans) {
+        QUuid materialId = planItem->materialId;
+        QString materialName = planItem->materialName();
+        QString rodBarcode = planItem->rodId;
+
+        auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+            return row.isAuditConfirmed &&
+                   row.materialId == materialId &&
+                   row.barcode == rodBarcode;
+        });
+
+        if (it != auditRows.end()) {
+            plan.push_back({
+                materialName,
+                "—",
+                it->storageName,
+                0,
+                true,
+                rodBarcode
+            });
+        } else {
+            auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+                return row.isAuditConfirmed &&
+                       row.barcode == rodBarcode &&
+                       row.actualQuantity > 0;
+            });
+
+            if (sourceIt != auditRows.end()) {
                 plan.push_back({
-                    destRow_Material->barcode, // anyag azonosító
-                    sourceRow.storageName,   // honnan
-                    //cuttingZoneName,         // hova
-                    destRow.storageName,     // hova
-                    moveQty                    // mennyit
+                    materialName,
+                    sourceIt->storageName,
+                    "—",
+                    1,
+                    false,
+                    rodBarcode
                 });
-
-                needToMove -= moveQty;
-                if (needToMove <= 0)
-                    break; // már betelt a hiány
+            } else {
+                plan.push_back({
+                    materialName,
+                    "—",
+                    "—",
+                    0,
+                    false,
+                    rodBarcode
+                });
             }
         }
     }
@@ -654,31 +760,81 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     return plan;
 }
 
+
+
+
+
+// void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int actualQuantity)
+// {
+//     AuditSyncGuard guard(&_auditStateManager); // 🔒 ideiglenesen kikapcsolja a figyelést
+
+//     for (StorageAuditRow &row : lastAuditRows) {
+//         if (row.rowId == rowId){
+//             row.actualQuantity = actualQuantity;
+
+//             // 🔄 Stock frissítés
+//             std::optional<StockEntry> opt =
+//                 StockRegistry::instance().findById(row.stockEntryId);
+//             if (opt.has_value()) {
+//                 StockEntry updated = opt.value();
+//                 updated.quantity = actualQuantity;
+
+//                 // audit alapján frissítünk
+//                 StockRegistry::instance().updateEntry(updated);
+
+//                 // frissíteni kell a storage rable row-t is
+//                 if(view){
+//                     view->updateRow_StockTable(updated);
+//                 }
+//             }
+
+//             // 🔄 Audit tábla frissítése
+//             if (view) {
+//                 view->updateRow_StorageAuditTable(row);
+//             }
+
+//             break;
+//         }
+//     }
+// }
+
 void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int actualQuantity)
 {
-    AuditSyncGuard guard(&_auditStateManager); // 🔒 ideiglenesen kikapcsolja a figyelést
+    AuditSyncGuard guard(&_auditStateManager);
 
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId){
             row.actualQuantity = actualQuantity;
+            row.wasModified = (actualQuantity != row.originalQuantity);
+            row.isAuditConfirmed = row.wasModified; // 🔹 audit = módosítás
 
             // 🔄 Stock frissítés
-            std::optional<StockEntry> opt =
-                StockRegistry::instance().findById(row.stockEntryId);            
-            if (opt.has_value()) {                
+            if (auto opt = StockRegistry::instance().findById(row.stockEntryId); opt.has_value()) {
                 StockEntry updated = opt.value();
                 updated.quantity = actualQuantity;
-
-                // audit alapján frissítünk
                 StockRegistry::instance().updateEntry(updated);
 
-                // frissíteni kell a storage rable row-t is
-                if(view){
+                if (view) {
                     view->updateRow_StockTable(updated);
                 }
             }
 
-            // 🔄 Audit tábla frissítése
+            if (view) {
+                view->updateRow_StorageAuditTable(row); // 🔄 újraépíti a cellát
+            }
+
+            break;
+        }
+    }
+}
+
+
+void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool checked)
+{
+    for (StorageAuditRow &row : lastAuditRows) {
+        if (row.rowId == rowId){
+            row.isAuditConfirmed = checked;
+
             if (view) {
                 view->updateRow_StorageAuditTable(row);
             }
@@ -702,6 +858,10 @@ void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPre
                 row.actualQuantity = 0;
                 break;
             }
+
+            // 🔍 Audit logika: módosítás eldöntése
+            row.wasModified = (row.actualQuantity != row.originalQuantity);
+            row.isAuditConfirmed = row.wasModified; // 🔹 audit = módosítás
 
             if (view) {
                 view->updateRow_StorageAuditTable(row);

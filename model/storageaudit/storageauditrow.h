@@ -29,8 +29,13 @@ struct StorageAuditRow {
     AuditPresence presence = AuditPresence::Unknown;
 
     int pickingQuantity = 0;       // Elvárt mennyiség (soronként, injektálás után)
-    int actualQuantity = 0;        // Audit során talált mennyiség
+    //int actualQuantity = 0;        // Audit során talált mennyiség
     bool isInOptimization = false; // Része-e az optimalizációnak
+
+    int originalQuantity;
+    int actualQuantity;
+    bool wasModified = false;
+    bool isAuditConfirmed = false; // pipa állapota
 
     QString barcode;               // Vonalkód (ha van)
     QString storageName;           // Tároló neve
@@ -98,13 +103,57 @@ struct StorageAuditRow {
     }
 
     // Audit státusz típus (ikonhoz, színezéshez)
+    // AuditStatus statusType() const {
+    //     // Ha nem része az optimalizációnak → csak információ
+    //     if (!isInOptimization) {
+    //         return AuditStatus::Info;
+    //     }
+
+    //     // Ha nincs context, fallback a lokális mezőkre
+    //     if (!context) {
+    //         if (pickingQuantity == 0 && actualQuantity > 0)
+    //             return AuditStatus::Info;
+    //         if (pickingQuantity == 0)
+    //             return AuditStatus::Info;
+    //         if (actualQuantity == 0)
+    //             return AuditStatus::Missing;
+    //         if (actualQuantity < pickingQuantity)
+    //             return AuditStatus::Pending;
+    //         if (actualQuantity >= pickingQuantity)
+    //             return AuditStatus::Ok;
+    //         return AuditStatus::Unknown;
+    //     }
+
+    //     // Kontextus szerinti értékelés (anyag+hely csoport szinten)
+    //     const int expected = context->totalExpected;
+    //     const int actual   = context->totalActual;
+
+    //     if (expected == 0 && actual > 0) return AuditStatus::Info;
+    //     if (expected == 0 && actual == 0) return AuditStatus::Info;
+    //     if (actual == 0) return AuditStatus::Missing;
+    //     if (actual < expected) return AuditStatus::Pending;
+    //     if (actual >= expected) return AuditStatus::Ok;
+
+    //     return AuditStatus::Unknown;
+    // }
+
     AuditStatus statusType() const {
-        // Ha nem része az optimalizációnak → csak információ
+        // 🔹 Leftover audit külön logika
+        if (sourceType == AuditSourceType::Leftover && isInOptimization) {
+            switch (presence) {
+            case AuditPresence::Present:   return AuditStatus::Ok;
+            case AuditPresence::Missing:   return AuditStatus::Missing;
+            case AuditPresence::Unknown:   return AuditStatus::Pending;
+            }
+            return AuditStatus::Unknown;
+        }
+
+        // 🔸 Nem optimalizált → csak információ
         if (!isInOptimization) {
             return AuditStatus::Info;
         }
 
-        // Ha nincs context, fallback a lokális mezőkre
+        // 🔸 Lokális fallback
         if (!context) {
             if (pickingQuantity == 0 && actualQuantity > 0)
                 return AuditStatus::Info;
@@ -119,7 +168,7 @@ struct StorageAuditRow {
             return AuditStatus::Unknown;
         }
 
-        // Kontextus szerinti értékelés (anyag+hely csoport szinten)
+        // 🔸 Kontextus szerinti értékelés
         const int expected = context->totalExpected;
         const int actual   = context->totalActual;
 
@@ -132,12 +181,25 @@ struct StorageAuditRow {
         return AuditStatus::Unknown;
     }
 
+
     // Szöveges státusz (konzisztens a statusType()-pal)
     QString statusText() const {
         if (sourceType == AuditSourceType::Leftover && isInOptimization) {
-            if (actualQuantity > 0) return "Felhasználás alatt, OK";
+            QString prefix = "Felhasználás alatt, ";
+
+            switch (presence) {
+            case AuditPresence::Present:
+                return prefix + "OK";
+            case AuditPresence::Missing:
+                return prefix + "Hiányzik";
+            case AuditPresence::Unknown:
+                return prefix + "Ellenőrzésre vár";
+            }
+            return prefix + "-";
         }
+
         return StorageAudit::Status::toText(statusType());
     }
+
 };
 

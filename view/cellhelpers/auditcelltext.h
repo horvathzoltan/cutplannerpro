@@ -7,6 +7,7 @@
 
 namespace AuditCellText {
 
+inline static bool _isVerbose = false;
 /**
  * @brief Elvárt mennyiség szöveges formázása audit sorhoz.
  *
@@ -18,16 +19,18 @@ namespace AuditCellText {
  * - Ha van csoportazonosító (groupLabel), megjelenik az érték mellett.
  */
 inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString& groupLabel = "") {
-    zInfo(L("📦 formatExpectedQuantity: rowId=%1, materialId=%2, sourceType=%3, isInOptimization=%4, pickingQuantity=%5, context=%6, groupSize=%7, groupLabel=%8")
-              .arg(row.rowId.toString())
-              .arg(row.materialId.toString())
-              .arg(static_cast<int>(row.sourceType))
-              .arg(row.isInOptimization)
-              .arg(row.pickingQuantity)
-              .arg(row.context ? "yes" : "no")
-              .arg(row.context ? row.context->group.size() : -1)
-              .arg(groupLabel));
-
+    if(_isVerbose)
+    {
+        zInfo(L("📦 formatExpectedQuantity: rowId=%1, materialId=%2, sourceType=%3, isInOptimization=%4, pickingQuantity=%5, context=%6, groupSize=%7, groupLabel=%8")
+                  .arg(row.rowId.toString())
+                  .arg(row.materialId.toString())
+                  .arg(static_cast<int>(row.sourceType))
+                  .arg(row.isInOptimization)
+                  .arg(row.pickingQuantity)
+                  .arg(row.context ? "yes" : "no")
+                  .arg(row.context ? row.context->group.size() : -1)
+                  .arg(groupLabel));
+    }
     // 🧩 Hulló audit sor esetén: csak akkor jelenítsünk meg elvárást, ha tényleg van
     if (row.sourceType == AuditSourceType::Leftover) {
         if (row.isInOptimization && row.pickingQuantity > 0)

@@ -24,6 +24,7 @@ QVector<StorageAuditRow> LeftoverAuditService::generateAuditRows_All()
         // Példányszintű modell: 1 bejegyzés == 1 darab
         row.pickingQuantity  = 0;            // globális auditnál nincs elvárt
         row.actualQuantity   = 1;            // regisztrált -> implicit 1 darab
+        row.originalQuantity = 1;
         row.presence         = AuditPresence::Present; // implicit jelen
         row.isInOptimization = false;
 
