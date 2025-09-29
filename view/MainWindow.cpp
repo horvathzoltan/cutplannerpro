@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
     resultsTableManager = std::make_unique<ResultsTableManager>(ui->tableResults, this);
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
+    relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, this);
 
     InputTableConnector::Connect(this, inputTableManager.get(), presenter);
     StockTableConnector::Connect(this, stockTableManager.get(), presenter);
@@ -411,49 +412,64 @@ void MainWindow::updateRow_StorageAuditTable(const StorageAuditRow& row) {
 
 void MainWindow::on_btn_Relocate_clicked()
 {
-    auto cutPlans = presenter->getPlansRef(); // vagy getActiveCutPlans(), ha szűrt
+    // 1️⃣ Adatok összegyűjtése
+    auto cutPlans = presenter->getPlansRef();
     auto auditRows = presenter->getLastAuditRows();
-    //QString cuttingZoneName = "CUT_ZONE"; // vagy akár a GUI-ból választva
 
+    // 2️⃣ Relocation terv generálása
     auto relocationPlan = presenter->generateRelocationPlan(cutPlans, auditRows);
 
-    // 1️⃣ Gyors lista feltöltése
-    QString text = format(relocationPlan); // pl. max 5 sor
-    ui->relocateQuickList->setPlainText(text);
+    // 3️⃣ Gyors lista megjelenítése (pl. max 5 sor)
+    ui->relocateQuickList->setPlainText(format(relocationPlan));
 
-    // 2️⃣ Végrehajtás majd egy külön gombból vagy megerősítés után:
-    // presenter->executeRelocation(relocationPlan);
+    // 4️⃣ Tábla feltöltése
+    relocationPlanTableManager->clearTable();
+    for (const auto& instr : relocationPlan) {
+        relocationPlanTableManager->addRow(instr);
+    }
+
+    // 5️⃣ Azonnali végrehajtás (ha nincs külön confirm gomb)
+    //presenter->executeRelocation(relocationPlan);
+
+    // opcionális: visszajelzés a felhasználónak
+    //QMessageBox::information(this, "Relokáció",
+    //                         "A relokációs terv végrehajtása megtörtént.");
 }
+
 
 // a sourcematerial annak kéne legyen, ahol az ador row anyaga megtalálható - tehát ez egy tárhely lista
 // nincs benne a material barcode - sem id
 QString MainWindow::format(const QList<RelocationInstruction>& items) {
     QString out;
-    out += QString("%1 | %2 | %3 | %4\n")
-               .arg("Anyag", -24)
-               .arg("Mennyiség", -10)
-               .arg("Forrás", -15)
-               .arg("Vonalkód", -20);
-    out += QString("-").repeated(75) + "\n";
+    out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
+               .arg("Anyag",    -24)
+               .arg("Mennyiség",-10)
+               .arg("Forrás",   -20)
+               .arg("Cél",      -20)
+               .arg("Vonalkód", -20)
+               .arg("Típus",    -10);
+    out += QString("-").repeated(120) + "\n";
 
     for (const auto& it : items) {
-        if (it.isSatisfied) {
-            out += QString("%1 | %2 | %3 | %4\n")
-            .arg(it.materialCode, -24)
-                .arg("✔ Megvan", -10)
-                .arg(it.targetLocation, -15)
-                .arg(it.barcode, -20);
-        } else {
-            out += QString("%1 | %2 | %3 | %4\n")
-            .arg(it.materialCode, -24)
-                .arg(QString::number(it.quantity), -10)
-                .arg(it.sourceLocation, -15)
-                .arg(it.barcode, -20);
-        }
+        QString sourceText = it.sourceLocation.isEmpty() ? "—" : it.sourceLocation;
+        QString targetText = it.targetLocation.isEmpty() ? "—" : it.targetLocation;
+
+        QString qtyText  = it.isSatisfied ? "✔ Megvan" : QString::number(it.quantity);
+        QString typeText = (it.sourceType == AuditSourceType::Stock) ? "Stock" : "Hulló";
+
+        out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
+                   .arg(it.materialCode, -24)
+                   .arg(qtyText,        -10)
+                   .arg(sourceText,     -20)
+                   .arg(targetText,     -20)
+                   .arg(it.barcode,     -20)
+                   .arg(typeText,       -10);
     }
 
     return out;
 }
+
+
 
 
 void MainWindow::showAuditCheckbox(const QUuid& rowId)

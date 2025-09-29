@@ -10,6 +10,7 @@
 #include "cutanalyticspanel.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "presenter/CuttingPresenter.h"
+#include "view/managers/relocationplantable_manager.h"
 #include "view/managers/storageaudittable_manager.h"
 
 QT_BEGIN_NAMESPACE
@@ -89,6 +90,8 @@ private:
     std::unique_ptr<ResultsTableManager> resultsTableManager = nullptr;
     // storage_audit
     std::unique_ptr<StorageAuditTableManager> storageAuditTableManager = nullptr;
+
+    std::unique_ptr<RelocationPlanTableManager> relocationPlanTableManager = nullptr;
 
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;

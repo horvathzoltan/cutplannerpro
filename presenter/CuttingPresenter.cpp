@@ -666,7 +666,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                 locationText,
                 0,
                 true,
-                materialCode // barcode = materialCode for stock
+                materialCode, // barcode = materialCode for stock
+                AuditSourceType::Stock,
+                materialId
             });
             continue;
         }
@@ -687,7 +689,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                 "—",
                 moveQty,
                 false,
-                sourceRow.barcode
+                sourceRow.barcode,
+                AuditSourceType::Stock,
+                materialId
             });
 
             missingQty -= moveQty;
@@ -702,8 +706,10 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                 "—",
                 0,
                 false,
-                materialCode
-            });
+                materialCode,
+                AuditSourceType::Stock,
+                materialId
+            });            
         }
     }
 
@@ -726,7 +732,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                 it->storageName,
                 0,
                 true,
-                rodBarcode
+                rodBarcode,
+                AuditSourceType::Leftover,
+                materialId
             });
         } else {
             auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
@@ -742,7 +750,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                     "—",
                     1,
                     false,
-                    rodBarcode
+                    rodBarcode,
+                    AuditSourceType::Leftover,
+                    materialId
                 });
             } else {
                 plan.push_back({
@@ -751,7 +761,9 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
                     "—",
                     0,
                     false,
-                    rodBarcode
+                    rodBarcode,
+                    AuditSourceType::Leftover,
+                    materialId
                 });
             }
         }
@@ -871,5 +883,7 @@ void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPre
         }
     }
 }
+
+/*relocation*/
 
 

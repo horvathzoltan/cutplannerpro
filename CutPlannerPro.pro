@@ -80,6 +80,7 @@ SOURCES += \
     view/dialog/stock/editstoragedialog.cpp \
     view/managers/inputtable_manager.cpp \
     view/managers/leftovertable_manager.cpp \
+    view/managers/relocationplantable_manager.cpp \
     view/managers/resultstable_manager.cpp \
     view/managers/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp
@@ -187,8 +188,11 @@ HEADERS += \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
     view/cellgenerators/auditrowviewmodelgenerator.h \
+    view/cellgenerators/relocationrowviewmodelgenerator.h \
     view/cellhelpers/auditcellcolors.h \
     view/cellhelpers/auditcelltooltips.h \
+    view/cellhelpers/cellfactory.h \
+    view/columnidexes/relocationplantable_columns.h \
     view/cutanalyticspanel.h \
     view/dialog/addinputdialog.h \
     view/dialog/addwastedialog.h \
@@ -199,6 +203,7 @@ HEADERS += \
     view/dialog/stock/editstoragedialog.h \
     view/managers/inputtable_manager.h \
     view/managers/leftovertable_manager.h \
+    view/managers/relocationplantable_manager.h \
     view/managers/resultstable_manager.h \
     view/managers/stocktable_manager.h \
     view/managers/storageaudittable_manager.h \

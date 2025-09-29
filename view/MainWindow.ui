@@ -187,7 +187,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="midBoxPage1">
         <attribute name="title">
@@ -354,6 +354,40 @@
          <string>RelocationOrder</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QTableWidget" name="tableRelocationOrder">
+           <column>
+            <property name="text">
+             <string>Anyag</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Vonalkód</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Mennyiség</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Forrás</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Cél</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Típus</string>
+            </property>
+           </column>
+          </widget>
+         </item>
          <item>
           <widget class="QPlainTextEdit" name="relocateQuickList"/>
          </item>

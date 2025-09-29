@@ -5,7 +5,7 @@
 #include <QUuid>
 
 struct TableRowViewModel {
-    QUuid rowId;           // azonosító – interakcióhoz, mentéshez, csoporthoz
+    QUuid rowId = QUuid::createUuid(); // Egyedi azonosító (CRUD műveletekhez is kell);           // azonosító – interakcióhoz, mentéshez, csoporthoz
     QMap<int, TableCellViewModel> cells; // oszlopIndex → cellaViewModel
     bool isVisible = true;               // sor szintű láthatóság
 };
