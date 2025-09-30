@@ -40,8 +40,8 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
 
     // Anyag
     vm.cells[RelocationPlanTableColumns::Material] =
-        CellFactory::textCell(instr.materialCode,
-                       QString("Anyag: %1").arg(instr.materialCode),
+        CellFactory::textCell(instr.materialName,
+                       QString("Anyag: %1").arg(instr.materialName),
                        baseColor, fgColor);
 
     // Vonalkód
@@ -52,13 +52,13 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
 
     // Mennyiség / státusz
     QString qtyText = instr.isSatisfied ? QStringLiteral("✔ Megvan")
-                                        : QString::number(instr.quantity);
+                                        : QString::number(instr.plannedQuantity);
     QColor qtyColor = instr.isSatisfied ? QColor("#228B22")
-                                        : (instr.quantity == 0 ? QColor("#B22222") : fgColor);
+                                        : (instr.plannedQuantity == 0 ? QColor("#B22222") : fgColor);
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
         CellFactory::textCell(qtyText,
-                       QString("Mennyiség: %1").arg(instr.quantity),
+                       QString("Mennyiség: %1").arg(instr.plannedQuantity),
                        baseColor, qtyColor);
 
     // Forrás

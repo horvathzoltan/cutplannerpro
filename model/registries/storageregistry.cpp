@@ -37,3 +37,26 @@ const StorageEntry* StorageRegistry::findByBarcode(const QString& barcode) const
     }
     return nullptr;
 }
+
+// storageregistry.cpp
+QStringList StorageRegistry::resolveTargetStoragesRecursive(const QUuid& rootId) const {
+    QStringList result;
+
+    // Root maga
+    if (auto rootOpt = findById(rootId)) {
+        result << rootOpt->name;
+    }
+
+    // Gyerekek rekurzívan
+    collectChildrenRecursive(rootId, result);
+
+    return result;
+}
+
+void StorageRegistry::collectChildrenRecursive(const QUuid& parentId, QStringList& out) const {
+    const auto& children = findByParentId(parentId);
+    for (const auto& child : children) {
+        out << child.name;
+        collectChildrenRecursive(child.id, out); // mélyebb szintek
+    }
+}

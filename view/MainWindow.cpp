@@ -454,11 +454,11 @@ QString MainWindow::format(const QList<RelocationInstruction>& items) {
         QString sourceText = it.sourceLocation.isEmpty() ? "—" : it.sourceLocation;
         QString targetText = it.targetLocation.isEmpty() ? "—" : it.targetLocation;
 
-        QString qtyText  = it.isSatisfied ? "✔ Megvan" : QString::number(it.quantity);
+        QString qtyText  = it.isSatisfied ? "✔ Megvan" : QString::number(it.plannedQuantity);
         QString typeText = (it.sourceType == AuditSourceType::Stock) ? "Stock" : "Hulló";
 
         out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
-                   .arg(it.materialCode, -24)
+                   .arg(it.materialName, -24)
                    .arg(qtyText,        -10)
                    .arg(sourceText,     -20)
                    .arg(targetText,     -20)

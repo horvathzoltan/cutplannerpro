@@ -59,12 +59,14 @@ void RelocationPlanTableManager::addRow(const RelocationInstruction& instr) {
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // rowId mentése
-    _planRowMap[vm.rowId] = instr;
+    //_planRowMap[vm.rowId] = instr;
+    _planRowMap.insert(vm.rowId, instr);
     _rowIndexMap[vm.rowId] = rowIx;
+
 
     if (_isVerbose) {
         zInfo(L("RelocationPlan row added via generator: %1 | %2")
-                  .arg(instr.materialCode)
+                  .arg(instr.materialName)
                   .arg(instr.barcode));
     }
 }
@@ -80,7 +82,9 @@ void RelocationPlanTableManager::updateRow(const QUuid& rowId, const RelocationI
     if (!_rowIndexMap.contains(rowId)) return;
 
     int rowIx = _rowIndexMap.value(rowId);
-    _planRowMap[rowId] = instr;
+    //_planRowMap[rowId] = instr;
+    // updateRow-ban:
+    _planRowMap.insert(rowId, instr);
 
     // 🔍 Anyag lekérése az azonosító alapján
     const MaterialMaster* mat = nullptr;
@@ -102,7 +106,7 @@ void RelocationPlanTableManager::updateRow(const QUuid& rowId, const RelocationI
 
     if (_isVerbose) {
         zInfo(L("RelocationPlan row updated via generator: %1 | %2")
-                  .arg(instr.materialCode)
+                  .arg(instr.materialName)
                   .arg(instr.barcode));
     }
 }

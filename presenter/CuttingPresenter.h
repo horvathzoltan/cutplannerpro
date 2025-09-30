@@ -75,6 +75,7 @@ public:
 
     void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
+    QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

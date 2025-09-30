@@ -2,7 +2,7 @@
 
 #include <QVector>
 #include <QUuid>
-#include <optional>
+//#include <optional>
 #include "../storageentry.h"
 
 class StorageRegistry {
@@ -10,6 +10,7 @@ private:
     StorageRegistry() = default;
     QVector<StorageEntry> _data;
 
+        void collectChildrenRecursive(const QUuid& parentId, QStringList& out) const;
 public:
     static StorageRegistry& instance();
 
@@ -28,4 +29,7 @@ public:
     // 🔄 Teljes törlés (UI reset esetén pl.)
     void clearAll();
     const StorageEntry* findByBarcode(const QString &barcode) const;
+
+    // 🆕 Root + children (rekurzív) lekérdezés
+    QStringList resolveTargetStoragesRecursive(const QUuid& rootId) const;
 };

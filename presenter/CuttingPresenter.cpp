@@ -28,6 +28,7 @@
 #include <service/cutting/plan/finalizer.h>
 
 #include <model/registries/materialregistry.h>
+#include <model/registries/storageregistry.h>
 
 #include <common/auditcontextbuilder.h>
 
@@ -657,16 +658,28 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         int availableQty = availableByMaterial.value(materialId, 0);
         int missingQty = requiredQty - availableQty;
 
+        // 🆕 Root + children célhelyek előkészítése
+        // (itt feltételezzük, hogy van legalább egy auditRow ehhez a materialId-hoz,
+        // és abból vesszük a rootStorageId-t)
+        QUuid rootId;
+        auto rowIt = std::find_if(auditRows.begin(), auditRows.end(),
+                                  [&](const StorageAuditRow& r){ return r.materialId == materialId; });
+        if (rowIt != auditRows.end())
+            rootId = rowIt->rootStorageId;
+
+        QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
+        QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
+
         if (missingQty <= 0) {
             QStringList locations = locationsByMaterial.value(materialId);
             QString locationText = locations.isEmpty() ? "—" : locations.join(", ");
-            plan.push_back({
+            plan.push_back(RelocationInstruction{
                 materialName,
-                "—",
+                targetText,      // 🆕 root + children nevei
                 locationText,
                 0,
                 true,
-                materialCode, // barcode = materialCode for stock
+                materialCode,
                 AuditSourceType::Stock,
                 materialId
             });
@@ -683,10 +696,10 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
             int moveQty = qMin(missingQty, sourceRow.actualQuantity);
 
-            plan.push_back({
+            plan.push_back(RelocationInstruction{
                 materialName,
-                sourceRow.storageName,
-                "—",
+                sourceRow.storageName,   // forrás
+                targetText,              // 🆕 cél = root + children
                 moveQty,
                 false,
                 sourceRow.barcode,
@@ -700,20 +713,20 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         }
 
         if (missingQty > 0) {
-            plan.push_back({
+            plan.push_back(RelocationInstruction{
                 materialName,
-                "—",
+                targetText,   // 🆕 cél = root + children
                 "—",
                 0,
                 false,
                 materialCode,
                 AuditSourceType::Stock,
                 materialId
-            });            
+            });
         }
     }
 
-    // 5️⃣ Hullók (Reusable) egyedi kezelése vonalkód alapján
+    // 5️⃣ Hullók (Reusable) – csak megjelenítés, nincs reallokáció
     for (const auto* planItem : reusablePlans) {
         QUuid materialId = planItem->materialId;
         QString materialName = planItem->materialName();
@@ -726,52 +739,107 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         });
 
         if (it != auditRows.end()) {
-            plan.push_back({
+            // 🆕 Csak megmutatjuk, hogy létezik és hol van
+            plan.push_back(RelocationInstruction{
                 materialName,
-                "—",
-                it->storageName,
-                0,
-                true,
+                "—",                 // nincs forrás
+                it->storageName,      // cél = ahol ténylegesen van
+                0,                    // nincs mozgatás
+                true,                 // ✔ megvan
                 rodBarcode,
                 AuditSourceType::Leftover,
                 materialId
             });
-        } else {
-            auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
-                return row.isAuditConfirmed &&
-                       row.barcode == rodBarcode &&
-                       row.actualQuantity > 0;
-            });
-
-            if (sourceIt != auditRows.end()) {
-                plan.push_back({
-                    materialName,
-                    sourceIt->storageName,
-                    "—",
-                    1,
-                    false,
-                    rodBarcode,
-                    AuditSourceType::Leftover,
-                    materialId
-                });
-            } else {
-                plan.push_back({
-                    materialName,
-                    "—",
-                    "—",
-                    0,
-                    false,
-                    rodBarcode,
-                    AuditSourceType::Leftover,
-                    materialId
-                });
-            }
         }
     }
+    // 5️⃣ Hullók (Reusable) egyedi kezelése vonalkód alapján
+
+    // for (const auto* planItem : reusablePlans) {
+    //     QUuid materialId = planItem->materialId;
+    //     QString materialName = planItem->materialName();
+    //     QString rodBarcode = planItem->rodId;
+
+    //     auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+    //         return row.isAuditConfirmed &&
+    //                row.materialId == materialId &&
+    //                row.barcode == rodBarcode;
+    //     });
+
+    //     // 🆕 Root + children célhelyek előkészítése (ha van auditRow)
+    //     QUuid rootId;
+    //     if (it != auditRows.end())
+    //         rootId = it->rootStorageId;
+    //     QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
+    //     QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
+
+    //     if (it != auditRows.end()) {
+    //         plan.push_back(RelocationInstruction{
+    //             materialName,
+    //             targetText,          // 🆕 cél = root + children
+    //             it->storageName,
+    //             0,
+    //             true,
+    //             rodBarcode,
+    //             AuditSourceType::Leftover,
+    //             materialId
+    //         });
+    //     } else {
+    //         auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+    //             return row.isAuditConfirmed &&
+    //                    row.barcode == rodBarcode &&
+    //                    row.actualQuantity > 0;
+    //         });
+
+    //         if (sourceIt != auditRows.end()) {
+    //             plan.push_back(RelocationInstruction{
+    //                 materialName,
+    //                 sourceIt->storageName,
+    //                 targetText,        // 🆕 cél = root + children
+    //                 1,
+    //                 false,
+    //                 rodBarcode,
+    //                 AuditSourceType::Leftover,
+    //                 materialId
+    //             });
+    //         } else {
+    //             plan.push_back(RelocationInstruction{
+    //                 materialName,
+    //                 targetText,        // 🆕 cél = root + children
+    //                 "—",
+    //                 0,
+    //                 false,
+    //                 rodBarcode,
+    //                 AuditSourceType::Leftover,
+    //                 materialId
+    //             });
+    //         }
+    //     }
+    // }
 
     return plan;
 }
 
+
+QVector<QString> CuttingPresenter::resolveTargetStorages(const QUuid& rootStorageId) {
+    QVector<QString> result;
+
+    // Root maga
+    if (const auto* root = StorageRegistry::instance().findById(rootStorageId)) {
+        result.append(root->name);
+    }
+
+    // Gyerekek rekurzívan
+    std::function<void(const QUuid)> collectChildren = [&](const QUuid parentId) {
+        const auto children = StorageRegistry::instance().findByParentId(parentId);
+        for (const auto& child : children) {
+            result.append(child.name);
+            collectChildren(child.id); // mélyebb szintek
+        }
+    };
+
+    collectChildren(rootStorageId);
+    return result;
+}
 
 
 

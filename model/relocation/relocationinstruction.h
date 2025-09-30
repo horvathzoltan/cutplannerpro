@@ -20,11 +20,30 @@
  * - sourceType: a forrás típusa (Stock vagy Hulló)
  */
 struct RelocationInstruction {
+
+    explicit RelocationInstruction(const QString& materialName,
+                                   const QString& targetLocation,
+                                   const QString& sourceLocation,
+                                   int plannedQuantity,
+                                   bool isSatisfied,
+                                   const QString& barcode,
+                                   AuditSourceType sourceType,
+                                   const QUuid& materialId)
+        : materialName(materialName),
+        sourceLocation(sourceLocation),
+        targetLocation(targetLocation),
+        plannedQuantity(plannedQuantity),
+        isSatisfied(isSatisfied),
+        barcode(barcode),
+        sourceType(sourceType),
+        materialId(materialId)
+    {}
+
     //QUuid rowId = QUuid::createUuid(); // Egyedi azonosító (CRUD műveletekhez is kell)
-    QString materialCode;      ///< Anyag kódja vagy megnevezése
+    QString materialName;      ///< Anyag kódja vagy megnevezése
     QString sourceLocation;    ///< Forrás tároló neve
     QString targetLocation;    ///< Cél tároló neve
-    int quantity;              ///< Mozgatandó mennyiség
+    int plannedQuantity;              ///< Mozgatandó mennyiség
     bool isSatisfied = false;  ///< Ha true → ✔ Megvan, nincs tényleges mozgatás
     QString barcode;           ///< Egyedi azonosító (különösen hullóknál fontos)
     AuditSourceType sourceType;///< Forrás típusa (Stock / Hulló)
