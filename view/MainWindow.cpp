@@ -444,24 +444,44 @@ QString MainWindow::format(const QList<RelocationInstruction>& items) {
     out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
                .arg("Anyag",    -24)
                .arg("Mennyiség",-10)
-               .arg("Forrás",   -20)
-               .arg("Cél",      -20)
+               .arg("Forrás",   -30)   // kicsit szélesebb, mert lista lehet
+               .arg("Cél",      -30)
                .arg("Vonalkód", -20)
                .arg("Típus",    -10);
-    out += QString("-").repeated(120) + "\n";
+    out += QString("-").repeated(140) + "\n";
 
     for (const auto& it : items) {
-        QString sourceText = it.sourceLocation.isEmpty() ? "—" : it.sourceLocation;
-        QString targetText = it.targetLocation.isEmpty() ? "—" : it.targetLocation;
+        // Forrás lista → "hely1 (moved/available), hely2 (moved/available)"
+        QStringList sourceParts;
+        for (const auto& src : it.sources) {
+            sourceParts << QString("%1 (%2/%3)")
+            .arg(src.locationName)
+                .arg(src.moved)
+                .arg(src.available);
+        }
+        QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
 
-        QString qtyText  = it.isSatisfied ? "✔ Megvan" : QString::number(it.plannedQuantity);
+        // Cél lista → "hely1 (placed), hely2 (placed)"
+        QStringList targetParts;
+        for (const auto& tgt : it.targets) {
+            targetParts << QString("%1 (%2)")
+            .arg(tgt.locationName)
+                .arg(tgt.placed);
+        }
+        QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
+
+        // Mennyiség oszlop → ha satisfied, akkor ✔ Megvan, különben plannedQuantity
+        QString qtyText  = it.isSatisfied ? "✔ Megvan"
+                                         : QString::number(it.plannedQuantity);
+
+        // Típus oszlop
         QString typeText = (it.sourceType == AuditSourceType::Stock) ? "Stock" : "Hulló";
 
         out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
                    .arg(it.materialName, -24)
                    .arg(qtyText,        -10)
-                   .arg(sourceText,     -20)
-                   .arg(targetText,     -20)
+                   .arg(sourceText,     -30)
+                   .arg(targetText,     -30)
                    .arg(it.barcode,     -20)
                    .arg(typeText,       -10);
     }

@@ -28,59 +28,86 @@ namespace RelocationRowViewModelGenerator {
 // }
 
 /// 🔹 Teljes TableRowViewModel generálása egy RelocationInstruction alapján
+/// 🔹 Teljes TableRowViewModel generálása egy RelocationInstruction alapján
 inline TableRowViewModel generate(const RelocationInstruction& instr,
                                   const MaterialMaster* mat,
                                   QObject* /*receiver*/ = nullptr) {
     TableRowViewModel vm;
-    //vm.rowId = instr.rowId;
+    // vm.rowId = instr.rowId; // ha később kell egyedi azonosító
 
     // 🎨 Alapszínek a csoport alapján
     QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
+    QColor fgColor   = baseColor.lightness() < 128 ? Qt::white : Qt::black;
 
     // Anyag
     vm.cells[RelocationPlanTableColumns::Material] =
         CellFactory::textCell(instr.materialName,
-                       QString("Anyag: %1").arg(instr.materialName),
-                       baseColor, fgColor);
+                              QString("Anyag: %1").arg(instr.materialName),
+                              baseColor, fgColor);
 
     // Vonalkód
     vm.cells[RelocationPlanTableColumns::Barcode] =
         CellFactory::textCell(instr.barcode,
-                       QString("Vonalkód: %1").arg(instr.barcode),
-                       baseColor, fgColor);
+                              QString("Vonalkód: %1").arg(instr.barcode),
+                              baseColor, fgColor);
 
     // Mennyiség / státusz
-    QString qtyText = instr.isSatisfied ? QStringLiteral("✔ Megvan")
-                                        : QString::number(instr.plannedQuantity);
-    QColor qtyColor = instr.isSatisfied ? QColor("#228B22")
-                                        : (instr.plannedQuantity == 0 ? QColor("#B22222") : fgColor);
+    QString qtyText = instr.isSatisfied
+                          ? QStringLiteral("✔ Megvan")
+                          : QString::number(instr.plannedQuantity);
+
+    QColor qtyColor = instr.isSatisfied
+                          ? QColor("#228B22")   // zöld, ha teljesült
+                          : (instr.plannedQuantity == 0
+                                 ? QColor("#B22222") // piros, ha 0
+                                 : fgColor);
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
         CellFactory::textCell(qtyText,
-                       QString("Mennyiség: %1").arg(instr.plannedQuantity),
-                       baseColor, qtyColor);
+                              QString("Terv szerinti mennyiség: %1").arg(instr.plannedQuantity),
+                              baseColor, qtyColor);
 
-    // Forrás
+    // Forrás lista → "hely1 (moved/available), hely2 (moved/available)"
+    QStringList sourceParts;
+    for (const auto& src : instr.sources) {
+        sourceParts << QString("%1 (%2/%3)")
+        .arg(src.locationName)
+            .arg(src.moved)
+            .arg(src.available);
+    }
+    QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
+
     vm.cells[RelocationPlanTableColumns::Source] =
-        CellFactory::textCell(instr.sourceLocation,
-                       QString("Forrás: %1").arg(instr.sourceLocation),
-                       baseColor, fgColor);
+        CellFactory::textCell(sourceText,
+                              QString("Forrás tárhelyek: %1").arg(sourceText),
+                              baseColor, fgColor);
 
-    // Cél
+    // Cél lista → "hely1 (placed), hely2 (placed)"
+    QStringList targetParts;
+    for (const auto& tgt : instr.targets) {
+        targetParts << QString("%1 (%2)")
+        .arg(tgt.locationName)
+            .arg(tgt.placed);
+    }
+    QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
+
     vm.cells[RelocationPlanTableColumns::Target] =
-        CellFactory::textCell(instr.targetLocation,
-                       QString("Cél: %1").arg(instr.targetLocation),
-                       baseColor, fgColor);
+        CellFactory::textCell(targetText,
+                              QString("Cél tárhelyek: %1").arg(targetText),
+                              baseColor, fgColor);
 
     // Típus
-    QString typeText = (instr.sourceType == AuditSourceType::Stock) ? "📦 Stock" : "♻️ Hulló";
+    QString typeText = (instr.sourceType == AuditSourceType::Stock)
+                           ? QStringLiteral("📦 Stock")
+                           : QStringLiteral("♻️ Hulló");
+
     vm.cells[RelocationPlanTableColumns::Type] =
         CellFactory::textCell(typeText,
-                       QString("Forrás típusa: %1").arg(typeText),
-                       baseColor, fgColor);
+                              QString("Forrás típusa: %1").arg(typeText),
+                              baseColor, fgColor);
 
     return vm;
 }
+
 
 } // namespace RelocationRowViewModelGenerator

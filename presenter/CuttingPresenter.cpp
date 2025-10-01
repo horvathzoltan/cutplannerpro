@@ -602,6 +602,223 @@ QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cut
 
 
 
+// QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
+//     const QVector<Cutting::Plan::CutPlan>& cutPlans,
+//     const QVector<StorageAuditRow>& auditRows)
+// {
+//     QVector<RelocationInstruction> plan;
+
+//     // 1️⃣ Auditálatlan sorok figyelmeztetése
+//     bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(), [](const StorageAuditRow& row) {
+//         return row.wasModified && !row.isAuditConfirmed;
+//     });
+
+//     if (hasUnaudited) {
+//         zWarning("⚠️ Auditálatlan sorok találhatók – a relocation terv nem teljesen megbízható!");
+//     }
+
+//     // 2️⃣ Auditált mennyiségek aggregálása anyag szinten
+//     QMap<QUuid, int> availableByMaterial;
+//     QMap<QUuid, QStringList> locationsByMaterial;
+
+//     for (const auto& row : auditRows) {
+//         if (!row.isAuditConfirmed)
+//             continue;
+
+//         if (row.sourceType != AuditSourceType::Stock)
+//             continue;
+
+//         availableByMaterial[row.materialId] += row.actualQuantity;
+//         locationsByMaterial[row.materialId].append(row.storageName);
+//     }
+
+//     // 3️⃣ CutPlan-ek szétválasztása forrás szerint
+//     QMap<QUuid, int> requiredStockByMaterial;
+//     QMap<QUuid, QString> materialCodeById;
+//     QMap<QUuid, QString> materialNameById;
+//     QVector<const Cutting::Plan::CutPlan*> reusablePlans;
+
+//     for (const auto& planItem : cutPlans) {
+//         if (planItem.source == Cutting::Plan::Source::Stock) {
+//             requiredStockByMaterial[planItem.materialId] += 1;
+//             materialCodeById[planItem.materialId] = planItem.materialBarcode();
+//             materialNameById[planItem.materialId] = planItem.materialName();
+//         } else if (planItem.source == Cutting::Plan::Source::Reusable) {
+//             reusablePlans.append(&planItem);
+//         }
+//     }
+
+//     // 4️⃣ Stock anyagok relokációja (aggregált)
+//     for (auto it = requiredStockByMaterial.begin(); it != requiredStockByMaterial.end(); ++it) {
+//         QUuid materialId = it.key();
+//         int requiredQty = it.value();
+//         QString materialCode = materialCodeById.value(materialId);
+//         QString materialName = materialNameById.value(materialId);
+
+//         int availableQty = availableByMaterial.value(materialId, 0);
+//         int missingQty = requiredQty - availableQty;
+
+//         // 🆕 Root + children célhelyek előkészítése
+//         // (itt feltételezzük, hogy van legalább egy auditRow ehhez a materialId-hoz,
+//         // és abból vesszük a rootStorageId-t)
+//         QUuid rootId;
+//         auto rowIt = std::find_if(auditRows.begin(), auditRows.end(),
+//                                   [&](const StorageAuditRow& r){ return r.materialId == materialId; });
+//         if (rowIt != auditRows.end())
+//             rootId = rowIt->rootStorageId;
+
+//         QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
+//         QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
+
+//         if (missingQty <= 0) {
+//             QStringList locations = locationsByMaterial.value(materialId);
+//             QString locationText = locations.isEmpty() ? "—" : locations.join(", ");
+//             plan.push_back(RelocationInstruction{
+//                 materialName,
+//                 targetText,      // 🆕 root + children nevei
+//                 locationText,
+//                 0,
+//                 true,
+//                 materialCode,
+//                 AuditSourceType::Stock,
+//                 materialId
+//             });
+//             continue;
+//         }
+
+//         for (const auto& sourceRow : auditRows) {
+//             if (!sourceRow.isAuditConfirmed)
+//                 continue;
+//             if (sourceRow.materialId != materialId)
+//                 continue;
+//             if (sourceRow.actualQuantity <= 0)
+//                 continue;
+
+//             int moveQty = qMin(missingQty, sourceRow.actualQuantity);
+
+//             plan.push_back(RelocationInstruction{
+//                 materialName,
+//                 sourceRow.storageName,   // forrás
+//                 targetText,              // 🆕 cél = root + children
+//                 moveQty,
+//                 false,
+//                 sourceRow.barcode,
+//                 AuditSourceType::Stock,
+//                 materialId
+//             });
+
+//             missingQty -= moveQty;
+//             if (missingQty <= 0)
+//                 break;
+//         }
+
+//         if (missingQty > 0) {
+//             plan.push_back(RelocationInstruction{
+//                 materialName,
+//                 targetText,   // 🆕 cél = root + children
+//                 "—",
+//                 0,
+//                 false,
+//                 materialCode,
+//                 AuditSourceType::Stock,
+//                 materialId
+//             });
+//         }
+//     }
+
+//     // 5️⃣ Hullók (Reusable) – csak megjelenítés, nincs reallokáció
+//     for (const auto* planItem : reusablePlans) {
+//         QUuid materialId = planItem->materialId;
+//         QString materialName = planItem->materialName();
+//         QString rodBarcode = planItem->rodId;
+
+//         auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+//             return row.isAuditConfirmed &&
+//                    row.materialId == materialId &&
+//                    row.barcode == rodBarcode;
+//         });
+
+//         if (it != auditRows.end()) {
+//             // 🆕 Csak megmutatjuk, hogy létezik és hol van
+//             plan.push_back(RelocationInstruction{
+//                 materialName,
+//                 "—",                 // nincs forrás
+//                 it->storageName,      // cél = ahol ténylegesen van
+//                 0,                    // nincs mozgatás
+//                 true,                 // ✔ megvan
+//                 rodBarcode,
+//                 AuditSourceType::Leftover,
+//                 materialId
+//             });
+//         }
+//     }
+//     // 5️⃣ Hullók (Reusable) egyedi kezelése vonalkód alapján
+
+//     // for (const auto* planItem : reusablePlans) {
+//     //     QUuid materialId = planItem->materialId;
+//     //     QString materialName = planItem->materialName();
+//     //     QString rodBarcode = planItem->rodId;
+
+//     //     auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+//     //         return row.isAuditConfirmed &&
+//     //                row.materialId == materialId &&
+//     //                row.barcode == rodBarcode;
+//     //     });
+
+//     //     // 🆕 Root + children célhelyek előkészítése (ha van auditRow)
+//     //     QUuid rootId;
+//     //     if (it != auditRows.end())
+//     //         rootId = it->rootStorageId;
+//     //     QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
+//     //     QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
+
+//     //     if (it != auditRows.end()) {
+//     //         plan.push_back(RelocationInstruction{
+//     //             materialName,
+//     //             targetText,          // 🆕 cél = root + children
+//     //             it->storageName,
+//     //             0,
+//     //             true,
+//     //             rodBarcode,
+//     //             AuditSourceType::Leftover,
+//     //             materialId
+//     //         });
+//     //     } else {
+//     //         auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
+//     //             return row.isAuditConfirmed &&
+//     //                    row.barcode == rodBarcode &&
+//     //                    row.actualQuantity > 0;
+//     //         });
+
+//     //         if (sourceIt != auditRows.end()) {
+//     //             plan.push_back(RelocationInstruction{
+//     //                 materialName,
+//     //                 sourceIt->storageName,
+//     //                 targetText,        // 🆕 cél = root + children
+//     //                 1,
+//     //                 false,
+//     //                 rodBarcode,
+//     //                 AuditSourceType::Leftover,
+//     //                 materialId
+//     //             });
+//     //         } else {
+//     //             plan.push_back(RelocationInstruction{
+//     //                 materialName,
+//     //                 targetText,        // 🆕 cél = root + children
+//     //                 "—",
+//     //                 0,
+//     //                 false,
+//     //                 rodBarcode,
+//     //                 AuditSourceType::Leftover,
+//     //                 materialId
+//     //             });
+//     //         }
+//     //     }
+//     // }
+
+//     return plan;
+//}
+
 QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     const QVector<Cutting::Plan::CutPlan>& cutPlans,
     const QVector<StorageAuditRow>& auditRows)
@@ -612,27 +829,19 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(), [](const StorageAuditRow& row) {
         return row.wasModified && !row.isAuditConfirmed;
     });
-
     if (hasUnaudited) {
         zWarning("⚠️ Auditálatlan sorok találhatók – a relocation terv nem teljesen megbízható!");
     }
 
-    // 2️⃣ Auditált mennyiségek aggregálása anyag szinten
+    // 2️⃣ Auditált mennyiségek összesítése anyagonként
     QMap<QUuid, int> availableByMaterial;
-    QMap<QUuid, QStringList> locationsByMaterial;
-
     for (const auto& row : auditRows) {
-        if (!row.isAuditConfirmed)
-            continue;
-
-        if (row.sourceType != AuditSourceType::Stock)
-            continue;
-
+        if (!row.isAuditConfirmed) continue;
+        if (row.sourceType != AuditSourceType::Stock) continue;
         availableByMaterial[row.materialId] += row.actualQuantity;
-        locationsByMaterial[row.materialId].append(row.storageName);
     }
 
-    // 3️⃣ CutPlan-ek szétválasztása forrás szerint
+    // 3️⃣ CutPlan-ek szétválogatása forrás szerint
     QMap<QUuid, int> requiredStockByMaterial;
     QMap<QUuid, QString> materialCodeById;
     QMap<QUuid, QString> materialNameById;
@@ -648,7 +857,7 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         }
     }
 
-    // 4️⃣ Stock anyagok relokációja (aggregált)
+    // 4️⃣ Stock anyagok relocation terve
     for (auto it = requiredStockByMaterial.begin(); it != requiredStockByMaterial.end(); ++it) {
         QUuid materialId = it.key();
         int requiredQty = it.value();
@@ -658,9 +867,7 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         int availableQty = availableByMaterial.value(materialId, 0);
         int missingQty = requiredQty - availableQty;
 
-        // 🆕 Root + children célhelyek előkészítése
-        // (itt feltételezzük, hogy van legalább egy auditRow ehhez a materialId-hoz,
-        // és abból vesszük a rootStorageId-t)
+        // Root + children célhelyek előkészítése
         QUuid rootId;
         auto rowIt = std::find_if(auditRows.begin(), auditRows.end(),
                                   [&](const StorageAuditRow& r){ return r.materialId == materialId; });
@@ -670,63 +877,83 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
         QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
 
+        // ✔ Ha nincs hiány → satisfied sor
         if (missingQty <= 0) {
-            QStringList locations = locationsByMaterial.value(materialId);
-            QString locationText = locations.isEmpty() ? "—" : locations.join(", ");
-            plan.push_back(RelocationInstruction{
-                materialName,
-                targetText,      // 🆕 root + children nevei
-                locationText,
-                0,
-                true,
-                materialCode,
-                AuditSourceType::Stock,
-                materialId
-            });
+            RelocationInstruction instr(materialName,
+                                        requiredQty,   // teljes mennyiség
+                                        true,          // satisfied
+                                        materialCode,
+                                        AuditSourceType::Stock,
+                                        materialId);
+            instr.executedQuantity = requiredQty;
+
+            zInfo(L("RelocationPlan(1) satisfied: %1 | barcode=%2 | required=%3 | executed=%4")
+                      .arg(instr.materialName)
+                      .arg(instr.barcode)
+                      .arg(requiredQty)
+                      .arg(instr.executedQuantity.value_or(-1)));
+
+            plan.push_back(instr);
             continue;
         }
 
+        // ➡️ Ha van hiány → relocation sorok a tényleges mozgatásokkal
         for (const auto& sourceRow : auditRows) {
-            if (!sourceRow.isAuditConfirmed)
-                continue;
-            if (sourceRow.materialId != materialId)
-                continue;
-            if (sourceRow.actualQuantity <= 0)
-                continue;
+            if (!sourceRow.isAuditConfirmed) continue;
+            if (sourceRow.materialId != materialId) continue;
+            if (sourceRow.actualQuantity <= 0) continue;
 
             int moveQty = qMin(missingQty, sourceRow.actualQuantity);
 
-            plan.push_back(RelocationInstruction{
+            // 🔹 Helper hívás – plannedQuantity = moveQty
+            RelocationInstruction instr = makeRelocationInstruction(
                 materialName,
-                sourceRow.storageName,   // forrás
-                targetText,              // 🆕 cél = root + children
-                moveQty,
-                false,
+                materialId,
                 sourceRow.barcode,
+                moveQty,   // ✅ csak a hiányzó mennyiség
                 AuditSourceType::Stock,
-                materialId
-            });
+                sourceRow,
+                rootId,
+                targetText,
+                moveQty);
+
+            zInfo(L("RelocationPlan(2) relocation: %1 | barcode=%2 | planned=%3 | executed=%4 | src=%5 | tgt=%6")
+                      .arg(instr.materialName)
+                      .arg(instr.barcode)
+                      .arg(instr.plannedQuantity)
+                      .arg(instr.executedQuantity.value_or(-1))
+                      .arg(instr.sources.size())
+                      .arg(instr.targets.size()));
+
+            plan.push_back(instr);
 
             missingQty -= moveQty;
             if (missingQty <= 0)
                 break;
         }
 
+        // ❌ Ha maradt hiány → jelző sor
         if (missingQty > 0) {
-            plan.push_back(RelocationInstruction{
-                materialName,
-                targetText,   // 🆕 cél = root + children
-                "—",
-                0,
-                false,
-                materialCode,
-                AuditSourceType::Stock,
-                materialId
-            });
+            RelocationInstruction instr(materialName,
+                                        requiredQty,   // teljes mennyiség
+                                        false,         // nincs teljesítve
+                                        materialCode,
+                                        AuditSourceType::Stock,
+                                        materialId);
+            instr.executedQuantity = requiredQty - missingQty;
+
+            zInfo(L("RelocationPlan(3) missing: %1 | barcode=%2 | required=%3 | executed=%4 | hiány=%5")
+                      .arg(instr.materialName)
+                      .arg(instr.barcode)
+                      .arg(requiredQty)
+                      .arg(instr.executedQuantity.value_or(-1))
+                      .arg(missingQty));
+
+            plan.push_back(instr);
         }
     }
 
-    // 5️⃣ Hullók (Reusable) – csak megjelenítés, nincs reallokáció
+    // 5️⃣ Hullók (Reusable) – csak megjelenítés
     for (const auto* planItem : reusablePlans) {
         QUuid materialId = planItem->materialId;
         QString materialName = planItem->materialName();
@@ -739,84 +966,69 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
         });
 
         if (it != auditRows.end()) {
-            // 🆕 Csak megmutatjuk, hogy létezik és hol van
-            plan.push_back(RelocationInstruction{
-                materialName,
-                "—",                 // nincs forrás
-                it->storageName,      // cél = ahol ténylegesen van
-                0,                    // nincs mozgatás
-                true,                 // ✔ megvan
-                rodBarcode,
-                AuditSourceType::Leftover,
-                materialId
-            });
+            RelocationInstruction instr(materialName,
+                                        0,     // nincs plannedQuantity
+                                        true,  // satisfied
+                                        rodBarcode,
+                                        AuditSourceType::Leftover,
+                                        materialId);
+            instr.executedQuantity = 0;
+
+            zInfo(L("RelocationPlan(4) leftover: %1 | barcode=%2 | sources=%3 | targets=%4")
+                      .arg(instr.materialName)
+                      .arg(instr.barcode)
+                      .arg(instr.sources.size())
+                      .arg(instr.targets.size()));
+
+            plan.push_back(instr);
         }
     }
-    // 5️⃣ Hullók (Reusable) egyedi kezelése vonalkód alapján
-
-    // for (const auto* planItem : reusablePlans) {
-    //     QUuid materialId = planItem->materialId;
-    //     QString materialName = planItem->materialName();
-    //     QString rodBarcode = planItem->rodId;
-
-    //     auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
-    //         return row.isAuditConfirmed &&
-    //                row.materialId == materialId &&
-    //                row.barcode == rodBarcode;
-    //     });
-
-    //     // 🆕 Root + children célhelyek előkészítése (ha van auditRow)
-    //     QUuid rootId;
-    //     if (it != auditRows.end())
-    //         rootId = it->rootStorageId;
-    //     QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
-    //     QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
-
-    //     if (it != auditRows.end()) {
-    //         plan.push_back(RelocationInstruction{
-    //             materialName,
-    //             targetText,          // 🆕 cél = root + children
-    //             it->storageName,
-    //             0,
-    //             true,
-    //             rodBarcode,
-    //             AuditSourceType::Leftover,
-    //             materialId
-    //         });
-    //     } else {
-    //         auto sourceIt = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
-    //             return row.isAuditConfirmed &&
-    //                    row.barcode == rodBarcode &&
-    //                    row.actualQuantity > 0;
-    //         });
-
-    //         if (sourceIt != auditRows.end()) {
-    //             plan.push_back(RelocationInstruction{
-    //                 materialName,
-    //                 sourceIt->storageName,
-    //                 targetText,        // 🆕 cél = root + children
-    //                 1,
-    //                 false,
-    //                 rodBarcode,
-    //                 AuditSourceType::Leftover,
-    //                 materialId
-    //             });
-    //         } else {
-    //             plan.push_back(RelocationInstruction{
-    //                 materialName,
-    //                 targetText,        // 🆕 cél = root + children
-    //                 "—",
-    //                 0,
-    //                 false,
-    //                 rodBarcode,
-    //                 AuditSourceType::Leftover,
-    //                 materialId
-    //             });
-    //         }
-    //     }
-    // }
 
     return plan;
+}
+
+RelocationInstruction CuttingPresenter::makeRelocationInstruction(
+    const QString& materialName,
+    const QUuid& materialId,
+    const QString& barcode,
+    int plannedQuantity,
+    AuditSourceType sourceType,
+    const StorageAuditRow& sourceRow,
+    const QUuid& targetRootId,
+    const QString& targetName,
+    int moveQty)
+{
+    RelocationInstruction instr(materialName,
+                                plannedQuantity,
+                                false, // isSatisfied
+                                barcode,
+                                sourceType,
+                                materialId);
+
+    // Forrás
+    RelocationSourceEntry src;
+    src.locationId = sourceRow.rootStorageId;
+    src.locationName = sourceRow.storageName;
+    src.available = sourceRow.actualQuantity;
+    src.moved = moveQty;
+    instr.sources.append(src);
+    zInfo(L("  Added source: %1 moved=%2/%3")
+             .arg(src.locationName)
+             .arg(src.moved)
+             .arg(src.available));
+    // Cél
+    RelocationTargetEntry tgt;
+    tgt.locationId = targetRootId;
+    tgt.locationName = targetName;
+    tgt.placed = moveQty;
+    instr.targets.append(tgt);
+    zInfo(L("  Added target: %1 placed=%2")
+             .arg(tgt.locationName)
+             .arg(tgt.placed));
+    // ExecutedQuantity
+    instr.executedQuantity = moveQty;
+
+    return instr;
 }
 
 

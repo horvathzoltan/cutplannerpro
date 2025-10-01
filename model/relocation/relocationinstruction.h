@@ -3,6 +3,27 @@
 #include "model/storageaudit/storageauditrow.h"
 #include <QString>
 
+struct RelocationSourceEntry {
+    QUuid locationId;       ///< Forrás tárhely azonosító
+    QString locationName;   ///< Forrás tárhely neve
+    int available = 0;      ///< Elérhető mennyiség a stockban
+    int moved = 0;          ///< Innen ténylegesen elmozgatott mennyiség
+};
+
+struct RelocationTargetEntry {
+    QUuid locationId;       ///< Cél tárhely azonosító
+    QString locationName;   ///< Cél tárhely neve
+    int placed = 0;         ///< Ide ténylegesen lerakott mennyiség
+};
+
+#pragma once
+
+#include "model/storageaudit/storageauditrow.h"
+#include <QString>
+#include <QUuid>
+#include <optional>
+#include <QVector>
+
 /**
  * @brief Egy relokációs terv egyetlen sorát reprezentáló adatstruktúra.
  *
@@ -11,27 +32,25 @@
  * számára egyértelműen megjelenítsük a táblában.
  *
  * Mezők:
- * - materialCode: az anyag kódja vagy megnevezése
- * - sourceLocation: a forrás tároló (honnan kell mozgatni)
- * - targetLocation: a cél tároló (hova kell mozgatni)
- * - quantity: a mozgatandó mennyiség (ha 0, akkor nincs tényleges mozgatás)
+ * - materialName: az anyag kódja vagy megnevezése
+ * - plannedQuantity: a terv szerinti mozgatandó mennyiség
+ * - executedQuantity: a ténylegesen végrehajtott mennyiség (Finalize után rögzül)
+ * - sources: forrás tárhelyek és mennyiségek listája
+ * - targets: cél tárhelyek és mennyiségek listája
  * - isSatisfied: jelzi, hogy a terv teljesült-e (✔ Megvan státusz)
  * - barcode: azonosító, különösen hullóknál fontos (egyedi rúd)
  * - sourceType: a forrás típusa (Stock vagy Hulló)
+ * - materialId: az anyag egyedi azonosítója (UUID)
  */
 struct RelocationInstruction {
 
     explicit RelocationInstruction(const QString& materialName,
-                                   const QString& targetLocation,
-                                   const QString& sourceLocation,
                                    int plannedQuantity,
                                    bool isSatisfied,
                                    const QString& barcode,
                                    AuditSourceType sourceType,
                                    const QUuid& materialId)
         : materialName(materialName),
-        sourceLocation(sourceLocation),
-        targetLocation(targetLocation),
         plannedQuantity(plannedQuantity),
         isSatisfied(isSatisfied),
         barcode(barcode),
@@ -39,13 +58,15 @@ struct RelocationInstruction {
         materialId(materialId)
     {}
 
-    //QUuid rowId = QUuid::createUuid(); // Egyedi azonosító (CRUD műveletekhez is kell)
     QString materialName;      ///< Anyag kódja vagy megnevezése
-    QString sourceLocation;    ///< Forrás tároló neve
-    QString targetLocation;    ///< Cél tároló neve
-    int plannedQuantity;              ///< Mozgatandó mennyiség
+    int plannedQuantity;       ///< Terv szerinti mozgatandó mennyiség
+    std::optional<int> executedQuantity; ///< Végrehajtott mennyiség (Finalize után rögzül)
+
+    QVector<RelocationSourceEntry> sources; ///< Forrás tárhelyek listája
+    QVector<RelocationTargetEntry> targets; ///< Cél tárhelyek listája
+
     bool isSatisfied = false;  ///< Ha true → ✔ Megvan, nincs tényleges mozgatás
     QString barcode;           ///< Egyedi azonosító (különösen hullóknál fontos)
     AuditSourceType sourceType;///< Forrás típusa (Stock / Hulló)
-    QUuid materialId;    ///< Anyag azonosító (UUID)
+    QUuid materialId;          ///< Anyag azonosító (UUID)
 };
