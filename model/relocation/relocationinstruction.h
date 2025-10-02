@@ -44,6 +44,7 @@ struct RelocationTargetEntry {
  */
 struct RelocationInstruction {
 
+    // Normál sor ctor
     explicit RelocationInstruction(const QString& materialName,
                                    int plannedQuantity,
                                    bool isSatisfied,
@@ -58,15 +59,55 @@ struct RelocationInstruction {
         materialId(materialId)
     {}
 
-    QString materialName;      ///< Anyag kódja vagy megnevezése
-    int plannedQuantity;       ///< Terv szerinti mozgatandó mennyiség
-    std::optional<int> executedQuantity; ///< Végrehajtott mennyiség (Finalize után rögzül)
+    // Összesítő sor ctor
+    RelocationInstruction(const QString& materialName,
+                          int requiredQty,
+                          int totalRemaining,
+                          int auditedRemaining,
+                          int movedQty,
+                          int uncoveredQty,
+                          int coveredQty,          // 🔹 tényleges lefedettség
+                          int usedFromRemaining,   // 🔹 ténylegesen felhasznált maradék
+                          const QString& statusText,
+                          const QString& barcode,
+                          AuditSourceType sourceType,
+                          const QUuid& materialId)
+        : materialName(materialName),
+        plannedQuantity(requiredQty),
+        executedQuantity(movedQty),
+        isSatisfied(uncoveredQty == 0),
+        barcode(barcode),
+        sourceType(sourceType),
+        materialId(materialId),
+        isSummary(true),
+        summaryText(statusText),
+        totalRemaining(totalRemaining),
+        auditedRemaining(auditedRemaining),
+        movedQty(movedQty),
+        uncoveredQty(uncoveredQty),
+        coveredQty(coveredQty),
+        usedFromRemaining(usedFromRemaining)   // 🔹 kitöltjük
+    {}
 
-    QVector<RelocationSourceEntry> sources; ///< Forrás tárhelyek listája
-    QVector<RelocationTargetEntry> targets; ///< Cél tárhelyek listája
+    QString materialName;
+    int plannedQuantity;
+    std::optional<int> executedQuantity;
 
-    bool isSatisfied = false;  ///< Ha true → ✔ Megvan, nincs tényleges mozgatás
-    QString barcode;           ///< Egyedi azonosító (különösen hullóknál fontos)
-    AuditSourceType sourceType;///< Forrás típusa (Stock / Hulló)
-    QUuid materialId;          ///< Anyag azonosító (UUID)
+    QVector<RelocationSourceEntry> sources;
+    QVector<RelocationTargetEntry> targets;
+
+    bool isSatisfied = false;
+    QString barcode;
+    AuditSourceType sourceType;
+    QUuid materialId;
+
+    // Összesítő sor mezők
+    bool isSummary = false;
+    QString summaryText;
+    int totalRemaining = 0;       ///< Teljes készlet (auditált + nem auditált)
+    int auditedRemaining = 0;     ///< Auditált készlet
+    int movedQty = 0;             ///< Odavitt mennyiség
+    int uncoveredQty = 0;         ///< Lefedetlen igény
+    int coveredQty = 0;           ///< Igényből ténylegesen lefedett mennyiség
+    int usedFromRemaining = 0;    ///< 🔹 Lefedéshez ténylegesen felhasznált maradék
 };

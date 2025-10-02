@@ -443,52 +443,74 @@ QString MainWindow::format(const QList<RelocationInstruction>& items) {
     QString out;
     out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
                .arg("Anyag",    -24)
-               .arg("Mennyiség",-10)
-               .arg("Forrás",   -30)   // kicsit szélesebb, mert lista lehet
+               .arg("Mennyiség",-12)
+               .arg("Forrás",   -30)
                .arg("Cél",      -30)
                .arg("Vonalkód", -20)
-               .arg("Típus",    -10);
+               .arg("Típus",    -12);
     out += QString("-").repeated(140) + "\n";
 
     for (const auto& it : items) {
-        // Forrás lista → "hely1 (moved/available), hely2 (moved/available)"
-        QStringList sourceParts;
-        for (const auto& src : it.sources) {
-            sourceParts << QString("%1 (%2/%3)")
-            .arg(src.locationName)
-                .arg(src.moved)
-                .arg(src.available);
+        if (it.isSummary) {
+            // 🔹 Összesítő sor formázása
+            // Most már a coveredQty-t használjuk, nem a totalRemaining+movedQty-t
+            QString qtyText = QString("%1/%2 (%3 maradék + %4 odavitt)")
+                                  .arg(it.coveredQty)
+                                  .arg(it.plannedQuantity)
+                                  .arg(it.usedFromRemaining)   // maradék
+                                  .arg(it.movedQty);        // odavitt
+
+
+            QString statusText = it.summaryText.isEmpty()
+                                     ? QString("Összesítő sor")
+                                     : it.summaryText;
+
+            out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
+                       .arg(it.materialName, -24)
+                       .arg(qtyText,        -12)
+                       .arg("—",            -30)   // Forrás nem releváns
+                       .arg("—",            -30)   // Cél nem releváns
+                       .arg("—",            -20)   // Vonalkód nem releváns
+                       .arg(QString("Σ %1").arg(statusText), -12);
+        } else {
+            // 🔹 Normál relocation sor
+            QStringList sourceParts;
+            for (const auto& src : it.sources) {
+                sourceParts << QString("%1 (%2/%3)")
+                .arg(src.locationName)
+                    .arg(src.moved)
+                    .arg(src.available);
+            }
+            QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
+
+            QStringList targetParts;
+            for (const auto& tgt : it.targets) {
+                targetParts << QString("%1 (%2)")
+                .arg(tgt.locationName)
+                    .arg(tgt.placed);
+            }
+            QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
+
+            QString qtyText = it.isSatisfied
+                                  ? QStringLiteral("✔ Megvan")
+                                  : QString::number(it.plannedQuantity);
+
+            QString typeText = (it.sourceType == AuditSourceType::Stock)
+                                   ? "Stock"
+                                   : "Hulló";
+
+            out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
+                       .arg(it.materialName, -24)
+                       .arg(qtyText,        -12)
+                       .arg(sourceText,     -30)
+                       .arg(targetText,     -30)
+                       .arg(it.barcode,     -20)
+                       .arg(typeText,       -12);
         }
-        QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
-
-        // Cél lista → "hely1 (placed), hely2 (placed)"
-        QStringList targetParts;
-        for (const auto& tgt : it.targets) {
-            targetParts << QString("%1 (%2)")
-            .arg(tgt.locationName)
-                .arg(tgt.placed);
-        }
-        QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
-
-        // Mennyiség oszlop → ha satisfied, akkor ✔ Megvan, különben plannedQuantity
-        QString qtyText  = it.isSatisfied ? "✔ Megvan"
-                                         : QString::number(it.plannedQuantity);
-
-        // Típus oszlop
-        QString typeText = (it.sourceType == AuditSourceType::Stock) ? "Stock" : "Hulló";
-
-        out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
-                   .arg(it.materialName, -24)
-                   .arg(qtyText,        -10)
-                   .arg(sourceText,     -30)
-                   .arg(targetText,     -30)
-                   .arg(it.barcode,     -20)
-                   .arg(typeText,       -10);
     }
 
     return out;
 }
-
 
 
 

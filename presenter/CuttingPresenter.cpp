@@ -826,22 +826,25 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
     QVector<RelocationInstruction> plan;
 
     // 1️⃣ Auditálatlan sorok figyelmeztetése
-    bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(), [](const StorageAuditRow& row) {
-        return row.wasModified && !row.isAuditConfirmed;
-    });
+    // Csak akkor jelezünk, ha volt módosítás (wasModified), de nincs megerősítve (isAuditConfirmed).
+    const bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(),
+                                          [](const StorageAuditRow& row) {
+                                              return row.wasModified && !row.isAuditConfirmed;
+                                          });
     if (hasUnaudited) {
         zWarning("⚠️ Auditálatlan sorok találhatók – a relocation terv nem teljesen megbízható!");
     }
 
-    // 2️⃣ Auditált mennyiségek összesítése anyagonként
+    // 2️⃣ Auditált STOCK mennyiségek összesítése anyagonként
+    // FONTOS: csak Stock típusú és megerősített (isAuditConfirmed) sorok számítanak a rendelkezésre állásba.
     QMap<QUuid, int> availableByMaterial;
     for (const auto& row : auditRows) {
         if (!row.isAuditConfirmed) continue;
-        if (row.sourceType != AuditSourceType::Stock) continue;
+        if (row.sourceType != AuditSourceType::Stock) continue; // 🔒 kizárjuk a hullót
         availableByMaterial[row.materialId] += row.actualQuantity;
     }
 
-    // 3️⃣ CutPlan-ek szétválogatása forrás szerint
+    // 3️⃣ CutPlan-ek szétválogatása: Stock igények és Hullók (Reusable)
     QMap<QUuid, int> requiredStockByMaterial;
     QMap<QUuid, QString> materialCodeById;
     QMap<QUuid, QString> materialNameById;
@@ -859,133 +862,168 @@ QVector<RelocationInstruction> CuttingPresenter::generateRelocationPlan(
 
     // 4️⃣ Stock anyagok relocation terve
     for (auto it = requiredStockByMaterial.begin(); it != requiredStockByMaterial.end(); ++it) {
-        QUuid materialId = it.key();
-        int requiredQty = it.value();
-        QString materialCode = materialCodeById.value(materialId);
-        QString materialName = materialNameById.value(materialId);
+        const QUuid materialId = it.key();
+        const int requiredQty = it.value();
+        const QString materialCode = materialCodeById.value(materialId);
+        const QString materialName = materialNameById.value(materialId);
 
-        int availableQty = availableByMaterial.value(materialId, 0);
+        const int availableQty = availableByMaterial.value(materialId, 0);
         int missingQty = requiredQty - availableQty;
 
-        // Root + children célhelyek előkészítése
+        // Célhelyek feloldása a root tárolóból (gépszintű csoport)
         QUuid rootId;
         auto rowIt = std::find_if(auditRows.begin(), auditRows.end(),
                                   [&](const StorageAuditRow& r){ return r.materialId == materialId; });
         if (rowIt != auditRows.end())
             rootId = rowIt->rootStorageId;
 
-        QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
-        QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
+        const QStringList targets = StorageRegistry::instance().resolveTargetStoragesRecursive(rootId);
+        const QString targetText = targets.isEmpty() ? "—" : targets.join(", ");
 
-        // ✔ Ha nincs hiány → satisfied sor
+        // ✔ Ha nincs hiány → satisfied sor (információ: lefedett igény)
         if (missingQty <= 0) {
             RelocationInstruction instr(materialName,
-                                        requiredQty,   // teljes mennyiség
-                                        true,          // satisfied
+                                        requiredQty,
+                                        true,                 // isSatisfied
                                         materialCode,
                                         AuditSourceType::Stock,
                                         materialId);
-            instr.executedQuantity = requiredQty;
-
-            zInfo(L("RelocationPlan(1) satisfied: %1 | barcode=%2 | required=%3 | executed=%4")
-                      .arg(instr.materialName)
-                      .arg(instr.barcode)
-                      .arg(requiredQty)
-                      .arg(instr.executedQuantity.value_or(-1)));
-
+            instr.executedQuantity = requiredQty;              // teljes lefedettség
             plan.push_back(instr);
+            // Összesítő sor ettől függetlenül még jöhet, ha szeretnénk a teljes képet,
+            // de itt elég a satisfied információs sor. Ha nem kell summary ilyenkor, return-öljünk continue-val.
             continue;
         }
 
-        // ➡️ Ha van hiány → relocation sorok a tényleges mozgatásokkal
+        // ➡️ Ha van hiány → próbáljunk mozgatni auditált STOCK forrásokból
+        int movedQty = 0;
+        //int usedFromRemaining = 0;   // 🔹 új számláló
         for (const auto& sourceRow : auditRows) {
             if (!sourceRow.isAuditConfirmed) continue;
+            if (sourceRow.sourceType != AuditSourceType::Stock) continue;
             if (sourceRow.materialId != materialId) continue;
             if (sourceRow.actualQuantity <= 0) continue;
 
-            int moveQty = qMin(missingQty, sourceRow.actualQuantity);
+            const int moveQty = qMin(missingQty, sourceRow.actualQuantity);
 
-            // 🔹 Helper hívás – plannedQuantity = moveQty
             RelocationInstruction instr = makeRelocationInstruction(
                 materialName,
                 materialId,
                 sourceRow.barcode,
-                moveQty,   // ✅ csak a hiányzó mennyiség
+                moveQty,
                 AuditSourceType::Stock,
                 sourceRow,
                 rootId,
                 targetText,
-                moveQty);
-
-            zInfo(L("RelocationPlan(2) relocation: %1 | barcode=%2 | planned=%3 | executed=%4 | src=%5 | tgt=%6")
-                      .arg(instr.materialName)
-                      .arg(instr.barcode)
-                      .arg(instr.plannedQuantity)
-                      .arg(instr.executedQuantity.value_or(-1))
-                      .arg(instr.sources.size())
-                      .arg(instr.targets.size()));
-
+                moveQty
+                );
             plan.push_back(instr);
 
+            movedQty   += moveQty;
+            //usedFromRemaining += moveQty;   // 🔹 ténylegesen felhasznált maradék
             missingQty -= moveQty;
-            if (missingQty <= 0)
-                break;
+            if (missingQty <= 0) break;
         }
 
-        // ❌ Ha maradt hiány → jelző sor
-        if (missingQty > 0) {
-            RelocationInstruction instr(materialName,
-                                        requiredQty,   // teljes mennyiség
-                                        false,         // nincs teljesítve
-                                        materialCode,
-                                        AuditSourceType::Stock,
-                                        materialId);
-            instr.executedQuantity = requiredQty - missingQty;
-
-            zInfo(L("RelocationPlan(3) missing: %1 | barcode=%2 | required=%3 | executed=%4 | hiány=%5")
-                      .arg(instr.materialName)
-                      .arg(instr.barcode)
-                      .arg(requiredQty)
-                      .arg(instr.executedQuantity.value_or(-1))
-                      .arg(missingQty));
-
-            plan.push_back(instr);
+        // 5️⃣ Összesítő sor generálása (lefedettség, auditáltság)
+        // totalRemaining: teljes készlet (auditált + nem auditált), anyag szinten
+        // auditedRemaining: auditált készlet ugyanebből
+        int totalRemaining = 0;
+        int auditedRemaining = 0;
+        for (const auto& row : auditRows) {
+            if (row.materialId != materialId) continue;
+            totalRemaining += row.actualQuantity;
+            if (row.isAuditConfirmed) {
+                auditedRemaining += row.actualQuantity;
+            }
         }
+
+        // ✅ Lefedettség számítása: az igényből mennyi van meg (maradt + odavitt), felső korlát: igény
+        // 🔹 Ténylegesen jelen lévő mennyiség a célhelyen (auditáltságtól függetlenül)
+        int presentAtTarget = 0;
+        // 🔹 Auditált mennyiség a célhelyen (csak színezéshez/tooltiphez)
+        int auditedAtTarget = 0;
+
+        for (const auto& row : auditRows) {
+            if (row.sourceType != AuditSourceType::Stock) continue;
+            if (row.materialId != materialId) continue;
+            if (row.rootStorageId != rootId) continue;
+
+            presentAtTarget += row.actualQuantity;
+            if (row.isAuditConfirmed) {
+                auditedAtTarget += row.actualQuantity;
+            }
+        }
+
+        // A lefedéshez felhasznált maradék a célhelyen ténylegesen jelen lévő készlet
+        int usedFromRemaining = std::min(requiredQty, presentAtTarget);
+
+
+        const int coveredQty = std::min(requiredQty, totalRemaining + movedQty);
+        int uncoveredQty = requiredQty - coveredQty; // maradék igény, ha nem teljes
+        if (uncoveredQty < 0) uncoveredQty = 0;      // védjük a negatív ellen
+
+        // Színezéshez maradhat a korábbi auditedRemaining vs totalRemaining,
+        // de finomabb lesz, ha a célhely audit arányát is figyelembe veszed:
+        const bool partiallyAuditedAtTarget = auditedAtTarget < presentAtTarget;
+
+        // Státusz szöveg a summary sorhoz
+        QString status;
+        if (uncoveredQty == 0) {
+            status = partiallyAuditedAtTarget
+                         ? "🟡 Részlegesen auditált, ✔ Igény teljesítve"
+                         : "🟢 Teljesen auditált, ✔ Igény teljesítve";
+        } else {
+            status = QString("🔴 Nem teljesített, Lefedetlen: %1").arg(uncoveredQty);
+        }
+
+        RelocationInstruction summary(materialName,
+                                      requiredQty,
+                                      totalRemaining,
+                                      auditedRemaining,
+                                      movedQty,
+                                      uncoveredQty,
+                                      coveredQty,
+                                      usedFromRemaining,
+                                      status,
+                                      materialCode,
+                                      AuditSourceType::Stock,
+                                      materialId);
+
+
+        plan.push_back(summary);
     }
 
-    // 5️⃣ Hullók (Reusable) – csak megjelenítés
+    // 6️⃣ Hullók (Reusable) – csak megjelenítés, NEM kerülnek a Stock ágba
     for (const auto* planItem : reusablePlans) {
-        QUuid materialId = planItem->materialId;
-        QString materialName = planItem->materialName();
-        QString rodBarcode = planItem->rodId;
+        const QUuid materialId = planItem->materialId;
+        const QString materialName = planItem->materialName();
+        const QString rodBarcode = planItem->rodId;
 
+        // Csak auditált leftover sorokat jelenítünk meg, pontos vonalkód egyezéssel
         auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
             return row.isAuditConfirmed &&
+                   row.sourceType == AuditSourceType::Leftover && // 🔒 biztosan hulló
                    row.materialId == materialId &&
                    row.barcode == rodBarcode;
         });
 
         if (it != auditRows.end()) {
             RelocationInstruction instr(materialName,
-                                        0,     // nincs plannedQuantity
-                                        true,  // satisfied
+                                        0,                          // nincs igény darabszám (egyedi rúd)
+                                        true,                       // jelen van → Megvan
                                         rodBarcode,
                                         AuditSourceType::Leftover,
                                         materialId);
-            instr.executedQuantity = 0;
-
-            zInfo(L("RelocationPlan(4) leftover: %1 | barcode=%2 | sources=%3 | targets=%4")
-                      .arg(instr.materialName)
-                      .arg(instr.barcode)
-                      .arg(instr.sources.size())
-                      .arg(instr.targets.size()));
-
+            instr.executedQuantity = 0;                             // nincs mozgatás
             plan.push_back(instr);
         }
     }
 
     return plan;
 }
+
+
 
 RelocationInstruction CuttingPresenter::makeRelocationInstruction(
     const QString& materialName,
@@ -1124,9 +1162,23 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
 void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool checked)
 {
     for (StorageAuditRow &row : lastAuditRows) {
-        if (row.rowId == rowId){
+        if (row.rowId == rowId) {
             row.isAuditConfirmed = checked;
 
+            if (checked) {
+                // Ha van tényleges mennyiség → jelen van, különben hiányzik
+                row.presence = (row.actualQuantity > 0)
+                                   ? AuditPresence::Present
+                                   : AuditPresence::Missing;
+            } else {
+                // Pipa levétele → visszaáll "ellenőrzésre vár"
+                row.presence = AuditPresence::Unknown;
+            }
+
+            // 🔄 Szinkronizáljuk a módosítás flaget is
+            row.wasModified = (row.actualQuantity != row.originalQuantity);
+
+            // 🔄 UI frissítés
             if (view) {
                 view->updateRow_StorageAuditTable(row);
             }
@@ -1135,6 +1187,7 @@ void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool chec
         }
     }
 }
+
 
 void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPresence presence) {
     for (StorageAuditRow& row : lastAuditRows) {

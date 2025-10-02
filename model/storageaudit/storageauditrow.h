@@ -72,6 +72,14 @@ struct StorageAuditRow {
 
     // Szöveges státusz (UI-hoz)
     QString status() const {
+        // 🔹 Ha a felhasználó auditáltnak jelölte (pipa)
+        if (isAuditConfirmed) {
+            if (actualQuantity > 0)
+                return "Auditált, OK";
+            else
+                return "Auditált, nincs készlet";
+        }
+
         // Hulló audit esetén külön logika
         if (sourceType == AuditSourceType::Leftover) {
             if (isInOptimization) {
@@ -138,6 +146,14 @@ struct StorageAuditRow {
     // }
 
     AuditStatus statusType() const {
+        if (isAuditConfirmed) {
+            if (actualQuantity > 0)
+                return AuditStatus::Ok;
+            else
+                return AuditStatus::Missing;
+        }
+
+
         // 🔹 Leftover audit külön logika
         if (sourceType == AuditSourceType::Leftover && isInOptimization) {
             switch (presence) {
