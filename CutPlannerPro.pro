@@ -131,6 +131,8 @@ HEADERS += \
     model/picking/pickingitem.h \
     model/registries/cuttingmachineregistry.h \
     model/relocation/relocationinstruction.h \
+    model/relocation/relocationquantitymodel.h \
+    model/relocation/relocationquantityrow.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/auditcontext.h \
     model/storageaudit/auditcontext_text.h \

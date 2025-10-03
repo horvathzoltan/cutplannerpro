@@ -1,21 +1,5 @@
 #pragma once
 
-#include "model/storageaudit/storageauditrow.h"
-#include <QString>
-
-struct RelocationSourceEntry {
-    QUuid locationId;       ///< Forrás tárhely azonosító
-    QString locationName;   ///< Forrás tárhely neve
-    int available = 0;      ///< Elérhető mennyiség a stockban
-    int moved = 0;          ///< Innen ténylegesen elmozgatott mennyiség
-};
-
-struct RelocationTargetEntry {
-    QUuid locationId;       ///< Cél tárhely azonosító
-    QString locationName;   ///< Cél tárhely neve
-    int placed = 0;         ///< Ide ténylegesen lerakott mennyiség
-};
-
 #pragma once
 
 #include "model/storageaudit/storageauditrow.h"
@@ -25,23 +9,78 @@ struct RelocationTargetEntry {
 #include <QVector>
 
 /**
+ * @brief Egy relokációs művelet forrás tárhelyét reprezentáló adatstruktúra.
+ *
+ * A RelocationSourceEntry tartalmazza, hogy egy adott tárhelyen mennyi készlet áll rendelkezésre,
+ * és abból mennyit mozgattunk el a relokáció során.
+ *
+ * Mezők:
+ * - locationId: a forrás tárhely egyedi azonosítója (UUID)
+ * - locationName: a tárhely megnevezése (pl. "Polc 14")
+ * - available: a tárhelyen elérhető készlet mennyisége
+ * - moved: a felhasználó által megadott, ténylegesen elmozgatott mennyiség
+ */
+struct RelocationSourceEntry {
+    QUuid locationId;       ///< Forrás tárhely azonosító
+    QString locationName;   ///< Forrás tárhely neve
+    int available = 0;      ///< Elérhető mennyiség a stockban
+    int moved = 0;          ///< Innen ténylegesen elmozgatott mennyiség
+};
+
+/**
+ * @brief Egy relokációs művelet cél tárhelyét reprezentáló adatstruktúra.
+ *
+ * A RelocationTargetEntry tartalmazza, hogy egy adott cél tárhelyre mennyi anyagot helyeztünk el
+ * a relokáció során. Akkor is szerepelhet, ha jelenleg nincs rajta készlet.
+ *
+ * Mezők:
+ * - locationId: a cél tárhely egyedi azonosítója (UUID)
+ * - locationName: a tárhely megnevezése (pl. "Vasanyag vágó")
+ * - placed: a felhasználó által megadott, ténylegesen lerakott mennyiség
+ */
+struct RelocationTargetEntry {
+    QUuid locationId;       ///< Cél tárhely azonosító
+    QString locationName;   ///< Cél tárhely neve
+    int placed = 0;         ///< Ide ténylegesen lerakott mennyiség
+};
+
+
+/**
  * @brief Egy relokációs terv egyetlen sorát reprezentáló adatstruktúra.
  *
  * A RelocationInstruction tartalmaz minden információt, ami szükséges ahhoz,
- * hogy egy anyag mozgatását vagy meglétének megerősítését a felhasználó
- * számára egyértelműen megjelenítsük a táblában.
+ * hogy egy anyag mozgatását, meglétét vagy lefedettségét a felhasználó
+ * számára egyértelműen megjelenítsük a relokációs táblában.
  *
  * Mezők:
  * - materialName: az anyag kódja vagy megnevezése
- * - plannedQuantity: a terv szerinti mozgatandó mennyiség
+ * - plannedQuantity: a terv szerinti mozgatandó mennyiség (igény)
  * - executedQuantity: a ténylegesen végrehajtott mennyiség (Finalize után rögzül)
- * - sources: forrás tárhelyek és mennyiségek listája
- * - targets: cél tárhelyek és mennyiségek listája
+ * - isFinalized: jelzi, hogy a sor véglegesítve lett-e (többször nem módosítható)
+ * - sources: forrás tárhelyek és az onnan elmozgatott mennyiségek listája
+ * - targets: cél tárhelyek és az oda lerakott mennyiségek listája
  * - isSatisfied: jelzi, hogy a terv teljesült-e (✔ Megvan státusz)
  * - barcode: azonosító, különösen hullóknál fontos (egyedi rúd)
  * - sourceType: a forrás típusa (Stock vagy Hulló)
  * - materialId: az anyag egyedi azonosítója (UUID)
+ *
+ * Összesítő sor esetén:
+ * - isSummary: jelzi, hogy a sor összesítő típusú (nem konkrét anyagmozgatás)
+ * - summaryText: státusz szöveg (tooltiphez)
+ * - totalRemaining: teljes készlet (auditált + nem auditált)
+ * - auditedRemaining: auditált készlet
+ * - movedQty: odavitt mennyiség (új mozgatás)
+ * - uncoveredQty: lefedetlen igény (hiány)
+ * - coveredQty: ténylegesen lefedett mennyiség
+ * - usedFromRemaining: lefedéshez ténylegesen felhasznált maradék
+ *
+ * Segédfüggvények:
+ * - isReadyToFinalize(): visszaadja, hogy a sor véglegesíthető-e
+ * - isAlreadyFinalized(): visszaadja, hogy a sor már véglegesítve lett-e
+ * - isFullyCovered(): visszaadja, hogy a dialógusban megadott mennyiségek teljesen lefedik-e az igényt
+ * - hasPartialExecution(): visszaadja, hogy történt-e részleges mozgatás (munkaközi állapot)
  */
+
 struct RelocationInstruction {
 
     // Normál sor ctor
@@ -66,8 +105,8 @@ struct RelocationInstruction {
                           int auditedRemaining,
                           int movedQty,
                           int uncoveredQty,
-                          int coveredQty,          // 🔹 tényleges lefedettség
-                          int usedFromRemaining,   // 🔹 ténylegesen felhasznált maradék
+                          int coveredQty,
+                          int usedFromRemaining,
                           const QString& statusText,
                           const QString& barcode,
                           AuditSourceType sourceType,
@@ -86,20 +125,21 @@ struct RelocationInstruction {
         movedQty(movedQty),
         uncoveredQty(uncoveredQty),
         coveredQty(coveredQty),
-        usedFromRemaining(usedFromRemaining)   // 🔹 kitöltjük
+        usedFromRemaining(usedFromRemaining)
     {}
 
-    QString materialName;
-    int plannedQuantity;
-    std::optional<int> executedQuantity;
+    QString materialName;                     ///< Anyag neve
+    int plannedQuantity = 0;                  ///< Igény szerinti mennyiség
+    std::optional<int> executedQuantity;      ///< Ténylegesen végrehajtott mennyiség (Finalize után)
+    bool isFinalized = false;                 ///< Jelzi, hogy a sor véglegesítve lett-e
 
-    QVector<RelocationSourceEntry> sources;
-    QVector<RelocationTargetEntry> targets;
+    QVector<RelocationSourceEntry> sources;   ///< Forrás tárhelyek
+    QVector<RelocationTargetEntry> targets;   ///< Cél tárhelyek
 
-    bool isSatisfied = false;
-    QString barcode;
-    AuditSourceType sourceType;
-    QUuid materialId;
+    bool isSatisfied = false;                 ///< ✔ Megvan státusz
+    QString barcode;                          ///< Vonalkód (különösen hullóknál)
+    AuditSourceType sourceType;               ///< Forrás típusa
+    QUuid materialId;                         ///< Anyag UUID
 
     // Összesítő sor mezők
     bool isSummary = false;
@@ -110,4 +150,43 @@ struct RelocationInstruction {
     int uncoveredQty = 0;         ///< Lefedetlen igény
     int coveredQty = 0;           ///< Igényből ténylegesen lefedett mennyiség
     int usedFromRemaining = 0;    ///< 🔹 Lefedéshez ténylegesen felhasznált maradék
+
+    // 🔹 Megadja, hogy a sor véglegesíthető-e (azaz a dialógusban minden mennyiség meg van adva)
+    bool isReadyToFinalize() const {
+        // Csak akkor finalizálható, ha van executedQuantity, és az pontosan megegyezik a plannedQuantity-vel
+        return executedQuantity.has_value() && executedQuantity.value() == plannedQuantity;
+    }
+
+    // 🔹 Megadja, hogy a sor már véglegesítve lett-e
+    bool isAlreadyFinalized() const {
+        return isFinalized;
+    }
+
+    // 🔹 Megadja, hogy a dialógusban megadott mennyiségek teljesen lefedik-e az igényt
+    bool isFullyCovered() const {
+        // Akkor tekintjük teljesen lefedettnek, ha a sources + targets összege pontosan megegyezik a plannedQuantity-vel
+        int totalMoved = 0;
+        for (const auto& src : sources)
+            totalMoved += src.moved;
+
+        int totalPlaced = 0;
+        for (const auto& tgt : targets)
+            totalPlaced += tgt.placed;
+
+        return totalMoved == plannedQuantity && totalPlaced == plannedQuantity;
+    }
+
+    // 🔹 Megadja, hogy a dialógusban van-e bármilyen adat (azaz elkezdett munka)
+    bool hasPartialExecution() const {
+        int totalMoved = 0;
+        for (const auto& src : sources)
+            totalMoved += src.moved;
+
+        int totalPlaced = 0;
+        for (const auto& tgt : targets)
+            totalPlaced += tgt.placed;
+
+        return totalMoved > 0 || totalPlaced > 0;
+    }
+
 };
