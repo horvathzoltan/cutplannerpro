@@ -30,6 +30,10 @@ public:
     // 👉 teljes tábla törlése
     void clearTable();
 
+public slots:
+    void editRow(const QUuid& rowId, const QString& mode);
+    //void onCellClicked(int row, int column);
+
 signals:
     // 👉 ha interaktívvá tesszük (pl. checkbox a teljesítéshez), ezen jelezhetünk vissza
     void relocationRowChecked(const QUuid& rowId, bool done);

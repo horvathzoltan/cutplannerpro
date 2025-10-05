@@ -3,6 +3,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
+
 CONFIG += c++20
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -47,7 +49,7 @@ SOURCES += \
     model/registries/materialregistry.cpp \
     model/registries/stockregistry.cpp \
     model/registries/storageregistry.cpp \
-    model/relocation/relocationinstruction.cpp \
+    model/relocation/relocationsourceentry.h \
     model/repositories/cuttingmachinerepository.cpp \
     model/repositories/cuttingrequestrepository.cpp \
     model/repositories/leftoverstockrepository.cpp \
@@ -71,9 +73,10 @@ SOURCES += \
     service/storageaudit/storageauditservice.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
-    view/dialog/addinputdialog.cpp \
-    view/dialog/addwastedialog.cpp \
+    view/dialog/input/addinputdialog.cpp \
+    view/dialog/waste/addwastedialog.cpp \
     view/dialog/movement/movementdialog.cpp \
+    view/dialog/relocation/relocationquantitydialog.cpp \
     view/dialog/stock/addstockdialog.cpp \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
@@ -102,6 +105,7 @@ HEADERS += \
     common/qteventutil.h \
     common/quantityparser.h \
     common/styleprofiles/auditcolors.h \
+    common/styleprofiles/relocationcolors.h \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/RowTracker.h \
     common/tableutils/auditcellformatter.h \
@@ -133,6 +137,7 @@ HEADERS += \
     model/relocation/relocationinstruction.h \
     model/relocation/relocationquantitymodel.h \
     model/relocation/relocationquantityrow.h \
+    model/relocation/relocationtargetentry.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/auditcontext.h \
     model/storageaudit/auditcontext_text.h \
@@ -189,16 +194,19 @@ HEADERS += \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
-    view/cellgenerators/auditrowviewmodelgenerator.h \
-    view/cellgenerators/relocationrowviewmodelgenerator.h \
+    view/viewmodels/audit/cellgenerator.h \
+    view/viewmodels/audit/rowgenerator.h \
+    view/viewmodels/relocation/cellgenerator.h \
+    view/viewmodels/relocation/rowgenerator.h \
     view/cellhelpers/auditcellcolors.h \
     view/cellhelpers/auditcelltooltips.h \
     view/cellhelpers/cellfactory.h \
     view/columnidexes/relocationplantable_columns.h \
     view/cutanalyticspanel.h \
-    view/dialog/addinputdialog.h \
-    view/dialog/addwastedialog.h \
+    view/dialog/input/addinputdialog.h \
+    view/dialog/waste/addwastedialog.h \
     view/dialog/movement/movementdialog.h \
+    view/dialog/relocation/relocationquantitydialog.h \
     view/dialog/stock/addstockdialog.h \
     view/dialog/stock/editcommentdialog.h \
     view/dialog/stock/editquantitydialog.h \
@@ -209,15 +217,17 @@ HEADERS += \
     view/managers/resultstable_manager.h \
     view/managers/stocktable_manager.h \
     view/managers/storageaudittable_manager.h \
+    view/tablehelpers/relocationquantityhelpers.h \
     view/tablehelpers/tablerowpopulator.h \
     view/viewmodels/tablecellviewmodel.h \
     view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
     view/MainWindow.ui \
-    view/dialog/addinputdialog.ui \
-    view/dialog/addwastedialog.ui \
+    view/dialog/input/addinputdialog.ui \
+    view/dialog/waste/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
+    view/dialog/relocation/relocationquantitydialog.ui \
     view/dialog/stock/addstockdialog.ui \
     view/dialog/stock/editcommentdialog.ui \
     view/dialog/stock/editquantitydialog.ui \

@@ -1,5 +1,5 @@
 #include "auditgroupsynchronizer.h"
-#include "view/cellgenerators/auditrowviewmodelgenerator.h"
+#include "view/viewmodels/audit/rowgenerator.h"
 #include "view/managers/storageaudittable_manager.h" // 🔹 ez kell a metódushíváshoz
 #include "view/tablehelpers/tablerowpopulator.h"
 
@@ -45,7 +45,7 @@ void AuditGroupSynchronizer::syncRow(const StorageAuditRow& row) {
         return;
 
     // 🔄 ViewModel újragenerálása
-    TableRowViewModel vm = AuditRowViewModelGenerator::generate(row, mat, groupLabel, _manager);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, _manager);
 
     // 🧩 Cellák újratöltése
     TableRowPopulator::populateRow(_table, rowIx, vm);

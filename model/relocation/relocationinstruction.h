@@ -1,49 +1,12 @@
 #pragma once
 
-#pragma once
-
+#include "model/relocation/relocationsourceentry.h"
+#include "model/relocation/relocationtargetentry.h"
 #include "model/storageaudit/storageauditrow.h"
 #include <QString>
 #include <QUuid>
 #include <optional>
 #include <QVector>
-
-/**
- * @brief Egy relokációs művelet forrás tárhelyét reprezentáló adatstruktúra.
- *
- * A RelocationSourceEntry tartalmazza, hogy egy adott tárhelyen mennyi készlet áll rendelkezésre,
- * és abból mennyit mozgattunk el a relokáció során.
- *
- * Mezők:
- * - locationId: a forrás tárhely egyedi azonosítója (UUID)
- * - locationName: a tárhely megnevezése (pl. "Polc 14")
- * - available: a tárhelyen elérhető készlet mennyisége
- * - moved: a felhasználó által megadott, ténylegesen elmozgatott mennyiség
- */
-struct RelocationSourceEntry {
-    QUuid locationId;       ///< Forrás tárhely azonosító
-    QString locationName;   ///< Forrás tárhely neve
-    int available = 0;      ///< Elérhető mennyiség a stockban
-    int moved = 0;          ///< Innen ténylegesen elmozgatott mennyiség
-};
-
-/**
- * @brief Egy relokációs művelet cél tárhelyét reprezentáló adatstruktúra.
- *
- * A RelocationTargetEntry tartalmazza, hogy egy adott cél tárhelyre mennyi anyagot helyeztünk el
- * a relokáció során. Akkor is szerepelhet, ha jelenleg nincs rajta készlet.
- *
- * Mezők:
- * - locationId: a cél tárhely egyedi azonosítója (UUID)
- * - locationName: a tárhely megnevezése (pl. "Vasanyag vágó")
- * - placed: a felhasználó által megadott, ténylegesen lerakott mennyiség
- */
-struct RelocationTargetEntry {
-    QUuid locationId;       ///< Cél tárhely azonosító
-    QString locationName;   ///< Cél tárhely neve
-    int placed = 0;         ///< Ide ténylegesen lerakott mennyiség
-};
-
 
 /**
  * @brief Egy relokációs terv egyetlen sorát reprezentáló adatstruktúra.
@@ -127,6 +90,8 @@ struct RelocationInstruction {
         coveredQty(coveredQty),
         usedFromRemaining(usedFromRemaining)
     {}
+
+    QUuid rowId = QUuid::createUuid(); ///< Egyedi sorazonosító – a táblában való hivatkozáshoz
 
     QString materialName;                     ///< Anyag neve
     int plannedQuantity = 0;                  ///< Igény szerinti mennyiség

@@ -1,7 +1,11 @@
 #include "relocationplantable_manager.h"
-#include "view/cellgenerators/relocationrowviewmodelgenerator.h"
+#include "view/viewmodels/relocation/rowgenerator.h"
 //#include "view/columnindexes/relocationplantable_columns.h"
 #include "common/logger.h"
+
+#include "view/dialog/relocation/relocationquantitydialog.h"
+#include "view/tablehelpers/relocationquantityhelpers.h"
+
 #include "view/tablehelpers/tablerowpopulator.h"
 
 #include <QTableWidgetItem>
@@ -24,6 +28,10 @@ RelocationPlanTableManager::RelocationPlanTableManager(QTableWidget* table, QWid
         QStringList headers = {"Anyag", "Vonalkód", "Mennyiség", "Forrás", "Cél", "Típus"};
         _table->setHorizontalHeaderLabels(headers);
         _table->horizontalHeader()->setStretchLastSection(true);
+
+        // connect(_table, &QTableWidget::cellClicked,
+        //         this, &RelocationPlanTableManager::onCellClicked);
+
     }
 }
 
@@ -55,7 +63,7 @@ void RelocationPlanTableManager::addRow(const RelocationInstruction& instr) {
         return;
 
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = RelocationRowViewModelGenerator::generate(instr, mat);
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // rowId mentése
@@ -101,7 +109,7 @@ void RelocationPlanTableManager::updateRow(const QUuid& rowId, const RelocationI
         return;
 
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = RelocationRowViewModelGenerator::generate(instr, mat);
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     if (_isVerbose) {
@@ -126,3 +134,67 @@ void RelocationPlanTableManager::clearTable() {
         zInfo(L("RelocationPlan table cleared"));
     }
 }
+
+void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode) {
+    auto it = _planRowMap.find(rowId);
+    if (it == _planRowMap.end())
+        return;
+
+    RelocationInstruction& instruction = it.value();
+
+    zInfo(L("editRow: sources=%1 targets=%2")
+        .arg(instruction.sources.size())
+        .arg(instruction.targets.size()));
+
+
+    // 🔹 Dialógus előkészítése
+    RelocationQuantityDialog dlg(_parent);
+
+    // Fejléc beállítása a mode alapján
+    if (mode == "source") {
+        dlg.setWindowTitle(tr("Forrás tárhelyek szerkesztése"));
+        auto rows = RelocationQuantityHelpers::generateSourceRows(instruction);
+        dlg.setRows(rows);
+        zInfo(L("generateSourceRows: %1 sor").arg(rows.size()));
+
+    } else if (mode == "target") {
+        dlg.setWindowTitle(tr("Cél tárhelyek szerkesztése"));
+        auto rows = RelocationQuantityHelpers::generateTargetRows(instruction);
+        dlg.setRows(rows);
+        zInfo(L("generateTargetRows: %1 sor").arg(rows.size()));
+    } else {
+        // fallback: teljes nézet
+        dlg.setWindowTitle(tr("Relokációs mennyiségek szerkesztése"));
+        auto rows = RelocationQuantityHelpers::generateQuantityRows(instruction);
+        dlg.setRows(rows);
+        zInfo(L("generateQuantityRows: %1 sor").arg(rows.size()));
+    }
+
+
+    if (dlg.exec() == QDialog::Accepted) {
+        QVector<RelocationQuantityRow> result = dlg.getRows();
+
+        if (mode == "source") {
+            RelocationQuantityHelpers::applySourceRows(instruction, result);
+        } else if (mode == "target") {
+            RelocationQuantityHelpers::applyTargetRows(instruction, result);
+        } else {
+            RelocationQuantityHelpers::applyQuantityRows(instruction, result);
+        }
+
+        updateRow(rowId, instruction); // frissítés a táblában
+    }
+}
+
+
+// void RelocationPlanTableManager::onCellClicked(int row, int column) {
+//     // Ha a "Mennyiség" oszlopra kattintottak → teljes dialógus
+//     if (column == RelocationPlanTableColumns::Quantity) {
+//         QTableWidgetItem* item = _table->item(row, 0);
+//         if (!item) return;
+
+//         QUuid rowId = item->data(Qt::UserRole).toUuid();
+//         editRow(rowId, "all"); // fallback mód
+//     }
+// }
+

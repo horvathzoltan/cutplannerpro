@@ -22,7 +22,7 @@
 #include "common/qteventutil.h"
 
 #include "dialog/stock/addstockdialog.h"
-#include "dialog/addinputdialog.h"
+#include "dialog/input/addinputdialog.h"
 
 #include "model/relocation/relocationinstruction.h"
 
@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableStock->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableLeftovers->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableStorageAudit->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableRelocationOrder->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     presenter = new CuttingPresenter(this, this);
 
@@ -86,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableStock->horizontalHeader()->restoreState(SettingsManager::instance().stockTableHeaderState());
     ui->tableLeftovers->horizontalHeader()->restoreState(SettingsManager::instance().leftoversTableHeaderState());
     ui->tableStorageAudit->horizontalHeader()->restoreState(SettingsManager::instance().storageAuditTableHeaderState());
+    ui->tableRelocationOrder->horizontalHeader()->restoreState(SettingsManager::instance().relocationOrderTableHeaderState());
 
     // splitter
     ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
@@ -167,14 +169,13 @@ void MainWindow::closeEvent(QCloseEvent* event)
     SettingsManager::instance().setResultsTableHeaderState(ui->tableResults->horizontalHeader()->saveState());
     SettingsManager::instance().setStockTableHeaderState(ui->tableStock->horizontalHeader()->saveState());
     SettingsManager::instance().setLeftoversTableHeaderState(ui->tableLeftovers->horizontalHeader()->saveState());
-
     SettingsManager::instance().setStorageAuditTableHeaderState(ui->tableStorageAudit->horizontalHeader()->saveState());
+    SettingsManager::instance().setRelocationOrderTableHeaderState(ui->tableRelocationOrder->horizontalHeader()->saveState());
 
     // ablakméret
     SettingsManager::instance().setWindowGeometry(saveGeometry());
     // splitter
     SettingsManager::instance().setMainSplitterState(ui->mainSplitter->saveState());
-
 
     SettingsManager::instance().save();
 

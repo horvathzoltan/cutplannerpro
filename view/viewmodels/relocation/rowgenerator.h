@@ -3,35 +3,29 @@
 #include "common/tableutils/colorlogicutils.h"
 #include "model/relocation/relocationinstruction.h"
 #include "view/columnindexes/relocationplantable_columns.h"
+#include "view/viewmodels/relocation/cellgenerator.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "view/cellhelpers/cellfactory.h"
 
 #include <QColor>
 #include <QObject>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QStyle>
 
-namespace RelocationRowViewModelGenerator {
+#include "common/styleprofiles/relocationcolors.h"
 
-// /// 🔹 Helper: egyszerű szöveges cella létrehozása
-// inline TableCellViewModel createTextCell(const QString& text,
-//                                          const QString& tooltip = {},
-//                                          const QColor& background = Qt::white,
-//                                          const QColor& foreground = Qt::black,
-//                                          bool isReadOnly = true) {
-//     TableCellViewModel cell;
-//     cell.text = text;
-//     cell.tooltip = tooltip;
-//     cell.background = background;
-//     cell.foreground = foreground;
-//     cell.isReadOnly = isReadOnly;
-//     return cell;
-// }
+namespace Relocation::ViewModel::RowGenerator {
 
 inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
-    TableRowViewModel vm;
+
+    TableRowViewModel vm;    
+    vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
     // 🎨 Összesítő sor szürke háttérrel
-    QColor bgColor = QColor("#B0B0B0"); // sötétebb, egérszürke
+    QColor bgColor = RelocationColors::SummaryBg; // sötétebb, egérszürke
     QColor fgColor = Qt::black;
 
     // Anyag
@@ -55,11 +49,11 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
 
     QColor qtyColor;
     if (instr.uncoveredQty > 0) {
-        qtyColor = QColor("#B22222"); // piros
+        qtyColor = RelocationColors::Uncovered;
     } else if (instr.auditedRemaining < instr.totalRemaining) {
-        qtyColor = QColor("#DAA520"); // sárga
+        qtyColor = RelocationColors::NotAudited;
     } else {
-        qtyColor = QColor("#228B22"); // zöld
+        qtyColor = RelocationColors::Covered;
     }
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
@@ -85,13 +79,19 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
 /// 🔹 Teljes TableRowViewModel generálása egy RelocationInstruction alapján
 inline TableRowViewModel generate(const RelocationInstruction& instr,
                                   const MaterialMaster* mat,
-                                  QObject* /*receiver*/ = nullptr) {
-
-    if (instr.isSummary) {
-        return generateSumRow(instr);
-    }
+                                  QObject* receiver = nullptr) {
 
     TableRowViewModel vm;
+
+    // Egységes rowId: ha az instruction nem ad id-t, generálunk egyet
+    vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
+
+    if (instr.isSummary) {
+        // ha van külön summary generatorod, abban is állítsd be vm.rowId-t
+        TableRowViewModel sum = generateSumRow(instr);
+        sum.rowId = vm.rowId;
+        return sum;
+    }
 
     // 🎨 Alapszínek a csoport alapján
     QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
@@ -133,9 +133,14 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
     }
     QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
     vm.cells[RelocationPlanTableColumns::Source] =
-        CellFactory::textCell(sourceText,
-                              QString("Forrás tárhelyek: %1").arg(sourceText),
-                              baseColor, fgColor);
+        // CellFactory::textCell(sourceText,
+        //                       QString("Forrás tárhelyek: %1").arg(sourceText),
+        //                       baseColor, fgColor);
+        CellGenerator::createEditableCell(vm.rowId,
+                                          sourceText,
+                                          QString("Forrás tárhelyek: %1").arg(sourceText),
+                                          receiver,
+                                          "source");
 
     QStringList targetParts;
     for (const auto& tgt : instr.targets) {
@@ -145,9 +150,14 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
     }
     QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
     vm.cells[RelocationPlanTableColumns::Target] =
-        CellFactory::textCell(targetText,
-                              QString("Cél tárhelyek: %1").arg(targetText),
-                              baseColor, fgColor);
+        // CellFactory::textCell(targetText,
+        //                       QString("Cél tárhelyek: %1").arg(targetText),
+        //                       baseColor, fgColor);
+        CellGenerator::createEditableCell(vm.rowId,
+                                          targetText,
+                                          QString("Cél tárhelyek: %1").arg(targetText),
+                                          receiver,
+                                          "target");
 
     QString typeText = (instr.sourceType == AuditSourceType::Stock)
                            ? QStringLiteral("📦 Stock")

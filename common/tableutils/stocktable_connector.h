@@ -12,7 +12,7 @@
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
 #include <model/registries/materialregistry.h>
-#include <view/dialog/addinputdialog.h>
+#include <view/dialog/input/addinputdialog.h>
 #include <presenter/CuttingPresenter.h>
 
 #include "service/movementlogger.h"   // a namespace-es inline log() miatt

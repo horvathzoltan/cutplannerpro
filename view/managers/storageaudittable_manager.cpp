@@ -13,9 +13,10 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QSpinBox>
-#include "view/cellgenerators/auditrowviewmodelgenerator.h"
+//#include "view/viewmodels/audit/rowgenerator.h"
 //#include "view/columnidexes/audittablecolumns.h"
 #include "view/tablehelpers/tablerowpopulator.h"
+#include "view/viewmodels/audit/rowgenerator.h"
 
 bool StorageAuditTableManager::_isVerbose = false;
 
@@ -52,7 +53,7 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
-    TableRowViewModel vm = AuditRowViewModelGenerator::generate(row, mat, groupLabel, this);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // 🧭 Sorregisztráció – segít a sorok azonosításában
@@ -103,7 +104,7 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
     QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
-    TableRowViewModel vm = AuditRowViewModelGenerator::generate(row, mat, groupLabel, this);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // 🔁 Csoport újraszinkronizálása

@@ -6,7 +6,7 @@
 #include <model/registries/stockregistry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <model/registries/leftoverstockregistry.h>
-#include <view/dialog/addinputdialog.h>
+#include <view/dialog/input/addinputdialog.h>
 #include <presenter/CuttingPresenter.h>
 
 namespace StorageAuditTableConnector {

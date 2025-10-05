@@ -36,7 +36,7 @@ void SettingsManager::persist(const QString& key, const QByteArray& value) {
 }
 
 /*fn*/
-
+//CuttingPlanFileName
 QString SettingsManager::cuttingPlanFileName() const{
     return _settings.value(SettingsKeys::CuttingPlanFileName).toString();
 }
@@ -49,6 +49,7 @@ void SettingsManager::setCuttingPlanFileName(const QString& fn) {
 
 /*táblák*/
 
+//TableInputHeader
 void SettingsManager::setInputTableHeaderState(const QByteArray& state) {
     _settings.setValue(SettingsKeys::TableInputHeader, state);
 }
@@ -57,6 +58,7 @@ QByteArray SettingsManager::inputTableHeaderState() const {
     return _settings.value(SettingsKeys::TableInputHeader).toByteArray();
 }
 
+//TableResultsHeader
 void SettingsManager::setResultsTableHeaderState(const QByteArray& state) {
     _settings.setValue(SettingsKeys::TableResultsHeader, state);
 }
@@ -65,6 +67,7 @@ QByteArray SettingsManager::resultsTableHeaderState() const {
     return _settings.value(SettingsKeys::TableResultsHeader).toByteArray();
 }
 
+//TableStockHeader
 void SettingsManager::setStockTableHeaderState(const QByteArray& state) {
     _settings.setValue(SettingsKeys::TableStockHeader, state);
 }
@@ -73,6 +76,7 @@ QByteArray SettingsManager::stockTableHeaderState() const {
     return _settings.value(SettingsKeys::TableStockHeader).toByteArray();
 }
 
+//TableLeftoversHeader
 void SettingsManager::setLeftoversTableHeaderState(const QByteArray& state) {
     _settings.setValue(SettingsKeys::TableLeftoversHeader, state);
 }
@@ -81,12 +85,22 @@ QByteArray SettingsManager::leftoversTableHeaderState() const {
     return _settings.value(SettingsKeys::TableLeftoversHeader).toByteArray();
 }
 
+//TableStorageAuditHeader
 void SettingsManager::setStorageAuditTableHeaderState(const QByteArray& state) {
     _settings.setValue(SettingsKeys::TableStorageAuditHeader, state);
 }
 
 QByteArray SettingsManager::storageAuditTableHeaderState() const {
     return _settings.value(SettingsKeys::TableStorageAuditHeader).toByteArray();
+}
+
+//TableRelocationOrderHeader
+void SettingsManager::setRelocationOrderTableHeaderState(const QByteArray& state) {
+    _settings.setValue(SettingsKeys::TableRelocationOrderHeader, state);
+}
+
+QByteArray SettingsManager::relocationOrderTableHeaderState() const {
+    return _settings.value(SettingsKeys::TableRelocationOrderHeader).toByteArray();
 }
 
 // ablakméret
