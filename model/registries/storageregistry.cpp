@@ -39,24 +39,43 @@ const StorageEntry* StorageRegistry::findByBarcode(const QString& barcode) const
 }
 
 // storageregistry.cpp
-QStringList StorageRegistry::resolveTargetStoragesRecursive(const QUuid& rootId) const {
+QStringList StorageRegistry::getNamesRecursive(const QUuid& rootId) const {
+
+    auto a = getRecursive(rootId);
     QStringList result;
 
-    // Root maga
-    if (auto rootOpt = findById(rootId)) {
-        result << rootOpt->name;
+    for (const auto& entry : a) {
+        result.append(entry.name);
     }
-
-    // Gyerekek rekurzívan
-    collectChildrenRecursive(rootId, result);
-
     return result;
 }
 
-void StorageRegistry::collectChildrenRecursive(const QUuid& parentId, QStringList& out) const {
+QVector<StorageEntry> StorageRegistry::getRecursive(const QUuid& rootId) const {
+    QVector<StorageEntry> result;
+
+    if (auto rootOpt = findById(rootId)) {
+        result.append(*rootOpt);
+    }
+
+    collectChildrenRecursive(rootId, result);
+    return result;
+}
+
+void StorageRegistry::collectChildrenRecursive(const QUuid& parentId, QVector<StorageEntry>& out) const {
     const auto& children = findByParentId(parentId);
     for (const auto& child : children) {
-        out << child.name;
-        collectChildrenRecursive(child.id, out); // mélyebb szintek
+        out.append(child);
+        collectChildrenRecursive(child.id, out);
     }
 }
+
+bool StorageRegistry::isDescendantOf(const QUuid& childId, const QUuid& ancestorId) const {
+    auto current = findById(childId);
+    while (current) {
+        if (current->parentId == ancestorId)
+            return true;
+        current = findById(current->parentId);
+    }
+    return false;
+}
+

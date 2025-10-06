@@ -99,3 +99,13 @@ bool StockRegistry::updateEntry(const StockEntry& updated) {
     // ❌ Nem találtuk meg az adott requestId-t
     return false;
 }
+
+QVector<StockEntry> StockRegistry::findByMaterialId(const QUuid& materialId) const {
+    QVector<StockEntry> result;
+    for (const auto& entry : _data) {
+        if (entry.materialId == materialId) {
+            result.append(entry);
+        }
+    }
+    return result;
+}

@@ -69,6 +69,7 @@ SOURCES += \
     service/cutting/result/archivedwasteutils.cpp \
     service/cutting/result/leftoversourceutils.cpp \
     service/cutting/segment/segmentutils.cpp \
+    service/relocation/relocationplanner.cpp \
     service/storageaudit/leftoverauditservice.cpp \
     service/storageaudit/storageauditservice.cpp \
     view/MainWindow.cpp \
@@ -190,6 +191,7 @@ HEADERS += \
     model/storagetype.h \
     presenter/CuttingPresenter.h \
     service/movementlogmodel.h \
+    service/relocation/relocationplanner.h \
     service/stockmovementservice.h \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \

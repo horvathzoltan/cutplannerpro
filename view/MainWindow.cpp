@@ -26,6 +26,8 @@
 
 #include "model/relocation/relocationinstruction.h"
 
+#include <service/relocation/relocationplanner.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -418,7 +420,7 @@ void MainWindow::on_btn_Relocate_clicked()
     auto auditRows = presenter->getLastAuditRows();
 
     // 2️⃣ Relocation terv generálása
-    auto relocationPlan = presenter->generateRelocationPlan(cutPlans, auditRows);
+    auto relocationPlan = RelocationPlanner::buildPlan(cutPlans, auditRows);
 
     // 3️⃣ Gyors lista megjelenítése (pl. max 5 sor)
     ui->relocateQuickList->setPlainText(format(relocationPlan));
@@ -428,13 +430,6 @@ void MainWindow::on_btn_Relocate_clicked()
     for (const auto& instr : relocationPlan) {
         relocationPlanTableManager->addRow(instr);
     }
-
-    // 5️⃣ Azonnali végrehajtás (ha nincs külön confirm gomb)
-    //presenter->executeRelocation(relocationPlan);
-
-    // opcionális: visszajelzés a felhasználónak
-    //QMessageBox::information(this, "Relokáció",
-    //                         "A relokációs terv végrehajtása megtörtént.");
 }
 
 

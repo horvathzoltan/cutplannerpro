@@ -29,4 +29,5 @@ public:
 
     bool isEmpty() const { return _data.isEmpty(); }
     void setData(const QVector<StockEntry>& v) { _data = v;}
+    QVector<StockEntry> findByMaterialId(const QUuid &materialId) const;
 };

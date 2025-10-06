@@ -86,8 +86,8 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
     // Egységes rowId: ha az instruction nem ad id-t, generálunk egyet
     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
+    // Σ Összesítő sor külön kezelve
     if (instr.isSummary) {
-        // ha van külön summary generatorod, abban is állítsd be vm.rowId-t
         TableRowViewModel sum = generateSumRow(instr);
         sum.rowId = vm.rowId;
         return sum;
@@ -97,26 +97,27 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
     QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
     QColor fgColor   = baseColor.lightness() < 128 ? Qt::white : Qt::black;
 
-
-    // 🔹 Normál relocation sor (eredeti logika)
+    // 📦 Anyag neve
     vm.cells[RelocationPlanTableColumns::Material] =
         CellFactory::textCell(instr.materialName,
                               QString("Anyag: %1").arg(instr.materialName),
                               baseColor, fgColor);
 
+    // 📦 Vonalkód
     vm.cells[RelocationPlanTableColumns::Barcode] =
         CellFactory::textCell(instr.barcode,
                               QString("Vonalkód: %1").arg(instr.barcode),
                               baseColor, fgColor);
 
+    // 🔢 Mennyiség (✔ Megvan, vagy a tervezett darabszám)
     QString qtyText = instr.isSatisfied
                           ? QStringLiteral("✔ Megvan")
                           : QString::number(instr.plannedQuantity);
 
     QColor qtyColor = instr.isSatisfied
-                          ? QColor("#228B22")
+                          ? QColor("#228B22") // zöld pipa
                           : (instr.plannedQuantity == 0
-                                 ? QColor("#B22222")
+                                 ? QColor("#B22222") // piros, ha 0
                                  : fgColor);
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
@@ -124,41 +125,58 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                               QString("Terv szerinti mennyiség: %1").arg(instr.plannedQuantity),
                               baseColor, qtyColor);
 
-    QStringList sourceParts;
-    for (const auto& src : instr.sources) {
-        sourceParts << QString("%1 (%2/%3)")
-        .arg(src.locationName)
-            .arg(src.moved)
-            .arg(src.available);
-    }
-    QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
-    vm.cells[RelocationPlanTableColumns::Source] =
-        // CellFactory::textCell(sourceText,
-        //                       QString("Forrás tárhelyek: %1").arg(sourceText),
-        //                       baseColor, fgColor);
-        CellGenerator::createEditableCell(vm.rowId,
-                                          sourceText,
-                                          QString("Forrás tárhelyek: %1").arg(sourceText),
-                                          receiver,
-                                          "source");
+    // 🔀 Forrás és cél cellák típustól függően
+    if (instr.sourceType == AuditSourceType::Stock) {
+        // --- STOCK ---
+        // Forrás: aggregált string (hely + moved/available), szerkeszthető
+        QStringList sourceParts;
+        for (const auto& src : instr.sources) {
+            sourceParts << QString("%1 (%2/%3)")
+            .arg(src.locationName)
+                .arg(src.moved)
+                .arg(src.available);
+        }
+        QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
+        vm.cells[RelocationPlanTableColumns::Source] =
+            CellGenerator::createEditableCell(vm.rowId,
+                                              sourceText,
+                                              QString("Forrás tárhelyek: %1").arg(sourceText),
+                                              receiver,
+                                              "source");
 
-    QStringList targetParts;
-    for (const auto& tgt : instr.targets) {
-        targetParts << QString("%1 (%2)")
-        .arg(tgt.locationName)
-            .arg(tgt.placed);
-    }
-    QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
-    vm.cells[RelocationPlanTableColumns::Target] =
-        // CellFactory::textCell(targetText,
-        //                       QString("Cél tárhelyek: %1").arg(targetText),
-        //                       baseColor, fgColor);
-        CellGenerator::createEditableCell(vm.rowId,
-                                          targetText,
-                                          QString("Cél tárhelyek: %1").arg(targetText),
-                                          receiver,
-                                          "target");
+        // Cél: aggregált string (hely + placed), szerkeszthető
+        QStringList targetParts;
+        for (const auto& tgt : instr.targets) {
+            targetParts << QString("%1 (%2)")
+            .arg(tgt.locationName)
+                .arg(tgt.placed);
+        }
+        QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
+        vm.cells[RelocationPlanTableColumns::Target] =
+            CellGenerator::createEditableCell(vm.rowId,
+                                              targetText,
+                                              QString("Cél tárhelyek: %1").arg(targetText),
+                                              receiver,
+                                              "target");
+    } else {
+        // --- HULLÓ ---
+        // Forrás: csak a hely neve, nincs (x/y), nincs gomb
+        QString sourceText = instr.sources.isEmpty()
+                                 ? "—"
+                                 : instr.sources.first().locationName;
+        vm.cells[RelocationPlanTableColumns::Source] =
+            CellFactory::textCell(sourceText,
+                                  QString("Hulló forrás: %1").arg(sourceText),
+                                  baseColor, fgColor);
 
+        // Cél: mindig üres, nincs gomb
+        vm.cells[RelocationPlanTableColumns::Target] =
+            CellFactory::textCell("—",
+                                  "Hullónál nincs cél",
+                                  baseColor, fgColor);
+    }
+
+    // 🏷️ Típus (Stock vagy Hulló)
     QString typeText = (instr.sourceType == AuditSourceType::Stock)
                            ? QStringLiteral("📦 Stock")
                            : QStringLiteral("♻️ Hulló");
@@ -169,5 +187,6 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
 
     return vm;
 }
+
 
 } // namespace RelocationRowViewModelGenerator
