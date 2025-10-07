@@ -5,8 +5,8 @@
 #include <QSpinBox>
 
 RelocationQuantityDialog::RelocationQuantityDialog(QWidget* parent)
-    : QDialog(parent), ui(new Ui::RelocationQuantityDialog) {
-    ui->setupUi(this);
+    : QDialog(parent), _ui(new Ui::RelocationQuantityDialog) {
+    _ui->setupUi(this);
 
     //connect(ui->btnDistributeEvenly, &QPushButton::clicked, this, &RelocationQuantityDialog::distributeEvenly);
     //connect(ui->btnOk, &QPushButton::clicked, this, &RelocationQuantityDialog::accept);
@@ -14,36 +14,68 @@ RelocationQuantityDialog::RelocationQuantityDialog(QWidget* parent)
 }
 
 RelocationQuantityDialog::~RelocationQuantityDialog() {
-    delete ui;
+    delete _ui;
 }
 
-void RelocationQuantityDialog::setRows(const QVector<RelocationQuantityRow>& rows) {
-    model.rows = rows;
+void RelocationQuantityDialog::setRows(const QVector<RelocationQuantityRow>& rows,
+                                       int planned,
+                                       int selectedFromSources)
+{
+    _model.rows = rows;
+    _plannedQuantity = planned;
+    _selectedFromSources = selectedFromSources;
 
-    auto* table = ui->tableQuantities;
-    table->clearContents();   // csak a cellák ürülnek, az oszlopok és a fejléc marad    //table->setColumnCount(3);
-    //table->setHorizontalHeaderLabels({tr("Tárhely"), tr("Elérhető"), tr("Mozgatott")});
+    // 🔹 Címkék és értékek beállítása a mód alapján
+    if (_mode == QuantityDialogMode::Source) {
+        _ui->labelPlannedCaption->setText("Mozgatandó");
+        _ui->labelPlannedValue->setText(QString::number(_plannedQuantity));
+        _ui->labelPlannedCaption->show();
+        _ui->labelPlannedValue->show();
+
+        _ui->labelSelectedCaption->setText("Kiválasztva");
+        _ui->labelSelectedValue->show();
+        _ui->labelSelectedCaption->show();
+    }
+    else if (_mode == QuantityDialogMode::Target) {
+        _ui->labelPlannedCaption->setText("Elosztandó");
+        _ui->labelPlannedValue->setText(QString::number(_selectedFromSources));
+        _ui->labelPlannedCaption->show();
+        _ui->labelPlannedValue->show();
+
+        _ui->labelSelectedCaption->setText("Elosztva");
+        _ui->labelSelectedValue->show();
+        _ui->labelSelectedCaption->show();
+    }
+    else { // Both
+        _ui->labelPlannedCaption->setText("Mozgatandó");
+        _ui->labelPlannedValue->setText(QString::number(_plannedQuantity));
+        _ui->labelPlannedCaption->show();
+        _ui->labelPlannedValue->show();
+
+        _ui->labelSelectedCaption->setText("Kiválasztva");
+        _ui->labelSelectedValue->show();
+        _ui->labelSelectedCaption->show();
+    }
+
+    // 🔹 Táblázat feltöltése
+    auto* table = _ui->tableQuantities;
+    table->clearContents();
     table->setRowCount(rows.size());
     table->horizontalHeader()->setStretchLastSection(true);
 
     for (int i = 0; i < rows.size(); ++i) {
         const auto& r = rows[i];
 
-        // 1. oszlop: tárhely neve
         table->setItem(i, 0, new QTableWidgetItem(r.storageName));
 
-        // 2. oszlop: elérhető mennyiség (forrásnál értelmes, célnál lehet 0 vagy üres)
         auto* availItem = new QTableWidgetItem(QString::number(r.isTarget ? 0 : r.available));
         availItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
         table->setItem(i, 1, availItem);
 
-        // 3. oszlop: mozgatott mennyiség (szerkeszthető spinbox)
         auto* spin = new QSpinBox(table);
         spin->setMinimum(0);
-        spin->setMaximum(r.isTarget ? 999999 : r.available); // forrásnál ne lehessen többet vinni, mint ami van
+        spin->setMaximum(r.isTarget ? 999999 : r.available);
         spin->setValue(r.selected);
-
-        // meta adatok
         spin->setProperty("rowIndex", i);
         spin->setProperty("isTarget", r.isTarget);
 
@@ -57,9 +89,10 @@ void RelocationQuantityDialog::setRows(const QVector<RelocationQuantityRow>& row
     updateSummary();
 }
 
+
 QVector<RelocationQuantityRow> RelocationQuantityDialog::getRows() const {
     QVector<RelocationQuantityRow> out;
-    auto* table = ui->tableQuantities;
+    auto* table = _ui->tableQuantities;
     out.reserve(table->rowCount());
 
     for (int i = 0; i < table->rowCount(); ++i) {
@@ -80,28 +113,90 @@ QVector<RelocationQuantityRow> RelocationQuantityDialog::getRows() const {
 
 
 void RelocationQuantityDialog::updateSummary() {
-    auto* table = ui->tableQuantities;
-    int total = 0;
+    auto* table = _ui->tableQuantities;
+    _totalSelectedFromSources = 0;
+    _totalDistributedToTargets = 0;
 
     for (int i = 0; i < table->rowCount(); ++i) {
         if (auto* w = table->cellWidget(i, 2)) {
             if (auto* spin = qobject_cast<QSpinBox*>(w)) {
-                total += spin->value();
+                bool isTarget = spin->property("isTarget").toBool();
+                if (isTarget) _totalDistributedToTargets += spin->value();
+                else          _totalSelectedFromSources += spin->value();
             }
         }
     }
 
-    ui->labelSummaryRight->setText(QString("Összesen: %1").arg(total));
+    _ui->labelPlannedValue->setText(QString::number(_plannedQuantity));
+    _ui->labelSelectedValue->setText(QString::number(_totalSelectedFromSources));
+
+    if (_totalSelectedFromSources == _plannedQuantity)
+        _ui->labelSelectedValue->setStyleSheet("color: green; font-weight: bold; font-size: 18pt;");
+    else if (_totalSelectedFromSources < _plannedQuantity)
+        _ui->labelSelectedValue->setStyleSheet("color: orange; font-weight: bold; font-size: 18pt;");
+    else
+        _ui->labelSelectedValue->setStyleSheet("color: red; font-weight: bold; font-size: 18pt;");
+
+    // Állapotjelzés a mód alapján
+    if (_mode == QuantityDialogMode::Source) {
+        if (_totalSelectedFromSources == _plannedQuantity) {
+            _ui->labelStatus->setStyleSheet("color: green;");
+            _ui->labelStatus->setText("✔ Forrás rendben, finalizálható.");
+        } else {
+            _ui->labelStatus->setStyleSheet("color: orange;");
+            _ui->labelStatus->setText("⚠ A forrásból felvett mennyiség nem egyezik az igénnyel.");
+        }
+    }
+    else if (_mode == QuantityDialogMode::Target) {
+        _totalSelectedFromSources = _selectedFromSources;
+
+        _ui->labelPlannedValue->setText(QString::number(_selectedFromSources));
+        _ui->labelSelectedValue->setText(QString::number(_totalDistributedToTargets));
+
+        if (_totalDistributedToTargets == _selectedFromSources) {
+            _ui->labelSelectedValue->setStyleSheet("color: green; font-weight: bold; font-size: 18pt;");
+            _ui->labelStatus->setStyleSheet("color: green;");
+            _ui->labelStatus->setText("✔ Cél kiosztás rendben.");
+        } else {
+            _ui->labelSelectedValue->setStyleSheet("color: orange; font-weight: bold; font-size: 18pt;");
+            _ui->labelStatus->setStyleSheet("color: orange;");
+            _ui->labelStatus->setText("⚠ A célokra kiosztott mennyiség nem egyezik a forrással.");
+        }
+    }
+
+    else { // Both
+        if (_totalDistributedToTargets > _totalSelectedFromSources) {
+            _ui->labelStatus->setStyleSheet("color: red;");
+            _ui->labelStatus->setText("❌ A célokra többet osztottál, mint amit felvettél.");
+        }
+        else if (_totalSelectedFromSources != _plannedQuantity) {
+            _ui->labelStatus->setStyleSheet("color: orange;");
+            _ui->labelStatus->setText("⚠ A forrásból felvett mennyiség nem egyezik az igénnyel.");
+        }
+        else if (_totalDistributedToTargets != _totalSelectedFromSources) {
+            _ui->labelStatus->setStyleSheet("color: orange;");
+            _ui->labelStatus->setText("⚠ A célokra kiosztott mennyiség nem egyezik a forrással.");
+        }
+        else {
+            _ui->labelStatus->setStyleSheet("color: green;");
+            _ui->labelStatus->setText("✔ A beállítás érvényes, finalizálható.");
+        }
+    }
+
     validate();
 }
 
-
-// void RelocationQuantityDialog::distributeEvenly() {
-//     model.distributeEvenly(model.totalSelected());
-//     // TODO: update tableQuantities spinboxes
-//     updateSummary();
-// }
-
 void RelocationQuantityDialog::validate() {
-    //ui->btnOk->setEnabled(model.isValid());
+    //_ui->btnOk->setEnabled(isValid()); // ha lesz OK gomb, ez aktiválható
+}
+
+bool RelocationQuantityDialog::isValid() const {
+    if (_mode == QuantityDialogMode::Source)
+        return (_totalSelectedFromSources == _plannedQuantity);
+
+    if (_mode == QuantityDialogMode::Target)
+        return (_totalDistributedToTargets == _totalSelectedFromSources);
+
+    return (_totalSelectedFromSources == _plannedQuantity &&
+            _totalDistributedToTargets == _totalSelectedFromSources);
 }

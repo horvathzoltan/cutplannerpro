@@ -149,24 +149,41 @@ void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode
 
     // 🔹 Dialógus előkészítése
     RelocationQuantityDialog dlg(_parent);
+    if (mode == "source") {
+        dlg.setMode(QuantityDialogMode::Source);
+        auto rows = RelocationQuantityHelpers::generateSourceRows(instruction);
+        dlg.setRows(rows, instruction.plannedQuantity, -1);
+    }
+    else if (mode == "target") {
+        dlg.setMode(QuantityDialogMode::Target);
+        auto rows = RelocationQuantityHelpers::generateTargetRows(instruction);
+        int totalMoved = 0;
+        for (const auto& src : instruction.sources)
+            totalMoved += src.moved;
+
+        dlg.setRows(rows, instruction.plannedQuantity, totalMoved);    }
 
     // Fejléc beállítása a mode alapján
     if (mode == "source") {
         dlg.setWindowTitle(tr("Forrás tárhelyek szerkesztése"));
         auto rows = RelocationQuantityHelpers::generateSourceRows(instruction);
-        dlg.setRows(rows);
+        dlg.setRows(rows, instruction.plannedQuantity, -1);
         zInfo(L("generateSourceRows: %1 sor").arg(rows.size()));
 
     } else if (mode == "target") {
         dlg.setWindowTitle(tr("Cél tárhelyek szerkesztése"));
         auto rows = RelocationQuantityHelpers::generateTargetRows(instruction);
-        dlg.setRows(rows);
+        int totalMoved = 0;
+        for (const auto& src : instruction.sources)
+            totalMoved += src.moved;
+
+        dlg.setRows(rows, instruction.plannedQuantity, totalMoved);
         zInfo(L("generateTargetRows: %1 sor").arg(rows.size()));
     } else {
         // fallback: teljes nézet
         dlg.setWindowTitle(tr("Relokációs mennyiségek szerkesztése"));
         auto rows = RelocationQuantityHelpers::generateQuantityRows(instruction);
-        dlg.setRows(rows);
+        dlg.setRows(rows, instruction.plannedQuantity, -1);
         zInfo(L("generateQuantityRows: %1 sor").arg(rows.size()));
     }
 
