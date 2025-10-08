@@ -203,15 +203,15 @@ void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode
     }
 }
 
+void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
+    if (!_planRowMap.contains(rowId)) return;
 
-// void RelocationPlanTableManager::onCellClicked(int row, int column) {
-//     // Ha a "Mennyiség" oszlopra kattintottak → teljes dialógus
-//     if (column == RelocationPlanTableColumns::Quantity) {
-//         QTableWidgetItem* item = _table->item(row, 0);
-//         if (!item) return;
+    RelocationInstruction& instr = _planRowMap[rowId];
+    if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized()) return;
 
-//         QUuid rowId = item->data(Qt::UserRole).toUuid();
-//         editRow(rowId, "all"); // fallback mód
-//     }
-// }
+    instr.executedQuantity = instr.plannedQuantity;
+    instr.isFinalized = true;
+
+    updateRow(rowId, instr); // újragenerálja a sort
+}
 

@@ -185,6 +185,33 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                               QString("Forrás típusa: %1").arg(typeText),
                               baseColor, fgColor);
 
+    // Finalize gomb cella
+    QPushButton* btn = new QPushButton("Finalize");
+    btn->setCursor(Qt::PointingHandCursor);
+    btn->setToolTip("A sor véglegesíthető, ha minden mennyiség meg van adva.");
+
+    if (instr.isAlreadyFinalized()) {
+        btn->setText("✔");
+        btn->setEnabled(false);
+        btn->setStyleSheet("background-color: #ccc; color: #666;");
+    } else if (instr.isReadyToFinalize()) {
+        btn->setEnabled(true);
+        btn->setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;");
+    } else {
+        btn->setEnabled(false);
+        btn->setStyleSheet("background-color: #eee; color: #999;");
+    }
+
+    // 🔗 Bekötés
+    QObject::connect(btn, &QPushButton::clicked, receiver, [receiver, rowId = instr.rowId]() {
+        QMetaObject::invokeMethod(receiver, "finalizeRow", Qt::QueuedConnection,
+                                  Q_ARG(QUuid, rowId));
+    });
+
+    // Cella beállítása
+    vm.cells[RelocationPlanTableColumns::Finalize] =
+        TableCellViewModel::fromWidget(btn, "Finalize gomb");
+
     return vm;
 }
 

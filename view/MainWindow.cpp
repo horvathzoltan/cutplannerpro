@@ -142,7 +142,10 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_Optimize, &QPushButton::clicked,
                this, &MainWindow::handle_btn_Optimize_clicked);
     connect(ui->btn_OpenCuttingPlan, &QPushButton::clicked,
-            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);    
+            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);
+
+    connect(ui->btn_Finalize_2, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_RelocationPlanFinalize_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -202,6 +205,15 @@ void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const
 void MainWindow::handle_btn_NewCuttingPlan_clicked()
 {
     presenter->createNew_CuttingPlanRequests();
+}
+
+void MainWindow::handle_btn_RelocationPlanFinalize_clicked(){
+    // for (const auto& rowId : relocationPlanTableManager->allRowIds()) {
+    //     const RelocationInstruction& instr = relocationPlanTableManager->getInstruction(rowId);
+    //     if (instr.isReadyToFinalize() && !instr.isAlreadyFinalized()) {
+    //         relocationPlanTableManager->finalizeRow(rowId);
+    //     }
+    // }
 }
 
 void MainWindow::handle_btn_OpenCuttingPlan_clicked()

@@ -71,6 +71,8 @@ private slots:
     void handle_btn_LeftoverDisposal_clicked();
     void handle_btn_AddLeftoverStockEntry_clicked();
 
+    void handle_btn_RelocationPlanFinalize_clicked();
+
     void on_btn_StorageAudit_clicked();
 
     void on_btn_Relocate_clicked();

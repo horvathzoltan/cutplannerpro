@@ -40,4 +40,5 @@ signals:
 
 public:
     static constexpr auto RowId_Key = "relocationId"; // 👉 UserRole kulcs a cellákban
+    void finalizeRow(const QUuid &rowId);
 };

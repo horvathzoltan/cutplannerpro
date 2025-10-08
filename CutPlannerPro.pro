@@ -254,5 +254,6 @@ DISTFILES += \
     testdata/ral_colors/design.csv \
     testdata/ral_colors/p1.csv \
     testdata/ral_colors/p2.csv \
+    run.txt \
     testdata/stock.csv \
     testdata/storages.csv

@@ -355,6 +355,30 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_Finalize_2">
+             <property name="text">
+              <string>Finalize</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QTableWidget" name="tableRelocationOrder">
            <column>
             <property name="text">
@@ -384,6 +408,11 @@
            <column>
             <property name="text">
              <string>Típus</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Finalize</string>
             </property>
            </column>
           </widget>
