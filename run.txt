@@ -1,5 +1,4 @@
-🧩 Relokációs rendszer – integrált állapottábla (2025.10.09. éjjeli állapot)
-
+🧩 Relokációs rendszer – integrált állapottábla (2025.10.09. éjjeli állapot, frissítve)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01	Relocation terv generálás kipróbálása	✅	✅
 02	Relocation táblamanager + generator integrálása	✅	✅
@@ -43,12 +42,12 @@ Sprint 5: Auditálás, visszavonás, státuszkezelés 🚧
 
 Sprint 6: Hullókezelés, példánykódok, normalizálás, adatfeltöltés 🚧
 
-💡 Következő konkrét lépések:
+💡 Következő konkrét lépések
 
-Globális finalize implementálása (08, 26).
+Globális finalize implementálása (08, 26) → hogy a teljes tervet is le lehessen zárni.
 
-CuttingStrategy integrálása a logikába (13).
+CuttingStrategy integrálása (13) → a cutting utasítás logikájának alapja.
 
-Vágási utasítás dialógus validáció befejezése (25).
+Vágási utasítás dialógus validáció befejezése (25) → ne engedjen hibás inputot.
 
-Sprint 5 előkészítése: auditálás + visszavonás.
+Sprint 5 előkészítése: auditálás + visszavonás → hogy a finalize után is legyen visszaút.
