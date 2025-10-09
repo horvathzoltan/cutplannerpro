@@ -15,13 +15,17 @@
 
 #include <model/registries/materialregistry.h>
 
+#include <service/stockmovementservice.h>
+
 bool RelocationPlanTableManager::_isVerbose = false;
 
 /**
  * @brief Konstruktor – inicializálja a táblát és beállítja az oszlopfejléceket.
  */
-RelocationPlanTableManager::RelocationPlanTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), _table(table), _parent(parent)
+RelocationPlanTableManager::RelocationPlanTableManager(QTableWidget* table,
+                                                       CuttingPresenter* presenter,
+                                                       QWidget* parent = nullptr)
+    : QObject(parent), _table(table), _parent(parent), _presenter(presenter)
 {
     if (_table) {
         _table->setColumnCount(6);
@@ -204,14 +208,23 @@ void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode
 }
 
 void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
-    if (!_planRowMap.contains(rowId)) return;
+    // 🔹 Keressük meg a sort
+    auto it = _planRowMap.find(rowId);
+    if (it == _planRowMap.end())
+        return;
 
-    RelocationInstruction& instr = _planRowMap[rowId];
-    if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized()) return;
+    RelocationInstruction& instr = it.value();
 
-    instr.executedQuantity = instr.plannedQuantity;
-    instr.isFinalized = true;
+    // 🔹 Csak akkor futtatjuk, ha tényleg finalizálható
+    if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized())
+        return;
 
-    updateRow(rowId, instr); // újragenerálja a sort
+    // 🔹 Service példány presenter-rel
+    StockMovementService svc(_presenter);
+    if (svc.finalizeRelocation(instr)) {
+        updateRow(rowId, instr); // UI frissítés
+    }
 }
+
+
 

@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QUuid>
 #include "model/relocation/relocationinstruction.h"
+#include "presenter/CuttingPresenter.h"
 
 class RelocationPlanTableManager : public QObject {
     Q_OBJECT
@@ -17,11 +18,14 @@ private:
     QMap<QUuid, RelocationInstruction> _planRowMap;
     // 👉 gyors lookup: rowId → rowIndex (így nem kell végigiterálni a táblát update-nél)
     QMap<QUuid, int> _rowIndexMap;
+    CuttingPresenter* _presenter = nullptr;   // 🔹 új mező
 
     static bool _isVerbose; // 👉 debug logging flag
 
 public:
-    explicit RelocationPlanTableManager(QTableWidget* table, QWidget* parent = nullptr);
+    explicit RelocationPlanTableManager(QTableWidget* table,
+                                        CuttingPresenter* presenter,
+                                        QWidget* parent);
 
     // 👉 új sor beszúrása
     void addRow(const RelocationInstruction& instr);

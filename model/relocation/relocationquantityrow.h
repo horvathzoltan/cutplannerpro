@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QUuid>
 
 /**
  * @brief Egy relokációs dialógus egy sorát reprezentáló adatstruktúra.
@@ -16,6 +17,7 @@
  * - isTarget: jelzi, hogy a sor cél típusú-e (true = cél, false = forrás)
  */
 struct RelocationQuantityRow {
+    QUuid entryId;          // 🔹 új mező: forrás StockEntry azonosítója
     QString storageName;   ///< Tárhely neve (pl. "Polc 14")
     int available = 0;     ///< Elérhető készlet (csak forrás esetén releváns)
     int current = 0;       ///< Jelenlegi mennyiség (csak cél esetén releváns)

@@ -16,6 +16,7 @@ inline QVector<RelocationQuantityRow> generateQuantityRows(const RelocationInstr
 
     for (const auto& src : instruction.sources) {
         RelocationQuantityRow r;
+        r.entryId     = src.entryId;        // 🔹 itt átvesszük
         r.storageName = src.locationName;
         r.available = src.available;
         r.selected = src.moved;
@@ -50,13 +51,14 @@ inline void applyQuantityRows(RelocationInstruction& instruction, const QVector<
         if (r.isTarget) {
             RelocationTargetEntry tgt;
             tgt.locationName = r.storageName;
-            tgt.placed = r.selected;
+            tgt.placed       = r.selected;
             instruction.targets.append(tgt);
         } else {
             RelocationSourceEntry src;
+            src.entryId      = r.entryId;     // 🔹 itt visszatöltjük
             src.locationName = r.storageName;
-            src.available = r.available;
-            src.moved = r.selected;
+            src.available    = r.available;
+            src.moved        = r.selected;
             instruction.sources.append(src);
             totalMoved += r.selected;
         }
@@ -71,6 +73,7 @@ inline QVector<RelocationQuantityRow> generateSourceRows(const RelocationInstruc
 
     for (const auto& src : instruction.sources) {
         RelocationQuantityRow r;
+        r.entryId     = src.entryId;
         r.storageName = src.locationName;
         r.available   = src.available;
         r.selected    = src.moved;
@@ -103,6 +106,7 @@ inline void applySourceRows(RelocationInstruction& instruction,
 
     for (const auto& r : rows) {
         RelocationSourceEntry src;
+        src.entryId      = r.entryId;
         src.locationName = r.storageName;
         src.available    = r.available;
         src.moved        = r.selected;

@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
     resultsTableManager = std::make_unique<ResultsTableManager>(ui->tableResults, this);
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
-    relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, this);
+    relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, presenter, this);
 
     InputTableConnector::Connect(this, inputTableManager.get(), presenter);
     StockTableConnector::Connect(this, stockTableManager.get(), presenter);

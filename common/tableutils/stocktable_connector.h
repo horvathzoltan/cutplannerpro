@@ -14,8 +14,9 @@
 #include <model/registries/materialregistry.h>
 #include <view/dialog/input/addinputdialog.h>
 #include <presenter/CuttingPresenter.h>
+#include <service/stockmovementservice.h>
 
-#include "service/movementlogger.h"   // a namespace-es inline log() miatt
+//#include "service/movementlogger.h"   // a namespace-es inline log() miatt
 
 namespace StockTableConnector {
 inline static void Connect(
@@ -100,84 +101,108 @@ inline static void Connect(
                });
 
     // mozgatás
+    // w->connect(manager, &StockTableManager::moveRequested, w,
+    //            [w, presenter](const QUuid& id) {
+
+    //                auto opt = StockRegistry::instance().findById(id);
+    //                if (!opt) return;
+    //                const StockEntry& original = *opt;
+
+    //                // Forrás raktár információk a UI-hoz és a loghoz
+    //                const auto* srcStorage = StorageRegistry::instance().findById(original.storageId);
+    //                const QString srcName = srcStorage ? srcStorage->name : "—";
+    //                // Ha van barcode meződ a raktárnál:
+    //                const QString srcBarcode = srcStorage ? srcStorage->barcode : QString();
+
+    //                MovementDialog dlg(w);
+    //                dlg.setSource(srcName, original.entryId, original.quantity);
+    //                if (dlg.exec() != QDialog::Accepted) return;
+
+    //                MovementData data = dlg.getMovementData();
+    //                // Alap validáció
+    //                if (data.quantity <= 0) return;
+    //                if (data.quantity > original.quantity) {
+    //                    // Opcionálisan jelezd a felhasználónak
+    //                    // QMessageBox::warning(w, "Érvénytelen mennyiség", "A kért mennyiség nagyobb, mint a rendelkezésre álló.");
+    //                    return;
+    //                }
+    //                if (data.toStorageId.isNull()) return;
+
+    //                // Cél raktár információk a loghoz
+    //                const auto* destStorage = StorageRegistry::instance().findById(data.toStorageId);
+    //                const QString destName = destStorage ? destStorage->name : "—";
+    //                const QString destBarcode = destStorage ? destStorage->barcode : QString();
+
+    //                // Ha értelmezett, ne engedjük ugyanabba a raktárba mozgatni
+    //                if (destStorage && srcStorage && destStorage->id == srcStorage->id) {
+    //                    // QMessageBox::information(w, "Nincs művelet", "A forrás és cél raktár azonos.");
+    //                    return;
+    //                }
+
+    //                // Új bejegyzés az áthelyezett mennyiséggel
+    //                StockEntry movedEntry = original;
+    //                movedEntry.entryId = QUuid::createUuid();
+    //                movedEntry.storageId = data.toStorageId;
+    //                movedEntry.quantity = data.quantity;
+    //                movedEntry.comment = data.comment;
+
+    //                const int remainingQty = original.quantity - data.quantity;
+
+    //                // Állapotmódosítás – csak siker esetén logolunk
+    //                if (remainingQty > 0) {
+    //                    // Részmozgás: előbb csökkentjük az eredetit, majd hozzáadjuk az újat
+    //                    StockEntry updatedOriginal = original;
+    //                    updatedOriginal.quantity = remainingQty;
+    //                    presenter->update_StockEntry(updatedOriginal);
+    //                    presenter->add_StockEntry(movedEntry);
+    //                } else {
+    //                    // Teljes áthelyezés: új bejegyzés, majd a régi törlése
+    //                    presenter->add_StockEntry(movedEntry);
+    //                    presenter->remove_StockEntry(original.entryId);
+    //                }
+
+    //                // LOG – csak sikeres módosítás után
+    //                // Gazdagítsuk a MovementData-t névvel/barcode-dal (ha van ilyen mező a struktúrában)
+    //                // Ha a MovementData-t kibővítetted korábban:
+    //                data.fromEntryId = original.entryId;
+    //                // Ha a Storage/Item rendelkezik ezekkel, töltsd:
+    //                data.fromStorageName = srcName;
+    //                data.fromBarcode = srcBarcode;
+    //                data.toStorageName = destName;
+    //                data.toBarcode = destBarcode;
+
+    //                // Ha van termék entitásod:
+    //                const auto* item = MaterialRegistry::instance().findById(original.materialId);
+    //                data.itemName = item ? item->name : QString();
+    //                data.itemBarcode = item ? item->barcode : QString();
+
+    //                MovementLogModel logdata{data};
+    //                MovementLogger::log(logdata);
+    //            });
     w->connect(manager, &StockTableManager::moveRequested, w,
                [w, presenter](const QUuid& id) {
-
                    auto opt = StockRegistry::instance().findById(id);
                    if (!opt) return;
                    const StockEntry& original = *opt;
 
-                   // Forrás raktár információk a UI-hoz és a loghoz
+                   // 🔍 Forrás tárhely lekérése
                    const auto* srcStorage = StorageRegistry::instance().findById(original.storageId);
-                   const QString srcName = srcStorage ? srcStorage->name : "—";
-                   // Ha van barcode meződ a raktárnál:
-                   const QString srcBarcode = srcStorage ? srcStorage->barcode : QString();
+                   //QString srcName = srcStorage ? srcStorage->name : QStringLiteral("—");
 
+                   QString srcLabel = srcStorage
+                                          ? QString("%1 (%2)").arg(srcStorage->name, srcStorage->barcode)
+                                          : QStringLiteral("—");
+
+                   // 💡 A dialógusban most már a tényleges tárhely neve jelenik meg
                    MovementDialog dlg(w);
-                   dlg.setSource(srcName, original.entryId, original.quantity);
+                   dlg.setSource(srcLabel, original.entryId, original.quantity);
+
                    if (dlg.exec() != QDialog::Accepted) return;
 
                    MovementData data = dlg.getMovementData();
-                   // Alap validáció
-                   if (data.quantity <= 0) return;
-                   if (data.quantity > original.quantity) {
-                       // Opcionálisan jelezd a felhasználónak
-                       // QMessageBox::warning(w, "Érvénytelen mennyiség", "A kért mennyiség nagyobb, mint a rendelkezésre álló.");
-                       return;
-                   }
-                   if (data.toStorageId.isNull()) return;
-
-                   // Cél raktár információk a loghoz
-                   const auto* destStorage = StorageRegistry::instance().findById(data.toStorageId);
-                   const QString destName = destStorage ? destStorage->name : "—";
-                   const QString destBarcode = destStorage ? destStorage->barcode : QString();
-
-                   // Ha értelmezett, ne engedjük ugyanabba a raktárba mozgatni
-                   if (destStorage && srcStorage && destStorage->id == srcStorage->id) {
-                       // QMessageBox::information(w, "Nincs művelet", "A forrás és cél raktár azonos.");
-                       return;
-                   }
-
-                   // Új bejegyzés az áthelyezett mennyiséggel
-                   StockEntry movedEntry = original;
-                   movedEntry.entryId = QUuid::createUuid();
-                   movedEntry.storageId = data.toStorageId;
-                   movedEntry.quantity = data.quantity;
-                   movedEntry.comment = data.comment;
-
-                   const int remainingQty = original.quantity - data.quantity;
-
-                   // Állapotmódosítás – csak siker esetén logolunk
-                   if (remainingQty > 0) {
-                       // Részmozgás: előbb csökkentjük az eredetit, majd hozzáadjuk az újat
-                       StockEntry updatedOriginal = original;
-                       updatedOriginal.quantity = remainingQty;
-                       presenter->update_StockEntry(updatedOriginal);
-                       presenter->add_StockEntry(movedEntry);
-                   } else {
-                       // Teljes áthelyezés: új bejegyzés, majd a régi törlése
-                       presenter->add_StockEntry(movedEntry);
-                       presenter->remove_StockEntry(original.entryId);
-                   }
-
-                   // LOG – csak sikeres módosítás után
-                   // Gazdagítsuk a MovementData-t névvel/barcode-dal (ha van ilyen mező a struktúrában)
-                   // Ha a MovementData-t kibővítetted korábban:
-                   data.fromEntryId = original.entryId;
-                   // Ha a Storage/Item rendelkezik ezekkel, töltsd:
-                   data.fromStorageName = srcName;
-                   data.fromBarcode = srcBarcode;
-                   data.toStorageName = destName;
-                   data.toBarcode = destBarcode;
-
-                   // Ha van termék entitásod:
-                   const auto* item = MaterialRegistry::instance().findById(original.materialId);
-                   data.itemName = item ? item->name : QString();
-                   data.itemBarcode = item ? item->barcode : QString();
-
-                   MovementLogModel logdata{data};
-                   MovementLogger::log(logdata);
+                   StockMovementService::moveStock(original, data, presenter);
                });
+
 
 }
 } // end namespace StockTableConnector

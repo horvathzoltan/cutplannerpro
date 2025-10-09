@@ -1,9 +1,9 @@
 #pragma once
 
-#include "model/storageaudit/storageauditrow.h"
+//#include "model/storageaudit/storageauditrow.h"
 #include <QString>
 #include <QUuid>
-#include <optional>
+//#include <optional>
 #include <QVector>
 
 /**
@@ -19,6 +19,7 @@
  * - moved: a felhasználó által megadott, ténylegesen elmozgatott mennyiség
  */
 struct RelocationSourceEntry {
+    QUuid entryId;          ///< Konkrét StockEntry azonosító
     QUuid locationId;       ///< Forrás tárhely azonosító
     QString locationName;   ///< Forrás tárhely neve
     int available = 0;      ///< Elérhető mennyiség a stockban
