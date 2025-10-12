@@ -27,20 +27,31 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
         int col = it.key();
         const TableCellViewModel& cell = it.value();
 
+        // widget eset - QWidget
         if (cell.widget) {
             // 🔘 Interaktív cella (pl. SpinBox, RadioButton)
             table->setCellWidget(rowIx, col, cell.widget);
-            cell.widget->setToolTip(cell.tooltip);
-        } else {
+            if(!cell.tooltip.isEmpty()){
+                cell.widget->setToolTip(cell.tooltip);
+            }
+        }
+        // cellatartalom eset - QTableWidgetItem
+        else
+        {
             // 🧾 Sima szöveges cella
             auto* item = new QTableWidgetItem(cell.text);
-            item->setToolTip(cell.tooltip);
+            if(!cell.tooltip.isEmpty()){
+                item->setToolTip(cell.tooltip);
+                }
             item->setBackground(cell.background);
             item->setForeground(cell.foreground);
 
             // 🔒 Szerkeszthetőség beállítása
+            auto flags = item->flags();
             if (cell.isReadOnly)
-                item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+                item->setFlags(flags & ~Qt::ItemIsEditable);
+            else
+                item->setFlags(flags | Qt::ItemIsEditable);
 
             table->setItem(rowIx, col, item);
         }
