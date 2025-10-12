@@ -16,13 +16,30 @@ struct TableCellViewModel {
 
     static TableCellViewModel fromWidget(QWidget* widget,
                                          const QString& tooltip = QString(),
-                                         bool isVisible = true)
+                                         bool isVisible = true) noexcept
     {
         TableCellViewModel vm;
         vm.widget = widget;
         vm.tooltip = tooltip;
         vm.isVisible = isVisible;
+        vm.isReadOnly = true;
         return vm;
     }
 
+    static TableCellViewModel fromText(const QString& text,
+                                       const QString& tooltip = QString(),
+                                       const QColor& background = Qt::white,
+                                       const QColor& foreground = Qt::black,
+                                       bool isReadOnly = true,
+                                       bool isVisible = true) noexcept
+    {
+        TableCellViewModel vm;
+        vm.text = text;
+        vm.tooltip = tooltip;
+        vm.background = background;
+        vm.foreground = foreground;
+        vm.isReadOnly = isReadOnly;
+        vm.isVisible = isVisible;
+        return vm;
+    }
 };

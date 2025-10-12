@@ -49,111 +49,233 @@ public:
         return moveStock(md, presenter_);
     }
 
-
-    // Relocation finalize: minden forrás és cél a moveStock()-on keresztül megy
-    bool finalizeRelocation(RelocationInstruction& instr)
+    inline bool finalizeRelocation(RelocationInstruction& instr)
     {
         zTrace();
-        StockRegistry::instance().dumpAll(); // debug
+        StockRegistry::instance().dumpAll(); // kezdő snapshot debughoz
 
-        if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized()) {
-            zInfo(L("finalizeRelocation failed"));
+        // 1) Strict előfeltétel: csak akkor folytatjuk, ha a teljes maradó mennyiség fedezett és nincs már finalizálva.
+        if (!instr.isReadyToFinalize_Strict() || instr.isAlreadyFinalized()) {
+            zInfo(QStringLiteral("finalizeRelocation failed: strict preconditions not met or already finalized for material %1")
+                      .arg(instr.materialId.toString()));
             return false;
         }
 
-        // Forrásokból levonás (entry-szintű moveStock hívások)
+        // 2) Mennyi a végrehajtandó mennyiség
+        const int toExecute = instr.plannedRemaining();
+        if (toExecute <= 0) {
+            zWarning(QStringLiteral("finalizeRelocation: nothing to execute for material %1").arg(instr.materialId.toString()));
+            return false;
+        }
+
+        // 3) Forrás oldal: végigmegyünk az instr.sources-on és a segédfüggvényeidet használjuk (moveStock végzi a tényleges consume/update-et)
+        //    A dialogban megadott src.moved azt jelzi, mennyit akarunk ebből az entry-ből; tényleges elvétel a src.available alapján.
+        int remaining = toExecute;
         for (const auto& src : instr.sources) {
-            if (src.moved <= 0) continue;
+            if (remaining <= 0) break;
 
-            QUuid sourceEntryId = src.entryId;
-            std::optional<StockEntry> opt;
-            if (!sourceEntryId.isNull()) {
-                opt = StockRegistry::instance().findById(sourceEntryId);
-                if (!opt) {
-                    zWarning(QStringLiteral("finalizeRelocation: source entry not found: %1. Will try resolve by storage+material.")
-                                 .arg(sourceEntryId.toString()));
-                }
-            }
+            int want = src.moved;
+            int avail = src.available;
+            int take = qMin(remaining, qMin(want, avail));
+            if (take <= 0) continue; // ebből a source-ból nincs mit venni
 
-            // Ha nincs entryId vagy nem található, próbáljuk feloldani storage+material alapján
-            if (!opt && !src.locationId.isNull()) {
-                // FIX: helyes sorrend: storageId, materialId
-                opt = StockRegistry::instance().findFirstByStorageAndMaterial(src.locationId, instr.materialId);
-                if (opt) {
-                    zInfo(QStringLiteral("finalizeRelocation: resolved source entry from storage: %1 -> entry=%2")
-                              .arg(src.locationId.toString()).arg(opt->entryId.toString()));
-                    sourceEntryId = opt->entryId;
+            // resolve entry: ha src.entryId megvan, moveStock használja azt; ha nincs, moveStock belső resolve-ot végezhet,
+            // de mi itt preferáljuk a fromEntryId-kitöltést, ha elérhető
+            QUuid fromEntry = src.entryId;
+            if (fromEntry.isNull()) {
+                // ha nincs explicit entryId, próbáljuk feloldani storage+material alapján
+                if (!src.locationId.isNull()) {
+                    if (auto resolved = StockRegistry::instance().findFirstByStorageAndMaterial(src.locationId, instr.materialId)) {
+                        fromEntry = resolved->entryId;
+                        zInfo(QStringLiteral("finalizeRelocation: resolved source entry %1 for storage %2")
+                                  .arg(fromEntry.toString()).arg(src.locationId.toString()));
+                    } else {
+                        zWarning(QStringLiteral("finalizeRelocation: cannot resolve source entry for storage=%1; skipping this source")
+                                     .arg(src.locationId.toString()));
+                        continue;
+                    }
                 } else {
-                    zWarning(QStringLiteral("finalizeRelocation: cannot resolve source entry for storage=%1 material=%2; skipping")
-                                 .arg(src.locationId.toString()).arg(instr.materialId.toString()));
+                    zWarning(QStringLiteral("finalizeRelocation: source has no entryId or locationId; skipping"));
                     continue;
                 }
             }
 
-            const StockEntry sourceEntry = *opt; // safe: opt valid here
-
-            // extra sanity: ensure material matches instr material
-            if (sourceEntry.materialId != instr.materialId) {
-                zWarning(QStringLiteral("finalizeRelocation: resolved entry material mismatch: entry=%1 material=%2 expected=%3")
-                             .arg(sourceEntry.entryId.toString())
-                             .arg(sourceEntry.materialId.toString())
-                             .arg(instr.materialId.toString()));
-                // döntés: folytatod-e vagy skippeled; itt skip
-                continue;
-            }
-
+            // Make MovementData for consume (fromEntry -> no target)
             MovementData md;
-            md.fromEntryId = sourceEntry.entryId;
-            md.materialId      = sourceEntry.materialId;
-            md.toStorageId = QUuid(); // for consumption/relocation source step we may not have target here
-            md.quantity    = src.moved;
-            md.comment     = "";//QStringLiteral("Relocation: source");
+            md.fromEntryId = fromEntry;
+            md.materialId  = instr.materialId;
+            md.toStorageId = QUuid(); // consume-only step
+            md.quantity    = take;
+            md.comment     = QStringLiteral("Relocation strict finalize - source");
 
-            zInfo(QStringLiteral("Calling moveStock(source): fromEntryId=%1 qty=%2")
-                      .arg(md.fromEntryId.toString()).arg(md.quantity));
-
+            zInfo(QStringLiteral("Calling moveStock(source): fromEntry=%1 qty=%2").arg(md.fromEntryId.toString()).arg(md.quantity));
             if (!moveStock(md, presenter_)) {
-                zWarning(QStringLiteral("finalizeRelocation: moveStock failed for source entry=%1 qty=%2 — aborting finalization")
+                zWarning(QStringLiteral("finalizeRelocation: moveStock failed for source entry=%1 qty=%2 — aborting")
                              .arg(md.fromEntryId.toString()).arg(md.quantity));
-                // Ha szeretnél: itt lehet rollback/retry logika, jelenleg abort
                 return false;
             }
 
+            remaining -= take;
         }
 
-        // Célokra felírás (deposit / aggregate hívások)
-        for (const auto& tgt : instr.targets) {
-            zInfo(QStringLiteral("Finalize target: locationId=%1, placed=%2")
-                      .arg(tgt.locationId.toString()).arg(tgt.placed));
+        // 4) Ellenőrzés: ha nem sikerült minden forrásból elvinni a szükséges mennyiséget, abort
+        if (remaining != 0) {
+            zWarning(QStringLiteral("finalizeRelocation: not enough moved from sources for material %1; remaining=%2")
+                         .arg(instr.materialId.toString()).arg(remaining));
+            return false;
+        }
 
-            if (tgt.placed <= 0) continue;
+        // 5) Cél oldal: a dialogban megadott targets[].placed értékek alapján írjuk be a célokra.
+        remaining = toExecute;
+        for (const auto& tgt : instr.targets) {
+            if (remaining <= 0) break;
+
+            int put = qMin(remaining, tgt.placed);
+            if (put <= 0) continue;
 
             MovementData md;
-            md.fromEntryId = QUuid();          // nincs forrásentry a deposit-only lépéshez
-            md.materialId      = instr.materialId; // material reference is required for aggregation/creation
-            md.toStorageId = tgt.locationId;   // pontos cél storage
-            md.quantity    = tgt.placed;
-            md.comment     = "";//QStringLiteral("Relocation: target");
+            md.fromEntryId = QUuid();         // deposit / aggregate lépésnél nincs explicit fromEntry
+            md.materialId  = instr.materialId;
+            md.toStorageId = tgt.locationId;  // pontos cél storage
+            md.quantity    = put;
+            md.comment     = QStringLiteral("Relocation strict finalize - target");
 
-            zInfo(QStringLiteral("Calling moveStock(target): toStorageId=%1 qty=%2")
-                      .arg(md.toStorageId.toString()).arg(md.quantity));
-
+            zInfo(QStringLiteral("Calling moveStock(target): toStorage=%1 qty=%2").arg(md.toStorageId.toString()).arg(md.quantity));
             if (!moveStock(md, presenter_)) {
                 zWarning(QStringLiteral("finalizeRelocation: moveStock failed for target storage=%1 qty=%2 — aborting")
                              .arg(md.toStorageId.toString()).arg(md.quantity));
                 return false;
             }
 
+            remaining -= put;
         }
 
-        // Instr frissítése
-        instr.executedQuantity = instr.plannedQuantity;
-        instr.isFinalized = true;
+        // 6) Ellenőrzés: minden célra sikeresen írtunk-e
+        if (remaining != 0) {
+            zWarning(QStringLiteral("finalizeRelocation: not enough deposited to targets for material %1; remaining=%2")
+                         .arg(instr.materialId.toString()).arg(remaining));
+            return false;
+        }
 
-        StockRegistry::instance().dumpAll(); // debug
-        zInfo(L("finalizeRelocation suceeded"));
+        // 7) Siker: frissítjük az instr állapotát, auditálunk és persisteljük a registry-t
+        instr.finalizedQuantity = instr.finalizedQuantitySoFar() + toExecute;
+       // instr.isFinalized = true;
+
+        //Auditor::instance().logFinalizeFull(instr.rowId, instr.materialId, toExecute, presenter_->currentUser());
+
+        // moveStock belső műveletei általában hívják a presenter->update_StockEntry/remove_StockEntry,
+        // de itt biztosítjuk a StockRegistry persist meghívását a végén
+        //StockRegistry::instance().persist();
+
+        StockRegistry::instance().dumpAll(); // végeredmény debug
+        zInfo(QStringLiteral("finalizeRelocation succeeded for material %1 executed=%2").arg(instr.materialId.toString()).arg(toExecute));
         return true;
     }
+
+    // Relocation finalize: minden forrás és cél a moveStock()-on keresztül megy
+    // bool finalizeRelocation(RelocationInstruction& instr)
+    // {
+    //     zTrace();
+    //     StockRegistry::instance().dumpAll(); // debug
+
+    //     if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized()) {
+    //         zInfo(L("finalizeRelocation failed"));
+    //         return false;
+    //     }
+
+    //     // Forrásokból levonás (entry-szintű moveStock hívások)
+    //     for (const auto& src : instr.sources) {
+    //         if (src.moved <= 0) continue;
+
+    //         QUuid sourceEntryId = src.entryId;
+    //         std::optional<StockEntry> opt;
+    //         if (!sourceEntryId.isNull()) {
+    //             opt = StockRegistry::instance().findById(sourceEntryId);
+    //             if (!opt) {
+    //                 zWarning(QStringLiteral("finalizeRelocation: source entry not found: %1. Will try resolve by storage+material.")
+    //                              .arg(sourceEntryId.toString()));
+    //             }
+    //         }
+
+    //         // Ha nincs entryId vagy nem található, próbáljuk feloldani storage+material alapján
+    //         if (!opt && !src.locationId.isNull()) {
+    //             // FIX: helyes sorrend: storageId, materialId
+    //             opt = StockRegistry::instance().findFirstByStorageAndMaterial(src.locationId, instr.materialId);
+    //             if (opt) {
+    //                 zInfo(QStringLiteral("finalizeRelocation: resolved source entry from storage: %1 -> entry=%2")
+    //                           .arg(src.locationId.toString()).arg(opt->entryId.toString()));
+    //                 sourceEntryId = opt->entryId;
+    //             } else {
+    //                 zWarning(QStringLiteral("finalizeRelocation: cannot resolve source entry for storage=%1 material=%2; skipping")
+    //                              .arg(src.locationId.toString()).arg(instr.materialId.toString()));
+    //                 continue;
+    //             }
+    //         }
+
+    //         const StockEntry sourceEntry = *opt; // safe: opt valid here
+
+    //         // extra sanity: ensure material matches instr material
+    //         if (sourceEntry.materialId != instr.materialId) {
+    //             zWarning(QStringLiteral("finalizeRelocation: resolved entry material mismatch: entry=%1 material=%2 expected=%3")
+    //                          .arg(sourceEntry.entryId.toString())
+    //                          .arg(sourceEntry.materialId.toString())
+    //                          .arg(instr.materialId.toString()));
+    //             // döntés: folytatod-e vagy skippeled; itt skip
+    //             continue;
+    //         }
+
+    //         MovementData md;
+    //         md.fromEntryId = sourceEntry.entryId;
+    //         md.materialId      = sourceEntry.materialId;
+    //         md.toStorageId = QUuid(); // for consumption/relocation source step we may not have target here
+    //         md.quantity    = src.moved;
+    //         md.comment     = "";//QStringLiteral("Relocation: source");
+
+    //         zInfo(QStringLiteral("Calling moveStock(source): fromEntryId=%1 qty=%2")
+    //                   .arg(md.fromEntryId.toString()).arg(md.quantity));
+
+    //         if (!moveStock(md, presenter_)) {
+    //             zWarning(QStringLiteral("finalizeRelocation: moveStock failed for source entry=%1 qty=%2 — aborting finalization")
+    //                          .arg(md.fromEntryId.toString()).arg(md.quantity));
+    //             // Ha szeretnél: itt lehet rollback/retry logika, jelenleg abort
+    //             return false;
+    //         }
+
+    //     }
+
+    //     // Célokra felírás (deposit / aggregate hívások)
+    //     for (const auto& tgt : instr.targets) {
+    //         zInfo(QStringLiteral("Finalize target: locationId=%1, placed=%2")
+    //                   .arg(tgt.locationId.toString()).arg(tgt.placed));
+
+    //         if (tgt.placed <= 0) continue;
+
+    //         MovementData md;
+    //         md.fromEntryId = QUuid();          // nincs forrásentry a deposit-only lépéshez
+    //         md.materialId      = instr.materialId; // material reference is required for aggregation/creation
+    //         md.toStorageId = tgt.locationId;   // pontos cél storage
+    //         md.quantity    = tgt.placed;
+    //         md.comment     = "";//QStringLiteral("Relocation: target");
+
+    //         zInfo(QStringLiteral("Calling moveStock(target): toStorageId=%1 qty=%2")
+    //                   .arg(md.toStorageId.toString()).arg(md.quantity));
+
+    //         if (!moveStock(md, presenter_)) {
+    //             zWarning(QStringLiteral("finalizeRelocation: moveStock failed for target storage=%1 qty=%2 — aborting")
+    //                          .arg(md.toStorageId.toString()).arg(md.quantity));
+    //             return false;
+    //         }
+
+    //     }
+
+    //     // Instr frissítése
+    //     instr.executedQuantity = instr.plannedQuantity;
+    //     instr.isFinalized = true;
+
+    //     StockRegistry::instance().dumpAll(); // debug
+    //     zInfo(L("finalizeRelocation suceeded"));
+    //     return true;
+    // }
 
 
     // 🔹 Forrás frissítése vagy törlése

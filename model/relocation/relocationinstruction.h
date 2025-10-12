@@ -76,7 +76,7 @@ struct RelocationInstruction {
                           const QUuid& materialId)
         : materialName(materialName),
         plannedQuantity(requiredQty),
-        executedQuantity(movedQty),
+        finalizedQuantity(std::nullopt),
         isSatisfied(uncoveredQty == 0),
         barcode(barcode),
         sourceType(sourceType),
@@ -95,8 +95,9 @@ struct RelocationInstruction {
 
     QString materialName;                     ///< Anyag neve
     int plannedQuantity = 0;                  ///< Igény szerinti mennyiség
-    std::optional<int> executedQuantity;      ///< Ténylegesen végrehajtott mennyiség (Finalize után)
-    bool isFinalized = false;                 ///< Jelzi, hogy a sor véglegesítve lett-e
+    //std::optional<int> dialogTotalMovedQuantity;      ///< Ténylegesen végrehajtott mennyiség (Finalize után)
+    std::optional<int> finalizedQuantity;      ///< Ténylegesen végrehajtott mennyiség (Finalize után)
+    //bool isFinalized = false;                 ///< Jelzi, hogy a sor véglegesítve lett-e
 
     QVector<RelocationSourceEntry> sources;   ///< Forrás tárhelyek
     QVector<RelocationTargetEntry> targets;   ///< Cél tárhelyek
@@ -116,15 +117,10 @@ struct RelocationInstruction {
     int coveredQty = 0;           ///< Igényből ténylegesen lefedett mennyiség
     int usedFromRemaining = 0;    ///< 🔹 Lefedéshez ténylegesen felhasznált maradék
 
-    // 🔹 Megadja, hogy a sor véglegesíthető-e (azaz a dialógusban minden mennyiség meg van adva)
-    bool isReadyToFinalize() const {
-        // Csak akkor finalizálható, ha van executedQuantity, és az pontosan megegyezik a plannedQuantity-vel
-        return executedQuantity.has_value() && executedQuantity.value() == plannedQuantity;
-    }
 
     // 🔹 Megadja, hogy a sor már véglegesítve lett-e
-    bool isAlreadyFinalized() const {
-        return isFinalized;
+    bool isAlreadyFinalized() const noexcept {
+        return finalizedQuantity.has_value();
     }
 
     // 🔹 Megadja, hogy a dialógusban megadott mennyiségek teljesen lefedik-e az igényt
@@ -154,4 +150,71 @@ struct RelocationInstruction {
         return totalMoved > 0 || totalPlaced > 0;
     }
 
+    // feltételezett mezők: AuditSourceType sourceType; QVector<TargetInfo> targets; int plannedQuantity; int availableQuantity;
+    inline bool isLeftover() const {
+        return sourceType == AuditSourceType::Leftover;
+    }
+
+    inline bool hasTarget() const {
+        return !targets.isEmpty();
+    }
+
+    // Összesített, ténylegesen odahelyezett mennyiség a targetekből
+    inline int totalPlaced() const {
+        int sum = 0;
+        for (const auto& t : targets) {
+            sum += t.placed; // a dialog vagy a UI írja ide a mennyiséget, ha van
+        }
+        return sum;
+    }
+
+    // Van-e legalább egy célhoz rendelt, nem‑null placed érték
+    inline bool hasValidTarget() const {
+        for (const auto& t : targets) {
+            if (t.placed > 0) return true;
+        }
+        return false;
+    }
+
+    // Elérhető mennyiség a forrásokból (összes available)
+    inline int availableQuantity() const {
+        int avail = 0;
+        for (const auto& s : sources) {
+            avail += s.available;
+        }
+        return avail;
+    }
+
+
+    // Összesített, már végrehajtott mennyiség (null-safe)
+    inline int finalizedQuantitySoFar() const {
+        return finalizedQuantity.value_or(0);
+    }
+
+    // Maradó (teljesítendő) mennyiség a tervből
+    inline int plannedRemaining() const {
+        int rem = plannedQuantity - finalizedQuantitySoFar();
+        return rem > 0 ? rem : 0;
+    }
+
+    // Szigorú feltétel: csak akkor finalizálható teljesen, ha van elég forrás és célra odarendelt mennyiség a teljes maradó mennyiségre
+    inline bool isReadyToFinalize_Strict() const {
+        if (isLeftover()) return false;
+        if (plannedRemaining() <= 0) return false;                       // nincs mit véglegesíteni
+        if (availableQuantity() < plannedRemaining()) return false;      // nincs elég a forrásokban
+        if (totalPlaced() < plannedRemaining()) return false;            // nincs elég odahelyezett mennyiség a célokon
+        return true;
+    }
+
+    // Ha Strict-et választjuk alapértelmezettként, lehet így:
+    inline bool isReadyToFinalize() const {
+        return isReadyToFinalize_Strict();
+    }
+
+    // returns sum of dialog-level moved amounts from source rows
+    inline int sourcesTotalMovedQuantity() const noexcept {
+        int total = 0;
+        for (const auto& s : sources) total += s.moved;
+        return total;
+    }
 };

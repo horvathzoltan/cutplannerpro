@@ -33,7 +33,7 @@ inline QVector<RelocationQuantityRow> generateSourceRows(const RelocationInstruc
 inline void applySourceRows(RelocationInstruction& instruction,
                             const QVector<RelocationQuantityRow>& rows) {
     instruction.sources.clear();
-    int totalMoved = 0;
+    //int totalMoved = 0;
 
     for (const auto& r : rows) {
         RelocationSourceEntry src;
@@ -47,11 +47,20 @@ inline void applySourceRows(RelocationInstruction& instruction,
         src.moved        = r.selected;
 
         instruction.sources.append(src);
-        totalMoved += r.selected;
+        //totalMoved += r.selected;
     }
 
-    instruction.executedQuantity = totalMoved;
-    instruction.isFinalized = false;
+    // A totalMovedQuantity itt a DIALÓGUS összesített értéke (átmeneti).
+    // Nem perzisztáljuk vele a véglegesített mennyiséget.
+    //instruction.dialogTotalMovedQuantity = totalMoved;
+    // Az alkalmazás pillanatában ne írjuk felül a véglegesített mezőt.
+    // finalizedQuantity legyen nullopt, ha még nincs finalize‑olt érték.
+    instruction.finalizedQuantity = std::nullopt; // csak a finalize során kerül beállításra
+
+    // isFinalized tükrözheti a perzisztált állapotot; dialog apply során maradjon false,
+    // a tényleges finalizeRelocation állítsa be szükség szerint.
+    //instruction.isFinalized = false;
+
 }
 
 
@@ -85,7 +94,7 @@ inline void applyTargetRows(RelocationInstruction& instruction,
         instruction.targets.append(tgt);
     }
 
-    instruction.isFinalized = false;
+   // instruction.isFinalized = false;
 }
 
 } // namespace RelocationQuantityHelpers

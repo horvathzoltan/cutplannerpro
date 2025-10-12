@@ -13,3 +13,7 @@
 [2025-10-12 14:14:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;"Polc 4";RACK64;;;"Relocation: source"
 [2025-10-12 14:14:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;"Polc 4";RACK64;;;"Relocation: source"
 [2025-10-12 14:14:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;;;"Polc 14";CM1WH_RACK1;"Relocation: target"
+[2025-10-12 17:26:44]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;"Polc 14";CM1WH_RACK1;"Polc 4";RACK64;
+[2025-10-12 19:54:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;"Polc 4";RACK64;;;"Relocation strict finalize - source"
+[2025-10-12 19:54:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;"Polc 4";RACK64;;;"Relocation strict finalize - source"
+[2025-10-12 19:54:36]  zoli@pif;"Csőtengely Ø60x6000mm";MAT-ROLL60-6000;1;;;"Polc 14";CM1WH_RACK1;"Relocation strict finalize - target"

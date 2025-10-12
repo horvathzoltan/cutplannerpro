@@ -43,34 +43,34 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
 
     // 🧩 Cellák feltöltése
     vm.cells[AuditTableColumns::Material] =
-        CellFactory::textCell(mat ? mat->name : "Ismeretlen",
+        TableCellViewModel::fromText(mat ? mat->name : "Ismeretlen",
                        mat ? mat->color.name() : "",
                        baseColor, fgColor);
 
     vm.cells[AuditTableColumns::Storage] =
-        CellFactory::textCell(row.storageName,
+        TableCellViewModel::fromText(row.storageName,
             QString("Tároló: %1").arg(row.storageName),
             baseColor, fgColor);
 
 
     vm.cells[AuditTableColumns::Expected] =
-        CellFactory::textCell(AuditCellText::formatExpectedQuantity(row, groupLabel),
+        TableCellViewModel::fromText(AuditCellText::formatExpectedQuantity(row, groupLabel),
             AuditCellTooltips::formatExpectedTooltip(row),
             baseColor, fgColor);
 
     vm.cells[AuditTableColumns::Missing] =
-        CellFactory::textCell(AuditCellText::formatMissingQuantity(row),
+        TableCellViewModel::fromText(AuditCellText::formatMissingQuantity(row),
             AuditCellTooltips::formatMissingTooltip(row),
             baseColor, fgColor);
 
     vm.cells[AuditTableColumns::Status] =
-        CellFactory::textCell(TableUtils::AuditCells::statusText(row),
+        TableCellViewModel::fromText(TableUtils::AuditCells::statusText(row),
              AuditCellTooltips::formatStatusTooltip(row, mat),
              AuditCellColors::resolveStatusColor(row),
              Qt::black);
 
     vm.cells[AuditTableColumns::Barcode] =
-        CellFactory::textCell(row.barcode,
+        TableCellViewModel::fromText(row.barcode,
             QString("Vonalkód: %1").arg(row.barcode),
             baseColor, fgColor);
 

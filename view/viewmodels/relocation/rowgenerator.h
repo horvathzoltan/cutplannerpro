@@ -30,13 +30,13 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
 
     // Anyag
     vm.cells[RelocationPlanTableColumns::Material] =
-        CellFactory::textCell(instr.materialName,
+        TableCellViewModel::fromText(instr.materialName,
                               QString("Anyag: %1").arg(instr.materialName),
                               bgColor, fgColor);
 
     // Vonalkód
     vm.cells[RelocationPlanTableColumns::Barcode] =
-        CellFactory::textCell("—",
+        TableCellViewModel::fromText("—",
                               "Összesítő sor, nincs vonalkód",
                               bgColor, fgColor);
 
@@ -57,19 +57,19 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
     }
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
-        CellFactory::textCell(qtyText,
+        TableCellViewModel::fromText(qtyText,
                               instr.summaryText,
                               bgColor, qtyColor);
 
     // Forrás / Cél
     vm.cells[RelocationPlanTableColumns::Source] =
-        CellFactory::textCell("—", "Összesítő sor", bgColor, fgColor);
+        TableCellViewModel::fromText("—", "Összesítő sor", bgColor, fgColor);
     vm.cells[RelocationPlanTableColumns::Target] =
-        CellFactory::textCell("—", "Összesítő sor", bgColor, fgColor);
+        TableCellViewModel::fromText("—", "Összesítő sor", bgColor, fgColor);
 
     // Típus
     vm.cells[RelocationPlanTableColumns::Type] =
-        CellFactory::textCell("Σ Összesítő",
+        TableCellViewModel::fromText("Σ Összesítő",
                               "Összesítő sor az igény lefedettségéről",
                               bgColor, fgColor);
 
@@ -83,52 +83,41 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
 
     TableRowViewModel vm;
 
-    // Egységes rowId: ha az instruction nem ad id-t, generálunk egyet
     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
-    // Σ Összesítő sor külön kezelve
     if (instr.isSummary) {
         TableRowViewModel sum = generateSumRow(instr);
         sum.rowId = vm.rowId;
         return sum;
     }
 
-    // 🎨 Alapszínek a csoport alapján
     QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
     QColor fgColor   = baseColor.lightness() < 128 ? Qt::white : Qt::black;
 
-    // 📦 Anyag neve
     vm.cells[RelocationPlanTableColumns::Material] =
-        CellFactory::textCell(instr.materialName,
+        TableCellViewModel::fromText(instr.materialName,
                               QString("Anyag: %1").arg(instr.materialName),
                               baseColor, fgColor);
 
-    // 📦 Vonalkód
     vm.cells[RelocationPlanTableColumns::Barcode] =
-        CellFactory::textCell(instr.barcode,
+        TableCellViewModel::fromText(instr.barcode,
                               QString("Vonalkód: %1").arg(instr.barcode),
                               baseColor, fgColor);
 
-    // 🔢 Mennyiség (✔ Megvan, vagy a tervezett darabszám)
     QString qtyText = instr.isSatisfied
                           ? QStringLiteral("✔ Megvan")
                           : QString::number(instr.plannedQuantity);
 
     QColor qtyColor = instr.isSatisfied
-                          ? QColor("#228B22") // zöld pipa
-                          : (instr.plannedQuantity == 0
-                                 ? QColor("#B22222") // piros, ha 0
-                                 : fgColor);
+                          ? QColor("#228B22")
+                          : (instr.plannedQuantity == 0 ? QColor("#B22222") : fgColor);
 
     vm.cells[RelocationPlanTableColumns::Quantity] =
-        CellFactory::textCell(qtyText,
+        TableCellViewModel::fromText(qtyText,
                               QString("Terv szerinti mennyiség: %1").arg(instr.plannedQuantity),
                               baseColor, qtyColor);
 
-    // 🔀 Forrás és cél cellák típustól függően
     if (instr.sourceType == AuditSourceType::Stock) {
-        // --- STOCK ---
-        // Forrás: aggregált string (hely + moved/available), szerkeszthető
         QStringList sourceParts;
         for (const auto& src : instr.sources) {
             sourceParts << QString("%1 (%2/%3)")
@@ -136,7 +125,7 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                 .arg(src.moved)
                 .arg(src.available);
         }
-        QString sourceText = sourceParts.isEmpty() ? "—" : sourceParts.join(", ");
+        QString sourceText = sourceParts.isEmpty() ? QStringLiteral("—") : sourceParts.join(", ");
         vm.cells[RelocationPlanTableColumns::Source] =
             CellGenerator::createEditableCell(vm.rowId,
                                               sourceText,
@@ -144,14 +133,13 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                                               receiver,
                                               "source");
 
-        // Cél: aggregált string (hely + placed), szerkeszthető
         QStringList targetParts;
         for (const auto& tgt : instr.targets) {
             targetParts << QString("%1 (%2)")
             .arg(tgt.locationName)
                 .arg(tgt.placed);
         }
-        QString targetText = targetParts.isEmpty() ? "—" : targetParts.join(", ");
+        QString targetText = targetParts.isEmpty() ? QStringLiteral("—") : targetParts.join(", ");
         vm.cells[RelocationPlanTableColumns::Target] =
             CellGenerator::createEditableCell(vm.rowId,
                                               targetText,
@@ -159,61 +147,81 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                                               receiver,
                                               "target");
     } else {
-        // --- HULLÓ ---
-        // Forrás: csak a hely neve, nincs (x/y), nincs gomb
-        QString sourceText = instr.sources.isEmpty()
-                                 ? "—"
-                                 : instr.sources.first().locationName;
+        QString sourceText = instr.sources.isEmpty() ? QStringLiteral("—") : instr.sources.first().locationName;
         vm.cells[RelocationPlanTableColumns::Source] =
-            CellFactory::textCell(sourceText,
+            TableCellViewModel::fromText(sourceText,
                                   QString("Hulló forrás: %1").arg(sourceText),
                                   baseColor, fgColor);
 
-        // Cél: mindig üres, nincs gomb
         vm.cells[RelocationPlanTableColumns::Target] =
-            CellFactory::textCell("—",
-                                  "Hullónál nincs cél",
+            TableCellViewModel::fromText(QStringLiteral("—"),
+                                  QStringLiteral("Hullónál nincs cél"),
                                   baseColor, fgColor);
     }
 
-    // 🏷️ Típus (Stock vagy Hulló)
     QString typeText = (instr.sourceType == AuditSourceType::Stock)
                            ? QStringLiteral("📦 Stock")
                            : QStringLiteral("♻️ Hulló");
     vm.cells[RelocationPlanTableColumns::Type] =
-        CellFactory::textCell(typeText,
+        TableCellViewModel::fromText(typeText,
                               QString("Forrás típusa: %1").arg(typeText),
                               baseColor, fgColor);
 
-    // Finalize gomb cella
-    QPushButton* btn = new QPushButton("Finalize");
-    btn->setCursor(Qt::PointingHandCursor);
-    btn->setToolTip("A sor véglegesíthető, ha minden mennyiség meg van adva.");
+    // Finalize gomb cella (frissített logika)
+    if (instr.sourceType == AuditSourceType::Stock) {
+        QPushButton* btn = new QPushButton("Finalize");
+        btn->setCursor(Qt::PointingHandCursor);
 
-    if (instr.isAlreadyFinalized()) {
-        btn->setText("✔");
-        btn->setEnabled(false);
-        btn->setStyleSheet("background-color: #ccc; color: #666;");
-    } else if (instr.isReadyToFinalize()) {
-        btn->setEnabled(true);
-        btn->setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;");
+        qInfo() << "Row" << instr.rowId
+                << "isFinalized=" << instr.isAlreadyFinalized()
+                << "isLeftover=" << instr.isLeftover()
+                << "hasTarget=" << instr.hasTarget()
+                << "targets.size=" << instr.targets.size()
+                << "planned=" << instr.plannedQuantity
+                << "available=" << instr.availableQuantity();
+
+        if (instr.isAlreadyFinalized()) {
+            btn->setText("✔");
+            btn->setEnabled(false);
+            btn->setStyleSheet("background-color: #ccc; color: #666;");
+            btn->setToolTip(QStringLiteral("A sor már véglegesítve lett."));
+        } else if (instr.isLeftover()) {
+            btn->setEnabled(false);
+            btn->setStyleSheet("background-color: #eee; color: #999;");
+            btn->setToolTip(QStringLiteral("Hulladékot nem finalizálunk."));
+        } else if (!instr.hasTarget()) {
+            btn->setEnabled(false);
+            btn->setStyleSheet("background-color: #eee; color: #999;");
+            btn->setToolTip(QStringLiteral("Nincs cél. Hozz létre célt vagy válassz meglévőt a sor szerkesztésével."));
+        } else if (!instr.isReadyToFinalize()) {
+            btn->setEnabled(false);
+            btn->setStyleSheet("background-color: #eee; color: #999;");
+            btn->setToolTip(QStringLiteral("A forrás nem tartalmaz elegendő mennyiséget a véglegesítéshez."));
+        } else {
+            btn->setEnabled(true);
+            btn->setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;");
+            btn->setToolTip(QStringLiteral("A sor véglegesíthető."));
+        }
+
+        QObject::connect(btn, &QPushButton::clicked, receiver, [receiver, rowId = instr.rowId]() {
+            QMetaObject::invokeMethod(receiver, "finalizeRow", Qt::QueuedConnection,
+                                      Q_ARG(QUuid, rowId));
+        });
+
+        vm.cells[RelocationPlanTableColumns::Finalize] =
+            TableCellViewModel::fromWidget(btn, QStringLiteral("Finalize gomb"));
     } else {
-        btn->setEnabled(false);
-        btn->setStyleSheet("background-color: #eee; color: #999;");
+        // Hullónál ne legyen Finalize gomb — üres, nem interaktív cella
+        vm.cells[RelocationPlanTableColumns::Finalize] =
+            TableCellViewModel::fromText("-",
+                                  QStringLiteral("Nincs finalize hullónál"),
+                                  baseColor, fgColor);
     }
 
-    // 🔗 Bekötés
-    QObject::connect(btn, &QPushButton::clicked, receiver, [receiver, rowId = instr.rowId]() {
-        QMetaObject::invokeMethod(receiver, "finalizeRow", Qt::QueuedConnection,
-                                  Q_ARG(QUuid, rowId));
-    });
-
-    // Cella beállítása
-    vm.cells[RelocationPlanTableColumns::Finalize] =
-        TableCellViewModel::fromWidget(btn, "Finalize gomb");
 
     return vm;
 }
+
 
 
 } // namespace RelocationRowViewModelGenerator

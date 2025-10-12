@@ -110,7 +110,8 @@ inline QVector<RelocationInstruction> buildPlan(
                                     materialId);
         instr.sources = sourceList;
         instr.targets = targetList;
-        instr.executedQuantity = 0;
+        //instr.dialogTotalMovedQuantity = 0;
+        instr.finalizedQuantity = std::nullopt; // még nincs finalize-olva;
         plan.append(instr);
 
         // 📊 Összesítő sor
@@ -182,7 +183,8 @@ inline QVector<RelocationInstruction> buildPlan(
             src.moved        = 0;                 // nem mozgatjuk
             instr.sources.append(src);
 
-            instr.executedQuantity = 0;
+            //instr.dialogTotalMovedQuantity = 0;
+            instr.finalizedQuantity = std::nullopt;
             plan.push_back(instr);
         }
     }

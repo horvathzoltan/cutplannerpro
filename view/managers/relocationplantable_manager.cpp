@@ -139,12 +139,12 @@ void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode
 
     // közvetlenül az instruction referencia után
     zInfo("---- Instruction full dump ----");
-    zInfo(QString("materialId=%1 materialName=%2 plannedQuantity=%3 executedQuantity=%4 isFinalized=%5 isSummary=%6")
+    zInfo(QString("materialId=%1 materialName=%2 plannedQuantity=%3 totalMovedQuantity=%4 isFinalized=%5 isSummary=%6")
               .arg(instruction.materialId.toString())
               .arg(instruction.materialName)
               .arg(instruction.plannedQuantity)
-              .arg(instruction.executedQuantity.has_value() ? QString::number(instruction.executedQuantity.value()) : QString("N/A"))
-              .arg(instruction.isFinalized)
+              .arg(instruction.sourcesTotalMovedQuantity())
+              .arg(instruction.isAlreadyFinalized())
               .arg(instruction.isSummary));
     zInfo(QString("isSatisfied=%1 barcode=%2 sourceType=%3")
               .arg(instruction.isSatisfied)
@@ -271,45 +271,128 @@ void RelocationPlanTableManager::editRow(const QUuid& rowId, const QString& mode
 }
 
 void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
-
     // 🔹 Keressük meg a sort
     auto it = _planRowMap.find(rowId);
-    if (it == _planRowMap.end())
+    if (it == _planRowMap.end()) {
+        zWarning(QStringLiteral("finalizeRow: row not found %1").arg(rowId.toString()));
         return;
+    }
 
     RelocationInstruction& instr = it.value();
 
+    // Minden targetnek legyen storage
     for (const auto& tgt : instr.targets) {
         if (!tgt.locationId.isNull()) continue;
-        qWarning() << "❌ finalizeRow: target locationId is NULL for material" << instr.materialId;
+        zWarning(QStringLiteral("❌ finalizeRow: target locationId is NULL for material %1").arg(instr.materialId.toString()));
         return;
     }
 
-    // 🔹 Csak akkor futtatjuk, ha tényleg finalizálható
-    if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized())
+    // Ne fusson, ha már finalizálták
+    if (instr.isAlreadyFinalized()) {
+        zInfo(QStringLiteral("finalizeRow: already finalized for row %1").arg(rowId.toString()));
         return;
+    }
 
-    zInfo("---- Finalize instruction dump ----");
+    // Strict előfeltétel (végső gate)
+    if (!instr.isReadyToFinalize_Strict()) {
+        zInfo(QStringLiteral("finalizeRow: strict preconditions not met for row %1; plannedRemaining=%2 available=%3 totalPlaced=%4")
+                  .arg(rowId.toString())
+                  .arg(instr.plannedRemaining())
+                  .arg(instr.availableQuantity())
+                  .arg(instr.totalPlaced()));
+        return;
+    }
+
+    const int toExecute = instr.plannedRemaining();
+    if (toExecute <= 0) {
+        zWarning(QStringLiteral("finalizeRow: nothing to execute for row %1").arg(rowId.toString()));
+        return;
+    }
+
+    // Debug dump
+    zInfo(QStringLiteral("---- Finalize instruction dump for row %1 ----").arg(rowId.toString()));
     for (const auto& src : instr.sources) {
-        zInfo(QString("Finalize source: entryId=%1, moved=%2, locationId=%3")
+        zInfo(QStringLiteral("Finalize source: entryId=%1, moved=%2, available=%3, locationId=%4")
                   .arg(src.entryId.toString())
                   .arg(src.moved)
+                  .arg(src.available)
                   .arg(src.locationId.toString()));
     }
-
     for (const auto& tgt : instr.targets) {
-        zInfo(QString("Finalize target: locationId=%1, placed=%2")
+        zInfo(QStringLiteral("Finalize target: locationId=%1, placed=%2")
                   .arg(tgt.locationId.toString())
                   .arg(tgt.placed));
     }
-    zInfo("---- End of finalize dump ----");
+    zInfo(QStringLiteral("---- End of finalize dump for row %1 ----").arg(rowId.toString()));
 
-    // 🔹 Service példány presenter-rel
+    // Szolgáltatás meghívása, opcionális requestId mint idempotencia token
+    //const QString requestId = QString::number(QDateTime::currentMSecsSinceEpoch());
     StockMovementService svc(_presenter);
     if (svc.finalizeRelocation(instr)) {
-        updateRow(rowId, instr); // UI frissítés
+        // Sikeres perzisztálás: frissítjük a UI-t a szolgáltatás által esetlegesen módosított instr alapján
+        updateRow(rowId, instr);
+        zInfo(QStringLiteral("finalizeRow: success for row %1 material=%2 totalMovedQuantity=%3")
+                  .arg(rowId.toString()).arg(instr.materialId.toString()).arg(instr.sourcesTotalMovedQuantity()));
+    } else {
+        // Részletes hibalog: mi próbálkozott, mi volt a várt állapot, mi hiányzott
+        zError(QStringLiteral("finalizeRow: service failed to finalize row %1 material=%2 plannedRemaining=%3 available=%4 totalPlaced=%5")
+                   .arg(rowId.toString())
+                   .arg(instr.materialId.toString())
+                   .arg(instr.plannedRemaining())
+                   .arg(instr.availableQuantity())
+                   .arg(instr.totalPlaced()));
+
+        // Opcionális: presenternek jelezve a sor újratöltését, hogy az UI a perzisztált állapotot mutassa
+        /*f (_presenter) {
+            QMetaObject::invokeMethod(_presenter, "refreshRow", Qt::QueuedConnection, Q_ARG(QUuid, rowId));
+        }*/
     }
+
+
+    // Sikeres perzisztálás után frissítjük a UI-t a szolgáltatás által esetlegesen módosított instr alapján
+    updateRow(rowId, instr);
+    zInfo(QStringLiteral("finalizeRow: success for row %1 executed=%2").arg(rowId.toString()).arg(toExecute));
 }
 
+// void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
+
+//     // 🔹 Keressük meg a sort
+//     auto it = _planRowMap.find(rowId);
+//     if (it == _planRowMap.end())
+//         return;
+
+//     RelocationInstruction& instr = it.value();
+
+//     for (const auto& tgt : instr.targets) {
+//         if (!tgt.locationId.isNull()) continue;
+//         qWarning() << "❌ finalizeRow: target locationId is NULL for material" << instr.materialId;
+//         return;
+//     }
+
+//     // 🔹 Csak akkor futtatjuk, ha tényleg finalizálható
+//     if (!instr.isReadyToFinalize() || instr.isAlreadyFinalized())
+//         return;
+
+//     zInfo("---- Finalize instruction dump ----");
+//     for (const auto& src : instr.sources) {
+//         zInfo(QString("Finalize source: entryId=%1, moved=%2, locationId=%3")
+//                   .arg(src.entryId.toString())
+//                   .arg(src.moved)
+//                   .arg(src.locationId.toString()));
+//     }
+
+//     for (const auto& tgt : instr.targets) {
+//         zInfo(QString("Finalize target: locationId=%1, placed=%2")
+//                   .arg(tgt.locationId.toString())
+//                   .arg(tgt.placed));
+//     }
+//     zInfo("---- End of finalize dump ----");
+
+//     // 🔹 Service példány presenter-rel
+//     StockMovementService svc(_presenter);
+//     if (svc.finalizeRelocation(instr)) {
+//         updateRow(rowId, instr); // UI frissítés
+//     }
+// }
 
 
