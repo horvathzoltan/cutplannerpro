@@ -50,16 +50,17 @@ void StockRegistry::persist() const {
     const QString path = FileNameHelper::instance().getStockCsvFile();
     if (path.isEmpty()) return;
 
-    // készítünk egy gyors snapshotot lock alatt, majd az I/O-t lock nélkül végezzük
-    QVector<StockEntry> snapshot;
+    QVector<StockEntry> toWrite;
     {
         ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
-        snapshot = _data; // gyors másolat
-    } // lock feloldódik itt
+        // swap _data és toWrite: gyors O(1) művelet, nincs elemmásolás
+        toWrite = _data; // másolat, _data változatlan marad        // vagy: toWrite = std::move(const_cast<QVector<StockEntry>&>(_data)); _data.clear();
+    } // lock feloldva itt
 
-    // lassú fájlírás lock nélkül
-    StockRepository::saveToCSV(snapshot, path);
+    // I/O lock nélkül; ha szükséges, visszateszünk adatot vagy naplózunk
+    StockRepository::saveToCSV(toWrite, path);
 }
+
 
 
 void StockRegistry::consumeEntry(const QUuid& materialId)
@@ -178,8 +179,11 @@ QVector<StockEntry> StockRegistry::readAll() const {
     return _data;
 }
 
-void StockRegistry::setData(const QVector<StockEntry>& v) {
+void StockRegistry::setData(const QVector<StockEntry>& v, bool doPersist) {
     ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     _data = v;
-    persist();
+
+    if (doPersist) {
+        persist();
+    }
 }

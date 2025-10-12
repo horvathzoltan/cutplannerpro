@@ -13,7 +13,7 @@ public:
     /// 📥 Betöltés fájlból és feltöltés a regisztrációba
     static bool loadFromCSV(StockRegistry& registry);
 
-    static bool saveToCSV(const StockRegistry &registry, const QString &filePath);
+    //static bool saveToCSV(const StockRegistry &registry, const QString &filePath);
     // új overload: közvetlen snapshot mentése (lock-mentes I/O lehetővé tétele)
     static bool saveToCSV(const QVector<StockEntry>& snapshot, const QString& filePath);
     static bool saveToSettingsPath(const StockRegistry &registry);

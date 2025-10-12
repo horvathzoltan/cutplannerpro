@@ -107,7 +107,7 @@ public:
             md.materialId      = sourceEntry.materialId;
             md.toStorageId = QUuid(); // for consumption/relocation source step we may not have target here
             md.quantity    = src.moved;
-            md.comment     = QStringLiteral("Relocation: source");
+            md.comment     = "";//QStringLiteral("Relocation: source");
 
             zInfo(QStringLiteral("Calling moveStock(source): fromEntryId=%1 qty=%2")
                       .arg(md.fromEntryId.toString()).arg(md.quantity));
@@ -133,7 +133,7 @@ public:
             md.materialId      = instr.materialId; // material reference is required for aggregation/creation
             md.toStorageId = tgt.locationId;   // pontos cél storage
             md.quantity    = tgt.placed;
-            md.comment     = QStringLiteral("Relocation: target");
+            md.comment     = "";//QStringLiteral("Relocation: target");
 
             zInfo(QStringLiteral("Calling moveStock(target): toStorageId=%1 qty=%2")
                       .arg(md.toStorageId.toString()).arg(md.quantity));

@@ -4,6 +4,7 @@
 #include <QFile>
 
 // Megjegyzés: a parser automatikusan kihagyja az üres sorokat a fájl feldolgozása során.
+/*
 QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
 {
     QList<QVector<QString>> rows;
@@ -65,6 +66,99 @@ QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separ
 
         fields.append(parseCell(s)); // Utolsó cella hozzáadása
         rows.append(fields);
+    }
+
+    return rows;
+}*/
+
+QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
+{
+    QList<QVector<QString>> rows;
+    if (!st) return rows;
+
+    QString partialLine;
+    while (!st->atEnd()) {
+        QString line = st->readLine();
+
+        // Üres sorok kihagyása
+        if (partialLine.isEmpty() && line.trimmed().isEmpty()) continue;
+
+        // Accumulate lines until quotes are balanced (handles multiline quoted cells)
+        if (partialLine.isEmpty()) partialLine = line;
+        else partialLine += '\n' + line;
+
+        // Count quote characters, but ignore escaped double quotes ""
+        int quoteCount = 0;
+        for (int i = 0; i < partialLine.size(); ++i) {
+            if (partialLine[i] == '"') {
+                // if next char is also '"', skip the pair as escaped quote
+                if (i + 1 < partialLine.size() && partialLine[i + 1] == '"') {
+                    ++i; // skip escaped quote pair
+                    continue;
+                }
+                ++quoteCount;
+            }
+        }
+
+        // If odd number of quotes -> still inside quoted field, read next line
+        if ((quoteCount & 1) != 0) {
+            // continue reading more lines to complete the quoted field
+            continue;
+        }
+
+        // Now partialLine contains a full logical CSV line; parse fields
+        QVector<QString> fields;
+        QString cell;
+        bool inQuote = false;
+
+        for (int i = 0; i < partialLine.size(); ++i) {
+            QChar ch = partialLine[i];
+
+            if (ch == '"') {
+                if (!inQuote) {
+                    inQuote = true;
+                    // if quote is immediately followed by another quote, it's an escaped quote start,
+                    // but we'll handle escaped quotes in the inQuote branch below
+                    continue;
+                } else {
+                    // if next char is also a quote -> escaped quote
+                    if (i + 1 < partialLine.size() && partialLine[i + 1] == '"') {
+                        cell += '"';
+                        ++i;
+                        continue;
+                    } else {
+                        inQuote = false;
+                        continue;
+                    }
+                }
+            }
+
+            if (!inQuote && ch == separator) {
+                fields.append(parseCell(cell));
+                cell.clear();
+            } else {
+                // handle backslash escapes outside quotes as before
+                if (!inQuote && ch == '\\' && i + 1 < partialLine.size()) {
+                    QChar next = partialLine[i + 1];
+                    switch (next.unicode()) {
+                    case 'n': cell += '\n'; break;
+                    case 't': cell += '\t'; break;
+                    case '\\': cell += '\\'; break;
+                    case '"': cell += '"'; break;
+                    default: cell += ch;
+                    }
+                    ++i;
+                } else {
+                    cell += ch;
+                }
+            }
+        }
+
+        fields.append(parseCell(cell));
+        rows.append(fields);
+
+        // reset for next logical line
+        partialLine.clear();
     }
 
     return rows;

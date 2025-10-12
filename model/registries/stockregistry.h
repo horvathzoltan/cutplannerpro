@@ -34,7 +34,7 @@ public:
     // convenience
     bool isEmpty() const;
     QVector<StockEntry> readAll() const;
-    void setData(const QVector<StockEntry>& v);
+    void setData(const QVector<StockEntry>& v, bool doPersist = true);
 
 private:
     StockRegistry() = default;
