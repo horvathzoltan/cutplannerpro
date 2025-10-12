@@ -104,8 +104,10 @@ HEADERS += \
     common/logger.h \
     common/logmeta.h \
     common/materialutils.h \
+    common/movementdatahelper.h \
     common/qteventutil.h \
     common/quantityparser.h \
+    common/scopedperthreadlock.h \
     common/styleprofiles/auditcolors.h \
     common/styleprofiles/relocationcolors.h \
     common/tablerowstyler/materialrowstyler.h \

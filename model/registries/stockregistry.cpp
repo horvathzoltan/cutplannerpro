@@ -1,34 +1,30 @@
-#include "stockregistry.h"
-//#include <ranges>
+#include "model/registries/stockregistry.h"
+#include <algorithm>
+#include <QDebug>
+
 #include <common/filenamehelper.h>
 #include <model/repositories/stockrepository.h>
+#include "common/scopedperthreadlock.h" // a korábban beillesztett általános wrapper
 
-StockRegistry &StockRegistry::instance() {
+StockRegistry& StockRegistry::instance() {
     static StockRegistry reg;
     return reg;
 }
 
 void StockRegistry::registerEntry(const StockEntry& entry) {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     _data.append(entry);
-    persist(); // 💾 Automatikus mentés
+    persist();
 }
 
 void StockRegistry::clearAll() {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     _data.clear();
-    persist(); // 💾 Állapot mentés törlés után
+    persist();
 }
 
-// bool StockRegistry::removeByMaterialId(const QUuid& id) {
-//     const int index = std::ranges::find_if(_data, [&](const auto& s) { return s.materialId == id; }) - _data.begin();
-//     if (index >= 0 && index < _data.size()) {
-//         _data.removeEntry(index);
-//         persist(); // 💾 Mentés csak ha történt törlés
-//         return true;
-//     }
-//     return false;
-// }
 void StockRegistry::removeEntry(const QUuid& id) {
-    // 🗑️ Törlés egyedi azonosító alapján
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     auto it = std::remove_if(_data.begin(), _data.end(),
                              [&](const StockEntry& r) {
                                  return r.entryId == id;
@@ -36,12 +32,12 @@ void StockRegistry::removeEntry(const QUuid& id) {
 
     if (it != _data.end()) {
         _data.erase(it, _data.end());
-        persist(); // 💾 Mentés csak akkor, ha történt törlés
+        persist();
     }
 }
 
-
 QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     QVector<StockEntry> result;
     for (const auto& entry : _data) {
         if (entry.materialGroupName() == name)
@@ -51,30 +47,37 @@ QVector<StockEntry> StockRegistry::findByGroupName(const QString& name) const {
 }
 
 void StockRegistry::persist() const {
-    // if(!isPersist){
-    //     return; // 🛑 Ha nem kell perzisztálni, akkor kilépünk
-    // }
-    const QString path = FileNameHelper::instance().getStockCsvFile(); // 🔧 Fix útvonal
-    if (!path.isEmpty())
-        StockRepository::saveToCSV(*this, path);
-}
+    const QString path = FileNameHelper::instance().getStockCsvFile();
+    if (path.isEmpty()) return;
 
+    // készítünk egy gyors snapshotot lock alatt, majd az I/O-t lock nélkül végezzük
+    QVector<StockEntry> snapshot;
+    {
+        ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+        snapshot = _data; // gyors másolat
+    } // lock feloldódik itt
+
+    // lassú fájlírás lock nélkül
+    StockRepository::saveToCSV(snapshot, path);
+}
 
 
 void StockRegistry::consumeEntry(const QUuid& materialId)
 {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     for (StockEntry& entry : _data) {
         if (entry.materialId == materialId) {
             if (entry.quantity > 0) {
-                entry.quantity -= 1; // 🧮 Levonunk egy darabot
-                persist(); // 💾 Készletváltozás mentése
+                entry.quantity -= 1;
+                persist();
             }
-            break; // ✅ Csak az első egyezőre reagálunk
+            break;
         }
     }
 }
 
 std::optional<StockEntry> StockRegistry::findById(const QUuid& entryId) const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     for (const auto& r : _data) {
         if (r.entryId == entryId)
             return r;
@@ -83,24 +86,19 @@ std::optional<StockEntry> StockRegistry::findById(const QUuid& entryId) const {
 }
 
 bool StockRegistry::updateEntry(const StockEntry& updated) {
-    // 🔍 Érvényesség ellenőrzése
-    //if (!updated.isValid())
-    //    return false;
-
-    // 🔄 Megkeressük a megfelelő requestId-t a vektorban
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     for (auto& r : _data) {
         if (r.entryId == updated.entryId) {
-            r = updated; // ✏️ Frissítés
-            persist();   // 💾 Mentés
+            r = updated;
+            persist();
             return true;
         }
     }
-
-    // ❌ Nem találtuk meg az adott requestId-t
     return false;
 }
 
 QVector<StockEntry> StockRegistry::findByMaterialId(const QUuid& materialId) const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
     QVector<StockEntry> result;
     for (const auto& entry : _data) {
         if (entry.materialId == materialId) {
@@ -108,4 +106,80 @@ QVector<StockEntry> StockRegistry::findByMaterialId(const QUuid& materialId) con
         }
     }
     return result;
+}
+
+std::optional<StockEntry> StockRegistry::findByMaterialAndStorage(const QUuid& materialId,
+                                                                  const QUuid& storageId) const
+{
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    qInfo() << QStringLiteral("🔎 findByMaterialAndStorage keresés indul: materialId=%1, storageId=%2")
+                   .arg(materialId.toString(), storageId.toString());
+
+    for (const auto& entry : _data) {
+        if (entry.materialId == materialId && entry.storageId == storageId) {
+            qInfo() << QStringLiteral("✅ Találat: entryId=%1 aggregálható").arg(entry.entryId.toString());
+            return entry;
+        }
+    }
+
+    qInfo() << QStringLiteral("❌ Nincs találat aggregáláshoz");
+    return std::nullopt;
+}
+
+void StockRegistry::dumpAll() const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    qInfo() << "📋 StockRegistry dump:";
+    for (const auto& entry : _data) {
+        qInfo() << QStringLiteral("  entryId=%1, materialId=%2, storageId=%3, qty=%4")
+        .arg(entry.entryId.toString(),
+             entry.materialId.toString(),
+             entry.storageId.toString())
+            .arg(entry.quantity);
+    }
+}
+
+QVector<StockEntry> StockRegistry::findAllByMaterialAndStorageSorted(const QUuid& materialId,
+                                                                     const QUuid& storageId) const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    QVector<StockEntry> result;
+    result.reserve(_data.size());
+    for (const auto& e : _data) {
+        if (e.materialId == materialId && e.storageId == storageId) result.append(e);
+    }
+    std::sort(result.begin(), result.end(), [](const StockEntry& a, const StockEntry& b){
+        if (a.quantity != b.quantity) return a.quantity < b.quantity;
+        return a.entryId.toRfc4122() < b.entryId.toRfc4122();
+    });
+    return result;
+}
+
+std::optional<StockEntry> StockRegistry::findFirstByStorageAndMaterial(const QUuid& storageId,
+                                                                       const QUuid& materialId) const
+{
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    const StockEntry* best = nullptr;
+    for (const auto& e : _data) {
+        if (e.storageId != storageId || e.materialId != materialId) continue;
+        if (!best || e.quantity < best->quantity) {
+            best = &e;
+        }
+    }
+    if (!best) return std::nullopt;
+    return *best;
+}
+
+bool StockRegistry::isEmpty() const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    return _data.isEmpty();
+}
+
+QVector<StockEntry> StockRegistry::readAll() const {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    return _data;
+}
+
+void StockRegistry::setData(const QVector<StockEntry>& v) {
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+    _data = v;
+    persist();
 }

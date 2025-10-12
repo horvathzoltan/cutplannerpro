@@ -11,7 +11,8 @@ public:
     // Map: rowId -> shared_ptr<AuditContext>
     static QHash<QUuid, std::shared_ptr<AuditContext>>
     buildFromRows(const QList<StorageAuditRow>& rows, const QMap<QUuid,int>& requiredStockMaterials);
-
-//private:
     static QString makeGroupKey(const StorageAuditRow& r);
+
+private:
+    static const bool _isVerbose = false;
 };

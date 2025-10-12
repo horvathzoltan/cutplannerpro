@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/movementdatahelper.h"
 #include "model/movementdata.h"
 #include "../common/logmeta.h"
 #include "common/../common/csvhelper.h"
@@ -23,17 +24,18 @@ struct MovementLogModel {
     }
 
     QString toCsvString() const {
+        auto movement_log = MovementDataHelper::fromMovementData(movement);
         return QString("%1;%2;%3;%4;%5;%6;%7;%8;%9")
         .arg(meta.toString())
-            .arg(CsvHelper::escape(movement.itemName))
-            .arg(movement.itemBarcode)
+            .arg(CsvHelper::escape(movement_log.itemName))
+            .arg(movement_log.itemBarcode)
             .arg(movement.quantity)
             // pl. dátum, user, host
-            .arg(CsvHelper::escape(movement.fromStorageName))
-            .arg(movement.fromBarcode)
+            .arg(CsvHelper::escape(movement_log.fromStorageName))
+            .arg(movement_log.fromBarcode)
 
-            .arg(CsvHelper::escape(movement.toStorageName))
-            .arg(movement.toBarcode)
+            .arg(CsvHelper::escape(movement_log.toStorageName))
+            .arg(movement_log.toBarcode)
 
             .arg(CsvHelper::escape(movement.comment));
     }

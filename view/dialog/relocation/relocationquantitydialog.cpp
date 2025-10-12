@@ -99,6 +99,7 @@ QVector<RelocationQuantityRow> RelocationQuantityDialog::getRows() const {
         RelocationQuantityRow r;
         r.storageName = table->item(i, 0)->text();
         r.available   = table->item(i, 1)->text().toInt();
+        r.storageId = _model.rows[i].storageId; // megtartjuk az eredetit
 
         if (auto* w = table->cellWidget(i, 2)) {
             if (auto* spin = qobject_cast<QSpinBox*>(w)) {

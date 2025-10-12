@@ -17,7 +17,8 @@
  * - isTarget: jelzi, hogy a sor cél típusú-e (true = cél, false = forrás)
  */
 struct RelocationQuantityRow {
-    QUuid entryId;          // 🔹 új mező: forrás StockEntry azonosítója
+    QUuid storageId;       ///< 🔹 a tárhely egyedi azonosítója
+    QUuid entryId;         ///< forrás StockEntry azonosítója - a célban nincsen ilyen, a mozgatás során jön majd létre, vagy aggregál
     QString storageName;   ///< Tárhely neve (pl. "Polc 14")
     int available = 0;     ///< Elérhető készlet (csak forrás esetén releváns)
     int current = 0;       ///< Jelenlegi mennyiség (csak cél esetén releváns)

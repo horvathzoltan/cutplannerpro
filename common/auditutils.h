@@ -9,79 +9,7 @@
 
 namespace AuditUtils {
 
-/**
- * @brief Injektálja a vágási tervből származó elvárt mennyiségeket (pickingQuantity)
- *        és optimalizációs státuszokat az audit sorokba.
- *
- * Logika:
- * - Stock forrás: minden CutPlan egy rúd → 1 db igény
- * - Leftover forrás: minden hulló egyedi → 1 db igény, rodId alapján
- */
-// inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plans,
-//                                      QVector<StorageAuditRow>* auditRows)
-// {
-//     if (!auditRows) {
-//         zWarning(L("⚠️ Audit sorok injektálása sikertelen: auditRows=nullptr"));
-//         return;
-//     }
-
-//     // 🔹 Összesített anyagigény stock esetén (materialId → darabszám)
-//     QMap<QUuid, int> requiredStockMaterials;
-//     for (const auto& plan : plans) {
-//         if (plan.source == Cutting::Plan::Source::Stock) {
-//             requiredStockMaterials[plan.materialId] += 1; // minden CutPlan = 1 rúd
-//         }
-//     }
-
-//     // 🔄 Audit sorok frissítése a vágási terv alapján
-//     for (auto& row : *auditRows) {
-//         switch (row.sourceType) {
-//         case AuditSourceType::Leftover: {
-//             // Hulló audit: barcode alapján összevetés
-//             for (const auto& plan : plans) {
-//                 if (plan.source == Cutting::Plan::Source::Reusable &&
-//                     plan.rodId == row.barcode) {
-//                     row.isInOptimization = true;
-//                     row.pickingQuantity  = 1; // hullók mindig 1 db
-//                     row.presence         = AuditPresence::Present;
-//                     break;
-//                 }
-//             }
-//             break;
-//         }
-//         case AuditSourceType::Stock: {
-//             if (requiredStockMaterials.contains(row.materialId)) {
-//                 int& remaining = requiredStockMaterials[row.materialId];
-//                 if (remaining > 0) {
-//                     row.pickingQuantity = 1;
-//                     row.isInOptimization = true;
-//                     row.presence = (row.actualQuantity >= 1)
-//                                        ? AuditPresence::Present
-//                                        : AuditPresence::Missing;
-//                     --remaining;
-//                 }
-//             }
-//             break;
-//         }
-
-//         default:
-//             // Egyéb forrástípusok (ha lesznek a jövőben)
-//             row.isInOptimization = false;
-//             break;
-//         }
-
-//         // 🔍 Debug log minden sorhoz
-//         zInfo(QString("[AuditInject] rowId=%1 | matId=%2 | expected(picking)=%3 | actual=%4 | inOpt=%5")
-//                   .arg(row.rowId.toString())
-//                   .arg(row.materialId.toString())
-//                   .arg(row.pickingQuantity)
-//                   .arg(row.actualQuantity)
-//                   .arg(row.isInOptimization));
-//     }
-
-//     zInfo(L("🔄 Audit sorok frissítve a vágási terv alapján — összes sor: %1")
-//               .arg(auditRows->size()));
-// }
+static const bool _isVerbose = false;
 
 inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plans,
                                      QVector<StorageAuditRow>* auditRows)
@@ -149,39 +77,41 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
             break;
         }
 
-        // 📋 Debug: injektált értékek soronként
-        zInfo(QString("[AuditInject] rowId=%1 | matId=%2 | expected(picking)=%3 | actual=%4 | inOpt=%5")
-                  .arg(row.rowId.toString())
-                  .arg(row.materialId.toString())
-                  .arg(row.pickingQuantity)
-                  .arg(row.actualQuantity)
-                  .arg(row.isInOptimization));
+        if(_isVerbose){
+            // 📋 Debug: injektált értékek soronként
+            zInfo(QString("[AuditInject] rowId=%1 | matId=%2 | expected(picking)=%3 | actual=%4 | inOpt=%5")
+                      .arg(row.rowId.toString())
+                      .arg(row.materialId.toString())
+                      .arg(row.pickingQuantity)
+                      .arg(row.actualQuantity)
+                      .arg(row.isInOptimization));
 
-        // 🧠 Debug: AuditContext aggregált értékek, ha elérhető
-        if (row.context) {
-            zInfo(QString("[AuditContext] matId=%1 | expected=%2 | actual=%3 | rows=%4")
-                       .arg(row.materialId.toString())
-                       .arg(row.context->totalExpected)
-                       .arg(row.context->totalActual)
-                       .arg(row.context->group.size()));
-        }
+            // 🧠 Debug: AuditContext aggregált értékek, ha elérhető
+            if (row.context) {
+                zInfo(QString("[AuditContext] matId=%1 | expected=%2 | actual=%3 | rows=%4")
+                           .arg(row.materialId.toString())
+                           .arg(row.context->totalExpected)
+                           .arg(row.context->totalActual)
+                           .arg(row.context->group.size()));
+            }
 
-        // ⚠️ Warning: hulló sor csoportba került (nem kéne)
-        if (row.sourceType == AuditSourceType::Leftover &&
-            row.context && row.context->group.isGroup()) {
-            zWarning(QString("⚠️ Hulló sor csoportba került! rowId=%1 | matId=%2 | groupSize=%3")
-                         .arg(row.rowId.toString())
-                         .arg(row.materialId.toString())
-                         .arg(row.context->group.size()));
-        }
+            // ⚠️ Warning: hulló sor csoportba került (nem kéne)
+            if (row.sourceType == AuditSourceType::Leftover &&
+                row.context && row.context->group.isGroup()) {
+                zWarning(QString("⚠️ Hulló sor csoportba került! rowId=%1 | matId=%2 | groupSize=%3")
+                             .arg(row.rowId.toString())
+                             .arg(row.materialId.toString())
+                             .arg(row.context->group.size()));
+            }
 
-        // ⚠️ Warning: negatív hiány (hibás aggregálás vagy túl sok actual)
-        int missing = row.missingQuantity();
-        if (missing < 0) {
-            zWarning(QString("⚠️ Negatív hiány! rowId=%1 | matId=%2 | missing=%3")
-                         .arg(row.rowId.toString())
-                         .arg(row.materialId.toString())
-                         .arg(missing));
+            // ⚠️ Warning: negatív hiány (hibás aggregálás vagy túl sok actual)
+            int missing = row.missingQuantity();
+            if (missing < 0) {
+                zWarning(QString("⚠️ Negatív hiány! rowId=%1 | matId=%2 | missing=%3")
+                             .arg(row.rowId.toString())
+                             .arg(row.materialId.toString())
+                             .arg(missing));
+            }
         }
     }
 
@@ -217,16 +147,16 @@ inline void assignContextsToRows(QVector<StorageAuditRow>* auditRows,
     zInfo(L("🔗 AuditContext hozzárendelve minden sorhoz — összes sor: %1")
               .arg(auditRows->size()));
 
-    for (auto& row : *auditRows) {
-        zInfo(QString("rowId=%1 | matId=%2 | rootStorageId=%3 | groupKey=%4 | expected=%5 | actual=%6 | contextPtr=%7")
-                  .arg(row.rowId.toString())
-                  .arg(row.materialId.toString())
-                  .arg(row.rootStorageId.toString())
-                  .arg(AuditContextBuilder::makeGroupKey(row))
-                  .arg(row.context ? row.context->totalExpected : -1)
-                  .arg(row.context ? row.context->totalActual : -1)
-                  .arg((quintptr)(row.context ? row.context.get() : nullptr), 0, 16));
-    }
+    // for (auto& row : *auditRows) {
+    //     zInfo(QString("rowId=%1 | matId=%2 | rootStorageId=%3 | groupKey=%4 | expected=%5 | actual=%6 | contextPtr=%7")
+    //               .arg(row.rowId.toString())
+    //               .arg(row.materialId.toString())
+    //               .arg(row.rootStorageId.toString())
+    //               .arg(AuditContextBuilder::makeGroupKey(row))
+    //               .arg(row.context ? row.context->totalExpected : -1)
+    //               .arg(row.context ? row.context->totalActual : -1)
+    //               .arg((quintptr)(row.context ? row.context.get() : nullptr), 0, 16));
+    // }
 
 }
 

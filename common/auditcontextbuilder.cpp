@@ -43,6 +43,7 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
     for (const auto& r : rows) {
         groups[makeGroupKey(r)].push_back(&r);
 
+        if(_isVerbose){
         // Debug log: minden sor bekerül a csoportba
         zInfo(L("[AuditContextBuilder] Row collected | rowId=%1 | matId=%2 | storage=%3 | rootStorage=%4 | picking=%5 | actual=%6")
                   .arg(r.rowId.toString())
@@ -51,6 +52,7 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
                   .arg(r.rootStorageId.toString())
                   .arg(r.pickingQuantity)
                   .arg(r.actualQuantity));
+        }
     }
 
     // 2️⃣ Kontextus létrehozás és visszacsatolás rowId-hoz
@@ -66,30 +68,34 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
 
         ctx->totalExpected = 0;
         ctx->totalActual   = 0;
-
+        if(_isVerbose){
         zInfo(L("[AuditContextBuilder] Building context for groupKey=%1 | rows=%2")
                   .arg(key)
                   .arg(grp.size()));
-
+        }
         // 2/A: tényleges mennyiség összegzése és sorok hozzárendelése
         for (const auto* r : grp) {
             ctx->totalActual += r->actualQuantity;
             ctx->group.addRow(r->rowId);
 
+            if(_isVerbose){
             zInfo(L("   adding rowId=%1 | picking=%2 | actual=%3 | runningActual=%4")
                       .arg(r->rowId.toString())
                       .arg(r->pickingQuantity)   // sor szintű jelző, de nem aggregáljuk
                       .arg(r->actualQuantity)
                       .arg(ctx->totalActual));
+            }
         }
 
         // 2/B: elvárt mennyiség beállítása anyagcsoport szinten a planből
         ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
 
+        if(_isVerbose){
         zInfo(L("   >> Context ready: expected=%1 | actual=%2 | rows=%3")
                   .arg(ctx->totalExpected)
                   .arg(ctx->totalActual)
                   .arg(ctx->group.size()));
+        }
 
         // 3️⃣ Minden sorhoz hozzárendeljük a közös context pointert
         for (const auto* r : grp) {

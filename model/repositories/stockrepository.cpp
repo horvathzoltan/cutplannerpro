@@ -160,3 +160,35 @@ bool StockRepository::saveToCSV(const StockRegistry& registry, const QString& fi
     return true;
 }
 
+bool StockRepository::saveToCSV(const QVector<StockEntry>& snapshot, const QString& filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "❌ Nem sikerült megnyitni a stock fájlt írásra:" << filePath;
+        return false;
+    }
+
+    QTextStream out(&file);
+    out.setEncoding(QStringConverter::Utf8);
+
+    out << "materialBarcode;quantity;storageBarcode;comment\n";
+
+    for (const StockEntry& entry : snapshot) {
+        const auto* mat = MaterialRegistry::instance().findById(entry.materialId);
+        if (!mat) {
+            qWarning() << "⚠️ Hiányzó anyag mentéskor:" << entry.materialId.toString();
+            continue;
+        }
+
+        const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+        const QString storageBarcode = storage ? storage->barcode : QString();
+
+        out << mat->barcode << ';'
+            << entry.quantity << ';'
+            << storageBarcode << ';'
+            << CsvHelper::escape(entry.comment) << '\n';
+    }
+
+    return true;
+}
+
+

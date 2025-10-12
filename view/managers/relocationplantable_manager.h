@@ -36,13 +36,12 @@ public:
 
 public slots:
     void editRow(const QUuid& rowId, const QString& mode);
-    //void onCellClicked(int row, int column);
+    void finalizeRow(const QUuid &rowId);
 
-signals:
-    // 👉 ha interaktívvá tesszük (pl. checkbox a teljesítéshez), ezen jelezhetünk vissza
-    void relocationRowChecked(const QUuid& rowId, bool done);
+// signals:
+//     // 👉 ha interaktívvá tesszük (pl. checkbox a teljesítéshez), ezen jelezhetünk vissza
+//     void relocationRowChecked(const QUuid& rowId, bool done);
 
 public:
     static constexpr auto RowId_Key = "relocationId"; // 👉 UserRole kulcs a cellákban
-    void finalizeRow(const QUuid &rowId);
 };
