@@ -1,20 +1,11 @@
 #pragma once
 
 #include "common/logger.h"
-#include "common/tableutils/colorlogicutils.h"
 #include "common/tableutils/storageaudittable_rowstyler.h"
 #include "model/storageaudit/auditcontext_text.h"
-#include "view/cellhelpers/auditcellcolors.h"
-#include "view/cellhelpers/auditcelltext.h"
-#include "view/cellhelpers/auditcelltooltips.h"
-#include "view/columnindexes/audittable_columns.h"
-#include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 
 #include "model/storageaudit/storageauditrow.h"
-#include "model/material/materialmaster.h"
-#include "common/tableutils/tableutils_auditcells.h"
-#include "view/cellhelpers/cellfactory.h"
 
 #include <QSpinBox>
 #include <QRadioButton>
@@ -23,32 +14,20 @@
 #include <QUuid>
 #include <QCheckBox>
 
-namespace AuditRowViewModelGenerator {
+namespace Audit::ViewModel::CellGenerator {
 
-// /// 🔹 Segédfüggvény: egyszerű szöveges cella létrehozása
-// inline TableCellViewModel createTextCell(const QString& text,
-//                                          const QString& tooltip = {},
-//                                          const QColor& background = Qt::white,
-//                                          const QColor& foreground = Qt::black,
-//                                          bool isReadOnly = true) {
-//     TableCellViewModel cell;
-//     cell.text = text;
-//     cell.tooltip = tooltip;
-//     cell.background = background;
-//     cell.foreground = foreground;
-//     cell.isReadOnly = isReadOnly;
-//     return cell;
-// }
+static const  bool _isVerbose = false;
 
 inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
 {
-    zInfo(L("[shouldShowAuditCheckbox] → %1 | módosítva: %2 | auditált: %3 | elvárt: %4 | egyezik: %5")
-              .arg(row.rowId.toString())
-              .arg(row.wasModified)
-              .arg(row.isAuditConfirmed)
-              .arg(row.pickingQuantity)
-              .arg(row.actualQuantity == row.originalQuantity));
-
+    if(_isVerbose){
+        zInfo(L("[shouldShowAuditCheckbox] → %1 | módosítva: %2 | auditált: %3 | elvárt: %4 | egyezik: %5")
+                  .arg(row.rowId.toString())
+                  .arg(row.wasModified)
+                  .arg(row.isAuditConfirmed)
+                  .arg(row.pickingQuantity)
+                  .arg(row.actualQuantity == row.originalQuantity));
+    }
     // Csak akkor kell pipa, ha:
     // - nem módosították
     // - az érték megegyezik az eredetivel
@@ -67,6 +46,7 @@ inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
     // Csak akkor jelenjen meg a checkbox, ha a sor auditálható
     return row.pickingQuantity > 0 || row.isInOptimization;
 }
+
 
 
 /// 🔹 Interaktív cella létrehozása az "actual" oszlophoz
@@ -153,9 +133,9 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
         //                         .arg(cell.foreground.name()));
 
         spin->setStyleSheet(QString(
-                                  "background-color: %1; color: %2;"
-                                  "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
-                                  ).arg(cell.background.name()).arg(cell.foreground.name()));
+                                "background-color: %1; color: %2;"
+                                "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
+                                ).arg(cell.background.name()).arg(cell.foreground.name()));
 
 
         QObject::connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), receiver, [spin, receiver](int value) {
@@ -184,9 +164,9 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
             //                             ).arg(cell.background.name()).arg(cell.foreground.name()));
 
             checkbox->setStyleSheet(QString(
-                                                "background-color: %1; color: %2;"
-                                                "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
-                                                ).arg(cell.background.name()).arg(cell.foreground.name()));
+                                        "background-color: %1; color: %2;"
+                                        "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
+                                        ).arg(cell.background.name()).arg(cell.foreground.name()));
 
 
             QObject::connect(checkbox, &QCheckBox::toggled, receiver, [checkbox, receiver](bool checked) {
@@ -196,13 +176,13 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
                                           Q_ARG(bool, checked));
             });
 
-//            checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
+            //            checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
             // checkbox->setStyleSheet(QString("background-color: %1; color: %2;")
             //                         .arg(cell.background.name())
             //                         .arg(cell.foreground.name()));
 
             layout->addWidget(checkbox);
-         }
+        }
 
         container->setStyleSheet(QString("background-color: %1; color: %2;")
                                      .arg(cell.background.name())
@@ -214,61 +194,4 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
     return cell;
 }
-
-
-
-/// 🔹 Teljes TableRowViewModel generálása egy StorageAuditRow alapján
-inline TableRowViewModel generate(const StorageAuditRow& row,
-                                  const MaterialMaster* mat,
-                                  const QString& groupLabel,
-                                  QObject* receiver) {
-    TableRowViewModel vm;
-    vm.rowId = row.rowId;
-
-    // 🎨 Alapszínek a csoport alapján
-    QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-//    QColor baseColor = mat ? AuditColors::groupColor(mat->groupId) : Qt::lightGray;
-//    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-    // 🧩 Cellák feltöltése
-    vm.cells[AuditTableColumns::Material] =
-        CellFactory::textCell(mat ? mat->name : "Ismeretlen",
-                       mat ? mat->color.name() : "",
-                       baseColor, fgColor);
-
-    vm.cells[AuditTableColumns::Storage] =
-        CellFactory::textCell(row.storageName,
-            QString("Tároló: %1").arg(row.storageName),
-            baseColor, fgColor);
-
-
-    vm.cells[AuditTableColumns::Expected] =
-        CellFactory::textCell(AuditCellText::formatExpectedQuantity(row, groupLabel),
-            AuditCellTooltips::formatExpectedTooltip(row),
-            baseColor, fgColor);
-
-    vm.cells[AuditTableColumns::Missing] =
-        CellFactory::textCell(AuditCellText::formatMissingQuantity(row),
-            AuditCellTooltips::formatMissingTooltip(row),
-            baseColor, fgColor);
-
-    vm.cells[AuditTableColumns::Status] =
-        CellFactory::textCell(TableUtils::AuditCells::statusText(row),
-             AuditCellTooltips::formatStatusTooltip(row, mat),
-             AuditCellColors::resolveStatusColor(row),
-             Qt::black);
-
-    vm.cells[AuditTableColumns::Barcode] =
-        CellFactory::textCell(row.barcode,
-            QString("Vonalkód: %1").arg(row.barcode),
-            baseColor, fgColor);
-
-    vm.cells[AuditTableColumns::Actual] =
-        createActualCell(row, receiver, baseColor, fgColor);
-
-    return vm;
 }
-
-} // namespace AuditRowViewModelGenerator
