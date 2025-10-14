@@ -1,3 +1,3 @@
 name,barcode,location,kerf,stellerMaxLength,stellerCompensation,storageBarcode,comment
-Thomas,CM1,Napellenző,2,3800,0.0,CM1WH,"Napellenző műhely"
-Rivers,CM2,Alu vágó,3,3200,2.4,CM2WH,"Alu vágó műhely"
+Thomas,CM1,Napellenző,2.0,0,0,CM1WH,"Napellenző műhely"
+Rivers,CM2,Alu vágó,3.2,3200,2.4,CM2WH,"Alu vágó műhely"

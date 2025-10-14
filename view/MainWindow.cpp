@@ -28,6 +28,8 @@
 
 #include <service/relocation/relocationplanner.h>
 
+#include <model/registries/cuttingmachineregistry.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -54,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     resultsTableManager = std::make_unique<ResultsTableManager>(ui->tableResults, this);
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, presenter, this);
+    cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
 
     InputTableConnector::Connect(this, inputTableManager.get(), presenter);
     StockTableConnector::Connect(this, stockTableManager.get(), presenter);
@@ -526,3 +529,73 @@ void MainWindow::showAuditCheckbox(const QUuid& rowId)
 {
    storageAuditTableManager->showAuditCheckbox(rowId);
 }
+
+
+
+void MainWindow::on_btn_GenerateCuttingPlan_clicked()
+{
+    // 1️⃣ Adatok összegyűjtése a Presenterből
+    auto& cutPlans = presenter->getPlansRef();          // vágási tervek
+    auto leftovers = presenter->getLeftoverResults();   // hullók
+
+    // 2️⃣ Tábla ürítése
+    cuttingInstructionTableManager->clearTable();
+
+    // 3️⃣ Gépenként szeparátor + utasítások
+    QString currentMachine;
+
+    // 🔧 Átmeneti workaround: mindig a "CM2" gépet használjuk
+    const CuttingMachine* fixedMachine =
+        CuttingMachineRegistry::instance().findByName("CM2");
+
+    if (!fixedMachine) {
+        qWarning() << "⚠️ A 'CM2' gép nincs regisztrálva a CuttingMachineRegistry-ben!";
+        return;
+    }
+
+    for (const auto& plan : cutPlans) {
+        QString machineName = fixedMachine->name;
+
+        if (machineName != currentMachine) {
+            // új gép → szeparátor sor a registry-ből
+            auto sep = Cutting::ViewModel::RowGenerator::generateMachineSeparator(*fixedMachine);
+            TableRowPopulator::populateRow(
+                ui->tableCuttingInstruction,
+                ui->tableCuttingInstruction->rowCount(),
+                sep
+                );
+            currentMachine = machineName;
+        }
+
+        // Plan → CutInstruction sorok
+        int step = 1;
+        double remaining = plan.totalLength;
+        for (const auto& seg : plan.segments) {
+            if (seg.type == Cutting::Segment::SegmentModel::Type::Piece) {
+                CutInstruction ci;
+                ci.stepId = step++;
+                ci.rodLabel = QString("Rod%1").arg(plan.rodNumber);
+                //ci.materialCode = plan.materialName();
+                ci.materialId = plan.materialId;
+                ci.barcode = QUuid::createUuid(); // vagy plan.rodId alapján
+                ci.cutSize_mm = seg.length_mm;
+                ci.kerf_mm = fixedMachine->kerf_mm; // ✅ géphez tartozó kerf
+                ci.remainingBefore_mm = remaining;
+                ci.computeRemaining();
+                //ci.machineName = machineName;
+                ci.machineId = fixedMachine->id;
+                ci.status = CutStatus::Pending;
+
+                cuttingInstructionTableManager->addRow(ci);
+                remaining = ci.remainingAfter_mm;
+            }
+        }
+    }
+
+    // 4️⃣ Hullók (leftovers) megjelenítése külön
+    for (const auto& lo : leftovers) {
+        // itt lehet külön táblába tenni, vagy a cutting táblába "Leftover" jelöléssel
+    }
+}
+
+

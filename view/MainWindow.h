@@ -10,6 +10,7 @@
 #include "cutanalyticspanel.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "presenter/CuttingPresenter.h"
+#include "view/managers/cuttinginstructiontable_manager.h"
 #include "view/managers/relocationplantable_manager.h"
 #include "view/managers/storageaudittable_manager.h"
 
@@ -77,6 +78,8 @@ private slots:
 
     void on_btn_Relocate_clicked();
 
+    void on_btn_GenerateCuttingPlan_clicked();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
@@ -94,6 +97,9 @@ private:
     std::unique_ptr<StorageAuditTableManager> storageAuditTableManager = nullptr;
 
     std::unique_ptr<RelocationPlanTableManager> relocationPlanTableManager = nullptr;
+
+    std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
+
 
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;

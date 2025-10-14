@@ -187,7 +187,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="midBoxPage1">
         <attribute name="title">
@@ -200,6 +200,13 @@
             <widget class="QPushButton" name="btn_Optimize">
              <property name="text">
               <string>Optimize</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_GenerateCuttingPlan">
+             <property name="text">
+              <string>GenerateCuttingPlan</string>
              </property>
             </widget>
            </item>
@@ -419,6 +426,86 @@
          </item>
          <item>
           <widget class="QPlainTextEdit" name="relocateQuickList"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_5">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>PushButton</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="tableCuttingInstruction">
+           <column>
+            <property name="text">
+             <string>StepId</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>RodLabel</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Material</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Barcode</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>CutSize</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>RemainingBefore</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>RemainingAfter</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Machine</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Status</string>
+            </property>
+           </column>
+          </widget>
          </item>
         </layout>
        </widget>

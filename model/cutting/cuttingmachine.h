@@ -12,8 +12,8 @@ struct CuttingMachine : public IdentifiableEntity {
     QString location;
 
     double kerf_mm = 0.0;                   // ✂️ Vágásveszteség mm-ben (kerf)
-    double stellerMaxLength_mm = 0.0;       // 📏 Max hossz stellerrel
-    double stellerCompensation_mm = 0.0;    // ⚖️ Kompenzáció érték mm-ben
+    std::optional<double> stellerMaxLength_mm = std::nullopt;       // 📏 Max hossz stellerrel
+    std::optional<double> stellerCompensation_mm = std::nullopt;    // ⚖️ Kompenzáció érték mm-ben
 
     QVector<MaterialType> compatibleMaterials; // ⚙️ Alkalmas anyagtípusok (pl. Aluminium, Steel)
 

@@ -83,6 +83,7 @@ SOURCES += \
     view/dialog/stock/editcommentdialog.cpp \
     view/dialog/stock/editquantitydialog.cpp \
     view/dialog/stock/editstoragedialog.cpp \
+    view/managers/cuttinginstructiontable_manager.cpp \
     view/managers/inputtable_manager.cpp \
     view/managers/leftovertable_manager.cpp \
     view/managers/relocationplantable_manager.cpp \
@@ -109,6 +110,8 @@ HEADERS += \
     common/quantityparser.h \
     common/scopedperthreadlock.h \
     common/styleprofiles/auditcolors.h \
+    common/styleprofiles/cuttingcolors.h \
+    common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
     common/tablerowstyler/materialrowstyler.h \
     common/tableutils/RowTracker.h \
@@ -121,6 +124,7 @@ HEADERS += \
     common/tableutils/storageaudittable_rowstyler.h \
     common/tableutils/tableutils_auditcells.h \
     model/cutting/cuttingmachine.h \
+    model/cutting/instruction/cutinstruction.h \
     model/cutting/optimizer/optimizermodel.h \
     model/cutting/piece/pieceinfo.h \
     model/cutting/piece/piecewithmaterial.h \
@@ -200,8 +204,11 @@ HEADERS += \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
+    view/columnindexes/tablecuttinginstruction_columns.h \
+    view/managers/cuttinginstructiontable_manager.h \
     view/viewmodels/audit/cellgenerator.h \
     view/viewmodels/audit/rowgenerator.h \
+    view/viewmodels/cutting/rowgenerator.h \
     view/viewmodels/relocation/cellgenerator.h \
     view/viewmodels/relocation/rowgenerator.h \
     view/cellhelpers/auditcellcolors.h \
