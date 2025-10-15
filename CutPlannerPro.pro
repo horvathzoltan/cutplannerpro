@@ -16,6 +16,7 @@ SOURCES += \
     common/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
     common/csvimporter.cpp \
+    common/eventlogger.cpp \
     common/filehelper.cpp \
     common/filenamehelper.cpp \
     common/logger.cpp \
@@ -99,6 +100,7 @@ HEADERS += \
     common/color/namedcolor.h \
     common/csvhelper.h \
     common/csvimporter.h \
+    common/eventlogger.h \
     common/filehelper.h \
     common/filenamehelper.h \
     common/grouputils.h \

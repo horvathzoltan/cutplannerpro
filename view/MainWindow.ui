@@ -680,6 +680,9 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QListWidget" name="eventLog"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -3,24 +3,45 @@
 #include <QString>
 #include <QStringList>
 
+namespace StatusHelper{
+inline QString getMessage(bool b, const QString& msg){
+    return (b?"✅ ":"❌ ")+msg+(b?" ok":" sikertelen");
+    }
+}
 
 // 🌱 Indulási állapotot leíró struktúra
 struct StartupStatus {
-    bool ok = false;
-    QString errorMessage;
-    QStringList warnings;
+private:
+    bool _ok = false;
+    QString _errorMessage;
+    QStringList _warnings;
 
+public:
     static StartupStatus success() {
-        return { true, QString(), {} };
+        StartupStatus s;
+        s._ok = true;
+        return s;
     }
 
     static StartupStatus failure(const QString& msg) {
-        return { false, msg, {} };
+        StartupStatus s;
+        s._ok = false;
+        s._errorMessage = msg;
+        return s;
     }
 
     void addWarning(const QString& warning) {
-        warnings.append(warning);
+        _warnings.append(warning);
     }
+
+    void addWarnings(const QStringList& warnings) {
+        _warnings.append(warnings);
+    }
+
+    bool isSuccess(){return _ok; }
+
+    QStringList warnings() const { return _warnings; }
+    QString errorMessage() const { return _errorMessage; }
 };
 
 // 🚀 Indítási logikát vezérlő osztály

@@ -17,68 +17,81 @@
 
 #include <model/repositories/cuttingmachinerepository.h>
 #include <model/registries/cuttingmachineregistry.h>
+#include <common/eventlogger.h>
 #include <common/filenamehelper.h>
 
 #include "common/color/namedcolor.h"
 
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
-    if (!ralColorStatus.ok)
+    if (!ralColorStatus.isSuccess())
         return ralColorStatus;
 
     StartupStatus materialStatus = initMaterialRegistry();
-    if (!materialStatus.ok)
+    if (!materialStatus.isSuccess())
         return materialStatus;
 
     StartupStatus storageStatus = initStorageRegistry();
-    if (!storageStatus.ok)
+    if (!storageStatus.isSuccess())
         return storageStatus;
 
-    StartupStatus groupStatus = initMaterialGroupRegistry(); // ✅ új név!
-    if (!groupStatus.ok)
+    StartupStatus groupStatus = initMaterialGroupRegistry();
+    if (!groupStatus.isSuccess())
         return groupStatus;
 
-    StartupStatus stockStatus = initStockRegistry(); // ✅ új név!
-    if (!stockStatus.ok)
+    StartupStatus stockStatus = initStockRegistry();
+    if (!stockStatus.isSuccess())
         return stockStatus;
 
     StartupStatus reusableStockStatus = initReusableStockRegistry();
-    if (!reusableStockStatus.ok)
+    if (!reusableStockStatus.isSuccess())
         return reusableStockStatus;
 
     //CuttingRequestRepository::tryLoadFromSettings(CuttingRequestRegistry::instance());
     StartupStatus cuttingReqStatus = initCuttingRequestRegistry();
-    if (!cuttingReqStatus.ok)
+    if (!cuttingReqStatus.isSuccess())
         return cuttingReqStatus;
 
     StartupStatus cuttingMachineStatus = initCuttingMachineRegistry();
-    if (!cuttingMachineStatus.ok)
+    if (!cuttingMachineStatus.isSuccess())
         return cuttingMachineStatus;
 
     StartupStatus finalStatus = StartupStatus::success();
-    finalStatus.warnings += ralColorStatus.warnings;
+    finalStatus.addWarnings(ralColorStatus.warnings());
 
-    finalStatus.warnings += materialStatus.warnings;
-    finalStatus.warnings += groupStatus.warnings;
-    finalStatus.warnings += stockStatus.warnings;    
-    finalStatus.warnings += reusableStockStatus.warnings;
-    finalStatus.warnings += cuttingReqStatus.warnings;
-    finalStatus.warnings += cuttingMachineStatus.warnings;
+    finalStatus.addWarnings(materialStatus.warnings());
+    finalStatus.addWarnings(groupStatus.warnings());
+    finalStatus.addWarnings(stockStatus.warnings());
+    finalStatus.addWarnings(reusableStockStatus.warnings());
+    finalStatus.addWarnings(cuttingReqStatus.warnings());
+    finalStatus.addWarnings(cuttingMachineStatus.warnings());
+
+    EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %2 gép, %3 stock, %4 leftover")
+                                       .arg(MaterialRegistry::instance().readAll().size())
+                                       .arg(CuttingMachineRegistry::instance().readAll().size())
+                                       .arg(StockRegistry::instance().readAll().size())
+                                       .arg(LeftoverStockRegistry::instance().readAll().size()));
 
     return finalStatus;
 }
 
 StartupStatus StartupManager::initMaterialRegistry() {
     bool loaded = MaterialRepository::loadFromCSV(MaterialRegistry::instance());
-    if (!loaded)
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni az anyagtörzset");
+
         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagtörzset a CSV fájlból.");
+    }
 
     const auto& all = MaterialRegistry::instance().readAll();
 
-    if (!hasMinimumMaterials(2))
+    if (!hasMinimumMaterials(2)){
+        EventLogger::instance().zEvent("❌ túl kevés adat az anyagtörzsben");
+
         return StartupStatus::failure(
             QString("⚠️ Túl kevés anyag található a törzsben (%1 db). Legalább 2 szükséges.")
                 .arg(all.size()));
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -100,6 +113,7 @@ StartupStatus StartupManager::initMaterialRegistry() {
     }
 
     if (!invalidGroups.isEmpty()) {
+        EventLogger::instance().zEvent("⚠️ az anyagcsoport adatai hibás elemeket tartalmaznak.");
         status.addWarning(
             QString("⚠️ %1 csoport olyan anyagot tartalmaz, ami nincs a törzsben.\nEllenőrizd a groups.csv fájlt: %2")
                 .arg(invalidGroups.size())
@@ -107,17 +121,24 @@ StartupStatus StartupManager::initMaterialRegistry() {
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"anyagtörzs init"));
     return status;
 }
 
 StartupStatus StartupManager::initStorageRegistry() {
     bool loaded = StorageRepository::loadFromCSV(StorageRegistry::instance());
-    if (!loaded)
-        return StartupStatus::failure("❌ Nem sikerült betölteni a storage.csv fájlból a raktári törzset.");
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a raktár törzset");
+
+        return StartupStatus::failure("❌ Nem sikerült betölteni a storage.csv fájlból a raktár törzset.");
+    }
 
     const auto& entries = StorageRegistry::instance().readAll();
-    if (entries.isEmpty())
-        return StartupStatus::failure("⚠️ A storage törzs üres. Legalább 1 raktári bejegyzés szükséges.");
+    if (entries.isEmpty()){
+        EventLogger::instance().zEvent("❌ nincs adat a raktár törzsben");
+
+        return StartupStatus::failure("⚠️ A raktár törzs üres. Legalább 1 raktári bejegyzés szükséges.");
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -134,6 +155,7 @@ StartupStatus StartupManager::initStorageRegistry() {
     }
 
     if (!invalidParentRefs.isEmpty()) {
+        EventLogger::instance().zEvent("❌ a raktár törzs adatai hibás elemeket tartalmaznak.");
         status.addWarning(
             QString("⚠️ %1 storage elem nem létező szülőre hivatkozik.\nÉrintett bejegyzések: %2")
                 .arg(invalidParentRefs.size())
@@ -141,19 +163,24 @@ StartupStatus StartupManager::initStorageRegistry() {
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"raktár törzs init"));
     return status;
 }
 
 
 StartupStatus StartupManager::initStockRegistry() {
     bool loaded = StockRepository::loadFromCSV(StockRegistry::instance());
-    if (!loaded)
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a készletet");
         return StartupStatus::failure("❌ Nem sikerült betölteni a készletet a CSV fájlból).");
-
+    }
     const auto& all = MaterialRegistry::instance().readAll();
 
-    if (all.isEmpty())
+    if (all.isEmpty()){
+        EventLogger::instance().zEvent("❌ nincs adat a készletben");
+
         return StartupStatus::failure("⚠️ A készlet üres. Legalább 1 tétel szükséges a működéshez.");
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -171,6 +198,7 @@ StartupStatus StartupManager::initStockRegistry() {
     }
 
     if (!invalidStockItems.isEmpty()) {
+        EventLogger::instance().zEvent("❌ a készlet adatai hibás elemeket tartalmaznak.");
         status.addWarning(
             QString("⚠️ %1 készletelem nem létező anyagra hivatkozik.\nEllenőrizd a stock.csv fájlt.\nÉrintett azonosítók:\n%2")
                 .arg(invalidStockItems.size())
@@ -178,19 +206,27 @@ StartupStatus StartupManager::initStockRegistry() {
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"készlet init"));
     return status;
 }
 
 
 StartupStatus StartupManager::initMaterialGroupRegistry() {
     bool loaded = MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry::instance());
-    if (!loaded)
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni az anyagcsoportokat");
+
         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagcsoportokat a groups.csv fájlból.");
+    }
 
     int count = MaterialGroupRegistry::instance().readAll().size();
-    if (count == 0)
-        return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
+    if (count == 0){
+        EventLogger::instance().zEvent("❌ nincs adat az anyagcsoportokban");
 
+        return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true,"anyagcsoport init"));
     return StartupStatus::success();
 }
 
@@ -200,13 +236,19 @@ bool StartupManager::hasMinimumMaterials(int minCount) {
 
 StartupStatus StartupManager::initReusableStockRegistry() {
     bool loaded = LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry::instance());
-    if (!loaded)
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a maradék készletet");
         return StartupStatus::failure("❌ Nem sikerült betölteni a maradék készletet a leftovers.csv fájlból.");
+    }
+
 
     const auto& all = LeftoverStockRegistry::instance().readAll();
 
-    if (all.isEmpty())
+    if (all.isEmpty()){
+        EventLogger::instance().zEvent("❌ nincs adat a maradék készletben");
+
         return StartupStatus::failure("⚠️ A maradék készlet üres. Legalább 1 tétel szükséges a működéshez.");
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -224,6 +266,8 @@ StartupStatus StartupManager::initReusableStockRegistry() {
     }
 
     if (!invalidReusableStockItems.isEmpty()) {
+        EventLogger::instance().zEvent("❌ a maradék készlet adatai hibás elemeket tartalmaznak.");
+
         status.addWarning(
             QString("⚠️ %1 maradék készletelem nem létező anyagra hivatkozik.Ellenőrizd a leftovers.csv fájlt.Érintett vonalkódok:%2")
                 .arg(invalidReusableStockItems.size())
@@ -231,6 +275,7 @@ StartupStatus StartupManager::initReusableStockRegistry() {
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"maradék készlet init"));
     return status;
 }
 
@@ -245,9 +290,11 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
         return StartupStatus::success();
 
     case CuttingPlanLoadResult::FileMissing:
+        EventLogger::instance().zEvent("❌ vágási terv fájl nem található");
         return StartupStatus::failure("❌ A beállított vágási terv fájl nem található.");
 
     case CuttingPlanLoadResult::LoadError:
+        EventLogger::instance().zEvent("❌ vágási terv fájl nem olvasható");
         return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket — fájl hibás vagy olvashatatlan.");
 
     case CuttingPlanLoadResult::Success:
@@ -257,13 +304,16 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
     const auto& all = CuttingPlanRequestRegistry::instance().readAll();
 
     // 💡 Check: file might be valid but intentionally empty (just header)
-    if (all.isEmpty() && CuttingRequestRepository::wasLastFileEffectivelyEmpty()) {
+    if (all.isEmpty() && CuttingRequestRepository::wasLastFileEffectivelyEmpty()) {        
         zInfo("ℹ️ Nincsenek vágási igények — új terv indítása vagy adat még nem érkezett");
         return StartupStatus::success();
     }
 
-    if (all.isEmpty())
+    if (all.isEmpty()){
+        EventLogger::instance().zEvent("❌ nincs adat az vágási igényekben");
+
         return StartupStatus::failure("⚠️ A vágási igény lista üres. Legalább 1 tétel szükséges.");
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -281,24 +331,31 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
     }
 
     if (!invalidRequests.isEmpty()) {
-        status.addWarning(
+        EventLogger::instance().zEvent("⚠️ vágási terv adatai hibás elemeket tartalmaznak.");
+        status.addWarning(            
             QString("⚠️ %1 vágási igény nem létező anyagra hivatkozik.\nEllenőrizd a cuttingrequests.csv fájlt.\nÉrintett azonosítók:\n%2")
                 .arg(invalidRequests.size())
                 .arg(invalidRequests.join(", "))
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"vágási terv init"));
     return status;
 }
 
 StartupStatus StartupManager::initCuttingMachineRegistry() {
     bool loaded = CuttingMachineRepository::loadFromCsv(CuttingMachineRegistry::instance());
-    if (!loaded)
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a vágógépeket");
         return StartupStatus::failure("❌ Nem sikerült betölteni a vágógépeket a cuttingmachines.csv fájlból.");
+    }
 
     const auto& machines = CuttingMachineRegistry::instance().readAll();
-    if (machines.isEmpty())
+    if (machines.isEmpty()){
+        EventLogger::instance().zEvent("❌ nincs adat a vágőgépekben");
+
         return StartupStatus::failure("⚠️ A vágógép törzs üres. Legalább 1 gép szükséges a működéshez.");
+    }
 
     StartupStatus status = StartupStatus::success();
 
@@ -310,13 +367,15 @@ StartupStatus StartupManager::initCuttingMachineRegistry() {
     }
 
     if (!machinesWithoutMaterials.isEmpty()) {
+        EventLogger::instance().zEvent("❌ a vágógépek adatai hibás elemeket tartalmaznak.");
+
         status.addWarning(
             QString("⚠️ %1 vágógéphez nincs megadva kompatibilis anyagtípus.\nÉrintett gépek: %2")
                 .arg(machinesWithoutMaterials.size())
-                .arg(machinesWithoutMaterials.join(", "))
-            );
+                .arg(machinesWithoutMaterials.join(", ")));
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"vágógépek init"));
     return status;
 }
 
@@ -336,11 +395,14 @@ StartupStatus StartupManager::initRalColors()
     StartupStatus status = StartupStatus::success();
 
     if (!ok) {
+        EventLogger::instance().zEvent("❌ a RAL színek adatai hibás elemeket tartalmaznak.");
+
         status.addWarning(
             QString("⚠️ Nem sikerült a RAL színeket initelni.")
             );
     }
 
+    EventLogger::instance().zEvent(StatusHelper::getMessage(status.isSuccess(),"RAL szinek init"));
     return status;
 }
 

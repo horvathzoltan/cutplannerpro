@@ -105,5 +105,6 @@ private:
     bool event(QEvent *e) override;
     void ButtonConnector_Connect();
     QString format(const QList<RelocationInstruction> &items);
+    void initEventLogWidget();
 };
 #endif // MAINWINDOW_H

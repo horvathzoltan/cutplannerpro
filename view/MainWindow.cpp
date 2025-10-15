@@ -30,12 +30,15 @@
 
 #include <model/registries/cuttingmachineregistry.h>
 
+#include <common/eventlogger.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    initEventLogWidget();    
 
     ui->relocateQuickList->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -116,6 +119,7 @@ MainWindow::MainWindow(QWidget *parent)
                                               : "");
     });
 
+    EventLogger::instance().zEvent("✅ MainWindow inited");
 }
 
 void MainWindow::ButtonConnector_Connect()
@@ -546,7 +550,7 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
 
     // 🔧 Átmeneti workaround: mindig a "CM2" gépet használjuk
     const CuttingMachine* fixedMachine =
-        CuttingMachineRegistry::instance().findByName("CM2");
+        CuttingMachineRegistry::instance().findByBarcode("CM2");
 
     if (!fixedMachine) {
         qWarning() << "⚠️ A 'CM2' gép nincs regisztrálva a CuttingMachineRegistry-ben!";
@@ -577,7 +581,7 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
                 ci.rodLabel = QString("Rod%1").arg(plan.rodNumber);
                 //ci.materialCode = plan.materialName();
                 ci.materialId = plan.materialId;
-                ci.barcode = QUuid::createUuid(); // vagy plan.rodId alapján
+                ci.barcode = plan.materialBarcode(); // vagy plan.rodId alapján
                 ci.cutSize_mm = seg.length_mm;
                 ci.kerf_mm = fixedMachine->kerf_mm; // ✅ géphez tartozó kerf
                 ci.remainingBefore_mm = remaining;
@@ -597,5 +601,20 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
         // itt lehet külön táblába tenni, vagy a cutting táblába "Leftover" jelöléssel
     }
 }
+
+void MainWindow::initEventLogWidget() {
+    EventLogger::instance().emitEvent = [this](const QString& line) {
+        ui->eventLog->insertItem(0, line); // legfrissebb felül
+    };
+
+    // 🔄 Betöltjük az eddigi eseményeket
+    //QStringList recent = EventLogger::instance().loadRecentEvents();
+    QStringList recent = EventLogger::instance().loadRecentEventsFromLastStart();
+
+    for (const QString& line : recent) {
+        ui->eventLog->insertItem(0, line);
+    }
+}
+
 
 

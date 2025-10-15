@@ -21,7 +21,7 @@ struct CutInstruction {
     QUuid materialId;            // Anyag UUID
     //QString materialCode;           // Anyag kódja
     //QString materialName;           // Anyag neve
-    QUuid barcode;                  // Konkrét rúd azonosítója
+    QString barcode;                  // Konkrét rúd azonosítója
     double cutSize_mm = 0.0;        // Vágandó hossz
     double kerf_mm = 0.0;           // Vágásveszteség
     double remainingBefore_mm = 0.0;// Vágás előtti hossz

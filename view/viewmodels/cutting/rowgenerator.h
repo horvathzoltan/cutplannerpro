@@ -87,7 +87,7 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     vm.cells[CuttingInstructionTableColumns::Material] =
         TableCellViewModel::fromText(mat ? mat->name : "Ismeretlen", "Anyag", baseColor, fgColor);
     vm.cells[CuttingInstructionTableColumns::Barcode] =
-        TableCellViewModel::fromText(ci.barcode.toString(), "Vonalkód", baseColor, fgColor);
+        TableCellViewModel::fromText(ci.barcode, "Vonalkód", baseColor, fgColor);
 
     vm.cells[CuttingInstructionTableColumns::CutSize] =
         TableCellViewModel::fromText(QString::number(ci.cutSize_mm, 'f', 1),
