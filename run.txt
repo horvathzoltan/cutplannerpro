@@ -1,4 +1,4 @@
-🔹 Frissített állapottábla (2025.10.14.)
+🧩 Frissített állapottábla (2025.10.15. este)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01	Relocation terv generálás kipróbálása	✅	✅
 02	Relocation táblamanager + generator integrálása	✅	✅
@@ -33,39 +33,29 @@
 31	Adatmodell (külső méret, darabméret, kompenzáció)	✅	✅			Táblázat elkészült, képlet tisztázva
 32	Állapotdiagram (darab → tétel → megrendelés)	✅	✅			Elkészült, három szinttel
 33	Munkalap–időmanager program	✅	❌	✅	🚧	Backlogba felvéve, később bontjuk ki
-34	CutPlan → gép hozzárendelés	❌	❌	✅	✅	Most fix "CM2", hiányzik a logika
-35	Kerf gépfüggővé tétele	❌	❌	✅	✅	Jelenleg globális 3 mm, registry‑ből kell jönnie
-36	Registry validáció induláskor	❌	❌	✅	✅	Ha nincs gép/anyag, most is lefut, de hibás
-37	zEvent logger (eseménylog)	❌	❌	✅	✅	Külön csatorna, fájl + UI
-38	UI eseménylista	❌	❌	✅	✅	Alsó panel, utolsó 50 esemény
-39	Init összefoglaló	❌	❌	✅	✅	„Betöltve: 2 gép, 18 anyag, 15 stock, 3 leftover”
-🚀 Sprint fókusz (frissítve)
-Sprint 1: plannedQuantity + executedQuantity + finalize logika ✅
+34	CutPlan → gép hozzárendelés	✅	⚙️	✅	✅	Most fix "CM2", logika készül
+35	Kerf gépfüggővé tétele	✅	⚙️	✅	✅	Registry-ből jön, optimalizációban használva
+36	Registry validáció induláskor	✅	⚙️	✅	✅	StartupManager ellenőrzi, zEvent logolja
+37	zEvent logger (eseménylog)	✅	⚙️	✅	✅	Konzol + fájl + UI lista
+38	UI eseménylista	✅	⚙️	✅	✅	Alsó panel, releváns események felül
+39	Init összefoglaló	✅	⚙️	✅	✅	„Betöltve: 2 gép, 18 anyag, 15 stock, 3 leftover”
+40	AppInitValidator komponens	✅	⚙️	✅	✅	StartupManager-ből hívva, registry-k validálása
+41	Teszt CutPlan generálás gépkerffel	✅	⚙️	✅	✅	Teszt CutPlan, kerf = gép.kerf_mm
+🚀 Sprint fókusz (aktuális)
+Sprint	Tartalom	Állapot
+Sprint 1	plannedQuantity, executedQuantity, finalize logika	✅
+Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	⚙️
+Sprint 3	Vágási utasítás dialógus + validáció	⏳
+Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggővé tétele, registry validáció, zEvent logger, UI eseménylista	⚙️
+Sprint 5	Auditálás, visszavonás	🚧
+Sprint 6	Hullókezelés, példánykódok, normalizálás, adatfeltöltés	🚧
+🧠 Következő lépések (prioritás szerint)
+StartupManager::runStartupSequence() → minden initXYZRegistry() után zEvent()
 
-Sprint 2: UI finomhangolás, CuttingStrategy, Cutting plan váltás ⚙️ (részben kész)
+CuttingInstructionDialog → gépválasztás validálása, kerf megjelenítése
 
-Sprint 3: Vágási utasítás dialógus + validáció ⏳ (aktuális fókusz)
+Finalize globális működésének lezárása
 
-Sprint 4: Finalize UI + soronkénti működés → globális finalize lezárása
+CuttingStrategy enum integrálása
 
-Sprint 5: Auditálás, visszavonás 🚧
-
-Sprint 6: Hullókezelés, példánykódok, normalizálás, adatfeltöltés 🚧
-
-Új backlog: Munkalap–időmanager program, gép-hozzárendelés, kerf gépfüggővé tétele, registry validáció, zEvent logger + UI eseménylista, init összefoglaló
-
----
-
-🔹 Teljes Worklist példa (két géppel)
-  StepId	Action	Rod label	Material	Barcode	Cut size (mm)	Remaining (mm)	Status
-  CM1 – Kerf = 2.0 mm (Acél vágógép) (colspan az Action→Status oszlopokra)
-  1	PickFromStock	A	Csőtengely Ø60x6000	MAT-ROLL60-6000	—	6000	Done ✔
-  2	ExecuteCutPlan	A	Csőtengely Ø60x6000	MAT-ROLL60-6000	198.0	5799.0	Pending ⬜
-  3	RegisterLeftover	A	Csőtengely Ø60x6000	RST-021	—	5799.0	Pending ⬜
-  CM2 – Kerf = 3.2 mm (Alu vágógép) (colspan az Action→Status oszlopokra)
-  4	PickFromStock	B	SávrolóTok (6000)	ST-6000	—	6000	Done ✔
-  5	ExecuteCutPlan	B	SávrolóTok	ST-6000	197.4	5799.4	Pending ⬜
-  6	RegisterLeftover	B	SávrolóTok	RST-022	—	5799.4	Pending ⬜
-  7	PickFromStock	C	SávrolóTengely	STE-6000	—	6000	Done ✔
-  8	ExecuteCutPlan	C	SávrolóTengely	STE-6000	195.7	5801.1	Pending ⬜
-  9	RegisterLeftover	C	SávrolóTengely	RST-023	—	5801.1	Pending ⬜
+Hullókezelés backlog előkészítése (Sprint 6)
