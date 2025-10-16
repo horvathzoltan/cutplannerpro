@@ -12,7 +12,7 @@ enum class CutStatus {
     Error      ///< Hiba történt
 };
 
-// Egyetlen vágási lépés adatai
+// Egyetlen vágái művelet végrehajtásának adatai
 struct CutInstruction {
     QUuid rowId;                   // 🔹 UI-szintű azonosító (sorhoz kötve)
 

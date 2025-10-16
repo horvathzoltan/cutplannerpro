@@ -106,8 +106,10 @@ HEADERS += \
     common/grouputils.h \
     common/logger.h \
     common/logmeta.h \
+    common/machineutils.h \
     common/materialutils.h \
     common/movementdatahelper.h \
+    common/optimizerutils.h \
     common/qteventutil.h \
     common/quantityparser.h \
     common/scopedperthreadlock.h \

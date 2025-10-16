@@ -1,61 +1,47 @@
-🧩 Frissített állapottábla (2025.10.15. este)
+🧩 Frissített állapottábla (2025.10.16. este)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
-01	Relocation terv generálás kipróbálása	✅	✅
-02	Relocation táblamanager + generator integrálása	✅	✅
-03	Gyors lista (format()) kiegészítése cél oszloppal	✅	✅
-04	addRow() / updateRow javítása	✅	✅
-05	Relocation cél: root + children logika (Stock)	✅	✅
-06	Hulló logika egyszerűsítése (csak listázás)	✅	✅
-07	plannedQuantity + executedQuantity mezők	✅	✅
-08	Finalize gomb logika (executedQuantity alapján)	✅	✅		⚠️	Soronként kész, globális finalize hiányzik
-09	Relocation Quantity Selector	✅	✅			✔ Dialógus működik
-10	Soronkénti végrehajtás lehetősége	✅	✅			finalizeRow() kész
-11	Inicializálás (designated init / explicit ctor)	✅	✅
-12	UI finomhangolás (cél oszlop + dialógus számok)	✅	✅
-13	CuttingStrategy enum + két fn	✅	❌	✅	✅	Enum megvan, nincs integrálva
-14	Cutting plan váltás (UI opció)	✅	❌	✅	✅	Nincs UI elem, nincs hatás
-15	Anyagcsoportosítás (roletta vs. sávroló)	✅	❌	✅	(opcionális)	Nincs csoportosító logika
-16	Stock példány azonosító (A, B, C…)	✅	❌	✅	✅	Nincs automatikus generálás
-17	Hullók felvétele	✅	❌	✅	✅	Nincs külön hullókezelő
-18	Hullók másolása (új kód generálás)	✅	❌	✅	✅	Nincs másolási funkció
-19	Hullók egyedi kódolása (központi manager)	✅	❌	✅	✅	Nincs központi manager
-20	Hulló normalizálás (71–78 cm → 70 cm)	✅	❌	✅	✅	Nincs normalizáló függvény
-21	Adatfeltöltés + éles teszt	✅	❌	✅	✅	Nincs adatimport, nincs tesztkészlet
-22	Megvan X/Y formátum a satisfied sorokra	✅	✅
-23	UI vizuális jelölések (✔, 🔄, ⚠️)	✅	✅
-24	Összesítő sor (Igény / Auditált / Mozgatni / Hiány)	✅	✅
-25	Vágási utasítás dialógus + validáció	✅	⏳	✅	✅	Dialógus készül, validáció részben
-26	Finalize gomb (UI)	✅	✅	✅	✅	Soronként kész, globális finalize hiányzik
-27	Finalize gomb (soronkénti működés)	✅	✅			működik
-28	Finalize auditálás + visszavonás	✅	❌		✅	Sprint 5-ben tervezve
-29	Worklist tab (darab szint, soronkénti finalize)	✅	⚙️	✅	✅	Modell definiálva, státuszok tisztázva
-30	Leftover sorok kezelése	✅	⚙️	✅	✅	Tervezett waste külön sor, címkézés + leftoverId
-31	Adatmodell (külső méret, darabméret, kompenzáció)	✅	✅			Táblázat elkészült, képlet tisztázva
-32	Állapotdiagram (darab → tétel → megrendelés)	✅	✅			Elkészült, három szinttel
-33	Munkalap–időmanager program	✅	❌	✅	🚧	Backlogba felvéve, később bontjuk ki
-34	CutPlan → gép hozzárendelés	✅	⚙️	✅	✅	Most fix "CM2", logika készül
-35	Kerf gépfüggővé tétele	✅	⚙️	✅	✅	Registry-ből jön, optimalizációban használva
-36	Registry validáció induláskor	✅	⚙️	✅	✅	StartupManager ellenőrzi, zEvent logolja
-37	zEvent logger (eseménylog)	✅	⚙️	✅	✅	Konzol + fájl + UI lista
-38	UI eseménylista	✅	⚙️	✅	✅	Alsó panel, releváns események felül
-39	Init összefoglaló	✅	⚙️	✅	✅	„Betöltve: 2 gép, 18 anyag, 15 stock, 3 leftover”
-40	AppInitValidator komponens	✅	⚙️	✅	✅	StartupManager-ből hívva, registry-k validálása
-41	Teszt CutPlan generálás gépkerffel	✅	⚙️	✅	✅	Teszt CutPlan, kerf = gép.kerf_mm
+01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
+13	CuttingStrategy enum + két fn	✅	🟡 Folyamatban	✅	✅	Enum integrálva az optimize()-ba
+14	Cutting plan váltás (UI opció)	✅	🔴 Hiányzik	✅	✅	UI elem még hiányzik
+15	Anyagcsoportosítás (roletta vs. sávroló)	✅	🔴 Hiányzik	✅	(opcionális)	nincs logika
+16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧	Sprint 6-ban
+21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧	nincs adatimport
+25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	dialógus kész, validáció részben
+26	Finalize gomb (UI)	✅	🟡 Részben kész	✅	⚠️	globális finalize hiányzik
+28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧	Sprint 5-ben
+29	Worklist tab (darab szint)	✅	🟡 Folyamatban	✅	✅	modell definiálva
+30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId
+33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧	backlog
+34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló	✅	🟡 Folyamatban	✅	✅	részben kész
+🚦 Színek jelentése
+🟢 Kész – teljesen lezárt, stabil funkció
+
+🟡 Folyamatban – részben kész, működik, de hiányos vagy további integráció kell
+
+🔴 Hiányzik – még nincs implementálva
+
+⚠️ Részben kész, kritikus hiány – működik soronként, de globális funkció hiányzik
+
+🚧 Backlog / későbbi sprint – előkészítve, de nem aktuális sprintben
+
 🚀 Sprint fókusz (aktuális)
-Sprint	Tartalom	Állapot
-Sprint 1	plannedQuantity, executedQuantity, finalize logika	✅
-Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	⚙️
-Sprint 3	Vágási utasítás dialógus + validáció	⏳
-Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggővé tétele, registry validáció, zEvent logger, UI eseménylista	⚙️
-Sprint 5	Auditálás, visszavonás	🚧
-Sprint 6	Hullókezelés, példánykódok, normalizálás, adatfeltöltés	🚧
+Sprint 2: CuttingStrategy integrálva, UI váltás hiányzik → 🟡
+
+Sprint 3: Vágási utasítás dialógus + validáció → 🟡
+
+Sprint 4: Finalize globális működés, gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista → 🟡
+
+Sprint 5: Auditálás, visszavonás → 🚧
+
+Sprint 6: Hullókezelés, példánykódok, normalizálás, adatfeltöltés → 🚧
+
 🧠 Következő lépések (prioritás szerint)
-StartupManager::runStartupSequence() → minden initXYZRegistry() után zEvent()
+Finalize globális működésének lezárása (kritikus hiány).
 
-CuttingInstructionDialog → gépválasztás validálása, kerf megjelenítése
+CuttingStrategy UI bekötése (enum már működik, csak UI hiányzik).
 
-Finalize globális működésének lezárása
+CuttingInstructionDialog validáció (gépválasztás, kerf megjelenítés).
 
-CuttingStrategy enum integrálása
+Hullókezelés backlog előkészítése (Sprint 6).
 
-Hullókezelés backlog előkészítése (Sprint 6)
+Auditálás + visszavonás (Sprint 5).

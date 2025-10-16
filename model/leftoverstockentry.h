@@ -20,6 +20,8 @@ struct LeftoverStockEntry {
     QUuid storageId;                // 📦 Tárolási hely azonosítója
 
     QString barcode; // 🧾 Egyedi azonosító hulladékdarabra
+
+    bool used = false;   // ➕ új mező: jelzi, hogy már felhasználtuk
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const LeftoverStockEntry& other) const;
 

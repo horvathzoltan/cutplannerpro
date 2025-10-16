@@ -1,8 +1,10 @@
 #include "optimizermodel.h"
 #include "common/grouputils.h"
+#include "common/machineutils.h"
+#include "common/optimizerutils.h"
 #include "service/cutting/segment/segmentutils.h"
 //#include "model/profilestock.h"
-#include <numeric>
+//#include <numeric>
 #include <algorithm>
 #include <QSet>
 
@@ -14,9 +16,9 @@ namespace Optimizer {
 
 OptimizerModel::OptimizerModel(QObject *parent) : QObject(parent) {}
 
-void OptimizerModel::setKerf(int value) {
-    kerf = value;
-}
+// void OptimizerModel::setKerf(int value) {
+//     kerf = value;
+// }
 
 QVector<Cutting::Plan::CutPlan>& OptimizerModel::getResult_PlansRef() {
     return _result_plans;
@@ -31,161 +33,167 @@ void OptimizerModel::optimize() {
     _result_leftovers.clear();
     int currentOpId = nextOptimizationId++;
 
-    // 🔧 1. Darabok előkészítése — minden vágandó darabot külön példányban tárolunk — külön hosszal
-
-
-    QVector<Cutting::Piece::PieceWithMaterial> pieces;
+    // 🔧 1. Darabok előkészítése — anyag szerint csoportosítva
+    QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial;
     for (const Cutting::Plan::Request &req : requests) {
         for (int i = 0; i < req.quantity; ++i) {
             Cutting::Piece::PieceInfo info;
             info.length_mm = req.requiredLength;
-            info.ownerName = "a";//req.ownerName; // vagy "Ismeretlen", ha nincs
-            info.externalReference = "b";//req.externalReference; // vagy ""
+            info.ownerName = req.ownerName.isEmpty() ? "Ismeretlen" : req.ownerName;
+            info.externalReference = req.externalReference;
             info.isCompleted = false;
-
-            pieces.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
+            piecesByMaterial[req.materialId].append(
+                Cutting::Piece::PieceWithMaterial(info, req.materialId));
         }
     }
+
+    auto anyPending = [&]() -> bool {
+        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it)
+            if (!it.value().isEmpty()) return true;
+        return false;
+    };
 
     int rodId = 0;
 
-    // 🔁 2. Optimalizációs ciklus — amíg van darab, keresünk rudat és vágunk - addig keresünk, amíg van vágandó darab
-    while (!pieces.isEmpty()) {
-        Cutting::Piece::PieceWithMaterial target = pieces.front();
-        QSet<QUuid> groupIds = GroupUtils::groupMembers(target.materialId);
+    // 🔁 2. Optimalizációs ciklus
+    while (anyPending()) {
+        // 🎯 2/a. Cél anyagcsoport kiválasztása (heurisztika: legnagyobb összhossz)
+        // 🎯 2/a. Cél anyagcsoport kiválasztása a beállított heurisztika alapján
+        QUuid targetMaterialId;
+        int bestMetric = -1;
 
-        // 🏷️ Az aktuálisan kiválasztott rúd metaadatai
-        QUuid selectedMaterialId;
-        int selectedLength = 0;
-        //QVector<int> selectedCombo;
-        QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial;
+        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+            int metric = 0;
+            switch (heuristic) {
+            case TargetHeuristic::ByCount:
+                metric = it.value().size();
+                break;
+            case TargetHeuristic::ByTotalLength:
+                metric = OptimizerUtils::sumLengths(it.value());
+                break;
+            }
 
-        bool found = false;
-        bool isReusable = false;
-
-        // ♻️ 2/a. Reusable készlet vizsgálata: Megpróbálunk találni hullóból újravágható rudat
-        std::optional<ReusableCandidate> candidate =
-            findBestReusableFit(reusableInventory, pieces, target.materialId);
-        if (candidate.has_value()) {
-            const auto& best = *candidate;
-
-            selectedMaterialId = best.stock.materialId;
-            selectedLength     = best.stock.availableLength_mm;
-            piecesWithMaterial = best.combo;
-
-            reusableInventory.remove(best.indexInInventory); // ❌ már nincs darabszám, kihúzzuk
-            isReusable = true;
-            found = true;
+            if (metric > bestMetric) {
+                bestMetric = metric;
+                targetMaterialId = it.key();
+            }
         }
 
-        // 🧱 2/b. Stock készlet vizsgálata:Ha nem találtunk hullót, akkor keresünk a profilkészletben
-        if (!found) {
-            for (int i = 0; i < profileInventory.size(); ++i) {
-                const auto& stock = profileInventory[i];
-                if (groupIds.contains(stock.materialId) && stock.quantity > 0) {
-                    profileInventory[i].quantity--; // készlet csökkentése
+        auto &groupVec = piecesByMaterial[targetMaterialId];
+        if (groupVec.isEmpty()) continue;
 
-                    selectedMaterialId = stock.materialId;
-                    selectedLength     = stock.master() ? stock.master()->stockLength_mm : 0;
+        // ⚙️ 2/b. Gép kiválasztása
+        auto machineOpt = MachineUtils::pickMachineForMaterial(targetMaterialId);
+        if (!machineOpt) {
+            groupVec.removeFirst();
+            continue;
+        }
+        const CuttingMachine machine = *machineOpt;
+        const double kerf_mm = machine.kerf_mm;
 
-                    QVector<Cutting::Piece::PieceWithMaterial> relevant;
-                    for (const auto& p : pieces)
-                        if (groupIds.contains(p.materialId))
-                            relevant.append(p);
+        QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial;
+        SelectedRod rod;
 
-                    piecesWithMaterial = findBestFit(relevant, selectedLength);
-                    found = true;
+        // ♻️ 2/c. Reusable vizsgálata
+        std::optional<ReusableCandidate> candidate =
+            findBestReusableFit(reusableInventory, groupVec, targetMaterialId, kerf_mm);
+        if (candidate.has_value()) {
+            const auto& best = *candidate;
+            rod.materialId = best.stock.materialId;
+            rod.length     = best.stock.availableLength_mm;
+            rod.isReusable = true;
+            rod.barcode    = best.stock.reusableBarcode();
+            piecesWithMaterial = best.combo;
+            reusableInventory[best.indexInInventory].used = true;
+        } else {
+            // 🧱 2/d. Stock vizsgálata
+            for (auto &stock : profileInventory) {
+                if (stock.materialId == targetMaterialId && stock.quantity > 0) {
+                    stock.quantity--;
+                    rod.materialId = stock.materialId;
+                    rod.length     = stock.master() ? stock.master()->stockLength_mm : 0;
+                    rod.isReusable = false;
+                    const auto& masterOpt = MaterialRegistry::instance().findById(rod.materialId);
+                    rod.barcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
+                    piecesWithMaterial = findBestFit(groupVec, rod.length, kerf_mm);
                     break;
                 }
             }
         }
 
-        // 🚫 3. Ha nem találunk rudat egyik készletből sem, nem tudunk vágni -> eldobjuk az első darabot és folytatjuk
-        if (!found || piecesWithMaterial.isEmpty()) {
-            pieces.removeOne(target); // 🚫 Nincs megfelelő rúd — darab eldobva
+        if (piecesWithMaterial.isEmpty()) {
+            groupVec.removeFirst();
             continue;
         }
 
-        // ✂️ 4. Kivágott darabok eltávolítása a listából
+        // ✂️ 4. Kivágott darabok eltávolítása UUID alapján
+        groupVec.erase(std::remove_if(groupVec.begin(), groupVec.end(),
+                                      [&](const auto& candidate){
+                                          return std::any_of(piecesWithMaterial.begin(), piecesWithMaterial.end(),
+                                                             [&](const auto& used){
+                                                                 return candidate.info.pieceId == used.info.pieceId;
+                                                             });
+                                      }), groupVec.end());
 
-        for (const auto& used : piecesWithMaterial) {
-            for (int i = 0; i < pieces.size(); ++i) {
-                if (pieces[i].info.length_mm == used.info.length_mm &&
-                    groupIds.contains(pieces[i].materialId)) {
-                    pieces.removeAt(i);
-                    break;
-                }
-            }
-        }
-
-
-        // 📦 5. Vágási terv létrehozása és mentése
-        //int totalCut = std::accumulate(selectedCombo.begin(), selectedCombo.end(), 0);
-        int totalCut = std::accumulate(piecesWithMaterial.begin(), piecesWithMaterial.end(), 0,
-                                       [](int sum, const Cutting::Piece::PieceWithMaterial& pwm) {
-                                           return sum + pwm.info.length_mm;
-                                       });
-
-        int kerfTotal = (piecesWithMaterial.size() ) * kerf; // vágási veszteség
+        // 📦 5. Vágási terv létrehozása
+        int totalCut = OptimizerUtils::sumLengths(piecesWithMaterial);
+        int kerfTotal = OptimizerUtils::roundKerfLoss(static_cast<int>(piecesWithMaterial.size()), kerf_mm);
         int used = totalCut + kerfTotal;
-        int waste = selectedLength - used;
-
-        QString barcode;
-        if (isReusable && candidate.has_value()) {
-            barcode = candidate->stock.reusableBarcode(); // 🧾 egyedi azonosító a reusable darabra
-        } else {
-            const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
-            barcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
-        }
+        int waste = OptimizerUtils::computeWasteInt(rod.length, used);
 
         Cutting::Plan::CutPlan p;
-
         p.rodNumber = ++rodId;
-        p.piecesWithMaterial = piecesWithMaterial;                    // ✅ Minden darab metaadatával
+        p.piecesWithMaterial = piecesWithMaterial;
         p.kerfTotal = kerfTotal;
         p.waste = waste;
-        p.materialId = selectedMaterialId;
-        p.rodId = barcode;                         // Ha reusable: barcode = reusableBarcode
-        p.source = isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
-        p.planId = QUuid::createUuid();           // Egyedi azonosító
+        p.materialId = rod.materialId;
+        p.rodId = rod.barcode;
+        p.source = rod.isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
+        p.planId = QUuid::createUuid();
         p.status = Cutting::Plan::Status::NotStarted;
-        p.totalLength = selectedLength;
+        p.totalLength = rod.length;
 
-        // ➕ 6. Hulló mentése — audit és újrahasznosítás céljából
+        // ⚙️ Gépadatok
+        p.machineId   = machine.id;
+        p.machineName = machine.name;
+        p.kerfUsed_mm = kerf_mm;
 
-
-        // 📐 Szakaszgenerálás – vizuális modellezéshez
-        p.generateSegments(kerf, selectedLength);
+        // 📐 Szakaszgenerálás
+        p.generateSegments(static_cast<int>(std::lround(kerf_mm)), rod.length);
 
         _result_plans.append(p);
 
-        // ➕ Maradék mentése, ha >300 mm — az újrafelhasználható
-        //if (waste >= 300) {
+        // ➕ 6. Hulló mentése
         Cutting::Result::ResultModel result;
         result.cutPlanId = p.planId;
-        result.materialId     = selectedMaterialId;
-        result.length         = selectedLength;
-        result.cuts           = piecesWithMaterial;
-        result.waste          = waste;
-        //result.source         = usedReusable ? LeftoverSource::Manual : LeftoverSource::Optimization;
-        result.source = isReusable ? Cutting::Result::ResultSource::FromReusable : Cutting::Result::ResultSource::FromStock;
-        result.optimizationId = isReusable ? std::nullopt : std::make_optional(currentOpId);
-        result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6)); // 📛 egyedi azonosító
+        result.materialId = rod.materialId;
+        result.length = rod.length;
+        result.cuts = piecesWithMaterial;
+        result.waste = waste;
+        result.source = rod.isReusable ? Cutting::Result::ResultSource::FromReusable
+                                       : Cutting::Result::ResultSource::FromStock;
+        result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
+        result.reusableBarcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6));
         result.isFinalWaste = Cutting::Segment::SegmentUtils::isTrailingWaste(result.waste, p.segments);
 
-        // if (isReusable && candidate.has_value()) {
-        //     result.reusableBarcode = candidate->stock.reusableBarcode();
-        //     result.leftoverEntryId = candidate->stock.entryId; // 💡 Itt állítjuk be!
-        // } else {
-        //     const auto& masterOpt = MaterialRegistry::instance().findById(selectedMaterialId);
-        //     result.reusableBarcode = masterOpt ? masterOpt->barcode : "(nincs barcode)";
-        //     result.leftoverEntryId = QUuid(); // vagy hagyhatod üresen
-        // }
-
         _result_leftovers.append(result);
-        //}
+
+        // 📝 Audit log
+        EventLogger::instance().zEvent(
+            QString("🪚 CutPlan #%1 → gép=%2, kerf=%3 mm, waste=%4 mm")
+                .arg(p.rodNumber)
+                .arg(machine.name)
+                .arg(kerf_mm)
+                .arg(waste));
     }
+
+    // 🧹 7. Reusable készlet takarítása
+    reusableInventory.erase(
+        std::remove_if(reusableInventory.begin(), reusableInventory.end(),
+                       [](const LeftoverStockEntry& e){ return e.used; }),
+        reusableInventory.end());
 }
+
 
 
 
@@ -195,38 +203,40 @@ Kis hulladékot preferál	100–300
 Kiegyensúlyozott	500–800
 */
 
-QVector<Cutting::Piece::PieceWithMaterial> OptimizerModel::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available, int lengthLimit) const {
+QVector<Cutting::Piece::PieceWithMaterial>
+OptimizerModel::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
+                            int lengthLimit,
+                            double kerf_mm) const {
     QVector<Cutting::Piece::PieceWithMaterial> bestCombo;
     int bestScore = std::numeric_limits<int>::min();
     int n = available.size();
     int totalCombos = 1 << n;
 
-    const int weight = 1000; // súly a darabszámhoz
+    // ⚡ Quick path: ha minden darab belefér, nincs mit optimalizálni
+    int totalRelevant = OptimizerUtils::sumLengths(available);
+    int maxKerf = OptimizerUtils::roundKerfLoss(available.size(), kerf_mm);
+    if (totalRelevant + maxKerf <= lengthLimit) {
+        return available;
+    }
 
     for (int mask = 1; mask < totalCombos; ++mask) {
         QVector<Cutting::Piece::PieceWithMaterial> combo;
-        int total = 0;
-        int count = 0;
-
         for (int i = 0; i < n; ++i) {
             if (mask & (1 << i)) {
-                const auto& pwm = available[i];
-                combo.append(pwm);
-                total += pwm.info.length_mm;
-                ++count;
+                combo.append(available[i]);
             }
         }
+        if (combo.isEmpty()) continue;
 
-        if (count == 0)
-            continue;
+        int totalCut = OptimizerUtils::sumLengths(combo);
+        if (totalCut > lengthLimit) continue; // early discard
 
-        int kerfTotal = combo.size()*kerf;// (count - 1) * kerf;
-        int used = total + kerfTotal;
+        int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+        int used = totalCut + kerfTotal;
 
         if (used <= lengthLimit) {
             int waste = lengthLimit - used;
-            int score = count * weight - waste;
-
+            int score = OptimizerUtils::calcScore(combo.size(), waste);
             if (score > bestScore) {
                 bestScore = score;
                 bestCombo = combo;
@@ -237,62 +247,67 @@ QVector<Cutting::Piece::PieceWithMaterial> OptimizerModel::findBestFit(const QVe
     return bestCombo;
 }
 
+
+
 /*
 ♻️ A reusable rudak sorbarendezése garantálja, hogy előbb próbáljuk a kisebb, „kockáztathatóbb” rudakat
 ✂️ A pontszámítás továbbra is érvényes: preferáljuk a több darabot és a kisebb hulladékot
  */
-std::optional<OptimizerModel::ReusableCandidate> OptimizerModel::findBestReusableFit(
-    const QVector<LeftoverStockEntry>& reusableInventory,
-    const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
-    QUuid materialId
-    ) const {
+std::optional<OptimizerModel::ReusableCandidate>
+OptimizerModel::findBestReusableFit(const QVector<LeftoverStockEntry>& reusableInventory,
+                                    const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
+                                    QUuid materialId,
+                                    double kerf_mm) const {
     std::optional<ReusableCandidate> best;
     int bestScore = std::numeric_limits<int>::min();
     QSet<QUuid> groupIds = GroupUtils::groupMembers(materialId);
 
-    //QVector<int> pieceLengths;
+    // 🔎 releváns darabok kiszűrése
     QVector<Cutting::Piece::PieceWithMaterial> relevantPieces;
     for (const auto& p : pieces)
         if (groupIds.contains(p.materialId))
             relevantPieces.append(p);
 
+    // Hullók rendezése hossz szerint
     QVector<LeftoverStockEntry> sorted = reusableInventory;
-    std::sort(sorted.begin(), sorted.end(), [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
-        return a.availableLength_mm < b.availableLength_mm;
-    });
+    std::sort(sorted.begin(), sorted.end(),
+              [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
+                  return a.availableLength_mm < b.availableLength_mm;
+              });
 
     for (int i = 0; i < sorted.size(); ++i) {
         const auto& stock = sorted[i];
-        if (!groupIds.contains(stock.materialId))
-            continue;
+        if (!groupIds.contains(stock.materialId)) continue;
 
-        //QVector<int> combo = findBestFit(pieceLengths, stock.availableLength_mm);
-        QVector<Cutting::Piece::PieceWithMaterial> combo = findBestFit(relevantPieces, stock.availableLength_mm);
-        if (combo.isEmpty())
-            continue;
+        // ⚡ Quick path: ha minden darab belefér
+        int totalRelevant = OptimizerUtils::sumLengths(relevantPieces);
+        int maxKerf = OptimizerUtils::roundKerfLoss(relevantPieces.size(), kerf_mm);
+        if (totalRelevant + maxKerf <= stock.availableLength_mm) {
+            int waste = stock.availableLength_mm - (totalRelevant + maxKerf);
+            return ReusableCandidate{ i, stock, relevantPieces, waste };
+        }
 
-        //int totalCut = std::accumulate(combo.begin(), combo.end(), 0);
+        // Egyébként: keresd a legjobb részhalmazt
+        auto combo = findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm);
+        if (combo.isEmpty()) continue;
 
-        int totalCut = std::accumulate(combo.begin(), combo.end(), 0,
-                                       [](int sum, const Cutting::Piece::PieceWithMaterial& pwm) {
-                                           return sum + pwm.info.length_mm;
-                                       });
-
-
-        int kerfTotal = (combo.size() ) * kerf;
+        int totalCut = OptimizerUtils::sumLengths(combo);
+        int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
         int used = totalCut + kerfTotal;
-        int waste = stock.availableLength_mm - used;
+        if (used > stock.availableLength_mm) continue; // early discard
 
-        int score = static_cast<int>(combo.size()) * 1000 - waste;
+        int waste = OptimizerUtils::computeWasteInt(stock.availableLength_mm, used);
+        int score = OptimizerUtils::calcScore(combo.size(), waste);
 
         if (score > bestScore) {
             best = ReusableCandidate{ i, stock, combo, waste };
             bestScore = score;
         }
     }
-
     return best;
 }
+
+
 
 void OptimizerModel::setCuttingRequests(const QVector<Cutting::Plan::Request>& list) {
     requests = list;

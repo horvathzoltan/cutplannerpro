@@ -14,37 +14,165 @@
 namespace Cutting {
 namespace Optimizer {
 
+/**
+ * @brief Beállítja, hogy az optimalizáló hogyan válassza ki a következő feldolgozandó anyagcsoportot.
+ *
+ * Kétféle "okosság" (heurisztika) közül lehet választani:
+ *
+ * - ByCount (📊 darabszám alapján):
+ *   Mindig azt az anyagcsoportot választja, ahol a legtöbb darab várakozik.
+ *   Példa: ha van egy csoportban 12 rövid darab, a másikban csak 2 hosszú,
+ *   akkor a 12 darabos csoport kerül előre, mert ott több a feldolgoznivaló.
+ *
+ * - ByTotalLength (📏 összhossz alapján):
+ *   Mindig azt az anyagcsoportot választja, ahol a darabok teljes hossza a legnagyobb.
+ *   Példa: ha van egy csoportban 10 db 100 mm-es darab (összesen 1000 mm),
+ *   és egy másikban 2 db 800 mm-es darab (összesen 1600 mm),
+ *   akkor a 2 darabos csoport kerül előre, mert ott nagyobb a teljes hossz.
+ *
+ * Röviden:
+ * - ByCount = "ahol több a darab"
+ * - ByTotalLength = "ahol több az anyag"
+ */
+enum class TargetHeuristic {
+    ByCount,       // 📊 Legtöbb darab
+    ByTotalLength  // 📏 Legnagyobb összhossz
+};
+
 class OptimizerModel : public QObject {
     Q_OBJECT
 
 public:
     explicit OptimizerModel(QObject *parent = nullptr);
 
-    void setKerf(int kerf);
-
+    /**
+ * @brief A teljes vágási tervek listáját adja vissza (referenciaként).
+ *
+ * Ez tartalmazza az összes elkészült CutPlan-t, vagyis minden egyes rúd teljes vágási tervét.
+ * Itt az látszik, hogy melyik rúd hogyan lett feldarabolva, milyen darabok kerültek belőle kivágásra,
+ * mennyi volt a kerf (fűrészvágás miatti veszteség), és mennyi hulladék maradt.
+ *
+ * Röviden: ez a "nagy kép", a teljes vágási folyamat terve rudanként.
+ */
     QVector<Cutting::Plan::CutPlan> &getResult_PlansRef();
+
+/**
+ * @brief A vágások után keletkezett hulló darabok listáját adja vissza.
+ *
+ * Ez NEM a teljes terv, hanem csak a maradékok (leftovers) gyűjteménye.
+ * Minden elem egy ResultModel, ami tartalmazza:
+ * - melyik tervből származik a hulló,
+ * - mekkora a hossza,
+ * - milyen anyagból van,
+ * - újrafelhasználható-e, vagy végső hulladék.
+ *
+ * Röviden: ez a "melléktermék lista", vagyis mi maradt a vágások után.
+ */
     QVector<Cutting::Result::ResultModel> getResults_Leftovers() const;
 
+
+    /**
+ * @brief Az optimalizáló fő folyamata: elkészíti a vágási terveket és a hulló listát.
+ *
+ * Mit csinál ez a függvény?
+ * 1. Összegyűjti a vágandó darabokat, és anyag szerint csoportosítja őket.
+ * 2. Amíg van feldolgozatlan darab:
+ *    - kiválasztja, melyik anyagcsoporttal foglalkozzon (a beállított heurisztika alapján:
+ *      ByCount = ahol több a darab, ByTotalLength = ahol több az anyag),
+ *    - megnézi, van-e hozzá megfelelő gép,
+ *    - először próbál hullóból (reusable) darabolni,
+ *    - ha nincs megfelelő hulló, akkor a készletből (stock) választ rudat,
+ *    - ha egyik sem jó, a darabot eldobja.
+ * 3. Ha talált megfelelő rudat:
+ *    - kivágja belőle a legjobb kombinációt,
+ *    - eltávolítja a felhasznált darabokat a listából,
+ *    - létrehoz egy CutPlan-t (vágási tervet) a teljes rúdról,
+ *    - létrehoz egy ResultModel-t a maradékról (hulló).
+ * 4. Minden lépésről audit logot ír (gépadatok, kerf, hulladék).
+ * 5. A végén kitakarítja a reusable készletből a már felhasznált hullókat.
+ *
+ * Röviden: ez a "nagy varázsló", ami a bemeneti igényekből (darabok + készlet)
+ * elkészíti a teljes vágási terveket és a hulló listát.
+ */
     void optimize();
 
     void setCuttingRequests(const QVector<Cutting::Plan::Request>& list);
     void setStockInventory(const QVector<StockEntry> &list);
     void setReusableInventory(const QVector<LeftoverStockEntry> &reusable);
-
+    void setTargetHeuristic(TargetHeuristic h) { heuristic = h; }
 private:
-    QVector<Cutting::Plan::Request> requests;
+
+    TargetHeuristic heuristic = TargetHeuristic::ByCount; // alapértelmezett
+
+    /**
+ * @brief Egy kiválasztott rúd adatait tartalmazza, amiből vágni fogunk.
+ *
+ * Ez a segédstruktúra arra szolgál, hogy egy helyen legyen minden fontos adat
+ * a következő feldolgozandó rúdról. Így nem kell külön változókból összeszedegetni.
+ *
+ * Mit tartalmaz?
+ * - materialId: az anyag azonosítója (milyen anyagból van a rúd)
+ * - length: a rúd teljes hossza milliméterben
+ * - isReusable: igaz/hamis jelző, hogy ez egy újrafelhasznált hulló-e (true),
+ *   vagy egy új rúd a készletből (false)
+ * - barcode: a rúd vonalkódja vagy egyedi azonosítója
+ *
+ * Röviden: ez a "kiválasztott rúd csomag", amit az optimalizáló éppen feldarabol.
+ */
+    struct SelectedRod {
+        QUuid materialId;
+        int length = 0;
+        bool isReusable = false;
+        QString barcode;
+    };
+
+    QVector<Cutting::Plan::Request> requests; // a vágási kérelmek
     QVector<StockEntry> profileInventory;
     QVector<LeftoverStockEntry> reusableInventory;
 
-    QVector<Cutting::Plan::CutPlan> _result_plans;
-    QVector<Cutting::Result::ResultModel> _result_leftovers;
+    QVector<Cutting::Plan::CutPlan> _result_plans; // vágás eremébye - egész szálak vágásának terve
+    QVector<Cutting::Result::ResultModel> _result_leftovers; // vágás eredménye - hulló anyagok vágási terve
 
-    int kerf = 3; // mm
+    //int kerf = 3; // mm
 
     int nextOptimizationId = 1;
 
-    QVector<Cutting::Piece::PieceWithMaterial> findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available, int lengthLimit) const;
+    /**
+ * @brief Megkeresi a legjobb darabkombinációt egy adott rúdhoz.
+ *
+ * Mit csinál?
+ * - Kap egy listát a rendelkezésre álló darabokról (ugyanabból az anyagcsoportból),
+ * - Kap egy hosszkorlátot (a rúd teljes hossza),
+ * - Kap egy kerf értéket (a vágások miatti veszteség).
+ *
+ * Ezután végigpróbálja a darabok különböző kombinációit, és kiválasztja azt,
+ * amelyik a legjobban kihasználja a rudat:
+ * - minél több darabot sikerül kivágni,
+ * - minél kevesebb hulladék marad.
+ *
+ * Röviden: ez a "kombináció-kereső", ami megmondja,
+ * hogy mely darabokat érdemes együtt kivágni egy rúdból.
+ */
+    QVector<Cutting::Piece::PieceWithMaterial> findBestFit(
+        const QVector<Cutting::Piece::PieceWithMaterial>& available,
+        int lengthLimit,
+        double kerf_mm) const;
 
+/**
+ * @brief Egy újrafelhasználható (hulló) rúd legjobb találatát írja le.
+ *
+ * Amikor az optimalizáló megpróbál darabokat elhelyezni egy már meglévő hulló rúdban,
+ * akkor a keresés eredményét ebben a struktúrában adjuk vissza.
+ *
+ * Mit tartalmaz?
+ * - indexInInventory: a reusableInventory-ban hol található ez a hulló darab
+ * - stock: maga a hulló rúd leírása (anyag, hossz, azonosító, stb.)
+ * - combo: azok a darabok, amiket ebből a hullóból sikerült kivágni
+ * - totalWaste: mennyi maradék (hulladék) maradt a vágás után
+ *
+ * Röviden: ez a "nyertes ajánlat" egy hulló rúdból.
+ * Ha találunk ilyet, akkor ebből vágunk, nem veszünk elő új rudat a készletből.
+ */
     struct ReusableCandidate {
         int indexInInventory;
         LeftoverStockEntry stock;
@@ -52,10 +180,32 @@ private:
         int totalWaste;
     };
 
+    /**
+ * @brief Megkeresi, hogy a hulló készletből (reusableInventory) van-e olyan darab,
+ *        amiből érdemes újra vágni.
+ *
+ * Mit csinál?
+ * - Végignézi az összes hulló rudat (reusableInventory),
+ * - Megnézi, hogy az adott anyagcsoport darabjai közül melyek férnek bele,
+ * - Kiszámolja, mennyi darabot lehet belőle kivágni és mennyi hulladék marad,
+ * - Kiválasztja a legjobb találatot (ahol a legtöbb darabot sikerül elhelyezni,
+ *   és a legkevesebb a veszteség).
+ *
+ * Ha talál ilyet, visszaad egy ReusableCandidate-et, ami tartalmazza:
+ * - melyik hulló rúd volt az,
+ * - milyen darabokat sikerült belőle kivágni,
+ * - mennyi hulladék maradt.
+ *
+ * Ha nem talál megfelelő hullót, akkor üres (std::nullopt) az eredmény.
+ *
+ * Röviden: ez a "hulló-vadász", ami megmondja,
+ * hogy érdemes-e egy meglévő maradékból dolgozni, vagy sem.
+ */
     std::optional<ReusableCandidate> findBestReusableFit(
         const QVector<LeftoverStockEntry>& reusableInventory,
         const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
-        QUuid materialId
+        QUuid materialId,
+        double kerf_mm
         ) const;
 };
 

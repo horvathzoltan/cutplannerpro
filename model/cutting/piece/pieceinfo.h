@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QUuid>
 
 /**
  * @brief Egy darabolási munkadarab részletes információi
@@ -15,6 +16,7 @@ namespace Piece {
 
 struct PieceInfo
 {
+    QUuid pieceId = QUuid::createUuid(); // ✅ automatikus UUID generálás;
     int length_mm = 0;                // 📏 Hossz milliméterben
     QString ownerName;                // 👤 Megrendelő, tulajdonos
     QString externalReference;        // 📎 Külső tételszám, SAP vagy egyedi azonosító

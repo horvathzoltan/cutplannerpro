@@ -16,7 +16,9 @@ namespace SegmentUtils {
      */
 bool isTrailingWaste(int wasteLength, const QVector<SegmentModel>& segments);
 
-QVector<SegmentModel> generateSegments(const QVector<Cutting::Piece::PieceWithMaterial>& cuts, int kerf_mm, int totalLength_mm);
+QVector<SegmentModel> generateSegments(
+    const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
+    double kerf_mm, double totalLength_mm);
 
 }
 

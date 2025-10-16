@@ -44,6 +44,8 @@ struct ResultModel {
     MaterialType materialType() const;      // 🔎 törzsből lekérhető típus
     QString materialName() const;           // 🧪 megjelenítéshez
     QColor materialGroupColor() const;           // 🎨 badge háttér (UI-hoz)
+
+    bool isReusable() const { return source == ResultSource::FromReusable; }
 };
 
 }}

@@ -43,6 +43,9 @@ public:
     QUuid materialId;         // 🔗 Az anyag azonosítója (UUID)
     int totalLength = 0;      // 📏 Anyag hossz (mm)
     QString rodId;            // 📄 Reusable barcode, ha van
+    QUuid machineId;   // a gép azonosítója
+    QString machineName;   // csak UI/audit
+    double kerfUsed_mm = 0.0; // audit fixálás
 
     Cutting::Plan::Source source = Cutting::Plan::Source::Stock; // anyag forrásas
 
@@ -73,13 +76,15 @@ public:
  * A szakaszok a piecesWithMaterial alapján jönnek létre.
  * A SegmentUtils::generateSegments metódust használja.
  */
-    void generateSegments(int kerf_mm, int totalLength_mm){
+    void generateSegments(double kerf_mm, int totalLength_mm){
         this->segments = Cutting::Segment::SegmentUtils::generateSegments(this->piecesWithMaterial
                                                                           /* PieceWithMaterial-ek */,
                                                                           kerf_mm, totalLength_mm);
 
     }
     QString materialBarcode() const;
+
+    QString machineLabel() const { return QString("%1 (kerf=%2 mm)").arg(machineName).arg(kerfUsed_mm); }
 };
 }  //endof namespace Plan
 }  //endof namespace Cutting

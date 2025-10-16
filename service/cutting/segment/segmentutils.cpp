@@ -43,15 +43,17 @@ bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>&
     return (last.type == SegmentModel::Type::Waste && last.length_mm == wasteLength);
 }
 
-QVector<SegmentModel> SegmentUtils::generateSegments(const QVector<Cutting::Piece::PieceWithMaterial>& cuts, int kerf_mm, int totalLength_mm)
+QVector<SegmentModel> SegmentUtils::generateSegments(
+    const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
+    double kerf_mm, double totalLength_mm)
 {
     QVector<SegmentModel> segments;
 
-    int usedLength = 0;
+    double usedLength = 0;
 
     for (int i = 0; i < cuts.size(); ++i) {
         const Cutting::Piece::PieceWithMaterial& pwm = cuts[i];
-        int len = pwm.info.length_mm;
+        double len = pwm.info.length_mm;
 
         // ➕ Darab szakasz
         SegmentModel piece;
@@ -73,7 +75,7 @@ QVector<SegmentModel> SegmentUtils::generateSegments(const QVector<Cutting::Piec
     }
 
     // 🧺 Végmaradék, ha van
-    int waste = totalLength_mm - usedLength;
+    double waste = totalLength_mm - usedLength;
     if (waste > 0) {
         SegmentModel trailingWaste;
         trailingWaste.length_mm = waste;

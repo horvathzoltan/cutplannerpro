@@ -22,7 +22,7 @@ struct SegmentModel {
         Waste    // 🪓 Végmaradék / selejt
     };
 
-    int length_mm;
+    double length_mm;
     Type type;
 
     /**
@@ -49,6 +49,6 @@ struct SegmentModel {
         return QString("[?%1]").arg(length_mm);
     }
 
-    QVector<SegmentModel> generateSegments(int kerf_mm, int totalLength_mm) const;
+    QVector<SegmentModel> generateSegments(double kerf_mm, double totalLength_mm) const;
 };
 }} //end namespace Cutting::Segment
