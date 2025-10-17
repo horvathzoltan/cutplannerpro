@@ -47,10 +47,10 @@ public:
     void update_LeftoverStockEntry(const LeftoverStockEntry &updated);
 
     // Paraméterek
-    void setKerf(int kerf);
+    //void setKerf(int kerf);
 
     // Optimalizálás
-    void runOptimization();
+    void runOptimization(Cutting::Optimizer::TargetHeuristic h);
 
     // Eredmények lekérése
     QVector<Cutting::Plan::CutPlan>& getPlansRef();

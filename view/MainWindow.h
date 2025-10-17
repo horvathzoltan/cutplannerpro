@@ -80,6 +80,8 @@ private slots:
 
     void on_btn_GenerateCuttingPlan_clicked();
 
+    void handle_btn_OptRad_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;

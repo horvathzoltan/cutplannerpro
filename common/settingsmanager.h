@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/optimizer/optimizermodel.h"
 #include <QSettings>
 
 namespace SettingsKeys {
@@ -12,11 +13,13 @@ inline constexpr auto TableLeftoversHeader   = "table_leftovers_header";
 inline constexpr auto TableStorageAuditHeader   = "table_storageaudit_header";
 inline constexpr auto TableRelocationOrderHeader   = "table_relocationorder_header";
 
-
 // ablakméret
 inline constexpr auto WindowGeometry = "window_geometry";
 // splitter
 inline constexpr auto MainSplitterState = "main_splitter_state";
+
+// CuttingStrategy
+inline constexpr auto CuttingStrategy = "cutting_strategy";
 }
 
 
@@ -59,6 +62,10 @@ public:
     //splitter
     void setMainSplitterState(const QByteArray& state);
     QByteArray mainSplitterState() const;
+
+    // CuttingStrategy
+    void setCuttingStrategy(Cutting::Optimizer::TargetHeuristic h);
+    Cutting::Optimizer::TargetHeuristic cuttingStrategy() const;
 
     void save();
     void load();

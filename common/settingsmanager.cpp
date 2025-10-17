@@ -121,3 +121,20 @@ QByteArray SettingsManager::mainSplitterState() const {
     return _settings.value(SettingsKeys::MainSplitterState).toByteArray();
 }
 
+// CuttingStrategy
+
+void SettingsManager::setCuttingStrategy(Cutting::Optimizer::TargetHeuristic h) {
+    // tároljuk stringként, hogy olvasható legyen az ini-ben
+    QString value = (h == Cutting::Optimizer::TargetHeuristic::ByCount)
+                        ? "ByCount"
+                        : "ByTotalLength";
+    persist(SettingsKeys::CuttingStrategy, value);
+}
+
+Cutting::Optimizer::TargetHeuristic SettingsManager::cuttingStrategy() const {
+    QString value = _settings.value(SettingsKeys::CuttingStrategy, "ByCount").toString();
+    if (value == "ByTotalLength") {
+        return Cutting::Optimizer::TargetHeuristic::ByTotalLength;
+    }
+    return Cutting::Optimizer::TargetHeuristic::ByCount;
+}

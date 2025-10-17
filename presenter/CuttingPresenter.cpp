@@ -178,9 +178,9 @@ void CuttingPresenter::setReusableInventory(const QVector<LeftoverStockEntry>& l
     model.setReusableInventory(list);
 }
 
-void CuttingPresenter::setKerf(int kerf) {
-    model.setKerf(kerf);
-}
+// void CuttingPresenter::setKerf(int kerf) {
+//     model.setKerf(kerf);
+// }
 
 QVector<Cutting::Plan::CutPlan>& CuttingPresenter::getPlansRef()
 {
@@ -192,7 +192,7 @@ QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
     return model.getResults_Leftovers();
 }
 
-void CuttingPresenter::runOptimization() {
+void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuristic) {
     // 🔒 Ellenőrzés: a modell szinkronizálva van-e a legfrissebb adatokkal
     if (!isModelSynced) {
         zWarning(L("⚠️ A modell nem volt szinkronizálva optimalizáció előtt!"));
@@ -201,7 +201,7 @@ void CuttingPresenter::runOptimization() {
     }
 
     // 🚀 Optimalizáció futtatása a modellben
-    model.optimize();
+    model.optimize(heuristic);
     isModelSynced = false; // újra false, hogy ha később újra hívják, akkor ismét szinkron kelljen
 
     // 📋 Optimalizációs tervek logolása (debug célokra)

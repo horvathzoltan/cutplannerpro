@@ -28,7 +28,7 @@ QVector<Cutting::Result::ResultModel> OptimizerModel::getResults_Leftovers() con
     return _result_leftovers;
 }
 
-void OptimizerModel::optimize() {
+void OptimizerModel::optimize(TargetHeuristic heuristic) {
     _result_plans.clear();
     _result_leftovers.clear();
     int currentOpId = nextOptimizationId++;

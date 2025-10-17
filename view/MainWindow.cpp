@@ -119,6 +119,15 @@ MainWindow::MainWindow(QWidget *parent)
                                               : "");
     });
 
+    auto h = SettingsManager::instance().cuttingStrategy();
+    if (h == Cutting::Optimizer::TargetHeuristic::ByTotalLength) {
+        ui->radioByTotalLength->setChecked(true);
+    } else if (h == Cutting::Optimizer::TargetHeuristic::ByCount) {
+        ui->radioByCount->setChecked(true);
+    } else{
+        EventLogger::instance().zEvent("ismeretlen cutting strategy beállítás");
+    }
+
     EventLogger::instance().zEvent("✅ MainWindow inited");
 }
 
@@ -153,6 +162,12 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_Finalize_2, &QPushButton::clicked,
             this, &MainWindow::handle_btn_RelocationPlanFinalize_clicked);
+
+    connect(ui->radioByCount, &QPushButton::toggled,
+     this, &MainWindow::handle_btn_OptRad_clicked);
+
+    connect(ui->radioByTotalLength, &QPushButton::toggled,
+     this, &MainWindow::handle_btn_OptRad_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -314,9 +329,37 @@ void MainWindow::handle_btn_LeftoverDisposal_clicked()
 void MainWindow::handle_btn_Optimize_clicked() {
     // 🧠 Modell frissítése
     presenter->syncModelWithRegistries();
+
+    // 🎛️ CuttingStrategy kiválasztása a radio gombok alapján
+    Cutting::Optimizer::TargetHeuristic h = Cutting::Optimizer::TargetHeuristic::ByCount;
+    if (ui->radioByTotalLength->isChecked()) {
+        h = Cutting::Optimizer::TargetHeuristic::ByTotalLength;
+    }
+
     // 🚀 Optimalizálás elindítása
-    presenter->runOptimization();
+    presenter->runOptimization(h);
 }
+
+void MainWindow::handle_btn_OptRad_clicked(bool checked)
+{
+    if (!checked) return; // csak akkor reagálunk, ha most lett bekapcsolva
+
+    Cutting::Optimizer::TargetHeuristic h =
+        ui->radioByTotalLength->isChecked()
+            ? Cutting::Optimizer::TargetHeuristic::ByTotalLength
+            : Cutting::Optimizer::TargetHeuristic::ByCount;
+
+    // 💾 Mentés az ini-be
+    SettingsManager::instance().setCuttingStrategy(h);
+
+
+    // 📝 Debug log
+    zInfo(QString("Cutting strategy changed to %1")
+              .arg(h == Cutting::Optimizer::TargetHeuristic::ByCount
+                       ? "ByCount 📊"
+                       : "ByTotalLength 📏"));
+}
+
 
 void MainWindow::handle_btn_Finalize_clicked()
 {

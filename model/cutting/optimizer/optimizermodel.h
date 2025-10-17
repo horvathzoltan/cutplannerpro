@@ -94,15 +94,15 @@ public:
  * Röviden: ez a "nagy varázsló", ami a bemeneti igényekből (darabok + készlet)
  * elkészíti a teljes vágási terveket és a hulló listát.
  */
-    void optimize();
+    void optimize(TargetHeuristic heuristic);
 
     void setCuttingRequests(const QVector<Cutting::Plan::Request>& list);
     void setStockInventory(const QVector<StockEntry> &list);
     void setReusableInventory(const QVector<LeftoverStockEntry> &reusable);
-    void setTargetHeuristic(TargetHeuristic h) { heuristic = h; }
+    //void setTargetHeuristic(TargetHeuristic h) { heuristic = h; }
 private:
 
-    TargetHeuristic heuristic = TargetHeuristic::ByCount; // alapértelmezett
+    //TargetHeuristic heuristic = TargetHeuristic::ByCount; // alapértelmezett
 
     /**
  * @brief Egy kiválasztott rúd adatait tartalmazza, amiből vágni fogunk.
