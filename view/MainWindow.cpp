@@ -128,7 +128,13 @@ MainWindow::MainWindow(QWidget *parent)
         EventLogger::instance().zEvent("ismeretlen cutting strategy beállítás");
     }
 
+    translate();
     EventLogger::instance().zEvent("✅ MainWindow inited");
+}
+
+void MainWindow::translate(){
+    ui->radioByCount->setToolTip("📊 Ahol több a darab – gyors feldolgozás");
+    ui->radioByTotalLength->setToolTip("📏 Ahol több az anyag – jobb kihasználás");
 }
 
 void MainWindow::ButtonConnector_Connect()

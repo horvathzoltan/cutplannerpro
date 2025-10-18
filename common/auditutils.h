@@ -59,17 +59,19 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
         // }
         case AuditSourceType::Stock: {
             if (requiredStockMaterials.contains(row.materialId)) {
-                // minden sor kapja az "optimalizációban van" jelölést
-                row.isInOptimization = true;
-                row.presence = (row.actualQuantity >= 1)
-                                   ? AuditPresence::Present
-                                   : AuditPresence::Missing;
-                // Ha a tervben szerepel ez az anyag, akkor minden sor kapja meg
-                // pickingQuantity-t hagyhatod 0-n, vagy max 1-en jelzésként
-                row.pickingQuantity = 0;//requiredStockMaterials[row.materialId];//1;
+                int& remaining = requiredStockMaterials[row.materialId];
+                if (remaining > 0) {
+                    row.isInOptimization = true;
+                    row.pickingQuantity = remaining; // teljes igény
+                    row.presence = (row.actualQuantity >= remaining)
+                                       ? AuditPresence::Present
+                                       : AuditPresence::Missing;
+                    remaining = 0; // egyszer kiosztva
+                }
             }
             break;
         }
+
 
         default:
             // Egyéb forrástípusok (ha lesznek a jövőben)

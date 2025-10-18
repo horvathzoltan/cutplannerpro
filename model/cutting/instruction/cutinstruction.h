@@ -19,14 +19,13 @@ struct CutInstruction {
     int stepId = 0;                 // Folyamatos sorszám
     QString rodLabel;               // Rúd azonosító (A, B, C…)
     QUuid materialId;            // Anyag UUID
-    //QString materialCode;           // Anyag kódja
-    //QString materialName;           // Anyag neve
+
     QString barcode;                  // Konkrét rúd azonosítója
     double cutSize_mm = 0.0;        // Vágandó hossz
     double kerf_mm = 0.0;           // Vágásveszteség
     double remainingBefore_mm = 0.0;// Vágás előtti hossz
     double remainingAfter_mm = 0.0; // Vágás utáni hossz
-    //QString machineName;            // Gépnélkülözhetetlen info
+
     QUuid machineId;            // Gép UUID
     CutStatus status = CutStatus::Pending; // 🔹 Enum alapú státusz
 

@@ -108,5 +108,6 @@ private:
     void ButtonConnector_Connect();
     QString format(const QList<RelocationInstruction> &items);
     void initEventLogWidget();
+    void translate();
 };
 #endif // MAINWINDOW_H

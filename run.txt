@@ -1,7 +1,7 @@
-🧩 Frissített állapottábla (2025.10.17. éjjel, lángnyelvekkel)
+🧩 Frissített állapottábla (2025.10.17. éjjel)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
-13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba
+13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
 14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	🔥 UI elem elhelyezés finomhangolás hiányzik
 15	Anyagcsoportosítás (roletta vs. sávroló)	✅	🔴 Hiányzik	✅	(opcionális)	🔥 nincs logika
 16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6-ban	🔥 teljes blokk hiányzik
@@ -13,21 +13,19 @@
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	🔥 külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	🔥 backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló	✅	🟡 Folyamatban	✅	✅	🔥 részben kész, több komponens hiányzik
-
 🚀 Sprint fókusz (2025.10.17. éjjel)
 Sprint	Tartalom	Állapot
 Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
-Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟡 Folyamatban <br>🔥 UI elhelyezés finomhangolás hiányzik
+Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész (CuttingStrategy teljes lánc lezárva, ini + UI connect működik)
 Sprint 3	Vágási utasítás dialógus + validáció	🟡 Folyamatban <br>🔥 Validáció hiányos (gépválasztás, kerf)
 Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista	🟡 Folyamatban <br>🔥 Globális finalize hiányzik, cutting lezárása után folytatjuk
 Sprint 5	Auditálás, visszavonás	🚧 Előkészítve
 Sprint 6	Hullókezelés, példánykódok, normalizálás, adatfeltöltés	🚧 Előkészítve
 📌 Összegzés
+Mai eredmény: CuttingStrategy teljes lánc kész, ini‑mentés és UI connect működik.
 
-Mai eredmény: CuttingStrategy teljes lánc kész, ini‑be mentés és UI connect is működik.
+Új döntés: először a cutting logika teljes lezárása, csak utána a globális finalize.
 
-Új döntés: először a cutting logika teljes lezárása, csak utána a Finalize globális működés.
+A tűz stabilan ég, a következő vízhordás a cutting logika maradék részleteinek lezárása lesz.
 
-A tűz nem aludt el, hanem most már stabilan ég – a következő vízhordás a cutting csont teljes lerágása lesz.
-
-👉 Holnap tehát a cutting maradék részleteit vesszük elő, és csak utána térünk vissza a finalize‑hoz.
+👉 Holnap tehát a cutting maradék részleteit vesszük elő (anyagcsoportosítás, leftover sorok, Worklist tab finomhangolás), és csak utána térünk vissza a finalize‑hoz.

@@ -104,7 +104,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             rod.isReusable = true;
             rod.barcode    = best.stock.reusableBarcode();
             piecesWithMaterial = best.combo;
-            reusableInventory[best.indexInInventory].used = true;
+            //reusableInventory[best.indexInInventory].used = true;
+            // ❌ régi: reusableInventory[best.indexInInventory].used = true;
+            // ✅ új: azonnal töröljük a készletből
+            reusableInventory.removeAt(best.indexInInventory);
         } else {
             // 🧱 2/d. Stock vizsgálata
             for (auto &stock : profileInventory) {
@@ -188,10 +191,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     }
 
     // 🧹 7. Reusable készlet takarítása
-    reusableInventory.erase(
-        std::remove_if(reusableInventory.begin(), reusableInventory.end(),
-                       [](const LeftoverStockEntry& e){ return e.used; }),
-        reusableInventory.end());
+    // reusableInventory.erase(
+    //     std::remove_if(reusableInventory.begin(), reusableInventory.end(),
+    //                    [](const LeftoverStockEntry& e){ return e.used; }),
+    //     reusableInventory.end());
 }
 
 
@@ -269,14 +272,15 @@ OptimizerModel::findBestReusableFit(const QVector<LeftoverStockEntry>& reusableI
             relevantPieces.append(p);
 
     // Hullók rendezése hossz szerint
-    QVector<LeftoverStockEntry> sorted = reusableInventory;
-    std::sort(sorted.begin(), sorted.end(),
-              [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
-                  return a.availableLength_mm < b.availableLength_mm;
-              });
+    // QVector<LeftoverStockEntry> sorted = reusableInventory;
+    // std::sort(sorted.begin(), sorted.end(),
+    //           [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
+    //               return a.availableLength_mm < b.availableLength_mm;
+    //           });
 
-    for (int i = 0; i < sorted.size(); ++i) {
-        const auto& stock = sorted[i];
+    for (int i = 0; i < reusableInventory.size(); ++i) {
+        const auto& stock = reusableInventory[i];
+        if (stock.used) continue; // már elhasználtuk
         if (!groupIds.contains(stock.materialId)) continue;
 
         // ⚡ Quick path: ha minden darab belefér

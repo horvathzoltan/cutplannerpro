@@ -87,7 +87,9 @@ QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingM
     return rows;
 }
 
-StorageAuditRow StorageAuditService::createAuditRow(const StockEntry& stock, const QUuid& rootStorageId)
+StorageAuditRow StorageAuditService::createAuditRow(
+    const StockEntry& stock,
+    const QUuid& rootStorageId)
 {
 
     if (stock.materialName().isEmpty() && stock.quantity == 0)
