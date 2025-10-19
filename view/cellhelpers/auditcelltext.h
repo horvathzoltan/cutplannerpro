@@ -8,37 +8,33 @@
 namespace AuditCellText {
 
 inline static bool _isVerbose = false;
+
 /**
  * @brief Elvárt mennyiség szöveges formázása audit sorhoz.
  *
  * Logika:
- * - Hulló audit soroknál nincs elvárt mennyiség → visszatér "–".
- * - Ha a sor valódi csoport tagja (group.isGroup()), akkor a context aggregált értékét mutatjuk.
- * - Egyedi sor esetén a lokális pickingQuantity jelenik meg.
- * - Ha nincs optimalizáció → visszatér "–" (vizuálisan semleges).
- * - Ha van csoportazonosító (groupLabel), megjelenik az érték mellett.
+ * - Hulló audit sor esetén: ha optimalizációban van és van pickingQuantity → "1 db", különben "–".
+ * - Csoportosított stock sor esetén:
+ *    - Ha nincs optimalizáció → "– (anyagcsoport [címke])"
+ *    - Ha van optimalizáció → "<összesített db> (anyagcsoport [címke])"
+ * - Egyedi stock sor esetén:
+ *    - Ha van optimalizáció → "<lokális db>"
+ *    - Ha nincs optimalizáció → "–"
+ *
+ * @param row        Audit sor
+ * @param groupLabel Csoportcímke (pl. "A", "B", stb.)
+ * @return QString   Formázott szöveg
  */
-inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString& groupLabel = "") {
-    if(_isVerbose)
-    {
-        zInfo(L("📦 formatExpectedQuantity: rowId=%1, materialId=%2, sourceType=%3, isInOptimization=%4, pickingQuantity=%5, context=%6, groupSize=%7, groupLabel=%8")
-                  .arg(row.rowId.toString())
-                  .arg(row.materialId.toString())
-                  .arg(static_cast<int>(row.sourceType))
-                  .arg(row.isInOptimization)
-                  .arg(row.pickingQuantity)
-                  .arg(row.context ? "yes" : "no")
-                  .arg(row.context ? row.context->group.size() : -1)
-                  .arg(groupLabel));
-    }
-    // 🧩 Hulló audit sor esetén: csak akkor jelenítsünk meg elvárást, ha tényleg van
+inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString& groupLabel = "")
+{
+    // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
         if (row.isInOptimization && row.pickingQuantity > 0)
-            return QString("%1 db").arg(row.pickingQuantity); // pl. "1 db"
-        return "–"; // nincs elvárás → vizuálisan semleges
+            return QString("%1 db (hulló)").arg(row.pickingQuantity);
+        return "–";
     }
 
-    // 🧩 Csoportosított stock sor esetén: aggregált elvárt mennyiség
+    // 🧩 Csoportosított stock sor
     if (row.context && row.context->group.isGroup()) {
         if (!row.isInOptimization) {
             return groupLabel.isEmpty()
@@ -51,46 +47,44 @@ inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString&
                    : QString("%1 db (anyagcsoport %2)").arg(expected).arg(groupLabel);
     }
 
+    // 🔹 Egyedi stock sor
+    if (row.isInOptimization && row.pickingQuantity > 0)
+        return QString("%1 db").arg(row.pickingQuantity);
 
-    // 🔹 Egyedi stock sor esetén: lokális elvárt mennyiség
-    return row.isInOptimization
-               ? QString("%1 db").arg(row.pickingQuantity)
-               : "–";
+    return "–";
 }
+
 
 /**
  * @brief Hiányzó mennyiség szöveges formázása audit sorhoz.
  *
  * Logika:
- * - Hulló audit sor esetén: ha van elvárt mennyiség, akkor lokális hiányt mutat.
- * - Csoportosított stock sor esetén: aggregált hiányt mutat.
- * - Egyedi stock sor esetén: lokális hiányt mutat.
- * - Ha nincs hiány, akkor "0 db" jelenik meg → vizuálisan is megerősíti a teljesülést.
- * - Ha nincs optimalizáció → visszatér "–".
- * - A hiány sosem lehet negatív → max(0, expected - actual).
+ * - Hulló audit sor esetén: ha van elvárás → lokális hiány, különben "–".
+ * - Csoportosított stock sor esetén: aggregált hiány, de nem írjuk ki újra a csoportcímkét.
+ * - Egyedi stock sor esetén: lokális hiány.
+ * - Ha nincs optimalizáció → "–".
  */
 inline QString formatMissingQuantity(const StorageAuditRow& row) {
-    // 🧩 Hulló audit sor: ha van elvárás, akkor számolunk hiányt
+    // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
         if (row.isInOptimization && row.pickingQuantity > 0) {
-            int missing = std::max(0, row.missingQuantity());
-            return QString("%1 db").arg(missing); // lehet 0 is
+            return QString("%1 db").arg(std::max(0, row.missingQuantity()));
         }
-        return "–"; // nincs elvárás → semleges megjelenítés
+        return "–";
     }
 
-    // 🧩 Csoportosított stock sor esetén: aggregált hiány
+    // 🧩 Csoportosított stock sor
     if (row.context && row.context->group.isGroup()) {
         if (!row.isInOptimization)
-            return "– (anyagcsoport)";
+            return "–";
         int missing = std::max(0, row.context->totalExpected - row.context->totalActual);
-        return QString("%1 db (anyagcsoport)").arg(missing);
+        return QString("%1 db").arg(missing);
     }
 
-
-    // 🔹 Egyedi stock sor esetén: lokális hiány
+    // 🔹 Egyedi stock sor
     return row.isInOptimization
                ? QString("%1 db").arg(std::max(0, row.missingQuantity()))
                : "–";
 }
+
 }

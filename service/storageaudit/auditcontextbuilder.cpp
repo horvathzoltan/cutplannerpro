@@ -1,4 +1,4 @@
-#include "common/auditcontextbuilder.h"
+#include "auditcontextbuilder.h"
 #include "common/logger.h" // zInfo, zWarning
 #include <QMap>
 
@@ -88,7 +88,13 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
         }
 
         // 2/B: elvárt mennyiség beállítása anyagcsoport szinten a planből
-        ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
+        //ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
+
+        ctx->totalExpected = 0;
+        for (const auto* r : grp) {
+            ctx->totalExpected = std::max(ctx->totalExpected,
+                                          requiredStockMaterials.value(r->materialId, 0));
+        }
 
         if(_isVerbose){
         zInfo(L("   >> Context ready: expected=%1 | actual=%2 | rows=%3")

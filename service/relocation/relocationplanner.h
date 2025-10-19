@@ -20,7 +20,7 @@ inline QVector<RelocationInstruction> buildPlan(
     // 1️⃣ Auditálatlan sorok figyelmeztetése
     const bool hasUnaudited = std::any_of(auditRows.begin(), auditRows.end(),
                                           [](const StorageAuditRow& row) {
-                                              return row.wasModified && !row.isAuditConfirmed;
+                                              return row.isRowModified && !row.isRowAuditChecked;
                                           });
     if (hasUnaudited) {
         zWarning("⚠️ Auditálatlan sorok találhatók – a relocation terv nem teljesen megbízható!");
@@ -94,7 +94,7 @@ inline QVector<RelocationInstruction> buildPlan(
             if (row.rootStorageId != rootId) continue;
 
             presentAtTarget += row.actualQuantity;
-            if (row.isAuditConfirmed)
+            if (row.isRowAuditChecked)
                 auditedAtTarget += row.actualQuantity;
         }
 
@@ -120,7 +120,7 @@ inline QVector<RelocationInstruction> buildPlan(
         for (const auto& row : auditRows) {
             if (row.materialId != materialId) continue;
             totalRemaining += row.actualQuantity;
-            if (row.isAuditConfirmed)
+            if (row.isRowAuditChecked)
                 auditedRemaining += row.actualQuantity;
         }
 
@@ -161,7 +161,7 @@ inline QVector<RelocationInstruction> buildPlan(
         const QString rodBarcode   = planItem->rodId;
 
         auto it = std::find_if(auditRows.begin(), auditRows.end(), [&](const StorageAuditRow& row) {
-            return row.isAuditConfirmed &&
+            return row.isRowAuditChecked &&
                    row.sourceType == AuditSourceType::Leftover &&
                    row.materialId == materialId &&
                    row.barcode == rodBarcode;

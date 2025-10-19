@@ -1,31 +1,51 @@
-🧩 Frissített állapottábla (2025.10.17. éjjel)
+🧩 Frissített állapottábla (2025.10.19. – esti állapot)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
 14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	🔥 UI elem elhelyezés finomhangolás hiányzik
-15	Anyagcsoportosítás (roletta vs. sávroló)	✅	🔴 Hiányzik	✅	(opcionális)	🔥 nincs logika
-16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6-ban	🔥 teljes blokk hiányzik
+15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	🔥 AuditContext → groupPresence / groupAuditResult kész, sor vs. csoport státusz szétválasztva
+16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6	🔥 teljes blokk hiányzik
 21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	🔥 kritikus hiány
 25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	🔥 validáció részben kész (gépválasztás, kerf)
 26	Finalize gomb (UI)	✅	🟡 Részben kész	✅	⚠️	🔥 globális finalize hiányzik, cutting lezárása után folytatjuk
-28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5-ben	🔥 teljesen hiányzik
-29	Worklist tab (darab szint)	✅	🟡 Folyamatban	✅	✅	modell definiálva
+28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	🔥 teljesen hiányzik
+29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	🔥 operátor UI, darab státusz
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	🔥 külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	🔥 backlogban
-34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló	✅	🟡 Folyamatban	✅	✅	🔥 részben kész, több komponens hiányzik
-🚀 Sprint fókusz (2025.10.17. éjjel)
+34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	🔥 részben kész, státuszvezérlés hiányzik
+🚀 Sprint fókusz (2025.10.19.)
 Sprint	Tartalom	Állapot
 Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
-Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész (CuttingStrategy teljes lánc lezárva, ini + UI connect működik)
-Sprint 3	Vágási utasítás dialógus + validáció	🟡 Folyamatban <br>🔥 Validáció hiányos (gépválasztás, kerf)
-Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista	🟡 Folyamatban <br>🔥 Globális finalize hiányzik, cutting lezárása után folytatjuk
-Sprint 5	Auditálás, visszavonás	🚧 Előkészítve
-Sprint 6	Hullókezelés, példánykódok, normalizálás, adatfeltöltés	🚧 Előkészítve
-📌 Összegzés
-Mai eredmény: CuttingStrategy teljes lánc kész, ini‑mentés és UI connect működik.
+Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész
+Sprint 3	Vágási utasítás dialógus + validáció, Anyagcsoportosítás master–detail, Worklist tab finomhangolás	🟡 Folyamatban
+Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés	🟡 Folyamatban
+Sprint 5	Finalize auditálás + visszavonás, Audit trail export / diff előkészítés	🚧 Előkészítve
+Sprint 6	Hullókezelés (azonosító, normalizálás, leftoverId), adatfeltöltés, audit trail export	🚧 Előkészítve
+📌 Mai eredmények
+AuditContext:
 
-Új döntés: először a cutting logika teljes lezárása, csak utána a globális finalize.
+confirmedCount → kívülről vezetve, nincs többé körhivatkozás.
 
-A tűz stabilan ég, a következő vízhordás a cutting logika maradék részleteinek lezárása lesz.
+groupPresence() és groupAuditResult() → tisztán getterek, mindig naprakészek.
 
-👉 Holnap tehát a cutting maradék részleteit vesszük elő (anyagcsoportosítás, leftover sorok, Worklist tab finomhangolás), és csak utána térünk vissza a finalize‑hoz.
+StorageAuditRow:
+
+statusType() és statusText() → átdolgozva:
+
+leftover külön logika,
+
+ha group tag → csoport presence számít,
+
+ha nem tag → sor saját adatai.
+
+UI logika:
+
+Checkbox csak akkor jelenik meg, ha van értelme (eredeti mennyiség, nem módosult).
+
+Mennyiség változtatás → státuszt módosít, de nem automatikusan pipál.
+
+Ha visszaáll az eredeti mennyiség → checkbox újra megjelenik, üresen.
+
+Signal blokkolás csak akkor kell, ha programból true‑ra állítjuk a pipát.
+
+👉 Holnap: az audit logikát fogjuk „vízzel hordani” – vagyis a mennyiségváltozás és a státusz összekapcsolását tesszük teljesen konzisztenssé.

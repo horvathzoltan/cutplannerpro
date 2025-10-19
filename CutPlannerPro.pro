@@ -12,8 +12,9 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    common/auditcontextbuilder.cpp \
-    common/auditstatemanager.cpp \
+    model/storageaudit/auditcontext.cpp \
+    service/storageaudit/auditcontextbuilder.cpp \
+    service/storageaudit/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
     common/csvimporter.cpp \
     common/eventlogger.cpp \
@@ -59,8 +60,6 @@ SOURCES += \
     model/repositories/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
     model/stockentry.cpp \
-    model/storageaudit/storageauditentry.cpp \
-    model/storageaudit/storageauditrow.cpp \
     model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
@@ -93,9 +92,10 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
-    common/auditcontextbuilder.h \
-    common/auditstatemanager.h \
-    common/auditsyncguard.h \
+    model/storageaudit/audit_enums.h \
+    service/storageaudit/auditcontextbuilder.h \
+    service/storageaudit/auditstatemanager.h \
+    service/storageaudit/auditsyncguard.h \
     common/auditutils.h \
     common/color/namedcolor.h \
     common/csvhelper.h \

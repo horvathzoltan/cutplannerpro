@@ -653,7 +653,9 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
 
 void MainWindow::initEventLogWidget() {
     EventLogger::instance().emitEvent = [this](const QString& line) {
-        ui->eventLog->insertItem(0, line); // legfrissebb felül
+        //ui->eventLog->insertItem(0, line); // legfrissebb felül
+
+        ui->eventLog->addItem(line); // legfrissebb alul
     };
 
     // 🔄 Betöltjük az eddigi eseményeket

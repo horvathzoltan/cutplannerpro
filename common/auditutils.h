@@ -1,9 +1,9 @@
 #pragma once
 
-#include "auditcontextbuilder.h"
+#include "service/storageaudit/auditcontextbuilder.h"
 #include "common/logger.h"
 #include "model/cutting/plan/cutplan.h"
-#include <model/storageaudit/storageauditrow.h>
+#include "model/storageaudit/storageauditrow.h"
 
 #include <QMap>
 
@@ -37,7 +37,7 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
                     plan.rodId == row.barcode) {
                     row.isInOptimization = true;
                     row.pickingQuantity  = 1; // hullók mindig 1 db
-                    row.presence         = AuditPresence::Present;
+                    row.rowPresence         = AuditPresence::Present;
                     break;
                 }
             }
@@ -63,7 +63,7 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
                 if (remaining > 0) {
                     row.isInOptimization = true;
                     row.pickingQuantity = remaining; // teljes igény
-                    row.presence = (row.actualQuantity >= remaining)
+                    row.rowPresence = (row.actualQuantity >= remaining)
                                        ? AuditPresence::Present
                                        : AuditPresence::Missing;
                     remaining = 0; // egyszer kiosztva

@@ -1,14 +1,15 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
-#include "common/auditsyncguard.h"
+#include "service/cutting/result/resultutils.h"
+#include "service/storageaudit/auditsyncguard.h"
 #include "common/auditutils.h"
 #include "common/logger.h"
 //#include "model/registries/materialregistry.h"
 //#include "model/relocation/relocationinstruction.h"
 #include "model/storageaudit/storageauditentry.h"
 #include "service/cutting/result/archivedwasteutils.h"
-#include "service/cutting/result/resultutils.h"
+//#include "service/cutting/result/resultutils.h"
 //#include "model/archivedwasteentry.h"
 #include "model/registries/cuttingplanrequestregistry.h"
 #include "model/registries/leftoverstockregistry.h"
@@ -30,7 +31,7 @@
 #include <model/registries/materialregistry.h>
 #include <model/registries/storageregistry.h>
 
-#include <common/auditcontextbuilder.h>
+//#include "service/storageaudit/auditcontextbuilder.h"
 
 #include <service/relocation/relocationplanner.h>
 
@@ -581,14 +582,15 @@ QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cut
             continue; // csak a stockból vágott anyagok számítanak
 
         pickingMap[plan.materialId] += 1; // minden CutPlan egy rúd
+        /*auto groupIds = GroupUtils::groupMembers(plan.materialId);
+        for (const auto& gid : groupIds) {
+            pickingMap[gid] += 1;
+        }*/
 
     }
 
     return pickingMap;
 }
-
-
-
 
 
 QVector<QString> CuttingPresenter::resolveTargetStorages(const QUuid& rootStorageId) {
@@ -619,8 +621,8 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId){
             row.actualQuantity = actualQuantity;
-            row.wasModified = (actualQuantity != row.originalQuantity);
-            row.isAuditConfirmed = row.wasModified; // 🔹 audit = módosítás
+            row.isRowModified = (actualQuantity != row.originalQuantity);
+            //row.isRowAuditChecked = row.isRowModified; // 🔹 audit = módosítás
 
             // 🔄 Stock frissítés
             if (auto opt = StockRegistry::instance().findById(row.stockEntryId); opt.has_value()) {
@@ -632,6 +634,8 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
                     view->updateRow_StockTable(updated);
                 }
             }
+
+            recalculateGroupAuditStatus(row.context);
 
             if (view) {
                 view->updateRow_StorageAuditTable(row); // 🔄 újraépíti a cellát
@@ -647,20 +651,104 @@ void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool chec
 {
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId) {
-            row.isAuditConfirmed = checked;
+            // 🔹 Csak az aktuális sor frissítése
+            row.isRowAuditChecked = checked;
+            row.rowPresence = checked
+                               ? (row.actualQuantity > 0 ? AuditPresence::Present : AuditPresence::Missing)
+                               : AuditPresence::Unknown;
+            //row.isRowModified = (row.actualQuantity != row.originalQuantity);
 
-            if (checked) {
-                // Ha van tényleges mennyiség → jelen van, különben hiányzik
-                row.presence = (row.actualQuantity > 0)
-                                   ? AuditPresence::Present
-                                   : AuditPresence::Missing;
-            } else {
-                // Pipa levétele → visszaáll "ellenőrzésre vár"
-                row.presence = AuditPresence::Unknown;
+            if (row.context) {
+                if (checked)
+                    row.context->confirmedCount++;
+                else
+                    row.context->confirmedCount--;
             }
 
-            // 🔄 Szinkronizáljuk a módosítás flaget is
-            row.wasModified = (row.actualQuantity != row.originalQuantity);
+            // 🔁 Teljes csoport státusz újraszámolása
+            recalculateGroupAuditStatus(row.context);
+
+            // 🔄 UI frissítés az aktuális sorra
+            if (view) {
+                view->updateRow_StorageAuditTable(row);
+            }
+
+
+            break;
+        }
+    }
+}
+
+void CuttingPresenter::recalculateGroupAuditStatus(const std::shared_ptr<AuditContext>& ctx)
+{
+    // if (!ctx) return;
+
+    // //int totalCount = ctx->group.size();
+    // // int confirmedCount = 0;
+
+    // // for (const QUuid& memberId : ctx->group.rowIds()) {
+    // //     auto it = std::find_if(lastAuditRows.begin(), lastAuditRows.end(),
+    // //                            [&](const StorageAuditRow& r){ return r.rowId == memberId; });
+    // //     if (it != lastAuditRows.end() && it->isRowAuditChecked) {
+    // //         confirmedCount++;
+    // //     }
+    // // }
+
+    // // // Frissítjük a context mezőit
+    // // //ctx->totalCount = totalCount;
+    // // ctx->confirmedCount = confirmedCount;
+
+    // // Meghatározzuk a csoport presence-t
+    // // AuditPresence groupPresence;
+    // // if (ctx->confirmedCount == 0) {
+    // //     groupPresence = AuditPresence::Unknown;   // semmi nincs auditálva
+    // // } else if (ctx->confirmedCount == totalCount) {
+    // //     groupPresence = AuditPresence::Present;   // minden auditált
+    // // } else {
+    // //     groupPresence = AuditPresence::Missing;   // részlegesen auditált
+    // // }
+
+    // // Ráírjuk minden tag sorra a csoport presence-t
+    // for (const QUuid& memberId : ctx->group.rowIds()) {
+    //     auto it = std::find_if(lastAuditRows.begin(), lastAuditRows.end(),
+    //                            [&](const StorageAuditRow& r){ return r.rowId == memberId; });
+    //     if (it != lastAuditRows.end()) {
+    //         it->rowPresence = ctx->groupPresence();
+    //         it->isRowModified = (it->actualQuantity != it->originalQuantity);
+    //     }
+    // }
+}
+
+
+void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPresence presence)
+{
+    for (StorageAuditRow& row : lastAuditRows) {
+        if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
+
+            // 🔹 Auditálás ténye: ha gombot nyomtak, akkor auditált
+            row.isRowAuditChecked = true;
+
+            // 🔹 Presence beállítása a gomb alapján
+            row.rowPresence = presence;
+
+            switch (presence) {
+            case AuditPresence::Present:
+                row.actualQuantity = 1;   // "Van" → 1 db
+                break;
+            case AuditPresence::Missing:
+                row.actualQuantity = 0;   // "Nincs" → 0 db
+                break;
+            case AuditPresence::Unknown:
+                row.isRowAuditChecked = false; // nincs audit
+                row.actualQuantity = 0;
+                break;
+            }
+
+            // 🔹 Módosítás flag
+            row.isRowModified = (row.actualQuantity != row.originalQuantity);
+
+            // 🔁 Csoport státusz újraszámolása
+            //recalculateGroupAuditStatus(row.context);
 
             // 🔄 UI frissítés
             if (view) {
@@ -672,34 +760,6 @@ void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool chec
     }
 }
 
-
-void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPresence presence) {
-    for (StorageAuditRow& row : lastAuditRows) {
-        if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
-            row.presence = presence;
-
-            switch (presence) {
-            case AuditPresence::Present:
-                row.actualQuantity = 1;
-                break;
-            case AuditPresence::Missing:
-            case AuditPresence::Unknown:
-                row.actualQuantity = 0;
-                break;
-            }
-
-            // 🔍 Audit logika: módosítás eldöntése
-            row.wasModified = (row.actualQuantity != row.originalQuantity);
-            row.isAuditConfirmed = row.wasModified; // 🔹 audit = módosítás
-
-            if (view) {
-                view->updateRow_StorageAuditTable(row);
-            }
-
-            break;
-        }
-    }
-}
 
 /*relocation*/
 

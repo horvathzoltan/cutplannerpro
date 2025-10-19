@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/storageaudit/auditstatus_text.h"
 #include "model/storageaudit/storageauditrow.h"
 #include <QColor>
 

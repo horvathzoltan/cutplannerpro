@@ -23,28 +23,15 @@ inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
     if(_isVerbose){
         zInfo(L("[shouldShowAuditCheckbox] → %1 | módosítva: %2 | auditált: %3 | elvárt: %4 | egyezik: %5")
                   .arg(row.rowId.toString())
-                  .arg(row.wasModified)
-                  .arg(row.isAuditConfirmed)
+                  .arg(row.isRowModified)
+                  .arg(row.isRowAuditChecked)
                   .arg(row.pickingQuantity)
                   .arg(row.actualQuantity == row.originalQuantity));
     }
-    // Csak akkor kell pipa, ha:
-    // - nem módosították
-    // - az érték megegyezik az eredetivel
-    // - nincs még auditálva
-    // - és van elvárt mennyiség (különben nincs mit auditálni)
-    // return !row.wasModified
-    //        && row.actualQuantity == row.originalQuantity
-    //        && !row.isAuditConfirmed
-    //        && row.pickingQuantity > 0;
 
-    // return !row.wasModified
-    //        && row.actualQuantity == row.originalQuantity
-    //        && !row.isAuditConfirmed
-    //        && (row.pickingQuantity > 0 || row.isInOptimization);
-
-    // Csak akkor jelenjen meg a checkbox, ha a sor auditálható
-    return row.pickingQuantity > 0 || row.isInOptimization;
+    return (row.context && row.context->totalExpected > 0)
+           || row.pickingQuantity > 0
+           || row.isInOptimization;
 }
 
 
@@ -78,8 +65,8 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
         radioPresent->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
         radioMissing->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
         container->setStyleSheet(QString("background-color: %1;").arg(cell.background.name()));
-        radioPresent->setChecked(row.presence == AuditPresence::Present);
-        radioMissing->setChecked(row.presence == AuditPresence::Missing);
+        radioPresent->setChecked(row.rowPresence == AuditPresence::Present);
+        radioMissing->setChecked(row.rowPresence == AuditPresence::Missing);
 
 
         QObject::connect(radioPresent, &QRadioButton::toggled, receiver, [radioPresent, receiver]() {
@@ -102,7 +89,7 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
         if (shouldShowAuditCheckbox(row)) {
             auto* checkbox = new QCheckBox("Auditálva");
-            checkbox->setChecked(row.isAuditConfirmed);
+            checkbox->setChecked(row.isRowAuditChecked);
             checkbox->setProperty("rowId", row.rowId);
 
             checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
@@ -154,7 +141,7 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
         if (shouldShowAuditCheckbox(row)) {
             auto* checkbox = new QCheckBox("Auditálva");
-            checkbox->setChecked(row.isAuditConfirmed);
+            checkbox->setChecked(row.isRowAuditChecked);
             checkbox->setProperty("rowId", row.rowId);
 
             checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");

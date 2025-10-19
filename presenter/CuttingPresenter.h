@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include "../model/cutting/optimizer/optimizermodel.h"
-#include "common/auditstatemanager.h"
+#include "service/storageaudit/auditstatemanager.h"
 #include "model/archivedwasteentry.h"
 #include "model/relocation/relocationinstruction.h"
 #include "model/storageaudit/storageauditrow.h"
@@ -76,6 +76,7 @@ public:
     void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
     QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
+    void recalculateGroupAuditStatus(const std::shared_ptr<AuditContext> &ctx);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
