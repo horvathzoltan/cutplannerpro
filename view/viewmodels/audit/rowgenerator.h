@@ -4,6 +4,7 @@
 #include "common/tableutils/colorlogicutils.h"
 #include "common/tableutils/storageaudittable_rowstyler.h"
 #include "model/storageaudit/auditcontext_text.h"
+#include "model/storageaudit/auditstatus_text.h"
 #include "view/cellhelpers/auditcellcolors.h"
 #include "view/cellhelpers/auditcelltext.h"
 #include "view/cellhelpers/auditcelltooltips.h"
@@ -25,60 +26,6 @@
 #include <QCheckBox>
 
 namespace Audit::ViewModel::RowGenerator {
-
-/// 🔹 Teljes TableRowViewModel generálása egy StorageAuditRow alapján
-// inline TableRowViewModel generate(const StorageAuditRow& row,
-//                                   const MaterialMaster* mat,
-//                                   const QString& groupLabel,
-//                                   QObject* receiver) {
-//     TableRowViewModel vm;
-//     vm.rowId = row.rowId;
-
-//     // 🎨 Alapszínek a csoport alapján
-//     QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-//     QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-// //    QColor baseColor = mat ? AuditColors::groupColor(mat->groupId) : Qt::lightGray;
-// //    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-//     // 🧩 Cellák feltöltése
-//     vm.cells[AuditTableColumns::Material] =
-//         TableCellViewModel::fromText(mat ? mat->name : "Ismeretlen",
-//                        mat ? mat->color.name() : "",
-//                        baseColor, fgColor);
-
-//     vm.cells[AuditTableColumns::Storage] =
-//         TableCellViewModel::fromText(row.storageName,
-//             QString("Tároló: %1").arg(row.storageName),
-//             baseColor, fgColor);
-
-
-//     vm.cells[AuditTableColumns::Expected] =
-//         TableCellViewModel::fromText(AuditCellText::formatExpectedQuantity(row, groupLabel),
-//             AuditCellTooltips::formatExpectedTooltip(row),
-//             baseColor, fgColor);
-
-//     vm.cells[AuditTableColumns::Missing] =
-//         TableCellViewModel::fromText(AuditCellText::formatMissingQuantity(row),
-//             AuditCellTooltips::formatMissingTooltip(row),
-//             baseColor, fgColor);
-
-//     vm.cells[AuditTableColumns::Status] =
-//         TableCellViewModel::fromText(TableUtils::AuditCells::statusText(row),
-//              AuditCellTooltips::formatStatusTooltip(row, mat),
-//              AuditCellColors::resolveStatusColor(row),
-//              Qt::black);
-
-//     vm.cells[AuditTableColumns::Barcode] =
-//         TableCellViewModel::fromText(row.barcode,
-//             QString("Vonalkód: %1").arg(row.barcode),
-//             baseColor, fgColor);
-
-//     vm.cells[AuditTableColumns::Actual] =
-//         Audit::ViewModel::CellGenerator::createActualCell(row, receiver, baseColor, fgColor);
-
-//     return vm;
-// }
 
 inline TableRowViewModel generate(const StorageAuditRow& row,
                                   const MaterialMaster* mat,
@@ -117,11 +64,12 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
                                      AuditCellTooltips::formatMissingTooltip(row),
                                      baseColor, fgColor);
 
+
     // 🧩 Státusz
     vm.cells[AuditTableColumns::Status] =
-        TableCellViewModel::fromText(TableUtils::AuditCells::statusText(row),
+        TableCellViewModel::fromText(row.statusText(),
                                      AuditCellTooltips::formatStatusTooltip(row, mat),
-                                     AuditCellColors::resolveStatusColor(row),
+                                     row.statusType().toColor(),
                                      Qt::black);
 
     // 🧩 Vonalkód

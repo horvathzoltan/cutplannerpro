@@ -620,9 +620,9 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
 
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId){
+
             row.actualQuantity = actualQuantity;
             row.isRowModified = (actualQuantity != row.originalQuantity);
-            //row.isRowAuditChecked = row.isRowModified; // 🔹 audit = módosítás
 
             // 🔄 Stock frissítés
             if (auto opt = StockRegistry::instance().findById(row.stockEntryId); opt.has_value()) {
@@ -635,8 +635,6 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
                 }
             }
 
-            recalculateGroupAuditStatus(row.context);
-
             if (view) {
                 view->updateRow_StorageAuditTable(row); // 🔄 újraépíti a cellát
             }
@@ -646,77 +644,33 @@ void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int
     }
 }
 
-
 void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool checked)
 {
     for (StorageAuditRow &row : lastAuditRows) {
         if (row.rowId == rowId) {
             // 🔹 Csak az aktuális sor frissítése
             row.isRowAuditChecked = checked;
-            row.rowPresence = checked
-                               ? (row.actualQuantity > 0 ? AuditPresence::Present : AuditPresence::Missing)
-                               : AuditPresence::Unknown;
-            //row.isRowModified = (row.actualQuantity != row.originalQuantity);
 
-            if (row.context) {
-                if (checked)
-                    row.context->confirmedCount++;
-                else
-                    row.context->confirmedCount--;
-            }
-
-            // 🔁 Teljes csoport státusz újraszámolása
-            recalculateGroupAuditStatus(row.context);
+            // if (checked) {
+            //     // Ha bepipálta → auditált, de a presence maradjon a quantity alapján
+            //     if (row.actualQuantity > 0) {
+            //         //row.rowAuditResult = AuditResult::AuditedOk;
+            //     } else {
+            //         //row.rowAuditResult = AuditResult::AuditedMissing;
+            //     }
+            // } else {
+            //     // Ha kivette a pipát → vissza nem auditáltra
+            //    //row.rowAuditResult = AuditResult::NotAudited;
+            // }
 
             // 🔄 UI frissítés az aktuális sorra
             if (view) {
                 view->updateRow_StorageAuditTable(row);
             }
 
-
             break;
         }
     }
-}
-
-void CuttingPresenter::recalculateGroupAuditStatus(const std::shared_ptr<AuditContext>& ctx)
-{
-    // if (!ctx) return;
-
-    // //int totalCount = ctx->group.size();
-    // // int confirmedCount = 0;
-
-    // // for (const QUuid& memberId : ctx->group.rowIds()) {
-    // //     auto it = std::find_if(lastAuditRows.begin(), lastAuditRows.end(),
-    // //                            [&](const StorageAuditRow& r){ return r.rowId == memberId; });
-    // //     if (it != lastAuditRows.end() && it->isRowAuditChecked) {
-    // //         confirmedCount++;
-    // //     }
-    // // }
-
-    // // // Frissítjük a context mezőit
-    // // //ctx->totalCount = totalCount;
-    // // ctx->confirmedCount = confirmedCount;
-
-    // // Meghatározzuk a csoport presence-t
-    // // AuditPresence groupPresence;
-    // // if (ctx->confirmedCount == 0) {
-    // //     groupPresence = AuditPresence::Unknown;   // semmi nincs auditálva
-    // // } else if (ctx->confirmedCount == totalCount) {
-    // //     groupPresence = AuditPresence::Present;   // minden auditált
-    // // } else {
-    // //     groupPresence = AuditPresence::Missing;   // részlegesen auditált
-    // // }
-
-    // // Ráírjuk minden tag sorra a csoport presence-t
-    // for (const QUuid& memberId : ctx->group.rowIds()) {
-    //     auto it = std::find_if(lastAuditRows.begin(), lastAuditRows.end(),
-    //                            [&](const StorageAuditRow& r){ return r.rowId == memberId; });
-    //     if (it != lastAuditRows.end()) {
-    //         it->rowPresence = ctx->groupPresence();
-    //         it->isRowModified = (it->actualQuantity != it->originalQuantity);
-    //     }
-    // }
 }
 
 
@@ -725,36 +679,30 @@ void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPre
     for (StorageAuditRow& row : lastAuditRows) {
         if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
 
-            // 🔹 Auditálás ténye: ha gombot nyomtak, akkor auditált
-            row.isRowAuditChecked = true;
-
-            // 🔹 Presence beállítása a gomb alapján
             row.rowPresence = presence;
 
             switch (presence) {
             case AuditPresence::Present:
-                row.actualQuantity = 1;   // "Van" → 1 db
+                row.actualQuantity = 1;
+                //row.rowAuditResult = AuditResult::AuditedOk;
                 break;
             case AuditPresence::Missing:
-                row.actualQuantity = 0;   // "Nincs" → 0 db
+                row.actualQuantity = 0;
+              //  row.rowAuditResult = AuditResult::AuditedMissing;
                 break;
             case AuditPresence::Unknown:
-                row.isRowAuditChecked = false; // nincs audit
+                row.isRowAuditChecked = false;
                 row.actualQuantity = 0;
+               // row.rowAuditResult = AuditResult::NotAudited;
                 break;
             }
 
             // 🔹 Módosítás flag
             row.isRowModified = (row.actualQuantity != row.originalQuantity);
 
-            // 🔁 Csoport státusz újraszámolása
-            //recalculateGroupAuditStatus(row.context);
-
-            // 🔄 UI frissítés
             if (view) {
                 view->updateRow_StorageAuditTable(row);
             }
-
             break;
         }
     }

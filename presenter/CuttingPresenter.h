@@ -76,7 +76,6 @@ public:
     void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
     QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
-    void recalculateGroupAuditStatus(const std::shared_ptr<AuditContext> &ctx);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
@@ -88,5 +87,6 @@ private:
     AuditStateManager _auditStateManager;
 
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
+    void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
 };
 

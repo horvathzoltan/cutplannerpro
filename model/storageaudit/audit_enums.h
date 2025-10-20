@@ -5,15 +5,18 @@ enum class AuditSourceType {
     Leftover
 };
 
-enum class AuditPresence {
-    Unknown,
-    Present,
-    Missing
-};
+// enum class AuditPresence {
+//     Unknown,
+//     Present,
+//     Missing
+// };
 
-enum class AuditResult {
-    NotAudited,   // nincs audit
-    AuditedOk,    // auditált, rendben
-   // AuditedMissing, // auditált, de hiányzik
-    AuditedPartial // (csak csoportnál értelmezett)
-};
+// enum class AuditResult {
+//     NotAudited,   // nincs audit
+//     AuditedOk,    // auditált, rendben
+//     AuditedMissing, // auditált, de a mennyiség hiányzik
+
+//     // (csak csoportnál értelmezett) és azt jelenti, hogy nem minden
+//     // csoporttag lett auditálva és nem pedig mennyiségi hiányt
+//     AuditedPartial
+// };

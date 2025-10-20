@@ -146,6 +146,20 @@ inline void assignContextsToRows(QVector<StorageAuditRow>* auditRows,
         row.context = contextMap.value(row.rowId);
     }
 
+    // 🔄 Csoportosítás kulcs alapján: minden context megkapja a hozzá tartozó sorokat
+    QMap<QString, QList<StorageAuditRow*>> groupMap;
+    for (auto& row : *auditRows) {
+        QString key = AuditContextBuilder::makeGroupKey(row);
+        groupMap[key].append(&row);
+    }
+
+    for (auto& row : *auditRows) {
+        QString key = AuditContextBuilder::makeGroupKey(row);
+        if (row.context) {
+            row.context->setGroupRows(groupMap.value(key));
+        }
+    }
+
     zInfo(L("🔗 AuditContext hozzárendelve minden sorhoz — összes sor: %1")
               .arg(auditRows->size()));
 

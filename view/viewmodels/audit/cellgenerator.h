@@ -29,9 +29,61 @@ inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
                   .arg(row.actualQuantity == row.originalQuantity));
     }
 
-    return (row.context && row.context->totalExpected > 0)
-           || row.pickingQuantity > 0
-           || row.isInOptimization;
+    if (row.sourceType == AuditSourceType::Leftover) {
+        // Hullóknál: csak akkor kell checkbox, ha nincs módosítás (eredeti állapotban van)
+        return !row.isRowModified;
+    }
+
+    // Stock soroknál marad az eredeti logika
+    return !row.isRowModified && (
+               (row.context && row.context->totalExpected > 0)
+               || row.pickingQuantity > 0
+               || row.isInOptimization
+               );
+}
+
+inline QWidget* createAuditCheckboxWidget(const StorageAuditRow& row,
+                                          QObject* receiver,
+                                          const QColor& background,
+                                          const QColor& foreground)
+{
+    constexpr int checkboxWidth = 80;
+
+    auto* container = new QWidget();
+    auto* layout = new QHBoxLayout(container);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    if (shouldShowAuditCheckbox(row)) {
+        auto* checkbox = new QCheckBox("Auditálva");
+        checkbox->setChecked(row.isRowAuditChecked);
+        checkbox->setProperty("rowId", row.rowId);
+
+        checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
+        checkbox->setStyleSheet(QString(
+                                    "background-color: %1; color: %2;"
+                                    "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
+                                    ).arg(background.name()).arg(foreground.name()));
+
+        QObject::connect(checkbox, &QCheckBox::toggled, receiver, [checkbox, receiver](bool checked) {
+            QUuid rowId = checkbox->property("rowId").toUuid();
+            QMetaObject::invokeMethod(receiver, "auditCheckboxToggled",
+                                      Q_ARG(QUuid, rowId),
+                                      Q_ARG(bool, checked));
+        });
+
+        checkbox->setFixedWidth(checkboxWidth);
+        layout->addWidget(checkbox);
+    } else {
+        // 🔹 Helyfoglaló widget, ha nincs checkbox
+        auto* spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        spacer->setFixedWidth(checkboxWidth); // pl. 80
+        layout->addWidget(spacer);
+
+    }
+
+    return container;
 }
 
 
@@ -87,26 +139,8 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
             }
         });
 
-        if (shouldShowAuditCheckbox(row)) {
-            auto* checkbox = new QCheckBox("Auditálva");
-            checkbox->setChecked(row.isRowAuditChecked);
-            checkbox->setProperty("rowId", row.rowId);
-
-            checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
-            checkbox->setStyleSheet(QString(
-                                        "background-color: %1; color: %2;"
-                                        "QToolTip { background-color: %1; color: %2; border: 1px solid gray; }"
-                                        ).arg(cell.background.name()).arg(cell.foreground.name()));
-
-            QObject::connect(checkbox, &QCheckBox::toggled, receiver, [checkbox, receiver](bool checked) {
-                QUuid rowId = checkbox->property("rowId").toUuid();
-                QMetaObject::invokeMethod(receiver, "auditCheckboxToggled",
-                                          Q_ARG(QUuid, rowId),
-                                          Q_ARG(bool, checked));
-            });
-
-            layout->addWidget(checkbox);
-        }
+        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background, cell.foreground);
+        layout->addWidget(checkbox);
 
         cell.widget = container;
     } else {
@@ -115,9 +149,6 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
         spin->setRange(0, 9999);
         spin->setValue(row.actualQuantity);
         spin->setProperty("rowId", row.rowId);
-        // spin->setStyleSheet(QString("background-color: %1; color: %2;")
-        //                         .arg(cell.background.name())
-        //                         .arg(cell.foreground.name()));
 
         spin->setStyleSheet(QString(
                                 "background-color: %1; color: %2;"
@@ -139,37 +170,8 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
         layout->addWidget(spin);
 
-        if (shouldShowAuditCheckbox(row)) {
-            auto* checkbox = new QCheckBox("Auditálva");
-            checkbox->setChecked(row.isRowAuditChecked);
-            checkbox->setProperty("rowId", row.rowId);
-
-            checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
-            // checkbox->setStyleSheet(QString(
-            //                             "background-color: %1; color: %2;"
-            //                             "QToolTip { background-color: %1; color: %2; border: 1px solid gray; }"
-            //                             ).arg(cell.background.name()).arg(cell.foreground.name()));
-
-            checkbox->setStyleSheet(QString(
-                                        "background-color: %1; color: %2;"
-                                        "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
-                                        ).arg(cell.background.name()).arg(cell.foreground.name()));
-
-
-            QObject::connect(checkbox, &QCheckBox::toggled, receiver, [checkbox, receiver](bool checked) {
-                QUuid rowId = checkbox->property("rowId").toUuid();
-                QMetaObject::invokeMethod(receiver, "auditCheckboxToggled",
-                                          Q_ARG(QUuid, rowId),
-                                          Q_ARG(bool, checked));
-            });
-
-            //            checkbox->setToolTip("Jelöld meg, ha az érték auditált, de nem módosult");
-            // checkbox->setStyleSheet(QString("background-color: %1; color: %2;")
-            //                         .arg(cell.background.name())
-            //                         .arg(cell.foreground.name()));
-
-            layout->addWidget(checkbox);
-        }
+        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background, cell.foreground);
+        layout->addWidget(checkbox);
 
         container->setStyleSheet(QString("background-color: %1; color: %2;")
                                      .arg(cell.background.name())

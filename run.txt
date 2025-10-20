@@ -1,19 +1,19 @@
-🧩 Frissített állapottábla (2025.10.19. – esti állapot)
-#	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
+
+Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
-14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	🔥 UI elem elhelyezés finomhangolás hiányzik
-15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	🔥 AuditContext → groupPresence / groupAuditResult kész, sor vs. csoport státusz szétválasztva
-16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6	🔥 teljes blokk hiányzik
-21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	🔥 kritikus hiány
-25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	🔥 validáció részben kész (gépválasztás, kerf)
-26	Finalize gomb (UI)	✅	🟡 Részben kész	✅	⚠️	🔥 globális finalize hiányzik, cutting lezárása után folytatjuk
-28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	🔥 teljesen hiányzik
-29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	🔥 operátor UI, darab státusz
-30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	🔥 külön sor, leftoverId – részben kész
-33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	🔥 backlogban
-34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	🔥 részben kész, státuszvezérlés hiányzik
-🚀 Sprint fókusz (2025.10.19.)
+14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	UI elem elhelyezés finomhangolás hiányzik
+15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	AuditContext → groupPresence / groupAuditResult getterek, sor vs. csoport státusz szétválasztva
+16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6	teljes blokk hiányzik
+21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
+25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	validáció részben kész (gépválasztás, kerf)
+26	Finalize gomb (UI)	✅	🟡 Részben kész	✅	⚠️	globális finalize hiányzik, cutting lezárása után folytatjuk
+28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	teljesen hiányzik
+29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	operátor UI, darab státusz
+30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész
+33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
+34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
+🚀 Sprint fókusz (2025.10.20.)
 Sprint	Tartalom	Állapot
 Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
 Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész
@@ -22,13 +22,13 @@ Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelé
 Sprint 5	Finalize auditálás + visszavonás, Audit trail export / diff előkészítés	🚧 Előkészítve
 Sprint 6	Hullókezelés (azonosító, normalizálás, leftoverId), adatfeltöltés, audit trail export	🚧 Előkészítve
 📌 Mai eredmények
-AuditContext:
+AuditContext
 
 confirmedCount → kívülről vezetve, nincs többé körhivatkozás.
 
-groupPresence() és groupAuditResult() → tisztán getterek, mindig naprakészek.
+groupPresence() és groupAuditResult() → tiszta getterek, mindig naprakészek.
 
-StorageAuditRow:
+StorageAuditRow
 
 statusType() és statusText() → átdolgozva:
 
@@ -38,7 +38,11 @@ ha group tag → csoport presence számít,
 
 ha nem tag → sor saját adatai.
 
-UI logika:
+rowAuditResult mező eltávolítva → felesleges, minden kiszámolható getterekből.
+
+rowPresence → refaktor ötlet: ne tárolt mező legyen, hanem számított getter (actualQuantity >= pickingQuantity ? Present : Missing), plusz bool isFulfilled() kényelmi getter.
+
+UI logika
 
 Checkbox csak akkor jelenik meg, ha van értelme (eredeti mennyiség, nem módosult).
 
@@ -48,4 +52,14 @@ Ha visszaáll az eredeti mennyiség → checkbox újra megjelenik, üresen.
 
 Signal blokkolás csak akkor kell, ha programból true‑ra állítjuk a pipát.
 
-👉 Holnap: az audit logikát fogjuk „vízzel hordani” – vagyis a mennyiségváltozás és a státusz összekapcsolását tesszük teljesen konzisztenssé.
+🆕 Felmerült új igények / refaktor ötletek
+Auditáltság getter: bool isAudited() const { return isRowModified || isRowAuditChecked; } → tisztán megmondja, hogy auditáltuk‑e a sort.
+
+Presence refaktor: AuditPresence presence() const + bool isFulfilled() const → számított érték, nem tárolt.
+
+Állapotmátrix szükségessége: jó lenne egy táblázat, ami lefedi:
+
+isRowModified × isRowAuditChecked × actualQuantity vs. pickingQuantity → ebből egyértelműen kijön statusType() és statusText().
+
+👉 Holnap: az audit logikát teljesen konzisztenssé tesszük (mennyiségváltozás + státusz + checkbox összekapcsolása).
+
