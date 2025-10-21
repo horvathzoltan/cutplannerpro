@@ -1,43 +1,63 @@
 #pragma once
 
 #include "common/styleprofiles/auditcolors.h"
-#include "model/storageaudit/audit_enums.h"
+//#include "model/storageaudit/auditcontext.h"
 #include <QColor>
 #include <QString>
-
 
 class AuditStatus {
 public:
     enum Value {
-        Ok,       // elvárt teljesül
-        Missing,  // semmi nincs jelen
-        Pending,  // részben jelen, de nem elég
-        Info,     // nincs elvárás (optimize előtt, vagy csak információ)
-        Unknown
+        Audited_Fulfilled,     // ✅ Auditált és teljesült
+        Audited_Missing,       // 🟥 Auditált, de nincs készlet
+        Audited_Unfulfilled,   // 🟡 Auditált, de részben teljesült
+        Audited_Partial,       // 🟠 Részlegesen auditált csoport
+        RegisteredOnly,        // 🔵 Regisztrált, nincs elvárás
+        NotAudited             // ⚪ Még nem auditált
     };
 
     // Konstruktor
-    explicit AuditStatus(Value v = Unknown) : value(v) {}
+    explicit AuditStatus(Value v = NotAudited) : value(v) {}
 
     // Konverzió szövegre
     QString toText() const {
         switch (value) {
-        case Ok:      return "OK";
-        case Missing: return "Hiányzik";
-        case Pending: return "Ellenőrzésre vár";
-        case Info:    return "Regisztrált";
-        default:      return "-";
+        case Audited_Fulfilled:    return "Auditált, teljesült";
+        case Audited_Missing:      return "Auditált, nincs készlet";
+        case Audited_Unfulfilled:  return "Auditált, részleges teljesülés";
+        case Audited_Partial:      return "Részlegesen auditált";
+        case RegisteredOnly:       return "Regisztrált (nincs elvárás)";
+        case NotAudited:           return "Nem auditált";
+        default:                   return "-";
         }
+    }
+
+    static QString statusEmoji(Value v) {
+        switch (v) {
+        case Audited_Fulfilled:    return "✅";
+        case Audited_Missing:      return "🟥";
+        case Audited_Unfulfilled:  return "🟡";
+        case Audited_Partial:      return "🟠";
+        case RegisteredOnly:       return "🔵";
+        case NotAudited:           return "⚪";
+        default:                   return "⚪";
+        }
+    }
+
+    static QString toDecoratedText(Value v) {
+        return statusEmoji(v) + " " + AuditStatus(v).toText();
     }
 
     // Konverzió színre
     QColor toColor() const {
         switch (value) {
-        case Ok:      return AuditColors::Ok;       // zöld
-        case Missing: return AuditColors::Missing;  // piros
-        case Pending: return AuditColors::Pending;  // sárga/narancs
-        case Info:    return AuditColors::Info;     // kékes/szürke
-        default:      return AuditColors::Unknown;  // szürke
+        case Audited_Fulfilled:    return AuditColors::Ok;
+        case Audited_Missing:      return AuditColors::Missing;
+        case Audited_Unfulfilled:  return AuditColors::Pending;
+        case Audited_Partial:      return AuditColors::PartialAudit;
+        case RegisteredOnly:       return AuditColors::Info;
+        case NotAudited:           return AuditColors::Unknown;
+        default:                   return AuditColors::Unknown;
         }
     }
 
@@ -50,35 +70,6 @@ public:
     bool operator!=(Value v) const { return value != v; }
 
 
-    // 🔹 AuditPresence → AuditStatus
-    static AuditStatus fromPresence(AuditPresence presence) {
-        switch (presence) {
-        case AuditPresence::Unknown: return AuditStatus(Unknown);
-        case AuditPresence::Missing: return AuditStatus(Pending);
-        case AuditPresence::Present: return AuditStatus(Ok);
-        }
-        return AuditStatus(Unknown);
-    }
-
-    // 🔹 Csoportos státusz szöveg
-    static QString fromPresenceText(AuditPresence presence) {
-        switch (presence) {
-        case AuditPresence::Unknown: return "⚪ Nem auditált (csoport)";
-        case AuditPresence::Missing: return "🟡 Részlegesen auditált (csoport)";
-        case AuditPresence::Present: return "🟢 Auditálva (csoport)";
-        }
-        return "⚪ Nem auditált (csoport)";
-    }
-
-    static QString toDecoratedText(Value v) {
-        switch (v) {
-        case Ok:      return "🟢 Auditált";
-        case Missing: return "🟠 Auditált (nincs készlet)";
-        case Pending: return "🟡 Auditált (részleges)";
-        case Info:    return "🔵 Regisztrált";
-        default:      return "⚪ Nem auditált";
-        }
-    }
 
     QString toDecoratedText() const { return toDecoratedText(value); }
 
@@ -88,47 +79,17 @@ public:
     }
 
     // 🔹 Standard suffixek
-    static QString suffixHullóVan()        { return QStringLiteral("(hulló, van)"); }
-    static QString suffixHullóNincs()      { return "(hulló, nincs)"; }
-    static QString suffixHullóNemAudit()   { return "(hulló)"; }
-    static QString suffixMódosítva()       { return "(módosítva)"; }
-    static QString suffixMódosítvaNincs()  { return "(módosítva, nincs készlet)"; }
-    static QString suffixNincsKészlet()    { return "(nincs készlet)"; }
+    static QString suffix_HulloVan()        { return "(hulló, van)"; }
+    static QString suffix_HulloNincs()      { return "(hulló, nincs)"; }
+    static QString suffix_HulloNemAudit()   { return "(hulló)"; }
+    static QString suffix_Modositva()       { return "(módosítva)"; }
+    static QString suffix_ModositvaNincs()  { return "(módosítva, nincs készlet)"; }
+    static QString suffix_NincsKeszlet()    { return "(nincs készlet)"; }
+
+    static QString suffix_CsoportHianyos() { return "(csoport, részleges teljesülés)"; }
+    static QString suffix_CsoportReszlegesAudit() { return "(csoport, részleges audit)"; }
+
 private:
     Value value;
 };
 
-// enum AuditStatus {
-//     Ok,       // elvárt teljesül
-//     Missing,  // semmi nincs jelen
-//     Pending,  // részben jelen, de nem elég
-//     Info,     // nincs elvárás (optimize előtt, vagy csak információ)
-//     Unknown
-// };
-
-// namespace StorageAudit{
-// namespace Status{
-
-// inline QString toText(AuditStatus s) {
-//     switch (s) {
-//     case AuditStatus::Ok:      return "OK";
-//     case AuditStatus::Missing: return "Hiányzik";
-//     case AuditStatus::Pending: return "Ellenőrzésre vár";
-//     case AuditStatus::Info:    return "Regisztrált";
-//     default:                   return "-";
-//     }
-// }
-
-// inline QColor toColor(AuditStatus s) {
-//     switch (s) {
-//     case AuditStatus::Ok:      return AuditColors::Ok; // zöld
-//     case AuditStatus::Missing: return AuditColors::Missing; // piros
-//     case AuditStatus::Pending: return AuditColors::Pending; // narancs
-//     case AuditStatus::Info:    return AuditColors::Info;
-//     default:                   return AuditColors::Unknown;
-//     }
-// }
-
-
-// }
-// }

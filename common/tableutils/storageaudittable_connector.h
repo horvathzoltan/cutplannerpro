@@ -25,10 +25,10 @@ inline static void Connect (
                });
 
     w->connect(manager,
-               &StorageAuditTableManager::leftoverPresenceChanged,
+               &StorageAuditTableManager::leftoverQuantityChanged,
                w,
-               [presenter](const QUuid& rowId, AuditPresence presence) {
-                   presenter->update_LeftoverAuditPresence(rowId, presence);
+               [presenter](const QUuid& rowId, int quantity) {
+                   presenter->update_LeftoverAuditActualQuantity(rowId, quantity);
                });
     w->connect(manager,
                &StorageAuditTableManager::auditCheckboxToggled,

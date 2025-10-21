@@ -5,6 +5,7 @@
 #include <QUuid>
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/stockregistry.h>
+#include "model/storageaudit/audit_enums.h"
 #include "model/storageaudit/auditcontext.h"
 #include "model/storageaudit/auditstatus.h"
 //#include "model/storageaudit/auditstatus_text.h"
@@ -16,10 +17,6 @@ struct StorageAuditRow {
     QUuid stockEntryId;                // Kapcsolat a StockEntry-hez
     AuditSourceType sourceType = AuditSourceType::Stock;
     //AuditPresence rowPresence = AuditPresence::Unknown;
-
-    bool isFulfilled() const {
-        return actualQuantity >= pickingQuantity;
-    }
 
     int pickingQuantity = 0;       // Elvárt mennyiség (soronként, injektálás után)
     //int actualQuantity = 0;        // Audit során talált mennyiség
@@ -34,6 +31,10 @@ struct StorageAuditRow {
 
     bool isAudited() const {
         return isRowModified || isRowAuditChecked;
+    }
+
+    bool isFulfilled() const {
+        return actualQuantity >= pickingQuantity;
     }
 
     QString barcode;               // Vonalkód (ha van)
@@ -69,250 +70,89 @@ struct StorageAuditRow {
         return s.value().storageId;
     }
 
-    // Szöveges státusz (UI-hoz)
-    // QString status() const {
-    //     // 🔹 Ha a felhasználó auditáltnak jelölte (pipa)
-    //     if (isRowAuditChecked) {
-    //         if (actualQuantity > 0)
-    //             return "Auditált, OK";
-    //         else
-    //             return "Auditált, nincs készlet";
-    //     }
 
-    //     // Hulló audit esetén külön logika
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         if (isInOptimization) {
-    //             if (actualQuantity > 0)
-    //                 return "Felhasználás alatt, OK";
-    //             else
-    //                 return "Felhasználás alatt, nincs megerősítve";
-    //         } else {
-    //             return "Regisztrált hulló"; // nincs elvárt → semleges státusz
-    //         }
-    //     }
+    AuditStatus status() const {
+        if (!isAudited()) {
+            return (sourceType == AuditSourceType::Leftover)
+                       ? AuditStatus(AuditStatus::RegisteredOnly)
+                       : AuditStatus(AuditStatus::NotAudited);
+        }
+        return isFulfilled()
+                   ? AuditStatus(AuditStatus::Audited_Fulfilled)
+                   : AuditStatus(AuditStatus::Audited_Missing);
+    }
 
-    //     // Stock audit esetén
-    //     if (pickingQuantity == 0) {
-    //         // nincs elvárt mennyiség → nincs viszonyítási alap
-    //         return "Regisztrált készlet";
-    //     }
-
-    //     // Ha van elvárt mennyiség, akkor audit státusz értelmezhető
-    //     switch (rowPresence) {
-    //     case AuditPresence::Present:
-    //         return "OK";
-    //     case AuditPresence::Missing:
-    //         return QString("Hiányzó mennyiség: %1").arg(missingQuantity());
-    //     case AuditPresence::Unknown:
-    //         return "Ellenőrzésre vár";
-    //     }
-    //     return "-";
-    // }
-
-
-    // AuditStatus statusType() const {
-    //     // 🔹 Leftover sorok külön logika
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         if (isInOptimization) {
-    //             return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-    //         }
-    //         return AuditStatus::Info; // regisztrált hulló
-    //     }
-
-    //     // 🔹 Ha módosult → auditáltként kezeljük
-    //     if (isRowModified) {
-    //         return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-    //     }
-
-    //     // 🔹 Ha van context és a sor tényleg group tag
-    //     if (context && context->group.size() > 1) {
-    //         switch (context->groupPresence()) {
-    //         case AuditPresence::Unknown: return AuditStatus::Unknown;
-    //         case AuditPresence::Missing: return AuditStatus::Pending;
-    //         case AuditPresence::Present: return AuditStatus::Ok;
-    //         }
-    //     }
-
-    //     // 🔹 Ha nincs context → egyedi sor logika
-    //     if (isRowAuditChecked) {
-    //         return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-    //     }
-
-    //     return AuditStatus::Unknown;
-    // }
-
-    // QString statusText() const {
-    //     // 🔹 Leftover sorok külön logika
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         if (!isRowAuditChecked) {
-    //             return "⚪ Nem auditált ♻️ (hulló)";
-    //         }
-    //         return (actualQuantity > 0)
-    //                    ? "🟢 Auditált ♻️ (van)"
-    //                    : "🟠 Auditált ♻️ (nincs)";
-    //     }
-
-    //     // 🔹 Ha módosult → auditáltként kezeljük
-    //     if (isRowModified) {
-    //         return (actualQuantity > 0)
-    //         ? "🟢 Auditált (módosítva)"
-    //         : "🟠 Auditált, nincs készlet (módosítva)";
-    //     }
-
-    //     // 🔹 Ha van context és a sor tényleg group tag
-    //     if (context && context->group.size() > 1) {
-    //         switch (context->groupPresence()) {
-    //         case AuditPresence::Unknown: return "⚪ Nem auditált (csoport)";
-    //         case AuditPresence::Missing: return "🟡 Részlegesen auditált (csoport)";
-    //         case AuditPresence::Present: return "🟢 Auditálva (csoport)";
-    //         }
-    //     }
-
-    //     // 🔹 Ha nincs context → egyedi sor logika
-    //     if (isRowAuditChecked) {
-    //         return (actualQuantity > 0)
-    //         ? "🟢 Auditálva"
-    //         : "🟠 Auditált, nincs készlet";
-    //     }
-
-    //     return "⚪ Nem auditált";
-    // }
-
-   //  AuditStatus statusType() const {
-   //      // 🔹 Leftover sorok külön logika
-   //      if (sourceType == AuditSourceType::Leftover) {
-   //          if (isInOptimization) {
-   //              return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-   //          }
-   //          return AuditStatus::Info;
-   //      }
-
-   //      // 🔹 Ha módosult → auditáltként kezeljük
-   //      if (isRowModified) {
-   //          return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-   //      }
-
-   //      // 🔹 Ha pipált → auditáltként kezeljük
-   //      if (isRowAuditChecked) {
-   //          return (actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing;
-   //      }
-
-   //      // 🔹 Ha van context és csoport tag
-   //      if (context && context->group.size() > 1) {
-   //          switch (context->groupPresence()) {
-   //          case AuditPresence::Unknown: return AuditStatus::Unknown; // ⚪ semmi nincs auditálva
-   //          case AuditPresence::Missing: return AuditStatus::Pending; // 🟡 részlegesen auditált
-   //          case AuditPresence::Present: return AuditStatus::Ok;      // 🟢 minden auditált
-   //          }
-   //      }
-
-   //      return AuditStatus::Unknown;
-   //  }
-
-
-
-
-
-   //  QString statusText() const {
-   //      // 🔹 Leftover sorok külön logika
-   //      if (sourceType == AuditSourceType::Leftover) {
-   //          if (!isRowAuditChecked) {
-   //              return "⚪ Nem auditált ♻️ (hulló)";
-   //          }
-   //          return (actualQuantity > 0)
-   //                     ? "🟢 Auditált ♻️ (van)"
-   //                     : "🟠 Auditált ♻️ (nincs)";
-   //      }
-
-   //      // 🔹 Ha módosult → auditáltként kezeljük
-   //      if (isRowModified) {
-   //          return (actualQuantity > 0)
-   //          ? "🟢 Auditált (módosítva)"
-   //          : "🟠 Auditált, nincs készlet (módosítva)";
-   //      }
-
-   //      // 🔹 Ha pipált → auditáltként kezeljük
-   //      if (isRowAuditChecked) {
-   //          return (actualQuantity > 0)
-   //          ? "🟢 Auditálva"
-   //          : "🟠 Auditált, nincs készlet";
-   //      }
-
-   //      // 🔹 Ha van context és csoport tag
-   //      if (context && context->group.size() > 1) {
-   //          switch (context->groupPresence()) {
-   //          case AuditPresence::Unknown: return "⚪ Nem auditált (csoport)";
-   //          case AuditPresence::Missing: return "🟡 Részlegesen auditált (csoport)";
-   //          case AuditPresence::Present: return "🟢 Auditálva (csoport)";
-   //          }
-   //      }
-
-   //      return "⚪ Nem auditált";
-   //  }
 
     AuditStatus statusType() const {
-        // 🔹 Leftover sorok külön logika
+        // 🔹 Hulló sor – mindig saját státusz alapján
         if (sourceType == AuditSourceType::Leftover) {
-            if (isInOptimization) {
-                return AuditStatus((actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing);
-            }
-            return AuditStatus(AuditStatus::Info);
+            return status();//AuditStatus::fromRow(isAudited(), isFulfilled(), true);
         }
 
-        // 🔹 Sor szintű auditáltság (módosítás vagy pipa)
-        if (isRowModified || isRowAuditChecked) {
-            return AuditStatus((actualQuantity > 0) ? AuditStatus::Ok : AuditStatus::Missing);
+        // 🔹 Egyedi sor – nincs csoport vagy csak 1 elem
+        if (!context || context->group.size() <= 1) {
+            return status();//AuditStatus::fromRow(isAudited(), isFulfilled());
         }
 
-        // 🔹 Csoport szintű auditáltság
-        if (context && context->group.size() > 1) {
-            return AuditStatus::fromPresence(context->groupPresence());
-        }
-
-        // 🔹 Alapértelmezett
-        return AuditStatus(AuditStatus::Unknown);
+        // 🔹 Csoportos sor – a csoport auditáltsága számít
+        return context->status();//AuditStatus::fromGroup(*context);
     }
 
+    QString suffixForRow() const {
+        if (sourceType == AuditSourceType::Leftover)
+            return isAudited() ? (isFulfilled() ? AuditStatus::suffix_HulloVan() : AuditStatus::suffix_HulloNincs())
+                               : AuditStatus::suffix_HulloNemAudit();
+
+        if (!context || context->group.size() <= 1) {
+            if (isRowModified)
+                return isFulfilled() ? AuditStatus::suffix_Modositva() : AuditStatus::suffix_ModositvaNincs();
+            if (isRowAuditChecked && !isFulfilled())
+                return AuditStatus::suffix_NincsKeszlet();
+        }
+
+        return QString(); // nincs suffix
+    }
 
     QString statusText() const {
-        AuditStatus status = statusType();
-
-        // 🔹 Leftover sorok külön jelöléssel
-        if (sourceType == AuditSourceType::Leftover) {
-            if (isRowModified || isRowAuditChecked) {
-                return (actualQuantity > 0)
-                ? AuditStatus::withSuffix(AuditStatus::Ok, AuditStatus::suffixHullóVan())
-                : AuditStatus::withSuffix(AuditStatus::Missing, AuditStatus::suffixHullóNincs());
-            }
-            return AuditStatus::withSuffix(AuditStatus::Info, AuditStatus::suffixHullóNemAudit());
-        }
-
-
-        // 🔹 Módosított sor külön jelöléssel
-        if (isRowModified) {
-            return (actualQuantity > 0)
-            ? AuditStatus::withSuffix(AuditStatus::Ok, AuditStatus::suffixMódosítva())
-            : AuditStatus::withSuffix(AuditStatus::Missing, AuditStatus::suffixMódosítvaNincs());
-        }
-
-        // 🔹 Pipált sor külön jelöléssel
-        if (isRowAuditChecked) {
-            return (actualQuantity > 0)
-            ? AuditStatus::toDecoratedText(AuditStatus::Ok)
-            : AuditStatus::withSuffix(AuditStatus::Missing, AuditStatus::suffixNincsKészlet());
-        }
-
-        // 🔹 Csoportos sor → helperből
-        if (context && context->group.size() > 1) {
-            return AuditStatus::fromPresenceText(context->groupPresence());
-        }
-
-        // 🔹 Egyébként az alap státusz szövege
-        return status.toDecoratedText();
+        const AuditStatus s = statusType();
+        const QString suffix = suffixForRow();
+        return suffix.isEmpty() ? s.toDecoratedText() : AuditStatus::withSuffix(s.get(), suffix);
     }
 
 
+    // QString statusText() const {
+    //     const AuditStatus s = statusType();
 
+    //     // 🔹 Leftover sorok
+    //     if (sourceType == AuditSourceType::Leftover) {
+    //         if (!isAudited()) {
+    //             return AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloNemAudit());
+    //         }
+    //         return isFulfilled()
+    //                    ? AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloVan())
+    //                    : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloNincs());
+    //     }
+
+    //     // 🔹 Egyedi sor
+    //     if (!context || context->group.size() <= 1) {
+    //         if (isRowModified) {
+    //             return isFulfilled()
+    //                 ? AuditStatus::withSuffix(s.get(), AuditStatus::suffix_Modositva())
+    //                 : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_ModositvaNincs());
+    //         }
+
+    //         if (isRowAuditChecked) {
+    //             return isFulfilled()
+    //             ? s.toDecoratedText()
+    //                        : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_NincsKeszlet());
+    //         }
+
+    //         return s.toDecoratedText();
+    //     }
+
+    //     // 🔹 Csoportos sor
+    //     return context->statusText();
+    // }
 
 
 };

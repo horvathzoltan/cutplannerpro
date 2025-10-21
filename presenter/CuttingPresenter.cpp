@@ -674,28 +674,29 @@ void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool chec
 }
 
 
-void CuttingPresenter::update_LeftoverAuditPresence(const QUuid& rowId, AuditPresence presence)
+void CuttingPresenter::update_LeftoverAuditActualQuantity(const QUuid& rowId, int quantity)
 {
     for (StorageAuditRow& row : lastAuditRows) {
         if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
 
-            row.rowPresence = presence;
+            // row.rowPresence = presence;
 
-            switch (presence) {
-            case AuditPresence::Present:
-                row.actualQuantity = 1;
-                //row.rowAuditResult = AuditResult::AuditedOk;
-                break;
-            case AuditPresence::Missing:
-                row.actualQuantity = 0;
-              //  row.rowAuditResult = AuditResult::AuditedMissing;
-                break;
-            case AuditPresence::Unknown:
-                row.isRowAuditChecked = false;
-                row.actualQuantity = 0;
-               // row.rowAuditResult = AuditResult::NotAudited;
-                break;
-            }
+            // switch (presence) {
+            // case AuditPresence::Present:
+            //     row.actualQuantity = 1;
+            //     //row.rowAuditResult = AuditResult::AuditedOk;
+            //     break;
+            // case AuditPresence::Missing:
+            //     row.actualQuantity = 0;
+            //   //  row.rowAuditResult = AuditResult::AuditedMissing;
+            //     break;
+            // case AuditPresence::Unknown:
+            //     row.isRowAuditChecked = false;
+            //     row.actualQuantity = 0;
+            //    // row.rowAuditResult = AuditResult::NotAudited;
+            //     break;
+            // }
+            row.actualQuantity = quantity;
 
             // 🔹 Módosítás flag
             row.isRowModified = (row.actualQuantity != row.originalQuantity);

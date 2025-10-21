@@ -15,7 +15,10 @@ namespace AuditColors {
 
 inline const QColor Ok        = QColor("#c8e6c9"); // zöld – auditált, rendben
 inline const QColor Missing   = QColor("#ffcdd2"); // piros – hiányzik
-inline const QColor Pending   = QColor("#fff3a0"); // sárga – részlegesen auditált
+
+inline const QColor Pending       = QColor("#ffe082"); // melegebb sárga – auditált, de hiányos
+inline const QColor PartialAudit  = QColor("#fff59d"); // világos sárga – részlegesen auditált
+
 inline const QColor Info      = QColor("#d0d8f0"); // kékes – regisztrált, semleges
 inline const QColor Unknown   = QColor("#eeeeee"); // szürke – nem auditált
 

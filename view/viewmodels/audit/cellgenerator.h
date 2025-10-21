@@ -117,25 +117,28 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
         radioPresent->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
         radioMissing->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
         container->setStyleSheet(QString("background-color: %1;").arg(cell.background.name()));
-        radioPresent->setChecked(row.rowPresence == AuditPresence::Present);
-        radioMissing->setChecked(row.rowPresence == AuditPresence::Missing);
+
+        auto rowFulfilled = row.isFulfilled();
+
+        radioPresent->setChecked(rowFulfilled);//row.rowPresence == AuditPresence::Present);
+        radioMissing->setChecked(!rowFulfilled);//row.rowPresence == AuditPresence::Missing);
 
 
         QObject::connect(radioPresent, &QRadioButton::toggled, receiver, [radioPresent, receiver]() {
             if (radioPresent->isChecked()) {
                 QUuid rowId = radioPresent->property("rowId").toUuid();
-                QMetaObject::invokeMethod(receiver, "leftoverPresenceChanged",
+                QMetaObject::invokeMethod(receiver, "leftoverQuantityChanged",
                                           Q_ARG(QUuid, rowId),
-                                          Q_ARG(AuditPresence, AuditPresence::Present));
+                                          Q_ARG(int, 1)); // "Van" → 1 db
             }
         });
 
         QObject::connect(radioMissing, &QRadioButton::toggled, receiver, [radioMissing, receiver]() {
             if (radioMissing->isChecked()) {
                 QUuid rowId = radioMissing->property("rowId").toUuid();
-                QMetaObject::invokeMethod(receiver, "leftoverPresenceChanged",
+                QMetaObject::invokeMethod(receiver, "leftoverQuantityChanged",
                                           Q_ARG(QUuid, rowId),
-                                          Q_ARG(AuditPresence, AuditPresence::Missing));
+                                          Q_ARG(int, 0)); // "Nincs" → 0 db
             }
         });
 

@@ -37,7 +37,7 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
                     plan.rodId == row.barcode) {
                     row.isInOptimization = true;
                     row.pickingQuantity  = 1; // hullók mindig 1 db
-                    row.rowPresence         = AuditPresence::Present;
+                    //row.rowPresence         = AuditPresence::Present;
                     break;
                 }
             }
@@ -63,9 +63,9 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
                 if (remaining > 0) {
                     row.isInOptimization = true;
                     row.pickingQuantity = remaining; // teljes igény
-                    row.rowPresence = (row.actualQuantity >= remaining)
-                                       ? AuditPresence::Present
-                                       : AuditPresence::Missing;
+                    // row.rowPresence = (row.actualQuantity >= remaining)
+                    //                    ? AuditPresence::Present
+                    //                    : AuditPresence::Missing;
                     remaining = 0; // egyszer kiosztva
                 }
             }

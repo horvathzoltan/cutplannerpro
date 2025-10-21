@@ -73,7 +73,7 @@ public:
 
     AuditStateManager* auditStateManager() { return &_auditStateManager;}
 
-    void update_LeftoverAuditPresence(const QUuid &rowId, AuditPresence presence);
+    void update_LeftoverAuditActualQuantity(const QUuid &rowId, int quantity);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
     QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
 private:

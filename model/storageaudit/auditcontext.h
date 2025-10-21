@@ -3,7 +3,8 @@
 #include <QList>
 #include <QUuid>
 #include "auditgroupinfo.h"
-#include "model/storageaudit/audit_enums.h"
+#include "model/storageaudit/auditstatus.h"
+//#include "model/storageaudit/audit_enums.h"
 
 struct StorageAuditRow; // forward declaration
 
@@ -34,18 +35,62 @@ public:
          return std::clamp(totalExpected - totalActual, 0, totalExpected);
      }
 
-     [[nodiscard]] AuditPresence groupPresence() const {
-         int confirmed = confirmedCount();
-         if (confirmed == 0) return AuditPresence::Unknown;
-         if (confirmed < totalCount()) return AuditPresence::Missing;
-         return AuditPresence::Present;
-     }
+    /**
+ * @brief Megállapítja, hogy a csoport legalább egy sora auditált-e.
+ *
+ * A csoport auditáltnak számít, ha legalább egy sorban történt felhasználói beavatkozás:
+ * - módosították a mennyiséget (`isRowModified == true`), vagy
+ * - bepipálták auditáltnak (`isRowAuditChecked == true`).
+ *
+ * Ez a függvény nem vizsgálja, hogy a mennyiség teljesült-e, csak azt, hogy történt-e audit.
+ * A `statusType()` és `statusText()` függvények ezt használják annak eldöntésére,
+ * hogy a csoport auditáltnak tekinthető-e.
+ *
+ * @return true, ha legalább egy sor auditált; különben false.
+ */
+    [[nodiscard]] bool isGroupAudited() const;
 
-     // [[nodiscard]] AuditResult groupAuditResult() const {
-     //     int confirmed = confirmedCount();
-     //     if (confirmed == 0) return AuditResult::NotAudited;
-     //     if (confirmed < totalCount()) return AuditResult::AuditedPartial;
-     //     return AuditResult::AuditedOk;
-     // }
+    [[nodiscard]] bool isGroupPartiallyAudited() const;
+
+     /**
+ * @brief Megállapítja, hogy a csoport összes sora teljesítette-e az elvárt mennyiséget.
+ *
+ * A csoport akkor tekinthető teljesültnek, ha minden sorban:
+ * `actualQuantity >= pickingQuantity` → az igény teljesült.
+ *
+ * Ez a függvény nem vizsgálja, hogy auditált-e a sor, csak a mennyiségi teljesülést.
+ * A `AuditStatus::fromGroup()` és `statusType()` ezt használják annak eldöntésére,
+ * hogy a csoport státusza "OK" vagy "Pending" legyen.
+ *
+ * @return true, ha minden sor teljesült; különben false.
+ */
+    [[nodiscard]] bool isGroupFulfilled() const;
+
+
+    AuditStatus status() const {
+        if (totalCount() == 0) return AuditStatus(AuditStatus::NotAudited);
+        if (!isGroupAudited()) return AuditStatus(AuditStatus::NotAudited);
+        if (isGroupPartiallyAudited()) return AuditStatus(AuditStatus::Audited_Partial);
+        return isGroupFulfilled()
+                   ? AuditStatus(AuditStatus::Audited_Fulfilled)
+                   : AuditStatus(AuditStatus::Audited_Unfulfilled);
+    }
+
+    QString statusText() const {
+        AuditStatus s = status();
+        const QString base = AuditStatus::statusEmoji(s.get()) + " " + s.toText();
+
+        switch (s.get()) {
+        case AuditStatus::Audited_Partial:
+        case AuditStatus::Audited_Unfulfilled:
+        case AuditStatus::Audited_Fulfilled:
+            return base + " (csoport)";
+        default:
+            return base;
+        }
+    }
+
+
+
 
 };

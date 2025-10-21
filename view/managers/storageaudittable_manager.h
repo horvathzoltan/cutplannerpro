@@ -40,7 +40,7 @@ private:
     //void applyGroupContextToRows(const StorageAuditRow &row);    
 signals:
     void auditValueChanged(const QUuid& requestId, int actualQuantity);
-    void leftoverPresenceChanged(const QUuid& rowId, AuditPresence presence);
+    void leftoverQuantityChanged(const QUuid& rowId, int quantity);
     void auditCheckboxToggled(const QUuid& rowId, bool checked);
 
 public:
