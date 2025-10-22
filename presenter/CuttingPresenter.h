@@ -75,7 +75,7 @@ public:
 
     void update_LeftoverAuditActualQuantity(const QUuid &rowId, int quantity);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
-    QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
+    //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
@@ -88,5 +88,6 @@ private:
 
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
+    void updateRow(const QUuid &rowId, std::function<void (StorageAuditRow &)> updater);
 };
 

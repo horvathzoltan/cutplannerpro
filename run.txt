@@ -1,4 +1,4 @@
-🧩 Frissített állapottábla (2025.10.21. – esti állapot)
+🧩 Frissített állapottábla (2025.10.22. – esti állapot)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
@@ -13,7 +13,7 @@
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-🚀 Sprint fókusz (2025.10.21.)
+🚀 Sprint fókusz (2025.10.22.)
 Sprint	Tartalom	Állapot
 Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
 Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész
@@ -21,49 +21,36 @@ Sprint 3	Vágási utasítás dialógus + validáció, Anyagcsoportosítás mas
 Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés	🟡 Folyamatban
 Sprint 5	Finalize auditálás + visszavonás, Audit trail export / diff előkészítés	🚧 Előkészítve
 Sprint 6	Hullókezelés (azonosító, normalizálás, leftoverId), adatfeltöltés, audit trail export	🚧 Előkészítve
-📌 Mai eredmények (2025.10.21.)
+📌 Mai eredmények (2025.10.22.)
 🔹 AuditContext
-auditStatus() → új tagfüggvény, kiváltja a korábbi AuditStatus::fromGroup() hívásokat.
+confirmedCount() → belső számított getter, _groupRows alapján.
+
+auditStatus() → kiváltja a korábbi AuditStatus::fromGroup()-ot.
 
 groupPresence() és groupAuditResult() → tiszta getterek, mindig naprakészek.
 
-confirmedCount → kívülről vezetve, nincs többé körhivatkozás.
-
 🔹 StorageAuditRow
-statusType() → refaktor: fromRow() eltávolítva, helyette status() és context->auditStatus() hívások.
+statusType() → refaktor: fromRow() eltávolítva, helyette status() és context->auditStatus().
 
-statusText() → optimalizálva: suffix kiválasztás külön helperből (suffixForRow()), státusz kiszámítása egy helyen (statusType()).
+statusText() → optimalizálva: suffix kiválasztás suffixForRow()-ból.
 
-rowAuditResult mező eltávolítva → felesleges, minden kiszámolható getterekből.
+rowAuditResult mező eltávolítva → minden kiszámolható getterekből.
 
 rowPresence → refaktor terv: számított getter (presence()), plusz isFulfilled() kényelmi getter.
 
 🔹 AuditStatus
-fromGroup() → áthelyezve az AuditContext osztályba (auditStatus()).
+Csak reprezentáció: enum + szöveg + emoji + szín + suffixek.
 
-toGroupText() → elavult, helyette context->statusDecorated() javasolt.
+fromGroup() teljesen kikerült → helyette AuditContext::auditStatus().
 
-statusEmoji() → külön helper, minden dekorált szöveg ebből épül.
+🔹 Presenter
+Új helper: updateRow(rowId, updater) → egységes sor‑keresés + UI frissítés.
 
-🔹 UI logika
-Checkbox csak akkor jelenik meg, ha van értelme (eredeti mennyiség, nem módosult).
+update_StorageAuditActualQuantity, update_StorageAuditCheckbox, update_LeftoverAuditActualQuantity → refaktorálva a helper használatára.
 
-Mennyiség változtatás → státuszt módosít, de nem automatikusan pipál.
+🆕 Következő lépések
+Állapotmátrix kidolgozása: isRowModified × isRowAuditChecked × fulfilment → minden kombinációhoz egyértelmű statusType() és statusText().
 
-Ha visszaáll az eredeti mennyiség → checkbox újra megjelenik, üresen.
+Unit tesztek a mátrix alapján.
 
-Signal blokkolás csak akkor kell, ha programból true‑ra állítjuk a pipát.
-
-🆕 Felmerült új igények / refaktor ötletek
-isAudited() getter: return isRowModified || isRowAuditChecked; → tisztán megmondja, hogy auditáltuk‑e a sort.
-
-presence() + isFulfilled() → számított érték, nem tárolt.
-
-Állapotmátrix szükségessége: isRowModified × isRowAuditChecked × actualQuantity vs. pickingQuantity → ebből egyértelműen kijön statusType() és statusText().
-
-👉 Holnap (2025.10.22.)
-Audit logika teljes konzisztenciája: mennyiségváltozás + státusz + checkbox összekapcsolása.
-
-Állapotmátrix megtervezése: minden kombinációra egyértelmű AuditStatus, szöveg és emoji.
-
-Előkészítés a hullókezeléshez: leftoverId, manager, normalizálás.
+Hullókezelés előkészítése: leftoverId, manager, normalizálás.

@@ -593,120 +593,79 @@ QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cut
 }
 
 
-QVector<QString> CuttingPresenter::resolveTargetStorages(const QUuid& rootStorageId) {
-    QVector<QString> result;
+// QVector<QString> CuttingPresenter::resolveTargetStorages(const QUuid& rootStorageId) {
+//     QVector<QString> result;
 
-    // Root maga
-    if (const auto* root = StorageRegistry::instance().findById(rootStorageId)) {
-        result.append(root->name);
-    }
+//     // Root maga
+//     if (const auto* root = StorageRegistry::instance().findById(rootStorageId)) {
+//         result.append(root->name);
+//     }
 
-    // Gyerekek rekurzívan
-    std::function<void(const QUuid)> collectChildren = [&](const QUuid parentId) {
-        const auto children = StorageRegistry::instance().findByParentId(parentId);
-        for (const auto& child : children) {
-            result.append(child.name);
-            collectChildren(child.id); // mélyebb szintek
+//     // Gyerekek rekurzívan
+//     std::function<void(const QUuid)> collectChildren = [&](const QUuid parentId) {
+//         const auto children = StorageRegistry::instance().findByParentId(parentId);
+//         for (const auto& child : children) {
+//             result.append(child.name);
+//             collectChildren(child.id); // mélyebb szintek
+//         }
+//     };
+
+//     collectChildren(rootStorageId);
+//     return result;
+// }
+
+void CuttingPresenter::updateRow(const QUuid& rowId,
+                                 std::function<void(StorageAuditRow&)> updater)
+{
+    for (StorageAuditRow& row : lastAuditRows) {
+        if (row.rowId == rowId) {
+            updater(row);
+            if (view) {
+                view->updateRow_StorageAuditTable(row);
+            }
+            break;
         }
-    };
-
-    collectChildren(rootStorageId);
-    return result;
+    }
 }
+
 
 void CuttingPresenter::update_StorageAuditActualQuantity(const QUuid& rowId, int actualQuantity)
 {
     AuditSyncGuard guard(&_auditStateManager);
 
-    for (StorageAuditRow &row : lastAuditRows) {
-        if (row.rowId == rowId){
+    updateRow(rowId, [&](StorageAuditRow& row) {
+        row.actualQuantity = actualQuantity;
+        row.isRowModified = (actualQuantity != row.originalQuantity);
 
-            row.actualQuantity = actualQuantity;
-            row.isRowModified = (actualQuantity != row.originalQuantity);
-
-            // 🔄 Stock frissítés
-            if (auto opt = StockRegistry::instance().findById(row.stockEntryId); opt.has_value()) {
-                StockEntry updated = opt.value();
-                updated.quantity = actualQuantity;
-                StockRegistry::instance().updateEntry(updated);
-
-                if (view) {
-                    view->updateRow_StockTable(updated);
-                }
-            }
+        // 🔄 Stock frissítés
+        if (auto opt = StockRegistry::instance().findById(row.stockEntryId); opt.has_value()) {
+            StockEntry updated = opt.value();
+            updated.quantity = actualQuantity;
+            StockRegistry::instance().updateEntry(updated);
 
             if (view) {
-                view->updateRow_StorageAuditTable(row); // 🔄 újraépíti a cellát
+                view->updateRow_StockTable(updated);
             }
-
-            break;
         }
-    }
+    });
 }
 
 void CuttingPresenter::update_StorageAuditCheckbox(const QUuid& rowId, bool checked)
 {
-    for (StorageAuditRow &row : lastAuditRows) {
-        if (row.rowId == rowId) {
-            // 🔹 Csak az aktuális sor frissítése
-            row.isRowAuditChecked = checked;
-
-            // if (checked) {
-            //     // Ha bepipálta → auditált, de a presence maradjon a quantity alapján
-            //     if (row.actualQuantity > 0) {
-            //         //row.rowAuditResult = AuditResult::AuditedOk;
-            //     } else {
-            //         //row.rowAuditResult = AuditResult::AuditedMissing;
-            //     }
-            // } else {
-            //     // Ha kivette a pipát → vissza nem auditáltra
-            //    //row.rowAuditResult = AuditResult::NotAudited;
-            // }
-
-            // 🔄 UI frissítés az aktuális sorra
-            if (view) {
-                view->updateRow_StorageAuditTable(row);
-            }
-
-            break;
-        }
-    }
+    updateRow(rowId, [&](StorageAuditRow& row) {
+        row.isRowAuditChecked = checked;
+    });
 }
 
 
 void CuttingPresenter::update_LeftoverAuditActualQuantity(const QUuid& rowId, int quantity)
 {
-    for (StorageAuditRow& row : lastAuditRows) {
-        if (row.rowId == rowId && row.sourceType == AuditSourceType::Leftover) {
+    updateRow(rowId, [&](StorageAuditRow& row) {
+        if (row.sourceType != AuditSourceType::Leftover) return;
 
-            // row.rowPresence = presence;
-
-            // switch (presence) {
-            // case AuditPresence::Present:
-            //     row.actualQuantity = 1;
-            //     //row.rowAuditResult = AuditResult::AuditedOk;
-            //     break;
-            // case AuditPresence::Missing:
-            //     row.actualQuantity = 0;
-            //   //  row.rowAuditResult = AuditResult::AuditedMissing;
-            //     break;
-            // case AuditPresence::Unknown:
-            //     row.isRowAuditChecked = false;
-            //     row.actualQuantity = 0;
-            //    // row.rowAuditResult = AuditResult::NotAudited;
-            //     break;
-            // }
-            row.actualQuantity = quantity;
-
-            // 🔹 Módosítás flag
-            row.isRowModified = (row.actualQuantity != row.originalQuantity);
-
-            if (view) {
-                view->updateRow_StorageAuditTable(row);
-            }
-            break;
-        }
-    }
+        row.actualQuantity = quantity;
+        row.isRowModified = (row.actualQuantity != row.originalQuantity);
+    });
 }
 
 
