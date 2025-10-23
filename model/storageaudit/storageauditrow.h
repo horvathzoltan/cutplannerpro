@@ -86,16 +86,28 @@ struct StorageAuditRow {
     AuditStatus statusType() const {
         // 🔹 Hulló sor – mindig saját státusz alapján
         if (sourceType == AuditSourceType::Leftover) {
-            return status();//AuditStatus::fromRow(isAudited(), isFulfilled(), true);
+            return status();
         }
 
         // 🔹 Egyedi sor – nincs csoport vagy csak 1 elem
         if (!context || context->group.size() <= 1) {
-            return status();//AuditStatus::fromRow(isAudited(), isFulfilled());
+            return status();
         }
 
-        // 🔹 Csoportos sor – a csoport auditáltsága számít
-        return context->status();//AuditStatus::fromGroup(*context);
+        // 🔹 Csoportos sor
+        if (isAudited()) {
+            // saját jogon auditált → mutassa a saját státuszt (zöld/piros)
+            return status();
+        } else {
+            // nem auditált, de a csoport részlegesen auditált → legyen sárga
+            if (context->isGroupPartiallyAudited()) {
+                return AuditStatus(AuditStatus::Audited_Partial);
+            }
+            // különben marad nem auditált
+            return AuditStatus(AuditStatus::NotAudited);
+        }
+
+        //return context->status();
     }
 
     QString suffixForRow() const {
@@ -116,44 +128,9 @@ struct StorageAuditRow {
     QString statusText() const {
         const AuditStatus s = statusType();
         const QString suffix = suffixForRow();
-        return suffix.isEmpty() ? s.toDecoratedText() : AuditStatus::withSuffix(s.get(), suffix);
+        return suffix.isEmpty()
+                   ? s.toDecoratedText()
+                   : AuditStatus::withSuffix(s.get(), suffix);
     }
-
-
-    // QString statusText() const {
-    //     const AuditStatus s = statusType();
-
-    //     // 🔹 Leftover sorok
-    //     if (sourceType == AuditSourceType::Leftover) {
-    //         if (!isAudited()) {
-    //             return AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloNemAudit());
-    //         }
-    //         return isFulfilled()
-    //                    ? AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloVan())
-    //                    : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_HulloNincs());
-    //     }
-
-    //     // 🔹 Egyedi sor
-    //     if (!context || context->group.size() <= 1) {
-    //         if (isRowModified) {
-    //             return isFulfilled()
-    //                 ? AuditStatus::withSuffix(s.get(), AuditStatus::suffix_Modositva())
-    //                 : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_ModositvaNincs());
-    //         }
-
-    //         if (isRowAuditChecked) {
-    //             return isFulfilled()
-    //             ? s.toDecoratedText()
-    //                        : AuditStatus::withSuffix(s.get(), AuditStatus::suffix_NincsKeszlet());
-    //         }
-
-    //         return s.toDecoratedText();
-    //     }
-
-    //     // 🔹 Csoportos sor
-    //     return context->statusText();
-    // }
-
-
 };
 

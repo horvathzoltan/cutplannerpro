@@ -724,12 +724,12 @@
         </widget>
        </widget>
       </widget>
-      <widget class="QListWidget" name="eventLog">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>400</height>
-        </size>
+      <widget class="QPlainTextEdit" name="eventLog">
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::TextSelectableByKeyboard|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+       </property>
+       <property name="maximumBlockCount">
+        <number>1000</number>
        </property>
       </widget>
      </widget>

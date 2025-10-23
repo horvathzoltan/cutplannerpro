@@ -25,6 +25,7 @@
 #include "dialog/input/addinputdialog.h"
 
 #include "model/relocation/relocationinstruction.h"
+#include "view/eventloghelpers.h"
 
 #include <service/relocation/relocationplanner.h>
 
@@ -129,7 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     translate();
-    EventLogger::instance().zEvent("✅ MainWindow inited");
+    EventLogger::instance().zEvent(EventLogger::Level::Info,"✅ MainWindow inited");
 }
 
 void MainWindow::translate(){
@@ -653,18 +654,11 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
 
 void MainWindow::initEventLogWidget() {
     EventLogger::instance().emitEvent = [this](const QString& line) {
-        //ui->eventLog->insertItem(0, line); // legfrissebb felül
-
-        ui->eventLog->addItem(line); // legfrissebb alul
+        EventLogHelpers::appendColoredLineWithTimestamp(ui->eventLog, line);
     };
 
-    // 🔄 Betöltjük az eddigi eseményeket
-    //QStringList recent = EventLogger::instance().loadRecentEvents();
     QStringList recent = EventLogger::instance().loadRecentEventsFromLastStart();
-
-    for (const QString& line : recent) {
-        ui->eventLog->insertItem(0, line);
-    }
+    EventLogHelpers::appendLines(ui->eventLog, recent);
 }
 
 

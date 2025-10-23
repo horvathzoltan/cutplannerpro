@@ -7,12 +7,15 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 CONFIG += c++20
 
+DEFINES += TARGI=$$TARGET
+message( "TARGET = "$$TARGI )
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
     model/storageaudit/auditcontext.cpp \
+    service/buildnumber.cpp \
     service/storageaudit/auditcontextbuilder.cpp \
     service/storageaudit/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
@@ -92,7 +95,9 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/sysinfohelper.h \
     model/storageaudit/audit_enums.h \
+    service/buildnumber.h \
     service/storageaudit/auditcontextbuilder.h \
     service/storageaudit/auditstatemanager.h \
     service/storageaudit/auditsyncguard.h \
@@ -209,15 +214,14 @@ HEADERS += \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
     view/columnindexes/tablecuttinginstruction_columns.h \
+    view/eventloghelpers.h \
     view/managers/cuttinginstructiontable_manager.h \
     view/viewmodels/audit/cellgenerator.h \
     view/viewmodels/audit/rowgenerator.h \
     view/viewmodels/cutting/rowgenerator.h \
     view/viewmodels/relocation/cellgenerator.h \
     view/viewmodels/relocation/rowgenerator.h \
-    view/cellhelpers/auditcellcolors.h \
     view/cellhelpers/auditcelltooltips.h \
-    view/cellhelpers/cellfactory.h \
     view/columnidexes/relocationplantable_columns.h \
     view/cutanalyticspanel.h \
     view/dialog/input/addinputdialog.h \

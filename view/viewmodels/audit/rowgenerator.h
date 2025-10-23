@@ -5,7 +5,7 @@
 #include "common/tableutils/storageaudittable_rowstyler.h"
 #include "model/storageaudit/auditcontext_text.h"
 #include "model/storageaudit/auditstatus_text.h"
-#include "view/cellhelpers/auditcellcolors.h"
+
 #include "view/cellhelpers/auditcelltext.h"
 #include "view/cellhelpers/auditcelltooltips.h"
 #include "view/columnindexes/audittable_columns.h"
@@ -16,7 +16,6 @@
 #include "model/storageaudit/storageauditrow.h"
 #include "model/material/materialmaster.h"
 #include "common/tableutils/tableutils_auditcells.h"
-#include "view/cellhelpers/cellfactory.h"
 
 #include <QSpinBox>
 #include <QRadioButton>
@@ -53,22 +52,22 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
     // 🧩 Elvárt mennyiség – mindig a contextből, ha van
     //int expected = row.context ? row.context->totalExpected : row.pickingQuantity;
     vm.cells[AuditTableColumns::Expected] =
-        TableCellViewModel::fromText(AuditCellText::formatExpectedQuantity(row, groupLabel),
-                                     AuditCellTooltips::formatExpectedTooltip(row),
+        TableCellViewModel::fromText(AuditCellText::forExpected(row, groupLabel),
+                                     AuditCellTooltips::forExpected(row),
                                      baseColor, fgColor);
 
     // 🧩 Hiányzó mennyiség – mindig a contextből, ha van
     int missing = row.missingQuantity();
     vm.cells[AuditTableColumns::Missing] =
         TableCellViewModel::fromText(QString::number(missing),
-                                     AuditCellTooltips::formatMissingTooltip(row),
+                                     AuditCellTooltips::forMissing(row),
                                      baseColor, fgColor);
 
 
     // 🧩 Státusz
     vm.cells[AuditTableColumns::Status] =
         TableCellViewModel::fromText(row.statusText(),
-                                     AuditCellTooltips::formatStatusTooltip(row, mat),
+                                     AuditCellTooltips::forStatus(row, mat),
                                      row.statusType().toColor(),
                                      Qt::black);
 

@@ -43,6 +43,16 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
             }
             break;
         }
+        case AuditSourceType::Stock: {
+            if (requiredStockMaterials.contains(row.materialId)) {
+                // minden sor a csoportban része az optimalizációnak
+                row.isInOptimization = true;
+                row.pickingQuantity = 0; // sor szinten nincs kiosztás
+                // a totalExpected-et majd a context kapja meg
+            }
+            break;
+        }
+
         // case AuditSourceType::Stock: {
         //     if (requiredStockMaterials.contains(row.materialId)) {
         //         int& remaining = requiredStockMaterials[row.materialId];
@@ -57,20 +67,20 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
         //     }
         //     break;
         // }
-        case AuditSourceType::Stock: {
-            if (requiredStockMaterials.contains(row.materialId)) {
-                int& remaining = requiredStockMaterials[row.materialId];
-                if (remaining > 0) {
-                    row.isInOptimization = true;
-                    row.pickingQuantity = remaining; // teljes igény
-                    // row.rowPresence = (row.actualQuantity >= remaining)
-                    //                    ? AuditPresence::Present
-                    //                    : AuditPresence::Missing;
-                    remaining = 0; // egyszer kiosztva
-                }
-            }
-            break;
-        }
+        // case AuditSourceType::Stock: {
+        //     if (requiredStockMaterials.contains(row.materialId)) {
+        //         int& remaining = requiredStockMaterials[row.materialId];
+        //         if (remaining > 0) {
+        //             row.isInOptimization = true;
+        //             row.pickingQuantity = 0;//remaining; // teljes igény
+        //             // row.rowPresence = (row.actualQuantity >= remaining)
+        //             //                    ? AuditPresence::Present
+        //             //                    : AuditPresence::Missing;
+        //             remaining = 0; // egyszer kiosztva
+        //         }
+        //     }
+        //     break;
+        // }
 
 
         default:

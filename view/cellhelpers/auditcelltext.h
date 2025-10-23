@@ -25,7 +25,7 @@ inline static bool _isVerbose = false;
  * @param groupLabel Csoportcímke (pl. "A", "B", stb.)
  * @return QString   Formázott szöveg
  */
-inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString& groupLabel = "")
+inline QString forExpected(const StorageAuditRow& row, const QString& groupLabel = "")
 {
     // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
@@ -64,7 +64,7 @@ inline QString formatExpectedQuantity(const StorageAuditRow& row, const QString&
  * - Egyedi stock sor esetén: lokális hiány.
  * - Ha nincs optimalizáció → "–".
  */
-inline QString formatMissingQuantity(const StorageAuditRow& row) {
+inline QString forMissing(const StorageAuditRow& row) {
     // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
         if (row.isInOptimization && row.pickingQuantity > 0) {

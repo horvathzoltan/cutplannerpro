@@ -66,7 +66,6 @@ public:
  */
     [[nodiscard]] bool isGroupFulfilled() const;
 
-
     AuditStatus status() const {
         if (totalCount() == 0) return AuditStatus(AuditStatus::NotAudited);
         if (!isGroupAudited()) return AuditStatus(AuditStatus::NotAudited);

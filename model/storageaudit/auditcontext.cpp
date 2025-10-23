@@ -18,11 +18,16 @@ int AuditContext::confirmedCount() const
     });
 }
 
-[[nodiscard]] bool AuditContext::isGroupFulfilled() const {
-    return std::all_of(_groupRows.begin(), _groupRows.end(), [](const StorageAuditRow* row) {
-        return row && row->isFulfilled();
-    });
+// [[nodiscard]] bool AuditContext::isGroupFulfilled() const {
+//     return std::all_of(_groupRows.begin(), _groupRows.end(), [](const StorageAuditRow* row) {
+//         return row && row->isFulfilled();
+//     });
+// }
+
+bool AuditContext::isGroupFulfilled() const {
+    return totalActual >= totalExpected;
 }
+
 
 [[nodiscard]] bool AuditContext::isGroupPartiallyAudited() const {
     int auditedCount = std::count_if(_groupRows.begin(), _groupRows.end(), [](const StorageAuditRow* row) {

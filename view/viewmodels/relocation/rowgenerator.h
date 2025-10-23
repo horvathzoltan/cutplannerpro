@@ -6,7 +6,6 @@
 #include "view/viewmodels/relocation/cellgenerator.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
-#include "view/cellhelpers/cellfactory.h"
 
 #include <QColor>
 #include <QObject>

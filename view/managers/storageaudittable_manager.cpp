@@ -13,8 +13,6 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QSpinBox>
-//#include "view/viewmodels/audit/rowgenerator.h"
-//#include "view/columnidexes/audittablecolumns.h"
 #include "view/tablehelpers/tablerowpopulator.h"
 #include "view/viewmodels/audit/rowgenerator.h"
 

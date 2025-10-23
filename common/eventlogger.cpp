@@ -8,21 +8,29 @@ EventLogger& EventLogger::instance() {
 }
 
 void EventLogger::setLogFile(const QString& path) {
-    file.setFileName(path);
-    if (!file.open(QIODevice::Append | QIODevice::Text)) {
+    fileName = path;
+
+    auto a = timestamped("🟢 START");
+
+    if (!writeToFile(a)) {
         qWarning() << "⚠️ Nem sikerült megnyitni az event log fájlt:" << path;
-    } else{
-        auto a = timestamped("🟢 START");
-        writeToFile(a);
     }
 }
 
 QString EventLogger::timestamped(const QString& msg) {
     return QString("[%1] %2")
-    .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"))
+    .arg(QDateTime::currentDateTime().toString(Qt::ISODateWithMs))
         .arg(msg);
 }
 
+QString EventLogger::toString(Level level) {
+    switch (level) {
+    case Info:    return "INFO: ";
+    case Warning: return "WARNING: ";
+    case Error:   return "ERROR: ";
+    }
+    return "LOG: "; // fallback, ha bővül az enum
+}
 
 void EventLogger::zEvent(const QString& msg) {
     QString line = timestamped(msg);
@@ -34,13 +42,20 @@ void EventLogger::zEvent(const QString& msg) {
     writeToFile(line);
 }
 
-void EventLogger::writeToFile(const QString& line) {
-    QFile f(file.fileName());
+void EventLogger::zEvent(Level level, const QString& msg) {
+    this->zEvent(toString(level) + msg);
+}
+
+
+bool EventLogger::writeToFile(const QString& line) {
+    QFile f(fileName);
     if (f.open(QIODevice::Append | QIODevice::Text)) {
         QTextStream out(&f);
         out << line << "\n";
-        f.flush();
         f.close();
+        return true;
+    } else{
+        return false;
     }
 }
 
@@ -48,7 +63,7 @@ void EventLogger::writeToFile(const QString& line) {
 QStringList EventLogger::loadRecentEvents(int maxLines) {
     QStringList lines;
 
-    QFile f(file.fileName()); // új példány, mindig olvasásra
+    QFile f(fileName); // új példány, mindig olvasásra
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return lines;
 
@@ -65,7 +80,7 @@ QStringList EventLogger::loadRecentEvents(int maxLines) {
 QStringList EventLogger::loadRecentEventsFromLastStart(int maxLines) {
     QStringList lines;
 
-    QFile f(file.fileName());
+    QFile f(fileName);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return lines;
 
@@ -78,12 +93,11 @@ QStringList EventLogger::loadRecentEventsFromLastStart(int maxLines) {
 
     std::reverse(all.begin(), all.end());
 
-    bool foundStart = false;
     for (const QString& line : all) {
         if (line.contains("🟢 START")) {
-            foundStart = true;
             break;
         }
+
         lines << line;
         if (lines.size() >= maxLines)
             break;
