@@ -1,4 +1,4 @@
-🧩 Frissített állapottábla (2025.10.22. – esti állapot)
+🧩 Frissített állapottábla (2025.10.23. – esti állapot)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
@@ -13,7 +13,7 @@
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-🚀 Sprint fókusz (2025.10.22.)
+🚀 Sprint fókusz (2025.10.23.)
 Sprint	Tartalom	Állapot
 Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
 Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész
@@ -21,36 +21,44 @@ Sprint 3	Vágási utasítás dialógus + validáció, Anyagcsoportosítás mas
 Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés	🟡 Folyamatban
 Sprint 5	Finalize auditálás + visszavonás, Audit trail export / diff előkészítés	🚧 Előkészítve
 Sprint 6	Hullókezelés (azonosító, normalizálás, leftoverId), adatfeltöltés, audit trail export	🚧 Előkészítve
-📌 Mai eredmények (2025.10.22.)
-🔹 AuditContext
-confirmedCount() → belső számított getter, _groupRows alapján.
+📌 Mai eredmények (2025.10.23.)
+EventLogger
 
-auditStatus() → kiváltja a korábbi AuditStatus::fromGroup()-ot.
+Level enum bevezetve (Info, Warning, Error).
 
-groupPresence() és groupAuditResult() → tiszta getterek, mindig naprakészek.
+zEvent(Level, msg) overload → típusbiztos, makróütközés megszűnt.
 
-🔹 StorageAuditRow
-statusType() → refaktor: fromRow() eltávolítva, helyette status() és context->auditStatus().
+toString(Level) helper → minden prefix egy helyen, könnyen bővíthető.
 
-statusText() → optimalizálva: suffix kiválasztás suffixForRow()-ból.
+Prefixek most már szóközzel, olvashatóbb formátumban (INFO: üzenet).
 
-rowAuditResult mező eltávolítva → minden kiszámolható getterekből.
+UI‑ban a timestamp neutrális, prefix fehér, payload színezve → profi vizuális megjelenítés.
 
-rowPresence → refaktor terv: számított getter (presence()), plusz isFulfilled() kényelmi getter.
+EventLogHelpers
 
-🔹 AuditStatus
-Csak reprezentáció: enum + szöveg + emoji + szín + suffixek.
+ensureNewline() segédfüggvény → nincs duplikált \n kezelés.
 
-fromGroup() teljesen kikerült → helyette AuditContext::auditStatus().
+appendColoredLineWithTimestamp() → timestamp + prefix + payload külön színezve.
 
-🔹 Presenter
-Új helper: updateRow(rowId, updater) → egységes sor‑keresés + UI frissítés.
+Prefix mindig fehér, payload a szint szerint (piros/narancs/zöld).
 
-update_StorageAuditActualQuantity, update_StorageAuditCheckbox, update_LeftoverAuditActualQuantity → refaktorálva a helper használatára.
+AuditContext / StorageAuditRow
+
+Getter‑alapú logika stabilizálva, minden számított érték konzisztens.
+
+rowPresence refaktor terv előkészítve → számított getter + isFulfilled().
+
+Presenter
+
+updateRow(rowId, updater) helper → egységes sor‑frissítés, UI logika tisztább.
 
 🆕 Következő lépések
-Állapotmátrix kidolgozása: isRowModified × isRowAuditChecked × fulfilment → minden kombinációhoz egyértelmű statusType() és statusText().
+Állapotmátrix: isRowModified × isRowAuditChecked × fulfilment → minden kombinációhoz egyértelmű statusType() és statusText(). → Ez lesz a stabil auditlogika alapja.
 
-Unit tesztek a mátrix alapján.
+Unit tesztek: A mátrix alapján lefedni minden edge case‑t.
 
-Hullókezelés előkészítése: leftoverId, manager, normalizálás.
+Hullókezelés előkészítése: leftoverId, manager, normalizálás → Sprint 6 előkészítése.
+
+Finalize UI: Soronkénti működés + globális finalize → Sprint 4 kulcsfeladata.
+
+👉 Összességében: a mai nap nagy nyeresége az EventLogger és a logpanel profi szintre emelése (enum, prefix, színezés), valamint az auditlogika getter‑alapú tisztítása. A következő napok fókusza az állapotmátrix és a finalize logika lesz.
