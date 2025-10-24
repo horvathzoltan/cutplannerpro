@@ -95,7 +95,9 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/signalhelper.h \
     common/sysinfohelper.h \
+    model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
     service/buildnumber.h \
     service/storageaudit/auditcontextbuilder.h \

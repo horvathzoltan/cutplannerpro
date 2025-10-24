@@ -26,6 +26,13 @@ const CuttingMachine* CuttingMachineRegistry::findByName(const QString& name) co
     return nullptr;
 }
 
+const CuttingMachine* CuttingMachineRegistry::findById(const QUuid& id) const {
+    for (auto& m : _data)
+        if (m.id == id)
+            return &m;
+    return nullptr;
+}
+
 bool CuttingMachineRegistry::isBarcodeUnique(const QString& barcode) const {
     for (const auto& m : _data)
         if (m.barcode == barcode)

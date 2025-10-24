@@ -32,7 +32,7 @@ QString EventLogger::toString(Level level) {
     return "LOG: "; // fallback, ha bővül az enum
 }
 
-void EventLogger::zEvent(const QString& msg) {
+void EventLogger::zEvent_(const QString& msg) {
     QString line = timestamped(msg);
     if(_isVerbose)
     {
@@ -42,21 +42,21 @@ void EventLogger::zEvent(const QString& msg) {
     writeToFile(line);
 }
 
-void EventLogger::zEvent(Level level, const QString& msg) {
-    this->zEvent(toString(level) + msg);
+void EventLogger::zEvent_(Level level, const QString& msg) {
+    this->zEvent_(toString(level) + msg);
 }
 
 
 bool EventLogger::writeToFile(const QString& line) {
-    QFile f(fileName);
-    if (f.open(QIODevice::Append | QIODevice::Text)) {
-        QTextStream out(&f);
-        out << line << "\n";
-        f.close();
-        return true;
-    } else{
+    if (fileName.isEmpty()) return false;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::Append | QIODevice::Text))
         return false;
-    }
+
+    QTextStream out(&file);
+    out << line << "\n";
+    return true;
 }
 
 

@@ -22,6 +22,7 @@ private:
 
     static bool _isVerbose; // 👉 debug logging flag
 
+    void overwriteRow(const QUuid &rowId, const RelocationInstruction &instr);
 public:
     explicit RelocationPlanTableManager(QTableWidget* table,
                                         CuttingPresenter* presenter,
@@ -44,4 +45,13 @@ public slots:
 
 public:
     static constexpr auto RowId_Key = "relocationId"; // 👉 UserRole kulcs a cellákban
-};
+    void updateSummaryRow(const RelocationInstruction &summaryInstr);
+    QVector<QUuid> allRowIds() const {
+        return _planRowMap.keys();
+    }
+
+    const RelocationInstruction& getInstruction(const QUuid& rowId) const;
+    RelocationInstruction& getInstruction(const QUuid& rowId);
+
+}; // end of class RelocationPlanTableManager
+

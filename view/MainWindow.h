@@ -109,5 +109,6 @@ private:
     QString format(const QList<RelocationInstruction> &items);
     void initEventLogWidget();
     void translate();
+    void refreshSummaryRows();
 };
 #endif // MAINWINDOW_H

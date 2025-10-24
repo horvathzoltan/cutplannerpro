@@ -354,6 +354,60 @@ void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
     zInfo(QStringLiteral("finalizeRow: success for row %1 executed=%2").arg(rowId.toString()).arg(toExecute));
 }
 
+void RelocationPlanTableManager::updateSummaryRow(const RelocationInstruction& summaryInstr) {
+    for (const auto& rowId : allRowIds()) {
+        const RelocationInstruction& existing = getInstruction(rowId);
+
+        if (existing.isSummary && existing.materialId == summaryInstr.materialId) {
+            overwriteRow(rowId, summaryInstr);
+            return;
+        }
+    }
+    // Ha nem találtunk meglévőt, új sor beszúrása
+    addRow(summaryInstr);
+}
+
+
+// relocationplantable_manager.cpp
+const RelocationInstruction& RelocationPlanTableManager::getInstruction(const QUuid& rowId) const {
+    auto it = _planRowMap.find(rowId);
+    if (it == _planRowMap.end()) {
+        throw std::runtime_error(("RowId not found: " + rowId.toString()).toStdString());
+    }
+    return it.value();
+}
+
+RelocationInstruction& RelocationPlanTableManager::getInstruction(const QUuid& rowId) {
+    auto it = _planRowMap.find(rowId);
+    if (it == _planRowMap.end()) {
+        throw std::runtime_error(("RowId not found: " + rowId.toString()).toStdString());
+    }
+    return it.value();
+}
+
+void RelocationPlanTableManager::overwriteRow(const QUuid& rowId, const RelocationInstruction& instr) {
+    if (!_rowIndexMap.contains(rowId)) return;
+
+    int rowIx = _rowIndexMap.value(rowId);
+    auto it = _planRowMap.find(rowId);
+    if (it != _planRowMap.end()) {
+        it.value() = instr; // közvetlen felülírás másolással
+    } else {
+        _planRowMap.insert(rowId, instr);
+    }
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(instr.materialId);
+    if (!mat) return;
+
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
+    TableRowPopulator::populateRow(_table, rowIx, vm);
+
+    if (_isVerbose) {
+        zInfo(L("RelocationPlan row overwritten: %1 | %2")
+                  .arg(instr.materialName)
+                  .arg(instr.barcode));
+    }
+}
+
 // void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
 
 //     // 🔹 Keressük meg a sort

@@ -126,11 +126,11 @@ MainWindow::MainWindow(QWidget *parent)
     } else if (h == Cutting::Optimizer::TargetHeuristic::ByCount) {
         ui->radioByCount->setChecked(true);
     } else{
-        EventLogger::instance().zEvent("ismeretlen cutting strategy beállítás");
+        zEvent("ismeretlen cutting strategy beállítás");
     }
 
     translate();
-    EventLogger::instance().zEvent(EventLogger::Level::Info,"✅ MainWindow inited");
+    zEventINFO("✅ MainWindow inited");
 }
 
 void MainWindow::translate(){
@@ -236,14 +236,50 @@ void MainWindow::handle_btn_NewCuttingPlan_clicked()
     presenter->createNew_CuttingPlanRequests();
 }
 
-void MainWindow::handle_btn_RelocationPlanFinalize_clicked(){
-    // for (const auto& rowId : relocationPlanTableManager->allRowIds()) {
-    //     const RelocationInstruction& instr = relocationPlanTableManager->getInstruction(rowId);
-    //     if (instr.isReadyToFinalize() && !instr.isAlreadyFinalized()) {
-    //         relocationPlanTableManager->finalizeRow(rowId);
-    //     }
-    // }
+void MainWindow::handle_btn_RelocationPlanFinalize_clicked()
+{
+    int finalizedCount = 0;
+
+    for (const auto& rowId : relocationPlanTableManager->allRowIds()) {
+        const RelocationInstruction& instr = relocationPlanTableManager->getInstruction(rowId);
+
+        if (instr.isSummary) continue;
+
+        if (instr.isReadyToFinalize() && !instr.isAlreadyFinalized()) {
+            relocationPlanTableManager->finalizeRow(rowId);
+            ++finalizedCount;
+        }
+    }
+
+    refreshSummaryRows();
+
+    // 🔹 EventLogger bejegyzés
+    if (finalizedCount > 0) {
+        zEvent(QStringLiteral("Totál finalize lefutott: %1 sor lezárva").arg(finalizedCount));
+    } else {
+        zEvent("Totál finalize lefutott: nem volt lezárható sor");
+    }
 }
+
+
+
+void MainWindow::refreshSummaryRows()
+{
+    // Lekérjük az aktuális cutPlan + audit snapshotot
+    auto cutPlans = presenter->getPlansRef();
+    auto auditRows = presenter->getLastAuditRows();
+
+    // Új tervet építünk
+    auto newPlan = RelocationPlanner::buildPlan(cutPlans, auditRows);
+
+    // Csak az összesítő sorokat frissítjük a táblában
+    for (const auto& instr : newPlan) {
+        if (!instr.isSummary) continue;
+
+        relocationPlanTableManager->updateSummaryRow(instr);
+    }
+}
+
 
 void MainWindow::handle_btn_OpenCuttingPlan_clicked()
 {
@@ -599,20 +635,30 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
     QString currentMachine;
 
     // 🔧 Átmeneti workaround: mindig a "CM2" gépet használjuk
-    const CuttingMachine* fixedMachine =
-        CuttingMachineRegistry::instance().findByBarcode("CM2");
+    // const CuttingMachine* fixedMachine =
+    //     CuttingMachineRegistry::instance().findByBarcode("CM2");
 
-    if (!fixedMachine) {
-        qWarning() << "⚠️ A 'CM2' gép nincs regisztrálva a CuttingMachineRegistry-ben!";
-        return;
-    }
+    // if (!fixedMachine) {
+    //     qWarning() << "⚠️ A 'CM2' gép nincs regisztrálva a CuttingMachineRegistry-ben!";
+    //     return;
+    // }
 
     for (const auto& plan : cutPlans) {
-        QString machineName = fixedMachine->name;
+        // 🔍 A tervhez tartozó gép lekérése
+        const CuttingMachine* machine =
+            CuttingMachineRegistry::instance().findById(plan.machineId);
+
+        if (!machine) {
+            qWarning() << "⚠️ A tervben szereplő gép nincs regisztrálva! PlanId:"
+                       << plan.planId << " machineId:" << plan.machineId;
+            continue; // ezt a tervet kihagyjuk
+        }
+
+        QString machineName = machine->name;
 
         if (machineName != currentMachine) {
             // új gép → szeparátor sor a registry-ből
-            auto sep = Cutting::ViewModel::RowGenerator::generateMachineSeparator(*fixedMachine);
+            auto sep = Cutting::ViewModel::RowGenerator::generateMachineSeparator(*machine);
             TableRowPopulator::populateRow(
                 ui->tableCuttingInstruction,
                 ui->tableCuttingInstruction->rowCount(),
@@ -633,11 +679,11 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
                 ci.materialId = plan.materialId;
                 ci.barcode = plan.materialBarcode(); // vagy plan.rodId alapján
                 ci.cutSize_mm = seg.length_mm;
-                ci.kerf_mm = fixedMachine->kerf_mm; // ✅ géphez tartozó kerf
+                ci.kerf_mm = machine->kerf_mm; // ✅ géphez tartozó kerf
                 ci.remainingBefore_mm = remaining;
                 ci.computeRemaining();
                 //ci.machineName = machineName;
-                ci.machineId = fixedMachine->id;
+                ci.machineId = machine->id;
                 ci.status = CutStatus::Pending;
 
                 cuttingInstructionTableManager->addRow(ci);
@@ -647,9 +693,9 @@ void MainWindow::on_btn_GenerateCuttingPlan_clicked()
     }
 
     // 4️⃣ Hullók (leftovers) megjelenítése külön
-    for (const auto& lo : leftovers) {
+    //for (const auto& lo : leftovers) {
         // itt lehet külön táblába tenni, vagy a cutting táblába "Leftover" jelöléssel
-    }
+    //}
 }
 
 void MainWindow::initEventLogWidget() {

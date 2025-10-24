@@ -16,49 +16,117 @@
 
 #include "common/styleprofiles/relocationcolors.h"
 
+#include <model/storageaudit/auditstatus.h>
+#include "model/relocation/relocationauditstatus.h"
+
 namespace Relocation::ViewModel::RowGenerator {
 
-inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
+// inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
 
-    TableRowViewModel vm;    
+//     TableRowViewModel vm;
+//     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
+
+//     // 🎨 Összesítő sor szürke háttérrel
+//     QColor bgColor = RelocationColors::SummaryBg; // sötétebb, egérszürke
+//     QColor fgColor = Qt::black;
+
+//     // Anyag
+//     vm.cells[RelocationPlanTableColumns::Material] =
+//         TableCellViewModel::fromText(instr.materialName,
+//                               QString("Anyag: %1").arg(instr.materialName),
+//                               bgColor, fgColor);
+
+//     // Vonalkód
+//     vm.cells[RelocationPlanTableColumns::Barcode] =
+//         TableCellViewModel::fromText("—",
+//                               "Összesítő sor, nincs vonalkód",
+//                               bgColor, fgColor);
+
+//     // Mennyiség
+//     QString qtyText = QString("%1/%2 (%3 maradék + %4 odavitt)")
+//                           .arg(instr.coveredQty)
+//                           .arg(instr.plannedQuantity)
+//                           .arg(instr.usedFromRemaining)
+//                           .arg(instr.movedQty);
+
+//     QColor qtyColor;
+//     if (instr.uncoveredQty > 0) {
+//         qtyColor = RelocationColors::Uncovered;
+//     } else if (instr.auditedRemaining < instr.totalRemaining) {
+//         qtyColor = RelocationColors::NotAudited;
+//     } else {
+//         qtyColor = RelocationColors::Covered;
+//     }
+
+//     vm.cells[RelocationPlanTableColumns::Quantity] =
+//         TableCellViewModel::fromText(qtyText,
+//                               instr.summaryText,
+//                               bgColor, qtyColor);
+
+//     // Forrás / Cél
+//     vm.cells[RelocationPlanTableColumns::Source] =
+//         TableCellViewModel::fromText("—", "Összesítő sor", bgColor, fgColor);
+//     vm.cells[RelocationPlanTableColumns::Target] =
+//         TableCellViewModel::fromText("—", "Összesítő sor", bgColor, fgColor);
+
+//     // Típus
+//     vm.cells[RelocationPlanTableColumns::Type] =
+//         TableCellViewModel::fromText("Σ Összesítő",
+//                               "Összesítő sor az igény lefedettségéről",
+//                               bgColor, fgColor);
+
+//     return vm;
+// }
+inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
+    qDebug() << "SUMROW" << instr.materialName
+             << "uncovered=" << instr.uncoveredQty
+             << "audRem=" << instr.auditedRemaining
+             << "totRem=" << instr.totalRemaining
+             << "presentAtTarget="  /* buildPlan logika szerinti érték, ha tárolod */
+             << "isSatisfied=" << instr.isSatisfied
+             << "auditStatusFixed=" << (instr.auditStatusFixed ? (int)instr.auditStatusFixed.value() : -1);
+
+
+    TableRowViewModel vm;
     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
-    // 🎨 Összesítő sor szürke háttérrel
-    QColor bgColor = RelocationColors::SummaryBg; // sötétebb, egérszürke
+    QColor bgColor = RelocationColors::SummaryBg;
     QColor fgColor = Qt::black;
 
     // Anyag
     vm.cells[RelocationPlanTableColumns::Material] =
         TableCellViewModel::fromText(instr.materialName,
-                              QString("Anyag: %1").arg(instr.materialName),
-                              bgColor, fgColor);
+                                     QString("Anyag: %1").arg(instr.materialName),
+                                     bgColor, fgColor);
 
     // Vonalkód
     vm.cells[RelocationPlanTableColumns::Barcode] =
         TableCellViewModel::fromText("—",
-                              "Összesítő sor, nincs vonalkód",
-                              bgColor, fgColor);
+                                     "Összesítő sor, nincs vonalkód",
+                                     bgColor, fgColor);
 
-    // Mennyiség
+    // Mennyiség szöveg
     QString qtyText = QString("%1/%2 (%3 maradék + %4 odavitt)")
                           .arg(instr.coveredQty)
                           .arg(instr.plannedQuantity)
                           .arg(instr.usedFromRemaining)
                           .arg(instr.movedQty);
 
-    QColor qtyColor;
-    if (instr.uncoveredQty > 0) {
-        qtyColor = RelocationColors::Uncovered;
-    } else if (instr.auditedRemaining < instr.totalRemaining) {
-        qtyColor = RelocationColors::NotAudited;
-    } else {
-        qtyColor = RelocationColors::Covered;
-    }
+    // Audit státusz (maradandó, auditból jön)
+    Relocation::AuditStatus status =
+        instr.auditStatusFixed.value_or(instr.auditStatus());
 
+    QColor qtyColor = Relocation::AuditStatusHelper::color(status);
+    QString qtyTooltip = QString("Audit státusz: %1\nIgény státusz: %2")
+                             .arg(Relocation::AuditStatusHelper::text(status))
+                             .arg(instr.isSatisfied ? "✔ Teljesítve" : "✗ Nem teljesült");
+
+    // Cellába beírjuk a mennyiséget + tooltipet
     vm.cells[RelocationPlanTableColumns::Quantity] =
         TableCellViewModel::fromText(qtyText,
-                              instr.summaryText,
-                              bgColor, qtyColor);
+                                     qtyTooltip,
+                                     bgColor,
+                                     qtyColor);
 
     // Forrás / Cél
     vm.cells[RelocationPlanTableColumns::Source] =
@@ -69,11 +137,13 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
     // Típus
     vm.cells[RelocationPlanTableColumns::Type] =
         TableCellViewModel::fromText("Σ Összesítő",
-                              "Összesítő sor az igény lefedettségéről",
-                              bgColor, fgColor);
+                                     "Összesítő sor az igény lefedettségéről",
+                                     bgColor, fgColor);
 
     return vm;
 }
+
+
 
 /// 🔹 Teljes TableRowViewModel generálása egy RelocationInstruction alapján
 inline TableRowViewModel generate(const RelocationInstruction& instr,

@@ -130,13 +130,23 @@ inline QVector<RelocationInstruction> buildPlan(
         int coveredQty = std::min(requiredQty, totalRemaining);
         int uncoveredQty = std::max(0, requiredQty - coveredQty);
 
-        QString status;
+        Relocation::AuditStatus fixedStatus;
+
         if (uncoveredQty == 0) {
-            status = auditedAtTarget < presentAtTarget
-                         ? "🟡 Részlegesen auditált, ✔ Igény teljesítve"
-                         : "🟢 Teljesen auditált, ✔ Igény teljesítve";
+            fixedStatus = (auditedAtTarget < presentAtTarget)
+            ? Relocation::AuditStatus::NotAudited
+            : Relocation::AuditStatus::Covered;
         } else {
-            status = QString("🔴 Nem teljesített, Lefedetlen: %1").arg(uncoveredQty);
+            fixedStatus = Relocation::AuditStatus::Uncovered;
+        }
+
+        QString statusText;
+        if (fixedStatus == Relocation::AuditStatus::Uncovered) {
+            statusText = QString("🔴 Nem teljesített, Lefedetlen: %1").arg(uncoveredQty);
+        } else if (fixedStatus == Relocation::AuditStatus::NotAudited) {
+            statusText = "🟡 Részlegesen auditált, ✔ Igény teljesítve";
+        } else {
+            statusText = "🟢 Teljesen auditált, ✔ Igény teljesítve";
         }
 
         RelocationInstruction summary(materialName,
@@ -147,10 +157,14 @@ inline QVector<RelocationInstruction> buildPlan(
                                       uncoveredQty,
                                       coveredQty,
                                       usedFromRemaining,
-                                      status,
+                                      statusText,
                                       materialCode,
                                       AuditSourceType::Stock,
                                       materialId);
+
+        // 🔹 itt rögzítjük a fix státuszt
+        summary.auditStatusFixed = fixedStatus;
+
         plan.append(summary);
     }
 

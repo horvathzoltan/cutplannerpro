@@ -14,9 +14,44 @@ SettingsManager::SettingsManager()
 
 
 
-void SettingsManager::load() {
+void SettingsManager::load(int argc, char* argv[]) {
     // _cuttingPlan_FileName = _settings.value(SettingsKeys::CuttingPlanFileName).toString();
+        detectTestMode(argc, argv);
  }
+
+void SettingsManager::detectTestMode(int argc, char* argv[]) {
+    // 1. Parancssori argumentum: --test maki
+    for (int i = 1; i < argc - 1; ++i) {
+        QString arg = argv[i];
+        QString next = argv[i + 1];
+        if (arg == "--test") {
+            if (next.compare("maki", Qt::CaseInsensitive) == 0) {
+                _testMode = TestMode::Maki;
+                return;
+            }
+            if (next.compare("full", Qt::CaseInsensitive) == 0) {
+                _testMode = TestMode::Full;
+                return;
+            }
+        }
+    }
+
+    // 2. settings.ini: test = maki
+    QString testProfile = _settings.value("test").toString();
+    if (testProfile.compare("maki", Qt::CaseInsensitive) == 0) {
+        _testMode = TestMode::Maki;
+        return;
+    }
+    if (testProfile.compare("full", Qt::CaseInsensitive) == 0) {
+        _testMode = TestMode::Full;
+        return;
+    }
+
+    // 3. settings.ini: testmode = true → Full
+    if (_settings.value("testmode", false).toBool()) {
+        _testMode = TestMode::Full;
+    }
+}
 
 void SettingsManager::save() {
 //     _settings.setValue(SettingsKeys::CuttingPlanFileName, _cuttingPlan_FileName);

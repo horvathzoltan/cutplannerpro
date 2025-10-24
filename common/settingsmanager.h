@@ -22,6 +22,11 @@ inline constexpr auto MainSplitterState = "main_splitter_state";
 inline constexpr auto CuttingStrategy = "cutting_strategy";
 }
 
+enum class TestMode {
+    None,
+    Maki,
+    Full
+};
 
 class SettingsManager {
 public:
@@ -68,13 +73,19 @@ public:
     Cutting::Optimizer::TargetHeuristic cuttingStrategy() const;
 
     void save();
-    void load();
+    void load(int argc, char* argv[]);
+
+    TestMode testMode() const { return _testMode; };
 private:
     SettingsManager();
 
     QSettings _settings;
+    TestMode _testMode;
 
     void persist(const QString& key, const QString& value);
     void persist(const QString &key, const QByteArray &value);
+
+    void detectTestMode(int argc, char *argv[]);
+
 };
 

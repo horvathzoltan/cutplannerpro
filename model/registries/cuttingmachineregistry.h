@@ -27,4 +27,5 @@ public:
 
     bool isEmpty() const { return _data.isEmpty(); }
     void clear();  // teszteléshez
+    const CuttingMachine *findById(const QUuid &id) const;
 };

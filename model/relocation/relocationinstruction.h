@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/relocation/relocationauditstatus.h"
 #include "model/relocation/relocationsourceentry.h"
 #include "model/relocation/relocationtargetentry.h"
 #include "model/storageaudit/storageauditrow.h"
@@ -117,6 +118,7 @@ struct RelocationInstruction {
     int coveredQty = 0;           ///< Igényből ténylegesen lefedett mennyiség
     int usedFromRemaining = 0;    ///< 🔹 Lefedéshez ténylegesen felhasznált maradék
 
+    std::optional<Relocation::AuditStatus> auditStatusFixed;
 
     // 🔹 Megadja, hogy a sor már véglegesítve lett-e
     bool isAlreadyFinalized() const noexcept {
@@ -217,4 +219,13 @@ struct RelocationInstruction {
         for (const auto& s : sources) total += s.moved;
         return total;
     }
+
+    Relocation::AuditStatus auditStatus() const {
+        return Relocation::AuditStatusHelper::fromInstruction(
+            uncoveredQty,
+            auditedRemaining,
+            totalRemaining
+            );
+    }
+
 };

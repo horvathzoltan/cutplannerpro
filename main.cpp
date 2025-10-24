@@ -10,17 +10,32 @@
 #include "common/logger.h"
 
 #include <common/eventlogger.h>
+#include <common/signalhelper.h>
 #include <common/sysinfohelper.h>
 
-//#include <service/builnumber.h>
+#include <QDebug>
 
 
 #define TEST_MODE
 
 int main(int argc, char *argv[])
 {
-    // SignalHelper::setShutDownSignal(SignalHelper::SIGINT_); // shut down on ctrl-c
-    // SignalHelper::setShutDownSignal(SignalHelper::SIGTERM_); // shut down on killall
+    // induláskor
+    SignalHelper::setCleanupHandler([](int sig){
+        EventLogger::instance().zEvent_(EventLogger::Info,
+                                       QString("🛠️ Alkalmazás leállítása, jel: %1").arg(sig));
+
+        if (sig == SignalHelper::SIGINT_) {
+            qDebug().noquote() << "Ctrl+C megszakítás → gyors mentés";
+        } else if (sig == SignalHelper::SIGTERM_) {
+            qDebug().noquote() << "Killall → teljes cleanup";
+        }
+        // registry flush, fájlmentés, stb.
+    });
+
+
+    SignalHelper::setShutDownSignal(SignalHelper::SIGINT_); // shut down on ctrl-c
+    SignalHelper::setShutDownSignal(SignalHelper::SIGTERM_); // shut down on killall
 
     QCoreApplication::setApplicationName(SysInfoHelper::instance().target());
     QCoreApplication::setApplicationVersion(Buildnumber::value);
@@ -29,8 +44,13 @@ int main(int argc, char *argv[])
 
     // itt initelünk mindet
     Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, false);
-    SettingsManager::instance().load();
+    SettingsManager::instance().load(argc, argv);
 
+    if (SettingsManager::instance().testMode() == TestMode::Maki) {
+        zEventINFO("Teszt mód: maki");
+        //runBusinessLogicTests();
+        return 0;
+    }
     // 🔧 Eseménynapló fájl megnyitása még az init előtt
     EventLogger::instance().setLogFile("eventlog.txt");
 
@@ -38,7 +58,7 @@ int main(int argc, char *argv[])
 
     auto sysInfo = SysInfoHelper::instance().sysInfo();
     zInfo(sysInfo);
-    EventLogger::instance().zEvent(sysInfo);
+    zEvent(sysInfo);
 
     // elvileg ha gond van, akkor itt nem nyitjuk megh a főablakot
     QApplication app(argc, argv);
