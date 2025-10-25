@@ -2,12 +2,12 @@
 
 #include <QObject>
 #include <QTableWidget>
-#include <common/tableutils/auditgrouplabeler.h>
-#include "common/tableutils/RowTracker.h"
+#include "view/tableutils/auditgrouplabeler.h"
+#include "view/tableutils/RowTracker.h"
 //#include "common/tableutils/rowid.h"
 #include "model/storageaudit/storageauditentry.h" // vagy ahová az entry kerül
 #include "model/storageaudit/storageauditrow.h"
-#include "common/tableutils/auditgroupsynchronizer.h"
+#include "view/tableutils/auditgroupsynchronizer.h"
 
 
 class StorageAuditTableManager : public QObject {

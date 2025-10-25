@@ -1,5 +1,6 @@
 #include "MainWindow.h"
-#include "common/tableutils/storageaudittable_connector.h"
+#include "view/tablehelpers/tablerowpopulator.h"
+#include "view/tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
 
 #include <QComboBox>
@@ -16,9 +17,9 @@
 
 #include "common/filenamehelper.h"
 #include "common/settingsmanager.h"
-#include "common/tableutils/leftovertable_connector.h"
-#include "common/tableutils/inputtable_connector.h"
-#include "common/tableutils/stocktable_connector.h"
+#include "view/tableutils/leftovertable_connector.h"
+#include "view/tableutils/inputtable_connector.h"
+#include "view/tableutils/stocktable_connector.h"
 #include "common/qteventutil.h"
 
 #include "dialog/stock/addstockdialog.h"
@@ -32,6 +33,7 @@
 #include <model/registries/cuttingmachineregistry.h>
 
 #include <common/eventlogger.h>
+#include "view/viewmodels/cutting/rowgenerator.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -144,9 +146,9 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_AddCuttingPlanRequest, &QPushButton::clicked,
                this, &MainWindow::handle_btn_AddCuttingPlanRequest_clicked);
     connect(ui->btn_NewCuttingPlan, &QPushButton::clicked,
-               this, &MainWindow::handle_btn_NewCuttingPlan_clicked);
+               this, &MainWindow::handle_btn_NewRequest_clicked);
     connect(ui->btn_ClearCuttingPlan, &QPushButton::clicked,
-               this, &MainWindow::handle_btn_ClearCuttingPlan_clicked);
+               this, &MainWindow::handle_btn_ClearRequest_clicked);
 
     // stock table
     connect(ui->btn_AddStockEntry, &QPushButton::clicked,
@@ -160,12 +162,11 @@ void MainWindow::ButtonConnector_Connect()
                this, &MainWindow::handle_btn_LeftoverDisposal_clicked);
 
     // cutting plan
-    connect(ui->btn_Finalize, &QPushButton::clicked,
-               this, &MainWindow::handle_btn_Finalize_clicked);
+
     connect(ui->btn_Optimize, &QPushButton::clicked,
                this, &MainWindow::handle_btn_Optimize_clicked);
     connect(ui->btn_OpenCuttingPlan, &QPushButton::clicked,
-            this, &MainWindow::handle_btn_OpenCuttingPlan_clicked);
+            this, &MainWindow::handle_btn_OpenRequest_clicked);
 
     connect(ui->btn_Finalize_2, &QPushButton::clicked,
             this, &MainWindow::handle_btn_RelocationPlanFinalize_clicked);
@@ -175,6 +176,18 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->radioByTotalLength, &QPushButton::toggled,
      this, &MainWindow::handle_btn_OptRad_clicked);
+
+    // storage audit
+    connect(ui->btn_StorageAudit, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_StorageAudit_clicked);
+
+    // relocation
+    connect(ui->btn_Relocate, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_Relocate_clicked);
+
+    // generate cutting plan
+    connect(ui->btn_GenerateCuttingPlan, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_GenerateCuttingPlan_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -231,7 +244,7 @@ void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const
 }
 
 /*cuttingplan*/
-void MainWindow::handle_btn_NewCuttingPlan_clicked()
+void MainWindow::handle_btn_NewRequest_clicked()
 {
     presenter->createNew_CuttingPlanRequests();
 }
@@ -281,7 +294,7 @@ void MainWindow::refreshSummaryRows()
 }
 
 
-void MainWindow::handle_btn_OpenCuttingPlan_clicked()
+void MainWindow::handle_btn_OpenRequest_clicked()
 {
 
     const QString folder = FileNameHelper::instance().getCuttingPlanFolder();
@@ -312,7 +325,7 @@ void MainWindow::handle_btn_OpenCuttingPlan_clicked()
 }
 
 
-void MainWindow::handle_btn_ClearCuttingPlan_clicked()
+void MainWindow::handle_btn_ClearRequest_clicked()
 {
     presenter->removeAll_CuttingPlanRequests();
 }
@@ -403,21 +416,6 @@ void MainWindow::handle_btn_OptRad_clicked(bool checked)
                        : "ByTotalLength 📏"));
 }
 
-
-void MainWindow::handle_btn_Finalize_clicked()
-{
-    const auto confirm = QMessageBox::question(this, "Terv lezárása",
-                                               "Biztosan lezárod ezt a vágási tervet? Ez módosítja a készletet.",
-                                               QMessageBox::Yes | QMessageBox::No);
-
-    if (confirm == QMessageBox::Yes) {
-        presenter->finalizePlans();
-        refresh_StockTable();
-        //ReusableStockRegistry::instance().all());
-        refresh_LeftoversTable();// frissítjük új hullókkal
-    }
-}
-
 // input table
 void MainWindow::addRow_InputTable(const Cutting::Plan::Request& v)
 {
@@ -498,7 +496,7 @@ void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plan
     //ui->tableResults->resizeColumnsToContents();
 }
 
-void MainWindow::on_btn_StorageAudit_clicked()
+void MainWindow::handle_btn_StorageAudit_clicked()
 {
     presenter->runStorageAudit();             // 🧠 Audit elindítása
 }
@@ -518,7 +516,7 @@ void MainWindow::updateRow_StorageAuditTable(const StorageAuditRow& row) {
 }
 
 
-void MainWindow::on_btn_Relocate_clicked()
+void MainWindow::handle_btn_Relocate_clicked()
 {
     // 1️⃣ Adatok összegyűjtése
     auto cutPlans = presenter->getPlansRef();
@@ -622,7 +620,7 @@ void MainWindow::showAuditCheckbox(const QUuid& rowId)
 
 
 
-void MainWindow::on_btn_GenerateCuttingPlan_clicked()
+void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
 {
     // 1️⃣ Adatok összegyűjtése a Presenterből
     auto& cutPlans = presenter->getPlansRef();          // vágási tervek

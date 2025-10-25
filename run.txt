@@ -1,42 +1,38 @@
-🧩 Frissített állapottábla (2025.10.24. – esti állapot)
+🧩 Állapottábla – 2025.10.25. (frissítve)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
-13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva az optimize()-ba, ini‑mentés + UI connect működik
+13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva, ini‑mentés + UI connect működik
 14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	UI elem elhelyezés finomhangolás hiányzik
-15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	AuditContext → groupPresence / groupAuditResult getterek, sor vs. csoport státusz szétválasztva
-16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6	teljes blokk hiányzik – új: elfogyasztós logika + pszichológiai score előkészítve
+15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, sor vs. csoport státusz szétválasztva
+16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🔴 Hiányzik	✅	🚧 Sprint 6	új koncepció: elfogyasztós logika + pszichológiai score előkészítve
 21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
 25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	validáció részben kész (gépválasztás, kerf)
-26	Finalize gomb (UI)	✅	🟡 Részben kész	✅	⚠️	globális finalize hiányzik, cutting lezárása után folytatjuk
+26	Finalize gomb (UI)	✅	🟢 Kész	✅		CutPlan finalize teljesen eltávolítva, csak Instruction/Relocation maradt
 28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	teljesen hiányzik
 29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	operátor UI, darab státusz
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-🚀 Sprint fókusz (2025.10.24.)
-Sprint	Tartalom	Állapot
-Sprint 1	plannedQuantity, executedQuantity, finalize logika	🟢 Kész
-Sprint 2	UI finomhangolás, CuttingStrategy, Cutting plan váltás	🟢 Kész
-Sprint 3	Vágási utasítás dialógus + validáció, Anyagcsoportosítás master–detail, Worklist tab finomhangolás	🟡 Folyamatban
-Sprint 4	Finalize UI + soronkénti működés, CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés	🟡 Folyamatban
-Sprint 5	Finalize auditálás + visszavonás, Audit trail export / diff előkészítés	🚧 Előkészítve
-Sprint 6	Hullókezelés (azonosító, normalizálás, leftoverId, elfogyasztós logika + pszichológiai score), adatfeltöltés, audit trail export	🚧 Előkészítve
-📌 Mai eredmények (2025.10.24.)
-EventLogger: enum + overload + színezett UI → profi szint.
+🚀 Sprint fókusz (2025.10.25.)
+Sprint 1 – plannedQuantity, executedQuantity, finalize logika → 🟢 Kész
 
-AuditContext / StorageAuditRow: getter-alapú logika stabil, refaktor előkészítve.
+Sprint 2 – UI finomhangolás, CuttingStrategy, Cutting plan váltás → 🟢 Kész
 
-Presenter: updateRow helper → tisztább UI logika.
+Sprint 3 – Vágási utasítás dialógus + validáció, Anyagcsoportosítás master–detail, Worklist tab → 🟡 Folyamatban
 
-Hullókezelés: új koncepciók rögzítve → rúd elfogyasztása + pszichológiai bónuszpontozás.
+Sprint 4 – Finalize UI (soronkénti működés), CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés → 🟡 Folyamatban
 
-🆕 Következő lépések
-Állapotmátrix: isRowModified × isRowAuditChecked × fulfilment → stabil auditlogika.
+Sprint 5 – Finalize auditálás + visszavonás, Audit trail export / diff előkészítés → 🚧 Előkészítve
 
-Unit tesztek: lefedni minden edge case-t.
+Sprint 6 – Hullókezelés (azonosító, normalizálás, leftoverId, elfogyasztós logika + pszichológiai score), adatfeltöltés, audit trail export → 🚧 Előkészítve
 
-Hullókezelés: leftoverId, manager, normalizálás + új score logika → Sprint 6.
+📌 Mai eredmények
+Finalize gomb (26) → teljesen kipucolva, státusz: 🟢 Kész.
 
-Finalize UI: soronkénti működés + globális finalize → Sprint 4 kulcsfeladata.
+UI finomhangolás → tab‑ok és oszlopsorrend átnézve, logika konzisztens, hiányzó azonosító a CutRequest táblában backlogba került.
 
-👉 Összességében: a mai nap nagy nyeresége az EventLogger profi szintre emelése és a hullókezelési stratégia újrafogalmazása. A következő napok fókusza az állapotmátrix és a finalize logika, majd a pszichológiai optimalizáció kódba ültetése.
+Hullókezelés → filozófia rögzítve, scoring logika előkészítve.
+
+EventLogger → profi szint, színezett UI.
+
+👉 A fókusz most a Sprint 3–4 feladatokon van: Worklist, anyagcsoportosítás, soronkénti finalize, gép‑hozzárendelés.

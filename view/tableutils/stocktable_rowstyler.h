@@ -1,9 +1,9 @@
 #pragma once
 
-#include "common/tablerowstyler/materialrowstyler.h"
-#include "common/tableutils/colorlogicutils.h"
-#include "common/tablerowstyler/tablestyleutils.h"
-#include <view/managers/stocktable_manager.h>
+#include "view/tablerowstyler/materialrowstyler.h"
+#include "view/tableutils/colorlogicutils.h"
+#include "view/tablerowstyler/tablestyleutils.h"
+#include "view/managers/stocktable_manager.h"
 
 namespace StockTable{
 namespace RowStyler{

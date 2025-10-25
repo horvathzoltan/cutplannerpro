@@ -2,7 +2,7 @@
 
 #include <QTableWidget>
 //#include "model/cutresult.h"
-#include "common/tableutils/rowid.h"
+#include "view/tableutils/rowid.h"
 #include "model/leftoverstockentry.h"
 
 /// ♻️ Hullók (maradékok) táblájának kezelése  (vágás utáni maradékanyagok)

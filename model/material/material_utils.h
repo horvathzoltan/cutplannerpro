@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QColor>
-#include "../model/material/materialmaster.h"
-#include "common/grouputils.h"
+#include "materialmaster.h"
+#include "materialgroup_utils.h"
 
 namespace MaterialUtils {
 

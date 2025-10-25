@@ -1,6 +1,6 @@
 #pragma once
-#include "common/grouputils.h"
-#include "common/tableutils/colorconstants.h"
+#include "model/material/materialgroup_utils.h"
+#include "common/color/colorconstants.h"
 #include "model/material/materialmaster.h"
 #include <QColor>
 #include <QWidget>

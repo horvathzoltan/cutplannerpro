@@ -6,11 +6,6 @@
 #include <QUuid>
 
 #include "model/cutting/instruction/cutinstruction.h"
-#include "view/viewmodels/cutting/rowgenerator.h"
-#include "view/tablehelpers/tablerowpopulator.h"
-#include "common/logger.h"
-#include "model/registries/materialregistry.h"
-#include "common/tableutils/colorlogicutils.h"
 
 /**
  * @brief CuttingInstructionTableManager

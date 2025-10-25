@@ -10,6 +10,7 @@
 #include "../plan/request.h"
 #include "../../leftoverstockentry.h"
 #include "../../stockentry.h"
+#include "model/inventorysnapshot.h"
 
 namespace Cutting {
 namespace Optimizer {
@@ -95,10 +96,13 @@ public:
  * elkészíti a teljes vágási terveket és a hulló listát.
  */
     void optimize(TargetHeuristic heuristic);
+    void optimize_old(TargetHeuristic heuristic);
 
     void setCuttingRequests(const QVector<Cutting::Plan::Request>& list);
-    void setStockInventory(const QVector<StockEntry> &list);
-    void setReusableInventory(const QVector<LeftoverStockEntry> &reusable);
+
+    void setInventorySnapshot(const InventorySnapshot &snapshot){
+        inventorySnapshot = snapshot;
+    }
     //void setTargetHeuristic(TargetHeuristic h) { heuristic = h; }
 private:
 
@@ -126,17 +130,26 @@ private:
         QString barcode;
     };
 
-    QVector<Cutting::Plan::Request> requests; // a vágási kérelmek
-    QVector<StockEntry> profileInventory;
-    QVector<LeftoverStockEntry> reusableInventory;
+    // A felhasználótól érkező vágási igények (darabok listája).
+    // Ezek a bemeneti adatok, az optimalizáció alatt nem módosulnak.
+    QVector<Cutting::Plan::Request> requests;
 
-    QVector<Cutting::Plan::CutPlan> _result_plans; // vágás eremébye - egész szálak vágásának terve
-    QVector<Cutting::Result::ResultModel> _result_leftovers; // vágás eredménye - hulló anyagok vágási terve
+    // A készlet pillanatképe (snapshot), amely tartalmazza a teljes rudakat és a maradékokat.
+    // Ez egy homokozó másolat, amelyet a registrykből töltünk be.
+    // Az optimalizáció ezen dolgozik, a valódi registryket nem érinti.
+    InventorySnapshot inventorySnapshot;
 
-    //int kerf = 3; // mm
+    // Az optimalizáció eredménye: minden egyes rúdhoz létrejött vágási terv.
+    QVector<Cutting::Plan::CutPlan> _result_plans;
+
+    // Az optimalizáció során előrejelzett maradékok (planned leftovers).
+    // Ezek a "mi lenne, ha" kimenetek, csak finalize után kerülhetnek vissza a registrybe.
+    QVector<Cutting::Result::ResultModel> _planned_leftovers;
+
 
     int nextOptimizationId = 1;
 
+    int planCounter = 0; // 🔢 Globális batch számláló
     /**
  * @brief Megkeresi a legjobb darabkombinációt egy adott rúdhoz.
  *
@@ -207,6 +220,8 @@ private:
         QUuid materialId,
         double kerf_mm
         ) const;
+    void cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    void cutComboBatch(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 };
 
 } //end namespace Optimizer

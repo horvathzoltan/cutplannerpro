@@ -27,9 +27,9 @@ SOURCES += \
     common/quantityparser.cpp \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
-    common/tableutils/auditgrouplabeler.cpp \
-    common/tableutils/auditgroupsynchronizer.cpp \
-    common/tableutils/resulttable_rowstyler.cpp \
+    view/tableutils/auditgrouplabeler.cpp \
+    view/tableutils/auditgroupsynchronizer.cpp \
+    view/tableutils/resulttable_rowstyler.cpp \
     main.cpp \
     model/archivedwasteentry.cpp \
     model/crosssectionshape.cpp \
@@ -68,7 +68,6 @@ SOURCES += \
     presenter/CuttingPresenter.cpp \
     service/cutting/optimizer/exporter.cpp \
     service/cutting/plan/autosavemanager.cpp \
-    service/cutting/plan/finalizer.cpp \
     service/cutting/result/archivedwasteutils.cpp \
     service/cutting/result/leftoversourceutils.cpp \
     service/cutting/segment/segmentutils.cpp \
@@ -95,28 +94,36 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/color/colorconstants.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
+    model/inventorysnapshot.h \
+    model/machine/machineutils.h \
+    model/material/material_utils.h \
+    model/material/materialgroup_utils.h \
     model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
     service/buildnumber.h \
+    service/cutting/optimizer/optimizationauditbuilder.h \
+    service/cutting/optimizer/optimizationlogger.h \
+    service/cutting/optimizer/optimizationrunner.h \
+    service/cutting/optimizer/optimizationviewupdater.h \
+    service/cutting/optimizer/optimizerconstants.h \
+    service/cutting/optimizer/optimizerutils.h \
+    service/snapshot/inventorysnapshotbuilder.h \
+    service/snapshot/requestsnapshotbuilder.h \
     service/storageaudit/auditcontextbuilder.h \
     service/storageaudit/auditstatemanager.h \
     service/storageaudit/auditsyncguard.h \
-    common/auditutils.h \
     common/color/namedcolor.h \
     common/csvhelper.h \
     common/csvimporter.h \
     common/eventlogger.h \
     common/filehelper.h \
     common/filenamehelper.h \
-    common/grouputils.h \
     common/logger.h \
     common/logmeta.h \
-    common/machineutils.h \
-    common/materialutils.h \
     common/movementdatahelper.h \
-    common/optimizerutils.h \
     common/qteventutil.h \
     common/quantityparser.h \
     common/scopedperthreadlock.h \
@@ -124,16 +131,16 @@ HEADERS += \
     common/styleprofiles/cuttingcolors.h \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
-    common/tablerowstyler/materialrowstyler.h \
-    common/tableutils/RowTracker.h \
-    common/tableutils/auditcellformatter.h \
-    common/tableutils/auditgrouplabeler.h \
-    common/tableutils/auditgroupsynchronizer.h \
-    common/tableutils/colorutils.h \
-    common/tableutils/rowid.h \
-    common/tableutils/storageaudittable_connector.h \
-    common/tableutils/storageaudittable_rowstyler.h \
-    common/tableutils/tableutils_auditcells.h \
+    view/tablerowstyler/materialrowstyler.h \
+    view/tableutils/RowTracker.h \
+    view/tableutils/auditcellformatter.h \
+    view/tableutils/auditgrouplabeler.h \
+    view/tableutils/auditgroupsynchronizer.h \
+    view/tableutils/colorutils.h \
+    view/tableutils/rowid.h \
+    view/tableutils/storageaudittable_connector.h \
+    view/tableutils/storageaudittable_rowstyler.h \
+    view/tableutils/tableutils_auditcells.h \
     model/cutting/cuttingmachine.h \
     model/cutting/instruction/cutinstruction.h \
     model/cutting/optimizer/optimizermodel.h \
@@ -167,7 +174,6 @@ HEADERS += \
     model/storageaudit/storageauditrow.h \
     service/cutting/optimizer/exporter.h \
     service/cutting/plan/autosavemanager.h \
-    service/cutting/plan/finalizer.h \
     service/cutting/result/archivedwasteutils.h \
     service/cutting/result/leftoversourceutils.h \
     service/cutting/result/resultutils.h \
@@ -176,17 +182,16 @@ HEADERS += \
     common/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
-    common/tableutils/colorconstants.h \
-    common/tableutils/colorlogicutils.h \
-    common/tableutils/inputtable_connector.h \
-    common/tableutils/inputtable_rowstyler.h \
-    common/tableutils/leftovertable_connector.h \
-    common/tableutils/leftovertable_rowstyler.h \
-    common/tableutils/resulttable_rowstyler.h \
-    common/tableutils/stocktable_connector.h \
-    common/tableutils/stocktable_rowstyler.h \
-    common/tablerowstyler/tablestyleutils.h \
-    common/tableutils/tableutils.h \
+    view/tableutils/colorlogicutils.h \
+    view/tableutils/inputtable_connector.h \
+    view/tableutils/inputtable_rowstyler.h \
+    view/tableutils/leftovertable_connector.h \
+    view/tableutils/leftovertable_rowstyler.h \
+    view/tableutils/resulttable_rowstyler.h \
+    view/tableutils/stocktable_connector.h \
+    view/tableutils/stocktable_rowstyler.h \
+    view/tablerowstyler/tablestyleutils.h \
+    view/tableutils/tableutils.h \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
     model/identifiableentity.h \
@@ -212,6 +217,7 @@ HEADERS += \
     service/relocation/relocationplanner.h \
     service/relocation/relocationservice.h \
     service/stockmovementservice.h \
+    service/storageaudit/auditutils.h \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \

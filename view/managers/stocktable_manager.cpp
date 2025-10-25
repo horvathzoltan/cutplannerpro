@@ -1,7 +1,8 @@
 #include "stocktable_manager.h"
-#include "common/tableutils/stocktable_rowstyler.h"
-#include "common/tableutils/tableutils.h"
-#include "common/materialutils.h"
+#include "view/tableutils/stocktable_rowstyler.h"
+#include "view/tableutils/tableutils.h"
+#include "model/material/material_utils.h"
+#include "model/material/materialgroup_utils.h"
 //#include "common/tableutils/resulttable_rowstyler.h"
 #include "model/registries/materialregistry.h"
 #include <QHBoxLayout>

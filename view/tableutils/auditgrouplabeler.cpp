@@ -1,4 +1,4 @@
-#include "common/tableutils/auditgrouplabeler.h"
+#include "view/tableutils/auditgrouplabeler.h"
 
 namespace TableUtils {
 

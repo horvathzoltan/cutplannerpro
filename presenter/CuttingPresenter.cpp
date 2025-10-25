@@ -1,9 +1,9 @@
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
-#include "service/cutting/result/resultutils.h"
+//#include "service/cutting/result/resultutils.h"
 #include "service/storageaudit/auditsyncguard.h"
-#include "common/auditutils.h"
+#include "service/storageaudit/auditutils.h"
 #include "common/logger.h"
 //#include "model/registries/materialregistry.h"
 //#include "model/relocation/relocationinstruction.h"
@@ -26,14 +26,18 @@
 #include <service/storageaudit/leftoverauditservice.h>
 #include <service/storageaudit/storageauditservice.h>
 
-#include <service/cutting/plan/finalizer.h>
-
 #include <model/registries/materialregistry.h>
 #include <model/registries/storageregistry.h>
 
-//#include "service/storageaudit/auditcontextbuilder.h"
-
 #include <service/relocation/relocationplanner.h>
+
+#include <service/cutting/optimizer/optimizationauditbuilder.h>
+#include <service/cutting/optimizer/optimizationlogger.h>
+#include <service/cutting/optimizer/optimizationrunner.h>
+#include <service/cutting/optimizer/optimizationviewupdater.h>
+
+#include <service/snapshot/inventorysnapshotbuilder.h>
+#include <service/snapshot/requestsnapshotbuilder.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -171,13 +175,13 @@ void CuttingPresenter::setCuttingRequests(const QVector<Cutting::Plan::Request>&
     model.setCuttingRequests(list);
 }
 
-void CuttingPresenter::setStockInventory(const QVector<StockEntry>& list) {
-    model.setStockInventory(list);
-}
+// void CuttingPresenter::setStockInventory(const QVector<StockEntry>& list) {
+//     model.setStockInventory(list);
+// }
 
-void CuttingPresenter::setReusableInventory(const QVector<LeftoverStockEntry>& list) {
-    model.setReusableInventory(list);
-}
+// void CuttingPresenter::setReusableInventory(const QVector<LeftoverStockEntry>& list) {
+//     model.setReusableInventory(list);
+// }
 
 // void CuttingPresenter::setKerf(int kerf) {
 //     model.setKerf(kerf);
@@ -193,135 +197,112 @@ QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
     return model.getResults_Leftovers();
 }
 
+// void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuristic) {
+//     // 🔒 Ellenőrzés: a modell szinkronizálva van-e a legfrissebb adatokkal
+//     if (!isModelSynced) {
+//         zWarning(L("⚠️ A modell nem volt szinkronizálva optimalizáció előtt!"));
+//         // Itt opcionálisan vissza is térhetnénk, vagy automatikusan szinkronizálhatnánk
+//         return;
+//     }
+
+//     // 🚀 Optimalizáció futtatása a modellben
+//     model.optimize(heuristic);
+//     isModelSynced = false; // újra false, hogy ha később újra hívják, akkor ismét szinkron kelljen
+
+//     // 📋 Optimalizációs tervek logolása (debug célokra)
+//     logPlans();
+
+//     // 📦 Az optimalizáció eredményeként létrejött vágási tervek
+//     // Minden CutPlan egy konkrét rúd (stock vagy hulló) felhasználását írja le
+//     QVector<Cutting::Plan::CutPlan> &plans = model.getResult_PlansRef();
+
+//     // ✨ UI frissítése, ha van aktív nézet
+//     if (view) {
+//         // Középső eredménytábla frissítése a vágási tervekkel
+//         view->update_ResultsTable(plans);
+
+//         // Készlet tábla frissítése (ha a készlet változik az optimalizáció hatására)
+//         view->refresh_StockTable();
+
+//         // Hullók kigyűjtése és konvertálása újrafelhasználható bejegyzésekké
+//         QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
+//         QVector<LeftoverStockEntry> e = Cutting::Result::ResultUtils::toReusableEntries(l);
+
+//         // ⚠️ TODO: itt jelenleg nem generálunk külön leftover audit sorokat,
+//         // mert a finalize lépés fogja ténylegesen frissíteni a stockot.
+//         // Ezért most csak a táblát frissítjük.
+//         view->refresh_LeftoversTable(); // paraméter nélkül, csak vizuális frissítés
+//     }
+
+//     // 📤 Export: optimalizációs tervek mentése CSV és TXT formátumban
+//     OptimizationExporter::exportPlansToCSV(plans);
+//     OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
+
+//     // 📊 Statisztikák frissítése a nézetben
+//     view->updateStats(plans, model.getResults_Leftovers());
+
+//     // 🗺️ PickingMap generálása: anyag → hány rúd kell az optimalizációhoz
+//     QMap<QUuid, int> pickingMap = generatePickingMapFromPlans(plans);
+//     for (auto it = pickingMap.begin(); it != pickingMap.end(); ++it) {
+//         QString msg = L("📦 Picking: %1 -> %2").arg(it.key().toString()).arg(it.value());
+//         zInfo(msg); // logoljuk, hogy melyik anyagból mennyi kell
+//     }
+
+//     // 📥 Audit sorok legenerálása a teljes stockból és a hullókból
+//     QVector<StorageAuditRow> stockAuditRows =
+//         StorageAuditService::generateAuditRows_All();
+//     QVector<StorageAuditRow> leftoverAuditRows =
+//         LeftoverAuditService::generateAuditRows_All();
+
+//     // Egyesített audit sor lista (stock + leftover)
+//     lastAuditRows = stockAuditRows + leftoverAuditRows;
+
+//     // 🧩 A vágási tervek injektálása az audit sorokba:
+//     // - beállítja a pickingQuantity-t (elvárt mennyiség)
+//     // - jelöli, hogy a sor része-e az optimalizációnak
+//     // - presence státuszt is frissíti (Present/Missing)
+//     AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
+
+//     // 🔗 Kontextus építése a planből származó igényekkel
+//     AuditUtils::assignContextsToRows(&lastAuditRows, pickingMap);
+//     // 🔗 Kontextus építése: anyag+hely szinten összesítjük az elvárt és tényleges mennyiségeket
+
+//     // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
+//     // for (auto& row : lastAuditRows) {
+//     //     row.context = contextMap.value(row.rowId); // minden sor kap egy context pointert
+//     // }
+
+
+
+//     // 🖥️ Végül frissítjük az Audit táblát a nézetben
+//     view->update_StorageAuditTable(lastAuditRows);
+// }
 void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuristic) {
-    // 🔒 Ellenőrzés: a modell szinkronizálva van-e a legfrissebb adatokkal
     if (!isModelSynced) {
-        zWarning(L("⚠️ A modell nem volt szinkronizálva optimalizáció előtt!"));
-        // Itt opcionálisan vissza is térhetnénk, vagy automatikusan szinkronizálhatnánk
+        zWarning(L("⚠️ Modell nincs szinkronizálva optimalizáció előtt!"));
         return;
     }
 
-    // 🚀 Optimalizáció futtatása a modellben
-    model.optimize(heuristic);
-    isModelSynced = false; // újra false, hogy ha később újra hívják, akkor ismét szinkron kelljen
+    // 1️⃣ Optimalizáció futtatása
+    OptimizationRunner::run(model, heuristic);
 
-    // 📋 Optimalizációs tervek logolása (debug célokra)
-    logPlans();
-
-    // 📦 Az optimalizáció eredményeként létrejött vágási tervek
-    // Minden CutPlan egy konkrét rúd (stock vagy hulló) felhasználását írja le
-    QVector<Cutting::Plan::CutPlan> &plans = model.getResult_PlansRef();
-
-    // ✨ UI frissítése, ha van aktív nézet
+    // 2️⃣ Nézet frissítése
     if (view) {
-        // Középső eredménytábla frissítése a vágási tervekkel
-        view->update_ResultsTable(plans);
-
-        // Készlet tábla frissítése (ha a készlet változik az optimalizáció hatására)
-        view->refresh_StockTable();
-
-        // Hullók kigyűjtése és konvertálása újrafelhasználható bejegyzésekké
-        QVector<Cutting::Result::ResultModel> l = model.getResults_Leftovers();
-        QVector<LeftoverStockEntry> e = Cutting::Result::ResultUtils::toReusableEntries(l);
-
-        // ⚠️ TODO: itt jelenleg nem generálunk külön leftover audit sorokat,
-        // mert a finalize lépés fogja ténylegesen frissíteni a stockot.
-        // Ezért most csak a táblát frissítjük.
-        view->refresh_LeftoversTable(); // paraméter nélkül, csak vizuális frissítés
+        OptimizationViewUpdater::update(view, model);
     }
 
-    // 📤 Export: optimalizációs tervek mentése CSV és TXT formátumban
-    OptimizationExporter::exportPlansToCSV(plans);
-    OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
+    // 3️⃣ Export (opcionális)
+    OptimizationExporter::exportPlans(model.getResult_PlansRef());
 
-    // 📊 Statisztikák frissítése a nézetben
-    view->updateStats(plans, model.getResults_Leftovers());
+    // 4️⃣ Audit sorok előállítása
+    lastAuditRows = OptimizationAuditBuilder::build(model);
 
-    // 🗺️ PickingMap generálása: anyag → hány rúd kell az optimalizációhoz
-    QMap<QUuid, int> pickingMap = generatePickingMapFromPlans(plans);
-    for (auto it = pickingMap.begin(); it != pickingMap.end(); ++it) {
-        QString msg = L("📦 Picking: %1 -> %2").arg(it.key().toString()).arg(it.value());
-        zInfo(msg); // logoljuk, hogy melyik anyagból mennyi kell
-    }
+    // 5️⃣ Logolás
+    OptimizationLogger::logPlans(model.getResult_PlansRef(), model.getResults_Leftovers());
 
-    // 📥 Audit sorok legenerálása a teljes stockból és a hullókból
-    QVector<StorageAuditRow> stockAuditRows =
-        StorageAuditService::generateAuditRows_All();
-    QVector<StorageAuditRow> leftoverAuditRows =
-        LeftoverAuditService::generateAuditRows_All();
-
-    // Egyesített audit sor lista (stock + leftover)
-    lastAuditRows = stockAuditRows + leftoverAuditRows;
-
-    // 🧩 A vágási tervek injektálása az audit sorokba:
-    // - beállítja a pickingQuantity-t (elvárt mennyiség)
-    // - jelöli, hogy a sor része-e az optimalizációnak
-    // - presence státuszt is frissíti (Present/Missing)
-    AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
-
-    // 🔗 Kontextus építése a planből származó igényekkel
-    AuditUtils::assignContextsToRows(&lastAuditRows, pickingMap);
-    // 🔗 Kontextus építése: anyag+hely szinten összesítjük az elvárt és tényleges mennyiségeket
-
-    // auto contextMap = AuditContextBuilder::buildFromRows(lastAuditRows);
-    // for (auto& row : lastAuditRows) {
-    //     row.context = contextMap.value(row.rowId); // minden sor kap egy context pointert
-    // }
-
-
-
-    // 🖥️ Végül frissítjük az Audit táblát a nézetben
-    view->update_StorageAuditTable(lastAuditRows);
+    isModelSynced = false;
 }
 
-
-/*
-    // QVector<LeftoverStockEntry> leftovers =
-    //     Cutting::Result::ResultUtils::toReusableEntries(model.getResults_Leftovers());
-
-
-    // for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
-    //     qDebug() << "Registry barcode:" << entry.barcode << "EntryId:" << entry.entryId;
-    // }
-
-    // QSet<QUuid> usedMaterialIds;
-    // QSet<QString> usedBarcodes;
-
-    // for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
-    //     usedMaterialIds.insert(plan.materialId);
-    //     usedBarcodes.insert(plan.rodId); // ez lehet reusable barcode is
-    // }
-
-    // // QSet<QUuid> usedLeftoverIds;
-
-    // // for (const Cutting::Plan::CutPlan& plan : model.getResult_PlansRef()) {
-    // //     if (plan.source == Cutting::Plan::Source::Reusable) {
-    // //         const auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(plan.rodId);
-    // //         if (entryOpt.has_value())
-    // //             usedLeftoverIds.insert(entryOpt->entryId);
-    // //     }
-    // // }
-
-    // // QVector<StorageAuditRow> leftoverAuditRows =
-    // //     LeftoverAuditService::instance().generateAudit(leftovers, usedLeftoverIds);
-
-    // QVector<StorageAuditRow> leftoverAuditRows;
-    // for (const auto& entry : LeftoverStockRegistry::instance().readAll()) {
-    //     StorageAuditRow row;
-    //     row.rowId = QUuid::createUuid();
-    //     row.materialId = entry.materialId;
-    //     row.stockEntryId = entry.entryId;
-    //     row.sourceType = AuditSourceType::Leftover;
-    //     row.actualQuantity = 0;
-    //     row.presence = AuditPresence::Unknown;
-    //     row.isInOptimization = usedBarcodes.contains(entry.reusableBarcode());
-    //     leftoverAuditRows.append(row);
-    // }
-
-    //lastAuditRows = stockAuditRows + leftoverAuditRows;
-
-    //lastAuditRows = generateAuditRowsFromPlans(plans);
-*/
 
 namespace CuttingUtils {
 void logStockStatus(const QString& title, const QVector<StockEntry>& entries) {
@@ -432,41 +413,6 @@ void CuttingPresenter::logPlans(){
 
 }
 
-
-
-void CuttingPresenter::finalizePlans()
-{
-    //logPlans();
-
-    QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef();
-    const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
-
-    qDebug() << "***";
-
-    CuttingUtils::logStockStatus("🧱 STOCK — finalize előtt:", StockRegistry::instance().readAll());
-    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize előtt:", LeftoverStockRegistry::instance().readAll());
-
-    // ✂️ Finalizálás → készletfogyás + hulladékkezelés
-    CuttingPlanFinalizer::finalize(plans, results);
-
-    qDebug() << "***";
-
-    CuttingUtils::logStockStatus("🧱 STOCK — finalize után:", StockRegistry::instance().readAll());
-    CuttingUtils::logReusableStatus("♻️ REUSABLE — finalize után:", LeftoverStockRegistry::instance().readAll());
-
-    // ✅ Állapot lezárása
-    for (Cutting::Plan::CutPlan& plan : model.getResult_PlansRef())
-        plan.setStatus(Cutting::Plan::Status::Completed);
-
-    // 🔁 View frissítése
-    if (view) {
-        view->refresh_StockTable();
-        // todo 02 : nem jó, nem a táblát kellene frissíteni, hanem a stockot
-        view->refresh_LeftoversTable();//CutResultUtils::toReusableEntries(results));
-        view->update_ResultsTable(plans);
-    }
-}
-
 void CuttingPresenter::scrapShortLeftovers()
 {
     auto& reusableRegistry = LeftoverStockRegistry::instance();
@@ -498,33 +444,30 @@ void CuttingPresenter::scrapShortLeftovers()
 }
 
 void CuttingPresenter::syncModelWithRegistries() {
-    auto requestList  = CuttingPlanRequestRegistry::instance().readAll();
-    auto stockList    = StockRegistry::instance().readAll();
-    auto reusableList = LeftoverStockRegistry::instance().filtered(300);
+    // 🔁 Snapshotok építése a registrykből
+    auto requests  = RequestSnapshotBuilder::build();
+    auto inventory = InventorySnapshotBuilder::build(300);
 
     QStringList errors;
 
-    // 📋 Validációs hibák aggregálása
-    if (requestList.isEmpty())
+    // 📋 Validáció
+    if (requests.isEmpty())
         errors << "Nincs megadva vágási igény.";
 
-    if (stockList.isEmpty())
+    if (inventory.profileInventory.isEmpty())
         errors << "A készlet üres.";
 
-    if (reusableList.isEmpty())
+    if (inventory.reusableInventory.isEmpty())
         errors << "Nincs újrahasználható hulladék elérhető.";
 
-    // ❗ Hibaüzenetek megjelenítése
-    if (errors.isEmpty()){
-        // 🔁 Modellbe betöltés
-        model.setCuttingRequests(requestList);
-        model.setStockInventory(stockList);
-        model.setReusableInventory(reusableList);
-
+    // ✅ Modell feltöltése vagy ❗ hibaüzenet
+    if (errors.isEmpty()) {
+        model.setCuttingRequests(requests);
+        model.setInventorySnapshot(inventory);   // << pengeéles snapshot betöltés
         isModelSynced = true;
     } else {
         QString fullMessage = "Az optimalizálás nem indítható:\n\n• " + errors.join("\n• ");
-        if(view)
+        if (view)
             view->ShowWarningDialog(fullMessage);
         isModelSynced = false;
     }

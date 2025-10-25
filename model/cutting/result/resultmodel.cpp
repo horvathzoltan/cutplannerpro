@@ -1,7 +1,7 @@
 #include "resultmodel.h"
 
 #include "../../registries/materialregistry.h"
-#include "../../../common/materialutils.h"
+#include "model/material/material_utils.h"
 
 namespace Cutting{
 namespace Result{

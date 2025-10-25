@@ -53,34 +53,34 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
             break;
         }
 
-        // case AuditSourceType::Stock: {
-        //     if (requiredStockMaterials.contains(row.materialId)) {
-        //         int& remaining = requiredStockMaterials[row.materialId];
-        //         if (remaining > 0) {
-        //             row.pickingQuantity = 1;
-        //             row.isInOptimization = true;
-        //             row.presence = (row.actualQuantity >= 1)
-        //                                ? AuditPresence::Present
-        //                                : AuditPresence::Missing;
-        //             --remaining;
-        //         }
-        //     }
-        //     break;
-        // }
-        // case AuditSourceType::Stock: {
-        //     if (requiredStockMaterials.contains(row.materialId)) {
-        //         int& remaining = requiredStockMaterials[row.materialId];
-        //         if (remaining > 0) {
-        //             row.isInOptimization = true;
-        //             row.pickingQuantity = 0;//remaining; // teljes igény
-        //             // row.rowPresence = (row.actualQuantity >= remaining)
-        //             //                    ? AuditPresence::Present
-        //             //                    : AuditPresence::Missing;
-        //             remaining = 0; // egyszer kiosztva
-        //         }
-        //     }
-        //     break;
-        // }
+            // case AuditSourceType::Stock: {
+            //     if (requiredStockMaterials.contains(row.materialId)) {
+            //         int& remaining = requiredStockMaterials[row.materialId];
+            //         if (remaining > 0) {
+            //             row.pickingQuantity = 1;
+            //             row.isInOptimization = true;
+            //             row.presence = (row.actualQuantity >= 1)
+            //                                ? AuditPresence::Present
+            //                                : AuditPresence::Missing;
+            //             --remaining;
+            //         }
+            //     }
+            //     break;
+            // }
+            // case AuditSourceType::Stock: {
+            //     if (requiredStockMaterials.contains(row.materialId)) {
+            //         int& remaining = requiredStockMaterials[row.materialId];
+            //         if (remaining > 0) {
+            //             row.isInOptimization = true;
+            //             row.pickingQuantity = 0;//remaining; // teljes igény
+            //             // row.rowPresence = (row.actualQuantity >= remaining)
+            //             //                    ? AuditPresence::Present
+            //             //                    : AuditPresence::Missing;
+            //             remaining = 0; // egyszer kiosztva
+            //         }
+            //     }
+            //     break;
+            // }
 
 
         default:
@@ -101,10 +101,10 @@ inline void injectPlansIntoAuditRows(const QVector<Cutting::Plan::CutPlan>& plan
             // 🧠 Debug: AuditContext aggregált értékek, ha elérhető
             if (row.context) {
                 zInfo(QString("[AuditContext] matId=%1 | expected=%2 | actual=%3 | rows=%4")
-                           .arg(row.materialId.toString())
-                           .arg(row.context->totalExpected)
-                           .arg(row.context->totalActual)
-                           .arg(row.context->group.size()));
+                          .arg(row.materialId.toString())
+                          .arg(row.context->totalExpected)
+                          .arg(row.context->totalActual)
+                          .arg(row.context->group.size()));
             }
 
             // ⚠️ Warning: hulló sor csoportba került (nem kéne)

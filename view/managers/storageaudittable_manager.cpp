@@ -1,10 +1,10 @@
 #include "storageaudittable_manager.h"
 
 #include "common/logger.h"
-#include "common/tableutils/storageaudittable_rowstyler.h"
+#include "view/tableutils/storageaudittable_rowstyler.h"
 //#include "common/tableutils/tableutils.h"
 //#include "common/tableutils/tableutils_auditcells.h"
-#include "common/tableutils/auditcellformatter.h"
+#include "view/tableutils/auditcellformatter.h"
 
 #include "model/storageaudit/storageauditentry.h"
 #include "model/storageaudit/storageauditrow.h"

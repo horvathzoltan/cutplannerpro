@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="title">
-         <string>CuttingPlan</string>
+         <string>CutRequest</string>
         </property>
         <layout class="QVBoxLayout" name="leftLayout">
          <item>
@@ -52,7 +52,7 @@
            <item>
             <widget class="QPushButton" name="btn_NewCuttingPlan">
              <property name="text">
-              <string>New Plan</string>
+              <string>New Request</string>
              </property>
             </widget>
            </item>
@@ -72,7 +72,7 @@
            <item>
             <widget class="QPushButton" name="btn_OpenCuttingPlan">
              <property name="text">
-              <string>Open Plan</string>
+              <string>Open Request</string>
              </property>
             </widget>
            </item>
@@ -83,7 +83,7 @@
            <item>
             <widget class="QPushButton" name="btn_AddCuttingPlanRequest">
              <property name="text">
-              <string>Add Row</string>
+              <string>Új Tétel</string>
              </property>
             </widget>
            </item>
@@ -123,6 +123,54 @@
             <widget class="QPushButton" name="btn_ClearCuttingPlan">
              <property name="text">
               <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="layoutCuttingStrategy">
+           <item>
+            <widget class="QLabel" name="labelCuttingStrategy">
+             <property name="text">
+              <string>e!</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioByCount">
+             <property name="text">
+              <string>By Count</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioByTotalLength">
+             <property name="text">
+              <string>By Total Length</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_Optimize">
+             <property name="text">
+              <string>Optimize</string>
              </property>
             </widget>
            </item>
@@ -195,66 +243,11 @@
         </property>
         <widget class="QWidget" name="midBoxPage1">
          <attribute name="title">
-          <string>Optimization</string>
+          <string>CuttingPlan</string>
          </attribute>
          <layout class="QVBoxLayout" name="midLayout">
           <item>
-           <layout class="QHBoxLayout" name="layoutCuttingStrategy">
-            <item>
-             <widget class="QLabel" name="labelCuttingStrategy">
-              <property name="text">
-               <string>Optimalizációs stratégia</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioByCount">
-              <property name="text">
-               <string>By Count</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioByTotalLength">
-              <property name="text">
-               <string>By Total Length</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QPushButton" name="btn_Optimize">
-              <property name="text">
-               <string>Optimize</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_GenerateCuttingPlan">
-              <property name="text">
-               <string>GenerateCuttingPlan</string>
-              </property>
-             </widget>
-            </item>
             <item>
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
@@ -269,9 +262,9 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_Finalize">
+             <widget class="QPushButton" name="btn_GenerateCuttingPlan">
               <property name="text">
-               <string>Finalize</string>
+               <string>GenerateCutInstruction</string>
               </property>
              </widget>
             </item>
@@ -327,7 +320,7 @@
             <item>
              <widget class="QPushButton" name="btn_StorageAudit">
               <property name="text">
-               <string>Audit</string>
+               <string>StorageAudit</string>
               </property>
              </widget>
             </item>
@@ -354,7 +347,7 @@
             <item>
              <widget class="QPushButton" name="btn_Relocate">
               <property name="text">
-               <string>ReLocate</string>
+               <string>GenerateRelocationOrder</string>
               </property>
              </widget>
             </item>
@@ -476,7 +469,7 @@
         </widget>
         <widget class="QWidget" name="tab_5">
          <attribute name="title">
-          <string>Page</string>
+          <string>CutInstruction</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>

@@ -60,13 +60,12 @@ public:
     void updateRow_StorageAuditTable(const StorageAuditRow &row);
     void showAuditCheckbox(const QUuid &rowId);
 private slots:
-    void handle_btn_NewCuttingPlan_clicked();
+    void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
-    void handle_btn_ClearCuttingPlan_clicked();
-    void handle_btn_OpenCuttingPlan_clicked();
+    void handle_btn_ClearRequest_clicked();
+    void handle_btn_OpenRequest_clicked();
 
     void handle_btn_Optimize_clicked();
-    void handle_btn_Finalize_clicked();
     void handle_btn_AddStockEntry_clicked();
 
     void handle_btn_LeftoverDisposal_clicked();
@@ -74,11 +73,11 @@ private slots:
 
     void handle_btn_RelocationPlanFinalize_clicked();
 
-    void on_btn_StorageAudit_clicked();
+    void handle_btn_StorageAudit_clicked();
 
-    void on_btn_Relocate_clicked();
+    void handle_btn_Relocate_clicked();
 
-    void on_btn_GenerateCuttingPlan_clicked();
+    void handle_btn_GenerateCuttingPlan_clicked();
 
     void handle_btn_OptRad_clicked(bool checked);
 

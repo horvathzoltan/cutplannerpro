@@ -1,8 +1,8 @@
 #pragma once
 
 #include "common/logger.h"
-#include "common/tableutils/colorlogicutils.h"
-#include "common/tableutils/storageaudittable_rowstyler.h"
+#include "view/tableutils/colorlogicutils.h"
+#include "view/tableutils/storageaudittable_rowstyler.h"
 #include "model/storageaudit/auditcontext_text.h"
 #include "model/storageaudit/auditstatus_text.h"
 
@@ -15,7 +15,7 @@
 
 #include "model/storageaudit/storageauditrow.h"
 #include "model/material/materialmaster.h"
-#include "common/tableutils/tableutils_auditcells.h"
+#include "view/tableutils/tableutils_auditcells.h"
 
 #include <QSpinBox>
 #include <QRadioButton>

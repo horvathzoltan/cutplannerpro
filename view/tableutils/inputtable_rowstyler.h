@@ -1,9 +1,7 @@
 #pragma once
 
-#include "common/grouputils.h"
-//#include "common/tableutils/colorlogicutils.h"
-//#include "common/tableutils/tablestyleutils.h"
-#include "common/tablerowstyler/materialrowstyler.h"
+#include "model/material/materialgroup_utils.h"
+#include "view/tablerowstyler/materialrowstyler.h"
 #include "model/cutting/plan/request.h"
 #include "model/material/materialmaster.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common/logger.h"
-#include "common/tableutils/storageaudittable_rowstyler.h"
+#include "view/tableutils/storageaudittable_rowstyler.h"
 #include "model/storageaudit/auditcontext_text.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 

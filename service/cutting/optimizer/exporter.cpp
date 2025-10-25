@@ -100,3 +100,8 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan
     file.close();
 }
 
+void OptimizationExporter::exportPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
+    // 📤 Export CSV + TXT
+    OptimizationExporter::exportPlansToCSV(plans);
+    OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
+}

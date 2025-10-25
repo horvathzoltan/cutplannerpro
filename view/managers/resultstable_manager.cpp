@@ -1,10 +1,10 @@
 #include "resultstable_manager.h"
-#include "common/materialutils.h"
-#include "common/tableutils/colorlogicutils.h"
+#include "model/material/materialgroup_utils.h"
+#include "view/tableutils/colorlogicutils.h"
 #include "model/registries/materialregistry.h"
-#include "common/tableutils/resulttable_rowstyler.h"
-#include "common/grouputils.h"
-#include "common/materialutils.h"
+#include "view/tableutils/resulttable_rowstyler.h"
+#include "model/material/materialgroup_utils.h"
+#include "model/material/material_utils.h"
 #include <QLabel>
 #include <QHBoxLayout>
 

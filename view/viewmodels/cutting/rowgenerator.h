@@ -1,12 +1,12 @@
 #pragma once
 
-#include "common/styleprofiles/cuttingcolors.h"
+//#include "common/styleprofiles/cuttingcolors.h"
 #include "common/styleprofiles/cuttingstatusutils.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "view/columnindexes/tablecuttinginstruction_columns.h"
 #include "model/cutting/instruction/cutinstruction.h"
-#include "common/tableutils/colorlogicutils.h"
+//#include "view/tableutils/colorlogicutils.h"
 #include "model/cutting/cuttingmachine.h"
 
 #include <QObject>

@@ -1,7 +1,7 @@
 #include "stockentry.h"
 #include "registries/materialregistry.h"
 
-#include "common/grouputils.h" // biztosan benne van
+#include "model/material/materialgroup_utils.h"
 
 #include <model/registries/storageregistry.h>
 

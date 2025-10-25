@@ -1,10 +1,11 @@
 #include "leftovertable_manager.h"
-#include "common/tableutils/tableutils.h"
-#include "common/materialutils.h"
+#include "view/tableutils/tableutils.h"
+#include "model/material/material_utils.h"
+//#include "model/material/materialgroup_utils.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
-#include <common/tableutils/leftovertable_rowstyler.h>
+#include "view/tableutils/leftovertable_rowstyler.h"
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
 #include "model/registries/materialregistry.h"

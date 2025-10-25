@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/tablerowstyler/materialrowstyler.h"
+#include "view/tablerowstyler/materialrowstyler.h"
 #include "model/leftoverstockentry.h"
 #include <view/managers/leftovertable_manager.h>
 //#include "common/materialutils.h"

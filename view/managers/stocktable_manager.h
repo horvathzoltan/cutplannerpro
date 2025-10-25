@@ -4,9 +4,8 @@
 #include <QWidget>
 //#include <QUuid>
 
-#include "common/tableutils/RowTracker.h"
-//#include "common/tableutils/rowid.h"
-#include "common/tableutils/RowTracker.h"
+#include "view/tableutils/RowTracker.h"
+
 #include "model/stockentry.h"
 //#include "model/materialmaster.h"
 

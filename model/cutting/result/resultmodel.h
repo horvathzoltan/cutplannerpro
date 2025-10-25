@@ -45,6 +45,8 @@ struct ResultModel {
     QString materialName() const;           // 🧪 megjelenítéshez
     QColor materialGroupColor() const;           // 🎨 badge háttér (UI-hoz)
 
+    std::optional<QString> parentBarcode;
+    QString sourceBarcode; // miből vágtuk ténylegesen
     bool isReusable() const { return source == ResultSource::FromReusable; }
 };
 

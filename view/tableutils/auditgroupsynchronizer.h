@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/tableutils/auditgrouplabeler.h"
+#include "view/tableutils/auditgrouplabeler.h"
 #include "model/storageaudit/storageauditrow.h"
 #include <QTableWidget>
 #include <QMap>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "model/material/materialmaster.h"
-#include "common/grouputils.h"
-#include "common/tablerowstyler/tablestyleutils.h"
+#include "model/material/materialgroup_utils.h"
+#include "view/tablerowstyler/tablestyleutils.h"
 
 namespace MaterialRowStyler {
 inline void applyMaterialStyle(QTableWidget* table, int row, const MaterialMaster* mat, const QSet<int>& excols) {

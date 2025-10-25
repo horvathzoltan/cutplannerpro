@@ -2,7 +2,7 @@
 
 #include <QTableWidget>
 //#include <optional>
-#include "common/tableutils/rowid.h"
+#include "view/tableutils/rowid.h"
 #include "model/cutting/plan/request.h"
 
 class InputTableManager: public QObject {  // 🔧 QObject öröklés!

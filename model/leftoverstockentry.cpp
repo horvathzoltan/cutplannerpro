@@ -1,6 +1,6 @@
 #include "leftoverstockentry.h"
 #include "registries/materialregistry.h"
-#include "common/grouputils.h"
+#include "model/material/materialgroup_utils.h"
 
 #include <model/registries/storageregistry.h>
 
