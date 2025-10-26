@@ -1,4 +1,4 @@
-🧩 Állapottábla – 2025.10.25. (frissítve)
+🧩 Állapottábla – 2025.10.26. (frissítve)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva, ini‑mentés + UI connect működik
@@ -13,7 +13,7 @@
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész
 33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-🚀 Sprint fókusz (2025.10.25.)
+🚀 Sprint fókusz (2025.10.26.)
 Sprint 1 – plannedQuantity, executedQuantity, finalize logika → 🟢 Kész
 
 Sprint 2 – UI finomhangolás, CuttingStrategy, Cutting plan váltás → 🟢 Kész
@@ -36,3 +36,69 @@ Hullókezelés → filozófia rögzítve, scoring logika előkészítve.
 EventLogger → profi szint, színezett UI.
 
 👉 A fókusz most a Sprint 3–4 feladatokon van: Worklist, anyagcsoportosítás, soronkénti finalize, gép‑hozzárendelés.
+
+***
+
+1. Segments azonosíthatósága
+✅ segId = QUuid → már benne van a SegmentModel‑ben.
+
+✅ Waste szegmens kezdetben UNIDENTIFIED → így inicializálódik.
+
+🟡 LeftoverBarcode visszavezetés → részben kész, de még hiányzik a parentBarcode öröklés (most új RST generálódik minden vágásnál).
+
+🟡 Piece szegmens → pieceId kapcsolódik, de az auditban még nem mindenhol használjuk a segId‑t.
+
+2. Következetes azonosító‑használat
+✅ Prefixek (ROD-, PCS-, RST-, SEG-) → IdentifierUtils már bevezetve.
+
+🟡 UNIDENTIFIED → a legtöbb helyen átírva, de még előfordulhat üres string fallback (pl. ResultsTableManager tooltipben).
+
+3. Leftover kezelés tisztítása
+🟡 Lokális leftover pool → már van _localLeftovers, de a commit a globális készletbe még nincs teljesen lezárva.
+
+🟡 findBestReusableFit → már látja a leftovereket, de az öröklés logika hiányzik (nem mindig a régi RST‑t használja).
+
+🔴 _planned_leftovers → töltődik, de nincs teljes audit‑szinkron commit végén.
+
+4. CutPlan és ResultModel tisztítása
+🟡 CutPlan.leftoverBarcode shortcut → van, de nem mindig szinkron a waste szegmenssel.
+
+🟡 ResultModel generál leftoverBarcode‑ot → működik, de nem mindig örökli a régit.
+
+✅ piecesWithMaterial → tisztán csak a darabokat tartalmazza, hulló nincs benne.
+
+5. Audit és GUI konzisztencia
+✅ ResultsTableManager waste badge → már formatWasteBadge(plan, idx) hívással megy.
+
+✅ UNIDENTIFIED fallback → működik.
+
+🟡 GUI és audit log → alapvetően egységes, de a leftover újragenerálás miatt még előfordul eltérés (pl. Rod1 waste → Rod6 új RST).
+
+✨ Összegzés – jelenlegi állapot
+Már kész:
+
+SegmentModel identitás (segId, UNIDENTIFIED init).
+
+IdentifierUtils prefixek.
+
+ResultsTableManager waste badge logika.
+
+PiecesWithMaterial tisztán darabokra korlátozva.
+
+Részben kész:
+
+Leftover öröklés (parentBarcode → újrafelhasználásnál).
+
+Lokális leftover pool commit.
+
+CutPlan.leftoverBarcode és waste szegmens szinkron.
+
+Audit/GUI konzisztencia (még szakad, ha új RST generálódik).
+
+Hiányzik:
+
+Teljes leftover commit a globális készletbe.
+
+Finalize auditálás + visszavonás (Sprint 5).
+
+Adatfeltöltés (Sprint 6).

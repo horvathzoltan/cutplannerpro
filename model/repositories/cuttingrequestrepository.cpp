@@ -49,7 +49,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     if (lastFileWasEffectivelyEmpty) {
         zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");        //registry.setPersist(false);
         //registry.clearAll();
-        registry.setData({}); // Clear the registry);
+        registry.setDataEphemeral({}); // Clear the registry);
         //registry.setPersist(true);
         return true;
     }
@@ -64,7 +64,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     // for (const auto &req : std::as_const(requests))
     //     registry.registerRequest(req);
 
-    registry.setData(requests);
+    registry.setDataEphemeral(requests);
 
     zInfo(QString("✅ %1 vágási igény sikeresen importálva a fájlból: %2").arg(requests.size()).arg(filePath));
 

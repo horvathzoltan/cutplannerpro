@@ -11,6 +11,22 @@
 ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent) {}
 
+QString ResultsTableManager::formatWasteBadge(const Cutting::Plan::CutPlan& plan, int wasteIndex) {
+    QString badge;
+    if (plan.leftoverBarcode.isEmpty()) {
+        badge = QString("[Rod%1|%2|W%3]")
+        .arg(plan.rodNumber)
+            .arg(IdentifierUtils::unidentified())   // ⬅ explicit UNIDENTIFIED
+            .arg(wasteIndex);
+    } else {
+        badge = QString("[Rod%1|%2|W%3]")
+        .arg(plan.rodNumber)
+            .arg(plan.leftoverBarcode)              // ⬅ mindig RST-xxxx
+            .arg(wasteIndex);
+    }
+    return badge;
+}
+
 void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan) {
     int row = table->rowCount();
     table->insertRow(row);
@@ -31,7 +47,18 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // table->setItem(rowIx, ColLength, itemLength);
 
     // 🔢 Rod #
-    auto* itemRod = new QTableWidgetItem(rodNumber);
+    // Globális planNumber + RodNumber + Barcode
+    QString rodLabel = QString("Rod%1 (%2)")
+                           .arg(plan.rodNumber)
+                           .arg(plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId);
+
+    auto* itemRod = new QTableWidgetItem(rodLabel);
+
+    // Tooltipben mindkettő: konkrét rodId és materialBarcode
+    itemRod->setToolTip(QString("RodId: %1\nMaterial: %2")
+                            .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
+                            .arg(plan.materialBarcode()));
+
     itemRod->setTextAlignment(Qt::AlignCenter);
 
     // ✂️ Cuts badge-ek
@@ -48,7 +75,31 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
         case Cutting::Segment::SegmentModel::Type::Waste:  color = "#bdc3c7"; break;
         }
 
-        QLabel* label = new QLabel(s.toLabelString());
+        QString segBarcode;
+
+        // Ha a szegmensnek van saját barcode-ja, azt használjuk
+        if (!s.barcode.isEmpty() && s.barcode != "UNIDENTIFIED") {
+            segBarcode = s.barcode;
+        }
+        // Ha waste szegmens és a plan shortcut is ismert, azt használjuk
+        else if (s.type == Cutting::Segment::SegmentModel::Type::Waste && !plan.leftoverBarcode.isEmpty()) {
+            segBarcode = plan.leftoverBarcode;
+        }
+        // Egyébként rodId vagy materialBarcode
+        else {
+            segBarcode = plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId;
+        }
+
+        QLabel* label = new QLabel(
+            s.toLabelString(QString("Rod%1").arg(plan.rodNumber), segBarcode)
+            );
+
+        // Tooltip: részletes infó
+        label->setToolTip(QString("Rod: %1\nBarcode: %2\nMaterial: %3")
+                              .arg(plan.rodNumber)
+                              .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
+                              .arg(plan.materialBarcode()));
+
         label->setAlignment(Qt::AlignCenter);
         label->setStyleSheet(QString(
                                  "QLabel { background-color: %1; color: white; font-weight: bold; padding: 3px 8px; border-radius: 6px; }"
@@ -62,10 +113,27 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
     // 📏 Kerf, Waste
     auto* itemKerf = new QTableWidgetItem(QString::number(plan.kerfTotal));
-    auto* itemWaste = new QTableWidgetItem(QString::number(plan.waste));
     auto* itemLength = new QTableWidgetItem(QString::number(plan.totalLength));
-    itemKerf->setTextAlignment(Qt::AlignCenter);
+
+    //int wasteCounter = 0;
+    // Csak a legutolsó waste szegmens
+    QString wasteBadge;
+    auto it = std::find_if(plan.segments.rbegin(), plan.segments.rend(),
+                           [](const auto& s){ return s.type == Cutting::Segment::SegmentModel::Type::Waste; });
+
+    if (it != plan.segments.rend()) {
+        // mindig csak az utolsó waste szegmens
+        wasteBadge = formatWasteBadge(plan, 1);
+    }
+
+    auto* itemWaste = new QTableWidgetItem(wasteBadge.isEmpty()
+                                               ? QString::number(plan.waste)
+                                               : wasteBadge);
     itemWaste->setTextAlignment(Qt::AlignCenter);
+    table->setItem(row, ColWaste, itemWaste);
+
+
+    itemKerf->setTextAlignment(Qt::AlignCenter);
     itemLength->setTextAlignment(Qt::AlignCenter);
 
     // 🎨 Háttér waste alapján
@@ -88,7 +156,6 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     table->setCellWidget(row, ColGroup, groupLabel);
     table->setItem(row, ColLength, itemLength);
     table->setItem(row, ColKerf, itemKerf);
-    table->setItem(row, ColWaste, itemWaste);
 
     table->setSpan(row + 1, 0, 1, table->columnCount());
     table->setCellWidget(row + 1, 0, cutsWidget);

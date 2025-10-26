@@ -95,6 +95,7 @@ SOURCES += \
 
 HEADERS += \
     common/color/colorconstants.h \
+    common/identifierutils.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
     model/inventorysnapshot.h \

@@ -20,8 +20,11 @@ struct LeftoverStockEntry {
     QUuid storageId;                // 📦 Tárolási hely azonosítója
 
     QString barcode; // 🧾 Egyedi azonosító hulladékdarabra
+    bool used = false;
 
-    bool used = false;   // ➕ új mező: jelzi, hogy már felhasználtuk
+    // 🔗 Új mező: a közvetlen forrás hulló azonosítója
+    std::optional<QString> parentBarcode;
+
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const LeftoverStockEntry& other) const;
 
@@ -34,7 +37,7 @@ struct LeftoverStockEntry {
     QString materialGroupName() const;
     QColor materialGroupColor() const;
     QString sourceAsString() const;
-    QString storageName() const;
+    QString storageName() const;    
 
     bool isReusable() const {
         return !barcode.isEmpty(); // vagy más logika, pl. hossz > 0 && nem selejt

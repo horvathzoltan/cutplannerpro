@@ -3,13 +3,15 @@
 #include <QObject>
 #include <QVector>
 #include <QMap>
+#include <QSet>
 
 #include <model/cutting/piece/piecewithmaterial.h>
 #include "../plan/cutplan.h"
 #include "../result/resultmodel.h"
 #include "../plan/request.h"
 #include "../../leftoverstockentry.h"
-#include "../../stockentry.h"
+//#include "../../stockentry.h"
+#include "model/cutting/cuttingmachine.h"
 #include "model/inventorysnapshot.h"
 
 namespace Cutting {
@@ -96,19 +98,17 @@ public:
  * elkészíti a teljes vágási terveket és a hulló listát.
  */
     void optimize(TargetHeuristic heuristic);
-    void optimize_old(TargetHeuristic heuristic);
+    //void optimize_old(TargetHeuristic heuristic);
 
     void setCuttingRequests(const QVector<Cutting::Plan::Request>& list);
 
     void setInventorySnapshot(const InventorySnapshot &snapshot){
-        inventorySnapshot = snapshot;
+        _inventorySnapshot = snapshot;
     }
-    //void setTargetHeuristic(TargetHeuristic h) { heuristic = h; }
+
 private:
 
-    //TargetHeuristic heuristic = TargetHeuristic::ByCount; // alapértelmezett
-
-    /**
+/**
  * @brief Egy kiválasztott rúd adatait tartalmazza, amiből vágni fogunk.
  *
  * Ez a segédstruktúra arra szolgál, hogy egy helyen legyen minden fontos adat
@@ -132,12 +132,12 @@ private:
 
     // A felhasználótól érkező vágási igények (darabok listája).
     // Ezek a bemeneti adatok, az optimalizáció alatt nem módosulnak.
-    QVector<Cutting::Plan::Request> requests;
+    QVector<Cutting::Plan::Request> _requests;
 
     // A készlet pillanatképe (snapshot), amely tartalmazza a teljes rudakat és a maradékokat.
     // Ez egy homokozó másolat, amelyet a registrykből töltünk be.
     // Az optimalizáció ezen dolgozik, a valódi registryket nem érinti.
-    InventorySnapshot inventorySnapshot;
+    InventorySnapshot _inventorySnapshot;
 
     // Az optimalizáció eredménye: minden egyes rúdhoz létrejött vágási terv.
     QVector<Cutting::Plan::CutPlan> _result_plans;
@@ -146,10 +146,26 @@ private:
     // Ezek a "mi lenne, ha" kimenetek, csak finalize után kerülhetnek vissza a registrybe.
     QVector<Cutting::Result::ResultModel> _planned_leftovers;
 
-
+    // 🔢 Globális számláló minden optimize futáshoz.
+    // Minden új optimalizációs futás (optimize()) kap egy egyedi azonosítót,
+    // amit a CutPlan-ekhez és ResultModel-ekhez rendelünk, hogy auditban
+    // és logban visszakövethető legyen, melyik futásból származnak.
     int nextOptimizationId = 1;
-
     int planCounter = 0; // 🔢 Globális batch számláló
+    QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
+
+private:
+    QVector<LeftoverStockEntry> _localLeftovers;  // csak az aktuális optimize futás idejére
+
+
+    // QVector<LeftoverStockEntry> allReusableLeftovers() const {
+    //     QVector<LeftoverStockEntry> all = _inventorySnapshot.reusableInventory;
+    //     all += _localLeftovers;
+    //     return all;
+    // }
+
+    //     void consumeLeftover(const LeftoverStockEntry& stock);
+
     /**
  * @brief Megkeresi a legjobb darabkombinációt egy adott rúdhoz.
  *
@@ -187,11 +203,14 @@ private:
  * Ha találunk ilyet, akkor ebből vágunk, nem veszünk elő új rudat a készletből.
  */
     struct ReusableCandidate {
-        int indexInInventory;
-        LeftoverStockEntry stock;
+        int indexInView;                  // az összefésült nézet indexe (csak kereséshez)
+        LeftoverStockEntry stock;         // a kiválasztott leftover
         QVector<Cutting::Piece::PieceWithMaterial> combo;
-        int totalWaste;
+        int waste;
+
+        enum class Source { GlobalSnapshot, LocalPool } source; // ⬅ forrás megjelölése
     };
+
 
     /**
  * @brief Megkeresi, hogy a hulló készletből (reusableInventory) van-e olyan darab,
@@ -216,12 +235,26 @@ private:
  */
     std::optional<ReusableCandidate> findBestReusableFit(
         const QVector<LeftoverStockEntry>& reusableInventory,
+        int globalCount,
         const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
         QUuid materialId,
         double kerf_mm
         ) const;
-    void cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
-    void cutComboBatch(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    void cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial &piece,
+                             int &remainingLength, const SelectedRod &rod,
+                             const CuttingMachine &machine,
+                             int currentOpId,
+                             int rodId,
+                             double kerf_mm,
+                             QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    void cutComboBatch(const QVector<Cutting::Piece::PieceWithMaterial> &combo,
+                       int &remainingLength,
+                       const SelectedRod &rod,
+                       const CuttingMachine &machine,
+                       int currentOpId,
+                       int rodId,
+                       double kerf_mm,
+                       QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 };
 
 } //end namespace Optimizer

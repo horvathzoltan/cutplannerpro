@@ -22,4 +22,5 @@ private:
     static constexpr int ColLength = 2;
     static constexpr int ColKerf   = 3;
     static constexpr int ColWaste  = 4;
+    QString formatWasteBadge(const Cutting::Plan::CutPlan &plan, int wasteIndex);
 };

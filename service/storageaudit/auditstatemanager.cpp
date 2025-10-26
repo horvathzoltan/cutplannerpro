@@ -23,23 +23,23 @@ void AuditStateManager::setActiveAuditRows(const QVector<StorageAuditRow>& rows)
     }
 
     auditOutdated = false;
-    emit auditStateChanged(false);
+    lastReason = AuditOutdatedReason::None;
+    emit auditStateChanged(AuditOutdatedReason::None);
 }
 
 void AuditStateManager::notifyStockChanged(const StockEntry& entry) {
     checkIfOutdated(entry);
+    setOutdated(AuditOutdatedReason::StockChanged);
 }
 
 void AuditStateManager::notifyStockAdded(const StockEntry& entry) {
     checkIfOutdated(entry);
+    setOutdated(AuditOutdatedReason::StockChanged);
 }
 
 void AuditStateManager::notifyStockRemoved(const QUuid& entryId) {
     if (auditedStockIds.contains(entryId)) {
-        if (!auditOutdated) {
-            auditOutdated = true;
-            emit auditStateChanged(true);
-        }
+        setOutdated(AuditOutdatedReason::StockChanged);
     }
 }
 
@@ -48,14 +48,8 @@ void AuditStateManager::checkIfOutdated(const StockEntry& entry) {
         return;
     if (auditedMaterialIds.contains(entry.materialId) ||
         auditedStorageIds.contains(entry.storageId) ||
-        auditedStockIds.contains(entry.entryId)) {
-        if (!auditOutdated) {
-            auditOutdated = true;
-            emit auditStateChanged(true);
-        }
+        auditedStockIds.contains(entry.entryId))
+    {
+        setOutdated(AuditOutdatedReason::StockChanged);
     }
-}
-
-bool AuditStateManager::isAuditOutdated() const {
-    return auditOutdated;
 }

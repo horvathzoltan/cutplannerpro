@@ -54,6 +54,8 @@ public:
     QUuid planId = QUuid::createUuid(); // ✅ automatikus UUID, egyedi tervazonosító
 
     QVector<Cutting::Segment::SegmentModel> segments; // 🧱 Vágási szakaszok — vizuális és logikai bontás
+
+    // bemenő adatok- ezeket "keressük"
     QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial; // ✂️ Levágott darabok — anyaggal együtt
 
     // 🧠 Viselkedésalapú metódusok
@@ -70,6 +72,8 @@ public:
 
     std::optional<QString> parentBarcode;
     std::optional<QUuid> parentPlanId;
+    // ♻️ Ha a rúd végén leftover keletkezik, itt tároljuk az új barcode-ot
+    QString leftoverBarcode;
 
     int planNumber = -1;   // 🔢 Globális batch-sorszám (planCounter)
 

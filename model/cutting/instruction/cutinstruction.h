@@ -26,8 +26,9 @@ struct CutInstruction {
     double remainingBefore_mm = 0.0;// Vágás előtti hossz
     double remainingAfter_mm = 0.0; // Vágás utáni hossz
 
-    QUuid machineId;            // Gép UUID
-    CutStatus status = CutStatus::Pending; // 🔹 Enum alapú státusz
+    QUuid machineId;        // Gép UUID
+    QString machineName;     // Gép neve (UI-hoz, redundáns viewmodel mező)
+    CutStatus status = CutStatus::Pending;
 
     // Segédfüggvény a számításhoz
     void computeRemaining() {

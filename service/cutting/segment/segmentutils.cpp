@@ -48,7 +48,6 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
     double kerf_mm, double totalLength_mm)
 {
     QVector<SegmentModel> segments;
-
     double usedLength = 0;
 
     for (int i = 0; i < cuts.size(); ++i) {
@@ -56,20 +55,14 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
         double len = pwm.info.length_mm;
 
         // ➕ Darab szakasz
-        SegmentModel piece;
-        piece.length_mm = len;
-        piece.type = SegmentModel::Type::Piece;
+        SegmentModel piece(SegmentModel::Type::Piece, static_cast<int>(len));
         segments.append(piece);
-
         usedLength += len;
 
-    // ➕ Kerf szakasz – az utolsó után is!
-        if (kerf_mm > 0){// && i != cuts.size() - 1) {
-            SegmentModel kerf;
-            kerf.length_mm = kerf_mm;
-            kerf.type = SegmentModel::Type::Kerf;
+        // ➕ Kerf szakasz – az utolsó után is!
+        if (kerf_mm > 0) {
+            SegmentModel kerf(SegmentModel::Type::Kerf, static_cast<int>(kerf_mm));
             segments.append(kerf);
-
             usedLength += kerf_mm;
         }
     }
@@ -77,9 +70,7 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
     // 🧺 Végmaradék, ha van
     double waste = totalLength_mm - usedLength;
     if (waste > 0) {
-        SegmentModel trailingWaste;
-        trailingWaste.length_mm = waste;
-        trailingWaste.type = SegmentModel::Type::Waste;
+        SegmentModel trailingWaste(SegmentModel::Type::Waste, static_cast<int>(waste));
         segments.append(trailingWaste);
     } else if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
@@ -87,4 +78,6 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
 
     return segments;
 }
-}} // endof namespace Cutting::Segment
+
+} // endof namespace Segment
+} // endof namespace Cutting::Segment

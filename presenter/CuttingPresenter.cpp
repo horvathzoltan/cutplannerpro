@@ -104,7 +104,7 @@ void CuttingPresenter::add_StockEntry(const StockEntry& entry) {
     if(view){
         view->addRow_StockTable(entry);
     }
-    _auditStateManager.notifyStockAdded(entry);
+    _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::StockChanged);
 }
 
 void CuttingPresenter::remove_StockEntry(const QUuid& stockId) {
@@ -138,6 +138,7 @@ void CuttingPresenter::add_LeftoverStockEntry(const LeftoverStockEntry& req) {
     if(view){
         view->addRow_LeftoversTable(req);
     }
+    _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::LeftoverChanged);
 }
 
 void CuttingPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
@@ -295,6 +296,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     OptimizationExporter::exportPlans(model.getResult_PlansRef());
 
     // 4️⃣ Audit sorok előállítása
+    _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
     lastAuditRows = OptimizationAuditBuilder::build(model);
 
     // 5️⃣ Logolás

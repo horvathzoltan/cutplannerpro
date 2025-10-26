@@ -112,15 +112,27 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColBarcode, true);
     ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColShape, true);
 
-    connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged, this, [this](bool outdated) {
-        ui->lblAuditStatus->setText(outdated
-                                        ? "⚠️ Az audit nem tükrözi a jelenlegi készletet"
-                                        : "✔️ Audit naprakész");
+    connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged,
+            this, [this](AuditStateManager::AuditOutdatedReason reason) {
+                switch (reason) {
+                case AuditStateManager::AuditOutdatedReason::None:
+                    ui->lblAuditStatus->setText("✔️ Audit naprakész");
+                    break;
+                case AuditStateManager::AuditOutdatedReason::OptimizeRun:
+                    ui->lblAuditStatus->setText("⚠️ Az audit nem tükrözi a jelenlegi optimize eredményt");
+                    break;
+                case AuditStateManager::AuditOutdatedReason::StockChanged:
+                    ui->lblAuditStatus->setText("⚠️ Az audit nem tükrözi a jelenlegi készletet");
+                    break;
+                case AuditStateManager::AuditOutdatedReason::LeftoverChanged:
+                    ui->lblAuditStatus->setText("⚠️ Az audit nem tükrözi a hullók aktuális állapotát");
+                    break;
+                case AuditStateManager::AuditOutdatedReason::RelocationFinalized:
+                    ui->lblAuditStatus->setText("⚠️ Az audit nem tükrözi a relocation utáni állapotot");
+                    break;
+                }
+            });
 
-        ui->lblAuditStatus->setStyleSheet(outdated
-                                              ? "background-color: #FFD700; color: black;"
-                                              : "");
-    });
 
     auto h = SettingsManager::instance().cuttingStrategy();
     if (h == Cutting::Optimizer::TargetHeuristic::ByTotalLength) {
@@ -269,6 +281,7 @@ void MainWindow::handle_btn_RelocationPlanFinalize_clicked()
     // 🔹 EventLogger bejegyzés
     if (finalizedCount > 0) {
         zEvent(QStringLiteral("Totál finalize lefutott: %1 sor lezárva").arg(finalizedCount));
+        presenter->auditStateManager()->setOutdated(AuditStateManager::AuditOutdatedReason::RelocationFinalized);
     } else {
         zEvent("Totál finalize lefutott: nem volt lezárható sor");
     }
@@ -681,7 +694,8 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
                 ci.remainingBefore_mm = remaining;
                 ci.computeRemaining();
                 //ci.machineName = machineName;
-                ci.machineId = machine->id;
+                ci.machineId = plan.machineId;
+                ci.machineName = plan.machineName;
                 ci.status = CutStatus::Pending;
 
                 cuttingInstructionTableManager->addRow(ci);

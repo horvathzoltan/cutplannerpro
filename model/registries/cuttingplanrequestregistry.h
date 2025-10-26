@@ -35,5 +35,11 @@ public:
     void clearAll(); // 🔄 ÚJ: teljes törlés
 
     bool isEmpty() const { return _data.isEmpty(); }
-    void setData(const QVector<Cutting::Plan::Request>& v) { _data = v;}
+    void setData(const QVector<Cutting::Plan::Request>& v) {
+        _data = v;
+        persist();
+    }
+    void setDataEphemeral(const QVector<Cutting::Plan::Request>& v) {
+        _data = v;   // csak memóriába tölt, nem hív persist()
+    }
 };

@@ -3,6 +3,7 @@
 #include <common/filenamehelper.h>
 #include <common/settingsmanager.h>
 #include <model/repositories/cuttingrequestrepository.h>
+#include <QDebug>
 
 CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {
     // 🧵 Singleton implementáció: egyetlen példány az egész programban
@@ -11,9 +12,8 @@ CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {
 }
 
 void CuttingPlanRequestRegistry::persist() const {
-    // if(!isPersist) {
-    //     return; // 🛑 Ha nem kell perzisztálni, akkor kilépünk
-    // }
+    Q_ASSERT(false); // itt megáll a debugger
+
     // 💾 Mentés fájlba, ha van megadott útvonal
     const QString fn = SettingsManager::instance().cuttingPlanFileName();
     const QString path = FileNameHelper::instance().getCuttingPlanFilePath(fn);
