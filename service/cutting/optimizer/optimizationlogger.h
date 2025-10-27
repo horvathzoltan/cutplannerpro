@@ -10,8 +10,8 @@ struct OptimizationLogger {
                          const QVector<Cutting::Result::ResultModel>& results) {
         zInfo(L("✅ VÁGÁSI TERVEK — CutPlan-ek:"));
         for (const auto& plan : plans) {
-            QString msg = L("  → #%1 | PlanId: %2 | Vágások: %3 | Hulladék: %4 mm")
-                              .arg(plan.rodNumber)
+            QString msg = L("  → %1 | PlanId: %2 | Vágások: %3 | Hulladék: %4 mm")
+                              .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
                               .arg(plan.planId.toString())
                               .arg(plan.piecesWithMaterial.size())
                               .arg(plan.waste);

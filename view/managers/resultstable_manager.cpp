@@ -14,18 +14,19 @@ ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
 QString ResultsTableManager::formatWasteBadge(const Cutting::Plan::CutPlan& plan, int wasteIndex) {
     QString badge;
     if (plan.leftoverBarcode.isEmpty()) {
-        badge = QString("[Rod%1|%2|W%3]")
-        .arg(plan.rodNumber)
+        badge = QString("[%1|%2|W%3]")
+        .arg(plan.rodId)                        // 🔑 Stabil rúd azonosító
             .arg(IdentifierUtils::unidentified())   // ⬅ explicit UNIDENTIFIED
             .arg(wasteIndex);
     } else {
-        badge = QString("[Rod%1|%2|W%3]")
-        .arg(plan.rodNumber)
-            .arg(plan.leftoverBarcode)              // ⬅ mindig RST-xxxx
+        badge = QString("[%1|%2|W%3]")
+        .arg(plan.rodId)
+            .arg(plan.leftoverBarcode)
             .arg(wasteIndex);
     }
     return badge;
 }
+
 
 void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan) {
     int row = table->rowCount();
@@ -48,9 +49,8 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
     // 🔢 Rod #
     // Globális planNumber + RodNumber + Barcode
-    QString rodLabel = QString("Rod%1 (%2)")
-                           .arg(plan.rodNumber)
-                           .arg(plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId);
+    QString rodLabel = QString("Rod %1")
+                       .arg(plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId);
 
     auto* itemRod = new QTableWidgetItem(rodLabel);
 
@@ -91,12 +91,12 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
         }
 
         QLabel* label = new QLabel(
-            s.toLabelString(QString("Rod%1").arg(plan.rodNumber), segBarcode)
+            s.toLabelString(QString("Rod %1").arg(plan.rodId), segBarcode)
             );
 
         // Tooltip: részletes infó
         label->setToolTip(QString("Rod: %1\nBarcode: %2\nMaterial: %3")
-                              .arg(plan.rodNumber)
+                              .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
                               .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
                               .arg(plan.materialBarcode()));
 

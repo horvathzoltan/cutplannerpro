@@ -33,7 +33,7 @@ void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan
             segmentLabels.append(s.toLabelString());
 
         out << plan.planId.toString() << ","
-            << plan.rodNumber << ","
+            //<< plan.rodNumber << ","
             << "\"" << plan.rodId << "\","
             << plan.materialId.toString() << ","
             << "\"" << cutLabels.join(" | ") << "\","
@@ -68,9 +68,12 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan
 
     // 🔁 Minden CutPlan részletezése
     for (const auto& plan : plans) {
-        out << QString("Terv #%1 — PlanId: %2\n").arg(plan.rodNumber).arg(plan.planId.toString());
+        out << QString("Rúd %1 — PlanId: %2\n")
+                   .arg(plan.rodId)                       // 🔑 Stabil rúd azonosító
+                   .arg(plan.planId.toString());
         out << QString("Anyag Barcode: %1\n").arg(plan.rodId);
-        out << QString("Forrás: %1\n").arg(plan.source == Cutting::Plan::Source::Reusable ? "REUSABLE" : "STOCK");
+        out << QString("Forrás: %1\n")
+                   .arg(plan.source == Cutting::Plan::Source::Reusable ? "REUSABLE" : "STOCK");
         //out << QString("Darabolások: %1\n").arg(plan.cuts.isEmpty() ? "-" : plan.cutsAsString() + " mm");
 
         out << QString("Darabolások:\n");

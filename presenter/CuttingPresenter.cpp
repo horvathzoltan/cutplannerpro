@@ -359,7 +359,7 @@ void CuttingPresenter::logPlans(){
         }
 
         QString msg =
-            L("  → #%1").arg(plan.rodNumber) +
+            L("  → %1").arg(plan.rodId) +
             L(" | PlanId: %1").arg(plan.planId.toString()) +
             L(" | Forrás: %1").arg(plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK") +
             L("\n     Azonosító: %1").arg(plan.isReusable() ? plan.rodId : plan.materialName()) +
@@ -371,7 +371,6 @@ void CuttingPresenter::logPlans(){
             L("\n     Hulladék szakaszok: %1").arg(wasteLabels.join(" "));
 
         zInfo(msg);
-
     }
 
     zInfo(L("♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:"));

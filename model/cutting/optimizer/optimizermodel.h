@@ -127,7 +127,9 @@ private:
         QUuid materialId;
         int length = 0;
         bool isReusable = false;
-        QString barcode;
+        QString barcode;   // külső címke (RST-xxxx)
+        QString rodId;     // belső identitás (ROD-xxxx)
+        std::optional<QUuid> entryId; // csak ha reusable
     };
 
     // A felhasználótól érkező vágási igények (darabok listája).
@@ -152,7 +154,12 @@ private:
     // és logban visszakövethető legyen, melyik futásból származnak.
     int nextOptimizationId = 1;
     int planCounter = 0; // 🔢 Globális batch számláló
-    QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
+    //QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
+
+    QMap<QUuid, QString> leftoverRodMap;   // entryId → rodId
+    QSet<QUuid> _usedLeftoverEntryIds; // ♻️ már felhasznált leftover entryId-k
+
+
 
 private:
     QVector<LeftoverStockEntry> _localLeftovers;  // csak az aktuális optimize futás idejére

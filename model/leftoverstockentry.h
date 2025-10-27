@@ -7,11 +7,21 @@
 #include "material/materialmaster.h"
 //#include "model/cutting/result/cutresult.h"
 #include "model/cutting/result/leftoversource.h"
-
+#include <QDebug>
 
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja
 struct LeftoverStockEntry {
-    QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
+    QUuid entryId;
+
+    // Csak itt generálódjon új GUID
+    LeftoverStockEntry() : entryId(QUuid::createUuid()) {
+        qDebug() << "CTOR new entryId=" << entryId;
+    }
+
+
+    // Másoláskor és assignmentnél megtartja az eredeti entryId-t
+    LeftoverStockEntry(const LeftoverStockEntry& other) = default;
+    LeftoverStockEntry& operator=(const LeftoverStockEntry& other) = default;
 
     QUuid materialId;           // 🔗 Anyag azonosító
     int availableLength_mm;         // 📏 Szálhossz milliméterben
@@ -29,7 +39,7 @@ struct LeftoverStockEntry {
     bool operator==(const LeftoverStockEntry& other) const;
 
     QString materialName() const;  // 📛 Anyag neve
-    QString reusableBarcode() const; // 🧾 Saját Vonalkód
+    //QString reusableBarcode() const; // 🧾 Saját Vonalkód
     QString materialBarcode() const; // 🧾 Material Vonalkód
     MaterialType materialType() const; // 🧬 Anyagtípus
     const MaterialMaster* master() const;

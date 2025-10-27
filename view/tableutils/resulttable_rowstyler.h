@@ -39,13 +39,17 @@ inline void applyStyle(QTableWidget* table, int row,
 
         switch (col) {
         case 0:
-            item->setToolTip(QString("Szál sorszáma: %1\n%2").arg(plan.rodNumber).arg(tooltip));
+            item->setToolTip(QString("Rúd azonosító: %1\n%2")
+                                 .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
+                                 .arg(tooltip));
             break;
         case 3:
-            item->setToolTip(QString("Fűrészszélesség összesen: %1 mm").arg(plan.kerfTotal));
+            item->setToolTip(QString("Fűrészszélesség összesen: %1 mm")
+                                 .arg(plan.kerfTotal));
             break;
         case 4:
-            item->setToolTip(QString("Hulladék: %1 mm").arg(plan.waste));
+            item->setToolTip(QString("Hulladék: %1 mm")
+                                 .arg(plan.waste));
             break;
         default:
             item->setToolTip(tooltip);

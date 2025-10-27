@@ -28,12 +28,8 @@ QVector<StorageAuditRow> LeftoverAuditService::generateAuditRows_All()
         //row.rowPresence         = AuditPresence::Present; // implicit jelen
         row.isInOptimization = false;
 
-        row.barcode = entry.reusableBarcode();         // Hulló azonosító
+        row.barcode = entry.barcode;         // Hulló azonosító
         row.storageName = entry.storageName();         // Tároló neve
-
-        //row.isPresent      = true;           // ha ezt használjátok a UI-ban
-        row.barcode        = entry.reusableBarcode();
-        row.storageName    = entry.storageName();
 
         result.append(row);
     }

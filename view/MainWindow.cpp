@@ -685,10 +685,10 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
             if (seg.type == Cutting::Segment::SegmentModel::Type::Piece) {
                 CutInstruction ci;
                 ci.stepId = step++;
-                ci.rodLabel = QString("Rod%1").arg(plan.rodNumber);
+                ci.rodLabel = QString("Rod %1").arg(plan.rodId);   // 🔑 Stabil rúd azonosító
                 //ci.materialCode = plan.materialName();
                 ci.materialId = plan.materialId;
-                ci.barcode = plan.materialBarcode(); // vagy plan.rodId alapján
+                ci.barcode = plan.materialBarcode(); // vagy akár plan.rodId, ha azt akarod címkézni
                 ci.cutSize_mm = seg.length_mm;
                 ci.kerf_mm = machine->kerf_mm; // ✅ géphez tartozó kerf
                 ci.remainingBefore_mm = remaining;
@@ -701,6 +701,7 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
                 cuttingInstructionTableManager->addRow(ci);
                 remaining = ci.remainingAfter_mm;
             }
+
         }
     }
 

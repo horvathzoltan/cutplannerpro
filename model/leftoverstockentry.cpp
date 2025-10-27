@@ -21,9 +21,9 @@ QString LeftoverStockEntry::materialBarcode() const {
     return m ? m->barcode : "(?)";
 }
 
-QString LeftoverStockEntry::reusableBarcode() const {
-    return barcode.isEmpty()? "(?)" : barcode;
-}
+// QString LeftoverStockEntry::reusableBarcode() const {
+//     return barcode.isEmpty()? "(?)" : barcode;
+// }
 
 MaterialType LeftoverStockEntry::materialType() const {
     const auto* m = master();

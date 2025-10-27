@@ -51,33 +51,74 @@ inline int computeWasteInt(int selectedLength_mm, int used_mm) {
  *       és a jól használható maradékokat, miközben bünteti a bosszantóan kicsi
  *       vagy a „túl nagy, de kihasználatlan” hulladékokat.
  */
+// inline int calcScore(int pieceCount, int waste, int leftoverLength) {
+//     int score = 0;
+//     score += pieceCount * 100;
+//     score -= waste;
+
+//     if (waste == 0) score += 800;
+
+//     // Jó leftover tartomány
+//     if (leftoverLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
+//         leftoverLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+//         score += 300;
+//     }
+
+//     // Selejt leftover
+//     if (leftoverLength > 0 && leftoverLength < OptimizerConstants::SELEJT_THRESHOLD) {
+//         score -= 300;
+//     }
+
+//     // Pontos egy darabos illeszkedés
+//     if (leftoverLength == 0 && pieceCount == 1) {
+//         score += 200;
+//     }
+
+//     // Túl nagy leftover
+//     if (leftoverLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
+//         score -= 100;
+//     }
+
+//     return score;
+// }
+
 inline int calcScore(int pieceCount, int waste, int leftoverLength) {
     int score = 0;
+
+    // 🎯 Alap: darabszám preferálása
     score += pieceCount * 100;
+
+    // 🧹 Hulladék levonása
     score -= waste;
 
-    if (waste == 0) score += 800;
+    // 🥇 Teljes elfogyasztás – pszichológiai bónusz
+    if (waste == 0) {
+        score += 800;
+    }
 
-    // Jó leftover tartomány
+    // 🎯 Pontos egy darabos illeszkedés – külön jutalom
+    if (leftoverLength == 0 && pieceCount == 1) {
+        score += 200;
+    }
+
+    // 😊 Jó leftover tartomány – „jó érzésű” maradék
     if (leftoverLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
         leftoverLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
         score += 300;
     }
 
-    // Selejt leftover
+    // 😬 Kellemetlen leftover – csak enyhe büntetés
     if (leftoverLength > 0 && leftoverLength < OptimizerConstants::SELEJT_THRESHOLD) {
-        score -= 300;
+        score -= 150; // korábban −300 volt
     }
 
-    // Pontos egy darabos illeszkedés
-    if (leftoverLength == 0 && pieceCount == 1) {
-        score += 200;
-    }
-
-    // Túl nagy leftover
+    // 🧱 Túl nagy leftover – enyhe figyelmeztetés
     if (leftoverLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
         score -= 100;
     }
+
+    // 🧠 Új: ha a leftoverből még kiadható lenne egy darab, de nem adja ki → extra büntetés
+    // (Ez opcionális, csak ha van darablista és kerf, külön függvényből hívva)
 
     return score;
 }
