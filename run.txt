@@ -21,6 +21,9 @@
 43	Maki tesztprofil bővítése (határérték‑tesztek)	✅	🟢 Kész	✅		Numerikus → egybetűs → kétbetűs váltás logban
 44	TableUtils monospace font helper	✅	🟢 Kész	✅		Fallback lista (Fira Code, Consolas, Source Code Pro, Roboto Mono, monospace)
 🚀 Sprint fókusz (2025.10.28. este)
+
+nagyon sos: 1. Rod azonosító megjelenítés tisztítása
+
 🔥 SOS‑1 – Stock rudak stabil azonosítója (MAT‑xxxx) → 🟡 Folyamatban
 
 🔥 SOS‑2 – ParentBarcode lánc konzisztencia → 🔴 Hiányzik

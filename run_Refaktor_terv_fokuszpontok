@@ -1,3 +1,38 @@
+1: Rod azonosító megjelenítés tisztítása
+
+A cellában mindig legyen kint a rodId (Rod‑A, Rod‑CA, stb.).
+
+A tooltipben külön soron:
+
+RodId: Rod‑A
+
+Barcode: MAT-ROLL60-6000
+
+Material: …
+
+RodId formátum váltás
+
+A mostani ROD-0001 helyett jöhet a betűs séma (Rod‑A, Rod‑CA), így teljesen elválik a RST-001 típusú leftover kódoktól.
+
+Ez vizuálisan is sokkal tisztább lesz: rögtön látszik, hogy egy rúd‑azonosítóról van szó, nem leftoverről.
+
+Badge label korrekció
+
+Az egyik mező maradjon a rodId, a másik a barcode.
+
+Így megszűnik a duplikáció, és auditban is egyértelmű lesz, melyik melyik.
+
+RodId betűs logikát ugyanarra a safeLetterPrefix készletre építsük, mint a MAT/RST kódoknál
+
+ezekre a fájlokra lesz szükség:
+
+
+common/identifierutils.h/.cpp
+ui/result/resultstablemanager.h/.cpp
+model/cutting/result/resultmodel.h/.cpp
+ui/presenter/cuttingpresenter.cpp
+
+
 2.a:
 Stockból jövő rudak is kapjanak egy stabil, emberi szemnek is értelmezhető azonosítót (pl. MAT-0001).
 
