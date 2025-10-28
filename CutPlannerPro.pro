@@ -27,6 +27,7 @@ SOURCES += \
     common/quantityparser.cpp \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
+    tests/testmanager.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     view/tableutils/resulttable_rowstyler.cpp \
@@ -132,6 +133,7 @@ HEADERS += \
     common/styleprofiles/cuttingcolors.h \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
+    tests/testmanager.h \
     view/tablerowstyler/materialrowstyler.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
@@ -270,6 +272,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     README.md \
+    run_2 \
+    run_Refaktor_terv_fokuszpontok \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \
     testdata/cuttingmachine_materialtypes.csv \

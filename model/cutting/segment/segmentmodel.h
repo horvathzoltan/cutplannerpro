@@ -72,7 +72,14 @@ struct SegmentModel {
      */
     QString toLabelString(const QString& rodLabel, const QString& externalBarcode) const {
         // Ha van saját barcode, azt használjuk, különben UNIDENTIFIED
-        QString idPart = barcode.isEmpty() ? "UNIDENTIFIED" : barcode;
+        QString idPart;
+        if (!externalBarcode.isEmpty() && externalBarcode != "UNIDENTIFIED") {
+            idPart = externalBarcode;   // külső forrásból jövő (MAT-xxx vagy RST-xxx)
+        } else if (!barcode.isEmpty() && barcode != "UNIDENTIFIED") {
+            idPart = barcode;           // saját barcode, ha van
+        } else {
+            idPart = "UNIDENTIFIED";    // fallback
+        }
 
         return QString("%1|%2|L%3")
             .arg(rodLabel)

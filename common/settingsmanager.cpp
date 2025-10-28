@@ -20,38 +20,29 @@ void SettingsManager::load(int argc, char* argv[]) {
  }
 
 void SettingsManager::detectTestMode(int argc, char* argv[]) {
-    // 1. Parancssori argumentum: --test maki
     for (int i = 1; i < argc - 1; ++i) {
         QString arg = argv[i];
         QString next = argv[i + 1];
         if (arg == "--test") {
-            if (next.compare("maki", Qt::CaseInsensitive) == 0) {
-                _testMode = TestMode::Maki;
-                return;
-            }
-            if (next.compare("full", Qt::CaseInsensitive) == 0) {
-                _testMode = TestMode::Full;
-                return;
-            }
+            _testProfile = next.toLower();
+            return;
         }
     }
 
-    // 2. settings.ini: test = maki
+    // ini-ből
     QString testProfile = _settings.value("test").toString();
-    if (testProfile.compare("maki", Qt::CaseInsensitive) == 0) {
-        _testMode = TestMode::Maki;
-        return;
-    }
-    if (testProfile.compare("full", Qt::CaseInsensitive) == 0) {
-        _testMode = TestMode::Full;
+    if (!testProfile.isEmpty()) {
+        _testProfile = testProfile.toLower();
         return;
     }
 
-    // 3. settings.ini: testmode = true → Full
     if (_settings.value("testmode", false).toBool()) {
-        _testMode = TestMode::Full;
+        _testProfile = "full";
     }
 }
+
+
+
 
 void SettingsManager::save() {
 //     _settings.setValue(SettingsKeys::CuttingPlanFileName, _cuttingPlan_FileName);
@@ -172,4 +163,22 @@ Cutting::Optimizer::TargetHeuristic SettingsManager::cuttingStrategy() const {
         return Cutting::Optimizer::TargetHeuristic::ByTotalLength;
     }
     return Cutting::Optimizer::TargetHeuristic::ByCount;
+}
+
+// optimizercounters
+
+int SettingsManager::materialCounter() const { return _settings.value(SettingsKeys::MaterialCounter, 0).toInt(); }
+
+int SettingsManager::leftoverCounter() const { return _settings.value(SettingsKeys::LeftoverCounter, 0).toInt(); }
+
+int SettingsManager::nextMaterialCounter() {
+    int c = materialCounter() + 1;
+    persist(SettingsKeys::MaterialCounter, QString::number(c));
+    return c;
+}
+
+int SettingsManager::nextLeftoverCounter() {
+    int c = leftoverCounter() + 1;
+    persist(SettingsKeys::LeftoverCounter, QString::number(c));
+    return c;
 }

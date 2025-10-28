@@ -5,11 +5,15 @@
 #include "view/tableutils/resulttable_rowstyler.h"
 #include "model/material/materialgroup_utils.h"
 #include "model/material/material_utils.h"
+#include "view/tableutils/tableutils.h"
 #include <QLabel>
 #include <QHBoxLayout>
 
 ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), table(table), parent(parent) {}
+    : QObject(parent), table(table), parent(parent) {
+
+   TableUtils::applySafeMonospaceFont(table, 10);
+}
 
 QString ResultsTableManager::formatWasteBadge(const Cutting::Plan::CutPlan& plan, int wasteIndex) {
     QString badge;
@@ -49,15 +53,16 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
     // 🔢 Rod #
     // Globális planNumber + RodNumber + Barcode
-    QString rodLabel = QString("Rod %1")
-                       .arg(plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId);
+    QString rodLabel = QString("Rod %1").arg(plan.sourceBarcode.isEmpty() ? plan.rodId : plan.sourceBarcode);
 
     auto* itemRod = new QTableWidgetItem(rodLabel);
 
     // Tooltipben mindkettő: konkrét rodId és materialBarcode
-    itemRod->setToolTip(QString("RodId: %1\nMaterial: %2")
+    itemRod->setToolTip(QString("RodId: %1\nBarcode: %2\nMaterial: %3")
                             .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
+                            .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode)
                             .arg(plan.materialBarcode()));
+
 
     itemRod->setTextAlignment(Qt::AlignCenter);
 

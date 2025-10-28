@@ -1,0 +1,96 @@
+2.a:
+Stockból jövő rudak is kapjanak egy stabil, emberi szemnek is értelmezhető azonosítót (pl. MAT-0001).
+
+LeftoverStockEntry elemeknek már van saját barcode mezőjük (RST-xxxx), az marad.
+
+Az optimize() belépési pontján minden kiválasztott rúd (legyen az stock vagy leftover) már rendelkezzen ilyen azonosítóval, hogy a teljes lánc auditban és GUI‑ban követhető legyen.
+
+FOLYAMATBAN
+
+2. ParentBarcode lánc konzisztencia
+Miről szól: minden új leftover mutasson vissza a szülő RST‑re, hogy a lánc auditban és GUI‑ban is követhető legyen.
+
+Mit kell csinálni:
+
+cutSinglePieceBatch() és cutComboBatch() →
+
+ha rod.isReusable, akkor p.parentBarcode = rod.barcode, és entry.parentBarcode = p.parentBarcode.
+
+ha stockból jött, akkor p.parentBarcode = std::nullopt, entry.parentBarcode = std::nullopt.
+
+Fájlok:
+
+model/cutting/optimizer/optimizermodel.cpp
+
+model/cutting/result/resultmodel.h/.cpp
+
+model/leftoverstockentry.h/.cpp
+
+3. Stop feltételek visszaemelése
+Miről szól: a rod‑loop ne vágjon mindig még egy darabot, hanem álljon meg jó tartományban, zárjon selejtnél, és próbáljon okosan köztes tartományban.
+
+Mit kell csinálni:
+
+optimize() rod‑loop → visszahozni a három tartománylogikát:
+
+selejt alatt → leftover + break
+
+jó tartományban → break
+
+köztes tartomány → csak akkor vágj, ha az újRemaining jó vagy selejt alá visz
+
+túl nagy leftover → próbálj még egy darabot, ha nincs, break
+
+Fájlok:
+
+model/cutting/optimizer/optimizermodel.cpp
+
+service/cutting/optimizer/optimizerconstants.h
+
+4. Leftover törlés stabilizálása
+Miről szól: reusable kiválasztás után a forrás leftover törlése mindig entryId alapján történjen, ne barcode alapján.
+
+Mit kell csinálni:
+
+optimize() → remove_if predikátort átírni: return e.entryId == best.stock.entryId;
+
+Fájlok:
+
+model/cutting/optimizer/optimizermodel.cpp
+
+5. RodId és planCounter szétválasztása
+Miről szól: a rodId ne a planCounter‑ből származzon, hanem dedikált generátorral menjen, planCounter csak a CutPlan sorszáma legyen.
+
+Mit kell csinálni:
+
+IdentifierUtils::makeRodId(...) hívásokat dokumentálni/átírni, hogy ne planCounter‑t használjon, hanem külön rodCountert.
+
+planCounter maradjon csak CutPlan számláló.
+
+Fájlok:
+
+model/cutting/optimizer/optimizermodel.cpp
+
+common/identifierutils.h
+
+6. Scoring finomhangolás
+Miről szól: a kellemetlen leftoverek erősebb büntetést kapjanak, hogy a loop ne hagyjon 3000+ mm maradékokat.
+
+Mit kell csinálni:
+
+calcScore() → a “kellemetlen leftover” büntetés vissza −300‑ra, vagy dinamikus skála (−150 a 150–300 mm sávban, −300 az 1–150 mm sávban).
+
+Fájlok:
+
+service/cutting/optimizer/optimizerutils.h
+
+✨ Használati mód
+Ha egy pontot akarsz velem végigvinni:
+
+bemásolod a fenti pont szövegét (pl. „### 1. EntryId logika tisztítása”)
+
+mellé bemásolod a felsorolt fájlokat (aktuális verziójukat)
+
+Én pedig fókuszáltan csak arra a pontra adok clean diffet és refaktor‑javaslatot.
+
+👉 Így kapsz egy irányított, fókuszált refaktor‑folyamatot, ahol mindig csak egy falatot veszünk be, és nem keveredik össze a sok változtatás.

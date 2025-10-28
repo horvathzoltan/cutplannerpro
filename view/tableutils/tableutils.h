@@ -8,6 +8,17 @@
 
 namespace TableUtils {
 
+// 🆕 Biztonságos monospace font beállítása
+// - Elsőként próbálja a Fira Code-ot
+// - Ha nincs, akkor Consolas, Source Code Pro, Roboto Mono
+// - Végül fallback: "monospace" (Qt a rendszer alap monospace fontját adja)
+inline void applySafeMonospaceFont(QWidget* widget, int pointSize = 10) {
+    QFont font;
+    font.setFamilies({"Fira Code", "Consolas", "Source Code Pro", "Roboto Mono", "monospace"});
+    font.setPointSize(pointSize);
+    widget->setFont(font);
+}
+
 inline void clearSafely(QTableWidget* table) {
     if (!table)
         return;

@@ -14,7 +14,7 @@
 #include <common/sysinfohelper.h>
 
 #include <QDebug>
-
+#include "tests/testmanager.h"
 
 #define TEST_MODE
 
@@ -46,11 +46,12 @@ int main(int argc, char *argv[])
     Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, false);
     SettingsManager::instance().load(argc, argv);
 
-    if (SettingsManager::instance().testMode() == TestMode::Maki) {
-        zEventINFO("Teszt mód: maki");
-        //runBusinessLogicTests();
+    // --test maki
+    if (SettingsManager::instance().isTestMode()) {
+        TestManager::instance().runBusinessLogicTests(SettingsManager::instance().testProfile());
         return 0;
     }
+
     // 🔧 Eseménynapló fájl megnyitása még az init előtt
     EventLogger::instance().setLogFile("eventlog.txt");
 

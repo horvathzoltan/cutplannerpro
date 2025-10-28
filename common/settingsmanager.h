@@ -20,6 +20,11 @@ inline constexpr auto MainSplitterState = "main_splitter_state";
 
 // CuttingStrategy
 inline constexpr auto CuttingStrategy = "cutting_strategy";
+
+// optimize számlálók
+inline constexpr auto MaterialCounter = "material_counter";
+inline constexpr auto LeftoverCounter = "leftover_counter";
+
 }
 
 enum class TestMode {
@@ -72,20 +77,32 @@ public:
     void setCuttingStrategy(Cutting::Optimizer::TargetHeuristic h);
     Cutting::Optimizer::TargetHeuristic cuttingStrategy() const;
 
+    // optimizercounters
+    int materialCounter() const;
+    int leftoverCounter() const;
+    int nextMaterialCounter();
+    int nextLeftoverCounter();
+
     void save();
     void load(int argc, char* argv[]);
 
-    TestMode testMode() const { return _testMode; };
+    QString testProfile() const { return _testProfile; }
+
+    bool isTestMode(){
+        if(_testProfile.isEmpty()) return false;
+        if(_testProfile.toLower() == "none") return false;
+        return true;
+    }
+
 private:
     SettingsManager();
 
     QSettings _settings;
-    TestMode _testMode;
+    QString _testProfile = "none";
 
     void persist(const QString& key, const QString& value);
     void persist(const QString &key, const QByteArray &value);
 
     void detectTestMode(int argc, char *argv[]);
-
 };
 

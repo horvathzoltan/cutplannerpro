@@ -75,6 +75,9 @@ public:
 
     int planNumber = -1;   // 🔢 Globális batch-sorszám (planCounter)
 
+    QString sourceBarcode;   // 🆕 Mindig kitöltött: MAT-xxx vagy RST-xxx
+
+
 /**
  * @brief 📐 Szakaszgenerálás helper - vágási szakaszok generálása a darabok és paraméterek alapján
  * @param kerf_mm Vágási veszteség mm-ben
