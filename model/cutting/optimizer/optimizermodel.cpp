@@ -185,9 +185,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 rod.length = stock.master() ? stock.master()->stockLength_mm : 0;
 
                 rod.isReusable = false;
-                // const auto &masterOpt =
-                //     MaterialRegistry::instance().findById(rod.materialId);
 
+                // 🔑 Új, mesterséges stock barcode generálása
                 int matId = SettingsManager::instance().nextMaterialCounter();
                 rod.barcode = IdentifierUtils::makeMaterialId(matId);
 
@@ -195,9 +194,9 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                           .arg(rod.barcode)
                           .arg(rod.materialId.toString()));
 
+                // 🔑 Stabil emberi azonosító
+                rod.rodId = IdentifierUtils::makeRodId(++planCounter);
 
-                rod.rodId = IdentifierUtils::makeRodId(
-                    ++planCounter); // új fizikai rúd identitás
 
                 remainingLength = rod.length;
                 break;

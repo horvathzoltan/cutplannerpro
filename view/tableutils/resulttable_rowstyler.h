@@ -21,10 +21,10 @@ inline void applyStyle(QTableWidget* table, int row,
     QColor fg = bg.lightness() < 128 ? Qt::white : Qt::black;
 
     QString groupName = GroupUtils::groupName(mat->id);
-    QString tooltip = QString("Anyag: %1\nCsoport: %2\nBarcode: %3")
-                          .arg(mat->name)
-                          .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
-                          .arg(mat->barcode);
+    // QString tooltip = QString("Anyag: %1\nCsoport: %2\nBarcode: %3")
+    //                       .arg(mat->name)
+    //                       .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
+    //                       .arg(mat->barcode);
 
     for (int col = 0; col < table->columnCount(); ++col) {
         QTableWidgetItem* item = table->item(row, col);
@@ -35,26 +35,26 @@ inline void applyStyle(QTableWidget* table, int row,
 
         item->setBackground(bg);
         item->setForeground(fg);
-        item->setTextAlignment(Qt::AlignCenter);
+        // item->setTextAlignment(Qt::AlignCenter);
 
-        switch (col) {
-        case 0:
-            item->setToolTip(QString("Rúd azonosító: %1\n%2")
-                                 .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
-                                 .arg(tooltip));
-            break;
-        case 3:
-            item->setToolTip(QString("Fűrészszélesség összesen: %1 mm")
-                                 .arg(plan.kerfTotal));
-            break;
-        case 4:
-            item->setToolTip(QString("Hulladék: %1 mm")
-                                 .arg(plan.waste));
-            break;
-        default:
-            item->setToolTip(tooltip);
-            break;
-        }
+        // switch (col) {
+        // case 0:
+        //     item->setToolTip(QString("Rúd azonosító: %1\n%2")
+        //                          .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
+        //                          .arg(tooltip));
+        //     break;
+        // case 3:
+        //     item->setToolTip(QString("Fűrészszélesség összesen: %1 mm")
+        //                          .arg(plan.kerfTotal));
+        //     break;
+        // case 4:
+        //     item->setToolTip(QString("Hulladék: %1 mm")
+        //                          .arg(plan.waste));
+        //     break;
+        // default:
+        //     item->setToolTip(tooltip);
+        //     break;
+        // }
     }
 }
 

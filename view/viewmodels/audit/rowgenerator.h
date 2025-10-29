@@ -3,8 +3,6 @@
 #include "common/logger.h"
 #include "view/tableutils/colorlogicutils.h"
 #include "view/tableutils/storageaudittable_rowstyler.h"
-#include "model/storageaudit/auditcontext_text.h"
-#include "model/storageaudit/auditstatus_text.h"
 
 #include "view/cellhelpers/auditcelltext.h"
 #include "view/cellhelpers/auditcelltooltips.h"

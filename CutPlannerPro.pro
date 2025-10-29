@@ -30,7 +30,6 @@ SOURCES += \
     tests/testmanager.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
-    view/tableutils/resulttable_rowstyler.cpp \
     main.cpp \
     model/archivedwasteentry.cpp \
     model/crosssectionshape.cpp \
@@ -169,10 +168,8 @@ HEADERS += \
     model/relocation/relocationtargetentry.h \
     model/repositories/cuttingmachinerepository.h \
     model/storageaudit/auditcontext.h \
-    model/storageaudit/auditcontext_text.h \
     model/storageaudit/auditgroupinfo.h \
     model/storageaudit/auditstatus.h \
-    model/storageaudit/auditstatus_text.h \
     model/storageaudit/storageauditentry.h \
     model/storageaudit/storageauditrow.h \
     service/cutting/optimizer/exporter.h \

@@ -5,9 +5,42 @@
 class IdentifierUtils {
 public:
     // 🆔 Rúd azonosító (maradhat tisztán numerikus, mert belső)
-    static QString makeRodId(int rodNumber) {
-        return QString("ROD-%1").arg(rodNumber, 4, 10, QChar('0'));
+    static QString makeRodId(int counter) {
+        static const QString allowed = "ABCDEFGHJKMNPQRSTUVWXYZ";
+        int base = allowed.size(); // 22
+
+        if (counter < 1000) {
+            return QString("Rod-%1").arg(counter, 3, 10, QChar('0'));
+        }
+
+        int block = counter / 1000;
+        int suffix = counter % 1000;
+
+        QString prefix;
+        if (block <= base) {
+            prefix = allowed[block - 1];
+        } else if (block <= base * base) {
+            int first = (block - 1) / base;
+            int second = (block - 1) % base;
+            prefix = QString("%1%2").arg(allowed[first]).arg(allowed[second]);
+        } else if (block <= base * base * base) {
+            int first = (block - 1) / (base * base);
+            int second = ((block - 1) / base) % base;
+            int third = (block - 1) % base;
+            prefix = QString("%1%2%3").arg(allowed[first]).arg(allowed[second]).arg(allowed[third]);
+        } else if (block <= base * base * base * base) {
+            int first = (block - 1) / (base * base * base);
+            int second = ((block - 1) / (base * base)) % base;
+            int third = ((block - 1) / base) % base;
+            int fourth = (block - 1) % base;
+            prefix = QString("%1%2%3%4").arg(allowed[first]).arg(allowed[second]).arg(allowed[third]).arg(allowed[fourth]);
+        } else {
+            return QString("Rod-%1").arg(QString::number(counter, 16).rightJustified(4, '0').toUpper());
+        }
+
+        return QString("Rod-%1-%2").arg(prefix).arg(suffix, 3, 10, QChar('0'));
     }
+
 
     // 🆔 Darab azonosító (UUID rövidítve)
     static QString makePieceId(const QUuid& pieceUuid) {

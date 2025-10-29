@@ -38,6 +38,25 @@ void TestManager::runMakiTests() {
         QString code = IdentifierUtils::makeLeftoverId(id);
         zInfo(QString("RST input=%1 → %2").arg(id).arg(code));
     }
+
+    zInfo("=== Rod ID tesztek ===");
+    QList<int> rodIds = {
+        42,       // Rod-042
+        999,      // Rod-999
+        1000,     // Rod-A-000
+        1234,     // Rod-B-234
+        22999,    // Rod-Z-999
+        23000,    // Rod-AA-000
+        24000,    // Rod-AB-000
+        506999,   // Rod-ZZ-999
+        507000,   // Rod-AAA-000
+        10000000, // Rod-1A3F (hex fallback)
+    };
+
+    for (int id : rodIds) {
+        QString code = IdentifierUtils::makeRodId(id);
+        zInfo(QString("ROD input=%1 → %2").arg(id).arg(code));
+    }
 }
 
 

@@ -38,9 +38,18 @@ public:
     // 📦 Mezők – az eredeti struct-nak megfelelően
     int kerfTotal = 0;        // 🔧 Vágások során vesztett anyag összesen
     int waste = 0;            // ♻️ Maradék mm
+
     QUuid materialId;         // 🔗 Az anyag azonosítója (UUID)
+    // 🔗 Anyag törzs azonosító (UUID a MaterialMaster-ből).
+    // Ez alapján jön a materialName(), materialGroupName(), materialBarcode().
+    // Nem egyedi a konkrét rúdra, csak az anyagtípusra mutat.
+
     int totalLength = 0;      // 📏 Anyag hossz (mm)
+
     QString rodId;            // 🔑 Stabil rúd azonosító (ROD-xxxx)
+    // 🔑 Stabil, emberi szemnek szánt rúd-azonosító (Rod-A, Rod-CA, ...).
+    // Minden CutPlan kap egy új rodId-t, ami auditban és UI-ban a "RodRef".
+
     QUuid machineId;   // a gép azonosítója
     QString machineName;   // csak UI/audit
     double kerfUsed_mm = 0.0; // audit fixálás
@@ -70,12 +79,18 @@ public:
 
     std::optional<QString> parentBarcode;
     std::optional<QUuid> parentPlanId;
-    // ♻️ Ha a rúd végén leftover keletkezik, itt tároljuk az új barcode-ot
-    QString leftoverBarcode;
+
+    QString leftoverBarcode; // ♻️ Ha a rúd végén leftover keletkezik, itt tároljuk az új barcode-ot
+    // ♻️ Ha a vágás után keletkezik új hulló, itt tároljuk az új RST-xxx kódot.
+    // Ez NEM a forrás, hanem a kimeneti leftover azonosító.
 
     int planNumber = -1;   // 🔢 Globális batch-sorszám (planCounter)
 
     QString sourceBarcode;   // 🆕 Mindig kitöltött: MAT-xxx vagy RST-xxx
+    // 🆕 Fizikai forrás azonosítója a konkrét rúdnál:
+    // - Stock esetén: mesterségesen generált MAT-001, MAT-002, ...
+    // - Leftover esetén: a leftover saját RST-xxx kódja.
+    // Ez az érték mindig egyedi a konkrét rúdra, és auditban a "Barcode" mező.
 
 
 /**
@@ -94,6 +109,8 @@ public:
             kerf_mm, totalLength_mm);
     }
 
+    // a material törzsből jön (MAT-ROLL60-6000), mivel a törzsből jövő kódot sokszor szeretnénk látni (pl. anyagazonosítás, csoportosítás, riport).
+    // és emiatt sok helyen félrevezető, mert a GUI tooltipben úgy tűnik, mintha ez lenne a sourceBarcode.
     QString materialBarcode() const;
 
     QString machineLabel() const { return QString("%1 (kerf=%2 mm)").arg(machineName).arg(kerfUsed_mm); }

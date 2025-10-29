@@ -40,7 +40,7 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // 🧵 Csoportnév badge
     QString groupName = GroupUtils::groupName(plan.materialId);
     QColor groupColor = GroupUtils::colorForGroup(plan.materialId);
-    QLabel* groupLabel = new QLabel(groupName.isEmpty() ? "–" : groupName);
+    QLabel* groupLabel = new QLabel((groupName.isEmpty() ? "–" : groupName)+plan.materialBarcode() );
     groupLabel->setAlignment(Qt::AlignCenter);
     groupLabel->setStyleSheet(QString(
                                   "QLabel { background-color: %1; color: white; font-weight: bold; padding: 6px; border-radius: 6px; }"
@@ -53,16 +53,11 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
     // 🔢 Rod #
     // Globális planNumber + RodNumber + Barcode
-    QString rodLabel = QString("Rod %1").arg(plan.sourceBarcode.isEmpty() ? plan.rodId : plan.sourceBarcode);
-
+    QString rodLabel = QString("%1|%2").arg(plan.rodId, plan.sourceBarcode);
     auto* itemRod = new QTableWidgetItem(rodLabel);
-
-    // Tooltipben mindkettő: konkrét rodId és materialBarcode
     itemRod->setToolTip(QString("RodId: %1\nBarcode: %2\nMaterial: %3")
-                            .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
-                            .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode)
-                            .arg(plan.materialBarcode()));
-
+                            .arg(plan.rodId)
+                            .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode));
 
     itemRod->setTextAlignment(Qt::AlignCenter);
 
@@ -84,15 +79,15 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
         // Ha a szegmensnek van saját barcode-ja, azt használjuk
         if (!s.barcode.isEmpty() && s.barcode != "UNIDENTIFIED") {
-            segBarcode = s.barcode;
+            "a:"+segBarcode = s.barcode;
         }
         // Ha waste szegmens és a plan shortcut is ismert, azt használjuk
         else if (s.type == Cutting::Segment::SegmentModel::Type::Waste && !plan.leftoverBarcode.isEmpty()) {
-            segBarcode = plan.leftoverBarcode;
+            "b:"+segBarcode = plan.leftoverBarcode;
         }
-        // Egyébként rodId vagy materialBarcode
+        //  Egyébként rodId vagy sourceBarcode (fizikai forrás azonosító)
         else {
-            segBarcode = plan.rodId.isEmpty() ? plan.materialBarcode() : plan.rodId;
+            "c:"+segBarcode = plan.rodId.isEmpty() ? plan.sourceBarcode : plan.rodId;
         }
 
         QLabel* label = new QLabel(
@@ -100,9 +95,9 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
             );
 
         // Tooltip: részletes infó
-        label->setToolTip(QString("Rod: %1\nBarcode: %2\nMaterial: %3")
-                              .arg(plan.rodId)   // 🔑 Stabil rúd azonosító
-                              .arg(plan.rodId.isEmpty() ? "—" : plan.rodId)
+        label->setToolTip(QString("RodId: %1\nBarcode: %2\nMaterial: %3")
+                              .arg(plan.rodId)
+                              .arg(segBarcode.isEmpty() ? "—" : segBarcode)
                               .arg(plan.materialBarcode()));
 
         label->setAlignment(Qt::AlignCenter);

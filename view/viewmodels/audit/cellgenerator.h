@@ -2,7 +2,6 @@
 
 #include "common/logger.h"
 #include "view/tableutils/storageaudittable_rowstyler.h"
-#include "model/storageaudit/auditcontext_text.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 
 #include "model/storageaudit/storageauditrow.h"

@@ -258,6 +258,7 @@ void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const
 /*cuttingplan*/
 void MainWindow::handle_btn_NewRequest_clicked()
 {
+    Q_ASSERT(false); // itt megáll a debugger
     presenter->createNew_CuttingPlanRequests();
 }
 
@@ -688,7 +689,7 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
                 ci.rodLabel = QString("Rod %1").arg(plan.rodId);   // 🔑 Stabil rúd azonosító
                 //ci.materialCode = plan.materialName();
                 ci.materialId = plan.materialId;
-                ci.barcode = plan.materialBarcode(); // vagy akár plan.rodId, ha azt akarod címkézni
+                ci.barcode = plan.sourceBarcode; // vagy akár plan.rodId, ha azt akarod címkézni
                 ci.cutSize_mm = seg.length_mm;
                 ci.kerf_mm = machine->kerf_mm; // ✅ géphez tartozó kerf
                 ci.remainingBefore_mm = remaining;
