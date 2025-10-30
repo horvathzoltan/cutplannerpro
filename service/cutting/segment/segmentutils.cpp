@@ -40,44 +40,88 @@ bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>&
         return false;
 
     const SegmentModel& last = segments.last();
-    return (last.type == SegmentModel::Type::Waste && last.length_mm == wasteLength);
+    return (last.type() == SegmentModel::Type::Waste && last.length_mm() == wasteLength);
 }
 
 QVector<SegmentModel> SegmentUtils::generateSegments(
     const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
-    double kerf_mm, double totalLength_mm)
+    double kerf_mm,
+    double totalLength_mm)
 {
     QVector<SegmentModel> segments;
     double usedLength = 0;
 
+    int pieceIx = 1;
+    int kerfIx  = 1;
+    int wasteIx = 1;
+
     for (int i = 0; i < cuts.size(); ++i) {
-        const Cutting::Piece::PieceWithMaterial& pwm = cuts[i];
+        const auto& pwm = cuts[i];
         double len = pwm.info.length_mm;
 
-        // ➕ Darab szakasz
-        SegmentModel piece(SegmentModel::Type::Piece, static_cast<int>(len));
-        segments.append(piece);
+        // ➕ Piece szakasz
+        segments.append(SegmentModel(SegmentModel::Type::Piece,
+                                     len,
+                                     pieceIx++));
         usedLength += len;
 
-        // ➕ Kerf szakasz – az utolsó után is!
+        // ➕ Kerf szakasz
         if (kerf_mm > 0) {
-            SegmentModel kerf(SegmentModel::Type::Kerf, static_cast<int>(kerf_mm));
-            segments.append(kerf);
+            segments.append(SegmentModel(SegmentModel::Type::Kerf,
+                                         kerf_mm,
+                                         kerfIx++));
             usedLength += kerf_mm;
         }
     }
 
-    // 🧺 Végmaradék, ha van
+    // ➕ Waste szakasz
     double waste = totalLength_mm - usedLength;
     if (waste > 0) {
-        SegmentModel trailingWaste(SegmentModel::Type::Waste, static_cast<int>(waste));
-        segments.append(trailingWaste);
+        segments.append(SegmentModel(SegmentModel::Type::Waste,
+                                     waste,
+                                     wasteIx++));
     } else if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
     }
 
     return segments;
 }
+
+// QVector<SegmentModel> SegmentUtils::generateSegments(
+//     const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
+//     double kerf_mm, double totalLength_mm)
+// {
+//     QVector<SegmentModel> segments;
+//     double usedLength = 0;
+
+//     for (int i = 0; i < cuts.size(); ++i) {
+//         const Cutting::Piece::PieceWithMaterial& pwm = cuts[i];
+//         double len = pwm.info.length_mm;
+
+//         // ➕ Darab szakasz
+//         SegmentModel piece(SegmentModel::Type::Piece, len, -1);
+//         segments.append(piece);
+//         usedLength += len;
+
+//         // ➕ Kerf szakasz – az utolsó után is!
+//         if (kerf_mm > 0) {
+//             SegmentModel kerf(SegmentModel::Type::Kerf, kerf_mm, -1);
+//             segments.append(kerf);
+//             usedLength += kerf_mm;
+//         }
+//     }
+
+//     // 🧺 Végmaradék, ha van
+//     double waste = totalLength_mm - usedLength;
+//     if (waste > 0) {
+//         SegmentModel trailingWaste(SegmentModel::Type::Waste, waste, -1);
+//         segments.append(trailingWaste);
+//     } else if (waste < 0) {
+//         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
+//     }
+
+//     return segments;
+// }
 
 } // endof namespace Segment
 } // endof namespace Cutting::Segment

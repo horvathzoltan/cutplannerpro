@@ -11,6 +11,9 @@ TestManager& TestManager::instance() {
 
 void TestManager::runBusinessLogicTests(const QString& profile) {
     zInfo(QString("🧪 Tesztprofil kiválasztva: %1").arg(profile));
+    if (profile == "double") {
+        runDoubleTests();
+    } else
     if (profile == "maki") {
         runMakiTests();
     } else if (profile == "full") {
@@ -18,6 +21,20 @@ void TestManager::runBusinessLogicTests(const QString& profile) {
     } else {
         zWarning(QString("⚠️ Ismeretlen tesztprofil: %1").arg(profile));
     }
+}
+
+void TestManager::runDoubleTests(){
+    double a = 1250.0;
+    double b = 288.49;
+    double c = 288.5;
+
+    QString a_txt= QString("%1").arg(a, 0, 'f', 0); // "1250"
+    QString b_txt= QString("%1").arg(b, 0, 'f', 0); // "288"
+    QString c_txt= QString("%1").arg(c, 0, 'f', 0); // "289"
+
+    zInfo("a_txt:"+a_txt);
+    zInfo("b_txt:"+b_txt);
+    zInfo("c_txt:"+c_txt);
 }
 
 void TestManager::runMakiTests() {

@@ -37,10 +37,7 @@ namespace Optimizer {
  * - ByCount = "ahol több a darab"
  * - ByTotalLength = "ahol több az anyag"
  */
-enum class TargetHeuristic {
-    ByCount,       // 📊 Legtöbb darab
-    ByTotalLength  // 📏 Legnagyobb összhossz
-};
+
 
 class OptimizerModel : public QObject {
     Q_OBJECT

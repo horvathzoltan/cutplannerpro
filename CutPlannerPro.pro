@@ -98,6 +98,7 @@ HEADERS += \
     common/identifierutils.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
+    model/cutting/optimizer/targetheuristic.h \
     model/inventorysnapshot.h \
     model/machine/machineutils.h \
     model/material/material_utils.h \

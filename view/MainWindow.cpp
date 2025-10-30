@@ -683,14 +683,14 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
         int step = 1;
         double remaining = plan.totalLength;
         for (const auto& seg : plan.segments) {
-            if (seg.type == Cutting::Segment::SegmentModel::Type::Piece) {
+            if (seg.type() == Cutting::Segment::SegmentModel::Type::Piece) {
                 CutInstruction ci;
                 ci.stepId = step++;
                 ci.rodLabel = QString("Rod %1").arg(plan.rodId);   // 🔑 Stabil rúd azonosító
                 //ci.materialCode = plan.materialName();
                 ci.materialId = plan.materialId;
                 ci.barcode = plan.sourceBarcode; // vagy akár plan.rodId, ha azt akarod címkézni
-                ci.cutSize_mm = seg.length_mm;
+                ci.cutSize_mm = seg.length_mm();
                 ci.kerf_mm = machine->kerf_mm; // ✅ géphez tartozó kerf
                 ci.remainingBefore_mm = remaining;
                 ci.computeRemaining();

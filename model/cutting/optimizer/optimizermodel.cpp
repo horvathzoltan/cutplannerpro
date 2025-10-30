@@ -400,6 +400,8 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
 
     p.parentPlanId  = std::nullopt; // később, ha láncolni akarod
 
+    QString wasteBarcode = p.getWasteBarcode();
+    p.leftoverBarcode = wasteBarcode;
 
     // ➕ ResultModel
     Cutting::Result::ResultModel result;
@@ -411,8 +413,8 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
     result.source = rod.isReusable ? Cutting::Result::ResultSource::FromReusable
                                    : Cutting::Result::ResultSource::FromStock;
     result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
-    int rstId = SettingsManager::instance().nextLeftoverCounter();
-    result.reusableBarcode = IdentifierUtils::makeLeftoverId(rstId);
+
+    result.reusableBarcode = wasteBarcode;
     result.isFinalWaste = (remainingLength - used <= 0);
     result.parentBarcode = p.parentBarcode;
     result.sourceBarcode = rod.barcode;
@@ -461,18 +463,6 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
          zInfo(QString("ParentBarcode set in ResultModel=%1, entry.parentBarcode=%2")
                    .arg(result.parentBarcode.value_or("∅"))
                    .arg(entry.parentBarcode.value_or("∅")));
-
-        p.leftoverBarcode = result.reusableBarcode;
-
-        // ⬇️ ÚJ: waste szegmens frissítése
-        for (auto &seg : p.segments) {
-            if (seg.type == Cutting::Segment::SegmentModel::Type::Waste &&
-                seg.barcode == IdentifierUtils::unidentified())
-            {
-                seg.barcode = result.reusableBarcode;
-                break;
-            }
-        }
     }
 
     _planned_leftovers.append(result);
@@ -536,6 +526,9 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
     }
     p.parentPlanId  = std::nullopt; // később, ha láncolni akarod
 
+    QString wasteBarcode = p.getWasteBarcode();
+
+    p.leftoverBarcode = wasteBarcode;
 
     // ➕ ResultModel
     Cutting::Result::ResultModel result;
@@ -548,8 +541,7 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
                                    : Cutting::Result::ResultSource::FromStock;
     result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
 
-    int rstId = SettingsManager::instance().nextLeftoverCounter();
-    result.reusableBarcode = IdentifierUtils::makeLeftoverId(rstId);
+    result.reusableBarcode = wasteBarcode;
 
     result.isFinalWaste = (remainingLength - used <= 0);
     result.parentBarcode = p.parentBarcode;
@@ -599,18 +591,6 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
         zInfo(QString("ParentBarcode set in ResultModel=%1, entry.parentBarcode=%2")
                   .arg(result.parentBarcode.value_or("∅"))
                   .arg(entry.parentBarcode.value_or("∅")));
-
-        p.leftoverBarcode = result.reusableBarcode;
-        // ⬇️ ÚJ: waste szegmens frissítése
-        for (auto &seg : p.segments) {
-            if (seg.type == Cutting::Segment::SegmentModel::Type::Waste &&
-                seg.barcode == IdentifierUtils::unidentified())
-            {
-                seg.barcode = result.reusableBarcode;
-                break;
-            }
-        }
-
     }
 
     _result_plans.append(p);

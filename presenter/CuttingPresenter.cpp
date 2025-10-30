@@ -351,7 +351,7 @@ void CuttingPresenter::logPlans(){
         QStringList pieceLabels, kerfLabels, wasteLabels;
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            switch (s.type) {
+            switch (s.type()) {
             case Cutting::Segment::SegmentModel::Type::Piece:  pieceLabels << s.toLabelString(); break;
             case Cutting::Segment::SegmentModel::Type::Kerf:   kerfLabels  << s.toLabelString(); break;
             case Cutting::Segment::SegmentModel::Type::Waste:  wasteLabels << s.toLabelString(); break;
@@ -398,8 +398,15 @@ void CuttingPresenter::logPlans(){
         totalSegments += plan.segments.size();
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            if (s.type == Cutting::Segment::SegmentModel::Type::Kerf)  kerfSegs++;
-            if (s.type == Cutting::Segment::SegmentModel::Type::Waste) wasteSegs++;
+            switch(s.type())
+            {
+            case Cutting::Segment::SegmentModel::Type::Kerf:
+                kerfSegs++;
+                break;
+            case Cutting::Segment::SegmentModel::Type::Waste:
+                wasteSegs++;
+                break;
+            }
         }
     }
 

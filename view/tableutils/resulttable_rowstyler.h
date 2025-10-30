@@ -3,7 +3,7 @@
 #include <QTableWidget>
 //#include "model/cutting/result/cutresult.h"
 #include "../../model/material/materialmaster.h"
-#include "model/material/materialgroup_utils.h"
+//#include "model/material/materialgroup_utils.h"
 #include "model/cutting/plan/cutplan.h"
 #include "model/material/material_utils.h"
 
@@ -20,7 +20,7 @@ inline void applyStyle(QTableWidget* table, int row,
     QColor bg = MaterialUtils::colorForMaterial(*mat);
     QColor fg = bg.lightness() < 128 ? Qt::white : Qt::black;
 
-    QString groupName = GroupUtils::groupName(mat->id);
+    //QString groupName = GroupUtils::groupName(mat->id);
     // QString tooltip = QString("Anyag: %1\nCsoport: %2\nBarcode: %3")
     //                       .arg(mat->name)
     //                       .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)

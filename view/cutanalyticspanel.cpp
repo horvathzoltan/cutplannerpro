@@ -56,18 +56,18 @@ void CutAnalyticsPanel::updateStats(const QVector<Cutting::Plan::CutPlan>& plans
         segmentCount += plan.segments.size();   // teljes szakaszszám
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            switch (s.type) {
+            switch (s.type()) {
             case Cutting::Segment::SegmentModel::Type::Piece:
                 pieceCount++;
-                totalPieceLength += s.length_mm;
+                totalPieceLength += s.length_mm();
                 break;
             case Cutting::Segment::SegmentModel::Type::Kerf:
                 kerfCount++;
-                totalKerfLength += s.length_mm;
+                totalKerfLength += s.length_mm();
                 break;
             case Cutting::Segment::SegmentModel::Type::Waste:
                 wasteCount++;
-                totalWasteLength += s.length_mm;
+                totalWasteLength += s.length_mm();
                 break;
             }
         }

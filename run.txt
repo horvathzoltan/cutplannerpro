@@ -1,65 +1,45 @@
-🧩 Állapottábla – 2025.10.28. (frissítve, esti állapot)
-
+🧩 Állapottábla – 2025.10.30. (esti frissítés)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
-🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	🟡 Folyamatban	✅	🚧 Sprint SOS	Optimize() belépési pontján minden stock rúd kapjon emberi szemnek is értelmezhető azonosítót
-🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Új leftover mutasson vissza a szülő RST‑re; stock esetén parentBarcode = nullopt
-🔥 SOS‑3	Stop feltételek visszaemelése	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Rod‑loop három tartománylogika: selejt / jó / köztes tartomány; túl nagy leftover kezelése
+🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	🟡 Folyamatban	✅	🚧 Sprint SOS	MAT‑xxxx kiosztás működik, RodId még számos, betűs séma bevezetése hátra van
+🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Vegyes: van ahol öröklődik, de több helyen ∅; szabályt konzisztensen be kell vezetni
+🔥 SOS‑3	Stop feltételek visszaemelése	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Rod‑loop még mindig „vágj amíg lehet”; három tartományos stop logika hiányzik
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva, ini‑mentés + UI connect működik
 14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	UI elem elhelyezés finomhangolás hiányzik
 15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, sor vs. csoport státusz szétválasztva
-16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🟡 Részben kész	✅	🚧 Sprint 6	filozófia rögzítve, scoring előkészítve, rod‑lánc javítva, parentBarcode öröklés hiányzik
+16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	🟡 Részben kész	✅	🚧 Sprint 6	filozófia rögzítve, parentBarcode öröklés és új entryId logika hiányzik
 21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
 25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	validáció részben kész (gépválasztás, kerf)
-26	Finalize gomb (UI)	✅	🟢 Kész	✅		CutPlan finalize teljesen eltávolítva, csak Instruction/Relocation maradt
+26	Finalize gomb (UI)	✅	🟢 Kész	✅		CutPlan finalize teljesen eltávolítva
 28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	teljesen hiányzik
 29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	operátor UI, darab státusz
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész, új entryId logika pontosítandó
-33	Munkalap–időmanager program	✅	🔴 Hiányzik	✅	🚧 backlog	backlogban
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-42	IdentifierUtils refaktor (makeGenericId, kétbetűs prefix)	✅	🟢 Kész	✅		Félmillió feletti biztonságos kód
-43	Maki tesztprofil bővítése (határérték‑tesztek)	✅	🟢 Kész	✅		Numerikus → egybetűs → kétbetűs váltás logban
-44	TableUtils monospace font helper	✅	🟢 Kész	✅		Fallback lista (Fira Code, Consolas, Source Code Pro, Roboto Mono, monospace)
-🚀 Sprint fókusz (2025.10.28. este)
-
-nagyon sos: 1. Rod azonosító megjelenítés tisztítása
-
-🔥 SOS‑1 – Stock rudak stabil azonosítója (MAT‑xxxx) → 🟡 Folyamatban
-
-🔥 SOS‑2 – ParentBarcode lánc konzisztencia → 🔴 Hiányzik
-
-🔥 SOS‑3 – Stop feltételek visszaemelése → 🔴 Hiányzik
-
-Eredeti sprint fókusz (megtartva):
-
-Sprint 1 – plannedQuantity, executedQuantity, finalize logika → 🟢 Kész
-
-Sprint 2 – UI finomhangolás, CuttingStrategy, Cutting plan váltás → 🟢 Kész
-
-Sprint 3 – Vágási utasítás dialógus + validáció, Anyagcsoportosítás master–detail, Worklist tab → 🟡 Folyamatban
-
-Sprint 4 – Finalize UI (soronkénti működés), CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent logger, UI eseménylista, CutPlan státuszvezérelt kezelés → 🟡 Folyamatban
-
-Sprint 5 – Finalize auditálás + visszavonás, Audit trail export / diff előkészítés → 🚧 Előkészítve
-
-Sprint 6 – Hullókezelés (azonosító, normalizálás, leftoverId, elfogyasztós logika + pszichológiai score), adatfeltöltés, audit trail export → 🚧 Előkészítve
-
+42	IdentifierUtils refaktor	✅	🟢 Kész	✅		kétbetűs prefix, félmillió feletti biztonságos kód
+43	Maki tesztprofil bővítése	✅	🟢 Kész	✅		határérték‑tesztek rendben
+44	TableUtils monospace font helper	✅	🟢 Kész	✅		fallback lista működik
 📌 Mai eredmények
-✅ IdentifierUtils refaktor: közös makeGenericId, kétbetűs prefix támogatás → félmillió feletti biztonságos kód.
+✅ Badge label szeparátor átállítva középső pontra (·), logban tisztán látszik: P1:MAT-203·2650mm.
 
-✅ Maki tesztprofil bővítése: határérték‑tesztek (999 → A‑000, Z‑999 → AA‑000).
+✅ Stock rudak MAT‑xxxx kiosztása működik (Assigned MAT barcode=MAT-204…).
 
-✅ TableUtils monospace font helper: fallback lista, minden táblázatban olvasható kódok.
+✅ Hulló audit sorok generálódnak, parentBarcode részben öröklődik.
 
-🟡 Hullókezelés: filozófia rögzítve, parentBarcode öröklés és új entryId logika még hiányzik.
+✅ AuditContextBuilder 11 csoport, 13 sor → teljes audit lefutott.
+
+⚠️ ParentBarcode még nem mindenhol konzisztens (több helyen ∅).
+
+⚠️ RodId még számos (Rod-001), betűs séma bevezetése hátra van.
+
+⚠️ Stop feltételek hiányoznak, nagy leftoverek (3348 mm) mutatják a scoring hiányosságát.
 
 👉 Holnap fókusz
-ParentBarcode öröklés bevezetése.
+ParentBarcode öröklés teljes bevezetése (OptimizerModel + ResultModel).
 
-Új waste leftover mindig új entryId‑t kapjon (forrás tiltása külön).
+Új leftover entryId logika → minden új hulló új entryId, forrás tiltása külön.
 
-Lokális leftover commit a globális készletbe.
+RodId betűs séma → safeLetterPrefix logika bevezetése, hogy vizuálisan elváljon a RST‑től.
 
-Audit szinkron (_planned_leftovers).
+Stop feltételek visszaemelése → három tartományos logika implementálása.
 
-Így most minden blokk benne van: a táblázat, a 🚀 Sprint fókusz (🔥 SOS pontokkal), a 📌 Mai eredmények és az 👉 Holnap fókusz.
+⚡ Összességében: a mai nap nagy előrelépése a badge‑ek tisztasága és a MAT‑xxxx kiosztás, de a holnapi fókuszban a ParentBarcode lánc és a RodId/stop logika lesz a kritikus.

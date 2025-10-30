@@ -109,6 +109,16 @@ public:
             kerf_mm, totalLength_mm);
     }
 
+
+    QString getWasteBarcode(){
+        for(auto&a:this->segments){
+            if(a.type() == Cutting::Segment::SegmentModel::Type::Waste){
+                return a.barcode();
+            }
+        }
+        return {};
+    }
+
     // a material törzsből jön (MAT-ROLL60-6000), mivel a törzsből jövő kódot sokszor szeretnénk látni (pl. anyagazonosítás, csoportosítás, riport).
     // és emiatt sok helyen félrevezető, mert a GUI tooltipben úgy tűnik, mintha ez lenne a sourceBarcode.
     QString materialBarcode() const;

@@ -1,4 +1,5 @@
 #include "resultstable_manager.h"
+#include "common/logger.h"
 #include "model/material/materialgroup_utils.h"
 #include "view/tableutils/colorlogicutils.h"
 #include "model/registries/materialregistry.h"
@@ -15,23 +16,6 @@ ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
    TableUtils::applySafeMonospaceFont(table, 10);
 }
 
-QString ResultsTableManager::formatWasteBadge(const Cutting::Plan::CutPlan& plan, int wasteIndex) {
-    QString badge;
-    if (plan.leftoverBarcode.isEmpty()) {
-        badge = QString("[%1|%2|W%3]")
-        .arg(plan.rodId)                        // 🔑 Stabil rúd azonosító
-            .arg(IdentifierUtils::unidentified())   // ⬅ explicit UNIDENTIFIED
-            .arg(wasteIndex);
-    } else {
-        badge = QString("[%1|%2|W%3]")
-        .arg(plan.rodId)
-            .arg(plan.leftoverBarcode)
-            .arg(wasteIndex);
-    }
-    return badge;
-}
-
-
 void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan) {
     int row = table->rowCount();
     table->insertRow(row);
@@ -40,22 +24,26 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // 🧵 Csoportnév badge
     QString groupName = GroupUtils::groupName(plan.materialId);
     QColor groupColor = GroupUtils::colorForGroup(plan.materialId);
-    QLabel* groupLabel = new QLabel((groupName.isEmpty() ? "–" : groupName)+plan.materialBarcode() );
+
+    // Anyagnév a registryből
+    QString materialName = plan.materialName();
+
+    // Ha van kategória, akkor "Category + Anyagnév", ha nincs, akkor csak Anyagnév
+    QString categoryText = groupName.isEmpty()
+                               ? materialName
+                               : groupName + " | " + materialName;
+
+    QLabel* groupLabel = new QLabel(categoryText);
     groupLabel->setAlignment(Qt::AlignCenter);
     groupLabel->setStyleSheet(QString(
                                   "QLabel { background-color: %1; color: white; font-weight: bold; padding: 6px; border-radius: 6px; }"
                                   ).arg(groupColor.name()));
 
-    // auto* itemLength = new QTableWidgetItem(QString::number(mat->stockLength_mm));
-    // itemLength->setTextAlignment(Qt::AlignCenter);
-    // //itemLength->setData(Qt::UserRole, mat->stockLength_mm);
-    // table->setItem(rowIx, ColLength, itemLength);
-
     // 🔢 Rod #
     // Globális planNumber + RodNumber + Barcode
     QString rodLabel = QString("%1|%2").arg(plan.rodId, plan.sourceBarcode);
     auto* itemRod = new QTableWidgetItem(rodLabel);
-    itemRod->setToolTip(QString("RodId: %1\nBarcode: %2\nMaterial: %3")
+    itemRod->setToolTip(QString("RodId: %1\nBarcode: %2")
                             .arg(plan.rodId)
                             .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode));
 
@@ -69,87 +57,52 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
 
     for (const Cutting::Segment::SegmentModel& s : plan.segments) {
         QString color;
-        switch (s.type) {
-        case Cutting::Segment::SegmentModel::Type::Piece:  color = s.length_mm < 300 ? "#e74c3c" : s.length_mm > 2000 ? "#f39c12" : "#27ae60"; break;
+        switch (s.type()) {
+        case Cutting::Segment::SegmentModel::Type::Piece:  color = s.length_mm() < 300 ? "#e74c3c" : s.length_mm() > 2000 ? "#f39c12" : "#27ae60"; break;
         case Cutting::Segment::SegmentModel::Type::Kerf:   color = "#34495e"; break;
         case Cutting::Segment::SegmentModel::Type::Waste:  color = "#bdc3c7"; break;
         }
 
-        QString segBarcode;
-
-        // Ha a szegmensnek van saját barcode-ja, azt használjuk
-        if (!s.barcode.isEmpty() && s.barcode != "UNIDENTIFIED") {
-            "a:"+segBarcode = s.barcode;
-        }
-        // Ha waste szegmens és a plan shortcut is ismert, azt használjuk
-        else if (s.type == Cutting::Segment::SegmentModel::Type::Waste && !plan.leftoverBarcode.isEmpty()) {
-            "b:"+segBarcode = plan.leftoverBarcode;
-        }
-        //  Egyébként rodId vagy sourceBarcode (fizikai forrás azonosító)
-        else {
-            "c:"+segBarcode = plan.rodId.isEmpty() ? plan.sourceBarcode : plan.rodId;
-        }
-
-        QLabel* label = new QLabel(
-            s.toLabelString(QString("Rod %1").arg(plan.rodId), segBarcode)
-            );
+        // Badge szegmens label      
+        QString badgeLabel= s.toLabelString();
 
         // Tooltip: részletes infó
-        label->setToolTip(QString("RodId: %1\nBarcode: %2\nMaterial: %3")
-                              .arg(plan.rodId)
-                              .arg(segBarcode.isEmpty() ? "—" : segBarcode)
-                              .arg(plan.materialBarcode()));
+        QString badge_tooltip_txt = QString("Anyag: %1\nCsoport: %2\nMaterial kód: %3\nForrás: %4")
+                                    .arg(plan.materialName())
+                                    .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
+                                    .arg(plan.materialBarcode())  // törzsből jövő kód (pl. MAT-ROLL60-6000)
+                                    .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode); // konkrét rúd (MAT-001 / RST-013)
+
+        zInfo("ResultsTableManager::addRow badgeLabel:"+badgeLabel);
+        zInfo("ResultsTableManager::addRow badge_tooltip_txt:"+badge_tooltip_txt);
+
+        QLabel* label = new QLabel(badgeLabel);
+        label->setToolTip(badge_tooltip_txt);
 
         label->setAlignment(Qt::AlignCenter);
         label->setStyleSheet(QString(
                                  "QLabel { background-color: %1; color: white; font-weight: bold; padding: 3px 8px; border-radius: 6px; }"
                                  ).arg(color));
 
-        if (s.type == Cutting::Segment::SegmentModel::Type::Kerf)
+        if (s.type() == Cutting::Segment::SegmentModel::Type::Kerf)
             label->setFixedWidth(60);
 
         layout->addWidget(label);
     }
 
-    // 📏 Kerf, Waste
-    auto* itemKerf = new QTableWidgetItem(QString::number(plan.kerfTotal));
+    // 📏 Length
     auto* itemLength = new QTableWidgetItem(QString::number(plan.totalLength));
-
-    //int wasteCounter = 0;
-    // Csak a legutolsó waste szegmens
-    QString wasteBadge;
-    auto it = std::find_if(plan.segments.rbegin(), plan.segments.rend(),
-                           [](const auto& s){ return s.type == Cutting::Segment::SegmentModel::Type::Waste; });
-
-    if (it != plan.segments.rend()) {
-        // mindig csak az utolsó waste szegmens
-        wasteBadge = formatWasteBadge(plan, 1);
-    }
-
-    auto* itemWaste = new QTableWidgetItem(wasteBadge.isEmpty()
-                                               ? QString::number(plan.waste)
-                                               : wasteBadge);
-    itemWaste->setTextAlignment(Qt::AlignCenter);
-    table->setItem(row, ColWaste, itemWaste);
-
-
-    itemKerf->setTextAlignment(Qt::AlignCenter);
     itemLength->setTextAlignment(Qt::AlignCenter);
 
-    // 🎨 Háttér waste alapján
-    QColor bgColor = plan.waste <= 500 ? QColor(144,238,144)
-                     : plan.waste >= 1500 ? QColor(255,120,120)
-                                          : QColor(245,245,245);
+    // kerf
+    auto* itemKerf = new QTableWidgetItem(QString::number(plan.kerfTotal));
+    itemKerf->setTextAlignment(Qt::AlignCenter);
 
-    for (int col = 0; col < table->columnCount(); ++col) {
-        QTableWidgetItem* item = table->item(row, col);
-        if (!item) {
-            item = new QTableWidgetItem();
-            table->setItem(row, col, item);
-        }
-        item->setBackground(bgColor);
-        item->setForeground(Qt::black);
-    }
+    // Csak a legutolsó waste szegmens
+    // 📏 Waste
+    auto* itemWaste = new QTableWidgetItem(QString::number(plan.waste));
+    itemWaste->setTextAlignment(Qt::AlignCenter);
+    table->setItem(row, ColWaste, itemWaste);
 
     // 📋 Cellák beállítása
     table->setItem(row, ColRod, itemRod);
@@ -161,7 +114,10 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     table->setCellWidget(row + 1, 0, cutsWidget);
 
     const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
+
+    // csak colort állít be
     ResultTable::RowStyler::applyStyle(table, row, mat, plan);
+    // csak stylesheetet állít be
     ColorLogicUtils::applyBadgeBackground(cutsWidget, MaterialUtils::colorForMaterial(*mat));
 }
 

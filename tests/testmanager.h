@@ -12,6 +12,7 @@ private:
     TestManager() = default;
 
     // Profil-specifikus tesztfüggvények
+    void runDoubleTests();
     void runMakiTests();
     void runFullTests();
 };
