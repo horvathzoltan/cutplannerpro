@@ -27,3 +27,70 @@ A OptimizerUtils::calcScore() logikáját nem láttuk, de a logban még mindig e
 Ez arra utal, hogy a kellemetlen leftover büntetés még nincs visszaállítva −300‑ra vagy dinamikus skálára.
 
 Ez még nincs megcsinálva → TODO.
+
+***
+
+Amit érdemes majd átbeszélni
+Mezősorrend – Most a StepId van elöl, utána a RodLabel, Material, Barcode… – Ha az operátor szemszögéből nézzük, lehet, hogy a RodId + Barcode párosnak kellene legelöl lennie, mert ezek alapján azonosítja a rudat. – A StepId inkább audit‑technikai, mehet hátrébb.
+
+Elnevezések – RodLabel → lehetne egyszerűen RodId (mert most már betűs sémát akarunk, pl. Rod‑A, Rod‑CA). – Barcode → maradhat, de tooltipben mindig külön soron legyen:
+
+Kód
+RodId: Rod‑A
+Barcode: MAT‑228
+Material: Csőtengely Ø60x6000mm
+– RemainingBefore / RemainingAfter → lehetne rövidebb, pl. Before / After vagy LenBefore / LenAfter, hogy ne legyen túl széles a tábla.
+
+Rod# tartalom – Most a RodLabel mezőben Rod Rod-001 formátum látszik. – A cél az, hogy itt csak a RodId legyen (pl. Rod‑A), és a barcode külön oszlopban. – Így megszűnik a duplikáció, és auditban is egyértelmű lesz, melyik a belső azonosító (RodId) és melyik a külső címke (MAT/RST).
+
+👉 Javaslat: amikor a hétvégi futamban hozzányúlunk a ParentBarcode örökléshez és a RodId betűsítéshez, akkor egyúttal érdemes a ResultsTableManager oszlopdefinícióját is átrendezni. Így a GUI‑ban rögtön tisztán látszik majd a RodId + Barcode páros, és nem keveredik össze a kettő.
+
+***
+💡 Mit érdemes a tooltipbe tenni?
+Most a log alapján így néz ki:
+
+Anyag neve
+
+Csoport
+
+Material kód
+
+Forrás (MAT‑xxx vagy RST‑xxx)
+
+Ehhez képest javaslom, hogy a tooltip legyen rövid, de audit‑barát, és mindig ugyanabban a sorrendben jelenjen meg. Például:
+
+Kód
+RodId: Rod‑A
+Barcode: MAT‑228
+Material: Csőtengely Ø60x6000mm
+Csoport: Csőtengely Ø60
+CutSize: 2650 mm
+Remaining: 3348 mm
+Forrás: RST‑012
+Gép: Thomas
+Státusz: Pending
+🎯 Javasolt mezők
+RodId – mindig az első sor, mert ez a belső identitás.
+
+Barcode – a külső címke (MAT/RST).
+
+Material + Csoport – hogy azonnal látszódjon, miből vágunk.
+
+CutSize – az adott vágás mérete.
+
+RemainingBefore / After – rövidítve csak egy sorban: Remaining: 3348 mm.
+
+Forrás – ha leftoverből jött, akkor az eredeti RST; ha stockból, akkor MAT.
+
+Gép – melyik gépen fut.
+
+Státusz – Pending / Done / Error.
+
+✨ Miért jó így?
+Az operátor rögtön látja: melyik rúd, milyen hossz, melyik gép.
+
+Az auditor rögtön látja: honnan jött (ParentBarcode), hova került (új leftover).
+
+A badge label maradhat rövid (P1·MAT-228·2650mm), a részletek a tooltipben lesznek.
+
+👉 Holnap, amikor a ParentBarcode öröklést és a RodId betűsítést hozzuk be, érdemes a tooltip logikát is átnézni a ResultsTableManager‑ben, hogy ezek az új mezők is bekerüljenek.
