@@ -43,9 +43,20 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
     // Globális planNumber + RodNumber + Barcode
     QString rodLabel = QString("%1|%2").arg(plan.rodId, plan.sourceBarcode);
     auto* itemRod = new QTableWidgetItem(rodLabel);
-    itemRod->setToolTip(QString("RodId: %1\nBarcode: %2")
-                            .arg(plan.rodId)
-                            .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode));
+    QString rod_tooltip_txt = QString("RodId: %1\n"
+                             "Barcode: %2\n"
+                             "Parent: %3\n"
+                             "Forrás: %4\n"
+                             "OptimizationId: %5")
+                         .arg(plan.rodId)
+                         .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode)
+                         .arg(plan.parentBarcode.value_or("—"))
+                         .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
+                              : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
+                                                                               : "Optimization")
+                         .arg(plan.optimizationId);
+
+    itemRod->setToolTip(rod_tooltip_txt);
 
     itemRod->setTextAlignment(Qt::AlignCenter);
 
@@ -67,11 +78,32 @@ void ResultsTableManager::addRow(const QString& rodNumber, const Cutting::Plan::
         QString badgeLabel= s.toLabelString();
 
         // Tooltip: részletes infó
-        QString badge_tooltip_txt = QString("Anyag: %1\nCsoport: %2\nMaterial kód: %3\nForrás: %4")
-                                    .arg(plan.materialName())
-                                    .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
-                                    .arg(plan.materialBarcode())  // törzsből jövő kód (pl. MAT-ROLL60-6000)
-                                    .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode); // konkrét rúd (MAT-001 / RST-013)
+        // Tooltip: részletes infó (audit-barát)
+        QString badge_tooltip_txt = QString(
+                                        "RodId: %1\n"
+                                        "Barcode: %2\n"
+                                        "Material: %3\n"
+                                        "Csoport: %4\n"
+                                        "CutSize: %5 mm\n"
+                                        "Remaining: %6 mm\n"
+                                        "Parent: %7\n"
+                                        "Forrás: %8\n"
+                                        "OptimizationId: %9\n"
+                                        "Gép: %10\n"
+                                        "Státusz: %11")
+                                        .arg(plan.rodId)
+                                        .arg(s.barcode())
+                                        .arg(plan.materialName())
+                                        .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
+                                        .arg(s.length_mm())
+                                        .arg(s.type() == Cutting::Segment::SegmentModel::Type::Waste ? QString::number(s.length_mm()) : "—")
+                                        .arg(plan.parentBarcode.value_or("—"))
+                                        .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
+                                             : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
+                                                                                              : "Optimization")
+                                        .arg(plan.optimizationId)
+                                        .arg(plan.machineName)
+                                        .arg(Cutting::Plan::statusText(plan.status));
 
         zInfo("ResultsTableManager::addRow badgeLabel:"+badgeLabel);
         zInfo("ResultsTableManager::addRow badge_tooltip_txt:"+badge_tooltip_txt);

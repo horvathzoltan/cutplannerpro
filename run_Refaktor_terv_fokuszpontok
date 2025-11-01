@@ -1,96 +1,71 @@
-2.a. Stockból jövő rudak stabil azonosítója
+Refaktor terv – fókuszpont lista
+1. ResultsTableManager – mezősorrend és elnevezés
+Cél: RodId + Barcode oszlop kerüljön legelőre, StepId hátrébb.
 
-A logban látszik: 🆕 Assigned MAT barcode=MAT-204 for stock materialId=... → tehát a stock rudak már kapnak MAT‑xxxx kódot.
+Feladatok:
 
-Ez rendben van, de a RodId és a MAT barcode még keveredik a badge‑ben. A cél az, hogy a RodId mindig külön mező legyen, a MAT‑xxxx pedig a barcode mezőben. Ez részben kész, de a RodId formátum még számos (Rod-001), nem betűs.
+RodLabel → RodId átnevezés.
 
-3. Stop feltételek visszaemelése
+Barcode külön oszlopban.
 
-A mostani optimize() rod‑loopban még mindig a „minden esetben próbáljunk még egy darabot” logika van.
+Rövidebb mezőnevek: Before / After.
 
-A három tartományos stop‑feltétel (selejt/jó/köztes/túl nagy leftover) még nincs visszahozva.
+Érintett modulok: ResultsTableManager, táblázat fejléc‑ és oszlopdefiníciók, tooltip generálás.
 
-Tehát ez TODO.
+2. Tooltip sablon frissítése
+Cél: audit‑barát, konzisztens sorrend.
 
-5. RodId és planCounter szétválasztása
+Új sorrend:
 
-A kódban még mindig rod.rodId = IdentifierUtils::makeRodId(++planCounter); van.
+RodId
 
-Tehát a RodId generálás a planCounter‑hez kötött, nincs külön rodCounter.
+Barcode
 
-Ez még nincs szétválasztva → TODO.
+Material + Csoport
 
-6. Scoring finomhangolás
+CutSize
 
-A OptimizerUtils::calcScore() logikáját nem láttuk, de a logban még mindig előfordulnak nagy leftoverek (pl. 3348 mm).
+Remaining
 
-Ez arra utal, hogy a kellemetlen leftover büntetés még nincs visszaállítva −300‑ra vagy dinamikus skálára.
+Forrás (MAT/RST)
 
-Ez még nincs megcsinálva → TODO.
+Gép
 
-***
+Státusz
 
-Amit érdemes majd átbeszélni
-Mezősorrend – Most a StepId van elöl, utána a RodLabel, Material, Barcode… – Ha az operátor szemszögéből nézzük, lehet, hogy a RodId + Barcode párosnak kellene legelöl lennie, mert ezek alapján azonosítja a rudat. – A StepId inkább audit‑technikai, mehet hátrébb.
+Érintett modulok: ResultsTableManager, SegmentModel::toLabelString(), tooltip sablon.
 
-Elnevezések – RodLabel → lehetne egyszerűen RodId (mert most már betűs sémát akarunk, pl. Rod‑A, Rod‑CA). – Barcode → maradhat, de tooltipben mindig külön soron legyen:
+3. Log kimenet finomítás
+Cél: minden sorban a legfontosabb adatok → forrás (Anyag/Hulló barcode), RodId, gép, kerf, darablista, hulladék.
 
-Kód
-RodId: Rod‑A
-Barcode: MAT‑228
-Material: Csőtengely Ø60x6000mm
-– RemainingBefore / RemainingAfter → lehetne rövidebb, pl. Before / After vagy LenBefore / LenAfter, hogy ne legyen túl széles a tábla.
+Feladatok:
 
-Rod# tartalom – Most a RodLabel mezőben Rod Rod-001 formátum látszik. – A cél az, hogy itt csak a RodId legyen (pl. Rod‑A), és a barcode külön oszlopban. – Így megszűnik a duplikáció, és auditban is egyértelmű lesz, melyik a belső azonosító (RodId) és melyik a külső címke (MAT/RST).
+Aggregált darablista (pl. 2×2650 mm).
 
-👉 Javaslat: amikor a hétvégi futamban hozzányúlunk a ParentBarcode örökléshez és a RodId betűsítéshez, akkor egyúttal érdemes a ResultsTableManager oszlopdefinícióját is átrendezni. Így a GUI‑ban rögtön tisztán látszik majd a RodId + Barcode páros, és nem keveredik össze a kettő.
+Redundáns sorok összevonása.
 
-***
-💡 Mit érdemes a tooltipbe tenni?
-Most a log alapján így néz ki:
+Érintett modulok: CuttingPresenter, zEvent logger.
 
-Anyag neve
+4. Audit státusz jelzések egységesítése
+Cél: minden leftover és cutPlan sor auditálható legyen.
 
-Csoport
+Feladatok:
 
-Material kód
+AuditStateManager enum + setOutdated kiterjesztése.
 
-Forrás (MAT‑xxx vagy RST‑xxx)
+MainWindow::lblAuditStatus switch‑es kezelés.
 
-Ehhez képest javaslom, hogy a tooltip legyen rövid, de audit‑barát, és mindig ugyanabban a sorrendben jelenjen meg. Például:
+Érintett modulok: AuditStateManager, CuttingPresenter, MainWindow.
 
-Kód
-RodId: Rod‑A
-Barcode: MAT‑228
-Material: Csőtengely Ø60x6000mm
-Csoport: Csőtengely Ø60
-CutSize: 2650 mm
-Remaining: 3348 mm
-Forrás: RST‑012
-Gép: Thomas
-Státusz: Pending
-🎯 Javasolt mezők
-RodId – mindig az első sor, mert ez a belső identitás.
+5. Registry és gép‑hozzárendelés
+Cél: Worklist tervben a gép hozzárendelése stabilan működjön.
 
-Barcode – a külső címke (MAT/RST).
+Feladatok:
 
-Material + Csoport – hogy azonnal látszódjon, miből vágunk.
+Amíg nincs végleges gép‑mapping, teszteléshez fix: CM2 („Alu vágó műhely”).
 
-CutSize – az adott vágás mérete.
+Registry validáció és zEvent logger integráció.
 
-RemainingBefore / After – rövidítve csak egy sorban: Remaining: 3348 mm.
+Érintett modulok: CutPlan, MachineUtils, registry kezelő.
 
-Forrás – ha leftoverből jött, akkor az eredeti RST; ha stockból, akkor MAT.
-
-Gép – melyik gépen fut.
-
-Státusz – Pending / Done / Error.
-
-✨ Miért jó így?
-Az operátor rögtön látja: melyik rúd, milyen hossz, melyik gép.
-
-Az auditor rögtön látja: honnan jött (ParentBarcode), hova került (új leftover).
-
-A badge label maradhat rövid (P1·MAT-228·2650mm), a részletek a tooltipben lesznek.
-
-👉 Holnap, amikor a ParentBarcode öröklést és a RodId betűsítést hozzuk be, érdemes a tooltip logikát is átnézni a ResultsTableManager‑ben, hogy ezek az új mezők is bekerüljenek.
+👉 Ez a lista most már tényleg a felhasználói élmény és audit‑ergonómia polírozására koncentrál, mert a belső logika (RodId, stop feltételek, scoring) már stabil.

@@ -4,42 +4,20 @@
 
 class IdentifierUtils {
 public:
-    // 🆔 Rúd azonosító (maradhat tisztán numerikus, mert belső)
     static QString makeRodId(int counter) {
-        static const QString allowed = "ABCDEFGHJKMNPQRSTUVWXYZ";
-        int base = allowed.size(); // 22
-
-        if (counter < 1000) {
-            return QString("Rod-%1").arg(counter, 3, 10, QChar('0'));
-        }
-
-        int block = counter / 1000;
-        int suffix = counter % 1000;
+        int base = 22; // ugyanannyi, mint a safeLetterPrefix allowed.size()
 
         QString prefix;
-        if (block <= base) {
-            prefix = allowed[block - 1];
-        } else if (block <= base * base) {
-            int first = (block - 1) / base;
-            int second = (block - 1) % base;
-            prefix = QString("%1%2").arg(allowed[first]).arg(allowed[second]);
-        } else if (block <= base * base * base) {
-            int first = (block - 1) / (base * base);
-            int second = ((block - 1) / base) % base;
-            int third = (block - 1) % base;
-            prefix = QString("%1%2%3").arg(allowed[first]).arg(allowed[second]).arg(allowed[third]);
-        } else if (block <= base * base * base * base) {
-            int first = (block - 1) / (base * base * base);
-            int second = ((block - 1) / (base * base)) % base;
-            int third = ((block - 1) / base) % base;
-            int fourth = (block - 1) % base;
-            prefix = QString("%1%2%3%4").arg(allowed[first]).arg(allowed[second]).arg(allowed[third]).arg(allowed[fourth]);
-        } else {
-            return QString("Rod-%1").arg(QString::number(counter, 16).rightJustified(4, '0').toUpper());
+        int n = counter;
+        while (n > 0) {
+            n--; // 0-index korrekció
+            prefix.prepend(safeLetterPrefix(n % base));
+            n /= base;
         }
 
-        return QString("Rod-%1-%2").arg(prefix).arg(suffix, 3, 10, QChar('0'));
+        return QString("Rod-%1").arg(prefix);
     }
+
 
 
     // 🆔 Darab azonosító (UUID rövidítve)

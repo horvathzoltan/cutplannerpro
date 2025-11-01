@@ -28,6 +28,7 @@ SOURCES += \
     common/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
     tests/testmanager.cpp \
+    view/cellhelpers/auditstatustext.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -134,6 +135,7 @@ HEADERS += \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
+    view/cellhelpers/auditstatustext.h \
     view/tablerowstyler/materialrowstyler.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
@@ -270,7 +272,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     README.md \
-    run_2 \
+    run_2.txt \
     run_Refaktor_terv_fokuszpontok \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \

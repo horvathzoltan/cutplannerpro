@@ -92,7 +92,7 @@ public:
     // - Leftover esetén: a leftover saját RST-xxx kódja.
     // Ez az érték mindig egyedi a konkrét rúdra, és auditban a "Barcode" mező.
 
-
+    int optimizationId; // 🔢 Az optimalizációs futás azonosítója (kötelező)
 /**
  * @brief 📐 Szakaszgenerálás helper - vágási szakaszok generálása a darabok és paraméterek alapján
  * @param kerf_mm Vágási veszteség mm-ben

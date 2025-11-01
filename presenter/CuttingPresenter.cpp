@@ -297,7 +297,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
 
     // 4️⃣ Audit sorok előállítása
     _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
-    lastAuditRows = OptimizationAuditBuilder::build(model);
+    //lastAuditRows = OptimizationAuditBuilder::build(model);
 
     // 5️⃣ Logolás
     OptimizationLogger::logPlans(model.getResult_PlansRef(), model.getResults_Leftovers());
@@ -488,6 +488,25 @@ bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
 }
 
 /*StorageAudit*/
+/**
+ * @brief Teljes audit futtatása: stock + leftover sorok összegyűjtése és context hozzárendelése.
+ *
+ * Lépései:
+ * 1. Legenerálja a stock audit sorokat a StorageAuditService-ből.
+ * 2. Legenerálja a leftover audit sorokat a LeftoverAuditService-ből.
+ * 3. Összefűzi a két listát (lastAuditRows).
+ * 4. Ha van optimalizációs terv:
+ *    - Meghívja az AuditUtils::injectPlansIntoAuditRows függvényt, amely
+ *      beállítja a sorok isInOptimization flag-jét és leftover esetén a 0/1 expected értéket.
+ *    - Legenerálja a pickingMap-et a generatePickingMapFromPlans segítségével.
+ *    - Meghívja az AuditUtils::assignContextsToRows függvényt, amely contextet rendel a sorokhoz.
+ * 5. Ha nincs optimalizációs terv, akkor üres pickingMap-pel hívja az assignContextsToRows-t.
+ * 6. Frissíti a nézetet (update_StorageAuditTable).
+ * 7. Beállítja az aktív audit sorokat az AuditStateManager-ben.
+ *
+ * Ez a függvény a stock és leftover világot egyesíti, és gondoskodik arról,
+ * hogy a leftover sorok példány szinten, a stock sorok pedig aggregáltan jelenjenek meg.
+ */
 
 
 void CuttingPresenter::runStorageAudit() {
@@ -518,12 +537,22 @@ void CuttingPresenter::runStorageAudit() {
 
 /*PickingPlan*/
 
-// a requestben van egy material - ebből az anyagból szeretnénk levágni - requestMaterial
-// a planban van egy material - selectedMaterialId - ezt nem tudjuk hogy mi.
-// De: először a reqMaterial groupjában keresünk hullót
-// és ha nincsen, akkor a groupjából keresünk egy szálat
-// majd elkészülnek a cutok per plan
-// minden cutban van egy material, ez a reqMaterial
+/**
+ * @brief PickingMap generálása a vágási tervek alapján.
+ *
+ * Feladata:
+ * - Csak a stock forrású terveket veszi figyelembe.
+ * - Minden stock CutPlan egy rúdnak számít → növeli a materialId-hoz tartozó darabszámot.
+ * - A leftover (Reusable) forrású terveket kihagyja, mert azok példány szinten,
+ *   külön audit sorban jelennek meg, és nem aggregálódnak materialId szerint.
+ *
+ * Eredmény:
+ * - QMap<materialId, darabszám>, amelyet az AuditContextBuilder::buildFromRows
+ *   használ a stock sorok totalExpected értékének kiszámításához.
+ *
+ * @param plans Az optimalizációs tervek listája.
+ * @return QMap<QUuid,int> materialId → elvárt darabszám.
+ */
 
 QMap<QUuid, int> CuttingPresenter::generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
     QMap<QUuid, int> pickingMap;

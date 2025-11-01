@@ -12,6 +12,27 @@
 StorageAuditService::StorageAuditService(QObject* parent)
     : QObject(parent) {}
 
+/**
+ * @brief Teljes stock audit sorok legenerálása minden vágógéphez.
+ *
+ * Lépései:
+ * - Lekéri az összes regisztrált vágógépet a CuttingMachineRegistry-ből.
+ * - Minden géphez meghívja az auditMachineStorage() függvényt,
+ *   amely kigyűjti a rootStorage és az alatta lévő tárolók stock bejegyzéseit.
+ * - Minden stock bejegyzésből StorageAuditRow készül, forrás típusa: Stock.
+ *
+ * Eredmény:
+ * - Egy vektor, amely tartalmazza az összes stock audit sort,
+ *   gépenként és tárolónként kigyűjtve.
+ *
+ * Fontos:
+ * - Ezek a sorok anyag szinten aggregálódnak majd a context építésnél.
+ * - Az expected értékük a pickingMap alapján kerül kiszámításra,
+ *   nem itt a generálásnál.
+ *
+ * @return QVector<StorageAuditRow> Az összes stock audit sor.
+ */
+
 QVector<StorageAuditRow> StorageAuditService::generateAuditRows_All()
 {
     QVector<StorageAuditRow> result;
@@ -102,7 +123,7 @@ StorageAuditRow StorageAuditService::createAuditRow(
     row.stockEntryId    = stock.entryId;               // 🔗 kapcsolat a StockEntry-hez
     row.sourceType = AuditSourceType::Stock;
 
-    row.pickingQuantity = 0;//pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
+    //row.pickingQuantity = 0;//pickingMap.value(stock.materialBarcode(), 0); // vagy materialName alapján
     row.actualQuantity   = stock.quantity;
     row.originalQuantity = stock.quantity;
     //row.rowPresence = AuditPresence::Unknown;         // Felhasználó fogja beállítani

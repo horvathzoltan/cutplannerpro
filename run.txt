@@ -1,8 +1,8 @@
-🧩 Állapottábla – 2025.10.30. (esti frissítés)
+🧩 Állapottábla – 2025.10.31. (esti frissítés)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
-🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	🟡 Folyamatban	✅	🚧 Sprint SOS	MAT‑xxxx kiosztás működik, RodId még számos, betűs séma bevezetése hátra van
-🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Vegyes: van ahol öröklődik, de több helyen ∅; szabályt konzisztensen be kell vezetni
-🔥 SOS‑3	Stop feltételek visszaemelése	✅	🔴 Hiányzik	✅	🚧 Sprint SOS	Rod‑loop még mindig „vágj amíg lehet”; három tartományos stop logika hiányzik
+🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	🟢 Kész	✅	🚧 Sprint SOS	MAT‑xxxx kiosztás stabil, RodId betűs séma (safeLetterPrefix) bevezetve
+🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	🟡 Részben kész	✅	🚧 Sprint SOS	Több helyen még ∅, teljes öröklés bevezetése OptimizerModel + ResultModel szinten szükséges
+🔥 SOS‑3	Stop feltételek visszaemelése	✅	🟢 Kész	✅	🚧 Sprint SOS	Három tartományos logika implementálva, leftover kezelés stabil
 01–12	Relocation + UI alapok	✅	🟢 Kész			stabil
 13	CuttingStrategy enum + két fn	✅	🟢 Kész			Enum integrálva, ini‑mentés + UI connect működik
 14	Cutting plan váltás (UI opció)	✅	🟡 Folyamatban	✅	✅	UI elem elhelyezés finomhangolás hiányzik
@@ -15,31 +15,29 @@
 29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	operátor UI, darab státusz
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, leftoverId – részben kész, új entryId logika pontosítandó
 34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	🟡 Folyamatban	✅	🚧 Sprint 4	részben kész, státuszvezérlés hiányzik
-42	IdentifierUtils refaktor	✅	🟢 Kész	✅		kétbetűs prefix, félmillió feletti biztonságos kód
+42	IdentifierUtils refaktor	✅	🟢 Kész	✅		safeLetterPrefix logika bevezetve, betűs RodId
 43	Maki tesztprofil bővítése	✅	🟢 Kész	✅		határérték‑tesztek rendben
 44	TableUtils monospace font helper	✅	🟢 Kész	✅		fallback lista működik
 📌 Mai eredmények
-✅ Badge label szeparátor átállítva középső pontra (·), logban tisztán látszik: P1:MAT-203·2650mm.
+✅ RodId refaktor: safeLetterPrefix logika bevezetve, Rod‑A, Rod‑AB formátum → vizuálisan elválik a RST‑től.
 
-✅ Stock rudak MAT‑xxxx kiosztása működik (Assigned MAT barcode=MAT-204…).
+✅ Stop feltételek: három tartományos logika visszaemelve, leftover kezelés stabil.
 
-✅ Hulló audit sorok generálódnak, parentBarcode részben öröklődik.
+✅ Scoring finomhangolás: selejt leftover −300, túl nagy leftover dinamikus büntetés → nagy maradékok kiszorítva.
 
-✅ AuditContextBuilder 11 csoport, 13 sor → teljes audit lefutott.
+✅ AuditContextBuilder: teljes audit lefutott, 11 csoport, 13 sor.
 
-⚠️ ParentBarcode még nem mindenhol konzisztens (több helyen ∅).
+⚠️ ParentBarcode: még nem mindenhol konzisztens, több helyen ∅.
 
-⚠️ RodId még számos (Rod-001), betűs séma bevezetése hátra van.
-
-⚠️ Stop feltételek hiányoznak, nagy leftoverek (3348 mm) mutatják a scoring hiányosságát.
+⚠️ Új leftover entryId logika: részben kész, pontosítás szükséges.
 
 👉 Holnap fókusz
 ParentBarcode öröklés teljes bevezetése (OptimizerModel + ResultModel).
 
 Új leftover entryId logika → minden új hulló új entryId, forrás tiltása külön.
 
-RodId betűs séma → safeLetterPrefix logika bevezetése, hogy vizuálisan elváljon a RST‑től.
+ResultsTableManager mezősorrend és elnevezés → RodId + Barcode előre, StepId hátrébb.
 
-Stop feltételek visszaemelése → három tartományos logika implementálása.
+Tooltip sablon frissítése → audit‑barát sorrend (RodId, Barcode, Material, CutSize, Remaining, Forrás, Gép, Státusz).
 
-⚡ Összességében: a mai nap nagy előrelépése a badge‑ek tisztasága és a MAT‑xxxx kiosztás, de a holnapi fókuszban a ParentBarcode lánc és a RodId/stop logika lesz a kritikus.
+⚡ Összességében: a mai nap nagy előrelépése a RodId refaktor, stop feltételek és scoring stabilizálása. A holnapi fókuszban a ParentBarcode lánc teljes konzisztenciája és a UI‑ergonómiai finomítások lesznek a kritikusak.

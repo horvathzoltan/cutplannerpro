@@ -19,12 +19,12 @@ static const  bool _isVerbose = false;
 
 inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
 {
-    if(_isVerbose){
+    if (_isVerbose) {
         zInfo(L("[shouldShowAuditCheckbox] → %1 | módosítva: %2 | auditált: %3 | elvárt: %4 | egyezik: %5")
                   .arg(row.rowId.toString())
                   .arg(row.isRowModified)
                   .arg(row.isRowAuditChecked)
-                  .arg(row.pickingQuantity)
+                  .arg(row.totalExpected()) // már getterből
                   .arg(row.actualQuantity == row.originalQuantity));
     }
 
@@ -35,11 +35,11 @@ inline bool shouldShowAuditCheckbox(const StorageAuditRow& row)
 
     // Stock soroknál marad az eredeti logika
     return !row.isRowModified && (
-               (row.context && row.context->totalExpected > 0)
-               || row.pickingQuantity > 0
+               row.totalExpected() > 0
                || row.isInOptimization
                );
 }
+
 
 inline QWidget* createAuditCheckboxWidget(const StorageAuditRow& row,
                                           QObject* receiver,

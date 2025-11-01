@@ -1,8 +1,11 @@
 #pragma once
 #include <QVector>
 #include <numeric>
+#include <model/registries/materialregistry.h>
 #include "model/cutting/piece/piecewithmaterial.h"
+#include "model/cutting/plan/cutplan.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
+#include "model/cutting/cuttingmachine.h"
 
 namespace OptimizerUtils {
                                                           // Darabhosszak összege
@@ -23,64 +26,31 @@ inline int computeWasteInt(int selectedLength_mm, int used_mm) {
 }
 
 /**
- * @brief Pontszámítást végez egy adott darabkombinációra.
+ * @brief Kombinációs pontszám számítása.
  *
  * A függvény célja, hogy összehasonlíthatóvá tegye a különböző vágási lehetőségeket,
  * és kiválassza közülük a legjobbat. A magasabb pontszám a kedvezőbb megoldást jelzi.
  *
- * A számítás szempontjai:
- * - @b Darabszám: minden kivágott darab +100 pontot ér.
- * - @b Hulladék: a keletkező hulladék hossza levonásra kerül a pontszámból.
- * - @b Teljes elfogyasztás: ha waste == 0, akkor +800 bónusz jár.
- * - @b Jó leftover: ha a maradék a GOOD_LEFTOVER_MIN és GOOD_LEFTOVER_MAX közé esik,
- *   akkor +300 bónusz jár (pszichológiailag „jó érzésű” maradék).
- * - @b Selejt leftover: ha a maradék 0 < leftover < SELEJT_THRESHOLD,
- *   akkor −300 büntetés jár (bosszantóan kicsi hulladék).
- * - @b Pontos egy darabos illeszkedés: ha egyetlen darabbal pontosan elfogy a rúd,
- *   további +200 bónusz jár.
- * - @b Túl nagy leftover: ha a maradék > GOOD_LEFTOVER_MAX,
- *   akkor −100 büntetés jár (valószínűleg kiadhatna még egy darabot, de nem ad).
+ * Szempontok:
+ * - Darabszám: minden kivágott darab +100 pont.
+ * - Hulladék: a keletkező hulladék hossza levonásra kerül.
+ * - Teljes elfogyasztás: ha waste == 0, akkor +800 bónusz.
+ * - Pontos egy darabos illeszkedés: ha leftover == 0 és pieceCount == 1, további +200 bónusz.
+ * - Jó leftover: ha leftover a GOOD_LEFTOVER_MIN és GOOD_LEFTOVER_MAX közé esik, +300 bónusz.
+ * - Selejt leftover: ha 0 < leftover < SELEJT_THRESHOLD, akkor −300 büntetés.
+ * - Túl nagy leftover: ha leftover > GOOD_LEFTOVER_MAX, akkor dinamikus büntetés
+ *   (−100 alap + mérettel arányos levonás).
  *
  * @param pieceCount     A kivágott darabok száma.
  * @param waste          A vágás után keletkező hulladék hossza (mm).
  * @param leftoverLength A rúd fennmaradó hossza (mm).
  * @return int           A kombináció pontszáma; minél nagyobb, annál jobb.
  *
- * @note Ez a pontozás nem pusztán matematikai hatékonyságot tükröz,
+ * @note A pontozás nem pusztán matematikai hatékonyságot tükröz,
  *       hanem a műhelypszichológiát is: preferálja a teljesen elfogyasztott rudakat
  *       és a jól használható maradékokat, miközben bünteti a bosszantóan kicsi
- *       vagy a „túl nagy, de kihasználatlan” hulladékokat.
+ *       vagy a túl nagy, kihasználatlan maradékokat.
  */
-// inline int calcScore(int pieceCount, int waste, int leftoverLength) {
-//     int score = 0;
-//     score += pieceCount * 100;
-//     score -= waste;
-
-//     if (waste == 0) score += 800;
-
-//     // Jó leftover tartomány
-//     if (leftoverLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
-//         leftoverLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
-//         score += 300;
-//     }
-
-//     // Selejt leftover
-//     if (leftoverLength > 0 && leftoverLength < OptimizerConstants::SELEJT_THRESHOLD) {
-//         score -= 300;
-//     }
-
-//     // Pontos egy darabos illeszkedés
-//     if (leftoverLength == 0 && pieceCount == 1) {
-//         score += 200;
-//     }
-
-//     // Túl nagy leftover
-//     if (leftoverLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
-//         score -= 100;
-//     }
-
-//     return score;
-// }
 
 inline int calcScore(int pieceCount, int waste, int leftoverLength) {
     int score = 0;
@@ -107,21 +77,22 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength) {
         score += 300;
     }
 
-    // 😬 Kellemetlen leftover – csak enyhe büntetés
+    // 😬 Selejt leftover – erősebb büntetés
     if (leftoverLength > 0 && leftoverLength < OptimizerConstants::SELEJT_THRESHOLD) {
-        score -= 150; // korábban −300 volt
+        score -= 300; // visszaállítva az eredeti szigorra
     }
 
-    // 🧱 Túl nagy leftover – enyhe figyelmeztetés
+    // 🧱 Túl nagy leftover – dinamikus büntetés
     if (leftoverLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
-        score -= 100;
+        // Alapbüntetés −100, de skálázva a mérettel
+        int oversize = leftoverLength - OptimizerConstants::GOOD_LEFTOVER_MAX;
+        score -= 100 + oversize / 100;
+        // pl. 900 mm leftover → −110, 1500 mm leftover → −1150
     }
-
-    // 🧠 Új: ha a leftoverből még kiadható lenne egy darab, de nem adja ki → extra büntetés
-    // (Ez opcionális, csak ha van darablista és kerf, külön függvényből hívva)
 
     return score;
 }
+
 
 
 /**
@@ -184,5 +155,36 @@ findSingleExactFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
     return std::nullopt;
 }
 
+inline QString formatCutPlanEvent(const Cutting::Plan::CutPlan& plan,
+                                  const CuttingMachine& machine) {
+    // Forrás azonosító
+    QString sourceLabel;
+    if (plan.source == Cutting::Plan::Source::Reusable) {
+        sourceLabel = QString("Hulló: %1").arg(plan.sourceBarcode);
+    } else {
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
+        sourceLabel = mat ? QString("Anyag: %1").arg(mat->name)
+                          : QString("Anyag: ? (%1)").arg(plan.materialId.toString());
+    }
+
+    // Darablista
+    QMap<int,int> pieceCount; // hossz → darabszám
+    for (const auto& pw : plan.piecesWithMaterial) {
+        pieceCount[pw.info.length_mm] += 1;
+    }
+    QStringList pieceList;
+    for (auto it = pieceCount.begin(); it != pieceCount.end(); ++it) {
+        pieceList << QString("%1×%2 mm").arg(it.value()).arg(it.key());
+    }
+
+    return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm, darabok: %6, hulladék=%7 mm")
+        .arg(plan.planNumber)
+        .arg(sourceLabel)
+        .arg(plan.rodId)
+        .arg(machine.name)
+        .arg(plan.kerfUsed_mm)
+        .arg(pieceList.join(", "))
+        .arg(plan.waste);
+}
 
 } // namespace OptimizerUtils

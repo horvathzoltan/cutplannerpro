@@ -38,7 +38,12 @@ void AuditGroupSynchronizer::syncRow(const StorageAuditRow& row) {
         return;
 
     int rowIx = _rowIndexMap.value(row.rowId);
-    QString groupLabel = row.context ? _labeler->labelFor(row.context.get()) : "";
+
+    // 🔹 Context‑független, null‑safe API a row‑on keresztül
+    QString groupLabel;
+    if (row.hasContext()) {
+        groupLabel = _labeler->labelFor(row.contextPtr());
+    }
 
     const MaterialMaster* mat = MaterialRegistry::instance().findById(row.materialId);
     if (!mat)

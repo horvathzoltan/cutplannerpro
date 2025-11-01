@@ -150,7 +150,10 @@ private:
     // amit a CutPlan-ekhez és ResultModel-ekhez rendelünk, hogy auditban
     // és logban visszakövethető legyen, melyik futásból származnak.
     int nextOptimizationId = 1;
-    int planCounter = 0; // 🔢 Globális batch számláló
+
+    int planCounter = 0;   // csak CutPlan sorszám
+    int rodCounter  = 0;   // csak RodId kiosztás
+
     //QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
 
     QMap<QUuid, QString> leftoverRodMap;   // entryId → rodId

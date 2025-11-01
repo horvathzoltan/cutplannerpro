@@ -8,6 +8,7 @@
 #include "model/storageaudit/audit_enums.h"
 #include "model/storageaudit/auditcontext.h"
 #include "model/storageaudit/auditstatus.h"
+//#include "view/cellhelpers/auditstatustext.h"
 //#include "model/storageaudit/auditstatus_text.h"
 
 
@@ -18,7 +19,7 @@ struct StorageAuditRow {
     AuditSourceType sourceType = AuditSourceType::Stock;
     //AuditPresence rowPresence = AuditPresence::Unknown;
 
-    int pickingQuantity = 0;       // Elvárt mennyiség (soronként, injektálás után)
+    //int pickingQuantity = 0;       // Elvárt mennyiség (soronként, injektálás után)
     //int actualQuantity = 0;        // Audit során talált mennyiség
     bool isInOptimization = false; // Része-e az optimalizációnak
 
@@ -33,34 +34,52 @@ struct StorageAuditRow {
         return isRowModified || isRowAuditChecked;
     }
 
-    bool isFulfilled() const {
-        return actualQuantity >= pickingQuantity;
+    // bool isFulfilled() const {
+    //     return actualQuantity >= pickingQuantity;
+    // }
+    // Új
+    bool isFulfilled() const noexcept {
+        if (context) {
+            return context->totalActual >= context->totalExpected;
+        }
+        // Nincs context → nincs elvárás → nem tekintjük hibának
+        return true;
     }
 
     QString barcode;               // Vonalkód (ha van)
     QString storageName;           // Tároló neve
     QUuid rootStorageId; // 🆕 Gépszintű csoportosításhoz szükséges
 
+private:
     // Kontextus pointer: azonos anyag+hely csoport összesített adatai
     std::shared_ptr<AuditContext> context;
+public:
+    void setContext(const std::shared_ptr<AuditContext>& ctx) { context = ctx; }
+    bool hasContext() const noexcept { return static_cast<bool>(context); }
 
-    /**
- * @brief Hiányzó mennyiség számítása sor szinten.
- *
- * - Ha van hozzárendelt AuditContext, akkor a csoport szintű hiányt adja vissza
- *   (delegál a AuditContext::missingQuantity()-ra).
- * - Ha nincs AuditContext, akkor a sor saját pickingQuantity és actualQuantity
- *   mezői alapján számolja a hiányt.
- *
- * @note A hiány sosem lehet negatív. A cél az audit teljesülésének ellenőrzése,
- *       nem a többlet kimutatása.
- *
- * @return int A hiányzó mennyiség (sor vagy csoport szinten).
- */
-    [[nodiscard]] int missingQuantity() const noexcept {
-        if (context) return context->missingQuantity();
-        return std::max(0, pickingQuantity - actualQuantity);
+    int totalExpected() const noexcept {
+        return context ? context->totalExpected : 0;
     }
+    int totalActual() const noexcept {
+        return context ? context->totalActual : 0;
+    }
+    int missingQuantity() const noexcept {
+        return context ? context->missingQuantity() : 0;
+    }
+
+    QString groupKey() const {
+        return context ? context->group.groupKey() : QString();
+    }
+
+    int groupSize() const noexcept {
+        return context ? context->group.size() : 0;
+    }
+
+    bool isGrouped() const noexcept {
+        return context && context->group.size() > 1;
+    }
+
+    AuditContext* contextPtr() const noexcept { return context.get(); }
 
     // Tároló UUID lekérése a StockRegistry-ből
     QUuid storageId() const {
@@ -70,17 +89,6 @@ struct StorageAuditRow {
         return s.value().storageId;
     }
 
-
-    AuditStatus status() const {
-        if (!isAudited()) {
-            return (sourceType == AuditSourceType::Leftover)
-                       ? AuditStatus(AuditStatus::RegisteredOnly)
-                       : AuditStatus(AuditStatus::NotAudited);
-        }
-        return isFulfilled()
-                   ? AuditStatus(AuditStatus::Audited_Fulfilled)
-                   : AuditStatus(AuditStatus::Audited_Missing);
-    }
 
 
     AuditStatus statusType() const {
@@ -99,25 +107,66 @@ struct StorageAuditRow {
             // saját jogon auditált → mutassa a saját státuszt (zöld/piros)
             return status();
         } else {
-            // nem auditált, de a csoport részlegesen auditált → legyen sárga
+            // nem auditált, de a csoport részlegesen auditált → legyen narancs
             if (context->isGroupPartiallyAudited()) {
                 return AuditStatus(AuditStatus::Audited_Partial);
+            }
+            // nem auditált, de a csoport részben teljesült → legyen sárga
+            if (context->totalActual > 0 && context->totalActual < context->totalExpected) {
+                return AuditStatus(AuditStatus::Audited_Unfulfilled);
             }
             // különben marad nem auditált
             return AuditStatus(AuditStatus::NotAudited);
         }
+    }
 
-        //return context->status();
+    AuditStatus status() const {
+        // 🔹 Hulló sorok
+        if (sourceType == AuditSourceType::Leftover) {
+            if (!isAudited()) {
+                if (isInOptimization && totalExpected() > 0) {
+                    // Van elvárás, de még nem auditálták
+                    return AuditStatus(AuditStatus::NotAudited);
+                }
+                // Tényleg nincs elvárás → csak regisztrált
+                return AuditStatus(AuditStatus::RegisteredOnly);
+            }
+            // Auditált leftover → fulfilled vagy missing
+            return isFulfilled()
+                       ? AuditStatus(AuditStatus::Audited_Fulfilled)
+                       : AuditStatus(AuditStatus::Audited_Missing);
+        }
+
+        // 🔹 Stock sorok
+        if (!isAudited()) {
+            if (totalExpected() > 0) {
+                // Van elvárás, de még nem auditálták
+                return AuditStatus(AuditStatus::NotAudited);
+            }
+            // Nincs elvárás → regisztrált
+            return AuditStatus(AuditStatus::RegisteredOnly);
+        }
+
+        // Auditált stock sor → fulfilled vagy missing
+        return isFulfilled()
+                   ? AuditStatus(AuditStatus::Audited_Fulfilled)
+                   : AuditStatus(AuditStatus::Audited_Missing);
     }
 
     QString suffixForRow() const {
-        if (sourceType == AuditSourceType::Leftover)
-            return isAudited() ? (isFulfilled() ? AuditStatus::suffix_HulloVan() : AuditStatus::suffix_HulloNincs())
-                               : AuditStatus::suffix_HulloNemAudit();
+        if (sourceType == AuditSourceType::Leftover) {
+            return isAudited()
+            ? (isFulfilled()
+                   ? AuditStatus::suffix_HulloVan()
+                   : AuditStatus::suffix_HulloNincs())
+            : AuditStatus::suffix_HulloNemAudit();
+        }
 
         if (!context || context->group.size() <= 1) {
             if (isRowModified)
-                return isFulfilled() ? AuditStatus::suffix_Modositva() : AuditStatus::suffix_ModositvaNincs();
+                return isFulfilled()
+                           ? AuditStatus::suffix_Modositva()
+                           : AuditStatus::suffix_ModositvaNincs();
             if (isRowAuditChecked && !isFulfilled())
                 return AuditStatus::suffix_NincsKeszlet();
         }
@@ -132,5 +181,7 @@ struct StorageAuditRow {
                    ? s.toDecoratedText()
                    : AuditStatus::withSuffix(s.get(), suffix);
     }
+
+
 };
 

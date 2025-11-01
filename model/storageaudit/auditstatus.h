@@ -24,7 +24,7 @@ public:
         switch (value) {
         case Audited_Fulfilled:    return "Auditált, teljesült";
         case Audited_Missing:      return "Auditált, nincs készlet";
-        case Audited_Unfulfilled:  return "Auditált, részleges teljesülés";
+        case Audited_Unfulfilled:  return "Auditált, részben teljesült";
         case Audited_Partial:      return "Részlegesen auditált";
         case RegisteredOnly:       return "Regisztrált (nincs elvárás)";
         case NotAudited:           return "Nem auditált";
@@ -85,8 +85,9 @@ public:
     static QString suffix_Modositva()       { return "(módosítva)"; }
     static QString suffix_ModositvaNincs()  { return "(módosítva, nincs készlet)"; }
     static QString suffix_NincsKeszlet()    { return "(nincs készlet)"; }
+    static QString suffix_ReszbenTeljesult() { return "(részben teljesült)"; }
 
-    static QString suffix_CsoportHianyos() { return "(csoport, részleges teljesülés)"; }
+    static QString suffix_CsoportReszbenTeljesult() { return "(csoport, részben teljesült)"; }
     static QString suffix_CsoportReszlegesAudit() { return "(csoport, részleges audit)"; }
 
 private:

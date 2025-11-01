@@ -8,7 +8,7 @@
 #include "model/cutting/cuttingmachine.h"
 #include "model/registries/cuttingmachineregistry.h"
 #include "model/registries/materialregistry.h"
-#include "common/eventlogger.h"
+//#include "common/eventlogger.h"
 
 namespace MachineUtils {
 
@@ -27,8 +27,8 @@ inline std::optional<CuttingMachine> pickMachineForMaterial(const QUuid& materia
     // 1. Anyag lekérése
     const auto matOpt = MaterialRegistry::instance().findById(materialId);
     if (!matOpt) {
-        EventLogger::instance().zEvent(
-            QString("❌ Anyag nem található a registry-ben: %1").arg(materialId.toString()));
+        // EventLogger::instance().zEvent(
+        //     QString("❌ Anyag nem található a registry-ben: %1").arg(materialId.toString()));
         return std::nullopt;
     }
     MaterialType type = matOpt->type;
@@ -43,8 +43,8 @@ inline std::optional<CuttingMachine> pickMachineForMaterial(const QUuid& materia
     }
 
     if (candidates.isEmpty()) {
-        EventLogger::instance().zEvent(
-            QString("⚠️ Nincs kompatibilis gép az anyaghoz: %1").arg(matOpt->name));
+        // EventLogger::instance().zEvent(
+        //     QString("⚠️ Nincs kompatibilis gép az anyaghoz: %1").arg(matOpt->name));
         return std::nullopt;
     }
 
@@ -59,10 +59,10 @@ inline std::optional<CuttingMachine> pickMachineForMaterial(const QUuid& materia
               });
 
     const CuttingMachine* chosen = candidates.front();
-    EventLogger::instance().zEvent(
-        QString("✅ Gép kiválasztva: %1 (kerf=%2 mm)")
-            .arg(chosen->name)
-            .arg(chosen->kerf_mm));
+    // EventLogger::instance().zEvent(
+    //     QString("✅ Gép kiválasztva: %1 (kerf=%2 mm)")
+    //         .arg(chosen->name)
+    //         .arg(chosen->kerf_mm));
 
     return *chosen;
 }

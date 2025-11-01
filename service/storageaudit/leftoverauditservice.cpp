@@ -7,6 +7,27 @@
 LeftoverAuditService::LeftoverAuditService(QObject* parent)
     : QObject(parent) {}
 
+/**
+ * @brief Teljes leftover audit sorok legenerálása.
+ *
+ * Lépései:
+ * - Lekéri az összes leftover bejegyzést a LeftoverStockRegistry-ből.
+ * - Minden leftover bejegyzésből StorageAuditRow készül, forrás típusa: Leftover.
+ * - Minden leftover sor egyedi példányt képvisel (külön barcode, külön entryId).
+ * - A sor implicit actualQuantity=1 értéket kap, mert a leftover mindig egy darab.
+ *
+ * Eredmény:
+ * - Egy vektor, amely tartalmazza az összes leftover audit sort.
+ *
+ * Fontos:
+ * - Ezek a sorok nem aggregálódnak materialId szerint.
+ * - A context építésnél mindig külön contextbe kerülnek (rowId alapján).
+ * - Az expected értékük bináris (0/1), amit az injectPlansIntoAuditRows állít be
+ *   attól függően, hogy a plan ténylegesen felhasználja-e az adott leftover példányt.
+ *
+ * @return QVector<StorageAuditRow> Az összes leftover audit sor.
+ */
+
 QVector<StorageAuditRow> LeftoverAuditService::generateAuditRows_All()
 {
     QVector<StorageAuditRow> result;
@@ -22,7 +43,7 @@ QVector<StorageAuditRow> LeftoverAuditService::generateAuditRows_All()
         row.sourceType = AuditSourceType::Leftover;    // Forrás: hulló
 
         // Példányszintű modell: 1 bejegyzés == 1 darab
-        row.pickingQuantity  = 0;            // globális auditnál nincs elvárt
+        //row.pickingQuantity  = 0;            // globális auditnál nincs elvárt
         row.actualQuantity   = 1;            // regisztrált -> implicit 1 darab
         row.originalQuantity = 1;
         //row.rowPresence         = AuditPresence::Present; // implicit jelen

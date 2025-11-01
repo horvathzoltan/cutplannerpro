@@ -47,8 +47,10 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     // 🗂️ AuditRow mentése a belső map-be
     _auditRowMap[row.rowId] = row;
 
-    // 🏷️ Csoportcímke lekérése
-    QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
+    // 🏷️ Csoportcímke lekérése (null-safe API-val)
+    QString groupLabel;
+    if (row.hasContext())
+        groupLabel = _groupLabeler.labelFor(row.contextPtr());
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
     TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
@@ -58,16 +60,16 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
     _rows.registerRow(rowIx, row.rowId);
 
     // 🔁 Csoport szinkronizálása – ha van AuditContext
-    if (row.context)
-        _groupSync->syncGroup(*row.context, row.rowId);
+    if (row.hasContext())
+        _groupSync->syncGroup(*row.contextPtr(), row.rowId);
 
     // 🧠 Naplózás – csak ha van AuditContext
-    if (_isVerbose && row.context) {
+    if (_isVerbose && row.hasContext()) {
         zInfo(L("AuditContext [%1]: expected=%2, actual=%3, rows=%4")
-            .arg(row.materialId.toString())
-            .arg(row.context->totalExpected)
-            .arg(row.context->totalActual)
-            .arg(row.context->group.size()));
+                  .arg(row.materialId.toString())
+                  .arg(row.totalExpected())
+                  .arg(row.totalActual())
+                  .arg(row.groupSize()));
     }
 }
 
@@ -80,12 +82,12 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         return;
 
     // 🧠 Naplózás – frissített AuditContext
-    if (_isVerbose && row.context) {
+    if (_isVerbose && row.hasContext()) {
         zInfo(L("🔄 Frissített AuditContext [%1]: expected=%2, actual=%3, rows=%4")
-            .arg(row.materialId.toString())
-            .arg(row.context->totalExpected)
-            .arg(row.context->totalActual)
-            .arg(row.context->group.size()));
+                  .arg(row.materialId.toString())
+                  .arg(row.totalExpected())
+                  .arg(row.totalActual())
+                  .arg(row.groupSize()));
     }
 
     // 🔍 Sorindex lekérése a rowId alapján
@@ -99,17 +101,19 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
     _auditRowMap[row.rowId] = row;
 
     // 🏷️ Csoportcímke újra lekérése
-    QString groupLabel = row.context ? _groupLabeler.labelFor(row.context.get()) : "";
+    QString groupLabel;
+    if (row.hasContext())
+        groupLabel = _groupLabeler.labelFor(row.contextPtr());
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
     TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // 🔁 Csoport újraszinkronizálása
-    if (row.context)
-        _groupSync->syncGroup(*row.context, row.rowId);
-
+    if (row.hasContext())
+        _groupSync->syncGroup(*row.contextPtr(), row.rowId);
 }
+
 
 void StorageAuditTableManager::clearTable() {
     _table->clearContents();

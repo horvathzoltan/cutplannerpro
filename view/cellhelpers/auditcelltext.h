@@ -27,29 +27,35 @@ inline static bool _isVerbose = false;
  */
 inline QString forExpected(const StorageAuditRow& row, const QString& groupLabel = "")
 {
+    if (!row.hasContext()) {
+        return "–"; // nincs context → nincs elvárás
+    }
+
+    int expected = row.totalExpected();
+
     // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
-        if (row.isInOptimization && row.pickingQuantity > 0)
-            return QString("%1 db (hulló)").arg(row.pickingQuantity);
+        if (row.isInOptimization && expected > 0)
+            return QString("%1 db (hulló)").arg(expected);
         return "–";
     }
 
     // 🧩 Csoportosított stock sor
-    if (row.context && row.context->group.isGroup()) {
+    if (row.isGrouped()) {
         if (!row.isInOptimization) {
             return groupLabel.isEmpty()
             ? "– (anyagcsoport)"
             : QString("– (anyagcsoport %1)").arg(groupLabel);
         }
-        int expected = row.context->totalExpected;
+        int expected = row.totalExpected();
         return groupLabel.isEmpty()
                    ? QString("%1 db (anyagcsoport)").arg(expected)
                    : QString("%1 db (anyagcsoport %2)").arg(expected).arg(groupLabel);
     }
 
     // 🔹 Egyedi stock sor
-    if (row.isInOptimization && row.pickingQuantity > 0)
-        return QString("%1 db").arg(row.pickingQuantity);
+    if (row.isInOptimization && expected > 0)
+        return QString("%1 db").arg(expected);
 
     return "–";
 }
@@ -65,26 +71,34 @@ inline QString forExpected(const StorageAuditRow& row, const QString& groupLabel
  * - Ha nincs optimalizáció → "–".
  */
 inline QString forMissing(const StorageAuditRow& row) {
+    if (!row.hasContext()) {
+        return "–"; // nincs context → nincs hiányzó
+    }
+
+    int expected = row.totalExpected();
+    int missingQuantity = row.missingQuantity();
+
     // 🧩 Hulló audit sor
     if (row.sourceType == AuditSourceType::Leftover) {
-        if (row.isInOptimization && row.pickingQuantity > 0) {
-            return QString("%1 db").arg(std::max(0, row.missingQuantity()));
+        if (row.isInOptimization && expected > 0) {
+            return QString("%1 db").arg(std::max(0, missingQuantity));
         }
         return "–";
     }
 
     // 🧩 Csoportosított stock sor
-    if (row.context && row.context->group.isGroup()) {
+    if (row.isGrouped()) {
         if (!row.isInOptimization)
             return "–";
-        int missing = std::max(0, row.context->totalExpected - row.context->totalActual);
+        int missing = std::max(0, row.totalExpected() - row.totalActual());
         return QString("%1 db").arg(missing);
     }
 
     // 🔹 Egyedi stock sor
     return row.isInOptimization
-               ? QString("%1 db").arg(std::max(0, row.missingQuantity()))
+               ? QString("%1 db").arg(std::max(0, missingQuantity))
                : "–";
 }
+
 
 }

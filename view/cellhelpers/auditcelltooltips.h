@@ -6,32 +6,48 @@
 
 namespace AuditCellTooltips {
 
+// auditcelltooltips.h
+
 inline QString forStatus(const StorageAuditRow& row, const MaterialMaster* mat) {
     QStringList lines;
-    lines << QString("Státusz: %1").arg(row.statusText());
 
-    if (mat) lines << QString("Anyag: %1").arg(mat->name);
-    if (!row.storageName.isEmpty()) lines << QString("Tároló: %1").arg(row.storageName);
+    // 🔑 Emberi azonosítók
+   // if (!row.rodId.isEmpty())
+   //     lines << QString("RodId: %1").arg(row.rodId);
+    lines << QString("Barcode: %1").arg(row.barcode.isEmpty() ? "—" : row.barcode);
 
-    if (row.context) {
+    // 📦 Anyag és tároló
+    if (mat)
+        lines << QString("Anyag: %1").arg(mat->name);
+    if (!row.storageName.isEmpty())
+        lines << QString("Tároló: %1").arg(row.storageName);
+
+    // 📊 Context adatok
+    if (row.hasContext()) {
         lines << QString("Auditcsoport: %1 (%2 tag)")
-        .arg(row.context->group.groupKey())
-            .arg(row.context->group.size());
-        lines << QString("Elvárt összesen: %1").arg(row.context->totalExpected);
-        lines << QString("Tényleges összesen: %1").arg(row.context->totalActual);
-        lines << QString("Hiányzó összesen: %1")
-                     .arg(std::max(0, row.context->totalExpected - row.context->totalActual));
+        .arg(row.groupKey())
+            .arg(row.groupSize());
+        lines << QString("Elvárt összesen: %1").arg(row.totalExpected());
+        lines << QString("Tényleges összesen: %1").arg(row.totalActual());
+        lines << QString("Hiányzó összesen: %1").arg(row.missingQuantity());
     }
 
-    lines << QString("Elvárt (sor): %1").arg(row.pickingQuantity);
+    // 📋 Sor szintű adatok
+    lines << QString("Elvárt (sor): %1").arg(row.totalExpected());
     lines << QString("Tényleges (sor): %1").arg(row.actualQuantity);
     lines << QString("Hiányzó (sor): %1").arg(row.missingQuantity());
+
+    // 🟢 Státusz (suffixekkel együtt)
+    lines << QString("Státusz: %1").arg(row.statusText());
 
     if (!row.isInOptimization)
         lines << "⚠️ Nem része az optimalizációnak";
 
     return lines.join("\n");
 }
+
+
+
 
 inline QString forExpected(const StorageAuditRow& row, const QString& groupLabel = "") {
     return AuditCellText::forExpected(row, groupLabel);

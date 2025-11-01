@@ -1,0 +1,34 @@
+Én a diff helyet code snippet before/after kérek, ilyen formátumban:
+fájlnév + függvénynév + sorszám környék + régi kód / új kód.
+
+
+Mit kérj tőlem?
+Ha azt szeretnéd, hogy külön snippetet adjak:
+
+Egy snippet a régi kódról (ahogy most van a fájlban).
+
+Egy snippet az új kódról (ahogy át kell írni).
+
+És mindkettőhöz odaírom:
+
+fájlnév
+
+függvénynév
+
+sorszám környék
+
+
+👉 Tehát ha azt kéred tőlem, hogy "
+
+adj snippetet régi és új kóddal, +/‑ jelek nélkül, külön blokkban
+
+", akkor pontosan ilyen formátumban fogom adni.
+
+
+a project állapotát ebben a formátumban kérem: 
+🧩 Állapottábla – 2025.10.xx. (frissítve, esti,reggeli,déli stb... állapot) 
+# Tevékenység Terv Kész Új Köv Megjegyzés
+
+az sos és a tűzoltást jelölt tűz ikonnal
+ezek a blokkok kellenek:
+a táblázat, a 🚀 Sprint fókusz (🔥 SOS pontokkal), a 📌 Mai eredmények és az 👉 Holnap fókusz.

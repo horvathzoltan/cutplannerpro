@@ -21,6 +21,10 @@ public:
 
     QList<StorageAuditRow*> _groupRows; // 🔗 közvetlen pointerek a sorokra
 
+    bool isGrouped() const noexcept {
+        return group.size() > 1;
+    }
+
     [[nodiscard]] int totalCount() const noexcept {
         return _groupRows.size();
     }
@@ -35,6 +39,9 @@ public:
          return std::clamp(totalExpected - totalActual, 0, totalExpected);
      }
 
+    const QList<StorageAuditRow*>& groupRows() const noexcept {
+        return _groupRows;
+    }
     /**
  * @brief Megállapítja, hogy a csoport legalább egy sora auditált-e.
  *

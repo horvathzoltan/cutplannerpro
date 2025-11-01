@@ -3,17 +3,19 @@
 #include <QMap>
 
 /**
- * @brief Csoportkulcs generálása egy audit sorhoz.
- *        A kulcs most: materialId + rootStorageId
- *        Ez biztosítja, hogy az audit sorok gépszinten csoportosuljanak.
- *        A hullók mind külön csoportot kapnak, így nem öröklik a hiányt, nem aggregálódnak.
+ * @brief Egyedi csoportkulcs generálása egy audit sorhoz.
+ *
+ * - Stock sorok esetén: a kulcs = materialId + rootStorageId.
+ *   Ez biztosítja, hogy az azonos anyagok ugyanazon géphez tartozó készletei
+ *   közös contextbe kerüljenek, és aggregáltan számolódjon az elvárt mennyiség.
+ *
+ * - Leftover sorok esetén: a kulcs = rowId.
+ *   Így minden leftover példány külön contextet kap, nem aggregálódik materialId szerint,
+ *   és nem keveredik a stock sorokkal.
+ *
+ * @param r Az audit sor, amelyhez a kulcsot képezzük.
+ * @return QString A csoportosítási kulcs.
  */
-// QString AuditContextBuilder::makeGroupKey(const StorageAuditRow& r) {
-//     if (r.sourceType == AuditSourceType::Leftover)
-//         return r.rowId.toString(); // hullók egyediek, ne csoportosuljanak
-
-//     return QString("%1|%2").arg(r.materialId.toString(), r.rootStorageId.toString());
-// }
 QString AuditContextBuilder::makeGroupKey(const StorageAuditRow& r) {
     if (r.sourceType == AuditSourceType::Leftover)
         return r.rowId.toString(); // hullók ne csoportosuljanak
@@ -22,15 +24,31 @@ QString AuditContextBuilder::makeGroupKey(const StorageAuditRow& r) {
 }
 
 /**
- * @brief Audit sorok csoportosítása anyag + rootStorage szerint.
- *        Minden sorhoz létrejön egy AuditContext, amely tartalmazza a csoportosított adatokat.
+ * @brief AuditContext objektumok építése az audit sorokból.
  *
- * A context tartalmazza:
- * - AuditGroupInfo: materialId, groupKey, rowIds
- * - totalExpected: az adott anyagcsoport teljes elvárt mennyisége (aggregált, nem soronkénti!)
- * - totalActual: az adott anyagcsoport tényleges mennyisége (összegzett)
- * - Minden sorhoz visszaadjuk a saját context pointerét
+ * Feladata:
+ * - A sorokat csoportosítja a makeGroupKey() alapján.
+ *   - Stock sorok: materialId + rootStorageId szerint.
+ *   - Leftover sorok: mindig saját rowId szerint, így önálló contextet kapnak.
+ *
+ * - Minden csoporthoz létrehoz egy AuditContext-et, amely tartalmazza:
+ *   - totalExpected:
+ *       * Stock esetén → a pickingMap (requiredStockMaterials) alapján számolt darabszám.
+ *       * Leftover esetén → bináris érték (0/1), attól függően, hogy a sor isInOptimization=true-e.
+ *   - totalActual: a tényleges készletmennyiség (stocknál raktári darabszám, leftovernél mindig 1).
+ *   - group: a csoporthoz tartozó sorok azonosítói.
+ *
+ * - A visszatérési érték egy map (rowId → AuditContext pointer), amely minden sorhoz
+ *   hozzárendeli a megfelelő contextet.
+ *
+ * Ez a függvény biztosítja, hogy a stock sorok aggregáltan, a leftover sorok pedig
+ * példány szinten, önállóan jelenjenek meg az auditban.
+ *
+ * @param rows Az audit sorok listája.
+ * @param requiredStockMaterials A pickingMap, amely a stock anyagok elvárt darabszámát tartalmazza.
+ * @return QHash<QUuid, std::shared_ptr<AuditContext>> rowId → AuditContext hozzárendelés.
  */
+
 QHash<QUuid, std::shared_ptr<AuditContext>>
 AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
                                    const QMap<QUuid,int>& requiredStockMaterials)
@@ -50,7 +68,7 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
                   .arg(r.materialId.toString())
                   .arg(r.storageName)
                   .arg(r.rootStorageId.toString())
-                  .arg(r.pickingQuantity)
+                  .arg(r.totalExpected())
                   .arg(r.actualQuantity));
         }
     }
@@ -81,7 +99,7 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
             if(_isVerbose){
             zInfo(L("   adding rowId=%1 | picking=%2 | actual=%3 | runningActual=%4")
                       .arg(r->rowId.toString())
-                      .arg(r->pickingQuantity)   // sor szintű jelző, de nem aggregáljuk
+                      .arg(r->totalExpected()) // sor szintű jelző, de nem aggregáljuk
                       .arg(r->actualQuantity)
                       .arg(ctx->totalActual));
             }
@@ -97,7 +115,20 @@ AuditContextBuilder::buildFromRows(const QList<StorageAuditRow>& rows,
         // }
 
         // 2/B: elvárt mennyiség beállítása anyagcsoport szinten a planből
-        ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
+        // 2/B: elvárt mennyiség beállítása forrástípus szerint
+        if (grp.first()->sourceType == AuditSourceType::Stock) {
+            ctx->totalExpected = requiredStockMaterials.value(grp.first()->materialId, 0);
+        } else if (grp.first()->sourceType == AuditSourceType::Leftover) {
+            ctx->totalExpected = 0;
+            for (const auto* r : grp) {
+                if (r->isInOptimization) {
+                    ctx->totalExpected = 1;
+                    break;
+                }
+            }
+        } else {
+            ctx->totalExpected = 0;
+        }
 
 
         if(_isVerbose){
