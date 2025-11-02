@@ -37,3 +37,88 @@ SOS‑3	Stop feltételek visszaemelése	✅ Lezárva	scoring finomhangolás megt
 ✅ Dupla hulló generálás megszüntetve: UU1/UU2 fallback kód eltávolítva, csak a CutPlan generál hullót
 
 👉 Következő fókusz: Worklist tab finomhangolása + Finalize auditálás és visszavonás.
+
+
+***
+
+🪚 Vágási követelmények – összefoglaló
+1. Auditálhatóság
+Minden vágásnak egyértelmű láncban kell szerepelnie: Stock (MAT-xxx) → Leftover (RST-xxx) → új Leftover (RST-yyy) → …
+
+ParentBarcode mindig a forrás barkódja legyen (MAT vagy RST).
+
+Minden új leftover kapjon új entryId‑t, a forrás pedig tiltásra kerüljön.
+
+2. Stop feltételek (három tartományos logika)
+Selejt alatti (< SELEJT_THRESHOLD): nem tároljuk, eldobás.
+
+Köztes tartomány (300–500 mm): próbáljunk még egy darabot vágni, ha nem sikerül → leftoverként elmentjük.
+
+Jó leftover tartomány (500–800 mm): megtartjuk leftoverként.
+
+Túl nagy leftover (> 800 mm): próbáljunk még egy darabot, ha nincs → leftoverként elmentjük.
+
+3. Scoring / optimalizáció
+Selejt leftover: −300 pont büntetés.
+
+Túl nagy leftover: dinamikus büntetés (minél nagyobb, annál rosszabb).
+
+Cél: minél több „jó leftover” és minél kevesebb selejt.
+
+4. CutPlan tartalma
+totalLength mindig a teljes rúd hossza.
+
+waste mindig a tényleges maradék a vágás után.
+
+kerf gépfüggő, mindig a kiválasztott gépből jön.
+
+machineId és machineName mindig kitöltve.
+
+sourceBarcode = a forrás rúd barkódja.
+
+parentBarcode = ugyanaz, auditlánc miatt.
+
+5. CutInstruction követelmények
+Minden CutPlanből generálódjon egy vagy több CutInstruction.
+
+Tartalmazza:
+
+StepId (sorrend)
+
+RodLabel (Rod‑A, Rod‑B, …)
+
+Material neve
+
+SourceBarcode + ParentBarcode
+
+CutSizes (darabolási hosszok)
+
+RemainingBefore / RemainingAfter
+
+Machine neve
+
+Status (Pending → InProgress → Done)
+
+Minden státuszváltás auditálva legyen (zEvent).
+
+6. UI / operátor oldal
+Az operátor nem a teljes CutPlan táblát látja, hanem a CutInstruction listát.
+
+Egyszerű, sorrendi utasítások: „Vágd le 2650 mm‑t → maradék 288 mm → új leftover RST‑523”.
+
+Minden sorhoz tartozik státusz ikon (Pending, InProgress, Done).
+
+A leftover sorok külön jelennek meg, hogy egyértelmű legyen: nem új stock, hanem maradék.
+
+🏁 Összegzés
+A vágási követelmények lényege:
+
+auditálható lánc,
+
+három tartományos stop logika,
+
+scoring optimalizáció,
+
+CutPlan → CutInstruction transzformáció,
+
+operátor‑barát UI státuszvezérléssel.
