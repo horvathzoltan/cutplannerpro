@@ -1,71 +1,20 @@
-Refaktor terv – fókuszpont lista
-1. ResultsTableManager – mezősorrend és elnevezés
-Cél: RodId + Barcode oszlop kerüljön legelőre, StepId hátrébb.
+🧭 Refaktor fókuszpontok – 2025.11.02. frissített állapot
+#	Fókuspont	Státusz	Megjegyzés
+1	ResultsTableManager – mezősorrend és elnevezés	✅ Lezárva	RodId + Barcode előre, rövid mezőnevek
+2	Tooltip sablon frissítése	✅ Lezárva	Új sorrend, központosított sablon
+3	CutInstruction gép-hozzárendelés	✅ Lezárva	Gépnév és ID minden utasításban
+4	Log kimenet finomítás	✅ Lezárva	Aggregált darablista, redundancia megszüntetve
+5	Audit státusz jelzések egységesítése	✅ Lezárva	AuditStateManager + UI switch működik
+6	Registry validáció és zEvent logolás	✅ Lezárva	Material + Machine registry ellenőrzés, zEvent logok beépítve
+7	Kerf gépfüggővé tétele	✅ Lezárva	kerf_mm mindenhol gépből jön, típus auditált, nincs kerekítés
+8	Hullókezelés auditálása	✅ Lezárva	entryId, parentBarcode, leftoverBarcode, badge és tooltip auditálva, zEvent log beépítve
+9	Compound anyagkezelés	⏳ Tervezett	Még nem indult, de prioritásként jelölted
+10	Páros vágási szabály	⏳ Tervezett	A Worklist után következik
+🧠 Javasolt következő lépés
+Most, hogy minden gépi és audit alap stabil, jöhet:
 
-Feladatok:
+🧪 Compound anyagkezelés → új anyagtípus, új logika, új badge, új szín
 
-RodLabel → RodId átnevezés.
+🧩 Páros vágási szabály → optimalizációs logika bővítése, darabpárok felismerése, új CutPlan típus
 
-Barcode külön oszlopban.
-
-Rövidebb mezőnevek: Before / After.
-
-Érintett modulok: ResultsTableManager, táblázat fejléc‑ és oszlopdefiníciók, tooltip generálás.
-
-2. Tooltip sablon frissítése
-Cél: audit‑barát, konzisztens sorrend.
-
-Új sorrend:
-
-RodId
-
-Barcode
-
-Material + Csoport
-
-CutSize
-
-Remaining
-
-Forrás (MAT/RST)
-
-Gép
-
-Státusz
-
-Érintett modulok: ResultsTableManager, SegmentModel::toLabelString(), tooltip sablon.
-
-3. Log kimenet finomítás
-Cél: minden sorban a legfontosabb adatok → forrás (Anyag/Hulló barcode), RodId, gép, kerf, darablista, hulladék.
-
-Feladatok:
-
-Aggregált darablista (pl. 2×2650 mm).
-
-Redundáns sorok összevonása.
-
-Érintett modulok: CuttingPresenter, zEvent logger.
-
-4. Audit státusz jelzések egységesítése
-Cél: minden leftover és cutPlan sor auditálható legyen.
-
-Feladatok:
-
-AuditStateManager enum + setOutdated kiterjesztése.
-
-MainWindow::lblAuditStatus switch‑es kezelés.
-
-Érintett modulok: AuditStateManager, CuttingPresenter, MainWindow.
-
-5. Registry és gép‑hozzárendelés
-Cél: Worklist tervben a gép hozzárendelése stabilan működjön.
-
-Feladatok:
-
-Amíg nincs végleges gép‑mapping, teszteléshez fix: CM2 („Alu vágó műhely”).
-
-Registry validáció és zEvent logger integráció.
-
-Érintett modulok: CutPlan, MachineUtils, registry kezelő.
-
-👉 Ez a lista most már tényleg a felhasználói élmény és audit‑ergonómia polírozására koncentrál, mert a belső logika (RodId, stop feltételek, scoring) már stabil.
+🎯 Mondd, melyik fókuszpontra ugorjunk rá, és máris indul a következő refakt

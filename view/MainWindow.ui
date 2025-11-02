@@ -283,7 +283,12 @@
             </attribute>
             <column>
              <property name="text">
-              <string>Rod#</string>
+              <string>RodId</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Barcode</string>
              </property>
             </column>
             <column>

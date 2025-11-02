@@ -36,6 +36,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                .arg(heuristic == TargetHeuristic::ByCount ? "ByCount" : "ByTotalLength")
                .arg(currentOpId));
 
+    rodCounter = 0;
     _result_plans.clear();
     _planned_leftovers.clear();
     _usedLeftoverEntryIds.clear();
@@ -105,6 +106,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         auto machineOpt = MachineUtils::pickMachineForMaterial(targetMaterialId);
         if (!machineOpt) { groupVec.removeFirst(); continue; }
         const CuttingMachine machine = *machineOpt;
+
         const double kerf_mm = machine.kerf_mm;
 
         //2/c. Rúd kiválasztása
@@ -118,9 +120,9 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         // ♻️ Először próbáljunk reusable-t
         if (std::optional<ReusableCandidate> candidate =
-            findBestReusableFit(merged, globalSnapshot.size(), groupVec,
-                                                                             targetMaterialId, kerf_mm)) {
+            findBestReusableFit(merged, globalSnapshot.size(), groupVec,targetMaterialId, kerf_mm)) {
             const auto &best = *candidate;
+
             rod.materialId = best.stock.materialId;
             rod.length = best.stock.availableLength_mm;
             rod.isReusable = true;
@@ -134,7 +136,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                           .arg(best.stock.entryId.toString())
                           .arg(rod.rodId));
             } else {
-                rod.rodId = IdentifierUtils::makeRodId(++planCounter);
+                rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
                 zWarning(QString("⚠️ Missing rodId mapping for leftover %1, new rodId=%2")
                           .arg(best.stock.entryId.toString())
                           .arg(rod.rodId));
@@ -157,16 +159,16 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                     globalSnapshot; //_inventorySnapshot.reusableInventory;
                 global.erase(std::remove_if(global.begin(), global.end(),
                                             [&](const LeftoverStockEntry &e) {
-                                                return e.barcode ==
-                                        best.stock.barcode;
+                                                return e.entryId ==
+                                        best.stock.entryId;
                              }),
-                             global.end());
+                             global.end());              
             } else {
                 // Lokális poolból törlünk barcode alapján
                 _localLeftovers.erase(
                     std::remove_if(_localLeftovers.begin(), _localLeftovers.end(),
                                    [&](const LeftoverStockEntry &e) {
-                                       return e.barcode == best.stock.barcode;
+                                       return e.entryId == best.stock.entryId;
                     }),
                     _localLeftovers.end());
             }
@@ -342,14 +344,14 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             // Selejt alá esés → lezárás
             if (remainingLength < OptimizerConstants::SELEJT_THRESHOLD) {
-                if (remainingLength > 0) {
-                    LeftoverStockEntry entry;
-                    entry.materialId = rod.materialId;
-                    entry.availableLength_mm = remainingLength;
-                    entry.used = false;
-                    entry.barcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6));
-                    _localLeftovers.append(entry);
-                }
+                // if (remainingLength > 0) {
+                //     LeftoverStockEntry entry;
+                //     entry.materialId = rod.materialId;
+                //     entry.availableLength_mm = remainingLength;
+                //     entry.used = false;
+                //     entry.barcode = QString("UU1-%1").arg(QUuid::createUuid().toString().mid(1, 6));
+                //     _localLeftovers.append(entry);
+                // }
                 break;
             }
 
@@ -376,14 +378,14 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                         break; // jó leftover → lezárjuk
                     }
                 }
-                if (remainingLength > 0) {
-                    LeftoverStockEntry entry;
-                    entry.materialId = rod.materialId;
-                    entry.availableLength_mm = remainingLength;
-                    entry.used = false;
-                    entry.barcode = QString("RST-%1").arg(QUuid::createUuid().toString().mid(1, 6));
-                    _localLeftovers.append(entry);
-                }
+                // if (remainingLength > 0) {
+                //     LeftoverStockEntry entry;
+                //     entry.materialId = rod.materialId;
+                //     entry.availableLength_mm = remainingLength;
+                //     entry.used = false;
+                //     entry.barcode = QString("UU2-%1").arg(QUuid::createUuid().toString().mid(1, 6));
+                //     _localLeftovers.append(entry);
+                // }
                 break;
             }
 
@@ -408,30 +410,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     _localLeftovers.clear();
 
 }
-
-// void OptimizerModel::consumeLeftover(const LeftoverStockEntry& stock)
-// {
-//     // 1️⃣ Próbáljuk a globális készletből törölni
-//     auto& global = _inventorySnapshot.reusableInventory;
-//     auto it = std::remove_if(global.begin(), global.end(),
-//                              [&](const LeftoverStockEntry& e){
-//                                  return e.barcode == stock.barcode;
-//                              });
-//     if (it != global.end()) {
-//         global.erase(it, global.end());
-//         return;
-//     }
-
-//     // 2️⃣ Ha nem volt a globálisban, próbáljuk a lokálisból
-//     auto it2 = std::remove_if(_localLeftovers.begin(), _localLeftovers.end(),
-//                               [&](const LeftoverStockEntry& e){
-//                                   return e.barcode == stock.barcode;
-//                               });
-//     if (it2 != _localLeftovers.end()) {
-//         _localLeftovers.erase(it2, _localLeftovers.end());
-//     }
-// }
-
 
 void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial& piece,
                                          int& remainingLength,
@@ -460,20 +438,24 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
     p.machineId   = machine.id;
     p.machineName = machine.name;
     p.kerfUsed_mm = kerf_mm;
-    p.generateSegments(static_cast<int>(std::lround(kerf_mm)), remainingLength);
+    p.generateSegments(kerf_mm, remainingLength);
     p.sourceBarcode = rod.barcode;   // MAT-xxx vagy RST-xxx
     p.optimizationId = currentOpId;
 
-    if (rod.isReusable) {
-        p.parentBarcode = rod.barcode;
-    } else {
-        p.parentBarcode = std::nullopt;
-    }
+    p.parentBarcode = rod.barcode;
+
+    // if (rod.isReusable) {
+    //     p.parentBarcode = rod.barcode;
+    // } else {
+    //     p.parentBarcode = std::nullopt;
+    // }
 
     p.parentPlanId  = std::nullopt; // később, ha láncolni akarod
 
     QString wasteBarcode = p.getWasteBarcode();
     p.leftoverBarcode = wasteBarcode;
+
+    zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
 
     // ➕ ResultModel
     Cutting::Result::ResultModel result;
@@ -497,18 +479,21 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
     // ♻️ Leftover visszarakása
     if (!result.isFinalWaste && result.waste > 0) {
         LeftoverStockEntry entry;
+        // 🆕 Mindig új entryId az új waste leftovernek
+        //entry.entryId = QUuid::createUuid();
+
         entry.materialId = result.materialId;
         entry.availableLength_mm = result.waste;
         entry.used = false;
         entry.barcode = result.reusableBarcode;
-        entry.parentBarcode = rod.isReusable
-                                  ? p.parentBarcode
-                                  : std::nullopt;
+        entry.parentBarcode = rod.barcode;
+        // entry.parentBarcode = rod.isReusable
+        //                           ? p.parentBarcode
+        //                           : std::nullopt;
         entry.source = Result::LeftoverSource::Optimization;
         entry.optimizationId = std::make_optional(currentOpId);
 
-         // 🆕 Mindig új entryId az új waste leftovernek
-         entry.entryId = QUuid::createUuid();
+        //zEvent(OptimizerUtils::formatLeftoverEvent(entry, rod.rodId));
 
         zInfo(QString("♻️ Assigned RST barcode=%1 for leftover entryId=%2 (rodId=%3)")
                   .arg(entry.barcode)
@@ -526,11 +511,18 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
          _localLeftovers.append(entry);
 
          // ⛔ A forrás leftover tiltása, nem az új waste-é
-         if (rod.isReusable && rod.entryId.has_value()) {
-             _usedLeftoverEntryIds.insert(rod.entryId.value());
-             zInfo(QString("TILTÁS: forrás leftover entryId=%1 (rodId=%2)")
-                       .arg(rod.entryId->toString())
-                       .arg(rod.rodId));
+         if (rod.isReusable) {
+             if (rod.entryId.has_value()) {
+                 _usedLeftoverEntryIds.insert(rod.entryId.value());
+                 zInfo(QString("TILTÁS: forrás leftover entryId=%1 (rodId=%2)")
+                           .arg(rod.entryId->toString())
+                           .arg(rod.rodId));
+             } else {
+                 zError(QString("❌ Inconsistent state: reusable rod without entryId (rodId=%1, barcode=%2)")
+                            .arg(rod.rodId)
+                            .arg(rod.barcode));
+                 Q_ASSERT(false);// vagy return; hogy ne folytassa
+             }
          }
 
          // 🔍 ParentBarcode log
@@ -541,9 +533,6 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
 
     _planned_leftovers.append(result);
     _result_plans.append(p);
-    // Audit log
-
-   zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
 
     // Darab törlése
     groupVec.erase(std::remove_if(groupVec.begin(), groupVec.end(),
@@ -584,20 +573,24 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
     p.machineId   = machine.id;
     p.machineName = machine.name;
     p.kerfUsed_mm = kerf_mm;
-    p.generateSegments(static_cast<int>(std::lround(kerf_mm)), remainingLength);
+    p.generateSegments(kerf_mm, remainingLength);
     p.sourceBarcode = rod.barcode;   // MAT-xxx vagy RST-xxx
     p.optimizationId = currentOpId;
 
-    if (rod.isReusable) {
-        p.parentBarcode = rod.barcode;
-    } else {
-        p.parentBarcode = std::nullopt;
-    }
+    p.parentBarcode = rod.barcode;
+
+    // if (rod.isReusable) {
+    //     p.parentBarcode = rod.barcode;
+    // } else {
+    //     p.parentBarcode = std::nullopt;
+    // }
     p.parentPlanId  = std::nullopt; // később, ha láncolni akarod
 
     QString wasteBarcode = p.getWasteBarcode();
 
     p.leftoverBarcode = wasteBarcode;
+
+    zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
 
     // ➕ ResultModel
     Cutting::Result::ResultModel result;
@@ -619,18 +612,21 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
 
     if (!result.isFinalWaste && result.waste > 0) {
         LeftoverStockEntry entry;
+        // 🆕 Mindig új entryId az új waste leftovernek
+        //entry.entryId = QUuid::createUuid();
+
         entry.materialId = result.materialId;
         entry.availableLength_mm = result.waste;
         entry.used = false;
         entry.barcode = result.reusableBarcode;
-        entry.parentBarcode = rod.isReusable
+        entry.parentBarcode = rod.barcode;/*rod.isReusable
                                   ? p.parentBarcode
-                                  : std::nullopt;
+                                  : std::nullopt;*/
         entry.source = Result::LeftoverSource::Optimization;
         entry.optimizationId = std::make_optional(currentOpId);
 
-        // 🆕 Mindig új entryId az új waste leftovernek
-        entry.entryId = QUuid::createUuid();
+
+        //zEvent(OptimizerUtils::formatLeftoverEvent(entry, rod.rodId));
 
         zInfo(QString("♻️ Assigned RST barcode=%1 for leftover entryId=%2 (rodId=%3)")
                   .arg(entry.barcode)
@@ -648,11 +644,18 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
         _localLeftovers.append(entry);
 
         // ⛔ A forrás leftover tiltása, nem az új waste-é
-        if (rod.isReusable && rod.entryId.has_value()) {
-            _usedLeftoverEntryIds.insert(rod.entryId.value());
-            zInfo(QString("TILTÁS: forrás leftover entryId=%1 (rodId=%2)")
-                      .arg(rod.entryId->toString())
-                      .arg(rod.rodId));
+        if (rod.isReusable) {
+            if (rod.entryId.has_value()) {
+                _usedLeftoverEntryIds.insert(rod.entryId.value());
+                zInfo(QString("TILTÁS: forrás leftover entryId=%1 (rodId=%2)")
+                          .arg(rod.entryId->toString())
+                          .arg(rod.rodId));
+            } else {
+                zError(QString("❌ Inconsistent state: reusable rod without entryId (rodId=%1, barcode=%2)")
+                           .arg(rod.rodId)
+                           .arg(rod.barcode));
+                Q_ASSERT(false); //vagy return; hogy ne folytassa
+            }
         }
 
         // 🔍 ParentBarcode log
@@ -664,7 +667,6 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
     _result_plans.append(p);
     _planned_leftovers.append(result);
 
-    zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
 
     // Darabok törlése
     groupVec.erase(std::remove_if(groupVec.begin(), groupVec.end(),

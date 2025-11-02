@@ -61,25 +61,28 @@ public:
     double length_mm() const { return _length_mm; }
     QString barcode() const { return _barcode; }
 
+    static QString segmentPrefix(SegmentModel::Type type) {
+        if(type == SegmentModel::Type::Piece) return "P";
+        if(type == SegmentModel::Type::Waste) return "W";
+        if(type == SegmentModel::Type::Kerf)  return "K";
+        return "?";
+    }
+
+
     /**
      * @brief Rövid string a munkalaphoz (pl. [1800], [K3], [W194])
      */
     QString toLabelString() const {
-        // Kerf mindig rövid, nincs barcode, nincs sorszám
-        if (_type == Type::Kerf) {
-            return QString("K%1").arg(_segIx);
-        }
+        QString prefix = segmentPrefix(_type);
 
-        // Prefix: P vagy W
-        QString prefix = (_type == Type::Piece) ? "P" : "W";
+        QString postfix = (_type == Type::Kerf)
+                              ? QString::number(_segIx)
+                              : QString("%1:%2·%3mm")
+                                    .arg(_segIx)
+                                    .arg(_barcode.isEmpty() ? "∅" : _barcode)
+                                    .arg(_length_mm, 0, 'f', 0);
 
-        QString r =  QString("%1%2:%3·%4mm")
-            .arg(prefix)
-            .arg(_segIx)
-            .arg(_barcode)
-            .arg(_length_mm, 0, 'f', 0); // double → egész számként kiírva (0 tizedesjegy)
-
-        return r;
+        return prefix+postfix;
     }
 
     //QVector<SegmentModel> generateSegments(double kerf_mm, double totalLength_mm) const;

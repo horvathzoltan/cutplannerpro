@@ -11,16 +11,12 @@ public:
     explicit ResultsTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
+    void addRow_old(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
     void clearTable();
 
 private:
-    QTableWidget* table;
+    QTableWidget* _table;
     QWidget* parent;
 
-    static constexpr int ColRod    = 0;
-    static constexpr int ColGroup  = 1;
-    static constexpr int ColLength = 2;
-    static constexpr int ColKerf   = 3;
-    static constexpr int ColWaste  = 4;
-    //QString formatWasteBadge(const Cutting::Plan::CutPlan &plan, int wasteIndex);
+    static bool _isVerbose; ///< Debug log flag
 };

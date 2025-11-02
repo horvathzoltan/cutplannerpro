@@ -136,6 +136,7 @@ HEADERS += \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
     view/cellhelpers/auditstatustext.h \
+    view/columnindexes/tableresults_columns.h \
     view/tablerowstyler/materialrowstyler.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
@@ -232,6 +233,7 @@ HEADERS += \
     view/viewmodels/cutting/rowgenerator.h \
     view/viewmodels/relocation/cellgenerator.h \
     view/viewmodels/relocation/rowgenerator.h \
+    view/cellhelpers/auditcelltext.h \
     view/cellhelpers/auditcelltooltips.h \
     view/columnidexes/relocationplantable_columns.h \
     view/cutanalyticspanel.h \
@@ -251,6 +253,8 @@ HEADERS += \
     view/managers/storageaudittable_manager.h \
     view/tablehelpers/relocationquantityhelpers.h \
     view/tablehelpers/tablerowpopulator.h \
+    view/viewmodels/result/badgerowgenerator.h \
+    view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \
     view/viewmodels/tablerowviewmodel.h
 

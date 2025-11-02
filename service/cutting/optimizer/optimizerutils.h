@@ -2,6 +2,7 @@
 #include <QVector>
 #include <numeric>
 #include <model/registries/materialregistry.h>
+#include <model/leftoverstockentry.h>
 #include "model/cutting/piece/piecewithmaterial.h"
 #include "model/cutting/plan/cutplan.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
@@ -155,6 +156,14 @@ findSingleExactFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
     return std::nullopt;
 }
 
+inline QString formatLeftoverEvent(const LeftoverStockEntry& entry, QString rodId) {
+    return QString("♻️ Hulló létrehozva: %1 (entryId=%2, rodId=%3)")
+        .arg(entry.barcode)
+        .arg(entry.entryId.toString())
+        .arg(rodId);
+}
+
+
 inline QString formatCutPlanEvent(const Cutting::Plan::CutPlan& plan,
                                   const CuttingMachine& machine) {
     // Forrás azonosító
@@ -182,7 +191,7 @@ inline QString formatCutPlanEvent(const Cutting::Plan::CutPlan& plan,
         .arg(sourceLabel)
         .arg(plan.rodId)
         .arg(machine.name)
-        .arg(plan.kerfUsed_mm)
+        .arg(QString::number(plan.kerfUsed_mm, 'f', 1)) // 🔧 pontos formázás
         .arg(pieceList.join(", "))
         .arg(plan.waste);
 }
