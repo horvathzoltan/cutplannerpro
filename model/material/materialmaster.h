@@ -27,5 +27,5 @@ struct MaterialMaster : public IdentifiableEntity {
 
     QString comment;       // opcionális, UI-ba is jó
 
-    MaterialMaster(); // 🔧 Default konstruktor deklaráció        
+    MaterialMaster(){}; // 🔧 Default konstruktor deklaráció
 };

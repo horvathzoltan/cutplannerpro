@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/styleprofiles/cuttingstatusutils.h"
+#include "view/cellhelpers/materialcellgenerator.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "view/columnindexes/tablecuttinginstruction_columns.h"
@@ -54,7 +55,7 @@ inline TableRowViewModel generateMachineSeparator(const CuttingMachine& machine)
     vm.cells[CuttingInstructionTableColumns::StepId] =
         TableCellViewModel::fromText(text, "Gép szeparátor sor", bg, fg);
 
-    for (int col = CuttingInstructionTableColumns::RodLabel;
+    for (int col = CuttingInstructionTableColumns::RodId;
          col <= CuttingInstructionTableColumns::Finalize; ++col) {
         vm.cells[col] = TableCellViewModel::fromText("—", "Separator", bg, fg, true);
     }
@@ -80,7 +81,7 @@ inline TableRowViewModel generate(const CutInstruction& ci,
         TableCellViewModel::fromText(QString::number(ci.stepId), "Lépés azonosító", baseColor, fgColor);
 
     // RodLabel: marad a CutPlan által generált label
-    vm.cells[CuttingInstructionTableColumns::RodLabel] =
+    vm.cells[CuttingInstructionTableColumns::RodId] =
         TableCellViewModel::fromText(ci.rodLabel, "Rúd jel", baseColor, fgColor);
 
     // Barcode: ha van konkrét rod barcode, azt mutatjuk, material megy tooltipbe
@@ -89,11 +90,11 @@ inline TableRowViewModel generate(const CutInstruction& ci,
                                  .arg(ci.barcode.isEmpty() ? "—" : ci.barcode)
                                  .arg(mat ? mat->name : "Ismeretlen");
 
-    vm.cells[CuttingInstructionTableColumns::Barcode] =
-        TableCellViewModel::fromText(barcodeToShow, barcodeTooltip, baseColor, fgColor);
+    // vm.cells[CuttingInstructionTableColumns::Barcode] =
+    //     TableCellViewModel::fromText(barcodeToShow, barcodeTooltip, baseColor, fgColor);
 
     vm.cells[CuttingInstructionTableColumns::Material] =
-        TableCellViewModel::fromText(mat ? mat->name : "Ismeretlen", "Anyag", baseColor, fgColor);
+        CellGenerators::materialCell(ci.materialId, ci.barcode, baseColor, fgColor);
 
     vm.cells[CuttingInstructionTableColumns::CutSize] =
         TableCellViewModel::fromText(QString::number(ci.cutSize_mm, 'f', 1),
@@ -105,9 +106,9 @@ inline TableRowViewModel generate(const CutInstruction& ci,
         TableCellViewModel::fromText(QString::number(ci.remainingAfter_mm, 'f', 1),
                                      "Vágás utáni hossz (mm)", baseColor, fgColor);
 
-    vm.cells[CuttingInstructionTableColumns::Machine] =
-        TableCellViewModel::fromText(ci.machineName.isEmpty() ? "—" : ci.machineName,
-                                     "Gép neve", baseColor, fgColor);
+    // vm.cells[CuttingInstructionTableColumns::Machine] =
+    //     TableCellViewModel::fromText(ci.machineName.isEmpty() ? "—" : ci.machineName,
+    //                                  "Gép neve", baseColor, fgColor);
 
 
     vm.cells[CuttingInstructionTableColumns::Status] =

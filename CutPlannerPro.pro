@@ -44,7 +44,6 @@ SOURCES += \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
     model/material/materialgroup.cpp \
-    model/material/materialmaster.cpp \
     model/material/materialtype.cpp \
     model/picking/pickingcomparisonresult.cpp \
     model/picking/pickingitem.cpp \
@@ -136,6 +135,7 @@ HEADERS += \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
     view/cellhelpers/auditstatustext.h \
+    view/cellhelpers/materialcellgenerator.h \
     view/columnindexes/tableresults_columns.h \
     view/tablerowstyler/materialrowstyler.h \
     view/tableutils/RowTracker.h \

@@ -239,7 +239,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="midBoxPage1">
          <attribute name="title">
@@ -525,22 +525,17 @@
             </column>
             <column>
              <property name="text">
-              <string>CutSize</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>RemainingBefore</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>RemainingAfter</string>
+              <string>CutSize</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Machine</string>
+              <string>RemainingAfter</string>
              </property>
             </column>
             <column>

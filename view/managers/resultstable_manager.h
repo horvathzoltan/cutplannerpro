@@ -11,7 +11,7 @@ public:
     explicit ResultsTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     void addRow(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
-    void addRow_old(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
+    //void addRow_old(const QString& rodNumber, const Cutting::Plan::CutPlan& plan);
     void clearTable();
 
 private:

@@ -1,32 +1,32 @@
 #pragma once
 
 /**
- * @brief Column indexek a CuttingInstruction (Worklist) táblához.
+ * @brief Oszlopindexek a CuttingInstruction (Worklist) táblához.
  *
  * Ezeket a konstansokat használjuk a QTableWidget oszlopainak
  * eléréséhez, hogy ne kelljen "magic number"-öket szórni a kódba.
  *
  * Oszlopok:
- * - StepId: lépés azonosító
- * - RodLabel: rúd jelölése (A, B, C…)
- * - Material: anyag neve
- * - Barcode: konkrét rúd azonosító
- * - CutSize: vágandó hossz
+ * - StepId: lépés azonosító (operátor ezzel kattintja készre)
+ * - RodId: rúd azonosító (emberi olvasásra, pl. Rod-A1)
+ * - Material: anyag + csoport + barcode (MaterialCellGenerator formátumban)
  * - RemainingBefore: vágás előtti hossz
+ * - CutSize: vágandó hossz
  * - RemainingAfter: vágás utáni hossz
- * - Machine: gép neve
- * - Status: Pending / Done
- * - Finalize: végrehajtás gomb vagy státusz
+ * - Status: Pending / InProgress / Done
+ * - Finalize: végrehajtás gomb vagy ikon
  */
 namespace CuttingInstructionTableColumns {
-static constexpr int StepId          = 0;  ///< Lépés azonosító
-static constexpr int RodLabel        = 1;  ///< Rúd jelölése
-static constexpr int Material        = 2;  ///< Anyag neve
-static constexpr int Barcode         = 3;  ///< Vonalkód
-static constexpr int CutSize         = 4;  ///< Vágandó hossz (mm)
-static constexpr int RemainingBefore = 5;  ///< Vágás előtti hossz (mm)
-static constexpr int RemainingAfter  = 6;  ///< Vágás utáni hossz (mm)
-static constexpr int Machine         = 7;  ///< Gép neve
-static constexpr int Status          = 8;  ///< Pending / Done
-static constexpr int Finalize        = 9;  ///< Végrehajtás gomb
+
+enum Column {
+    StepId = 0,          ///< Lépés azonosító
+    RodId,               ///< Rúd azonosító (pl. Rod-A1)
+    Material,            ///< Anyag + csoport + barcode (egységes cella)
+    RemainingBefore,     ///< Vágás előtti hossz (mm)
+    CutSize,             ///< Vágandó hossz (mm)
+    RemainingAfter,      ///< Vágás utáni hossz (mm)
+    Status,              ///< Pending / InProgress / Done
+    Finalize             ///< Végrehajtás gomb vagy ikon
+};
+
 }
