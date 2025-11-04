@@ -18,6 +18,21 @@ CuttingInstructionTableManager::CuttingInstructionTableManager(QTableWidget* tab
     // A tábla oszlopait a designerben definiáljuk (StepId, RodLabel, Material, stb.)
 }
 
+void CuttingInstructionTableManager::addMachineRow(const MachineHeader& machine) {
+    if (!_table) return;
+
+    int rowIx = _table->rowCount();
+    _table->insertRow(rowIx);
+    _table->setSpan(rowIx, 0, 1, _table->columnCount());
+
+    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generateMachineSeparator(machine);
+    TableRowPopulator::populateRow(_table, rowIx, vm);
+
+    if (_isVerbose) {
+        zInfo(QString("CuttingInstruction machine separator row added: %1")
+                  .arg(machine.machineName));
+    }
+}
 /**
  * @brief Új sor beszúrása a CuttingInstruction táblába.
  *
@@ -46,7 +61,7 @@ void CuttingInstructionTableManager::addRow(const CutInstruction& ci) {
     if (_isVerbose) {
         zInfo(QString("CuttingInstruction row added: %1 | step=%2")
                   .arg(mat->name)
-                  .arg(ci.stepId));
+                  .arg(ci.globalStepId));
     }
 }
 
@@ -72,7 +87,7 @@ void CuttingInstructionTableManager::updateRow(const QUuid& rowId, const CutInst
     if (_isVerbose) {
         zInfo(QString("CuttingInstruction row updated: %1 | step=%2")
                   .arg(mat->name)
-                  .arg(ci.stepId));
+                  .arg(ci.globalStepId));
     }
 }
 
@@ -118,7 +133,7 @@ void CuttingInstructionTableManager::finalizeRow(const QUuid& rowId) {
     }
 
     ci.computeRemaining();
-    if (ci.remainingAfter_mm < 0) {
+    if (ci.lengthAfter_mm < 0) {
         zWarning("finalizeRow: negative remaining; check cutSize/kerf");
         return;
     }
@@ -131,6 +146,6 @@ void CuttingInstructionTableManager::finalizeRow(const QUuid& rowId) {
 
     zInfo(QString("finalizeRow: success for row %1 | step=%2 | remainingAfter=%3")
               .arg(rowId.toString())
-              .arg(ci.stepId)
-              .arg(ci.remainingAfter_mm));
+              .arg(ci.globalStepId)
+              .arg(ci.lengthAfter_mm));
 }

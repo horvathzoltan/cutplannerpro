@@ -1,4 +1,4 @@
-🧩 Állapottábla – 2025.11.02. (esti frissítés, korrigálva)
+🧩 Állapottábla – 2025.11.04. (esti frissítés)
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve, safeLetterPrefix működik
 🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve OptimizerModel + ResultModel + CutPlan + LeftoverStockEntry + SegmentModel, nincs több ∅
@@ -18,16 +18,16 @@
 42	IdentifierUtils refaktor	✅	✅ Lezárva	✅		safeLetterPrefix logika bevezetve
 43	Maki tesztprofil bővítése	✅	✅ Lezárva	✅		határérték‑tesztek rendben
 44	TableUtils monospace font helper	✅	✅ Lezárva	✅		fallback lista működik
-
-🧩 ResultsTableManager mezősorrend és elnevezés	✅	✅ Lezárva	✅		RodId + Barcode előre, StepId hátrébb, mezőnevek rövidítve
-🧠 Tooltip sablon frissítése	✅	✅ Lezárva	✅		Új sorrend, audit-barát sablon, badge és tooltip egységesítve
-🆕 Új leftover entryId logika	✅	✅ Lezárva	✅	🚧 Sprint 6	minden új hulló új entryId, forrás tiltása külön, auditálva
-
+🧩	ResultsTableManager mezősorrend és elnevezés	✅	✅ Lezárva	✅		RodId + Barcode előre, StepId hátrébb, mezőnevek rövidítve
+🧠	Tooltip sablon frissítése	✅	✅ Lezárva	✅		Új sorrend, audit-barát sablon, badge és tooltip egységesítve
+🆕	Új leftover entryId logika	✅	✅ Lezárva	✅	🚧 Sprint 6	minden új hulló új entryId, forrás tiltása külön, auditálva
+✨ ÚJ	CutSize kiemelés (ikon + stílus)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	✂️ ikon, vastagabb betű, kontrasztos háttér, operátor figyelem fókuszálása
+✨ ÚJ	Leftover színezés kategóriák szerint	✅	🟡 Folyamatban	✅	🚧 Sprint 6	selejt = piros, jó = sárga, köztes = narancs, tooltip kategóriával
+✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	🟡 Folyamatban	✅	🚧 Sprint 5	végrehajtott = szürke, aktuális = zöld keret, jövőbeli = normál
 🚀 Sprint fókusz – 🔥 SOS pontok
-
 SOS‑kód	Cél	Státusz	Következő lépés
 SOS‑1	Stabil RodId + MAT‑xxxx kiosztás	✅ Lezárva	nincs további teendő
-SOS‑2	ParentBarcode lánc konzisztencia	✅ Lezárva	auditálás további finomítása, SegmentModel ellenőrzés kész
+SOS‑2	ParentBarcode lánc konzisztencia	✅ Lezárva	auditálás további finomítása, SegmentModel ellenőrzés
 SOS‑3	Stop feltételek visszaemelése	✅ Lezárva	scoring finomhangolás megtörtént
 📌 Mai eredmények
 ✅ ParentBarcode lánc: teljes öröklés bevezetve → nincs több ∅, minden új hulló a forrás barkódját örökli, SegmentModel::toLabelString() szinten is rendben
@@ -36,7 +36,21 @@ SOS‑3	Stop feltételek visszaemelése	✅ Lezárva	scoring finomhangolás megt
 
 ✅ Dupla hulló generálás megszüntetve: UU1/UU2 fallback kód eltávolítva, csak a CutPlan generál hullót
 
-👉 Következő fókusz: Worklist tab finomhangolása + Finalize auditálás és visszavonás.
+✨ CutSize cella kiemelés: ✂️ ikon, nagyobb kontraszt, operátor figyelem fókuszálása
+
+✨ Leftover színezés: selejt/jó/köztes kategóriák színkódolva, tooltipben kategória megjelenítve
+
+✨ Sorvezető logika: végrehajtott sorok szürkítve, aktuális sor zöld kerettel kiemelve, jövőbeliek normál színnel
+
+👉 Következő fókusz:
+
+Worklist tab finomhangolása
+
+Finalize auditálás és visszavonás
+
+Sorvezető teljes integrálása (delegate + státuszvezérlés)
+
+Ez így most egy nagyon erős napi zárás: a rendszer már nemcsak auditálható és stabil, hanem vizuálisan is operátor‑barát, a CutSize és leftover cellák kiemelése, valamint a sorvezető logika tényleg emberközelivé teszi a táblát.
 
 
 ***

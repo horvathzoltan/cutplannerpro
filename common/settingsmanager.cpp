@@ -129,6 +129,15 @@ QByteArray SettingsManager::relocationOrderTableHeaderState() const {
     return _settings.value(SettingsKeys::TableRelocationOrderHeader).toByteArray();
 }
 
+//cuttingInstructionTableHeaderState
+    void SettingsManager::setCuttingInstructionTableHeaderState(const QByteArray& state) {
+    _settings.setValue(SettingsKeys::CuttingInstructionTableHeader, state);
+}
+
+QByteArray SettingsManager::cuttingInstructionTableHeaderState() const {
+    return _settings.value(SettingsKeys::CuttingInstructionTableHeader).toByteArray();
+}
+
 // ablakméret
 void SettingsManager::setWindowGeometry(const QByteArray& state) {
     _settings.setValue(SettingsKeys::WindowGeometry, state);

@@ -2,7 +2,7 @@
 
 #include <QString>
 #include <QUuid>
-//#include <optional>
+#include <QVector>
 
 // Vágási utasítás státusz
 enum class CutStatus {
@@ -16,24 +16,42 @@ enum class CutStatus {
 struct CutInstruction {
     QUuid rowId;                   // 🔹 UI-szintű azonosító (sorhoz kötve)
 
-    int stepId = 0;                 // Folyamatos sorszám
-    QString rodLabel;               // Rúd azonosító (A, B, C…)
+    int globalStepId = 0;                 // Folyamatos sorszám
+    QString rodId;               // Rúd azonosító (A, B, C…)
     QUuid materialId;            // Anyag UUID
 
     QString barcode;                  // Konkrét rúd azonosítója
     double cutSize_mm = 0.0;        // Vágandó hossz
     double kerf_mm = 0.0;           // Vágásveszteség
-    double remainingBefore_mm = 0.0;// Vágás előtti hossz
-    double remainingAfter_mm = 0.0; // Vágás utáni hossz
+    double lengthBefore_mm = 0.0;// Vágás előtti hossz
+    double lengthAfter_mm = 0.0; // Vágás utáni hossz
 
     QUuid machineId;        // Gép UUID
     QString machineName;     // Gép neve (UI-hoz, redundáns viewmodel mező)
     CutStatus status = CutStatus::Pending;
 
+    bool isFinalLeftover = false; // 🔴 Végső leftover jelző
+    QString leftoverBarcode;
+
     // Segédfüggvény a számításhoz
     void computeRemaining() {
-        remainingAfter_mm = remainingBefore_mm - cutSize_mm - kerf_mm;
+        lengthAfter_mm = lengthBefore_mm - cutSize_mm - kerf_mm;
     }
 
     CutInstruction() : rowId(QUuid::createUuid()) {}
+};
+
+struct MachineHeader {
+    QUuid machineId;
+    QString machineName;
+    QString comment;
+    double kerf_mm = 0.0;
+    std::optional<double> stellerMaxLength_mm;
+    std::optional<double> stellerCompensation_mm;
+};
+
+
+struct MachineCuts{
+    MachineHeader machineHeader;
+    QVector<CutInstruction> cutInstructions;
 };

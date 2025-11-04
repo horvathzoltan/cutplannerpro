@@ -10,9 +10,9 @@
  * - StepId: lépés azonosító (operátor ezzel kattintja készre)
  * - RodId: rúd azonosító (emberi olvasásra, pl. Rod-A1)
  * - Material: anyag + csoport + barcode (MaterialCellGenerator formátumban)
- * - RemainingBefore: vágás előtti hossz
+ * - LengthBefore: vágás előtti hossz
  * - CutSize: vágandó hossz
- * - RemainingAfter: vágás utáni hossz
+ * - LengthAfter: vágás utáni hossz
  * - Status: Pending / InProgress / Done
  * - Finalize: végrehajtás gomb vagy ikon
  */
@@ -22,9 +22,9 @@ enum Column {
     StepId = 0,          ///< Lépés azonosító
     RodId,               ///< Rúd azonosító (pl. Rod-A1)
     Material,            ///< Anyag + csoport + barcode (egységes cella)
-    RemainingBefore,     ///< Vágás előtti hossz (mm)
+    LengthBefore,     ///< Vágás előtti hossz (mm)
     CutSize,             ///< Vágandó hossz (mm)
-    RemainingAfter,      ///< Vágás utáni hossz (mm)
+    LengthAfter,      ///< Vágás utáni hossz (mm)
     Status,              ///< Pending / InProgress / Done
     Finalize             ///< Végrehajtás gomb vagy ikon
 };

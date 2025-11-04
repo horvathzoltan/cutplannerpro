@@ -29,6 +29,9 @@ public:
     explicit CuttingInstructionTableManager(QTableWidget* table,
                                             QWidget* parent = nullptr);
 
+    /// Új machine beszúrása a táblába
+    void addMachineRow(const MachineHeader& m);
+
     /// Új sor beszúrása a táblába
     void addRow(const CutInstruction& ci);
 
@@ -42,3 +45,19 @@ public slots:
     /// Sor végrehajtása (Finalize gomb)
     void finalizeRow(const QUuid& rowId);
 };
+
+// class HighlightDelegate : public QStyledItemDelegate {
+// public:
+//     int currentRow = -1;
+//     void paint(QPainter* p, const QStyleOptionViewItem& opt,
+//                const QModelIndex& idx) const override {
+//         QStyledItemDelegate::paint(p, opt, idx);
+//         if (idx.row() == currentRow) {
+//             p->save();
+//             QPen pen(Qt::red, 2);
+//             p->setPen(pen);
+//             p->drawRect(opt.rect.adjusted(0,0,-1,-1));
+//             p->restore();
+//         }
+//     }
+// };

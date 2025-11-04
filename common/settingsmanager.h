@@ -12,6 +12,7 @@ inline constexpr auto TableStockHeader       = "table_stock_header";
 inline constexpr auto TableLeftoversHeader   = "table_leftovers_header";
 inline constexpr auto TableStorageAuditHeader   = "table_storageaudit_header";
 inline constexpr auto TableRelocationOrderHeader   = "table_relocationorder_header";
+inline constexpr auto CuttingInstructionTableHeader   = "table_cuttinginstruction_header";
 
 // ablakméret
 inline constexpr auto WindowGeometry = "window_geometry";
@@ -64,6 +65,11 @@ public:
     // RelocationOrder tábla
     void setRelocationOrderTableHeaderState(const QByteArray &state);
     QByteArray relocationOrderTableHeaderState() const;
+
+
+    // cuttingInstructionTableHeaderState
+    void setCuttingInstructionTableHeaderState(const QByteArray &state);
+    QByteArray cuttingInstructionTableHeaderState() const;
 
     // ablakmléret
     void setWindowGeometry(const QByteArray& state);

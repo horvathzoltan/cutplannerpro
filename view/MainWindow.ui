@@ -239,7 +239,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="midBoxPage1">
          <attribute name="title">
@@ -510,7 +510,7 @@
             </column>
             <column>
              <property name="text">
-              <string>RodLabel</string>
+              <string>rodId</string>
              </property>
             </column>
             <column>
@@ -520,12 +520,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Barcode</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>RemainingBefore</string>
+              <string>lengthBefore</string>
              </property>
             </column>
             <column>
@@ -535,12 +530,17 @@
             </column>
             <column>
              <property name="text">
-              <string>RemainingAfter</string>
+              <string>lengthAfter</string>
              </property>
             </column>
             <column>
              <property name="text">
               <string>Status</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Finalize</string>
              </property>
             </column>
            </widget>

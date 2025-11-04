@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/styleprofiles/cuttingstatusutils.h"
+#include "service/cutting/optimizer/optimizerconstants.h"
 #include "view/cellhelpers/materialcellgenerator.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
@@ -27,7 +28,7 @@ namespace Cutting::ViewModel::RowGenerator {
 
 /// Összesítő sor generálása (Σ)
 /// Gép szeparátor sor generálása
-inline TableRowViewModel generateMachineSeparator(const CuttingMachine& machine) {
+inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine) {
     TableRowViewModel vm;
     vm.rowId = QUuid::createUuid();
 
@@ -35,7 +36,7 @@ inline TableRowViewModel generateMachineSeparator(const CuttingMachine& machine)
     QColor fg = Qt::black;
 
     // Fő szöveg: gép neve
-    QString text = QString("=== %1 ===").arg(machine.name);
+    QString text = QString("=== %1 ===").arg(machine.machineName);
 
     // Részletek: kerf, steller, kompenzáció
     QStringList details;
@@ -78,11 +79,11 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;    bool done = (ci.status == CutStatus::Done);
 
     vm.cells[CuttingInstructionTableColumns::StepId] =
-        TableCellViewModel::fromText(QString::number(ci.stepId), "Lépés azonosító", baseColor, fgColor);
+        TableCellViewModel::fromText(QString::number(ci.globalStepId), "Lépés azonosító", baseColor, fgColor);
 
     // RodLabel: marad a CutPlan által generált label
     vm.cells[CuttingInstructionTableColumns::RodId] =
-        TableCellViewModel::fromText(ci.rodLabel, "Rúd jel", baseColor, fgColor);
+        TableCellViewModel::fromText(ci.rodId, "Rúd jel", baseColor, fgColor);
 
     // Barcode: ha van konkrét rod barcode, azt mutatjuk, material megy tooltipbe
     QString barcodeToShow = ci.barcode.isEmpty() ? "—" : ci.barcode;
@@ -96,19 +97,60 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     vm.cells[CuttingInstructionTableColumns::Material] =
         CellGenerators::materialCell(ci.materialId, ci.barcode, baseColor, fgColor);
 
-    vm.cells[CuttingInstructionTableColumns::CutSize] =
-        TableCellViewModel::fromText(QString::number(ci.cutSize_mm, 'f', 1),
-                                     "Vágandó hossz (mm)", baseColor, fgColor);
-    vm.cells[CuttingInstructionTableColumns::RemainingBefore] =
-        TableCellViewModel::fromText(QString::number(ci.remainingBefore_mm, 'f', 1),
-                                     "Vágás előtti hossz (mm)", baseColor, fgColor);
-    vm.cells[CuttingInstructionTableColumns::RemainingAfter] =
-        TableCellViewModel::fromText(QString::number(ci.remainingAfter_mm, 'f', 1),
-                                     "Vágás utáni hossz (mm)", baseColor, fgColor);
+    QString cutText = QString("✂️ %1").arg(ci.cutSize_mm, 0, 'f', 1);
+    QString cutTooltip = "Vágandó hossz (mm)";
 
-    // vm.cells[CuttingInstructionTableColumns::Machine] =
-    //     TableCellViewModel::fromText(ci.machineName.isEmpty() ? "—" : ci.machineName,
-    //                                  "Gép neve", baseColor, fgColor);
+    // kiemelt háttér és betű
+    QColor cutBg = baseColor.darker(120);
+    QColor cutFg = Qt::white;
+
+    vm.cells[CuttingInstructionTableColumns::CutSize] =
+        TableCellViewModel::fromText(
+            cutText,
+            cutTooltip,
+            cutBg,
+            cutFg,
+            "font-weight: bold; font-size: 14px; text-decoration: underline;"
+            );
+
+    vm.cells[CuttingInstructionTableColumns::LengthBefore] =
+        TableCellViewModel::fromText(QString::number(ci.lengthBefore_mm, 'f', 1),
+                                     "Vágás előtti hossz (mm)", baseColor, fgColor);
+
+
+    QColor fg = baseColor.lightness() < 128 ? Qt::white : Qt::black;
+    QColor bg = baseColor; // alap háttérszín az anyag színe
+
+    QString afterText = QString::number(ci.lengthAfter_mm, 'f', 1);
+    QString afterTooltip = "Vágás utáni hossz (mm)";
+
+    if (ci.isFinalLeftover && ci.lengthAfter_mm > 0) {
+        double len = ci.lengthAfter_mm;
+
+        if (len < OptimizerConstants::SELEJT_THRESHOLD) {
+            bg = QColor("#e74c3c"); // selejt → piros
+            fg = Qt::white;
+        } else if (len >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
+                   len <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+            bg = QColor("#f1c40f"); // jó leftover → sárga
+            fg = Qt::black;
+        } else {
+            bg = QColor("#e67e22"); // köztes leftover → narancs
+            fg = Qt::white;
+        }
+
+        afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
+        afterTooltip = QString("Végső leftover (%1 mm, kategória: %2)")
+                           .arg(len)
+                           .arg(len < OptimizerConstants::SELEJT_THRESHOLD ? "Selejt"
+                                : (len >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
+                                   len <= OptimizerConstants::GOOD_LEFTOVER_MAX) ? "Jó"
+                                                                                : "Köztes");
+    }
+
+    vm.cells[CuttingInstructionTableColumns::LengthAfter] =
+        TableCellViewModel::fromText(afterText, afterTooltip, bg, fg);
+
 
 
     vm.cells[CuttingInstructionTableColumns::Status] =
