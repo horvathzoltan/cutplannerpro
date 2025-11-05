@@ -1,138 +1,50 @@
-🧩 Állapottábla – 2025.11.04. (esti frissítés)
+🧩 Állapottábla – 2025.11.05. (esti frissítés, frissített állapot)
+
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve, safeLetterPrefix működik
 🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve OptimizerModel + ResultModel + CutPlan + LeftoverStockEntry + SegmentModel, nincs több ∅
 🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧 Sprint SOS	Három tartományos logika stabil, scoring finomítva
-01–12	Relocation + UI alapok	✅	✅ Lezárva			stabil
-13	CuttingStrategy enum + két fn	✅	✅ Lezárva			Enum + ini mentés működik
-14	Cutting plan váltás (UI opció)	✅	✅ Lezárva	✅		UI opció működik, finomhangolás kész
 15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, státusz szétválasztva
-16–20	Hullókezelés (azonosító, másolás, manager, normalizálás)	✅	✅ Lezárva	✅	🚧 Sprint 6	entryId, parentBarcode, leftoverBarcode, badge és log auditálva
 21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
 25	Vágási utasítás dialógus + validáció	✅	🟡 Folyamatban	✅	✅	gépválasztás + kerf validáció részben kész
-26	Finalize gomb (UI)	✅	✅ Lezárva	✅		CutPlan finalize teljesen eltávolítva
 28	Finalize auditálás + visszavonás	✅	🔴 Hiányzik		🚧 Sprint 5	teljesen hiányzik
 29	Worklist tab (darab szint, finomhangolás)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	operátor UI, darab státusz
 30	Leftover sorok kezelése	✅	🟡 Folyamatban	✅	✅	külön sor, új entryId logika részben kész
-34–41	CutPlan → gép hozzárendelés, kerf gépfüggő, registry validáció, zEvent, UI eseménylista, init összefoglaló, CutPlan státuszvezérelt kezelés	✅	✅ Lezárva	✅	🚧 Sprint 4	minden auditálva, kerf gépből jön, zEvent működik
-42	IdentifierUtils refaktor	✅	✅ Lezárva	✅		safeLetterPrefix logika bevezetve
-43	Maki tesztprofil bővítése	✅	✅ Lezárva	✅		határérték‑tesztek rendben
-44	TableUtils monospace font helper	✅	✅ Lezárva	✅		fallback lista működik
-🧩	ResultsTableManager mezősorrend és elnevezés	✅	✅ Lezárva	✅		RodId + Barcode előre, StepId hátrébb, mezőnevek rövidítve
-🧠	Tooltip sablon frissítése	✅	✅ Lezárva	✅		Új sorrend, audit-barát sablon, badge és tooltip egységesítve
-🆕	Új leftover entryId logika	✅	✅ Lezárva	✅	🚧 Sprint 6	minden új hulló új entryId, forrás tiltása külön, auditálva
-✨ ÚJ	CutSize kiemelés (ikon + stílus)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	✂️ ikon, vastagabb betű, kontrasztos háttér, operátor figyelem fókuszálása
-✨ ÚJ	Leftover színezés kategóriák szerint	✅	🟡 Folyamatban	✅	🚧 Sprint 6	selejt = piros, jó = sárga, köztes = narancs, tooltip kategóriával
-✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	🟡 Folyamatban	✅	🚧 Sprint 5	végrehajtott = szürke, aktuális = zöld keret, jövőbeli = normál
+✨ ÚJ	CutSize kiemelés (ikon + stílus)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	✂️ ikon, vastagabb betű, kontrasztos háttér
+✨ ÚJ	Leftover színezés kategóriák szerint	✅	🟡 Folyamatban	✅	🚧 Sprint 6	selejt = piros, jó = sárga, köztes = narancs
+✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	🟡 Folyamatban	✅	🚧 Sprint 5	végrehajtott = szürke, aktuális = zöld keret
 🚀 Sprint fókusz – 🔥 SOS pontok
-SOS‑kód	Cél	Státusz	Következő lépés
-SOS‑1	Stabil RodId + MAT‑xxxx kiosztás	✅ Lezárva	nincs további teendő
-SOS‑2	ParentBarcode lánc konzisztencia	✅ Lezárva	auditálás további finomítása, SegmentModel ellenőrzés
-SOS‑3	Stop feltételek visszaemelése	✅ Lezárva	scoring finomhangolás megtörtént
+
+🔥 SOS‑1 → ✅ Lezárva
+
+🔥 SOS‑2 → ✅ Lezárva (audit finomítás, SegmentModel ellenőrzés még folyamatban)
+
+🔥 SOS‑3 → ✅ Lezárva (scoring finomhangolás kész)
+
 📌 Mai eredmények
-✅ ParentBarcode lánc: teljes öröklés bevezetve → nincs több ∅, minden új hulló a forrás barkódját örökli, SegmentModel::toLabelString() szinten is rendben
 
-✅ Új leftover entryId logika: minden új hulló új entryId‑t kap, a forrás külön tiltva, audit logban tisztán látszik
+✅ ParentBarcode lánc: teljes öröklés → nincs több ∅.
 
-✅ Dupla hulló generálás megszüntetve: UU1/UU2 fallback kód eltávolítva, csak a CutPlan generál hullót
+✅ Új leftover entryId logika → minden új hulló új entryId‑t kap, audit log tiszta.
 
-✨ CutSize cella kiemelés: ✂️ ikon, nagyobb kontraszt, operátor figyelem fókuszálása
+✅ Dupla hulló generálás megszüntetve (UU1/UU2 fallback eltávolítva).
 
-✨ Leftover színezés: selejt/jó/köztes kategóriák színkódolva, tooltipben kategória megjelenítve
+✅ Forrás tiltás aktív → minden leftover egyszer használható.
 
-✨ Sorvezető logika: végrehajtott sorok szürkítve, aktuális sor zöld kerettel kiemelve, jövőbeliek normál színnel
+✨ CutSize cella kiemelés: ✂️ ikon, nagyobb kontraszt.
 
-👉 Következő fókusz:
+✨ Leftover színezés: selejt/jó/köztes kategóriák színkódolva, tooltipben kategória.
 
-Worklist tab finomhangolása
+✨ Sorvezető logika: végrehajtott sorok szürkítve, aktuális sor zöld kerettel.
 
-Finalize auditálás és visszavonás
+✅ Commit leftover események bekerültek a logba → minden új leftover auditálva.
 
-Sorvezető teljes integrálása (delegate + státuszvezérlés)
+👉 Holnap fókusz
 
-Ez így most egy nagyon erős napi zárás: a rendszer már nemcsak auditálható és stabil, hanem vizuálisan is operátor‑barát, a CutSize és leftover cellák kiemelése, valamint a sorvezető logika tényleg emberközelivé teszi a táblát.
+Worklist tab finomhangolása (darab szint, státuszok).
 
+Finalize auditálás és visszavonás implementálása.
 
-***
+Sorvezető teljes integrálása (delegate + státuszvezérlés).
 
-🪚 Vágási követelmények – összefoglaló
-1. Auditálhatóság
-Minden vágásnak egyértelmű láncban kell szerepelnie: Stock (MAT-xxx) → Leftover (RST-xxx) → új Leftover (RST-yyy) → …
-
-ParentBarcode mindig a forrás barkódja legyen (MAT vagy RST).
-
-Minden új leftover kapjon új entryId‑t, a forrás pedig tiltásra kerüljön.
-
-2. Stop feltételek (három tartományos logika)
-Selejt alatti (< SELEJT_THRESHOLD): nem tároljuk, eldobás.
-
-Köztes tartomány (300–500 mm): próbáljunk még egy darabot vágni, ha nem sikerül → leftoverként elmentjük.
-
-Jó leftover tartomány (500–800 mm): megtartjuk leftoverként.
-
-Túl nagy leftover (> 800 mm): próbáljunk még egy darabot, ha nincs → leftoverként elmentjük.
-
-3. Scoring / optimalizáció
-Selejt leftover: −300 pont büntetés.
-
-Túl nagy leftover: dinamikus büntetés (minél nagyobb, annál rosszabb).
-
-Cél: minél több „jó leftover” és minél kevesebb selejt.
-
-4. CutPlan tartalma
-totalLength mindig a teljes rúd hossza.
-
-waste mindig a tényleges maradék a vágás után.
-
-kerf gépfüggő, mindig a kiválasztott gépből jön.
-
-machineId és machineName mindig kitöltve.
-
-sourceBarcode = a forrás rúd barkódja.
-
-parentBarcode = ugyanaz, auditlánc miatt.
-
-5. CutInstruction követelmények
-Minden CutPlanből generálódjon egy vagy több CutInstruction.
-
-Tartalmazza:
-
-StepId (sorrend)
-
-RodLabel (Rod‑A, Rod‑B, …)
-
-Material neve
-
-SourceBarcode + ParentBarcode
-
-CutSizes (darabolási hosszok)
-
-RemainingBefore / RemainingAfter
-
-Machine neve
-
-Status (Pending → InProgress → Done)
-
-Minden státuszváltás auditálva legyen (zEvent).
-
-6. UI / operátor oldal
-Az operátor nem a teljes CutPlan táblát látja, hanem a CutInstruction listát.
-
-Egyszerű, sorrendi utasítások: „Vágd le 2650 mm‑t → maradék 288 mm → új leftover RST‑523”.
-
-Minden sorhoz tartozik státusz ikon (Pending, InProgress, Done).
-
-A leftover sorok külön jelennek meg, hogy egyértelmű legyen: nem új stock, hanem maradék.
-
-🏁 Összegzés
-A vágási követelmények lényege:
-
-auditálható lánc,
-
-három tartományos stop logika,
-
-scoring optimalizáció,
-
-CutPlan → CutInstruction transzformáció,
-
-operátor‑barát UI státuszvezérléssel.
+✅ Összkép: Az SOS‑ok teljesen lezárva, a rendszer auditált és stabil. A fő fókusz most a Worklist tab finomhangolása, a Finalize auditálás/visszavonás beépítése és a sorvezető teljes integrálása. A vizuális és audit funkciók már összeértek, most a felhasználói élmény és a végső audit‑lánc lezárása van hátra.

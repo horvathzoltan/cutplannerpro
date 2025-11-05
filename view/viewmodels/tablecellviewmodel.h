@@ -11,6 +11,7 @@ struct TableCellViewModel {
     QColor background;
     QColor foreground;
     QWidget* widget = nullptr; // opcionális, ha van interaktív komponens
+    QString style; // opcionális egyedi stílus
     bool isReadOnly = false; // alapértelmezett: csak olvasható
     bool isVisible = true; // alapértelmezett: látható
 
@@ -40,6 +41,25 @@ struct TableCellViewModel {
         vm.foreground = foreground;
         vm.isReadOnly = isReadOnly;
         vm.isVisible = isVisible;
+        return vm;
+    }
+
+    static TableCellViewModel fromStyledText(const QString& text,
+                                       const QString& tooltip = QString(),
+                                       const QColor& background = Qt::white,
+                                       const QColor& foreground = Qt::black,
+                                       const QString& style = QString(),
+                                       bool isReadOnly = true,
+                                       bool isVisible = true) noexcept
+    {
+        TableCellViewModel vm;
+        vm.text = text;
+        vm.tooltip = tooltip;
+        vm.background = background;
+        vm.foreground = foreground;
+        vm.isReadOnly = isReadOnly;
+        vm.isVisible = isVisible;
+        vm.style = style;
         return vm;
     }
 };

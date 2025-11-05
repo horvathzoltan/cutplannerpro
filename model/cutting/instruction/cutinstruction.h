@@ -7,7 +7,7 @@
 // Vágási utasítás státusz
 enum class CutStatus {
     Pending,   ///< Még nem hajtották végre
-    InProgress,///< Folyamatban (opcionális)
+    InProgress,///< Ez az aktuális sor, itt van a zöld gomb
     Done,      ///< Végrehajtva
     Error      ///< Hiba történt
 };

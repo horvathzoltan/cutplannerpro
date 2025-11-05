@@ -148,7 +148,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             }
 
             // ⛔ Már most jelöljük használtként
-            //_usedLeftoverEntryIds.insert(best.stock.entryId);
+            _usedLeftoverEntryIds.insert(best.stock.entryId);
+            zEvent(QString("♻️ Forrás leftover tiltva: %1").arg(best.stock.entryId.toString()));
 
             // leftovers.removeAt(best.indexInInventory);
             // consumeLeftover(best.stock);
@@ -280,6 +281,27 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         //         break;
         //     }
 
+        // Ha nincs értelmes darab → leftoverként elmentjük
+        // if (remainingLength > 0) {
+        //     LeftoverStockEntry entry;
+        //     entry.materialId = rod.materialId;
+        //     entry.availableLength_mm = remainingLength;
+        //     entry.used = false;
+        //     entry.barcode = IdentifierUtils::makeLeftoverId(SettingsManager::instance().nextMaterialCounter());
+        //     entry.entryId = QUuid::createUuid();
+        //     entry.parentBarcode = rod.barcode;
+        //     entry.source = Cutting::Result::LeftoverSource::Optimization;
+        //     entry.optimizationId = std::make_optional(currentOpId);
+
+        //     leftoverRodMap.insert(entry.entryId, rod.rodId);
+        //     _usedLeftoverEntryIds.insert(entry.entryId);
+        //     _localLeftovers.append(entry);
+
+        //     zEvent(QString("📦 Új leftover létrehozva köztes tartományból: %1 (%2 mm)")
+        //                .arg(entry.barcode).arg(entry.availableLength_mm));
+        // }
+        // break;
+
         //     // Túl nagy leftover (> 800) → próbáljunk még egy darabot
         //     if (remainingLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
         //         auto onePieceFit = OptimizerUtils::findSingleBestPiece(groupVec, remainingLength, kerf_mm);
@@ -338,6 +360,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
             auto combo = findBestFit(groupVec, remainingLength, kerf_mm);
+            zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
+                       .arg(groupVec.size()).arg(combo.size()));
             if (combo.isEmpty()) break;
 
             cutComboBatch(combo, remainingLength, rod, machine, currentOpId, rodId, kerf_mm, groupVec);
@@ -399,15 +423,40 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 break; // ha nincs, lezárjuk
             }
 
-            break; // egyébként nincs értelmes további vágás
+
+            // Ha maradt még anyag, de nem esett bele egyik stop feltételbe sem → leftoverként elmentjük
+            if (remainingLength > 0) {
+                LeftoverStockEntry entry;
+                entry.materialId = rod.materialId;
+                entry.availableLength_mm = remainingLength;
+                entry.used = false;
+                entry.barcode = IdentifierUtils::makeLeftoverId(SettingsManager::instance().nextMaterialCounter());
+                entry.entryId = QUuid::createUuid();
+                entry.parentBarcode = rod.barcode;
+                entry.source = Cutting::Result::LeftoverSource::Optimization;
+                entry.optimizationId = std::make_optional(currentOpId);
+
+                leftoverRodMap.insert(entry.entryId, rod.rodId);
+                _usedLeftoverEntryIds.insert(entry.entryId);
+                _localLeftovers.append(entry);
+
+                zEvent(QString("📦 Új leftover létrehozva rod‑loop végén: %1 (%2 mm)")
+                           .arg(entry.barcode).arg(entry.availableLength_mm));
+            }
+
+            break; // nincs több értelmes darab → lezárjuk
         }
 
     }
     // A lokális leftoverokat commitoljuk a globális készletbe
+    // A lokális leftoverokat commitoljuk a globális készletbe
     for (const auto& entry : _localLeftovers) {
         _inventorySnapshot.reusableInventory.append(entry);
+        zEvent(QString("📦 Commit leftover: %1 (%2 mm)")
+                   .arg(entry.barcode).arg(entry.availableLength_mm));
     }
     _localLeftovers.clear();
+
 
 }
 
@@ -777,6 +826,9 @@ OptimizerModel::findBestReusableFit(const QVector<LeftoverStockEntry>& mergedVie
 
         // Egyébként: keresd a legjobb részhalmazt
         auto combo = findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm);
+        zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
+                   .arg(relevantPieces.size()).arg(combo.size()));
+
         if (combo.isEmpty()) continue;
 
         int totalCut = OptimizerUtils::sumLengths(combo);

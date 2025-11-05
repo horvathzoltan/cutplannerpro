@@ -503,6 +503,12 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableCuttingInstruction">
+            <property name="focusPolicy">
+             <enum>Qt::FocusPolicy::NoFocus</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+            </property>
             <column>
              <property name="text">
               <string>StepId</string>

@@ -6,6 +6,8 @@
 #include "model/registries/materialregistry.h"
 #include "view/tableutils/colorlogicutils.h"
 
+#include <view/tableutils/highlightdelegate.h>
+
 
 bool CuttingInstructionTableManager::_isVerbose = false;
 
@@ -28,6 +30,11 @@ void CuttingInstructionTableManager::addMachineRow(const MachineHeader& machine)
     TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generateMachineSeparator(machine);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
+    if (QTableWidgetItem* item = _table->item(rowIx, 0)) {
+        item->setData(Qt::UserRole + 2, true);
+    }
+
+
     if (_isVerbose) {
         zInfo(QString("CuttingInstruction machine separator row added: %1")
                   .arg(machine.machineName));
@@ -46,22 +53,42 @@ void CuttingInstructionTableManager::addRow(const CutInstruction& ci) {
     int rowIx = _table->rowCount();
     _table->insertRow(rowIx);
 
+
     // Anyag színének meghatározása
     const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
     QColor baseColor = mat ? ColorLogicUtils::resolveBaseColor(mat) : QColor("#DDDDDD");
 
+    CutInstruction ciCopy = ci;
+    if (_currentRowIx < 0) {
+        ciCopy.status = CutStatus::InProgress;
+        _currentRowIx = rowIx;
+        emit rowFinalized(rowIx);
+    }
+
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ci, baseColor, this);
+    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ciCopy, baseColor, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
+    // // 👉 csak a 0. oszlophoz adjuk hozzá a stepId-t
+    // if (QTableWidgetItem* item = _table->item(rowIx, 0)) {
+    //     item->setData(Qt::UserRole + 1, ci.globalStepId);
+    // }
+
     // rowId mentése
-    _rowMap.insert(vm.rowId, ci);
+    _rowMap.insert(vm.rowId, ciCopy);
     _rowIndexMap[vm.rowId] = rowIx;
+
+    // ha még nincs fókusz, az első nem gép-header sor legyen az aktuális
+    // if (_currentRowIx < 0) {
+    //     _currentRowIx = rowIx;
+
+    //     emit rowFinalized(rowIx);
+    // }
 
     if (_isVerbose) {
         zInfo(QString("CuttingInstruction row added: %1 | step=%2")
                   .arg(mat->name)
-                  .arg(ci.globalStepId));
+                  .arg(ciCopy.globalStepId));
     }
 }
 
@@ -141,11 +168,45 @@ void CuttingInstructionTableManager::finalizeRow(const QUuid& rowId) {
     // TODO: CuttingExecutionService meghívása (perzisztálás, leftover regisztráció)
     // Most csak státuszt állítunk
     ci.status = CutStatus::Done;
-
     updateRow(rowId, ci);
 
     zInfo(QString("finalizeRow: success for row %1 | step=%2 | remainingAfter=%3")
               .arg(rowId.toString())
               .arg(ci.globalStepId)
               .arg(ci.lengthAfter_mm));
+
+    // léptetés: következő sor a táblázatban
+    int currentRowIx = _rowIndexMap.value(rowId, -1);
+    int nextRowIx = -1;
+
+    for (int r = currentRowIx + 1; r < _table->rowCount(); ++r) {
+        QTableWidgetItem* item = _table->item(r, 0);
+        if (!item) continue;
+        if (!item->data(Qt::UserRole + 2).toBool()) { // nem gép-header
+            nextRowIx = r;
+            break;
+        }
+    }
+
+    // finalizeRow végén
+    if (nextRowIx != -1) {
+        _currentRowIx = nextRowIx;
+        QUuid nextRowId;
+        for (auto it = _rowIndexMap.begin(); it != _rowIndexMap.end(); ++it) {
+            if (it.value() == nextRowIx) {
+                nextRowId = it.key();
+                break;
+            }
+        }
+        if (!nextRowId.isNull()) {
+            CutInstruction& c2 = _rowMap[nextRowId];
+            c2.status = CutStatus::InProgress;
+            updateRow(nextRowId, c2); // csak a következő sor frissül
+        }
+    } else {
+        _currentRowIx = -1; // nincs több sor
+    }
+
+    emit rowFinalized(currentRowIx);
+
 }

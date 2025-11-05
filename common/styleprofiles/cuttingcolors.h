@@ -6,8 +6,8 @@ namespace CuttingColors {
 // 🎨 Globális színprofil – vágási státuszokhoz
 
 inline const QColor Pending     = QColor(200, 200, 200); // szürke – még nem futott
-inline const QColor InProgress  = QColor(100, 149, 237); // cornflowerblue – folyamatban
-inline const QColor Done        = QColor(200, 230, 201); // #c8e6c9 – zöldes, sikeres
+inline const QColor InProgress  = QColor(231, 76, 60);   // piros (#e74c3c) – folyamatban
+inline const QColor Done        = QColor(46, 204, 113);  // zöld (#2ecc71) – sikeres
 inline const QColor Error       = QColor(255, 205, 210); // #ffcdd2 – pirosas, hiba
 
 // 🎨 Szeparátor sor háttér (gépekhez)

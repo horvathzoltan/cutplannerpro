@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "view/tablehelpers/tablerowpopulator.h"
+#include "view/tableutils/highlightdelegate.h"
 #include "view/tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
 
@@ -63,6 +64,21 @@ MainWindow::MainWindow(QWidget *parent)
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, presenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
+
+    // 🔦 Sorvezető delegate bekötése
+    auto* highlightDelegate = new HighlightDelegate(ui->tableCuttingInstruction);
+    highlightDelegate->currentRowIx =
+        cuttingInstructionTableManager->currentRowIx();
+    ui->tableCuttingInstruction->setItemDelegate(highlightDelegate);
+
+    connect(cuttingInstructionTableManager.get(), &CuttingInstructionTableManager::rowFinalized,
+            this, [this, highlightDelegate](int rowIx) {
+                highlightDelegate->completedRows.insert(rowIx);
+                highlightDelegate->currentRowIx = cuttingInstructionTableManager->currentRowIx();
+                ui->tableCuttingInstruction->viewport()->update();
+            });
+
+
 
     InputTableConnector::Connect(this, inputTableManager.get(), presenter);
     StockTableConnector::Connect(this, stockTableManager.get(), presenter);

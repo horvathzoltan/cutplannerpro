@@ -29,6 +29,12 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
 
         // widget eset - QWidget
         if (cell.widget) {
+            // előző widget törlése, ha volt
+            if (QWidget* old = table->cellWidget(rowIx, col)) {
+                table->removeCellWidget(rowIx, col);
+                delete old;
+            }
+
             // 🔘 Interaktív cella (pl. SpinBox, RadioButton)
             table->setCellWidget(rowIx, col, cell.widget);
             if(!cell.tooltip.isEmpty()){
@@ -38,6 +44,12 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
         // cellatartalom eset - QTableWidgetItem
         else
         {
+            // előző widget törlése, ha volt
+            if (QWidget* old = table->cellWidget(rowIx, col)) {
+                table->removeCellWidget(rowIx, col);
+                delete old;
+            }
+
             // 🧾 Sima szöveges cella
             auto* item = new QTableWidgetItem(cell.text);
             if(!cell.tooltip.isEmpty()){

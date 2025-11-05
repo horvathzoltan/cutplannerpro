@@ -143,6 +143,7 @@ HEADERS += \
     view/tableutils/auditgrouplabeler.h \
     view/tableutils/auditgroupsynchronizer.h \
     view/tableutils/colorutils.h \
+    view/tableutils/highlightdelegate.h \
     view/tableutils/rowid.h \
     view/tableutils/storageaudittable_connector.h \
     view/tableutils/storageaudittable_rowstyler.h \

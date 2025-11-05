@@ -25,8 +25,8 @@ adj snippetet régi és új kóddal, +/‑ jelek nélkül, külön blokkban
 ", akkor pontosan ilyen formátumban fogom adni.
 
 
-a project állapotát ebben a formátumban kérem: 
-🧩 Állapottábla – 2025.10.xx. (frissítve, esti,reggeli,déli stb... állapot) 
+a project állapotát ebben a formátumban kérem:
+🧩 Állapottábla – 2025.10.xx. (frissítve, esti,reggeli,déli stb... állapot)
 # Tevékenység Terv Kész Új Köv Megjegyzés
 
 az sos és a tűzoltást jelölt tűz ikonnal
@@ -35,25 +35,3 @@ a táblázat, a 🚀 Sprint fókusz (🔥 SOS pontokkal), a 📌 Mai eredmények
 
 
 ***
-
-Model réteg
-
-model/material/materialmaster.h / .cpp → itt van a material neve, az alapadatok.
-
-model/material/materialgroup_utils.h vagy GroupUtils → itt jön a csoportnév.
-
-model/cutting/instruction/cutinstruction.h → itt van a materialId és a barcode mező, amit a cellában meg kell jeleníteni.
-
-Registry / Service réteg
-
-model/registries/materialregistry.h / .cpp → innen tudod lekérni a MaterialMaster példányt materialId alapján.
-
-service/cutting/result/resultutils.h vagy segmentutils.h → ha van már helper, ami a material + group + barcode kombinációt előállítja.
-
-ViewModel / Cell generator réteg
-
-view/viewmodels/cutting/rowgenerator.h / .cpp → itt történik a cellák előállítása a CutInstruction sorhoz.
-
-view/viewmodels/result/rowgenerator.h → itt látszik a mostani categoryText logika, amit át lehet emelni és egységesíteni.
-
-Új fájl: view/cellhelpers/materialcellgenerator.h / .cpp → ide érdemes kitenni a központi logikát, hogy minden táblában ugyanazt a formátumot használd.

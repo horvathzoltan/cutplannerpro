@@ -76,14 +76,24 @@ inline TableRowViewModel generate(const CutInstruction& ci,
 
     // 🎨 Alapszínek a csoport alapján
     //QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;    bool done = (ci.status == CutStatus::Done);
+    //QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
+    bool done = (ci.status == CutStatus::Done);
+
+    // Ha Done → szürke háttér, sötét szöveg
+    QColor rowBg = baseColor;
+    QColor rowFg = (baseColor.lightness() < 128 ? Qt::white : Qt::black);
+
+    if (done) {
+        rowBg = QColor(220,220,220);   // világosszürke háttér
+        rowFg = QColor(80,80,80);      // sötétszürke szöveg
+    }
 
     vm.cells[CuttingInstructionTableColumns::StepId] =
-        TableCellViewModel::fromText(QString::number(ci.globalStepId), "Lépés azonosító", baseColor, fgColor);
+        TableCellViewModel::fromText(QString::number(ci.globalStepId), "Lépés azonosító", rowBg, rowFg);
 
     // RodLabel: marad a CutPlan által generált label
     vm.cells[CuttingInstructionTableColumns::RodId] =
-        TableCellViewModel::fromText(ci.rodId, "Rúd jel", baseColor, fgColor);
+        TableCellViewModel::fromText(ci.rodId, "Rúd jel", rowBg, rowFg);
 
     // Barcode: ha van konkrét rod barcode, azt mutatjuk, material megy tooltipbe
     QString barcodeToShow = ci.barcode.isEmpty() ? "—" : ci.barcode;
@@ -95,7 +105,9 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     //     TableCellViewModel::fromText(barcodeToShow, barcodeTooltip, baseColor, fgColor);
 
     vm.cells[CuttingInstructionTableColumns::Material] =
-        CellGenerators::materialCell(ci.materialId, ci.barcode, baseColor, fgColor);
+        CellGenerators::materialCell(ci.materialId, ci.barcode, rowBg, rowFg);
+
+
 
     QString cutText = QString("✂️ %1").arg(ci.cutSize_mm, 0, 'f', 1);
     QString cutTooltip = "Vágandó hossz (mm)";
@@ -103,19 +115,20 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     // kiemelt háttér és betű
     QColor cutBg = baseColor.darker(120);
     QColor cutFg = Qt::white;
+    QString cutStyle = "font-weight: bold; font-size: 14px; text-decoration: underline;";
+
+    if (done) {
+        cutBg = rowBg;   // szürke háttér
+        cutFg = rowFg;   // sötét szöveg
+        cutStyle.clear(); // ne legyen kiemelés
+    }
 
     vm.cells[CuttingInstructionTableColumns::CutSize] =
-        TableCellViewModel::fromText(
-            cutText,
-            cutTooltip,
-            cutBg,
-            cutFg,
-            "font-weight: bold; font-size: 14px; text-decoration: underline;"
-            );
+        TableCellViewModel::fromStyledText(cutText,cutTooltip,cutBg,cutFg, cutStyle);
 
     vm.cells[CuttingInstructionTableColumns::LengthBefore] =
         TableCellViewModel::fromText(QString::number(ci.lengthBefore_mm, 'f', 1),
-                                     "Vágás előtti hossz (mm)", baseColor, fgColor);
+                                     "Vágás előtti hossz (mm)", rowBg, rowFg);
 
 
     QColor fg = baseColor.lightness() < 128 ? Qt::white : Qt::black;
@@ -148,6 +161,12 @@ inline TableRowViewModel generate(const CutInstruction& ci,
                                                                                 : "Köztes");
     }
 
+    // Ha Done → felülírjuk a kategória színeket is
+    if (done) {
+        bg = rowBg;
+        fg = rowFg;
+    }
+
     vm.cells[CuttingInstructionTableColumns::LengthAfter] =
         TableCellViewModel::fromText(afterText, afterTooltip, bg, fg);
 
@@ -157,14 +176,17 @@ inline TableRowViewModel generate(const CutInstruction& ci,
         TableCellViewModel::fromText(
             CuttingStatusUtils::toText(ci.status),
             "Vágási státusz",
-            baseColor,
+            rowBg,
             CuttingStatusUtils::toColor(ci.status)
             );
 
-    if (done) {
+    // 🔑 Finalize cella logika
+    if (ci.status == CutStatus::Done) {
         vm.cells[CuttingInstructionTableColumns::Finalize] =
-            TableCellViewModel::fromText("✔", "Már végrehajtva", baseColor, QColor("#666666"), true);
-    } else {
+            TableCellViewModel::fromText("✔", "Már végrehajtva",
+                                         rowBg, rowFg, true);
+    }
+    else if (ci.status == CutStatus::InProgress) {
         QPushButton* btn = new QPushButton("Finalize");
         btn->setCursor(Qt::PointingHandCursor);
         btn->setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;");
@@ -176,6 +198,12 @@ inline TableRowViewModel generate(const CutInstruction& ci,
         vm.cells[CuttingInstructionTableColumns::Finalize] =
             TableCellViewModel::fromWidget(btn, "Végrehajtás");
     }
+    else {
+        vm.cells[CuttingInstructionTableColumns::Finalize] =
+            TableCellViewModel::fromText("—", "Nem aktuális sor",
+                                         rowBg, rowFg, true);
+    }
+
 
     return vm;
 }
