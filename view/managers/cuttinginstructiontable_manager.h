@@ -48,9 +48,11 @@ public:
 public slots:
     /// Sor végrehajtása (Finalize gomb)
     void finalizeRow(const QUuid& rowId);
+    void compensationChange(const QUuid& machineId, double newVal);
 
 signals:
     /// Jelzés: egy sor sikeresen finalizálva lett
     void rowFinalized(int rowIndex);
+    void compensationChanged(const QUuid& machineId, double newVal);
 };
 

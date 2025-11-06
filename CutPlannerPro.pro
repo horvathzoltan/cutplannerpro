@@ -106,6 +106,7 @@ HEADERS += \
     model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
     service/buildnumber.h \
+    service/cutting/instruction/cuttinginstructionutils.h \
     service/cutting/optimizer/optimizationauditbuilder.h \
     service/cutting/optimizer/optimizationlogger.h \
     service/cutting/optimizer/optimizationrunner.h \

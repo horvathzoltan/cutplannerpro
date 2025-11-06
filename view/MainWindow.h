@@ -13,6 +13,7 @@
 #include "view/managers/cuttinginstructiontable_manager.h"
 #include "view/managers/relocationplantable_manager.h"
 #include "view/managers/storageaudittable_manager.h"
+#include "view/tableutils/highlightdelegate.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -81,10 +82,15 @@ private slots:
 
     void handle_btn_OptRad_clicked(bool checked);
 
+    void onRowFinalized(int rowIx);
+    void onCompensationChanged(const QUuid& machineId, double newVal);
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
     CutAnalyticsPanel* analyticsPanel = nullptr;
+    HighlightDelegate *_highlightDelegate;
+    QVector<MachineCuts> _machineCutsList;
 
     // input tábla - vágási terv
     std::unique_ptr<InputTableManager> inputTableManager = nullptr;
@@ -109,5 +115,7 @@ private:
     void initEventLogWidget();
     void translate();
     void refreshSummaryRows();
+    void postProcessMachineCuts(MachineCuts &mc);
+    void renderCuttingInstructions();
 };
 #endif // MAINWINDOW_H

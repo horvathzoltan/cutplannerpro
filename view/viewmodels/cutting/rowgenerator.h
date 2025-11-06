@@ -7,12 +7,14 @@
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "view/columnindexes/tablecuttinginstruction_columns.h"
 #include "model/cutting/instruction/cutinstruction.h"
-#include "model/cutting/cuttingmachine.h"
 
 #include <QObject>
 #include <QPushButton>
 #include <QColor>
 #include <QUuid>
+#include <QDoubleSpinBox>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include <model/registries/materialregistry.h>
 
@@ -28,34 +30,90 @@ namespace Cutting::ViewModel::RowGenerator {
 
 /// Összesítő sor generálása (Σ)
 /// Gép szeparátor sor generálása
-inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine) {
+inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine,
+                                                  QObject* receiver = nullptr) {
     TableRowViewModel vm;
     vm.rowId = QUuid::createUuid();
 
     QColor bg = QColor("#B0C4DE"); // halvány kékesszürke háttér
     QColor fg = Qt::black;
 
-    // Fő szöveg: gép neve
-    QString text = QString("=== %1 ===").arg(machine.machineName);
+    // 🔹 Composite widget a badge-szerű megjelenítéshez
+    QWidget* badgeWidget = new QWidget();
+    QHBoxLayout* layout = new QHBoxLayout(badgeWidget);
+    layout->setContentsMargins(4, 4, 4, 4);
+    layout->setSpacing(8);
 
-    // Részletek: kerf, steller, kompenzáció
-    QStringList details;
-    details << QString("Kerf=%1 mm").arg(machine.kerf_mm, 0, 'f', 1);
-    if (machine.stellerMaxLength_mm.has_value())
-        details << QString("StellerMax=%1 mm").arg(machine.stellerMaxLength_mm.value(), 0, 'f', 1);
-    if (machine.stellerCompensation_mm.has_value())
-        details << QString("Comp=%1 mm").arg(machine.stellerCompensation_mm.value(), 0, 'f', 1);
+    // Gépnév badge
+    QLabel* lblMachine = new QLabel(QString("=== %1 ===").arg(machine.machineName));
+    lblMachine->setStyleSheet("QLabel { background-color: #2980b9; color: white; font-weight: bold; padding: 4px 10px; border-radius: 6px; }");
+    layout->addWidget(lblMachine);
 
-    if (!details.isEmpty())
-        text.append("   [" + details.join(" | ") + "]");
+    // Kerf badge
+    QLabel* lblKerf = new QLabel(QString("Kerf=%1 mm").arg(machine.kerf_mm, 0, 'f', 1));
+    lblKerf->setStyleSheet("QLabel { background-color: #16a085; color: white; padding: 3px 8px; border-radius: 6px; }");
+    layout->addWidget(lblKerf);
 
-    if (!machine.comment.isEmpty())
-        text.append(QString("   (%1)").arg(machine.comment));
+    // StellerMax badge (ha van)
+    if (machine.stellerMaxLength_mm.has_value()) {
+        QLabel* lblSteller = new QLabel(QString("StellerMax=%1 mm").arg(machine.stellerMaxLength_mm.value(), 0, 'f', 1));
+        lblSteller->setStyleSheet("QLabel { background-color: #8e44ad; color: white; padding: 3px 8px; border-radius: 6px; }");
+        layout->addWidget(lblSteller);
+    }
 
-    // Csak az első cellát töltjük ki, a többiben vizuális szeparátor
+    // Kompenzáció badge-szerű widget: label + spinbox + suffix
+    if (machine.stellerMaxLength_mm.has_value() && machine.stellerMaxLength_mm.value() > 0) {
+        QWidget* compWidget = new QWidget();
+        QHBoxLayout* compLayout = new QHBoxLayout(compWidget);
+        compLayout->setContentsMargins(0,0,0,0);
+        compLayout->setSpacing(4);
+
+        QLabel* lblPrefix = new QLabel("Comp:");
+        lblPrefix->setStyleSheet("font-weight: bold; color: #2c3e50;");
+
+        QDoubleSpinBox* spin = new QDoubleSpinBox();
+        spin->setRange(-50.0, 50.0);
+        spin->setDecimals(2);
+        spin->setValue(machine.stellerCompensation_mm.value_or(0.0));
+        spin->setToolTip("Steller kompenzáció felülírása");
+        spin->setKeyboardTracking(false);
+        spin->setLocale(QLocale(QLocale::Hungarian)); // magyar tizedeselválasztó
+
+        // 🔑 Bekötés: amikor változik az érték
+        QObject::connect(spin, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+                         receiver, [receiver, machineId = machine.machineId](double newVal) {
+                             QMetaObject::invokeMethod(receiver, "compensationChange",
+                                                       Qt::QueuedConnection,
+                                                       Q_ARG(QUuid, machineId),
+                                                       Q_ARG(double, newVal));
+                         });
+
+        QLabel* lblSuffix = new QLabel("mm");
+        lblSuffix->setStyleSheet("color: #2c3e50;");
+
+        compLayout->addWidget(lblPrefix);
+        compLayout->addWidget(spin);
+        compLayout->addWidget(lblSuffix);
+        compWidget->setLayout(compLayout);
+
+        layout->addWidget(compWidget);
+    }
+
+    // Komment badge (ha van)
+    if (!machine.comment.isEmpty()) {
+        QLabel* lblComment = new QLabel(machine.comment);
+        lblComment->setStyleSheet("QLabel { background-color: #f39c12; color: black; padding: 3px 8px; border-radius: 6px; }");
+        layout->addWidget(lblComment);
+    }
+
+    layout->addStretch();
+    badgeWidget->setLayout(layout);
+
+    // 🔹 A StepId cellába tesszük be a composite widgetet
     vm.cells[CuttingInstructionTableColumns::StepId] =
-        TableCellViewModel::fromText(text, "Gép szeparátor sor", bg, fg);
+        TableCellViewModel::fromWidget(badgeWidget, "Gép szeparátor sor");
 
+    // A többi oszlop marad szeparátor
     for (int col = CuttingInstructionTableColumns::RodId;
          col <= CuttingInstructionTableColumns::Finalize; ++col) {
         vm.cells[col] = TableCellViewModel::fromText("—", "Separator", bg, fg, true);
@@ -63,6 +121,47 @@ inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine) 
 
     return vm;
 }
+
+
+//     return vm;
+// }
+
+// inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine) {
+//     TableRowViewModel vm;
+//     vm.rowId = QUuid::createUuid();
+
+//     QColor bg = QColor("#B0C4DE"); // halvány kékesszürke háttér
+//     QColor fg = Qt::black;
+
+//     // Fő szöveg: gép neve
+//     QString text = QString("=== %1 ===").arg(machine.machineName);
+
+//     // Részletek: kerf, steller, kompenzáció
+//     QStringList details;
+//     details << QString("Kerf=%1 mm").arg(machine.kerf_mm, 0, 'f', 1);
+//     if (machine.stellerMaxLength_mm.has_value())
+//         details << QString("StellerMax=%1 mm").arg(machine.stellerMaxLength_mm.value(), 0, 'f', 1);
+//     if (machine.stellerCompensation_mm.has_value())
+//         details << QString("Comp=%1 mm").arg(machine.stellerCompensation_mm.value(), 0, 'f', 1);
+
+//     if (!details.isEmpty())
+//         text.append("   [" + details.join(" | ") + "]");
+
+//     if (!machine.comment.isEmpty())
+//         text.append(QString("   (%1)").arg(machine.comment));
+
+//     // Csak az első cellát töltjük ki, a többiben vizuális szeparátor
+//     vm.cells[CuttingInstructionTableColumns::StepId] =
+//         TableCellViewModel::fromText(text, "Gép szeparátor sor", bg, fg);
+
+//     for (int col = CuttingInstructionTableColumns::RodId;
+//          col <= CuttingInstructionTableColumns::Finalize; ++col) {
+//         vm.cells[col] = TableCellViewModel::fromText("—", "Separator", bg, fg, true);
+//     }
+
+//     return vm;
+// }
+
 
 /// Normál sor generálása
 inline TableRowViewModel generate(const CutInstruction& ci,
@@ -109,8 +208,20 @@ inline TableRowViewModel generate(const CutInstruction& ci,
 
 
 
-    QString cutText = QString("✂️ %1").arg(ci.cutSize_mm, 0, 'f', 1);
-    QString cutTooltip = "Vágandó hossz (mm)";
+    // QString cutText = QString("✂️ %1").arg(ci.cutSize_mm, 0, 'f', 1);
+    // QString cutTooltip = "Vágandó hossz (mm)";
+
+    QString cutText;
+    QString cutTooltip;
+
+    if (ci.isManualCut) {
+        cutText = QString("📏 %1").arg(ci.cutSize_mm, 0, 'f', 1);
+        cutTooltip = "Kézi jelölés – nincs steller kompenzáció";
+    } else {
+        cutText = QString("✂️ %1").arg(ci.effectiveCutSize_mm, 0, 'f', 1);
+        cutTooltip = QString("Vágandó hossz kompenzációval (eredeti: %1 mm)")
+                         .arg(ci.cutSize_mm, 0, 'f', 1);
+    }
 
     // kiemelt háttér és betű
     QColor cutBg = baseColor.darker(120);

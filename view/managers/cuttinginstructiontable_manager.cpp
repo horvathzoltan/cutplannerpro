@@ -27,7 +27,7 @@ void CuttingInstructionTableManager::addMachineRow(const MachineHeader& machine)
     _table->insertRow(rowIx);
     _table->setSpan(rowIx, 0, 1, _table->columnCount());
 
-    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generateMachineSeparator(machine);
+    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generateMachineSeparator(machine, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     if (QTableWidgetItem* item = _table->item(rowIx, 0)) {
@@ -208,5 +208,8 @@ void CuttingInstructionTableManager::finalizeRow(const QUuid& rowId) {
     }
 
     emit rowFinalized(currentRowIx);
+}
 
+void CuttingInstructionTableManager::compensationChange(const QUuid& machineId, double newVal){
+    emit compensationChanged(machineId, newVal);
 }

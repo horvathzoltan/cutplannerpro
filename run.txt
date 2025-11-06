@@ -1,4 +1,4 @@
-🧩 Állapottábla – 2025.11.05. (esti frissítés, frissített állapot)
+🧩 Állapottábla – 2025.11.05. (esti frissítés után, frissített állapot)
 
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve, safeLetterPrefix működik
@@ -15,36 +15,38 @@
 ✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	🟡 Folyamatban	✅	🚧 Sprint 5	végrehajtott = szürke, aktuális = zöld keret
 🚀 Sprint fókusz – 🔥 SOS pontok
 
-🔥 SOS‑1 → ✅ Lezárva
+SOS‑1 → ✅ Lezárva
 
-🔥 SOS‑2 → ✅ Lezárva (audit finomítás, SegmentModel ellenőrzés még folyamatban)
+SOS‑2 → ✅ Lezárva (audit finomítás, SegmentModel ellenőrzés még folyamatban)
 
-🔥 SOS‑3 → ✅ Lezárva (scoring finomhangolás kész)
+SOS‑3 → ✅ Lezárva (scoring finomhangolás kész)
 
 📌 Mai eredmények
 
-✅ ParentBarcode lánc: teljes öröklés → nincs több ∅.
+✅ ParentBarcode lánc: teljes öröklés → nincs több ∅
 
-✅ Új leftover entryId logika → minden új hulló új entryId‑t kap, audit log tiszta.
+✅ Új leftover entryId logika → minden új hulló új entryId‑t kap, audit log tiszta
 
-✅ Dupla hulló generálás megszüntetve (UU1/UU2 fallback eltávolítva).
+✅ Dupla hulló generálás megszüntetve (UU1/UU2 fallback eltávolítva)
 
-✅ Forrás tiltás aktív → minden leftover egyszer használható.
+✅ Forrás tiltás aktív → minden leftover egyszer használható
 
-✨ CutSize cella kiemelés: ✂️ ikon, nagyobb kontraszt.
+✨ CutSize cella kiemelés: ✂️ ikon, nagyobb kontraszt
 
-✨ Leftover színezés: selejt/jó/köztes kategóriák színkódolva, tooltipben kategória.
+✨ Leftover színezés: selejt/jó/köztes kategóriák színkódolva, tooltipben kategória
 
-✨ Sorvezető logika: végrehajtott sorok szürkítve, aktuális sor zöld kerettel.
+✨ Sorvezető logika: végrehajtott sorok szürkítve, aktuális sor zöld kerettel
 
-✅ Commit leftover események bekerültek a logba → minden új leftover auditálva.
+✅ Commit leftover események bekerültek a logba → minden új leftover auditálva
 
 👉 Holnap fókusz
 
-Worklist tab finomhangolása (darab szint, státuszok).
+Worklist tab finomhangolása (darab szint, státuszok)
 
-Finalize auditálás és visszavonás implementálása.
+Finalize auditálás és visszavonás implementálása
 
-Sorvezető teljes integrálása (delegate + státuszvezérlés).
+Sorvezető teljes integrálása (delegate + státuszvezérlés)
 
-✅ Összkép: Az SOS‑ok teljesen lezárva, a rendszer auditált és stabil. A fő fókusz most a Worklist tab finomhangolása, a Finalize auditálás/visszavonás beépítése és a sorvezető teljes integrálása. A vizuális és audit funkciók már összeértek, most a felhasználói élmény és a végső audit‑lánc lezárása van hátra.
+✅ Összkép Az SOS‑ok teljesen lezárva, a rendszer auditált és stabil. A fő fókusz most a Worklist tab finomhangolása, a Finalize auditálás/visszavonás beépítése és a sorvezető teljes integrálása. A vizuális és audit funkciók már összeértek, most a felhasználói élmény és a végső audit‑lánc lezárása van hátra.
+
+🎯 Nagyon szép haladás: a kritikus SOS pontok lezárva, a vizuális élmény (ikonok, színezés, sorvezető) már kézzelfogható, és az audit lánc tiszta. Holnap a fókusz a finomhangolás és a hiányzó audit funkciók beépítése lesz.

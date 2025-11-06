@@ -32,6 +32,8 @@ struct CutInstruction {
 
     bool isFinalLeftover = false; // 🔴 Végső leftover jelző
     QString leftoverBarcode;
+    bool isManualCut = false;
+    double effectiveCutSize_mm = 0.0; // kompenzációval számolt méret
 
     // Segédfüggvény a számításhoz
     void computeRemaining() {
