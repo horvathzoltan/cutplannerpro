@@ -50,7 +50,7 @@ void AuditGroupSynchronizer::syncRow(const StorageAuditRow& row) {
         return;
 
     // 🔄 ViewModel újragenerálása
-    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, _manager);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, *mat, groupLabel, _manager);
 
     // 🧩 Cellák újratöltése
     TableRowPopulator::populateRow(_table, rowIx, vm);

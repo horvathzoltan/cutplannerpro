@@ -9,6 +9,8 @@
 
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép
 struct MaterialMaster : public IdentifiableEntity {
+    MaterialMaster(){}; // 🔧 Default konstruktor deklaráció
+
     double stockLength_mm = 0.0;       // 📏 Teljes szálhossz mm-ben (pl. 6000)
 
     CrossSectionShape shape;           // 🧩 Keresztmetszet formája
@@ -25,7 +27,5 @@ struct MaterialMaster : public IdentifiableEntity {
     //QString coating;       // pl. fehér, szürke, szinterezhető
     NamedColor color; // 🎨 Anyag színe (RAL vagy HEX kód)
 
-    QString comment;       // opcionális, UI-ba is jó
-
-    MaterialMaster(){}; // 🔧 Default konstruktor deklaráció
+    QString comment;       // opcionális, UI-ba is jó    
 };

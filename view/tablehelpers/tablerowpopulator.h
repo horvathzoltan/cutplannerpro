@@ -40,6 +40,19 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
             if(!cell.tooltip.isEmpty()){
                 cell.widget->setToolTip(cell.tooltip);
             }
+
+            QString styletxt;
+
+            if(cell.background.isValid()){
+                styletxt+=QString("background-color: %1;").arg(cell.background.name());
+            }
+            if(cell.foreground.isValid()){
+                styletxt+=QString("color: %2;").arg(cell.foreground.name());
+            }
+
+            if(!styletxt.isEmpty()){
+                cell.widget->setStyleSheet(styletxt);
+            }
         }
         // cellatartalom eset - QTableWidgetItem
         else

@@ -32,12 +32,14 @@ public:
     double _length_mm;
     QString _barcode;
     int _segIx;
+    QUuid _requestId;        // 🔗 Request azonosító
 
-    SegmentModel(Type t, double len, int ix):
+    SegmentModel(Type t, double len, int ix, QUuid reqId):
         _segId(QUuid::createUuid()),
         _type(t),
         _length_mm(len),
-        _segIx(ix)
+        _segIx(ix),
+        _requestId(reqId)
     {
         switch(t){
         case Type::Piece:{

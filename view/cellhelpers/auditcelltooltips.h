@@ -10,7 +10,7 @@ namespace AuditCellTooltips {
 
 // auditcelltooltips.h
 
-inline QString forStatus(const StorageAuditRow& row, const MaterialMaster* mat) {
+inline QString forStatus(const StorageAuditRow& row, const MaterialMaster& mat) {
     QStringList lines;
 
     // 🔑 Emberi azonosítók
@@ -19,8 +19,7 @@ inline QString forStatus(const StorageAuditRow& row, const MaterialMaster* mat) 
     lines << QString("Barcode: %1").arg(row.barcode.isEmpty() ? "—" : row.barcode);
 
     // 📦 Anyag és tároló
-    if (mat)
-        lines << QString("Anyag: %1").arg(mat->name);
+    lines << QString("Anyag: %1").arg(mat.name);
     if (!row.storageName.isEmpty())
         lines << QString("Tároló: %1").arg(row.storageName);
 

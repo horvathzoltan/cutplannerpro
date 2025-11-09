@@ -8,7 +8,7 @@ namespace MaterialRowStyler {
 inline void applyMaterialStyle(QTableWidget* table, int row, const MaterialMaster* mat, const QSet<int>& excols) {
     if (!table || !mat) return;
 
-    QColor backColor = GroupUtils::colorForGroup(mat->id); // vagy mat->color.toQColor()
+    QColor backColor = GroupUtils::groupColor(mat->id); // vagy mat->color.toQColor()
     QColor textColor = backColor.lightness() < 128 ? Qt::white : Qt::black;
 
     for (int col = 0; col < table->columnCount(); ++col) {

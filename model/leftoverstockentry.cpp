@@ -35,7 +35,7 @@ QString LeftoverStockEntry::materialGroupName() const {
 }
 
 QColor LeftoverStockEntry::materialGroupColor() const {
-    return GroupUtils::colorForGroup(materialId);
+    return GroupUtils::groupColor(materialId);
 }
 
 bool LeftoverStockEntry::operator==(const LeftoverStockEntry& other) const {

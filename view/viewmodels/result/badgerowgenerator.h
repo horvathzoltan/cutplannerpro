@@ -4,13 +4,14 @@
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "model/cutting/plan/cutplan.h"
 #include "model/material/materialgroup_utils.h"
-#include "view/tableutils/colorlogicutils.h"
+//#include "view/tableutils/colorlogicutils.h"
 //#include "model/material/material_utils.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QWidget>
 
+#include <model/registries/cuttingplanrequestregistry.h>
 #include <model/registries/materialregistry.h>
 
 namespace Results::ViewModel::BadgeRowGenerator {
@@ -20,9 +21,10 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
     vm.rowId = QUuid::createUuid();
 
     QString groupName = GroupUtils::groupName(plan.materialId);
+    QColor baseColor = GroupUtils::groupColor(plan.materialId);
     //QColor baseColor = MaterialUtils::colorForMaterial(plan.materialId);
-    const auto* mat = MaterialRegistry::instance().findById(plan.materialId);
-    QColor baseColor = mat ? ColorLogicUtils::resolveBaseColor(mat) : QColor("#DDDDDD");
+    //const auto* mat = MaterialRegistry::instance().findById(plan.materialId);
+    //QColor baseColor = mat ? ColorLogicUtils::resolveBaseColor(mat) : QColor("#DDDDDD");
 
 
     QWidget* cutsWidget = new QWidget;
@@ -44,6 +46,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
         QString badgeLabel = s.toLabelString();
 
+        const auto* req = CuttingPlanRequestRegistry::instance().findById(s._requestId);
+
+
         QString badgeTooltip = QString(
                                    "RodId: %1\n"
                                    "Barcode: %2\n"
@@ -55,7 +60,8 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    "Forrás: %8\n"
                                    "OptimizationId: %9\n"
                                    "Gép: %10\n"
-                                   "Státusz: %11")
+                                   "Státusz: %11\n"
+                                   "Request: %12")
                                    .arg(plan.rodId)
                                    .arg(s.barcode())
                                    .arg(plan.materialName())
@@ -68,7 +74,8 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                                                                          : "Optimization")
                                    .arg(plan.optimizationId)
                                    .arg(plan.machineName)
-                                   .arg(Cutting::Plan::statusText(plan.status));
+                                   .arg(Cutting::Plan::statusText(plan.status))
+                                   .arg(req ? req->toString() : "Ismeretlen");
 
         QLabel* label = new QLabel(badgeLabel);
         label->setToolTip(badgeTooltip);

@@ -53,7 +53,7 @@ void StorageAuditTableManager::addRow(const StorageAuditRow& row) {
         groupLabel = _groupLabeler.labelFor(row.contextPtr());
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
-    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, *mat, groupLabel, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // 🧭 Sorregisztráció – segít a sorok azonosításában
@@ -106,7 +106,7 @@ void StorageAuditTableManager::updateRow(const StorageAuditRow& row) {
         groupLabel = _groupLabeler.labelFor(row.contextPtr());
 
     // 🧱 ViewModel generálása + 🧩 Megjelenítés
-    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, mat, groupLabel, this);
+    TableRowViewModel vm = Audit::ViewModel::RowGenerator::generate(row, *mat, groupLabel, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // 🔁 Csoport újraszinkronizálása

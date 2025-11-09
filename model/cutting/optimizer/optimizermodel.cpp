@@ -68,8 +68,9 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         for (int i = 0; i < req.quantity; ++i) {
             Cutting::Piece::PieceInfo info;
             info.length_mm = req.requiredLength;
-            info.ownerName = req.ownerName.isEmpty() ? "Ismeretlen" : req.ownerName;
-            info.externalReference = req.externalReference;
+            //info.ownerName = req.ownerName.isEmpty() ? "Ismeretlen" : req.ownerName;
+            //info.externalReference = req.externalReference;
+            info.requestId = req.requestId;
             info.isCompleted = false;
             piecesByMaterial[req.materialId].append(
                 Cutting::Piece::PieceWithMaterial(info, req.materialId));
@@ -390,11 +391,14 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 remainingLength < OptimizerConstants::GOOD_LEFTOVER_MIN) {
                 auto onePieceFit = OptimizerUtils::findSingleBestPiece(groupVec, remainingLength, kerf_mm);
                 if (onePieceFit.has_value()) {
-                    const auto& piece = *onePieceFit;
-                    int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
+                    const Piece::PieceWithMaterial &piece = *onePieceFit;
+
+                    int used = piece.info.length_mm +
+                               OptimizerUtils::roundKerfLoss(1, kerf_mm);
                     int newRemaining = remainingLength - used;
 
-                    cutSinglePieceBatch(piece, remainingLength, rod, machine, currentOpId, rodId, kerf_mm, groupVec);
+                    cutSinglePieceBatch(piece, remainingLength, rod, machine,
+                                        currentOpId, rodId, kerf_mm, groupVec);
 
                     if (newRemaining < OptimizerConstants::SELEJT_THRESHOLD) {
                         continue; // teljesen elfogyott → új rúd

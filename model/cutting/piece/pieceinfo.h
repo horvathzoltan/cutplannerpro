@@ -18,20 +18,21 @@ struct PieceInfo
 {
     QUuid pieceId = QUuid::createUuid(); // ✅ automatikus UUID generálás;
     int length_mm = 0;                // 📏 Hossz milliméterben
-    QString ownerName;                // 👤 Megrendelő, tulajdonos
-    QString externalReference;        // 📎 Külső tételszám, SAP vagy egyedi azonosító
+    QUuid requestId;               // 🔗 Eredeti igény azonosító
     bool isCompleted = false;         // ✅ Elkészült-e a darab
 
-    bool isValid() const {
-        return length_mm > 0 && !ownerName.isEmpty();
-    }
+    // bool isValid() const {
+    //     return length_mm > 0 && !requestId.isNull();
+    // }
 
-    QString displayText() const {
-        return QString("%1 • %2 • %3 mm")
-            .arg(ownerName.isEmpty() ? "(?)" : ownerName)
-            .arg(externalReference.isEmpty() ? "-" : externalReference)
-            .arg(length_mm);
-    }
+    // QString displayText() const {
+    //     return QString("%1 • %2 • %3 mm")
+
+
+    //         .arg(ownerName.isEmpty() ? "(?)" : ownerName)
+    //         .arg(externalReference.isEmpty() ? "-" : externalReference)
+    //         .arg(length_mm);
+    // }
 };
 
 } // endof namespace Piece

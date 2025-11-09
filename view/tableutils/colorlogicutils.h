@@ -35,9 +35,9 @@ inline void applyBadgeBackground(QWidget* widget, const QColor& base) {
                               ).arg(base.name()));
 }
 
-inline QColor resolveBaseColor(const MaterialMaster* mat) {
-    if (!mat) return QColor(Qt::lightGray);
-    return GroupUtils::colorForGroup(mat->id); // vagy MaterialUtils::colorForMaterial(*mat)
-}
+// inline QColor resolveBaseColor(const MaterialMaster& mat) {
+//     //if (!mat) return QColor(Qt::lightGray);
+//     return GroupUtils::colorForGroup(mat.id); // vagy MaterialUtils::colorForMaterial(*mat)
+// }
 
 } // endof namespace ColorLogicUtils

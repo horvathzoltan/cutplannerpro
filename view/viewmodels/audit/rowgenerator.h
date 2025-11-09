@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/logger.h"
+#include "view/cellhelpers/materialcellgenerator.h"
 #include "view/tableutils/colorlogicutils.h"
 #include "view/tableutils/storageaudittable_rowstyler.h"
 
@@ -25,21 +26,22 @@
 namespace Audit::ViewModel::RowGenerator {
 
 inline TableRowViewModel generate(const StorageAuditRow& row,
-                                  const MaterialMaster* mat,
+                                  const MaterialMaster& mat,
                                   const QString& groupLabel,
                                   QObject* receiver) {
     TableRowViewModel vm;
     vm.rowId = row.rowId;
 
     // 🎨 Alapszínek a csoport alapján
-    QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
+    //QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
+    //QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
 
     // 🧩 Anyag neve
     vm.cells[AuditTableColumns::Material] =
-        TableCellViewModel::fromText(mat ? mat->name : "Ismeretlen",
-                                     mat ? mat->color.name() : "",
-                                     baseColor, fgColor);
+        CellGenerators::materialCell(mat,row.barcode);
+
+    QColor baseColor = vm.cells[AuditTableColumns::Material].background;
+    QColor fgColor = vm.cells[AuditTableColumns::Material].foreground;
 
     // 🧩 Tároló
     vm.cells[AuditTableColumns::Storage] =

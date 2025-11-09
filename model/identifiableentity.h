@@ -13,7 +13,7 @@ struct IdentifiableEntity {
     QString barcode;    // 🏷️ Nyomtatott, beolvasott vagy egyéb fizikai kód (általában "MAT-..." vagy egyedi string)
 
     // 🖼️ Vizuális, felhasználóbarát megjelenítési név (pl. listában)
-    QString displayName() const {
+    QString toDisplay() const {
         QString suffix;
         if (!barcode.isEmpty()) suffix += "[" + barcode + "]";
         return suffix.isEmpty() ? name : name + " " + suffix;

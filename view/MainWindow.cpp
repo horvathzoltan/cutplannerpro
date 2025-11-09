@@ -720,8 +720,8 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
                 ci.kerf_mm = machine->kerf_mm;
                 ci.lengthBefore_mm = remaining;
                 ci.computeRemaining();
-                ci.machineId = plan.machineId;
-                ci.machineName = plan.machineName;
+                //ci.machineId = plan.machineId;
+                //ci.machineName = plan.machineName;
                 ci.status = CutStatus::Pending;
                 ci.leftoverBarcode = plan.leftoverBarcode;
 

@@ -26,14 +26,16 @@ struct CutInstruction {
     double lengthBefore_mm = 0.0;// Vágás előtti hossz
     double lengthAfter_mm = 0.0; // Vágás utáni hossz
 
-    QUuid machineId;        // Gép UUID
-    QString machineName;     // Gép neve (UI-hoz, redundáns viewmodel mező)
+//    QUuid machineId;        // Gép UUID
+    //QString machineName;     // Gép neve (UI-hoz, redundáns viewmodel mező)
     CutStatus status = CutStatus::Pending;
 
     bool isFinalLeftover = false; // 🔴 Végső leftover jelző
     QString leftoverBarcode;
     bool isManualCut = false;
     double effectiveCutSize_mm = 0.0; // kompenzációval számolt méret
+
+    QUuid requestId;        // 🔗 Request azonosító
 
     // Segédfüggvény a számításhoz
     void computeRemaining() {

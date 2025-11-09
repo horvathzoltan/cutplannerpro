@@ -29,7 +29,7 @@ void AddStockDialog::populateMaterialCombo() {
     ui->comboMaterial->clear();
 
     for (const auto& m : registry) {
-        ui->comboMaterial->addItem(m.displayName(), m.id);
+        ui->comboMaterial->addItem(m.toDisplay(), m.id);
     }
 }
 

@@ -113,6 +113,7 @@ HEADERS += \
     service/cutting/optimizer/optimizationviewupdater.h \
     service/cutting/optimizer/optimizerconstants.h \
     service/cutting/optimizer/optimizerutils.h \
+    service/cutting/plan/requestutils.h \
     service/snapshot/inventorysnapshotbuilder.h \
     service/snapshot/requestsnapshotbuilder.h \
     service/storageaudit/auditcontextbuilder.h \

@@ -53,11 +53,6 @@ void CuttingInstructionTableManager::addRow(const CutInstruction& ci) {
     int rowIx = _table->rowCount();
     _table->insertRow(rowIx);
 
-
-    // Anyag színének meghatározása
-    const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
-    QColor baseColor = mat ? ColorLogicUtils::resolveBaseColor(mat) : QColor("#DDDDDD");
-
     CutInstruction ciCopy = ci;
     if (_currentRowIx < 0) {
         ciCopy.status = CutStatus::InProgress;
@@ -66,26 +61,15 @@ void CuttingInstructionTableManager::addRow(const CutInstruction& ci) {
     }
 
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ciCopy, baseColor, this);
+    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ciCopy, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
-
-    // // 👉 csak a 0. oszlophoz adjuk hozzá a stepId-t
-    // if (QTableWidgetItem* item = _table->item(rowIx, 0)) {
-    //     item->setData(Qt::UserRole + 1, ci.globalStepId);
-    // }
 
     // rowId mentése
     _rowMap.insert(vm.rowId, ciCopy);
     _rowIndexMap[vm.rowId] = rowIx;
 
-    // ha még nincs fókusz, az első nem gép-header sor legyen az aktuális
-    // if (_currentRowIx < 0) {
-    //     _currentRowIx = rowIx;
-
-    //     emit rowFinalized(rowIx);
-    // }
-
     if (_isVerbose) {
+        const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
         zInfo(QString("CuttingInstruction row added: %1 | step=%2")
                   .arg(mat->name)
                   .arg(ciCopy.globalStepId));
@@ -105,13 +89,11 @@ void CuttingInstructionTableManager::updateRow(const QUuid& rowId, const CutInst
     int rowIx = _rowIndexMap.value(rowId);
     _rowMap.insert(rowId, ci);
 
-    const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
-    QColor baseColor = mat ? ColorLogicUtils::resolveBaseColor(mat) : QColor("#DDDDDD");
-
-    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ci, baseColor, this);
+    TableRowViewModel vm = Cutting::ViewModel::RowGenerator::generate(ci, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     if (_isVerbose) {
+        const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
         zInfo(QString("CuttingInstruction row updated: %1 | step=%2")
                   .arg(mat->name)
                   .arg(ci.globalStepId));

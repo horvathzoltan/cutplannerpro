@@ -83,11 +83,11 @@ void CuttingPlanRequestRegistry::clearAll() {
     persist();
 }
 
-std::optional<Cutting::Plan::Request> CuttingPlanRequestRegistry::findById(const QUuid& requestId) const {
-    for (const auto& r : _data) {
+Cutting::Plan::Request* CuttingPlanRequestRegistry::findById(const QUuid& requestId) {
+    for (auto& r : _data) {
         if (r.requestId == requestId)
-            return r;
+            return &r;
     }
-    return std::nullopt;
+    return nullptr;
 }
 

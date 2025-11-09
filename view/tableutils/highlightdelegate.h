@@ -41,5 +41,15 @@ public:
         }
     }
 
-
+    // delegate-ben:
+    void updateEditorGeometry(QWidget *editor,
+                              const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const override {
+        QRect r = option.rect;
+        if (index.row() == currentRowIx) {
+            // csak az aktuális sorban kisebbítjük
+            r = r.adjusted(0, 2, 0, -2);
+        }
+        editor->setGeometry(r);
+    }
 }; // endof HighlightDelegate

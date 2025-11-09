@@ -30,7 +30,7 @@ public:
     void removeRequest(const QUuid &requestId);
 
     QVector<Cutting::Plan::Request> readAll() const;
-    std::optional<Cutting::Plan::Request> findById(const QUuid& requestId) const; // ⬅️ új
+    Cutting::Plan::Request* findById(const QUuid& requestId); // ⬅️ új
     //QVector<CuttingPlanRequest> findByMaterialId(const QUuid& materialId) const;
     void clearAll(); // 🔄 ÚJ: teljes törlés
 

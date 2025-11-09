@@ -3,6 +3,7 @@
 #include "common/styleprofiles/cuttingstatusutils.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
 #include "view/cellhelpers/materialcellgenerator.h"
+#include "view/tableutils/colorlogicutils.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "view/columnindexes/tablecuttinginstruction_columns.h"
@@ -16,6 +17,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include <model/registries/cuttingplanrequestregistry.h>
 #include <model/registries/materialregistry.h>
 
 /**
@@ -165,27 +167,34 @@ inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine,
 
 /// Normál sor generálása
 inline TableRowViewModel generate(const CutInstruction& ci,
-                                  const QColor& baseColor,
                                   QObject* receiver = nullptr) {
     TableRowViewModel vm;
     vm.rowId = ci.rowId.isNull() ? QUuid::createUuid() : ci.rowId;
 
     const auto* mat = MaterialRegistry::instance().findById(ci.materialId);
+    const auto* req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
 
-
-    // 🎨 Alapszínek a csoport alapján
-    //QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    //QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
     bool done = (ci.status == CutStatus::Done);
+    auto matCell = CellGenerators::materialCell(*mat, ci.barcode);
 
-    // Ha Done → szürke háttér, sötét szöveg
-    QColor rowBg = baseColor;
-    QColor rowFg = (baseColor.lightness() < 128 ? Qt::white : Qt::black);
+    QColor rowBg;
+    QColor rowFg;
 
-    if (done) {
+    if (done) {     // Ha Done → szürke háttér, sötét szöveg
         rowBg = QColor(220,220,220);   // világosszürke háttér
         rowFg = QColor(80,80,80);      // sötétszürke szöveg
+        matCell.background = rowBg;
+        matCell.foreground = rowFg;
+
+    } else{
+        rowBg = matCell.background;
+        rowFg = matCell.foreground;
     }
+
+    vm.cells[CuttingInstructionTableColumns::Material] = matCell;
+
+    QString tooltip = QString("Request: %1")
+                          .arg(req ? req->toString() : "Ismeretlen");
 
     vm.cells[CuttingInstructionTableColumns::StepId] =
         TableCellViewModel::fromText(QString::number(ci.globalStepId), "Lépés azonosító", rowBg, rowFg);
@@ -200,17 +209,6 @@ inline TableRowViewModel generate(const CutInstruction& ci,
                                  .arg(ci.barcode.isEmpty() ? "—" : ci.barcode)
                                  .arg(mat ? mat->name : "Ismeretlen");
 
-    // vm.cells[CuttingInstructionTableColumns::Barcode] =
-    //     TableCellViewModel::fromText(barcodeToShow, barcodeTooltip, baseColor, fgColor);
-
-    vm.cells[CuttingInstructionTableColumns::Material] =
-        CellGenerators::materialCell(ci.materialId, ci.barcode, rowBg, rowFg);
-
-
-
-    // QString cutText = QString("✂️ %1").arg(ci.cutSize_mm, 0, 'f', 1);
-    // QString cutTooltip = "Vágandó hossz (mm)";
-
     QString cutText;
     QString cutTooltip;
 
@@ -224,7 +222,7 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     }
 
     // kiemelt háttér és betű
-    QColor cutBg = baseColor.darker(120);
+    QColor cutBg = rowBg;//baseColor.darker(120);
     QColor cutFg = Qt::white;
     QString cutStyle = "font-weight: bold; font-size: 14px; text-decoration: underline;";
 
@@ -242,8 +240,8 @@ inline TableRowViewModel generate(const CutInstruction& ci,
                                      "Vágás előtti hossz (mm)", rowBg, rowFg);
 
 
-    QColor fg = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-    QColor bg = baseColor; // alap háttérszín az anyag színe
+    QColor fg = rowFg;//baseColor.lightness() < 128 ? Qt::white : Qt::black;
+    QColor bg = rowBg;//baseColor; // alap háttérszín az anyag színe
 
     QString afterText = QString::number(ci.lengthAfter_mm, 'f', 1);
     QString afterTooltip = "Vágás utáni hossz (mm)";
@@ -272,16 +270,13 @@ inline TableRowViewModel generate(const CutInstruction& ci,
                                                                                 : "Köztes");
     }
 
-    // Ha Done → felülírjuk a kategória színeket is
     if (done) {
-        bg = rowBg;
-        fg = rowFg;
+        bg = rowBg;   // szürke háttér
+        fg = rowFg;   // sötét szöveg
     }
 
     vm.cells[CuttingInstructionTableColumns::LengthAfter] =
         TableCellViewModel::fromText(afterText, afterTooltip, bg, fg);
-
-
 
     vm.cells[CuttingInstructionTableColumns::Status] =
         TableCellViewModel::fromText(

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <QColor>
+#include <model/registries/materialregistry.h>
 #include "materialmaster.h"
 #include "materialgroup_utils.h"
 
 namespace MaterialUtils {
 
 static inline QColor colorForMaterial(const MaterialMaster& mat) {
-    auto colorName = GroupUtils::colorForGroup(mat.id);
+    auto colorName = GroupUtils::groupColor(mat.id);
     return QColor(colorName);
 }
 
@@ -45,4 +46,37 @@ static inline QString formatShapeText(const MaterialMaster& mat) {
 
     return "(ismeretlen forma)";
 }
+
+enum DisplayType{Label, Tooltip};
+
+// material(group):barcode
+static inline QString materialToDisplay(const MaterialMaster& mat, DisplayType dt, const QString& b = "") {
+    //const auto* mat = MaterialRegistry::instance().findById(materialId);
+    //if (!mat) return "(ismeretlen anyag)";
+
+    QString materialName = mat.name;
+    QString groupName = GroupUtils::groupName(mat.id);
+    QString barcode = b.isEmpty()?mat.barcode:b;
+
+    QString out;
+
+    if(dt == Tooltip) {
+        out = QString("Anyag: %1\nCsoport: %2\nBarcode: %3")
+            .arg(materialName,
+                 groupName.isEmpty() ? "—" : groupName,
+                 barcode.isEmpty() ? "—" : barcode);
+    }
+    else if(dt == Label){
+        out = materialName;
+        if (!groupName.isEmpty())
+            out += QString(" (%1)").arg(groupName);
+        if (!barcode.isEmpty())
+            out += QString(":%1").arg(barcode);
+
+        return out;
+    }
+    return out;
 }
+
+
+} // end namespace MaterialUtils

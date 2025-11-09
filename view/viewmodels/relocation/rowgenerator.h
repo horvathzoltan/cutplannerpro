@@ -1,5 +1,6 @@
 #pragma once
 
+#include "view/cellhelpers/materialcellgenerator.h"
 #include "view/tableutils/colorlogicutils.h"
 #include "model/relocation/relocationinstruction.h"
 #include "view/columnindexes/relocationplantable_columns.h"
@@ -151,6 +152,7 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                                   QObject* receiver = nullptr) {
 
     TableRowViewModel vm;
+    if(!mat) return vm; // anyag nélkül nem megy
 
     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
@@ -160,13 +162,18 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
         return sum;
     }
 
-    QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    QColor fgColor   = baseColor.lightness() < 128 ? Qt::white : Qt::black;
+
+
+    // vm.cells[RelocationPlanTableColumns::Material] =
+    //     TableCellViewModel::fromText(instr.materialName,
+    //                           QString("Anyag: %1").arg(instr.materialName),
+    //                           baseColor, fgColor);
 
     vm.cells[RelocationPlanTableColumns::Material] =
-        TableCellViewModel::fromText(instr.materialName,
-                              QString("Anyag: %1").arg(instr.materialName),
-                              baseColor, fgColor);
+        CellGenerators::materialCell(*mat,instr.barcode);
+
+    QColor baseColor =vm.cells[RelocationPlanTableColumns::Material].background;
+    QColor fgColor   = vm.cells[RelocationPlanTableColumns::Material].foreground;;
 
     vm.cells[RelocationPlanTableColumns::Barcode] =
         TableCellViewModel::fromText(instr.barcode,

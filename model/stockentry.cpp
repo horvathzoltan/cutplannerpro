@@ -41,7 +41,7 @@ QString StockEntry::materialGroupName() const {
 }
 
 QColor StockEntry::materialGroupColor() const {
-    return GroupUtils::colorForGroup(materialId);
+    return GroupUtils::groupColor(materialId);
 }
 
 QString StockEntry::storageName() const {

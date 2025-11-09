@@ -62,14 +62,16 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
         // ➕ Piece szakasz
         segments.append(SegmentModel(SegmentModel::Type::Piece,
                                      len,
-                                     pieceIx++));
+                                     pieceIx++,
+                                     pwm.info.requestId));
         usedLength += len;
 
         // ➕ Kerf szakasz
         if (kerf_mm > 0) {
             segments.append(SegmentModel(SegmentModel::Type::Kerf,
                                          kerf_mm,
-                                         kerfIx++));
+                                         kerfIx++,
+                                         pwm.info.requestId));
             usedLength += kerf_mm;
         }
     }
@@ -79,7 +81,7 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
     if (waste > 0) {
         segments.append(SegmentModel(SegmentModel::Type::Waste,
                                      waste,
-                                     wasteIx++));
+                                     wasteIx++, QUuid()));
     } else if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
     }
