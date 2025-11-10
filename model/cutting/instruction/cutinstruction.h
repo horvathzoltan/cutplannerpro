@@ -37,6 +37,11 @@ struct CutInstruction {
 
     QUuid requestId;        // 🔗 Request azonosító
 
+    // 🔹 Új: tényleges darab azonosító
+    int pieceCounter = 0;
+    // 🔹 Új: finalize-kor mentett kompenzáció
+    double appliedCompensation_mm;
+
     // Segédfüggvény a számításhoz
     void computeRemaining() {
         lengthAfter_mm = lengthBefore_mm - cutSize_mm - kerf_mm;

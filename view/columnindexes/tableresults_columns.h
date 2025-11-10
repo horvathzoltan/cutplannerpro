@@ -8,8 +8,7 @@ namespace ResultsTableColumns {
 
 enum Column {
     RodId = 0,       ///< Emberi azonosító (pl. Rod-A1)
-    Barcode,         ///< Forrás barcode (MAT-xxxx vagy RST-xxxx)
-    Category,        ///< Anyag + csoport badge
+    Material,        ///< Anyag + csoport badge + forrás barcode
     Length,          ///< Teljes hossz (mm)
     Kerf,            ///< Összes kerf (mm)
     Waste            ///< Hulladék (mm)

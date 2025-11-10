@@ -4,6 +4,10 @@
 #include <model/registries/materialregistry.h>
 #include "materialmaster.h"
 #include "materialgroup_utils.h"
+#include "model/cutting/plan/request.h"
+
+enum DisplayType{Label, Tooltip};
+
 
 namespace MaterialUtils {
 
@@ -47,7 +51,6 @@ static inline QString formatShapeText(const MaterialMaster& mat) {
     return "(ismeretlen forma)";
 }
 
-enum DisplayType{Label, Tooltip};
 
 // material(group):barcode
 static inline QString materialToDisplay(const MaterialMaster& mat, DisplayType dt, const QString& b = "") {
@@ -57,14 +60,16 @@ static inline QString materialToDisplay(const MaterialMaster& mat, DisplayType d
     QString materialName = mat.name;
     QString groupName = GroupUtils::groupName(mat.id);
     QString barcode = b.isEmpty()?mat.barcode:b;
+    QString materialColorName = mat.color.name();
 
     QString out;
 
     if(dt == Tooltip) {
-        out = QString("Anyag: %1\nCsoport: %2\nBarcode: %3")
+        out = QString("Anyag: %1\nCsoport: %2\nBarcode: %3\nColor: %4")
             .arg(materialName,
                  groupName.isEmpty() ? "—" : groupName,
-                 barcode.isEmpty() ? "—" : barcode);
+                 barcode.isEmpty() ? "—" : barcode,
+                       materialColorName);
     }
     else if(dt == Label){
         out = materialName;
@@ -72,8 +77,37 @@ static inline QString materialToDisplay(const MaterialMaster& mat, DisplayType d
             out += QString(" (%1)").arg(groupName);
         if (!barcode.isEmpty())
             out += QString(":%1").arg(barcode);
+    }
+    return out;
+}
+}
 
-        return out;
+namespace CuttingPlanRequestUtils {
+
+static inline QString cuttingPlanRequestToDisplay(const Cutting::Plan::Request& req, DisplayType dt, const QString& b = "") {
+    //
+    //if (!mat) return "(ismeretlen anyag)";
+
+
+    QString out;
+
+    if(dt == Tooltip) {
+        out = QString("Azonosító: %1\nMegrendelő: %2\n%3 mm × %4 db")
+                  .arg(req.externalReference, req.ownerName)
+                  .arg(req.requiredLength).arg(req.quantity);
+        const auto* mat = MaterialRegistry::instance().findById(req.materialId);
+        if(mat){
+            out+= '\n'+MaterialUtils::materialToDisplay(*mat, DisplayType::Tooltip);
+            }
+    }
+    else if(dt == Label){
+        out = QString("%1: %2,%3 mm × %4 db")
+                  .arg(req.externalReference, req.ownerName)
+                  .arg(req.requiredLength).arg(req.quantity);
+        const auto* mat = MaterialRegistry::instance().findById(req.materialId);
+        if(mat){
+            out+= ','+MaterialUtils::materialToDisplay(*mat, DisplayType::Label);
+        }
     }
     return out;
 }

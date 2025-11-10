@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/styleprofiles/cuttingstatusutils.h"
+#include "model/material/material_utils.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
 #include "view/cellhelpers/materialcellgenerator.h"
 #include "view/tableutils/colorlogicutils.h"
@@ -71,7 +72,7 @@ inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine,
         compLayout->setSpacing(4);
 
         QLabel* lblPrefix = new QLabel("Comp:");
-        lblPrefix->setStyleSheet("font-weight: bold; color: #2c3e50;");
+        lblPrefix->setStyleSheet("font-weight: bold; color: white;");
 
         QDoubleSpinBox* spin = new QDoubleSpinBox();
         spin->setRange(-50.0, 50.0);
@@ -91,7 +92,7 @@ inline TableRowViewModel generateMachineSeparator(const MachineHeader& machine,
                          });
 
         QLabel* lblSuffix = new QLabel("mm");
-        lblSuffix->setStyleSheet("color: #2c3e50;");
+        lblSuffix->setStyleSheet("color: white;");
 
         compLayout->addWidget(lblPrefix);
         compLayout->addWidget(spin);
@@ -193,15 +194,25 @@ inline TableRowViewModel generate(const CutInstruction& ci,
 
     vm.cells[CuttingInstructionTableColumns::Material] = matCell;
 
-    QString tooltip = QString("Request: %1")
-                          .arg(req ? req->toString() : "Ismeretlen");
 
+        /*QString("Request: %1\nMaterial: %2")
+                          .arg(req ? req->toString() : "Ismeretlen")
+                          .arg(MaterialUtils::materialToDisplay(*mat, MaterialUtils::DisplayType::Tooltip));
+    */
     vm.cells[CuttingInstructionTableColumns::StepId] =
         TableCellViewModel::fromText(QString::number(ci.globalStepId), "Lépés azonosító", rowBg, rowFg);
 
     // RodLabel: marad a CutPlan által generált label
+    QString rodTooltip;
+    if(req){
+        rodTooltip = CuttingPlanRequestUtils::cuttingPlanRequestToDisplay(*req,DisplayType::Tooltip);
+        if(req->quantity>1){
+            rodTooltip.append(QString("\nPiece: %1/%2").arg(ci.pieceCounter).arg(req->quantity));
+        }
+    }
+
     vm.cells[CuttingInstructionTableColumns::RodId] =
-        TableCellViewModel::fromText(ci.rodId, "Rúd jel", rowBg, rowFg);
+        TableCellViewModel::fromText(ci.rodId, rodTooltip, rowBg, rowFg);
 
     // Barcode: ha van konkrét rod barcode, azt mutatjuk, material megy tooltipbe
     QString barcodeToShow = ci.barcode.isEmpty() ? "—" : ci.barcode;
@@ -261,7 +272,7 @@ inline TableRowViewModel generate(const CutInstruction& ci,
             fg = Qt::white;
         }
 
-        afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
+        //afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
         afterTooltip = QString("Végső leftover (%1 mm, kategória: %2)")
                            .arg(len)
                            .arg(len < OptimizerConstants::SELEJT_THRESHOLD ? "Selejt"
@@ -277,6 +288,25 @@ inline TableRowViewModel generate(const CutInstruction& ci,
 
     vm.cells[CuttingInstructionTableColumns::LengthAfter] =
         TableCellViewModel::fromText(afterText, afterTooltip, bg, fg);
+
+    QString pieceText;
+    QString pieceTooltip;
+
+    if(req){
+        pieceText = QString("%1").arg(req->externalReference);
+        if(req->quantity>1){
+            pieceText.append(QString(".%1.").arg(ci.pieceCounter));
+        }
+        pieceText.append(QString(" %1 %2").arg(req->ownerName).arg(req->primaryDimension()));
+
+        pieceTooltip = CuttingPlanRequestUtils::cuttingPlanRequestToDisplay(*req,DisplayType::Tooltip);
+    } else{
+        pieceText = "-";
+        pieceTooltip = "Nincs hozzá tartozó igény (Request)";
+    }
+
+    vm.cells[CuttingInstructionTableColumns::PieceId] =
+        TableCellViewModel::fromText(pieceText, pieceTooltip, bg, fg);
 
     vm.cells[CuttingInstructionTableColumns::Status] =
         TableCellViewModel::fromText(

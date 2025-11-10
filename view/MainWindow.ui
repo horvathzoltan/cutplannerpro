@@ -297,12 +297,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Barcode</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Category</string>
+              <string>Material</string>
              </property>
             </column>
             <column>
@@ -376,11 +371,6 @@
             </column>
             <column>
              <property name="text">
-              <string>Vonalkód</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Tárhely</string>
              </property>
             </column>
@@ -442,11 +432,6 @@
             <column>
              <property name="text">
               <string>Anyag</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Vonalkód</string>
              </property>
             </column>
             <column>
@@ -546,6 +531,11 @@
             <column>
              <property name="text">
               <string>lengthAfter</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>PieceId</string>
              </property>
             </column>
             <column>

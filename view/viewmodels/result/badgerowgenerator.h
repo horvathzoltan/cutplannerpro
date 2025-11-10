@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/material/material_utils.h"
 #include "view/viewmodels/tablerowviewmodel.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 #include "model/cutting/plan/cutplan.h"
@@ -61,7 +62,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    "OptimizationId: %9\n"
                                    "Gép: %10\n"
                                    "Státusz: %11\n"
-                                   "Request: %12")
+                                   )
                                    .arg(plan.rodId)
                                    .arg(s.barcode())
                                    .arg(plan.materialName())
@@ -75,7 +76,12 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    .arg(plan.optimizationId)
                                    .arg(plan.machineName)
                                    .arg(Cutting::Plan::statusText(plan.status))
-                                   .arg(req ? req->toString() : "Ismeretlen");
+                                   ;
+        if(req){
+            QString rodTooltip;
+            rodTooltip = CuttingPlanRequestUtils::cuttingPlanRequestToDisplay(*req,DisplayType::Tooltip);
+            badgeTooltip += "\nRequest:"+rodTooltip;
+        }
 
         QLabel* label = new QLabel(badgeLabel);
         label->setToolTip(badgeTooltip);

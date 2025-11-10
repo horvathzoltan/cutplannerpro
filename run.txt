@@ -1,78 +1,174 @@
-🧩 Állapottábla – 2025.11.07.
+📊 Frissített Állapottábla – 2025.11.10.
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
-🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve, safeLetterPrefix működik
-🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve OptimizerModel + ResultModel + CutPlan + LeftoverStockEntry + SegmentModel, nincs több ∅
-🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧 Sprint SOS	Három tartományos logika stabil, scoring finomítva
+🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve
+🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve
+🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧 Sprint SOS	Három tartományos logika stabil
 15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, státusz szétválasztva
 21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
-25+29	Vágási terv generálás + Worklist tab darab szinten	✅	🟡 Folyamatban	✅	🚧 Sprint 3	RequestId integráció hiányzik, kritikus darabok mérési terv generálása következő lépés. Státuszok és sorvezető logika működnek, finalize auditált, visszavonás nem szükséges.
-28	Finalize auditálás + visszavonás	✅	✅ Lezárva	✅	🚧 Sprint 5	Finalize visszavonás nem szükséges – hibakezelés új audit eseményen keresztül történik.
-30	Leftover sorok kezelése	✅	✅ Lezárva	✅	🚧 Sprint 6	A leftoverek a táblában jól jelennek meg: színezés, tooltip, barcode. Külön sor nem szükséges.
-✨ ÚJ	CutSize kiemelés (ikon + stílus)	✅	❌ Nem szükséges	❌	🚫	Átdolgozva, nem kell külön kiemelés – a jelenlegi megjelenítés elegendő.
-✨ ÚJ	Leftover színezés kategóriák szerint	✅	✅ Lezárva	✅	🚧 Sprint 6	Selejt = piros, jó = sárga, köztes = narancs – működik, tooltipben kategória is megjelenik.
-✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	✅ Lezárva	✅	🚧 Sprint 5	Végrehajtott sorok szürkítve, aktuális sor zöld kerettel – teljesen működik, teszt kimutatja, ha bármi hibás.
-🎯 Haladási terv – fókusz a célig
-25+29 lezárása – operátori workflow stabilizálása
-
-requestId integráció: CutPlan → CutInstruction → Worklist tooltip.
-
-Kritikus darabok mérési terv generálása.
-
-Audit log finomítása: finalize + leftover események zEvent‑tel.
-
-21 – Adatfeltöltés és éles teszt
-
-Ez a legnagyobb blocker: amíg nincs adatimport, nincs valós teszt.
-
-Sprint fókusz: adatfeltöltés pipeline + validáció.
-
-15 – Anyagcsoportosítás véglegesítése
-
-Master–detail Σ sor stabilizálása.
-
-Audit és vizuális visszajelzés finomítása.
-
-Finomhangolások (30, ✨ ÚJ pontok)
-
-Már lezárva vagy stabil, csak tesztelni kell.
-
-Nem igényel új fejlesztést, csak validáció.
-
+25+29	Vágási terv generálás + Worklist tab darab szinten	✅	🟡 Folyamatban	✅	🚧 Sprint 3	RequestId integráció hiányzik, finalize audit stabil
+28	Finalize auditálás + visszavonás	✅	✅ Lezárva	✅	🚧 Sprint 5	Audit események stabilak
+30	Leftover sorok kezelése	✅	✅ Lezárva	✅	🚧 Sprint 6	Tooltip + színezés működik
+✨ ÚJ	CutSize kiemelés	✅	❌ Nem szükséges	❌	🚫	Átdolgozva
+✨ ÚJ	Leftover színezés kategóriák szerint	✅	✅ Lezárva	✅	🚧 Sprint 6	Selejt = piros, jó = sárga, köztes = narancs
+✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	✅ Lezárva	✅	🚧 Sprint 5	működik
+✨ ÚJ	Request új mezők integráció (méret + szín)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	fullWidth/fullHeight + relevantDim + requiredColorName
+✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	isMeasurementNeeded → Worklist Measurement oszlop, globális számláló, audit integráció
 🚀 Fókusz sorrend
-25+29 → requestId + mérési terv + audit események.
 
-21 → adatfeltöltés, éles teszt.
+25+29 + ✨ ÚJ Mérési terv → RequestId integráció + mérési terv lezárása.
+
+21 → adatfeltöltés pipeline + éles teszt.
 
 15 → anyagcsoportosítás véglegesítése.
 
 Tesztelés + finomhangolás → leftover, sorvezető, vizuális badge‑ek.
+
+👉 Mit szólsz, Zoltán: a mérési terv számlálót inkább a Worklist fejlécben mutassuk (globális státusz), vagy minden gép szeparátor sorban külön (gépenkénti mérési arány)?
+
 ***
 
-📂 Fájlok, amik érintettek lesznek
-CutPlan.h / CutPlan.cpp
+🧩 Végrehajtható lépésenkénti terv – Request új mezők + mérési terv integráció
+Request bővítése
 
-Ide kell bekerülnie az új mezőnek: QUuid requestId;
+Már tartalmazza: fullWidth_mm, fullHeight_mm, RelevantDimension relevantDim, requiredColorName, isMeasurementNeeded.
 
-A darabok generálásakor a requestből át kell adni.
+Segédfüggvény: primaryDimension() → visszaadja a releváns méretet.
 
-CutInstruction.h / CutInstruction.cpp
+CutPlan → CutInstruction generálás
 
-A CutInstruction struktúrába is át kell vinni a requestId.
+A seg._requestId alapján hozzuk létre a CutInstruction.
 
-Így a Worklist tab soraihoz elérhető lesz.
+Átadjuk a requestId‑t, és kitöltjük a pieceBarcode.
 
-Worklist / CuttingInstructionTableManager.cpp
+Ha a Request.isMeasurementNeeded == true, akkor a CutInstruction is megkapja ezt a flaget.
 
-Tooltip generálásnál (RowGenerator::generate() vagy hasonló) ki kell olvasni a requestId‑t a CutInstruction‑ból.
+Worklist / RowGenerator
 
-Megjelenítés: pl. "Request ID: %1" a tooltipben.
+Új oszlop: PieceId → itt jelenik meg a darab azonosító (pieceBarcode) és a releváns méret (primaryDimension()).
 
-Audit / CutExecutionLog.cpp (ha van)
+Új oszlop: Measurement → checkbox:
 
-Nem kötelező első körben, de érdemes az audit eseményekhez is hozzáadni a requestId mezőt, hogy visszakövethető legyen.
+Ha isMeasurementNeeded == true, akkor mindig bepipálva és letiltva.
 
+Ha false, akkor szabadon pipálható, finalize státusztól függetlenül.
 
-//
+Globális mérési terv számláló
 
-inline TableCellViewModel materialCell(const QUuid& materialId,
-QString requestToDisplay(const Cutting::Plan::Request& r, const QChar& sep = '|') {
+A Worklist manager számolja:
+
+Kötelező darabok (isMeasurementNeeded == true).
+
+Operátor által pipált darabok.
+
+Státuszjelző: pl. „Mérési terv teljesítve: 12/10 darab”.
+
+Audit log (CutExecutionLog)
+
+Mentjük: requestId, pieceBarcode, appliedCompensation_mm, isMeasurementNeeded.
+
+Így visszakövethető, mely darab volt kötelező mérés, és melyet választottak ki pluszban.
+
+***
+
+🧩 Mérési terv funkciói
+Kötelező darabok kezelése
+
+Vannak darabok, ahol isMeasurementNeeded == true.
+
+Ezek automatikusan bekerülnek a mérési tervbe.
+
+Az operátor nem tudja kikapcsolni őket (checkbox disabled, mindig bepipálva).
+
+Arányos mérés biztosítása
+
+Például: 10% darabot kötelező mérni.
+
+Ha a kötelező darabok kiadnak 6%-ot, akkor további 4%-ot kell kijelölni random vagy kézi kiválasztással.
+
+A rendszer számolja, hogy teljesült‑e az előírt arány.
+
+Opcionális darabok kijelölése
+
+Az operátor a Worklist táblában pipálhatja be a darabokat.
+
+Ezek finalize státusztól függetlenül jelölhetők.
+
+Így auditban rögzíthető, hogy mely darabokat választották ki plusz mérésre.
+
+Globális számláló és státuszjelzés
+
+A rendszer folyamatosan számolja: kötelező + opcionálisan kijelölt darabok.
+
+Státuszjelző mutatja: pl. „Mérési terv teljesítve: 12/10 darab”.
+
+Így az operátor tudja, hogy elég darabot jelölt‑e ki.
+
+Audit integráció
+
+Finalize eseménykor rögzítjük:
+
+requestId
+
+pieceBarcode
+
+appliedCompensation_mm
+
+isMeasurementNeeded (kötelező vagy opcionális mérés).
+
+Így visszakövethető, hogy mely darabokat mértünk, és miért.
+
+Vizualizáció
+
+Kötelező mérés darabok → sárga vagy külön ikon.
+
+Opcionálisan kijelölt darabok → checkbox pipálva.
+
+A táblafejlécben vagy gép szeparátor sorban látszik a mérési arány.
+
+🎯 Röviden
+A mérési tervnek azt kell tudnia, hogy:
+
+automatikusan kijelöli a kötelező darabokat,
+
+biztosítja a teljes mérési arányt (pl. 10%),
+
+engedi az operátornak plusz darabokat kijelölni,
+
+auditban rögzíti mindezt,
+
+vizuálisan egyértelműen mutatja, hogy teljesült‑e a terv.
+
+🧩 Mérési terv – végrehajtható lépések
+Request mezők integrációja
+
+fullWidth_mm, fullHeight_mm, RelevantDimension relevantDim, requiredColorName, isMeasurementNeeded → már a Request struktúrában.
+
+Segédfüggvény: primaryDimension() → visszaadja a releváns méretet.
+
+CutInstruction bővítése
+
+Átveszi a requestId‑t és a pieceBarcode‑ot.
+
+isMeasurementNeeded flag átkerül a CutInstruction‑ba is, hogy a Worklist sorban elérhető legyen.
+
+Worklist táblázat
+
+Új oszlop: PieceId → darab azonosító + releváns méret (primaryDimension()).
+
+Új oszlop: Measurement → checkbox:
+
+Kötelező darabok (isMeasurementNeeded == true) → mindig bepipálva, letiltva.
+
+Opcionális darabok → operátor szabadon pipálhatja, finalize státusztól függetlenül.
+
+Globális mérési terv számláló
+
+Számolja: kötelező + opcionálisan kijelölt darabok.
+
+Státuszjelző: pl. „Mérési terv teljesítve: 12/10 darab”.
+
+Audit log
+
+Mentjük: requestId, pieceBarcode, appliedCompensation_mm, isMeasurementNeeded.
+
+Így visszakövethető, mely darab volt kötelező mérés, és melyet választottak ki pluszban.

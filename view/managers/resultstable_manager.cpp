@@ -1,17 +1,9 @@
 #include "resultstable_manager.h"
 #include "common/logger.h"
-//#include "model/material/materialgroup_utils.h"
-//#include "view/cellhelpers/auditcelltooltips.h"
 #include "view/tablehelpers/tablerowpopulator.h"
-//#include "view/tableutils/colorlogicutils.h"
-//#include "model/registries/materialregistry.h"
-//#include "view/tableutils/resulttable_rowstyler.h"
-//#include "model/material/materialgroup_utils.h"
-//#include "model/material/material_utils.h"
 #include "view/tableutils/tableutils.h"
 #include <QLabel>
 #include <QHBoxLayout>
-//#include "view/columnindexes/tableresults_columns.h"
 #include "view/viewmodels/result/badgerowgenerator.h"
 #include "view/viewmodels/result/rowgenerator.h"
 
@@ -24,8 +16,7 @@ ResultsTableManager::ResultsTableManager(QTableWidget* table, QWidget* parent)
    TableUtils::applySafeMonospaceFont(table, 11);
 }
 
-void ResultsTableManager::addRow(const QString& rodNumber,
-                                 const Cutting::Plan::CutPlan& plan) {
+void ResultsTableManager::addRow(const Cutting::Plan::CutPlan& plan) {
     if (!_table) return;
 
     int rowIx = _table->rowCount();

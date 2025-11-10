@@ -1,4 +1,5 @@
 #pragma once
+//#include "model/cutting/plan/request.h"
 #include "model/material/material_utils.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 
@@ -9,51 +10,11 @@
 
 namespace CellGenerators {
 
-// megcsinál egy materialcellt
-
-// inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString& barcode = "")
-// {
-//     QString text = MaterialUtils::materialToDisplay(mat,MaterialUtils::DisplayType::Label, barcode);
-//     QString tooltip = MaterialUtils::materialToDisplay(mat,MaterialUtils::DisplayType::Tooltip, barcode);
-
-//     QColor baseColor = GroupUtils::groupColor(mat.id);
-//     QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-//     return TableCellViewModel::fromText(text, tooltip, baseColor, fgColor);
-// }
-
-/**
- * @brief Anyag cella generátor, bogyóval kiegészítve.
- *
- * Feladata:
- *  - Az adott MaterialMaster objektumhoz tartozó szöveg és tooltip előállítása
- *    a MaterialUtils::materialToDisplay segítségével.
- *  - A szöveget két részre bontja: fő név (label1) és opcionális csoport/barcode rész (label2).
- *  - Meghatározza a csoporthoz tartozó háttérszínt (GroupUtils::groupColor),
- *    valamint a kontrasztos előtérszínt.
- *  - Létrehoz egy QWidget panelt, amely tartalmazza:
- *      • a fő név QLabel‑t,
- *      • opcionálisan egy kis színes „bogyót” (12×12 px), ha az anyaghoz van érvényes szín,
- *      • opcionálisan a második QLabel‑t (csoport/barcode rész).
- *  - A panel háttérszínét és előtérszínét a csoport színe alapján állítja be.
- *  - A cella tooltipje a MaterialUtils által generált részletes információ.
- *
- * @param mat     A MaterialMaster objektum, amely tartalmazza az anyag nevét, színét, barcode‑ját.
- * @param barcode Opcionális barcode string, amelyet a MaterialUtils::materialToDisplay felhasznál.
- *
- * @return TableCellViewModel, amely a felépített QWidget panelt tartalmazza,
- *         háttér és előtér színekkel kiegészítve.
- *
- * @note Ez a verzió vizuálisan gazdagabb, mint a sima fromText alapú cella:
- *       a név mellett megjeleníti az anyag színét egy kis kör formájában,
- *       így az operátor számára azonnali vizuális visszajelzést ad.
- */
-
 inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString& barcode = "")
 {
     // 🏷️ Szöveg és tooltip előállítása
-    QString text    = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Label,   barcode);
-    QString tooltip = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Tooltip, barcode);
+    QString text    = MaterialUtils::materialToDisplay(mat, DisplayType::Label,   barcode);
+    QString tooltip = MaterialUtils::materialToDisplay(mat, DisplayType::Tooltip, barcode);
     QString label1,label2;
 
     int ix = text.indexOf(" (");
@@ -123,6 +84,12 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
     r.foreground = foregroundColor;
     return r;
 }
+
+// inline TableCellViewModel cuttingPlanRequestCell(const Cutting::Plan::Request& r, const QString& barcode = ""){
+//     QString text    = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Label,   barcode);
+//     QString tooltip = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Tooltip, barcode);
+
+// }
 
 
 } // namespace CellGenerators

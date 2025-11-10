@@ -58,7 +58,7 @@ void RelocationPlanTableManager::addRow(const RelocationInstruction& instr) {
         return;
 
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, *mat, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     // rowId mentése
@@ -104,7 +104,7 @@ void RelocationPlanTableManager::updateRow(const QUuid& rowId, const RelocationI
         return;
 
     // ViewModel generálása és cellák kirenderelése
-    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, *mat, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     if (_isVerbose) {
@@ -398,7 +398,7 @@ void RelocationPlanTableManager::overwriteRow(const QUuid& rowId, const Relocati
     const MaterialMaster* mat = MaterialRegistry::instance().findById(instr.materialId);
     if (!mat) return;
 
-    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, mat, this);
+    TableRowViewModel vm = Relocation::ViewModel::RowGenerator::generate(instr, *mat, this);
     TableRowPopulator::populateRow(_table, rowIx, vm);
 
     if (_isVerbose) {

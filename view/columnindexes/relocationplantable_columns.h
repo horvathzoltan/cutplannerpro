@@ -15,11 +15,12 @@
  * - Type: forrás típusa (Stock / Hulló)
  */
 namespace RelocationPlanTableColumns {
-static constexpr int Material    = 0;   ///< Anyag neve
-static constexpr int Barcode     = 1;   ///< Vonalkód
-static constexpr int Quantity    = 2;   ///< Mennyiség / státusz
-static constexpr int Source      = 3;   ///< Forrás tároló
-static constexpr int Target      = 4;   ///< Cél tároló
-static constexpr int Type        = 5;   ///< Forrás típusa (Stock/Hulló)
-static constexpr int Finalize    = 6;   ///< Forrás típusa (Stock/Hulló)
-}
+enum Columns{
+    Material = 0,   ///< Anyag neve + csoport + barcode
+    Quantity,   ///< Mennyiség / státusz
+    Source,   ///< Forrás tároló
+    Target,   ///< Cél tároló
+    Type,   ///< Forrás típusa (Stock/Hulló)
+    Finalize,   ///< Forrás típusa (Stock/Hulló)
+};
+} // endof namespace RelocationPlanTableColumns

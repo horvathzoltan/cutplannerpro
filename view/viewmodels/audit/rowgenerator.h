@@ -32,16 +32,12 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
     TableRowViewModel vm;
     vm.rowId = row.rowId;
 
+    // 🧩 Anyag + csoprt + barcode
+    auto matCell = CellGenerators::materialCell(mat, row.barcode);
     // 🎨 Alapszínek a csoport alapján
-    //QColor baseColor = ColorLogicUtils::resolveBaseColor(mat);
-    //QColor fgColor = baseColor.lightness() < 128 ? Qt::white : Qt::black;
-
-    // 🧩 Anyag neve
-    vm.cells[AuditTableColumns::Material] =
-        CellGenerators::materialCell(mat,row.barcode);
-
-    QColor baseColor = vm.cells[AuditTableColumns::Material].background;
-    QColor fgColor = vm.cells[AuditTableColumns::Material].foreground;
+    QColor baseColor = matCell.background;
+    QColor fgColor = matCell.foreground;
+    vm.cells[AuditTableColumns::Material] = matCell;
 
     // 🧩 Tároló
     vm.cells[AuditTableColumns::Storage] =
@@ -63,19 +59,12 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
                                      AuditCellTooltips::forMissing(row),
                                      baseColor, fgColor);
 
-
     // 🧩 Státusz
     vm.cells[AuditTableColumns::Status] =
         TableCellViewModel::fromText(row.statusText(),
                                      AuditCellTooltips::forStatus(row, mat),
                                      row.statusType().toColor(),
                                      Qt::black);
-
-    // 🧩 Vonalkód
-    vm.cells[AuditTableColumns::Barcode] =
-        TableCellViewModel::fromText(row.barcode,
-                                     QString("Vonalkód: %1").arg(row.barcode),
-                                     baseColor, fgColor);
 
     // 🧩 Tényleges mennyiség (interaktív cella)
     vm.cells[AuditTableColumns::Actual] =

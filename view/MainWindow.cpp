@@ -526,7 +526,7 @@ void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plan
     for (int i = 0; i < plans.size(); ++i) {
         const Cutting::Plan::CutPlan& plan = plans[i];
         //addRow_ResultsTable(plan.rodId, plan);
-        resultsTableManager->addRow(plan.rodId, plan); // Rod #1, Rod #2, stb.
+        resultsTableManager->addRow(plan); // Rod #1, Rod #2, stb.
     }
 
     //ui->tableResults->resizeColumnsToContents();
@@ -661,6 +661,8 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
     auto& cutPlans = presenter->getPlansRef();          // vágási tervek
     auto leftovers = presenter->getLeftoverResults();   // hullók (külön kezelhetők)
 
+    QHash<QUuid,int> requestPieceCounters;
+
     // 2️⃣ Tábla ürítése
     cuttingInstructionTableManager->clearTable();
 
@@ -720,10 +722,13 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
                 ci.kerf_mm = machine->kerf_mm;
                 ci.lengthBefore_mm = remaining;
                 ci.computeRemaining();
-                //ci.machineId = plan.machineId;
-                //ci.machineName = plan.machineName;
+                ci.requestId = seg._requestId;
                 ci.status = CutStatus::Pending;
                 ci.leftoverBarcode = plan.leftoverBarcode;
+
+                // 🔹 Új: darab azonosító kiosztása per request
+                int count = ++requestPieceCounters[seg._requestId];
+                ci.pieceCounter = count;
 
                 // Ha ez az utolsó Piece → leftover jelölés
                 if (i == lastPieceIdx && ci.lengthAfter_mm > 0) {

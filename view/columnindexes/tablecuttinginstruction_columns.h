@@ -25,6 +25,7 @@ enum Column {
     LengthBefore,     ///< Vágás előtti hossz (mm)
     CutSize,             ///< Vágandó hossz (mm)
     LengthAfter,      ///< Vágás utáni hossz (mm)
+    PieceId,            ///< Darab azonosító (Piece-xxxx)
     Status,              ///< Pending / InProgress / Done
     Finalize             ///< Végrehajtás gomb vagy ikon
 };

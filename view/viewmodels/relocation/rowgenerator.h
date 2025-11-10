@@ -78,7 +78,8 @@ namespace Relocation::ViewModel::RowGenerator {
 
 //     return vm;
 // }
-inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
+inline TableRowViewModel generateSumRow(const RelocationInstruction& instr,
+                                        const MaterialMaster& mat) {
     qDebug() << "SUMROW" << instr.materialName
              << "uncovered=" << instr.uncoveredQty
              << "audRem=" << instr.auditedRemaining
@@ -94,17 +95,22 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
     QColor bgColor = RelocationColors::SummaryBg;
     QColor fgColor = Qt::black;
 
-    // Anyag
-    vm.cells[RelocationPlanTableColumns::Material] =
-        TableCellViewModel::fromText(instr.materialName,
-                                     QString("Anyag: %1").arg(instr.materialName),
-                                     bgColor, fgColor);
+    // 🧩 Anyag + csoprt + barcode
+    auto matCell = CellGenerators::materialCell(mat, instr.barcode);
+    // 🎨 Alapszínek a csoport alapján
+    vm.cells[RelocationPlanTableColumns::Material] = matCell;
 
-    // Vonalkód
-    vm.cells[RelocationPlanTableColumns::Barcode] =
-        TableCellViewModel::fromText("—",
-                                     "Összesítő sor, nincs vonalkód",
-                                     bgColor, fgColor);
+    // Anyag
+    // vm.cells[RelocationPlanTableColumns::Material] =
+    //     TableCellViewModel::fromText(instr.materialName,
+    //                                  QString("Anyag: %1").arg(instr.materialName),
+    //                                  bgColor, fgColor);
+
+    // // Vonalkód
+    // vm.cells[RelocationPlanTableColumns::Barcode] =
+    //     TableCellViewModel::fromText("—",
+    //                                  "Összesítő sor, nincs vonalkód",
+    //                                  bgColor, fgColor);
 
     // Mennyiség szöveg
     QString qtyText = QString("%1/%2 (%3 maradék + %4 odavitt)")
@@ -148,37 +154,25 @@ inline TableRowViewModel generateSumRow(const RelocationInstruction& instr) {
 
 /// 🔹 Teljes TableRowViewModel generálása egy RelocationInstruction alapján
 inline TableRowViewModel generate(const RelocationInstruction& instr,
-                                  const MaterialMaster* mat,
+                                  const MaterialMaster& mat,
                                   QObject* receiver = nullptr) {
 
     TableRowViewModel vm;
-    if(!mat) return vm; // anyag nélkül nem megy
 
     vm.rowId = instr.rowId.isNull() ? QUuid::createUuid() : instr.rowId;
 
     if (instr.isSummary) {
-        TableRowViewModel sum = generateSumRow(instr);
+        TableRowViewModel sum = generateSumRow(instr, mat);
         sum.rowId = vm.rowId;
         return sum;
     }
 
-
-
-    // vm.cells[RelocationPlanTableColumns::Material] =
-    //     TableCellViewModel::fromText(instr.materialName,
-    //                           QString("Anyag: %1").arg(instr.materialName),
-    //                           baseColor, fgColor);
-
-    vm.cells[RelocationPlanTableColumns::Material] =
-        CellGenerators::materialCell(*mat,instr.barcode);
-
-    QColor baseColor =vm.cells[RelocationPlanTableColumns::Material].background;
-    QColor fgColor   = vm.cells[RelocationPlanTableColumns::Material].foreground;;
-
-    vm.cells[RelocationPlanTableColumns::Barcode] =
-        TableCellViewModel::fromText(instr.barcode,
-                              QString("Vonalkód: %1").arg(instr.barcode),
-                              baseColor, fgColor);
+    // 🧩 Anyag + csoprt + barcode
+    auto matCell = CellGenerators::materialCell(mat, instr.barcode);
+    // 🎨 Alapszínek a csoport alapján
+    QColor baseColor = matCell.background;
+    QColor fgColor = matCell.foreground;
+    vm.cells[RelocationPlanTableColumns::Material] = matCell;
 
     // Quantity cell text and color logic
     QString qtyText;
@@ -235,7 +229,7 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
                 .arg(src.moved)
                 .arg(src.available);
         }
-        QString sourceText = sourceParts.isEmpty() ? QStringLiteral("—") : sourceParts.join(", ");
+        QString sourceText = sourceParts.isEmpty() ? QStringLiteral("—") : sourceParts.join("/n");
 
         if (editableAllowed) {
             vm.cells[RelocationPlanTableColumns::Source] =
@@ -260,7 +254,7 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
             .arg(tgt.locationName)
                 .arg(tgt.placed);
         }
-        QString targetText = targetParts.isEmpty() ? QStringLiteral("—") : targetParts.join(", ");
+        QString targetText = targetParts.isEmpty() ? QStringLiteral("—") : targetParts.join("/n");
 
         if (editableAllowed) {
             vm.cells[RelocationPlanTableColumns::Target] =
