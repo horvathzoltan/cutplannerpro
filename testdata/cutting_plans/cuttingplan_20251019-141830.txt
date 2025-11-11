@@ -1,3 +1,4 @@
-materialBarCode;requiredLength;quantity;ownerName;externalReference
-MAT-ROLL60-6000;234;2;"aaa";"2650"
-MAT-ROLL60-5000;2650;6;"pele bt.";"2560"
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+2650;"nyúl béla ev.";235;1100;234;+/-0.5;2;"";MAT-ROLL60-6000;Width;false
+2651;"pele bt.";2650;1200;2648;-0.5/0;6;"";MAT-ROLL60-5000;Width;true
+2652;"kovács kft.";1200;1300;1191;;4;"";MAT-ROLL60-5000;Width;false

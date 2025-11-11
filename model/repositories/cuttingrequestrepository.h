@@ -35,11 +35,17 @@ private:
     static QVector<Cutting::Plan::Request> loadFromCsv_private(CsvReader::FileContext& ctx);
 
     struct CuttingRequestRow {
-        QString barcode;
-        int requiredLength;
-        int quantity;
-        QString ownerName;
-        QString externalReference;
+        QString externalReference;   ///< Külső hivatkozás / tételszám
+        QString ownerName;           ///< Megrendelő neve
+        int fullWidth_mm = 0;        ///< Teljes szélesség mm-ben
+        int fullHeight_mm = 0;       ///< Teljes magasság mm-ben
+        int requiredLength = 0;      ///< Nominális vágási hossz
+        QString toleranceStr;        ///< Tűrés szöveges formátumban (CSV-ből)
+        int quantity = 0;            ///< Szükséges darabszám
+        QString requiredColorName;   ///< Szín igény (opcionális)
+        QString barcode;             ///< Anyag azonosító (lookuphoz)
+        QString relevantDimStr;      ///< Releváns dimenzió (Width/Height)
+        bool isMeasurementNeeded = false; ///< Mérési terv jelző
     };
 
     static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);

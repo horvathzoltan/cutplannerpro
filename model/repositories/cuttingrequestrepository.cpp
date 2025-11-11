@@ -48,9 +48,7 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
     lastFileWasEffectivelyEmpty = requests.isEmpty() && FileHelper::isCsvWithOnlyHeader(filePath);
     if (lastFileWasEffectivelyEmpty) {
         zInfo("ℹ️ Cutting plan file only contains header — valid state, no requests found");        //registry.setPersist(false);
-        //registry.clearAll();
         registry.setDataEphemeral({}); // Clear the registry);
-        //registry.setPersist(true);
         return true;
     }
 
@@ -58,11 +56,6 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
         zWarning("❌ A cutting plan fájl hibás vagy nem tartalmaz érvényes adatot.");
         return false;
     }
-
-    //registry.setPersist(false);
-    // registry.clearAll();
-    // for (const auto &req : std::as_const(requests))
-    //     registry.registerRequest(req);
 
     registry.setDataEphemeral(requests);
 
@@ -77,48 +70,37 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx) {
     return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest, true);
 }
 
-// QVector<Cutting::Plan::Request>
-// CuttingRequestRepository::loadFromCsv_private(const QString& filepath) {
-//     // QFile file(filepath);
-//     // if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//     //     qWarning() << "❌ Nem sikerült megnyitni a fájlt:" << filepath;
-//     //     return {};
-//     // }
-
-//     // QTextStream in(&file);
-//     // in.setEncoding(QStringConverter::Utf8);
-
-//     //const auto rows = FileHelper::parseCSV(&in, ';');
-//     //return CsvImporter::processCsvRows<Cutting::Plan::Request>(rows, convertRowToCuttingRequest);
-//     return CsvReader::readAndConvert<Cutting::Plan::Request>(filepath, convertRowToCuttingRequest, true);
-// }
-
-
 std::optional<CuttingRequestRepository::CuttingRequestRow>
 CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 5) {
+    if (parts.size() < 11) {
         QString msg = L("⚠️ Kevés adat");
         ctx.addError(ctx.currentLineNumber(), msg);
-
         return std::nullopt;
     }
 
     CuttingRequestRow row;
-    row.barcode           = parts[0].trimmed();
-    row.requiredLength    = parts[1].trimmed().toInt();
-    row.quantity          = parts[2].trimmed().toInt();
-    row.ownerName         = parts[3].trimmed();
-    row.externalReference = parts[4].trimmed();
+    row.externalReference = parts[0].trimmed();
+    row.ownerName         = parts[1].trimmed();
+    row.fullWidth_mm      = parts[2].trimmed().toInt();
+    row.fullHeight_mm     = parts[3].trimmed().toInt();
+    row.requiredLength    = parts[4].trimmed().toInt();
+    row.toleranceStr      = parts[5].trimmed();
+    row.quantity          = parts[6].trimmed().toInt();
+    row.requiredColorName = parts[7].trimmed();
+    row.barcode           = parts[8].trimmed();
+    row.relevantDimStr    = parts[9].trimmed();
+    row.isMeasurementNeeded = (parts[10].trimmed().toLower() == "true");
 
     if (row.barcode.isEmpty() || row.requiredLength <= 0 || row.quantity <= 0) {
         QString msg = L("⚠️ Érvénytelen mező");
         ctx.addError(ctx.currentLineNumber(), msg);
-
         return std::nullopt;
     }
 
     return row;
 }
+
+
 
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
@@ -126,26 +108,50 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     if (!mat) {
         QString msg = L("⚠️ Ismeretlen barcode '%1'").arg(row.barcode);
         ctx.addError(ctx.currentLineNumber(), msg);
-
         return std::nullopt;
     }
 
     Cutting::Plan::Request req;
     req.materialId        = mat->id;
+    req.externalReference = row.externalReference;
+    req.ownerName         = row.ownerName;
+    req.fullWidth_mm      = row.fullWidth_mm;
+    req.fullHeight_mm     = row.fullHeight_mm;
     req.requiredLength    = row.requiredLength;
     req.quantity          = row.quantity;
-    req.ownerName         = row.ownerName;
-    req.externalReference = row.externalReference;
+    req.requiredColorName = row.requiredColorName;
+    req.isMeasurementNeeded = row.isMeasurementNeeded;
+
+    // 🔍 Tűrés beolvasása
+    if (!row.toleranceStr.isEmpty()) {
+        auto tolOpt = Tolerance::fromString(row.toleranceStr);
+        if (tolOpt.has_value()) {
+            req.requiredTolerance = tolOpt;
+        } else {
+            QString msg = L("⚠️ Érvénytelen tűrés formátum: '%1'").arg(row.toleranceStr);
+            ctx.addError(ctx.currentLineNumber(), msg);
+        }
+    }
+
+    // 🔍 RelevantDimension konverzió
+    if (row.relevantDimStr.compare("Width", Qt::CaseInsensitive) == 0) {
+        req.relevantDim = RelevantDimension::Width;
+    } else if (row.relevantDimStr.compare("Height", Qt::CaseInsensitive) == 0) {
+        req.relevantDim = RelevantDimension::Height;
+    } else {
+        QString msg = L("⚠️ Érvénytelen relevantDim érték: '%1'").arg(row.relevantDimStr);
+        ctx.addError(ctx.currentLineNumber(), msg);
+    }
 
     if (!req.isValid()) {
         QString msg = L("⚠️ Érvénytelen CuttingRequest");
         ctx.addError(ctx.currentLineNumber(), msg);
-
         return std::nullopt;
     }
 
     return req;
 }
+
 
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
@@ -167,7 +173,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     QTextStream out(&file);
 
     // 📋 CSV fejléc
-    out << "materialBarCode;requiredLength;quantity;ownerName;externalReference\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
@@ -176,42 +182,26 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             continue;
         }
 
-        out << material->barcode << ";"
-            << req.requiredLength << ";"
-            << req.quantity << ";"
+        QString toleranceStr = req.requiredTolerance.has_value()
+                                   ? req.requiredTolerance->toCsvString()
+                                   : "";
+
+        out << "\"" << req.externalReference << "\";"
             << "\"" << req.ownerName << "\";"
-            << "\"" << req.externalReference << "\"\n";
+            << req.fullWidth_mm << ";"
+            << req.fullHeight_mm << ";"
+            << req.requiredLength << ";"
+            << toleranceStr << ";"
+            << req.quantity << ";"
+            << "\"" << req.requiredColorName << "\";"
+            << material->barcode << ";"
+            << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
+            << (req.isMeasurementNeeded ? "true" : "false") << "\n";
     }
+
 
     file.close();
     return true;
 }
 
 
-// std::optional<CuttingRequest> CuttingRequestRepository::convertRowToRequest(const QVector<QString>& parts, int lineIndex) {
-//     if (parts.size() < 5) {
-//         qWarning() << QString("⚠️ Sor %1 hibás (kevés mező):").arg(lineIndex) << parts;
-//         return std::nullopt;
-//     }
-
-//     const QString barcode = parts[0].trimmed();
-//     const auto* mat = MaterialRegistry::instance().findByBarcode(barcode);
-//     if (!mat) {
-//         qWarning() << QString("⚠️ Ismeretlen anyag sor %1-ben:").arg(lineIndex) << barcode;
-//         return std::nullopt;
-//     }
-
-//     CuttingRequest req;
-//     req.materialId         = mat->id;
-//     req.requiredLength     = parts[1].trimmed().toInt();
-//     req.quantity           = parts[2].trimmed().toInt();
-//     req.ownerName          = parts[3].trimmed();
-//     req.externalReference  = parts[4].trimmed();
-
-//     if (!req.isValid()) {
-//         qWarning() << QString("⚠️ Érvénytelen vágási igény sor %1-ben:").arg(lineIndex) << req.toString();
-//         return std::nullopt;
-//     }
-
-//     return req;
-// }

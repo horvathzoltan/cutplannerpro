@@ -4,6 +4,8 @@
 
 #include <QList>
 
+#include <model/cutting/plan/request.h>
+
 TestManager& TestManager::instance() {
     static TestManager _instance;
     return _instance;
@@ -17,7 +19,9 @@ void TestManager::runBusinessLogicTests(const QString& profile) {
     if (profile == "maki") {
         runMakiTests();
     } else if (profile == "full") {
-        runFullTests();
+        runFullTests();    
+    } else if (profile == "tolerance") {
+        runToleranceTests();
     } else {
         zWarning(QString("⚠️ Ismeretlen tesztprofil: %1").arg(profile));
     }
@@ -35,6 +39,19 @@ void TestManager::runDoubleTests(){
     zInfo("a_txt:"+a_txt);
     zInfo("b_txt:"+b_txt);
     zInfo("c_txt:"+c_txt);
+}
+
+void TestManager::runToleranceTests()
+{
+    auto t1 = Tolerance::fromString("+/-0.5");    // min=-0.5, max=+0.5
+    auto t2 = Tolerance::fromString("-0.5/0");    // min=-0.5, max=0
+    auto t3 = Tolerance::fromString("234 ±0.5");  // min=-0.5, max=+0.5
+    auto t4 = Tolerance::fromString("234 -0.5/+0.2"); // min=-0.5, max=+0.2
+
+    zInfo("t1:"+t1->toString());           // "+/-0.5 mm"
+    zInfo("t2:"+t2->toString());           // "-0.5/0 mm"
+    zInfo("t3:"+t3->toString(234));        // "234 ±0.5 mm"
+    zInfo("t4:"+t4->toString(234));        // "234 -0.5/0.2 mm"
 }
 
 void TestManager::runMakiTests() {

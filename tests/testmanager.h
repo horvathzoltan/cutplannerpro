@@ -13,6 +13,7 @@ private:
 
     // Profil-specifikus tesztfüggvények
     void runDoubleTests();
+    void runToleranceTests();
     void runMakiTests();
     void runFullTests();
 };
