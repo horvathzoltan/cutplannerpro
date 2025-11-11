@@ -4,7 +4,7 @@
 🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve
 🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧 Sprint SOS	Három tartományos logika stabil
 15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, státusz szétválasztva
-21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 nincs adatimport	kritikus hiány
+21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 pipeline	kritikus hiány
 25+29	Vágási terv generálás + Worklist tab darab szinten	✅	🟡 Folyamatban	✅	🚧 Sprint 3	RequestId integráció hiányzik, finalize audit stabil
 28	Finalize auditálás + visszavonás	✅	✅ Lezárva	✅	🚧 Sprint 5	Audit események stabilak
 30	Leftover sorok kezelése	✅	✅ Lezárva	✅	🚧 Sprint 6	Tooltip + színezés működik
@@ -14,7 +14,6 @@
 ✨ ÚJ	Request új mezők integráció (méret + szín)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	fullWidth/fullHeight + relevantDim + requiredColorName
 ✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	isMeasurementNeeded → Worklist Measurement oszlop, globális számláló, audit integráció
 🚀 Fókusz sorrend
-
 25+29 + ✨ ÚJ Mérési terv → RequestId integráció + mérési terv lezárása.
 
 21 → adatfeltöltés pipeline + éles teszt.
@@ -23,8 +22,14 @@
 
 Tesztelés + finomhangolás → leftover, sorvezető, vizuális badge‑ek.
 
-👉 Mit szólsz, Zoltán: a mérési terv számlálót inkább a Worklist fejlécben mutassuk (globális státusz), vagy minden gép szeparátor sorban külön (gépenkénti mérési arány)?
+🎯 Mérési terv vizualizáció – döntési pont
+Globális számláló a Worklist fejlécben → egyértelmű, minden gépre összesítve.
 
+Gép szeparátor soronkénti számláló → részletesebb, gépenkénti arány mutatása.
+
+👉 Ha az operátoroknak fontos a gépenkénti mérési arány, akkor a szeparátor sorban is megjelenhet. Ha inkább az összkép számít, akkor elég a fejlécben.
+
+⚡ Röviden: az állapottábla most már tükrözi, hogy a Request új mezők és a mérési terv logika integrációja folyamatban van, és a következő fókusz a Worklist + mérési terv lezárása.
 ***
 
 🧩 Végrehajtható lépésenkénti terv – Request új mezők + mérési terv integráció
