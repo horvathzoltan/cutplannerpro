@@ -19,6 +19,7 @@ public:
 
     void setLogFile(const QString& path);
     void zEvent_(const QString& msg);
+    void zEvent_(const QStringList& msg);
     void zEvent_(Level level, const QString& msg);
 
     // UI callback: pl. QListWidget vagy QPlainTextEdit frissítéséhez

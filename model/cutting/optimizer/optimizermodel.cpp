@@ -150,7 +150,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             // ⛔ Már most jelöljük használtként
             _usedLeftoverEntryIds.insert(best.stock.entryId);
-            zEvent(QString("♻️ Forrás leftover tiltva: %1").arg(best.stock.entryId.toString()));
+            //zEvent(QString("♻️ Forrás leftover tiltva: %1").arg(best.stock.entryId.toString()));
 
             // leftovers.removeAt(best.indexInInventory);
             // consumeLeftover(best.stock);
@@ -456,8 +456,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     // A lokális leftoverokat commitoljuk a globális készletbe
     for (const auto& entry : _localLeftovers) {
         _inventorySnapshot.reusableInventory.append(entry);
-        zEvent(QString("📦 Commit leftover: %1 (%2 mm)")
-                   .arg(entry.barcode).arg(entry.availableLength_mm));
+        // zEvent(QString("📦 Commit leftover: %1 (%2 mm)")
+        //            .arg(entry.barcode).arg(entry.availableLength_mm));
     }
     _localLeftovers.clear();
 

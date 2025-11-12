@@ -88,7 +88,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
-    CutAnalyticsPanel* analyticsPanel = nullptr;
+    //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
     QVector<MachineCuts> _machineCutsList;
 
@@ -117,5 +117,6 @@ private:
     void refreshSummaryRows();
     void postProcessMachineCuts(MachineCuts &mc);
     void renderCuttingInstructions();
+    static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
 };
 #endif // MAINWINDOW_H

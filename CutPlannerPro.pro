@@ -138,6 +138,7 @@ HEADERS += \
     tests/testmanager.h \
     view/cellhelpers/auditstatustext.h \
     view/cellhelpers/materialcellgenerator.h \
+    view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     view/tablerowstyler/materialrowstyler.h \
     view/tableutils/RowTracker.h \
@@ -256,6 +257,7 @@ HEADERS += \
     view/managers/storageaudittable_manager.h \
     view/tablehelpers/relocationquantityhelpers.h \
     view/tablehelpers/tablerowpopulator.h \
+    view/viewmodels/request/rowgenerator.h \
     view/viewmodels/result/badgerowgenerator.h \
     view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \

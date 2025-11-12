@@ -272,7 +272,7 @@ inline TableRowViewModel generate(const CutInstruction& ci,
             fg = Qt::white;
         }
 
-        //afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
+        afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
         afterTooltip = QString("Végső leftover (%1 mm, kategória: %2)")
                            .arg(len)
                            .arg(len < OptimizerConstants::SELEJT_THRESHOLD ? "Selejt"

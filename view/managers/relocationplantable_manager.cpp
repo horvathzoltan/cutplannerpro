@@ -45,14 +45,6 @@ void RelocationPlanTableManager::addRow(const RelocationInstruction& instr) {
 
     // 🔍 Anyag lekérése az azonosító alapján
     const MaterialMaster* mat = nullptr;
-    // if(instr.sourceType == AuditSourceType::Stock){
-    //      mat = MaterialRegistry::instance().findByBarcode(instr.barcode);
-    // } else {
-    //     std::optional<LeftoverStockEntry> a =
-    //         LeftoverStockRegistry::instance().findByBarcode(instr.barcode);
-    //     if(a.has_value())
-    //         mat = MaterialRegistry::instance().findById(a->materialId);
-    // }
     mat = MaterialRegistry::instance().findById(instr.materialId);
     if (!mat)
         return;

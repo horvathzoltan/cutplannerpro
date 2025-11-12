@@ -1,7 +1,7 @@
 #pragma once
 
 #include "view/cellhelpers/materialcellgenerator.h"
-#include "view/tableutils/colorlogicutils.h"
+//#include "view/tableutils/colorlogicutils.h"
 #include "model/relocation/relocationinstruction.h"
 #include "view/columnindexes/relocationplantable_columns.h"
 #include "view/viewmodels/relocation/cellgenerator.h"

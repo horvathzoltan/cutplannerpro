@@ -42,6 +42,11 @@ void EventLogger::zEvent_(const QString& msg) {
     writeToFile(line);
 }
 
+void EventLogger::zEvent_(const QStringList& lines) {
+    QString a = lines.join("\n");
+    zEvent_(a);
+}
+
 void EventLogger::zEvent_(Level level, const QString& msg) {
     this->zEvent_(toString(level) + msg);
 }

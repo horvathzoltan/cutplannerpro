@@ -108,8 +108,8 @@ MainWindow::MainWindow(QWidget *parent)
         setInputFileLabel(currentFileName, fullPath);
     }
 
-    analyticsPanel = new CutAnalyticsPanel(this);
-    ui->midLayout->addWidget(analyticsPanel);
+    //analyticsPanel = new CutAnalyticsPanel(this);
+    //ui->midLayout->addWidget(analyticsPanel);
 
     // 🔄 Fejléc állapot betöltése
 
@@ -274,7 +274,9 @@ void MainWindow::ShowWarningDialog(const QString& msg) {
 }
 
 void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const QVector<Cutting::Result::ResultModel>& results) {
-    analyticsPanel->updateStats(plans, results);
+    //analyticsPanel->updateStats(plans, results);
+    QStringList a = generateStatsStrings(plans, results);
+    zEvent(a);
 }
 
 /*cuttingplan*/
@@ -460,7 +462,7 @@ void MainWindow::addRow_InputTable(const Cutting::Plan::Request& v)
 
 void MainWindow::updateRow_InputTable(const Cutting::Plan::Request& v)
 {
-    inputTableManager->updateRow(v);
+    inputTableManager->updateRow(v.requestId, v);
 }
 
 void MainWindow::removeRow_InputTable(const QUuid& id)
@@ -799,4 +801,72 @@ void MainWindow::renderCuttingInstructions() {
             cuttingInstructionTableManager->addRow(ci);
         }
     }
+}
+
+
+QStringList MainWindow::generateStatsStrings(
+    const QVector<Cutting::Plan::CutPlan>& plans,
+    const QVector<Cutting::Result::ResultModel>& leftovers)
+{
+    // 🔢 Inicializálás
+    int totalCuts          = 0;
+    int segmentCount       = 0;
+    int pieceCount         = 0;
+    int kerfCount          = 0;
+    int wasteCount         = 0;
+    int totalPieceLength   = 0;
+    int totalKerfLength    = 0;
+    int totalWasteLength   = 0;
+
+    // 📊 Tervek bejárása
+    for (const Cutting::Plan::CutPlan& plan : plans) {
+        totalCuts += plan.piecesWithMaterial.size();
+        segmentCount += plan.segments.size();
+
+        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+            switch (s.type()) {
+            case Cutting::Segment::SegmentModel::Type::Piece:
+                pieceCount++;
+                totalPieceLength += s.length_mm();
+                break;
+            case Cutting::Segment::SegmentModel::Type::Kerf:
+                kerfCount++;
+                totalKerfLength += s.length_mm();
+                break;
+            case Cutting::Segment::SegmentModel::Type::Waste:
+                wasteCount++;
+                totalWasteLength += s.length_mm();
+                break;
+            }
+        }
+    }
+
+    // ♻️ Újrahasznosítható maradékok száma (min. 300mm)
+    int reusableWasteCount = std::count_if(leftovers.begin(), leftovers.end(),
+                                           [](const Cutting::Result::ResultModel& r) { return r.waste >= 300; });
+
+    // 🗃️ Végleges hulladékok száma
+    int finalWasteCount = std::count_if(leftovers.begin(), leftovers.end(),
+                                        [](const Cutting::Result::ResultModel& r) { return r.isFinalWaste; });
+
+    // 🚦 Hatékonyság
+    double efficiency = (totalPieceLength == 0) ? 0.0
+                                                : static_cast<double>(totalPieceLength) /
+                                                      static_cast<double>(totalPieceLength + totalKerfLength + totalWasteLength) * 100.0;
+
+    // 📋 Stringek összeállítása
+    QStringList stats;
+    stats << QString("📊 Darabolás: %1 darab, %2 kerf (%3 mm), %4 hulladék (%5 mm)")
+                 .arg(pieceCount).arg(kerfCount).arg(totalKerfLength).arg(wasteCount).arg(totalWasteLength);
+
+    stats << QString("📐 Szakaszok összesen: %1 (%2 darab + %3 kerf + %4 hulladék)")
+                 .arg(segmentCount).arg(pieceCount).arg(kerfCount).arg(wasteCount);
+
+    stats << QString("♻️ Újrahasználható: %1 db • Archivált végmaradék: %2 db")
+                 .arg(reusableWasteCount).arg(finalWasteCount);
+
+    stats << QString("🚦 Hatékonysági mutató: %1%")
+                 .arg(QString::number(efficiency, 'f', 1));
+
+    return stats;
 }
