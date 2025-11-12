@@ -1,35 +1,48 @@
-📊 Frissített Állapottábla – 2025.11.10.
+📊 Frissített Állapottábla – 2025.11.12.
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
-🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧 Sprint SOS	RodId refaktor befejezve
-🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧 Sprint SOS	Teljes öröklés bevezetve
-🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧 Sprint SOS	Három tartományos logika stabil
-15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧 Sprint 3	getterek stabilak, státusz szétválasztva
-21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧 pipeline	kritikus hiány
-25+29	Vágási terv generálás + Worklist tab darab szinten	✅	🟡 Folyamatban	✅	🚧 Sprint 3	RequestId integráció hiányzik, finalize audit stabil
-28	Finalize auditálás + visszavonás	✅	✅ Lezárva	✅	🚧 Sprint 5	Audit események stabilak
-30	Leftover sorok kezelése	✅	✅ Lezárva	✅	🚧 Sprint 6	Tooltip + színezés működik
+🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧	RodId refaktor befejezve
+🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧	Teljes öröklés bevezetve
+🔥 SOS‑3	Stop feltételek visszaemelése	✅	✅ Lezárva	✅	🚧	Három tartományos logika stabil
+15	Anyagcsoportosítás (master–detail Σ sor + detail)	✅	🟡 Folyamatban	✅	🚧	getterek stabilak, státusz szétválasztva
+21	Adatfeltöltés + éles teszt	✅	🔴 Hiányzik	✅	🚧	pipeline kritikus hiány
+25+29	Vágási terv generálás + Worklist tab darab szinten	✅	🟡 Folyamatban	✅	🚧	RequestId integráció hiányzik, finalize audit stabil
+28	Finalize auditálás + visszavonás	✅	✅ Lezárva	✅	🚧	Audit események stabilak
+30	Leftover sorok kezelése	✅	✅ Lezárva	✅	🚧	Tooltip + színezés működik
 ✨ ÚJ	CutSize kiemelés	✅	❌ Nem szükséges	❌	🚫	Átdolgozva
-✨ ÚJ	Leftover színezés kategóriák szerint	✅	✅ Lezárva	✅	🚧 Sprint 6	Selejt = piros, jó = sárga, köztes = narancs
-✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	✅ Lezárva	✅	🚧 Sprint 5	működik
-✨ ÚJ	Request új mezők integráció (méret + szín)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	fullWidth/fullHeight + relevantDim + requiredColorName
-✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧 Sprint 4	isMeasurementNeeded → Worklist Measurement oszlop, globális számláló, audit integráció
-🚀 Fókusz sorrend
-25+29 + ✨ ÚJ Mérési terv → RequestId integráció + mérési terv lezárása.
+✨ ÚJ	Leftover színezés kategóriák szerint	✅	✅ Lezárva	✅	🚧	Selejt = piros, jó = sárga, köztes = narancs
+✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	✅ Lezárva	✅	🚧	működik
+✨ ÚJ	Request új mezők integráció (méret + szín)	✅	🟡 Folyamatban	✅	🚧	fullWidth/fullHeight + relevantDim + requiredColorName
+✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧	isMeasurementNeeded → Worklist Measurement oszlop, globális számláló, audit integráció
+🚀 Fókusz sorrend – 2025.11.12.
+25+29 + ✨ ÚJ Mérési terv → RequestId integráció + mérési terv lezárása → Measurement oszlop viselkedés + globális számláló + audit log
 
-21 → adatfeltöltés pipeline + éles teszt.
+21 – Adatfeltöltés pipeline + éles teszt → kritikus hiány, blokkoló
 
-15 → anyagcsoportosítás véglegesítése.
+15 – Anyagcsoportosítás véglegesítése → Σ sor + detail logika stabilizálása
 
-Tesztelés + finomhangolás → leftover, sorvezető, vizuális badge‑ek.
+Tesztelés + finomhangolás → leftover badge‑ek, sorvezető, vizuális visszajelzések
 
 🎯 Mérési terv vizualizáció – döntési pont
-Globális számláló a Worklist fejlécben → egyértelmű, minden gépre összesítve.
-
-Gép szeparátor soronkénti számláló → részletesebb, gépenkénti arány mutatása.
-
+Vizualizációs lehetőség	Előny	Hátrány
+Fejlécben globális számláló	Egyértelmű, gyors áttekintés	Nem mutat gépenkénti arányt
+Gép szeparátor soronkénti számláló	Részletes, gépenkénti visszajelzés	Zsúfoltabb UI, több logika
 👉 Ha az operátoroknak fontos a gépenkénti mérési arány, akkor a szeparátor sorban is megjelenhet. Ha inkább az összkép számít, akkor elég a fejlécben.
 
-⚡ Röviden: az állapottábla most már tükrözi, hogy a Request új mezők és a mérési terv logika integrációja folyamatban van, és a következő fókusz a Worklist + mérési terv lezárása.
+✅ Mérési terv – jelenlegi állapot
+Request mezők: már integrálva (fullWidth_mm, fullHeight_mm, relevantDim, requiredColorName, isMeasurementNeeded)
+
+CutInstruction: már tartalmazza requestId, pieceBarcode, isMeasurementNeeded
+
+Worklist: új oszlopok előkészítve (PieceId, Measurement)
+
+Globális számláló: számolás logikája készül
+
+Audit log: már menti a szükséges mezőket
+
+Vizualizáció: ikonok, színek, checkbox viselkedés még finomítás alatt
+
+⚡ Röviden: A státusz most már pontosan tükrözi, hogy a mérési terv logika és a Request mezők integrációja folyamatban van, és a következő fókusz a Worklist viselkedés + mérési terv lezárása. A vizualizációs döntés (globális vs. gépenkénti számláló) még nyitott, de a technikai alapok már stabilak.
+
 ***
 
 🧩 Végrehajtható lépésenkénti terv – Request új mezők + mérési terv integráció
