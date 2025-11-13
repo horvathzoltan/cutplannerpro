@@ -3,6 +3,8 @@
 #include <QUuid>
 #include <QStringList>
 
+#include <common/color/namedcolor.h>
+
 
 /**
  * @brief Egy vágási igényt reprezentáló adatstruktúra.
@@ -10,6 +12,30 @@
  * Tartalmazza az anyag azonosítóját, a kívánt hosszúságot, darabszámot,
  * valamint opcionálisan a megrendelő nevét és a külső hivatkozási azonosítót.
  */
+enum HandlerSide{
+    Left,    ///< Balos kivitel – kezelő/hajtómű bal oldalon
+    Right,   ///< Jobbos kivitel – kezelő/hajtómű jobb oldalon
+    Unknown   ///< Nem megadott – figyelmeztetés szükséges
+};
+
+namespace HandlerSideUtils {
+
+inline QString toString(HandlerSide side) {
+    switch (side) {
+    case HandlerSide::Left:    return "L";
+    case HandlerSide::Right:   return "R";
+    case HandlerSide::Unknown: return "Unknown";
+    }
+    return "Unknown";
+}
+
+inline HandlerSide parse(const QString& str) {
+    if (str.compare("Left", Qt::CaseInsensitive) == 0 || str =="L")   return HandlerSide::Left;
+    if (str.compare("Right", Qt::CaseInsensitive) == 0 || str=="R")  return HandlerSide::Right;
+    return HandlerSide::Unknown;
+}
+
+} // namespace HandlerSideUtils
 
 struct Tolerance{
     double min_mm; ///< negatív eltérés mm-ben
@@ -93,7 +119,7 @@ struct Request {
     int fullWidth_mm = 0;    ///< Teljes szélesség mm-ben (opcionális)
     int fullHeight_mm = 0;   ///< Teljes magasság mm-ben (opcionális)
     RelevantDimension relevantDim = RelevantDimension::Width;
-    QString requiredColorName;    /// ha ez eltér a material colorjától, szinterezni kell ->
+    //QString requiredColorName;    /// ha ez eltér a material colorjától, szinterezni kell ->
 // ha szinterezni kell, akkor plusz költség van,
 // ami költség arányos a festett felülettel
 // emiatt plusz számítás van
@@ -108,6 +134,11 @@ struct Request {
     // vágási utasítást követő és/vagy ahoz tartozó , abból származó mérési tervbe
 
     std::optional<Tolerance> requiredTolerance;
+
+    HandlerSide handlerSide = HandlerSide::Unknown; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
+
+    NamedColor requiredColor; // 🎨 Anyag színe (RAL vagy HEX kód)
+
     /**
      * @brief Ellenőrzi, hogy az igény érvényes-e.
      *

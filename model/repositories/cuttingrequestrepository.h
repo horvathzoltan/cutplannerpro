@@ -42,6 +42,7 @@ private:
         int requiredLength = 0;      ///< Nominális vágási hossz
         QString toleranceStr;        ///< Tűrés szöveges formátumban (CSV-ből)
         int quantity = 0;            ///< Szükséges darabszám
+        QString handlerSide; ///< Kezelő oldal (Left/Right)
         QString requiredColorName;   ///< Szín igény (opcionális)
         QString barcode;             ///< Anyag azonosító (lookuphoz)
         QString relevantDimStr;      ///< Releváns dimenzió (Width/Height)

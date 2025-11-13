@@ -66,13 +66,13 @@ QString NamedColor::normalizeRalExtended(const QString& raw) {
     //code.replace("RALP", "RAL P", Qt::CaseInsensitive);
 
     // RAL Classic
-    QRegularExpression classicRe("^RAL\\s?(\\d{4})$");
+    QRegularExpression classicRe("^RAL[-\\s]*(\\d{4})$");
     auto match = classicRe.match(code);
     if (match.hasMatch())
         return "RAL " + match.captured(1);
 
     // RAL Design
-    QRegularExpression designRe("^RAL\\s?(\\d{3})\\s?(\\d{2})\\s?(\\d{2})$");
+    QRegularExpression designRe("^RAL[-\\s]*(\\d{3})[-\\s]*(\\d{2})[-\\s]*(\\d{2})$");
     match = designRe.match(code);
     if (match.hasMatch())
         return QString("RAL %1 %2 %3")
@@ -81,7 +81,7 @@ QString NamedColor::normalizeRalExtended(const QString& raw) {
             .arg(match.captured(3));
 
     // RAL Plastics
-    QRegularExpression plasticsRe("^RAL\\s?P1\\s?(\\d{3})\\s?(\\d{2})\\s?(\\d{2})$");
+    QRegularExpression plasticsRe("^RAL[-\\s]*P1[-\\s]*(\\d{3})[-\\s]*(\\d{2})[-\\s]*(\\d{2})$");
     match = plasticsRe.match(code);
     if (match.hasMatch())
         return QString("RAL P1 %1 %2 %3")

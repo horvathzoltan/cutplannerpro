@@ -25,6 +25,7 @@ enum Column {
     Length,          ///< Nominális vágási hossz (mm)
     Tolerance,       ///< Tűrés szöveges formátumban
     Quantity,        ///< Darabszám
+    HandlerSide, /// < Kezelő oldal (Left/Right)
     Color,           ///< Igényelt szín
     Measurement,     ///< Mérési terv jelző (checkbox vagy ikon)
     Actions          ///< Műveletek (Update/Delete gombok)

@@ -53,13 +53,20 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     vm.cells[InputTableColumns::Tolerance] =
         TableCellViewModel::fromText(tolStr,"",baseColor, fgColor, true);
 
+    QString handlerTxt = HandlerSideUtils::toString(request.handlerSide);
+    vm.cells[InputTableColumns::HandlerSide] =
+        TableCellViewModel::fromText(handlerTxt,"",baseColor, fgColor, true);
+
     // Quantity
     vm.cells[InputTableColumns::Quantity] =
         TableCellViewModel::fromText(QString::number(request.quantity), "",baseColor, fgColor, true);
 
     // Color
-    vm.cells[InputTableColumns::Color] =
-        TableCellViewModel::fromText(request.requiredColorName, "",baseColor, fgColor, true);
+    auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color);
+    colorCell.background = baseColor;
+    colorCell.foreground = fgColor;
+    vm.cells[InputTableColumns::Color] = colorCell;
+        //TableCellViewModel::fromText(request.requiredColorName, "",baseColor, fgColor, true);
 
     // Measurement
     vm.cells[InputTableColumns::Measurement] =

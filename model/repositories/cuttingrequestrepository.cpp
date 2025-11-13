@@ -13,19 +13,21 @@
 
 
 // vágási terv nélkül tudunk létezni - mi hozzuk létre őket és ez nem törzsadat
-CuttingPlanLoadResult CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry& registry) {
+
+CuttingPlanLoadResult CuttingRequestRepository::tryLoadFromSettings(
+    CuttingPlanRequestRegistry &registry) {
     QString fn = SettingsManager::instance().cuttingPlanFileName();
 
     if (fn.isEmpty())
         return CuttingPlanLoadResult::NoFileConfigured;
 
-    const QString filePath = FileNameHelper::instance().getCuttingPlanFilePath(fn);
-
+    const QString filePath =
+        FileNameHelper::instance().getCuttingPlanFilePath(fn);
 
     if (!QFile::exists(filePath))
         return CuttingPlanLoadResult::FileMissing;
 
-    bool ok =  loadFromFile(registry, filePath);
+    bool ok = loadFromFile(registry, filePath);
     return ok ? CuttingPlanLoadResult::Success : CuttingPlanLoadResult::LoadError;
 }
 
@@ -72,7 +74,7 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx) {
 
 std::optional<CuttingRequestRepository::CuttingRequestRow>
 CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 11) {
+    if (parts.size() < 12) {
         QString msg = L("⚠️ Kevés adat");
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
@@ -86,10 +88,11 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     row.requiredLength    = parts[4].trimmed().toInt();
     row.toleranceStr      = parts[5].trimmed();
     row.quantity          = parts[6].trimmed().toInt();
-    row.requiredColorName = parts[7].trimmed();
-    row.barcode           = parts[8].trimmed();
-    row.relevantDimStr    = parts[9].trimmed();
-    row.isMeasurementNeeded = (parts[10].trimmed().toLower() == "true");
+    row.handlerSide = parts[7].trimmed();
+    row.requiredColorName = parts[8].trimmed();
+    row.barcode           = parts[9].trimmed();
+    row.relevantDimStr    = parts[10].trimmed();
+    row.isMeasurementNeeded = (parts[11].trimmed().toLower() == "true");
 
     if (row.barcode.isEmpty() || row.requiredLength <= 0 || row.quantity <= 0) {
         QString msg = L("⚠️ Érvénytelen mező");
@@ -119,7 +122,8 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.fullHeight_mm     = row.fullHeight_mm;
     req.requiredLength    = row.requiredLength;
     req.quantity          = row.quantity;
-    req.requiredColorName = row.requiredColorName;
+    req.handlerSide = HandlerSideUtils::parse(row.handlerSide);
+    //req.requiredColorName = row.requiredColorName;
     req.isMeasurementNeeded = row.isMeasurementNeeded;
 
     // 🔍 Tűrés beolvasása
@@ -149,6 +153,17 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         return std::nullopt;
     }
 
+    // 🎨 Szín hozzárendelés – RAL, HEX vagy üres
+    if (!row.requiredColorName.isEmpty()) {
+        req.requiredColor = NamedColor(row.requiredColorName);
+        if (!req.requiredColor.isValid()) {
+            QString msg = L("⚠️ Ismeretlen színformátum: %1").arg( row.requiredColorName);
+            ctx.addError(ctx.currentLineNumber(), msg);
+        }
+    } else {
+        req.requiredColor = NamedColor(); // nincs festve
+    }
+
     return req;
 }
 
@@ -173,7 +188,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     QTextStream out(&file);
 
     // 📋 CSV fejléc
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
@@ -193,7 +208,8 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << req.requiredLength << ";"
             << toleranceStr << ";"
             << req.quantity << ";"
-            << "\"" << req.requiredColorName << "\";"
+            << HandlerSideUtils::toString(req.handlerSide) << ";"
+            << req.requiredColor.name() << "\";"
             << material->barcode << ";"
             << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
             << (req.isMeasurementNeeded ? "true" : "false") << "\n";

@@ -1,4 +1,4 @@
-📊 Frissített Állapottábla – 2025.11.12.
+📊 Frissített Állapottábla – 2025.11.13.
 #	Tevékenység	Terv	Kész	Új	Köv	Megjegyzés
 🔥 SOS‑1	Stock rudak stabil azonosítója (MAT‑xxxx)	✅	✅ Lezárva	✅	🚧	RodId refaktor befejezve
 🔥 SOS‑2	ParentBarcode lánc konzisztencia	✅	✅ Lezárva	✅	🚧	Teljes öröklés bevezetve
@@ -11,9 +11,10 @@
 ✨ ÚJ	CutSize kiemelés	✅	❌ Nem szükséges	❌	🚫	Átdolgozva
 ✨ ÚJ	Leftover színezés kategóriák szerint	✅	✅ Lezárva	✅	🚧	Selejt = piros, jó = sárga, köztes = narancs
 ✨ ÚJ	Sorvezető (aktuális sor kiemelése)	✅	✅ Lezárva	✅	🚧	működik
-✨ ÚJ	Request új mezők integráció (méret + szín)	✅	🟡 Folyamatban	✅	🚧	fullWidth/fullHeight + relevantDim + requiredColorName
-✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧	isMeasurementNeeded → Worklist Measurement oszlop, globális számláló, audit integráció
-🚀 Fókusz sorrend – 2025.11.12.
+✨ ÚJ	Request új mezők integráció (méret + szín + side)	✅	🟡 Folyamatban	✅	🚧	fullWidth/fullHeight + relevantDim + requiredColor + handlerSide
+✨ ÚJ	Request szín vizualizáció	✅	✅ Lezárva	✅	🚧	név + színkocka + festés jelzés
+✨ ÚJ	Mérési terv logika (kötelező + opcionális)	✅	🟡 Folyamatban	✅	🚧	Measurement oszlop, globális számláló, audit integráció
+🚀 Fókusz sorrend – 2025.11.13.
 25+29 + ✨ ÚJ Mérési terv → RequestId integráció + mérési terv lezárása → Measurement oszlop viselkedés + globális számláló + audit log
 
 21 – Adatfeltöltés pipeline + éles teszt → kritikus hiány, blokkoló
@@ -27,6 +28,10 @@ Vizualizációs lehetőség	Előny	Hátrány
 Fejlécben globális számláló	Egyértelmű, gyors áttekintés	Nem mutat gépenkénti arányt
 Gép szeparátor soronkénti számláló	Részletes, gépenkénti visszajelzés	Zsúfoltabb UI, több logika
 👉 Ha az operátoroknak fontos a gépenkénti mérési arány, akkor a szeparátor sorban is megjelenhet. Ha inkább az összkép számít, akkor elég a fejlécben.
+
+⚡ Röviden: Az állapottábla most már tartalmazza a Request szín vizualizáció lezárását és a HandlerSide mezőt. A következő fókusz a Worklist mérési terv lezárása és az adatfeltöltés pipeline.
+
+***
 
 ✅ Mérési terv – jelenlegi állapot
 Request mezők: már integrálva (fullWidth_mm, fullHeight_mm, relevantDim, requiredColorName, isMeasurementNeeded)
@@ -44,7 +49,46 @@ Vizualizáció: ikonok, színek, checkbox viselkedés még finomítás alatt
 ⚡ Röviden: A státusz most már pontosan tükrözi, hogy a mérési terv logika és a Request mezők integrációja folyamatban van, és a következő fókusz a Worklist viselkedés + mérési terv lezárása. A vizualizációs döntés (globális vs. gépenkénti számláló) még nyitott, de a technikai alapok már stabilak.
 
 ***
+🧩 Mit jelent a lezárás?
+Measurement oszlop viselkedés véglegesítése
 
+Kötelező darabok (isMeasurementNeeded == true) → checkbox mindig bepipálva és letiltva.
+
+Opcionális darabok → operátor szabadon pipálhatja, finalize státusztól függetlenül.
+
+Így nincs félreértés: ami kötelező, az mindig mérve lesz, ami opcionális, azt az operátor döntése határozza meg.
+
+Globális számláló implementálása
+
+A Worklist fejlécben vagy gép szeparátor sorban megjelenik: "Mérési terv teljesítve: X/Y darab".
+
+Ez folyamatosan számolja: kötelező + opcionálisan kijelölt darabok.
+
+Az operátor azonnal látja, hogy teljesült‑e az előírt arány (pl. 10%).
+
+Audit log integráció
+
+Finalize eseménykor rögzítjük:
+
+requestId
+
+pieceBarcode
+
+appliedCompensation_mm
+
+isMeasurementNeeded (kötelező vagy opcionális mérés).
+
+Így visszakövethető, hogy mely darabokat mértünk, és miért.
+
+Vizualizáció véglegesítése
+
+Kötelező darabok → sárga ikon vagy külön jelzés.
+
+Opcionálisan kijelölt darabok → checkbox pipálva.
+
+Tooltipben egyértelműen látszik, hogy kötelező vagy opcionális mérésről van szó.
+
+***
 🧩 Végrehajtható lépésenkénti terv – Request új mezők + mérési terv integráció
 Request bővítése
 

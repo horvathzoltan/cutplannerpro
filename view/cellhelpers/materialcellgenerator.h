@@ -46,7 +46,7 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
     // 📛 Anyag név label
     QLabel* nameLabel1 = new QLabel(label1);
-    nameLabel1->setAlignment(Qt::AlignVCenter); // függőleges közép
+    //nameLabel1->setAlignment(Qt::AlignVCenter); // függőleges közép
 
     //nameLabel1->setToolTip(tooltip);
     layout->addWidget(nameLabel1);
@@ -85,11 +85,51 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
     return r;
 }
 
+
 // inline TableCellViewModel cuttingPlanRequestCell(const Cutting::Plan::Request& r, const QString& barcode = ""){
 //     QString text    = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Label,   barcode);
 //     QString tooltip = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Tooltip, barcode);
 
 // }
+
+inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor)
+{
+    QString text = requiredColor.isValid() ? requiredColor.name() : "Nincs szín";
+    QString tooltip = QString("Igényelt szín: %1").arg(text);
+
+    // Festés jelzés, ha eltér az anyag színétől - illetve ha az anyag natúr, akkor is festeni kell
+    bool isPaintingNeeded = requiredColor.isValid() && requiredColor.name() != matColor.name();
+    if (isPaintingNeeded) {
+        text += " 🎨";
+        tooltip += "\n🎨 Festés szükséges";
+    }
+
+    QWidget* panel = new QWidget();
+    QHBoxLayout* layout = new QHBoxLayout(panel);
+    layout->setContentsMargins(4,0,0,0);
+    layout->setSpacing(4);
+    layout->setAlignment(Qt::AlignLeft);      // balra igazítás
+
+    QLabel* nameLabel = new QLabel(text);
+    layout->addWidget(nameLabel);
+
+    if (requiredColor.isValid()) {
+        QColor fgColor = requiredColor.color().lightness() < 128 ? Qt::white : Qt::black;
+        QLabel* colorBox = new QLabel();
+        //colorBox->setAlignment(Qt::AlignVCenter); // függőleges közép
+
+        colorBox->setFixedSize(12,12);
+        colorBox->setStyleSheet(QString(
+                                    "background-color: %1; color: %2; "
+                                    "border-radius: 5px; "
+                                    "border: 1px solid #888;"
+                                    ).arg(requiredColor.color().name(), fgColor.name()));
+        layout->addWidget(colorBox);
+    }
+
+    panel->setLayout(layout);
+    return TableCellViewModel::fromWidget(panel, tooltip);
+}
 
 
 } // namespace CellGenerators
