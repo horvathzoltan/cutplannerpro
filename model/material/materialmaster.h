@@ -6,6 +6,9 @@
 #include "common/color/namedcolor.h"
 #include "materialtype.h"
 #include "../crosssectionshape.h"
+#include "model/material/cuttingmode.h"
+#include "model/material/paintingmode.h"
+
 
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép
 struct MaterialMaster : public IdentifiableEntity {
@@ -26,6 +29,9 @@ struct MaterialMaster : public IdentifiableEntity {
 
     //QString coating;       // pl. fehér, szürke, szinterezhető
     NamedColor color; // 🎨 Anyag színe (RAL vagy HEX kód)
+
+    PaintingMode paintingMode = PaintingMode::Paintable; // jelzi, ha az anyag festhető
+    CuttingMode cuttingMode = CuttingMode::Length; // 🔧 Alapértelmezés: szálhossz vágás
 
     QString comment;       // opcionális, UI-ba is jó    
 };

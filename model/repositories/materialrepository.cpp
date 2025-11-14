@@ -16,7 +16,8 @@
 #include <common/filenamehelper.h>
 #include <common/csvimporter.h>
 #include <common/color/namedcolor.h>
-
+#include "../material/cuttingmode.h"
+#include "../material/paintingmode.h"
 // bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 //     auto& helper = FileNameHelper::instance();
 //     if (!helper.isInited()) return false;
@@ -86,7 +87,7 @@ MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, CsvReade
 
 std::optional<MaterialRepository::MaterialRow>
 MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 9) {
+    if (parts.size() < 11) {
         QString msg = L("⚠️ Kevés mező (legalább 9)");
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
@@ -100,7 +101,9 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     row.shapeStr   = parts[5].trimmed();
     row.machineId  = parts[6].trimmed();
     row.typeStr    = parts[7].trimmed();
-    row.colorStr = parts[8].trimmed(); // csak ha van legalább 9 mező
+    row.colorStr = parts[8].trimmed();
+    row.cuttingMode = parts[9].trimmed();
+    row.paintingMode = parts[10].trimmed();
 
     const QString lengthStr = parts[2].trimmed();
     bool okLength = false;
@@ -125,6 +128,8 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::File
     m.defaultMachineId = row.machineId;
     m.shape = CrossSectionShape::fromString(row.shapeStr);
     m.type = MaterialType::fromString(row.typeStr);
+    m.cuttingMode = CuttingModeUtils::parse(row.cuttingMode);
+    m.paintingMode = PaintingModeUtils::parse(row.paintingMode);
 
     if (m.shape == CrossSectionShape(CrossSectionShape::Shape::Rectangular)) {
         bool okW = false, okH = false;

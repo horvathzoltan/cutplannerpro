@@ -1,0 +1,75 @@
+src/
+ ├── materials/                  # Anyagtörzs (MaterialMaster)
+ │    ├── model/
+ │    │    ├── material_master.h/.cpp
+ │    │    └── material_repository.h/.cpp
+ │    ├── service/
+ │    │    └── material_service.h/.cpp        # festhetőség logika, keresés
+ │    ├── presenter/
+ │    │    └── material_presenter.h/.cpp
+ │    └── view/
+ │         ├── material_list_view.h/.cpp
+ │         └── material_editor_dialog.h/.cpp
+ │
+ ├── products/                   # Termékdefiníciók (ProductMaster)
+ │    ├── model/
+ │    │    ├── product_master.h/.cpp
+ │    │    ├── product_need.h/.cpp
+ │    │    ├── deduction_rule.h/.cpp
+ │    │    └── product_repository.h/.cpp
+ │    ├── service/
+ │    │    └── product_service.h/.cpp         # levonások, kitting
+ │    ├── presenter/
+ │    │    └── product_presenter.h/.cpp
+ │    └── view/
+ │         ├── product_editor_panel.h/.cpp    # bal fa + középső táblázat + jobb anyaglista
+ │         ├── product_need_table.h/.cpp
+ │         └── product_tree_view.h/.cpp
+ │
+ ├── customers/                  # Ügyféltörzs (CustomerMaster)
+ │    ├── model/
+ │    │    └── customer_master.h/.cpp
+ │    ├── service/
+ │    │    └── customer_service.h/.cpp        # autocomplete, validáció
+ │    ├── presenter/
+ │    │    └── customer_presenter.h/.cpp
+ │    └── view/
+ │         └── customer_editor_dialog.h/.cpp
+ │
+ ├── orders/                     # Rendelések (OrderDomain)
+ │    ├── model/
+ │    │    ├── order_domain.h/.cpp
+ │    │    └── order_line.h/.cpp
+ │    ├── service/
+ │    │    └── order_service.h/.cpp           # aggregálás, dátumkezelés
+ │    ├── presenter/
+ │    │    └── order_presenter.h/.cpp
+ │    └── view/
+ │         └── order_dialog.h/.cpp
+ │
+ ├── calculation/                # Anyagszükséglet számítás (CalculationDomain)
+ │    ├── model/
+ │    │    └── need_result.h/.cpp
+ │    ├── service/
+ │    │    └── need_calculator.h/.cpp
+ │    ├── presenter/
+ │    │    └── needs_presenter.h/.cpp
+ │    └── view/
+ │         └── needs_view.h/.cpp
+ │
+ ├── audit/                      # Audit funkció (AuditDomain)
+ │    ├── model/
+ │    │    └── audit_entry.h/.cpp
+ │    ├── service/
+ │    │    └── audit_service.h/.cpp
+ │    ├── presenter/
+ │    │    └── audit_presenter.h/.cpp
+ │    └── view/
+ │         └── audit_log_view.h/.cpp
+ │
+ ├── common/                     # Közös segédosztályok
+ │    ├── identifiable_entity.h
+ │    ├── enums.h                # HandlerSide, MaterialType, AuditState
+ │    └── utils.h/.cpp
+ │
+ └── main.cpp                    # Belépési pont

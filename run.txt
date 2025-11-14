@@ -23,6 +23,8 @@
 
 Tesztelés + finomhangolás → leftover badge‑ek, sorvezető, vizuális visszajelzések
 
+SOS: Material: paintable flag
+
 🎯 Mérési terv vizualizáció – döntési pont
 Vizualizációs lehetőség	Előny	Hátrány
 Fejlécben globális számláló	Egyértelmű, gyors áttekintés	Nem mutat gépenkénti arányt

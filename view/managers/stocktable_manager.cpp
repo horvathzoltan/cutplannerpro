@@ -77,6 +77,17 @@ void StockTableManager::addRow(const StockEntry& entry) {
     });
     _table->setCellWidget(rowIx, ColComment, commentPanel);
 
+
+    // 🎯 CuttingMode
+    // auto* itemCuttingMode = new QTableWidgetItem(CuttingModeUtils::toString(mat->cuttingMode));
+    // itemCuttingMode->setTextAlignment(Qt::AlignCenter);
+    // _table->setItem(rowIx, ColCuttingMode, itemCuttingMode);
+
+    // // 🎨 PaintingMode
+    // auto* itemPaintingMode = new QTableWidgetItem(PaintingModeUtils::toString(mat->paintingMode));
+    // itemPaintingMode->setTextAlignment(Qt::AlignCenter);
+    // _table->setItem(rowIx, ColPaintingMode, itemPaintingMode);
+
     // 🗑️ Törlés gomb
     QPushButton* btnDelete = TableUtils::createIconButton("🗑️", "Sor törlése", entry.entryId);    
     QPushButton* btnMove = TableUtils::createIconButton("➡️", "Mozgatás", entry.entryId);

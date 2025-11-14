@@ -101,8 +101,10 @@ HEADERS += \
     model/cutting/optimizer/targetheuristic.h \
     model/inventorysnapshot.h \
     model/machine/machineutils.h \
+    model/material/cuttingmode.h \
     model/material/material_utils.h \
     model/material/materialgroup_utils.h \
+    model/material/paintingmode.h \
     model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
     service/buildnumber.h \
@@ -282,6 +284,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     README.md \
     run_2.txt \
+    run_3 \
     run_Refaktor_terv_fokuszpontok \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \

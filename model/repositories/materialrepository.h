@@ -25,6 +25,8 @@ private:
         QString machineId;
         QString typeStr;
         QString colorStr; // 🎨 Opcionális színmező (RAL, HEX vagy üres)
+        QString cuttingMode;
+        QString paintingMode;
     };
 
     static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, CsvReader::FileContext& ctx);
