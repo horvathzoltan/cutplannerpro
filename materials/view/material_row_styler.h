@@ -1,7 +1,7 @@
 #pragma once
 
-#include "model/material/materialmaster.h"
-#include "model/material/materialgroup_utils.h"
+#include "materials/model/material_master.h"
+#include "materials/utils/material_group_utils.h"
 #include "view/tablerowstyler/tablestyleutils.h"
 
 namespace MaterialRowStyler {

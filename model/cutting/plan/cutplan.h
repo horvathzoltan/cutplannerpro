@@ -2,8 +2,8 @@
 
 #include "status.h"
 #include "source.h"
-#include "service/cutting/segment/segmentutils.h"
-#include "model/cutting/piece/piecewithmaterial.h"
+#include "../../../service/cutting/segment/segmentutils.h"
+#include "../piece/piecewithmaterial.h"
 //#include "../piece/pieceinfo.h"
 #include "../segment/segmentmodel.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/plan/request.h"
+#include "../../../model/cutting/plan/request.h"
 #include <QDialog>
 #include <QUuid>
 

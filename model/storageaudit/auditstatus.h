@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/styleprofiles/auditcolors.h"
+#include "../../common/styleprofiles/auditcolors.h"
 //#include "model/storageaudit/auditcontext.h"
 #include <QColor>
 #include <QString>

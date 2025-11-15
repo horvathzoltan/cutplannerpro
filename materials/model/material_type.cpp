@@ -1,4 +1,4 @@
-#include "materialtype.h"
+#include "materials/model/material_type.h"
 
 MaterialType::MaterialType() : value(Type::Unknown) {} // cpp-ben
 MaterialType::MaterialType(Type t) : value(t) {}

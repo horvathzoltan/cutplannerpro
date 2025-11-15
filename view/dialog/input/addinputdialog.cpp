@@ -1,9 +1,9 @@
 #include "addinputdialog.h"
 
 //#include "qpushbutton.h"
-#include "model/cutting/plan/request.h"
+#include "../../../model/cutting/plan/request.h"
 #include "ui_addinputdialog.h"
-#include "model/registries/materialregistry.h"
+#include "materials/registry/material_registry.h"
 
 #include <QMessageBox>
 

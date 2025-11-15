@@ -1,8 +1,8 @@
 #pragma once
-#include "common/logger.h"
+#include "../../common/logger.h"
 // #include "model/storageaudit/auditcontext.h"
 // #include "model/material/materialmaster.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "../../model/storageaudit/storageauditrow.h"
 #include <QString>
 
 namespace AuditCellText {

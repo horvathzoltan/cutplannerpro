@@ -2,10 +2,10 @@
 
 #include <QTableWidget>
 //#include "model/cutting/result/cutresult.h"
-#include "../../model/material/materialmaster.h"
+#include "materials/model/material_master.h"
 //#include "model/material/materialgroup_utils.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/material/material_utils.h"
+#include "../../model/cutting/plan/cutplan.h"
+#include "materials/utils/material_utils.h"
 
 // 🎨 Táblázatsor stíluskezelő – közös utility
 namespace ResultTable {

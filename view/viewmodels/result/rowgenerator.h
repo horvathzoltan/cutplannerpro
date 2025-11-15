@@ -1,11 +1,11 @@
 #pragma once
 
-#include "view/cellhelpers/materialcellgenerator.h"
-#include "view/viewmodels/tablerowviewmodel.h"
-#include "view/viewmodels/tablecellviewmodel.h"
-#include "view/columnindexes/tableresults_columns.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/registries/materialregistry.h"
+#include "materials/view/material_cell_generator.h"
+#include "../tablerowviewmodel.h"
+#include "../tablecellviewmodel.h"
+#include "../../columnindexes/tableresults_columns.h"
+#include "../../../model/cutting/plan/cutplan.h"
+#include "materials/registry/material_registry.h"
 
 namespace Results::ViewModel::RowGenerator {
 

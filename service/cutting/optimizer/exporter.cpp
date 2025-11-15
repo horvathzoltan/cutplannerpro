@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QDir>
-#include <model/registries/cuttingplanrequestregistry.h>
+#include "../../../model/registries/cuttingplanrequestregistry.h"
 
 void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan>& plans, const QString& folderPath)
 {

@@ -1,21 +1,21 @@
 #include "relocationplantable_manager.h"
-#include "view/viewmodels/relocation/rowgenerator.h"
+#include "../viewmodels/relocation/rowgenerator.h"
 //#include "view/columnindexes/relocationplantable_columns.h"
-#include "common/logger.h"
+#include "../../common/logger.h"
 
-#include "view/dialog/relocation/relocationquantitydialog.h"
-#include "view/tablehelpers/relocationquantityhelpers.h"
+#include "../dialog/relocation/relocationquantitydialog.h"
+#include "../tablehelpers/relocationquantityhelpers.h"
 
-#include "view/tablehelpers/tablerowpopulator.h"
+#include "../tablehelpers/tablerowpopulator.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QBrush>
 #include <QColor>
 
-#include <model/registries/materialregistry.h>
+#include "materials/registry/material_registry.h"
 
-#include <service/stockmovementservice.h>
+#include "../../service/stockmovementservice.h"
 
 bool RelocationPlanTableManager::_isVerbose = false;
 

@@ -5,14 +5,14 @@
 #include <QMap>
 #include <QSet>
 
-#include <model/cutting/piece/piecewithmaterial.h>
+#include "../piece/piecewithmaterial.h"
 #include "../plan/cutplan.h"
 #include "../result/resultmodel.h"
 #include "../plan/request.h"
 #include "../../leftoverstockentry.h"
 //#include "../../stockentry.h"
-#include "model/cutting/cuttingmachine.h"
-#include "model/inventorysnapshot.h"
+#include "../cuttingmachine.h"
+#include "../../inventorysnapshot.h"
 
 namespace Cutting {
 namespace Optimizer {

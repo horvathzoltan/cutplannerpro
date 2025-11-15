@@ -1,12 +1,12 @@
 #pragma once
 
-#include "view/viewmodels/tablecellviewmodel.h"
+#include "../tablecellviewmodel.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QUuid>
 #include <QWidget>
-#include "view/viewmodels/tablecellviewmodel.h"
+#include "../tablecellviewmodel.h"
 
 #include <QHBoxLayout>
 #include <QPushButton>

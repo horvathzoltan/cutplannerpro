@@ -3,8 +3,8 @@
 #include <QString>
 #include <QVector>
 #include <common/csvimporter.h>
-#include "../material/materialmaster.h"
-#include "../registries/materialregistry.h"
+#include "materials/model/material_master.h"
+#include "materials/registry/material_registry.h"
 #include "common/csvimporter.h"
 
 

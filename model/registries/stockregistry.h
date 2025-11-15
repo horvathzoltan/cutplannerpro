@@ -6,7 +6,7 @@
 #include <optional>
 #include <QRecursiveMutex>
 
-#include "model/stockentry.h"
+#include "../stockentry.h"
 
 class StockRegistry {
 public:

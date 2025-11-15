@@ -1,13 +1,13 @@
 #pragma once
 
-#include "view/MainWindow.h"
-#include "view/dialog/waste/addwastedialog.h"
-#include "view/dialog/stock/editstoragedialog.h"
-#include <model/registries/stockregistry.h>
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/leftoverstockregistry.h>
-#include <view/dialog/input/addinputdialog.h>
-#include <presenter/CuttingPresenter.h>
+#include "../MainWindow.h"
+#include "../dialog/waste/addwastedialog.h"
+#include "../dialog/stock/editstoragedialog.h"
+#include "../../model/registries/stockregistry.h"
+#include "../../model/registries/cuttingplanrequestregistry.h"
+#include "../../model/registries/leftoverstockregistry.h"
+#include "../dialog/input/addinputdialog.h"
+#include "../../presenter/CuttingPresenter.h"
 
 namespace LeftoverTableConnector {
 inline static void Connect(

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "common/movementdatahelper.h"
-#include "model/movementdata.h"
+#include "../common/movementdatahelper.h"
+#include "../model/movementdata.h"
 #include "../common/logmeta.h"
-#include "common/../common/csvhelper.h"
+#include "../common/csvhelper.h"
 #include <QCoreApplication>
 #include <QSysInfo>
 //#include <QHostInfo>

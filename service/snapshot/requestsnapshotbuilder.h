@@ -1,7 +1,7 @@
 #pragma once
 
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/cutting/plan/request.h>
+#include "../../model/registries/cuttingplanrequestregistry.h"
+#include "../../model/cutting/plan/request.h"
 
 /**
  * @brief Service osztály, amely a vágási igények (Cutting::Plan::Request) listáját építi a registryből.

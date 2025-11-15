@@ -2,8 +2,8 @@
 
 #include <QTableWidget>
 //#include "model/cutresult.h"
-#include "view/tableutils/rowid.h"
-#include "model/leftoverstockentry.h"
+#include "../tableutils/rowid.h"
+#include "../../model/leftoverstockentry.h"
 
 /// ♻️ Hullók (maradékok) táblájának kezelése  (vágás utáni maradékanyagok)
 class LeftoverTableManager : public QObject {  // 🔧 QObject öröklés!

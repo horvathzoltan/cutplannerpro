@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../piece/piecewithmaterial.h"
-#include "model/cutting/result/resultsource.h"
-#include "model/material/materialtype.h"
+#include "resultsource.h"
+#include "materials/model/material_type.h"
 #include <QColor>
 #include <QString>
 #include <QUuid>

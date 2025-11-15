@@ -1,15 +1,15 @@
 #include "cuttingrequestrepository.h"
 #include "../cutting/plan/request.h"
 #include "../registries/cuttingplanrequestregistry.h"
-#include "common/logger.h"
+#include "../../common/logger.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <common/filenamehelper.h>
-#include <common/settingsmanager.h>
-#include <model/registries/materialregistry.h>
-#include <common/filehelper.h>
-#include <common/csvimporter.h>
+#include "../../common/filenamehelper.h"
+#include "../../common/settingsmanager.h"
+#include "materials/registry/material_registry.h"
+#include "../../common/filehelper.h"
+#include "../../common/csvimporter.h"
 
 
 // vágási terv nélkül tudunk létezni - mi hozzuk létre őket és ez nem törzsadat

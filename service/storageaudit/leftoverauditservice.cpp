@@ -1,6 +1,6 @@
 #include "leftoverauditservice.h"
-#include "common/logger.h"
-#include "model/registries/leftoverstockregistry.h"
+#include "../../common/logger.h"
+#include "../../model/registries/leftoverstockregistry.h"
 
 #include <QSet>
 

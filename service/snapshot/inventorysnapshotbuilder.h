@@ -1,11 +1,11 @@
 #pragma once
 
-#include "model/inventorysnapshot.h"
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/stockregistry.h>
+#include "../../model/inventorysnapshot.h"
+#include "../../model/registries/cuttingplanrequestregistry.h"
+#include "../../model/registries/leftoverstockregistry.h"
+#include "../../model/registries/stockregistry.h"
 
-#include <model/cutting/plan/request.h>
+#include "../../model/cutting/plan/request.h"
 
 /**
  * @brief Service osztály, amely InventorySnapshot-ot épít a registrykből.

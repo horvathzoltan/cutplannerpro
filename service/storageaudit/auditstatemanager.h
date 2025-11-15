@@ -4,8 +4,8 @@
 #include <QUuid>
 #include <QSet>
 #include <QMap>
-#include "model/storageaudit/storageauditrow.h"
-#include "model/stockentry.h"
+#include "../../model/storageaudit/storageauditrow.h"
+#include "../../model/stockentry.h"
 
 class AuditStateManager : public QObject {
     Q_OBJECT

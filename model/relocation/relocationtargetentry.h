@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/storageaudit/storageauditrow.h"
+#include "../storageaudit/storageauditrow.h"
 #include <QString>
 #include <QUuid>
 #include <optional>

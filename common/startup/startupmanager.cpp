@@ -1,26 +1,26 @@
 #include "startupmanager.h"
-#include "../../model/repositories/materialrepository.h"
-#include "../../model/registries/materialregistry.h"
-#include "../../model/material/materialmaster.h"
-#include "common/logger.h"
-#include "model/registries/cuttingplanrequestregistry.h"
+#include "materials/repository/material_repository.h"
+#include "materials/registry/material_registry.h"
+#include "materials/model/material_master.h"
+#include "../logger.h"
+#include "../../model/registries/cuttingplanrequestregistry.h"
 //#include "model/stockentry.h"
 
-#include <model/repositories/materialgrouprepository.h>
-#include <model/registries//stockregistry.h>
-#include <model/repositories/cuttingrequestrepository.h>
-#include <model/repositories/leftoverstockrepository.h>
-#include <model/repositories/stockrepository.h>
-#include <model/repositories/storagerepository.h>
+#include "materials/repository/material_group_repository.h"
+#include "../../model/registries/stockregistry.h"
+#include "../../model/repositories/cuttingrequestrepository.h"
+#include "../../model/repositories/leftoverstockrepository.h"
+#include "../../model/repositories/stockrepository.h"
+#include "../../model/repositories/storagerepository.h"
 
 #include <QSet>
 
-#include <model/repositories/cuttingmachinerepository.h>
-#include <model/registries/cuttingmachineregistry.h>
-#include <common/eventlogger.h>
-#include <common/filenamehelper.h>
+#include "../../model/repositories/cuttingmachinerepository.h"
+#include "../../model/registries/cuttingmachineregistry.h"
+#include "../eventlogger.h"
+#include "../filenamehelper.h"
 
-#include "common/color/namedcolor.h"
+#include "../color/namedcolor.h"
 
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();

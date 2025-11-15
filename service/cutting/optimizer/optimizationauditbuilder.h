@@ -1,11 +1,11 @@
 #pragma once
 
-#include "service/storageaudit/storageauditservice.h"
-#include "service/storageaudit/leftoverauditservice.h"
-#include "service/storageaudit/auditutils.h"
-#include "model/storageaudit/storageauditrow.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/cutting/optimizer/optimizermodel.h"
+#include "../../storageaudit/storageauditservice.h"
+#include "../../storageaudit/leftoverauditservice.h"
+#include "../../storageaudit/auditutils.h"
+#include "../../../model/storageaudit/storageauditrow.h"
+#include "../../../model/cutting/plan/cutplan.h"
+#include "../../../model/cutting/optimizer/optimizermodel.h"
 
 struct OptimizationAuditBuilder {
     static QVector<StorageAuditRow> build(Cutting::Optimizer::OptimizerModel& model) {

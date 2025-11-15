@@ -3,7 +3,7 @@
 #include <QColor>
 #include <QString>
 #include <QUuid>
-#include "model/material/materialmaster.h"
+#include "materials/model/material_master.h"
 #include "storageentry.h"
 
 struct StockEntry {

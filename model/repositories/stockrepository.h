@@ -4,7 +4,7 @@
 #include <QVector>
 #include "../stockentry.h"
 #include "../registries/stockregistry.h"
-#include "common/csvimporter.h"
+#include "../../common/csvimporter.h"
 //#include "model/cutresult.h"
 //#include "model/reusablestockentry.h"
 

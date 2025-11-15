@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/movementdata.h"
+#include "../../../model/movementdata.h"
 #include <QDialog>
 #include <QUuid>
 

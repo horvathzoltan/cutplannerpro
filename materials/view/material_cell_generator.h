@@ -1,6 +1,6 @@
 #pragma once
 //#include "model/cutting/plan/request.h"
-#include "model/material/material_utils.h"
+#include "materials/utils/material_utils.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 
 #include <model/cutting/instruction/cutinstruction.h>

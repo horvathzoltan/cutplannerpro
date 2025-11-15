@@ -1,10 +1,10 @@
 #pragma once
 
-#include <model/movementdata.h>
+#include "../model/movementdata.h"
 
-#include <model/registries/materialregistry.h>
-#include <model/registries/stockregistry.h>
-#include <model/registries/storageregistry.h>
+#include "materials/registry/material_registry.h"
+#include "../model/registries/stockregistry.h"
+#include "../model/registries/storageregistry.h"
 
 
 namespace MovementDataHelper {

@@ -1,8 +1,8 @@
-#include "common/logger.h"
-#include "presenter/CuttingPresenter.h"
-#include <model/registries/materialregistry.h>
-#include <model/registries/stockregistry.h>
-#include <model/registries/storageregistry.h>
+#include "../common/logger.h"
+#include "../presenter/CuttingPresenter.h"
+#include "materials/registry/material_registry.h"
+#include "../model/registries/stockregistry.h"
+#include "../model/registries/storageregistry.h"
 #include "movementlogger.h"     // MovementLogger::log
 //#include "model/movementlogmodel.h"    // MovementLogModel
 

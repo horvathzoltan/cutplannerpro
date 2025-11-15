@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QUuid>
 
-#include "model/cutting/instruction/cutinstruction.h"
+#include "../../model/cutting/instruction/cutinstruction.h"
 
 /**
  * @brief CuttingInstructionTableManager

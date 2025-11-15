@@ -4,8 +4,8 @@
 #include <QColor>
 #include <QUuid>
 #include <QSet>
-#include "model/registries/materialgroupregistry.h"
-#include "model/material/materialgroup.h"
+#include "materials/registry/material_group_registry.h"
+#include "materials/model/material_group.h"
 #include "view/tableutils/colorutils.h"
 
 namespace GroupUtils {

@@ -1,7 +1,7 @@
 #include "leftoverstockregistry.h"
 #include <algorithm>
-#include <common/filenamehelper.h>
-#include <model/repositories/leftoverstockrepository.h>
+#include "../../common/filenamehelper.h"
+#include "../repositories/leftoverstockrepository.h"
 
 LeftoverStockRegistry &LeftoverStockRegistry::instance() {
     // 🧵 Singleton implementáció: egyetlen példány az egész programban

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "model/relocation/relocationinstruction.h"
-#include "model/relocation/relocationquantityrow.h"
+#include "../../model/relocation/relocationinstruction.h"
+#include "../../model/relocation/relocationquantityrow.h"
 #include <QVector>
 
 namespace RelocationQuantityHelpers {

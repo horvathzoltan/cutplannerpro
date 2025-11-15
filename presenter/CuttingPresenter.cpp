@@ -2,42 +2,42 @@
 #include "../view/MainWindow.h"
 
 //#include "service/cutting/result/resultutils.h"
-#include "service/storageaudit/auditsyncguard.h"
-#include "service/storageaudit/auditutils.h"
-#include "common/logger.h"
+#include "../service/storageaudit/auditsyncguard.h"
+#include "../service/storageaudit/auditutils.h"
+#include "../common/logger.h"
 //#include "model/registries/materialregistry.h"
 //#include "model/relocation/relocationinstruction.h"
-#include "model/storageaudit/storageauditentry.h"
-#include "service/cutting/result/archivedwasteutils.h"
+#include "../model/storageaudit/storageauditentry.h"
+#include "../service/cutting/result/archivedwasteutils.h"
 //#include "service/cutting/result/resultutils.h"
 //#include "model/archivedwasteentry.h"
-#include "model/registries/cuttingplanrequestregistry.h"
-#include "model/registries/leftoverstockregistry.h"
-#include "model/registries/stockregistry.h"
+#include "../model/registries/cuttingplanrequestregistry.h"
+#include "../model/registries/leftoverstockregistry.h"
+#include "../model/registries/stockregistry.h"
 //#include "service/cutting/plan/finalizer.h"
-#include "service/cutting/optimizer/exporter.h"
+#include "../service/cutting/optimizer/exporter.h"
 //#include "service/cutting/result/archivedwasteutils.h"
 
-#include "common/filenamehelper.h"
-#include "common/settingsmanager.h"
+#include "../common/filenamehelper.h"
+#include "../common/settingsmanager.h"
 
-#include <model/repositories/cuttingrequestrepository.h>
+#include "../model/repositories/cuttingrequestrepository.h"
 
-#include <service/storageaudit/leftoverauditservice.h>
-#include <service/storageaudit/storageauditservice.h>
+#include "../service/storageaudit/leftoverauditservice.h"
+#include "../service/storageaudit/storageauditservice.h"
 
-#include <model/registries/materialregistry.h>
-#include <model/registries/storageregistry.h>
+#include "materials/registry/material_registry.h"
+#include "../model/registries/storageregistry.h"
 
-#include <service/relocation/relocationplanner.h>
+#include "../service/relocation/relocationplanner.h"
 
-#include <service/cutting/optimizer/optimizationauditbuilder.h>
-#include <service/cutting/optimizer/optimizationlogger.h>
-#include <service/cutting/optimizer/optimizationrunner.h>
-#include <service/cutting/optimizer/optimizationviewupdater.h>
+#include "../service/cutting/optimizer/optimizationauditbuilder.h"
+#include "../service/cutting/optimizer/optimizationlogger.h"
+#include "../service/cutting/optimizer/optimizationrunner.h"
+#include "../service/cutting/optimizer/optimizationviewupdater.h"
 
-#include <service/snapshot/inventorysnapshotbuilder.h>
-#include <service/snapshot/requestsnapshotbuilder.h>
+#include "../service/snapshot/inventorysnapshotbuilder.h"
+#include "../service/snapshot/requestsnapshotbuilder.h"
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}

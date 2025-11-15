@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/optimizer/optimizermodel.h"
+#include "../../../model/cutting/optimizer/optimizermodel.h"
 
 struct OptimizationRunner {
     static void run(Cutting::Optimizer::OptimizerModel& model,

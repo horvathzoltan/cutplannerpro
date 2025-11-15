@@ -1,20 +1,20 @@
 #include "storageaudittable_manager.h"
 
-#include "common/logger.h"
-#include "view/tableutils/storageaudittable_rowstyler.h"
+#include "../../common/logger.h"
+#include "../tableutils/storageaudittable_rowstyler.h"
 //#include "common/tableutils/tableutils.h"
 //#include "common/tableutils/tableutils_auditcells.h"
-#include "view/tableutils/auditcellformatter.h"
+#include "../tableutils/auditcellformatter.h"
 
-#include "model/storageaudit/storageauditentry.h"
-#include "model/storageaudit/storageauditrow.h"
-#include "model/registries/materialregistry.h"
+#include "../../model/storageaudit/storageauditentry.h"
+#include "../../model/storageaudit/storageauditrow.h"
+#include "materials/registry/material_registry.h"
 
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QSpinBox>
-#include "view/tablehelpers/tablerowpopulator.h"
-#include "view/viewmodels/audit/rowgenerator.h"
+#include "../tablehelpers/tablerowpopulator.h"
+#include "../viewmodels/audit/rowgenerator.h"
 
 bool StorageAuditTableManager::_isVerbose = false;
 

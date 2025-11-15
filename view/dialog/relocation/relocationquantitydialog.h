@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QDialog>
-#include "model/relocation/relocationquantityrow.h"
-#include "model/relocation/relocationquantitymodel.h"
+#include "../../../model/relocation/relocationquantityrow.h"
+#include "../../../model/relocation/relocationquantitymodel.h"
 
 namespace Ui {
 class RelocationQuantityDialog;

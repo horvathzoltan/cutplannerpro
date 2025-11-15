@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/result/leftoversource.h"
+#include "../../../model/cutting/result/leftoversource.h"
 #include <QString>
 
 namespace LeftoverSourceUtils {

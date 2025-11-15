@@ -4,8 +4,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>
-#include <common/filehelper.h>
-#include <common/filenamehelper.h>
+#include "../../common/filehelper.h"
+#include "../../common/filenamehelper.h"
 #include <QDebug>
 
 bool StorageRepository::loadFromCSV(StorageRegistry& registry) {

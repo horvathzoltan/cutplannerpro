@@ -1,10 +1,10 @@
-#include "model/registries/stockregistry.h"
+#include "stockregistry.h"
 #include <algorithm>
 #include <QDebug>
 
-#include <common/filenamehelper.h>
-#include <model/repositories/stockrepository.h>
-#include "common/scopedperthreadlock.h" // a korábban beillesztett általános wrapper
+#include "../../common/filenamehelper.h"
+#include "../repositories/stockrepository.h"
+#include "../../common/scopedperthreadlock.h" // a korábban beillesztett általános wrapper
 
 StockRegistry& StockRegistry::instance() {
     static StockRegistry reg;

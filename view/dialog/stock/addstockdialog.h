@@ -2,7 +2,7 @@
 
 #include <QDialog>
 #include <QUuid>
-#include "model/stockentry.h"
+#include "../../../model/stockentry.h"
 
 namespace Ui {
 class AddStockDialog;

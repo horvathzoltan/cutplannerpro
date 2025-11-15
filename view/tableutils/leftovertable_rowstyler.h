@@ -1,8 +1,8 @@
 #pragma once
 
-#include "view/tablerowstyler/materialrowstyler.h"
-#include "model/leftoverstockentry.h"
-#include <view/managers/leftovertable_manager.h>
+#include "materials/view/material_row_styler.h"
+#include "../../model/leftoverstockentry.h"
+#include "../managers/leftovertable_manager.h"
 //#include "common/materialutils.h"
 
 namespace LeftoverTable{

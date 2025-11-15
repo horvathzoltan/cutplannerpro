@@ -1,10 +1,10 @@
 #pragma once
-#include "model/cutting/plan/cutplan.h"
-#include "model/storageaudit/storageauditrow.h"
-#include "model/material/materialmaster.h"
-#include "view/cellhelpers/auditcelltext.h"
+#include "../../model/cutting/plan/cutplan.h"
+#include "../../model/storageaudit/storageauditrow.h"
+#include "materials/model/material_master.h"
+#include "auditcelltext.h"
 #include <QString>
-#include <model/cutting/segment/segmentmodel.h>
+#include "../../model/cutting/segment/segmentmodel.h"
 
 namespace AuditCellTooltips {
 

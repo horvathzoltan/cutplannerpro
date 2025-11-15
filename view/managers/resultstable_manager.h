@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QTableWidget>
-#include "model/cutting/plan/cutplan.h"
+#include "../../model/cutting/plan/cutplan.h"
 
 class ResultsTableManager : public QObject {
     Q_OBJECT

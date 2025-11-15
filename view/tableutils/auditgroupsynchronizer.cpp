@@ -1,9 +1,9 @@
 #include "auditgroupsynchronizer.h"
-#include "view/viewmodels/audit/rowgenerator.h"
-#include "view/managers/storageaudittable_manager.h" // 🔹 ez kell a metódushíváshoz
-#include "view/tablehelpers/tablerowpopulator.h"
+#include "../viewmodels/audit/rowgenerator.h"
+#include "../managers/storageaudittable_manager.h" // 🔹 ez kell a metódushíváshoz
+#include "../tablehelpers/tablerowpopulator.h"
 
-#include <model/registries/materialregistry.h>
+#include "materials/registry/material_registry.h"
 
 namespace TableUtils {
 

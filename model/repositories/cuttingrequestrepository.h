@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/csvimporter.h"
-#include "model/cutting/plan/request.h"
+#include "../../common/csvimporter.h"
+#include "../cutting/plan/request.h"
 #include <QString>
 #include <QVector>
 

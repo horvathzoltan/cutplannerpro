@@ -1,10 +1,10 @@
 #pragma once
 
 //#include "presenter/CuttingPresenter.h"
-#include "view/MainWindow.h"
-#include "model/cutting/result/resultmodel.h"
-#include "model/leftoverstockentry.h"
-#include "service/cutting/result/resultutils.h"
+#include "../../../view/MainWindow.h"
+#include "../../../model/cutting/result/resultmodel.h"
+#include "../../../model/leftoverstockentry.h"
+#include "../result/resultutils.h"
 
 struct OptimizationViewUpdater {
     static void update(MainWindow* view, Cutting::Optimizer::OptimizerModel& model) {

@@ -1,11 +1,11 @@
-#include "materialgrouprepository.h"
+#include "materials/repository/material_group_repository.h"
 #include "common/csvimporter.h"
-#include "model/material/materialgroup.h"
+#include "materials/model/material_group.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
 #include <common/filenamehelper.h>
-#include <model/registries/materialregistry.h>
+#include "materials/registry/material_registry.h"
 
 // --- Stage 1: Convert ---
 

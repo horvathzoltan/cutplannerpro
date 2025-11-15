@@ -2,12 +2,12 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include "common/filenamehelper.h"
-#include "service/cutting/result/leftoversourceutils.h"
-#include <model/registries/materialregistry.h>
-#include <model/registries/storageregistry.h>
-#include <common/filehelper.h>
-#include <common/csvimporter.h>
+#include "../../common/filenamehelper.h"
+#include "../../service/cutting/result/leftoversourceutils.h"
+#include "materials/registry/material_registry.h"
+#include "../registries/storageregistry.h"
+#include "../../common/filehelper.h"
+#include "../../common/csvimporter.h"
 
 bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
     auto& helper = FileNameHelper::instance();

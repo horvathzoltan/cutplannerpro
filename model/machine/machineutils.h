@@ -5,9 +5,9 @@
 #include <QUuid>
 #include <algorithm>
 
-#include "model/cutting/cuttingmachine.h"
-#include "model/registries/cuttingmachineregistry.h"
-#include "model/registries/materialregistry.h"
+#include "../cutting/cuttingmachine.h"
+#include "../registries/cuttingmachineregistry.h"
+#include "materials/registry/material_registry.h"
 //#include "common/eventlogger.h"
 
 namespace MachineUtils {

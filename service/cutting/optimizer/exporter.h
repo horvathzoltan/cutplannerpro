@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/plan/cutplan.h"
+#include "../../../model/cutting/plan/cutplan.h"
 #include <QVector>
 
 namespace OptimizationExporter {

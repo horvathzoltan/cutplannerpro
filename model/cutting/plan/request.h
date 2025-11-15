@@ -3,7 +3,7 @@
 #include <QUuid>
 #include <QStringList>
 
-#include <common/color/namedcolor.h>
+#include "../../../common/color/namedcolor.h"
 
 
 /**

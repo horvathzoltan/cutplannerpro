@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QVector>
-#include "model/storageaudit/storageauditrow.h"
+#include "../../model/storageaudit/storageauditrow.h"
 //#include "model/leftoverstockentry.h"
 
 class LeftoverAuditService : public QObject {

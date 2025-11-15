@@ -7,7 +7,7 @@
 #include <QIODevice>
 #include <QFile>
 #include <QTextStream>
-#include "common/logger.h"
+#include "logger.h"
 #include "filehelper.h"
 
 namespace CsvReader{

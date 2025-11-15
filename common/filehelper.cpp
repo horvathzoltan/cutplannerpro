@@ -1,5 +1,5 @@
 #include "filehelper.h"
-#include "common/logger.h"
+#include "logger.h"
 
 #include <QFile>
 

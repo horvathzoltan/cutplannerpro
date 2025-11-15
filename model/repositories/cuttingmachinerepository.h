@@ -2,7 +2,7 @@
 
 #include <QString>
 #include "../registries/cuttingmachineregistry.h"
-#include "common/csvimporter.h"
+#include "../../common/csvimporter.h"
 
 /*
 ✂️ CuttingMachineRepository – Three Phase Import

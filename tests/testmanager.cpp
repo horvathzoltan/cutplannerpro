@@ -1,10 +1,10 @@
 #include "testmanager.h"
-#include "common/logger.h"
-#include "common/identifierutils.h"
+#include "../common/logger.h"
+#include "../common/identifierutils.h"
 
 #include <QList>
 
-#include <model/cutting/plan/request.h>
+#include "../model/cutting/plan/request.h"
 
 TestManager& TestManager::instance() {
     static TestManager _instance;

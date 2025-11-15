@@ -1,15 +1,15 @@
-#include "../registries/materialregistry.h"
-#include "common/csvhelper.h"
+#include "materials/registry/material_registry.h"
+#include "../../common/csvhelper.h"
 #include "stockrepository.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <common/filehelper.h>
-#include <common/filenamehelper.h>
-#include <common/csvimporter.h>
-#include <common/settingsmanager.h>
-#include <model/registries/storageregistry.h>
-#include "common/logger.h"
+#include "../../common/filehelper.h"
+#include "../../common/filenamehelper.h"
+#include "../../common/csvimporter.h"
+#include "../../common/settingsmanager.h"
+#include "../registries/storageregistry.h"
+#include "../../common/logger.h"
 
 bool StockRepository::loadFromCSV(StockRegistry& registry) {
     auto& helper = FileNameHelper::instance();

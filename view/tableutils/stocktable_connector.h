@@ -1,20 +1,20 @@
 #pragma once
 
-#include "view/MainWindow.h"
-#include "view/dialog/movement/movementdialog.h"
-#include "view/dialog/stock/addstockdialog.h"
-#include "view/dialog/stock/addstockdialog.h"
-#include "view/dialog/stock/editstoragedialog.h"
-#include "view/dialog/stock/editquantitydialog.h"
-#include "view/dialog/stock/editcommentdialog.h"
-#include <model/registries/stockregistry.h>
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/storageregistry.h>
-#include <model/registries/materialregistry.h>
-#include <view/dialog/input/addinputdialog.h>
-#include <presenter/CuttingPresenter.h>
-#include <service/stockmovementservice.h>
+#include "../MainWindow.h"
+#include "../dialog/movement/movementdialog.h"
+#include "../dialog/stock/addstockdialog.h"
+#include "../dialog/stock/addstockdialog.h"
+#include "../dialog/stock/editstoragedialog.h"
+#include "../dialog/stock/editquantitydialog.h"
+#include "../dialog/stock/editcommentdialog.h"
+#include "../../model/registries/stockregistry.h"
+#include "../../model/registries/cuttingplanrequestregistry.h"
+#include "../../model/registries/leftoverstockregistry.h"
+#include "../../model/registries/storageregistry.h"
+#include "materials/registry/material_registry.h"
+#include "../dialog/input/addinputdialog.h"
+#include "../../presenter/CuttingPresenter.h"
+#include "../../service/stockmovementservice.h"
 
 //#include "service/movementlogger.h"   // a namespace-es inline log() miatt
 

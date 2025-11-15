@@ -1,7 +1,7 @@
 #include "MainWindow.h"
-#include "service/cutting/instruction/cuttinginstructionutils.h"
-#include "view/tableutils/highlightdelegate.h"
-#include "view/tableutils/storageaudittable_connector.h"
+#include "../service/cutting/instruction/cuttinginstructionutils.h"
+#include "tableutils/highlightdelegate.h"
+#include "tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
 
 #include <QComboBox>
@@ -13,27 +13,27 @@
 #include <QCheckBox>
 
 //#include "cutanalyticspanel.h"
-#include "model/stockentry.h"
-#include "model/cutting/plan/request.h"
+#include "../model/stockentry.h"
+#include "../model/cutting/plan/request.h"
 
-#include "common/filenamehelper.h"
-#include "common/settingsmanager.h"
-#include "view/tableutils/leftovertable_connector.h"
-#include "view/tableutils/inputtable_connector.h"
-#include "view/tableutils/stocktable_connector.h"
-#include "common/qteventutil.h"
+#include "../common/filenamehelper.h"
+#include "../common/settingsmanager.h"
+#include "tableutils/leftovertable_connector.h"
+#include "tableutils/inputtable_connector.h"
+#include "tableutils/stocktable_connector.h"
+#include "../common/qteventutil.h"
 
 #include "dialog/stock/addstockdialog.h"
 #include "dialog/input/addinputdialog.h"
 
-#include "model/relocation/relocationinstruction.h"
-#include "view/eventloghelpers.h"
+#include "../model/relocation/relocationinstruction.h"
+#include "eventloghelpers.h"
 
-#include <service/relocation/relocationplanner.h>
+#include "../service/relocation/relocationplanner.h"
 
-#include <model/registries/cuttingmachineregistry.h>
+#include "../model/registries/cuttingmachineregistry.h"
 
-#include <common/eventlogger.h>
+#include "../common/eventlogger.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

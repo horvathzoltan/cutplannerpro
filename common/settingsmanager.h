@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/optimizer/targetheuristic.h"
+#include "../model/cutting/optimizer/targetheuristic.h"
 #include <QSettings>
 
 namespace SettingsKeys {

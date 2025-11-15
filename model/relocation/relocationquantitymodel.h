@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/relocation/relocationquantityrow.h"
+#include "relocationquantityrow.h"
 #include <QVector>
 
 /**

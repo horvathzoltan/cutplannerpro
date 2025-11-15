@@ -1,9 +1,9 @@
 #pragma once
 
-#include "model/relocation/relocationauditstatus.h"
-#include "model/relocation/relocationsourceentry.h"
-#include "model/relocation/relocationtargetentry.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "relocationauditstatus.h"
+#include "relocationsourceentry.h"
+#include "relocationtargetentry.h"
+#include "../storageaudit/storageauditrow.h"
 #include <QString>
 #include <QUuid>
 #include <optional>

@@ -2,12 +2,12 @@
 
 #include <QString>
 #include <QSizeF>
-#include "../identifiableentity.h"
+#include "model/identifiableentity.h"
 #include "common/color/namedcolor.h"
-#include "materialtype.h"
-#include "../crosssectionshape.h"
-#include "model/material/cuttingmode.h"
-#include "model/material/paintingmode.h"
+#include "materials/model/material_type.h"
+#include "model/crosssectionshape.h"
+#include "materials/model/cutting_mode.h"
+#include "materials/model/painting_mode.h"
 
 
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép

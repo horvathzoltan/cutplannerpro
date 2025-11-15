@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QString>
-#include "../registries/materialgroupregistry.h"
+#include "materials/registry/material_group_registry.h"
 #include "common/csvimporter.h"
 
 /*

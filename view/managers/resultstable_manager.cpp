@@ -1,11 +1,11 @@
 #include "resultstable_manager.h"
-#include "common/logger.h"
-#include "view/tablehelpers/tablerowpopulator.h"
-#include "view/tableutils/tableutils.h"
+#include "../../common/logger.h"
+#include "../tablehelpers/tablerowpopulator.h"
+#include "../tableutils/tableutils.h"
 #include <QLabel>
 #include <QHBoxLayout>
-#include "view/viewmodels/result/badgerowgenerator.h"
-#include "view/viewmodels/result/rowgenerator.h"
+#include "../viewmodels/result/badgerowgenerator.h"
+#include "../viewmodels/result/rowgenerator.h"
 
 bool ResultsTableManager::_isVerbose = false;
 

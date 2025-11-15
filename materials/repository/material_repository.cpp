@@ -1,14 +1,14 @@
-#include "materialrepository.h"
+#include "materials/repository/material_repository.h"
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>
 
 //#include "common/categoryutils.h"
-#include "materialrepository.h"
-#include "../material/materialmaster.h"
-#include "../material/materialtype.h"
-#include "../crosssectionshape.h"
-#include "../registries/materialregistry.h"
+#include "materials/repository/material_repository.h"
+#include "materials/model/material_master.h"
+#include "materials/model/material_type.h"
+#include "model/crosssectionshape.h"
+#include "materials/registry/material_registry.h"
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>
@@ -16,8 +16,8 @@
 #include <common/filenamehelper.h>
 #include <common/csvimporter.h>
 #include <common/color/namedcolor.h>
-#include "../material/cuttingmode.h"
-#include "../material/paintingmode.h"
+#include "materials/model/cutting_mode.h"
+#include "materials/model/painting_mode.h"
 // bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 //     auto& helper = FileNameHelper::instance();
 //     if (!helper.isInited()) return false;

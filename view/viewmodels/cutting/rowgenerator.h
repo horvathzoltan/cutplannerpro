@@ -1,14 +1,14 @@
 #pragma once
 
-#include "common/styleprofiles/cuttingstatusutils.h"
-#include "model/material/material_utils.h"
-#include "service/cutting/optimizer/optimizerconstants.h"
-#include "view/cellhelpers/materialcellgenerator.h"
-#include "view/tableutils/colorlogicutils.h"
-#include "view/viewmodels/tablerowviewmodel.h"
-#include "view/viewmodels/tablecellviewmodel.h"
-#include "view/columnindexes/tablecuttinginstruction_columns.h"
-#include "model/cutting/instruction/cutinstruction.h"
+#include "../../../common/styleprofiles/cuttingstatusutils.h"
+#include "materials/utils/material_utils.h"
+#include "../../../service/cutting/optimizer/optimizerconstants.h"
+#include "materials/view/material_cell_generator.h"
+#include "../../tableutils/colorlogicutils.h"
+#include "../tablerowviewmodel.h"
+#include "../tablecellviewmodel.h"
+#include "../../columnindexes/tablecuttinginstruction_columns.h"
+#include "../../../model/cutting/instruction/cutinstruction.h"
 
 #include <QObject>
 #include <QPushButton>
@@ -18,8 +18,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/materialregistry.h>
+#include "../../../model/registries/cuttingplanrequestregistry.h"
+#include "materials/registry/material_registry.h"
 
 /**
  * @brief CuttingInstruction RowGenerator

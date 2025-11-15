@@ -2,10 +2,10 @@
 
 #include <QObject>
 #include "../model/cutting/optimizer/optimizermodel.h"
-#include "service/storageaudit/auditstatemanager.h"
-#include "model/archivedwasteentry.h"
-#include "model/relocation/relocationinstruction.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "../service/storageaudit/auditstatemanager.h"
+#include "../model/archivedwasteentry.h"
+#include "../model/relocation/relocationinstruction.h"
+#include "../model/storageaudit/storageauditrow.h"
 
 /*
 Értelmezi és kezeli a felhasználói interakciókat

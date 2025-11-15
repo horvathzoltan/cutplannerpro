@@ -1,11 +1,11 @@
 #include "cuttingmachinerepository.h"
-#include "common/csvimporter.h"
-#include "model/cutting/cuttingmachine.h"
-#include "model/material/materialtype.h"
-#include "common/filenamehelper.h"
-#include "model/registries/cuttingmachineregistry.h"
+#include "../../common/csvimporter.h"
+#include "../cutting/cuttingmachine.h"
+#include "materials/model/material_type.h"
+#include "../../common/filenamehelper.h"
+#include "../registries/cuttingmachineregistry.h"
 #include <QDebug>
-#include <model/registries/storageregistry.h>
+#include "../registries/storageregistry.h"
 
 // --- Stage 1: Convert ---
 

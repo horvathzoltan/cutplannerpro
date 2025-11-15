@@ -1,10 +1,10 @@
 #pragma once
 
-#include "model/material/material_utils.h"
-#include "view/viewmodels/tablerowviewmodel.h"
-#include "view/viewmodels/tablecellviewmodel.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/material/materialgroup_utils.h"
+#include "materials/utils/material_utils.h"
+#include "../tablerowviewmodel.h"
+#include "../tablecellviewmodel.h"
+#include "../../../model/cutting/plan/cutplan.h"
+#include "materials/utils/material_group_utils.h"
 //#include "view/tableutils/colorlogicutils.h"
 //#include "model/material/material_utils.h"
 
@@ -12,8 +12,8 @@
 #include <QHBoxLayout>
 #include <QWidget>
 
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/materialregistry.h>
+#include "../../../model/registries/cuttingplanrequestregistry.h"
+#include "materials/registry/material_registry.h"
 
 namespace Results::ViewModel::BadgeRowGenerator {
 

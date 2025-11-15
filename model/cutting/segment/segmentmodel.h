@@ -1,11 +1,11 @@
 #pragma once
 
-#include "common/logger.h"
+#include "../../../common/logger.h"
 #include <QString>
 #include <QUuid>
 
-#include <common/identifierutils.h>
-#include <common/settingsmanager.h>
+#include "../../../common/identifierutils.h"
+#include "../../../common/settingsmanager.h"
 
 /**
  * @brief Darabolási szakasz típusa — a rúd struktúrájához

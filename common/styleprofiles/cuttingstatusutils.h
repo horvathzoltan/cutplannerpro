@@ -1,8 +1,8 @@
 #pragma once
 #include <QString>
 #include <QColor>
-#include "model/cutting/instruction/cutinstruction.h"
-#include "common/styleprofiles/cuttingcolors.h"
+#include "../../model/cutting/instruction/cutinstruction.h"
+#include "cuttingcolors.h"
 
 /**
  * @brief Helper függvények a CutStatus enumhoz

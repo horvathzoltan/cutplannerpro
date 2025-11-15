@@ -4,9 +4,9 @@
 #include <QString>
 #include <QColor>
 
-#include "material/materialmaster.h"
+#include "materials/model/material_master.h"
 //#include "model/cutting/result/cutresult.h"
-#include "model/cutting/result/leftoversource.h"
+#include "cutting/result/leftoversource.h"
 #include <QDebug>
 
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja

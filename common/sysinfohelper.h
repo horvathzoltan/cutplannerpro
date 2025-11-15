@@ -1,4 +1,4 @@
-#include "service/buildnumber.h"
+#include "../service/buildnumber.h"
 
 #define SYSINFO_STRINGIFY(x) #x
 #define SYSINFO_TOSTRING(x) SYSINFO_STRINGIFY(x)

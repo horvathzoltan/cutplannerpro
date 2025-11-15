@@ -3,7 +3,7 @@
 #include <QList>
 #include <QUuid>
 #include "auditgroupinfo.h"
-#include "model/storageaudit/auditstatus.h"
+#include "auditstatus.h"
 //#include "model/storageaudit/audit_enums.h"
 
 struct StorageAuditRow; // forward declaration

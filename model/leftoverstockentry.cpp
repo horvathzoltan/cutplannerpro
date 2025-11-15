@@ -1,8 +1,8 @@
 #include "leftoverstockentry.h"
-#include "registries/materialregistry.h"
-#include "model/material/materialgroup_utils.h"
+#include "materials/registry/material_registry.h"
+#include "materials/utils/material_group_utils.h"
 
-#include <model/registries/storageregistry.h>
+#include "registries/storageregistry.h"
 
 const MaterialMaster* LeftoverStockEntry::master() const {
     if (materialId.isNull())

@@ -43,23 +43,23 @@ SOURCES += \
     model/cutting/result/resultmodel.cpp \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
-    model/material/materialgroup.cpp \
-    model/material/materialtype.cpp \
+    materials/model/material_group.cpp \
+    materials/model/material_type.cpp \
     model/picking/pickingcomparisonresult.cpp \
     model/picking/pickingitem.cpp \
     model/registries/cuttingmachineregistry.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
     model/registries/leftoverstockregistry.cpp \
-    model/registries/materialgroupregistry.cpp \
-    model/registries/materialregistry.cpp \
+    materials/registry/material_group_registry.cpp \
+    materials/registry/material_registry.cpp \
     model/registries/stockregistry.cpp \
     model/registries/storageregistry.cpp \
     model/relocation/relocationsourceentry.h \
     model/repositories/cuttingmachinerepository.cpp \
     model/repositories/cuttingrequestrepository.cpp \
     model/repositories/leftoverstockrepository.cpp \
-    model/repositories/materialgrouprepository.cpp \
-    model/repositories/materialrepository.cpp \
+    materials/repository/material_group_repository.cpp \
+    materials/repository/material_repository.cpp \
     model/repositories/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
     model/stockentry.cpp \
@@ -101,10 +101,10 @@ HEADERS += \
     model/cutting/optimizer/targetheuristic.h \
     model/inventorysnapshot.h \
     model/machine/machineutils.h \
-    model/material/cuttingmode.h \
-    model/material/material_utils.h \
-    model/material/materialgroup_utils.h \
-    model/material/paintingmode.h \
+    materials/model/cutting_mode.h \
+    materials/utils/material_utils.h \
+    materials/utils/material_group_utils.h \
+    materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
     service/buildnumber.h \
@@ -139,10 +139,10 @@ HEADERS += \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
     view/cellhelpers/auditstatustext.h \
-    view/cellhelpers/materialcellgenerator.h \
+    materials/view/material_cell_generator.h \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
-    view/tablerowstyler/materialrowstyler.h \
+    materials/view/material_row_styler.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
@@ -166,9 +166,9 @@ HEADERS += \
     model/cutting/result/resultmodel.h \
     model/cutting/result/resultsource.h \
     model/cutting/segment/segmentmodel.h \
-    model/material/materialgroup.h \
-    model/material/materialmaster.h \
-    model/material/materialtype.h \
+    materials/model/material_group.h \
+    materials/model/material_master.h \
+    materials/model/material_type.h \
     model/picking/pickingcomparisonresult.h \
     model/picking/pickingitem.h \
     model/registries/cuttingmachineregistry.h \
@@ -209,14 +209,14 @@ HEADERS += \
     model/movementdata.h \
     model/registries/cuttingplanrequestregistry.h \
     model/registries/leftoverstockregistry.h \
-    model/registries/materialgroupregistry.h \
-    model/registries/materialregistry.h \
+    materials/registry/material_group_registry.h \
+    materials/registry/material_registry.h \
     model/registries/stockregistry.h \
     model/registries/storageregistry.h \
     model/repositories/cuttingrequestrepository.h \
     model/repositories/leftoverstockrepository.h \
-    model/repositories/materialgrouprepository.h \
-    model/repositories/materialrepository.h \
+    materials/repository/material_group_repository.h \
+    materials/repository/material_repository.h \
     model/repositories/stockrepository.h \
     model/repositories/storagerepository.h \
     model/stockentry.h \

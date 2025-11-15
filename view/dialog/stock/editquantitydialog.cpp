@@ -1,6 +1,6 @@
 #include "editquantitydialog.h"
 #include "ui_editquantitydialog.h"
-#include "common/quantityparser.h"
+#include "../../../common/quantityparser.h"
 
 #include <QMessageBox>
 

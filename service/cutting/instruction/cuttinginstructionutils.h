@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/instruction/cutinstruction.h"
+#include "../../../model/cutting/instruction/cutinstruction.h"
 
 namespace CuttingInstructionUtils {
 

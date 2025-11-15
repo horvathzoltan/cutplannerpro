@@ -1,14 +1,14 @@
 #include "leftovertable_manager.h"
-#include "view/tableutils/tableutils.h"
-#include "model/material/material_utils.h"
+#include "../tableutils/tableutils.h"
+#include "materials/utils/material_utils.h"
 //#include "model/material/materialgroup_utils.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
-#include "view/tableutils/leftovertable_rowstyler.h"
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/storageregistry.h>
-#include "model/registries/materialregistry.h"
+#include "../tableutils/leftovertable_rowstyler.h"
+#include "../../model/registries/leftoverstockregistry.h"
+#include "../../model/registries/storageregistry.h"
+#include "materials/registry/material_registry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent),

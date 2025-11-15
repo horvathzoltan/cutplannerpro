@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QVector>
-#include "../material/materialtype.h"
+#include "materials/model/material_type.h"
 #include "../identifiableentity.h"
 
 // 🔧 Gépdefiníció a vágáshoz: kerf, anyagkompatibilitás, hely, megjegyzés

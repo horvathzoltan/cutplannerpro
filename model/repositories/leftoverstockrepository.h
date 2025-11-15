@@ -4,7 +4,7 @@
 #include <QUuid>
 #include "../leftoverstockentry.h"
 #include "../registries/leftoverstockregistry.h"
-#include "common/csvimporter.h"
+#include "../../common/csvimporter.h"
 
 class LeftoverStockRepository {
 public:

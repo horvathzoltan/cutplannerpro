@@ -1,16 +1,16 @@
 #include "stocktable_manager.h"
-#include "view/tableutils/stocktable_rowstyler.h"
-#include "view/tableutils/tableutils.h"
-#include "model/material/material_utils.h"
-#include "model/material/materialgroup_utils.h"
+#include "../tableutils/stocktable_rowstyler.h"
+#include "../tableutils/tableutils.h"
+#include "materials/utils/material_utils.h"
+#include "materials/utils/material_group_utils.h"
 //#include "common/tableutils/resulttable_rowstyler.h"
-#include "model/registries/materialregistry.h"
+#include "materials/registry/material_registry.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
-#include "model/registries/stockregistry.h"
-#include <model/registries/storageregistry.h>
+#include "../../model/registries/stockregistry.h"
+#include "../../model/registries/storageregistry.h"
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), _table(table), _parent(parent)

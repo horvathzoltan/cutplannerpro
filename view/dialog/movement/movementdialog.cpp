@@ -1,6 +1,6 @@
 #include "movementdialog.h"
 #include "ui_movementdialog.h"
-#include "model/registries/storageregistry.h"
+#include "../../../model/registries/storageregistry.h"
 
 MovementDialog::MovementDialog(QWidget* parent)
     : QDialog(parent), ui(new Ui::MovementDialog)

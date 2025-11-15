@@ -1,4 +1,4 @@
-#include "materialgroupregistry.h"
+#include "materials/registry/material_group_registry.h"
 
 MaterialGroupRegistry& MaterialGroupRegistry::instance() {
     static MaterialGroupRegistry registry;

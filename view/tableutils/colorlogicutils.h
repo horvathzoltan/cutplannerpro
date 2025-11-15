@@ -1,7 +1,7 @@
 #pragma once
-#include "model/material/materialgroup_utils.h"
-#include "common/color/colorconstants.h"
-#include "model/material/materialmaster.h"
+#include "materials/utils/material_group_utils.h"
+#include "../../common/color/colorconstants.h"
+#include "materials/model/material_master.h"
 #include <QColor>
 #include <QWidget>
 

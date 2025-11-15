@@ -1,8 +1,8 @@
 #pragma once
-#include "model/cutting/result/resultmodel.h"
-#include "model/cutting/result/resultsource.h"
-#include "model/cutting/result/leftoversource.h"
-#include "model/leftoverstockentry.h"
+#include "../../../model/cutting/result/resultmodel.h"
+#include "../../../model/cutting/result/resultsource.h"
+#include "../../../model/cutting/result/leftoversource.h"
+#include "../../../model/leftoverstockentry.h"
 
 namespace Cutting{
 namespace Result{

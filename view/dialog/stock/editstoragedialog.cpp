@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-#include <model/registries/storageregistry.h>
+#include "../../../model/registries/storageregistry.h"
 
 EditStorageDialog::EditStorageDialog(QWidget* parent)
     : QDialog(parent), ui(new Ui::EditStorageDialog)

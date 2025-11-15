@@ -1,20 +1,20 @@
 #pragma once
 
-#include "common/logger.h"
-#include "view/cellhelpers/materialcellgenerator.h"
-#include "view/tableutils/colorlogicutils.h"
-#include "view/tableutils/storageaudittable_rowstyler.h"
+#include "../../../common/logger.h"
+#include "materials/view/material_cell_generator.h"
+#include "../../tableutils/colorlogicutils.h"
+#include "../../tableutils/storageaudittable_rowstyler.h"
 
-#include "view/cellhelpers/auditcelltext.h"
-#include "view/cellhelpers/auditcelltooltips.h"
-#include "view/columnindexes/audittable_columns.h"
-#include "view/viewmodels/audit/cellgenerator.h"
-#include "view/viewmodels/tablerowviewmodel.h"
-#include "view/viewmodels/tablecellviewmodel.h"
+#include "../../cellhelpers/auditcelltext.h"
+#include "../../cellhelpers/auditcelltooltips.h"
+#include "../../columnindexes/audittable_columns.h"
+#include "cellgenerator.h"
+#include "../tablerowviewmodel.h"
+#include "../tablecellviewmodel.h"
 
-#include "model/storageaudit/storageauditrow.h"
-#include "model/material/materialmaster.h"
-#include "view/tableutils/tableutils_auditcells.h"
+#include "../../../model/storageaudit/storageauditrow.h"
+#include "materials/model/material_master.h"
+#include "../../tableutils/tableutils_auditcells.h"
 
 #include <QSpinBox>
 #include <QRadioButton>

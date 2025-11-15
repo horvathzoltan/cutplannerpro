@@ -1,18 +1,18 @@
 #include "inputtable_manager.h"
-#include "common/logger.h"
+#include "../../common/logger.h"
 //#include "view/columnindexes/inputtable_columns.h"
-#include "view/tablehelpers/tablerowpopulator.h"
+#include "../tablehelpers/tablerowpopulator.h"
 //#include "view/tableutils/inputtable_rowstyler.h"
-#include "view/tableutils/tableutils.h"
+#include "../tableutils/tableutils.h"
 //#include "model/registries/materialregistry.h"
-#include "view/viewmodels/tablerowviewmodel.h"
+#include "../viewmodels/tablerowviewmodel.h"
 //#include "common/tableutils/resulttable_rowstyler.h"
 #include <QPushButton>
 #include <QMessageBox>
 #include <QLabel>
 #include <QHBoxLayout>
-#include <model/registries/cuttingplanrequestregistry.h>
-#include "view/viewmodels/request/rowgenerator.h"
+#include "../../model/registries/cuttingplanrequestregistry.h"
+#include "../viewmodels/request/rowgenerator.h"
 
 bool InputTableManager::_isVerbose = false;
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "model/material/materialgroup_utils.h"
-#include "view/tablerowstyler/materialrowstyler.h"
-#include "model/cutting/plan/request.h"
-#include "model/material/materialmaster.h"
+#include "materials/utils/material_group_utils.h"
+#include "materials/view/material_row_styler.h"
+#include "../../model/cutting/plan/request.h"
+#include "materials/model/material_master.h"
 
 #include <QTableWidgetItem>
 //#include <view/managers/stocktablemanager.h>

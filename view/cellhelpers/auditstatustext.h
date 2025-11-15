@@ -1,7 +1,7 @@
 #pragma once
 
-#include "model/storageaudit/storageauditrow.h"
-#include "model/storageaudit/auditstatus.h"
+#include "../../model/storageaudit/storageauditrow.h"
+#include "../../model/storageaudit/auditstatus.h"
 
 namespace AuditStatusText {
 

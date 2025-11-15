@@ -1,6 +1,6 @@
 #include "addwastedialog.h"
 #include "ui_addwastedialog.h"
-#include "model/registries/materialregistry.h"
+#include "materials/registry/material_registry.h"
 #include <QMessageBox>
 
 AddWasteDialog::AddWasteDialog(QWidget *parent)

@@ -2,10 +2,10 @@
 
 #include <QObject>
 #include <QVector>
-#include "model/cutting/cuttingmachine.h"
-#include "model/stockentry.h"
+#include "../../model/cutting/cuttingmachine.h"
+#include "../../model/stockentry.h"
 //#include "model/storageaudit/storageauditentry.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "../../model/storageaudit/storageauditrow.h"
 
 class StorageAuditService : public QObject {
     Q_OBJECT

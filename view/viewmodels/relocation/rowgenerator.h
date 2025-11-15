@@ -1,12 +1,12 @@
 #pragma once
 
-#include "view/cellhelpers/materialcellgenerator.h"
+#include "materials/view/material_cell_generator.h"
 //#include "view/tableutils/colorlogicutils.h"
-#include "model/relocation/relocationinstruction.h"
-#include "view/columnindexes/relocationplantable_columns.h"
-#include "view/viewmodels/relocation/cellgenerator.h"
-#include "view/viewmodels/tablerowviewmodel.h"
-#include "view/viewmodels/tablecellviewmodel.h"
+#include "../../../model/relocation/relocationinstruction.h"
+#include "../../columnindexes/relocationplantable_columns.h"
+#include "cellgenerator.h"
+#include "../tablerowviewmodel.h"
+#include "../tablecellviewmodel.h"
 
 #include <QColor>
 #include <QObject>
@@ -15,10 +15,10 @@
 #include <QIcon>
 #include <QStyle>
 
-#include "common/styleprofiles/relocationcolors.h"
+#include "../../../common/styleprofiles/relocationcolors.h"
 
-#include <model/storageaudit/auditstatus.h>
-#include "model/relocation/relocationauditstatus.h"
+#include "../../../model/storageaudit/auditstatus.h"
+#include "../../../model/relocation/relocationauditstatus.h"
 
 namespace Relocation::ViewModel::RowGenerator {
 

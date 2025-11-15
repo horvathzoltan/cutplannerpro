@@ -4,8 +4,8 @@
 #include <QTableWidget>
 #include <QMap>
 #include <QUuid>
-#include "model/relocation/relocationinstruction.h"
-#include "presenter/CuttingPresenter.h"
+#include "../../model/relocation/relocationinstruction.h"
+#include "../../presenter/CuttingPresenter.h"
 
 class RelocationPlanTableManager : public QObject {
     Q_OBJECT

@@ -1,11 +1,11 @@
 #include <QMessageBox>
 
-#include <model/registries/storageregistry.h>
+#include "../../../model/registries/storageregistry.h"
 
 #include "addstockdialog.h"
 #include "ui_addstockdialog.h"
-#include "model/registries/materialregistry.h"
-#include "common/quantityparser.h"
+#include "materials/registry/material_registry.h"
+#include "../../../common/quantityparser.h"
 
 
 

@@ -1,12 +1,12 @@
 #include "cuttinginstructiontable_manager.h"
 
-#include "view/viewmodels/cutting/rowgenerator.h"
-#include "view/tablehelpers/tablerowpopulator.h"
-#include "common/logger.h"
-#include "model/registries/materialregistry.h"
-#include "view/tableutils/colorlogicutils.h"
+#include "../viewmodels/cutting/rowgenerator.h"
+#include "../tablehelpers/tablerowpopulator.h"
+#include "../../common/logger.h"
+#include "materials/registry/material_registry.h"
+#include "../tableutils/colorlogicutils.h"
 
-#include <view/tableutils/highlightdelegate.h>
+#include "../tableutils/highlightdelegate.h"
 
 
 bool CuttingInstructionTableManager::_isVerbose = false;

@@ -4,7 +4,7 @@
 #include <functional>
 #include <QString>
 #include <QCoreApplication>
-#include "common/logger.h"
+#include "logger.h"
 
 class SignalHelper
 {

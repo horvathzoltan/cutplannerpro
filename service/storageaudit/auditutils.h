@@ -1,9 +1,9 @@
 #pragma once
 
-#include "service/storageaudit/auditcontextbuilder.h"
-#include "common/logger.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "auditcontextbuilder.h"
+#include "../../common/logger.h"
+#include "../../model/cutting/plan/cutplan.h"
+#include "../../model/storageaudit/storageauditrow.h"
 
 #include <QMap>
 

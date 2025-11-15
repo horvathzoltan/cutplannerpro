@@ -1,10 +1,10 @@
 #pragma once
 
-#include "common/logger.h"
-#include "view/tableutils/storageaudittable_rowstyler.h"
-#include "view/viewmodels/tablecellviewmodel.h"
+#include "../../../common/logger.h"
+#include "../../tableutils/storageaudittable_rowstyler.h"
+#include "../tablecellviewmodel.h"
 
-#include "model/storageaudit/storageauditrow.h"
+#include "../../../model/storageaudit/storageauditrow.h"
 
 #include <QSpinBox>
 #include <QRadioButton>

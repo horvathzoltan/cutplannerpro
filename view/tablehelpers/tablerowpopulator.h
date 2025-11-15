@@ -1,5 +1,5 @@
 #pragma once
-#include "view/viewmodels/tablerowviewmodel.h"
+#include "../viewmodels/tablerowviewmodel.h"
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QWidget>

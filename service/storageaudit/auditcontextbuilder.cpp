@@ -1,5 +1,5 @@
 #include "auditcontextbuilder.h"
-#include "common/logger.h" // zInfo, zWarning
+#include "../../common/logger.h" // zInfo, zWarning
 #include <QMap>
 
 /**

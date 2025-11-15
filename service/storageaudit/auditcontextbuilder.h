@@ -3,8 +3,8 @@
 
 #include <QHash>
 #include <memory>
-#include "model/storageaudit/auditcontext.h"
-#include "model/storageaudit/storageauditrow.h"
+#include "../../model/storageaudit/auditcontext.h"
+#include "../../model/storageaudit/storageauditrow.h"
 
 class AuditContextBuilder {
 public:

@@ -1,9 +1,9 @@
 // inputtablerowgenerator.h
-#include "model/cutting/plan/request.h"
-#include "model/material/materialmaster.h"
-#include "view/cellhelpers/materialcellgenerator.h"
-#include "view/columnindexes/inputtable_columns.h"
-#include "view/viewmodels/tablerowviewmodel.h"
+#include "../../../model/cutting/plan/request.h"
+#include "materials/model/material_master.h"
+#include "materials/view/material_cell_generator.h"
+#include "../../columnindexes/inputtable_columns.h"
+#include "../tablerowviewmodel.h"
 
 #include <QPushButton>
 namespace Request::ViewModel::RowGenerator {

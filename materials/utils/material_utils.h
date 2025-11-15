@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QColor>
-#include <model/registries/materialregistry.h>
-#include "materialmaster.h"
-#include "materialgroup_utils.h"
+#include "materials/registry/material_registry.h"
+#include "materials/model/material_master.h"
+#include "materials/utils/material_group_utils.h"
 #include "model/cutting/plan/request.h"
 
 enum DisplayType{Label, Tooltip};

@@ -1,12 +1,12 @@
 #pragma once
 #include <QVector>
 #include <numeric>
-#include <model/registries/materialregistry.h>
-#include <model/leftoverstockentry.h>
-#include "model/cutting/piece/piecewithmaterial.h"
-#include "model/cutting/plan/cutplan.h"
-#include "service/cutting/optimizer/optimizerconstants.h"
-#include "model/cutting/cuttingmachine.h"
+#include "materials/registry/material_registry.h"
+#include "../../../model/leftoverstockentry.h"
+#include "../../../model/cutting/piece/piecewithmaterial.h"
+#include "../../../model/cutting/plan/cutplan.h"
+#include "optimizerconstants.h"
+#include "../../../model/cutting/cuttingmachine.h"
 
 namespace OptimizerUtils {
                                                           // Darabhosszak összege

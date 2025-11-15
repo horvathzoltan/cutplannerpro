@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/cutting/piece/piecewithmaterial.h"
+#include "../../../model/cutting/piece/piecewithmaterial.h"
 #include "../../../model/cutting/segment/segmentmodel.h"
 #include <QVector>
 

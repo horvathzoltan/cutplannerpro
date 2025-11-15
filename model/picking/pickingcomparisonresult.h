@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QString>
-#include "model/picking/pickingitem.h"
-#include "model/storageaudit/storageauditentry.h"
+#include "pickingitem.h"
+#include "../storageaudit/storageauditentry.h"
 
 struct PickingComparisonResult {
     PickingItem picking;

@@ -1,8 +1,8 @@
 #include "cuttingplanrequestregistry.h"
 
-#include <common/filenamehelper.h>
-#include <common/settingsmanager.h>
-#include <model/repositories/cuttingrequestrepository.h>
+#include "../../common/filenamehelper.h"
+#include "../../common/settingsmanager.h"
+#include "../repositories/cuttingrequestrepository.h"
 #include <QDebug>
 
 CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {

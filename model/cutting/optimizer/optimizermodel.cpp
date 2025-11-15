@@ -1,19 +1,19 @@
 #include "optimizermodel.h"
-#include "common/eventlogger.h"
-#include "common/logger.h"
-#include "model/material/materialgroup_utils.h"
-#include "model/machine/machineutils.h"
-#include "service/cutting/optimizer/optimizerutils.h"
+#include "../../../common/eventlogger.h"
+#include "../../../common/logger.h"
+#include "materials/utils/material_group_utils.h"
+#include "../../machine/machineutils.h"
+#include "../../../service/cutting/optimizer/optimizerutils.h"
 //#include "service/cutting/segment/segmentutils.h"
 //#include "model/profilestock.h"
 //#include <numeric>
 #include <algorithm>
 #include <QSet>
 
-#include <model/registries/materialregistry.h>
+#include "materials/registry/material_registry.h"
 #include <QDebug>
-#include <common/identifierutils.h>
-#include <common/settingsmanager.h>
+#include "../../../common/identifierutils.h"
+#include "../../../common/settingsmanager.h"
 
 namespace Cutting {
 namespace Optimizer {

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QStringList>
-#include <model/cutting/plan/request.h>
-#include <model/registries/materialregistry.h>
-#include <model/material/material_utils.h>
+#include "../../../model/cutting/plan/request.h"
+#include "materials/registry/material_registry.h"
+#include "materials/utils/material_utils.h"
 
 //namespace Service {
 namespace Cutting {

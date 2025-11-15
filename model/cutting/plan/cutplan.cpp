@@ -1,7 +1,7 @@
 #include "cutplan.h"
 #include <QDebug>
-#include "../../registries/materialregistry.h"
-#include "model/material/materialgroup_utils.h"
+#include "materials/registry/material_registry.h"
+#include "materials/utils/material_group_utils.h"
 
 namespace Cutting {
 namespace Plan {

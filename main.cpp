@@ -3,8 +3,8 @@
 #include <QApplication>
 #include <QMessageBox>
 
-#include <model/registries/materialregistry.h>
-#include <model/repositories/materialrepository.h>
+#include "materials/registry/material_registry.h"
+#include "materials/repository/material_repository.h"
 #include <common/startup/startupmanager.h>
 #include <common/settingsmanager.h>
 #include "common/logger.h"

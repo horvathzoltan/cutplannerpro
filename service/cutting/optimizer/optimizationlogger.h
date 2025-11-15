@@ -1,9 +1,9 @@
 #ifndef OPTIMIZATIONLOGGER_H
 #define OPTIMIZATIONLOGGER_H
 
-#include "common/logger.h"
-#include "model/cutting/plan/cutplan.h"
-#include "model/cutting/result/resultmodel.h"
+#include "../../../common/logger.h"
+#include "../../../model/cutting/plan/cutplan.h"
+#include "../../../model/cutting/result/resultmodel.h"
 
 struct OptimizationLogger {
     static void logPlans(const QVector<Cutting::Plan::CutPlan>& plans,
