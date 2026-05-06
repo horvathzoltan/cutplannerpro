@@ -1,4 +1,5 @@
 name;barcode;length;dim1;dim2;shape;machineBarcode;type;color;cuttingMode;paintingMode
+SinesLáb;NP-SL-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable
 Csőtengely Ø60x5000mm;MAT-ROLL60-5000;5000;60;;Round;CM1;Steel;RAL7016;Length;Paintable
 Csőtengely Ø60x6000mm;MAT-ROLL60-6000;6000;60;;Round;CM1;Steel;RAL 7016;Length;Paintable
 Csőtengely Ø60x7000mm;MAT-ROLL60-7000;7000;60;;Round;CM1;Steel;RAL7016;Length;Paintable
@@ -8,12 +9,17 @@ Zárósúly Ø22x3000mm;MAT-BAR22-3000;3000;22;;Round;CM1;Steel;RAL 7016;Length;
 Zárósúly Ø22x4000mm;MAT-BAR22-4000;4000;22;;Round;CM1;Steel;RAL7016;Length;Paintable
 SávrolóTok;ST-6000;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable
 SávrolóZáró;SZ-6000;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable
-SávrolóPálca;SP-6000;6000;;;Round;CM2;Aluminum;RAL9016;Length;Paintable
-SávrolóTengely;STE-6000;6000;;;Round;CM2;Aluminum;;;Length;Paintable
+SávrolóPálca;SP-6000;6000;10;;Round;CM2;Aluminum;RAL9016;Length;Paintable
+SávrolóTengely;STE-6000;6000;36;;Round;CM2;Aluminum;;;Length;Paintable
 MiniTok;MT-6000;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable
 MiniZáró;MZ-6000;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable
-MiniPálca;MP-6000;6000;;;Round;CM2;Aluminum;RAL9016;Length;Paintable
-MiniTengely;MTE-6000;6000;;;Round;CM2;Aluminum;;;Length;Paintable
-RolettaTengely;RTE-6000;6000;;;Round;CM2;Aluminum;;;Length;Paintable
-AlsóPálca;AP-6000;6000;;;Round;CM2;Aluminum;;;Length;Paintable
+MiniPálca;MP-6000;6000;8;;Round;CM2;Aluminum;RAL9016;Length;Paintable
+MiniTengely;MTE-6000;6000;18;;Round;CM2;Aluminum;;;Length;Paintable
+RolettaTengely;RTE-6000;6000;23;;Round;CM2;Aluminum;;;Length;Paintable
+AlsóPálca;AP-6000;6000;10;;Round;CM2;Aluminum;;;Length;Paintable
 ErősítettZáró;EZ-6000;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable
+NaphálóTok;NP-T-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable
+CipzárosLáb;NP-CL-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable
+Lábtakaró;NP-CLT-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable
+Lábbetét;NP-CLB-9016;6000;;;;CM2;Plastic;RAL9016;Length;Paintable
+CipzárosZáró;NP-CZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable

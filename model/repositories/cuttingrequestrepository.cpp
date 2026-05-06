@@ -209,7 +209,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << toleranceStr << ";"
             << req.quantity << ";"
             << HandlerSideUtils::toString(req.handlerSide) << ";"
-            << req.requiredColor.name() << "\";"
+            << "\"" << req.requiredColor.name() << "\";"
             << material->barcode << ";"
             << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
             << (req.isMeasurementNeeded ? "true" : "false") << "\n";

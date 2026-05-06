@@ -1,6 +1,7 @@
 #pragma once
 #include <QVector>
 #include <numeric>
+#include <model/registries/cuttingplanrequestregistry.h>
 #include "materials/registry/material_registry.h"
 #include "../../../model/leftoverstockentry.h"
 #include "../../../model/cutting/piece/piecewithmaterial.h"
@@ -17,14 +18,20 @@ inline int sumLengths(const QVector<Cutting::Piece::PieceWithMaterial>& combo) {
 
 // Kerf veszteség számítása (darabszám × kerf, kerekítve)
 inline int roundKerfLoss(int pieceCount, double kerf_mm) {
-    return static_cast<int>(std::lround(pieceCount * kerf_mm));
+    // A kerf a vágások száma → darabszám - 1
+    if (pieceCount <= 1) return 0;
+    return static_cast<int>(std::lround((pieceCount - 1) * kerf_mm));
 }
+
 
 // Hulladék számítása (negatív érték ne legyen)
 inline int computeWasteInt(int selectedLength_mm, int used_mm) {
-    const int w = selectedLength_mm - used_mm;
-    return w < 0 ? 0 : w;
+    // Negatív hulladék TILOS → ez már algoritmushiba
+    if (used_mm > selectedLength_mm)
+        return -1; // jelzés a hívónak
+    return selectedLength_mm - used_mm;
 }
+
 
 /**
  * @brief Kombinációs pontszám számítása.
@@ -177,14 +184,43 @@ inline QString formatCutPlanEvent(const Cutting::Plan::CutPlan& plan,
     }
 
     // Darablista
-    QMap<int,int> pieceCount; // hossz → darabszám
+    // QMap<int,int> pieceCount; // hossz → darabszám
+    // for (const auto& pw : plan.piecesWithMaterial) {
+    //     pieceCount[pw.info.length_mm] += 1;
+    // }
+    // QStringList pieceList;
+    // for (auto it = pieceCount.begin(); it != pieceCount.end(); ++it) {
+    //     pieceList << QString("%1×%2 mm").arg(it.value()).arg(it.key());
+    // }
+
+    // hossz → { darabszám, tételszámok listája }
+    // hossz → { darabszám, tételszámok listája }
+    struct PieceAgg { int count = 0; QStringList refs; };
+    QMap<int, PieceAgg> agg;
+
     for (const auto& pw : plan.piecesWithMaterial) {
-        pieceCount[pw.info.length_mm] += 1;
+        int len = pw.info.length_mm;
+        agg[len].count += 1;
+
+        // 🔍 Request lekérdezése requestId alapján
+        auto req = CuttingPlanRequestRegistry::instance().findById(pw.info.requestId);
+
+        QString ref = req
+                          ? req->externalReference
+                          : "???";
+
+        agg[len].refs.append(ref);
     }
+
     QStringList pieceList;
-    for (auto it = pieceCount.begin(); it != pieceCount.end(); ++it) {
-        pieceList << QString("%1×%2 mm").arg(it.value()).arg(it.key());
+    for (auto it = agg.begin(); it != agg.end(); ++it) {
+        QString refs = it.value().refs.join(", ");
+        pieceList << QString("%1×%2 mm [%3]")
+                         .arg(it.value().count)
+                         .arg(it.key())
+                         .arg(refs);
     }
+
 
     return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm, darabok: %6, hulladék=%7 mm")
         .arg(plan.planNumber)

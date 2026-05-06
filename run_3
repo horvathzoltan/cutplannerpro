@@ -73,3 +73,198 @@ src/
  │    └── utils.h/.cpp
  │
  └── main.cpp                    # Belépési pont
+
+
+**
+
+most koncentráljunk az új programunkra: az anyagszükséglet számítására! vannak termékek,
+pl tetőtéri rugós roletta ez rolatta/rugós/tetőtéri ehez kell egy alap tengely 32 mm átmérő,
+meg kell egy alsó pálca, mindkettőhöz van levonás, mert feljönnek a tengelyre a végek
+, szerelékek, és azzal együtt kell a méret - szélesség - -et elérni. ezért ehez a termékhez,
+mint mindegyikhez - kell majd egy táblázat amiben szerepelnek a material törzs elemei mint anyag,
+
+és a szükséges szélességek úgy jönnek ki, hogy a levonással együtt. amikor beviszünk egy terméket
+aminek kérjük a gyártását, lesz egy tételszám és egy megrendelő, lesznek méretek, lesz egy j/bal
+oldali kezeő, lesz egy szín, meg lesz egy darabszám ennek a bevitelére kell majd egy felület,
+majd amikor megvannak a termékek, kell egy listát generálni a szükséges anyagokról - vagy közben?
+erre kellene egy program, illetve annak egy kezelői felület jó lenne, ha a megrendelő nevét
+elkezdem beírni, megtalálná - illetve a következő terméknél feljönne a következő tételszám,
+emlékezne a megrendelőre, és a kért színre pl. általában eltérni a méret és a darabszám szokott
+- illetve ha felviszek az ügyfélhez több azonos szín - méret terméket, hogy többet rendelt
+- aggregálná? hogy lehetne ezt jól csinálni? minden terméknek lenne egy kódja - és a szükséglet-levonás
+táblázatainkat per termék kellne kezelnünk, és mindíg beolvasni számítás előtt? vagy kellene egy nagy
+és globális táblázat? - ha átírunk valamit akkor mindíg újra kéne írni azt is ami nem változott? hogy
+lenne ez a legjobb?
+ja, igen, a dátum - fontos dolog, mert a termékcsomagolóknak ki lesz írva szállításra és keresni fogják
+
+Termékek
+ ├── Roletta
+ │    ├── Rugós
+ │    │    ├── Tetőtéri
+ │    │    │    ├── Mérési mód: teljes szélesség (tok külső méret)
+ │    │    │    ├── Levonás: tengely -15 mm, pálca -10 mm
+ │    │    │    └── Szerelékek: 2 db rugó
+ │    │    └── Normál
+ │    │         ├── Mérési mód: szövet szélesség
+ │    │         ├── Levonás: tengely -20 mm, pálca -12 mm
+ │    │         └── Szerelékek: 2 db végzáró
+ │    └── Motoros
+ │         └── Mérési mód: teljes szerkezet szélesség
+ └── Sávroló
+      ├── Rugós
+      │    ├── Mérési mód: szövet szélesség
+      │    └── Levonás: tengely -10 mm
+      └── Motoros
+           ├── Mérési mód: tok külső méret
+           └── Levonás: tengely -12 mm
+
+azaz! tehát egy roletta pl. konkrétan egy tetőtéri rugós roletta  áll azokból az anyagokból amikből a tetőtéri rugós roletták általában szoktak állni - ezek közt vannak darabos termékek pl a dugók, végelemek, gyöngylánc, hajtómű, meg vannak a méretre vágott elemek mint a tok, a tengely, és a záróléc - na most a méretre vágott elemek méretszámítási módját határozza meg az hogy a pocok mit mért le a helyszínen - ebből épülne fel valami táblázatos adatszerkezet - egy kupac adatot ami által a mérési adatból kijön a vágási méret levonásoknak nevezzük, függetlenül attól hogy ez matematikailag milyen számítást takar (tipikusan levonást - innen a név)
+
+🧩 Adatmodell
+Material törzs (globális)
+
+MaterialMaster táblázat: minden alapanyag (tengely, pálca, szövet, rugó, stb.)
+
+Tartalmazza: méret, szín, típus, súly, gép, RAL/HEX színkód.
+
+Product törzs (per termék típus)
+
+ProductDefinition: pl. tetőtéri rugós roletta.
+
+Ehhez tartozik egy szükséglet‑levonás táblázat:
+
+Tengely: 32 mm átmérő, levonás pl. 15 mm.
+
+Alsó pálca: levonás pl. 10 mm.
+
+Egyéb szerelékek: fix darabszám vagy méret.
+
+Ez a táblázat szabja meg, hogyan kell számolni a tényleges anyagméretet a megadott szélességből.
+
+Order (megrendelés)
+
+OrderHeader: tételszám, megrendelő neve, dátum.
+
+OrderLine: termék kód, méret, darabszám, szín, handlerSide.
+
+A ProductDefinition alapján kiszámolja a szükséges anyagokat.
+
+🧩 Számítási logika
+Bevitelkor:
+
+Felhasználó megadja: méret, darabszám, szín, handlerSide.
+
+Program automatikusan kiszámolja:
+
+Tengely hossz = szélesség − levonás.
+
+Alsó pálca hossz = szélesség − levonás.
+
+Egyéb szerelékek = fix darabszám.
+
+Ezek bekerülnek egy anyagigény listába.
+
+Aggregálás:
+
+Ha ugyanannál az ügyfélnél több azonos termék van (azonos szín + méret + típus), akkor összevonható.
+
+Pl. 3 db tetőtéri roletta, ugyanazzal a színnel → egy sorban 3 darab, nem külön sorokban.
+
+Ez csökkenti a redundanciát és egyszerűsíti a gyártási listát.
+
+🧩 Felület logika
+Order entry UI:
+
+Megrendelő neve → autocomplete (korábbi ügyfelekből).
+
+Tételszám → automatikusan növekvő.
+
+Szín → autocomplete + színkocka.
+
+HandlerSide → bal/jobb választó.
+
+Méret + darabszám → kötelező mezők.
+
+Anyagszükséglet lista:
+
+Generálható azonnal bevitelkor (real‑time preview), vagy összesítéskor (batch).
+
+Célszerű real‑time preview, mert az operátor rögtön látja, hogy a bevitt méretből milyen anyag kell.
+
+🧩 Táblázat kezelés
+Globális ProductDefinition táblázat:
+
+Minden termékhez tartozik egy szabálytábla (levonások, szerelékek).
+
+Ez legyen egy központi adatforrás, nem külön fájlok per termék.
+
+Így ha változik egy levonás, csak a központi táblát kell frissíteni, és minden számítás automatikusan új értékkel fut.
+
+Verziózás:
+
+Ha átírsz egy levonást, az új rendelések már az új szabályt használják.
+
+A régi rendelésekhez auditban megmarad a régi érték.
+
+Így nincs szükség minden termék újraírására.
+
+🚀 Röviden
+Legyen globális ProductDefinition táblázat → minden termékhez levonási szabályok.
+
+A MaterialMaster marad az alapanyag törzs.
+
+Az OrderLine a bevitt termékadatokból automatikusan számolja a szükséges anyagokat.
+
+Aggregálás: azonos ügyfél + azonos termék + azonos szín → összevonás.
+
+Felület: autocomplete ügyfél + szín, automatikus tételszám, real‑time preview anyagszükséglet.
+
+**
+
+🖥️ Order entry UI – fő elemek
+Megrendelő neve
+
+Autocomplete a korábbi ügyfelekből.
+
+Ha elkezded gépelni, felajánlja a meglévő neveket.
+
+Tételszám
+
+Automatikusan növekvő, minden új terméknél generálódik.
+
+Termék kód
+
+Dropdown vagy kereső, a ProductDefinition táblából.
+
+Méret + darabszám
+
+Kötelező mezők, validációval (pl. csak szám).
+
+Szín
+
+Autocomplete + színkocka vizuális jelzéssel.
+
+HandlerSide (bal/jobb)
+
+Egyszerű toggle vagy rádiógomb.
+
+Dátum
+
+Automatikusan kitöltődik, de módosítható.
+
+📋 Anyagszükséglet lista – preview
+Real‑time számítás: amint beviszel egy terméket, azonnal kiszámolja a szükséges anyagokat.
+
+Aggregálás: ha ugyanannál az ügyfélnél több azonos termék van (azonos szín + méret + típus), összevonja egy sorba.
+
+Audit jelzés: ha valami hiányzik a ProductDefinition táblából, jelzi, hogy nem tudja kiszámolni.
+
+🧩 Extra kényelmi funkciók
+Megrendelő emlékezet: ha több terméket viszel fel ugyanahhoz az ügyfélhez, automatikusan kitölti a nevet és színt, csak a méret/darabszám változik.
+
+Szűrés és keresés: a felvitt tételek között gyors keresés (pl. ügyfélnév, dátum, termék).
+
+Export: a teljes anyagszükséglet lista kimenthető gyártási listaként.
+
+🎯 Röviden: az UI célja, hogy minimális gépeléssel, maximális automatizmussal lehessen felvinni a rendeléseket, és közben azonnal látszódjon, milyen anyag kell a gyártáshoz.
+

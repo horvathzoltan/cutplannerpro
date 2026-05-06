@@ -225,9 +225,16 @@ QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
         QTextStream testStream(lines.join("\n").toUtf8());
         QList<QVector<QString>> rows = FileHelper::parseCSV(&testStream, sep);
 
+        if (rows.size() < 2)
+            continue; // vagy return QChar();
+
+        if (rows[0].isEmpty() || rows[1].isEmpty())
+            continue;
+
         int headerFieldCount = std::count_if(rows[0].begin(), rows[0].end(), [](const QString& s) {
             return !s.trimmed().isEmpty();
         });
+
 
         int dataFieldCount = rows[1].size();
 

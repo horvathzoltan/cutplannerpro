@@ -282,7 +282,7 @@ void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const
 /*cuttingplan*/
 void MainWindow::handle_btn_NewRequest_clicked()
 {
-    Q_ASSERT(false); // itt megáll a debugger
+    //Q_ASSERT(false); // itt megáll a debugger
     presenter->createNew_CuttingPlanRequests();
 }
 
@@ -752,6 +752,11 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
 
     // === FÁZIS 3: Kirakás a táblába ===
     renderCuttingInstructions();
+
+    for (const auto& mc : _machineCutsList) {
+        zEvent(CuttingInstructionUtils::formatMachineCutsEvent(mc));
+    }
+
 }
 
 
@@ -802,6 +807,8 @@ void MainWindow::renderCuttingInstructions() {
         }
     }
 }
+
+
 
 
 QStringList MainWindow::generateStatsStrings(

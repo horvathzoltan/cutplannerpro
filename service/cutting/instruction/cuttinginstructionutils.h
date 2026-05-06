@@ -2,6 +2,12 @@
 
 #include "../../../model/cutting/instruction/cutinstruction.h"
 
+#include <materials/model/material_master.h>
+
+#include <materials/registry/material_registry.h>
+
+#include <model/registries/cuttingplanrequestregistry.h>
+
 namespace CuttingInstructionUtils {
 
 enum class SortStrategy {
@@ -64,5 +70,48 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
         }
     }
 }
+
+
+
+
+inline QString formatMachineCutsEvent(const MachineCuts& mc)
+{
+    QStringList lines;
+
+    lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+
+    for (const auto& ci : mc.cutInstructions) {
+
+        // 1) Ikon kiválasztása
+        QString icon = ci.isManualCut ? "📏" : "✂️";
+
+        // 2) Material név + kód
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(ci.materialId);
+
+        QString materialLabel = mat
+                                    ? QString("%1:%2").arg(mat->name).arg(ci.barcode)
+                                    : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
+
+        // 3) Request → tételszám + ownerName
+        auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+
+        QString pieceLabel = req
+                                 ? QString("%1. %2").arg(req->externalReference).arg(req->ownerName)
+                                 : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
+
+        // 4) Sor összeállítása
+        lines << QString("%2. %3 | %4 | %1 %5 | %6")
+                     .arg(icon)
+                     .arg(ci.globalStepId)
+                     .arg(ci.rodId)
+                     .arg(materialLabel)
+                     .arg(QString::number(ci.cutSize_mm, 'f', 1))
+                     .arg(pieceLabel);
+    }
+
+    return lines.join("\n");
+}
+
 
 }

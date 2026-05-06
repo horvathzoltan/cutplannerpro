@@ -38,5 +38,8 @@ private:
 
     QUuid current_requestId; // 🔒 Megőrzi az eredeti ID-t
 
+    static QString s_lastOwnerName;
+    static QString s_lastExternalRef;
+    static QUuid s_lastMaterialId;
 };
 

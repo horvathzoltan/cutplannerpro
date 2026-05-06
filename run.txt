@@ -236,3 +236,56 @@ Audit log
 Mentjük: requestId, pieceBarcode, appliedCompensation_mm, isMeasurementNeeded.
 
 Így visszakövethető, mely darab volt kötelező mérés, és melyet választottak ki pluszban.
+
+***
+
+és akkor még azon gondolkoztam, hogy ösze lehetne szedni, hogy milyen az eloszlása annak amit vágok, ahoz képest, milyennek kéne lennie - pl. normál eloszlásnak, és hogy rendre el vannak-e tolódva, vagy sem. tehát mi a gaussa annak aminek elméletileg lennie kéne, nem a méretből, hanem az eltérésből, szóval az nyilván nulla, és az én vágásom eltéréseinek az eloszlásából is kijön egy gauss, annak is van egy függőleges tengelye, és az vajon hova esik?
+Ez már a statisztikai minőségellenőrzés területére visz, Zoltán ⚡ – amit leírsz, az gyakorlatilag a folyamatképesség vizsgálata Gauss‑eloszlással.
+
+🧩 Az elméleti kép
+Elméleti eloszlás: ha minden darab pontosan a célméretre esne, akkor az eltérés eloszlása egy normál Gauss lenne, középpontja 0 (azaz nincs eltolódás).
+
+Valós eloszlás: a tényleges vágási eltérésekből is kijön egy Gauss‑szerű görbe.
+
+Ennek középértéke (átlag) mutatja, hogy van‑e szisztematikus eltolódás (pl. mindig +0.3 mm).
+
+Ennek szórása (σ) mutatja, mennyire szóródnak a darabok a cél körül.
+
+🎯 Mit érdemes nézni?
+Átlag (μ)
+
+Ha ≠ 0, akkor a folyamat el van tolódva.
+
+Például μ = +0.4 mm → mindig kicsit nagyobbra vág.
+
+Szórás (σ)
+
+Ez mutatja a pontosságot.
+
+Kis σ → stabil folyamat, nagy σ → ingadozó.
+
+Elméleti vs. valós Gauss összevetése
+
+Az elméleti görbe középen van (0).
+
+A valós görbe középpontja lehet eltolva.
+
+A kettő közti különbség adja a folyamat bias‑át.
+
+📊 Hogyan lehet vizualizálni?
+Gyűjtsd az eltéréseket (mért méret – célméret).
+
+Készíts histogramot.
+
+Illessz rá normál eloszlást (pl. maximum likelihood vagy egyszerűen átlag + szórás alapján).
+
+Hasonlítsd össze az elméleti (μ=0, σ=tervezett) és a valós (μ, σ) görbéket.
+
+🔎 Mit árul el?
+Ha a valós Gauss középpontja eltolódott, akkor a gép vagy a beállítás rendszeresen hibázik.
+
+Ha a valós Gauss szórása nagyobb, akkor a folyamat instabil.
+
+Ha a valós Gauss szép, középen van, kis szórással, akkor a folyamat jól kontrollált.
+
+Ez a gondolatmenet nagyon erős alap a mérési tervhez: nem csak darabonkénti ellenőrzés lesz, hanem folyamat‑szintű statisztikai kontroll.

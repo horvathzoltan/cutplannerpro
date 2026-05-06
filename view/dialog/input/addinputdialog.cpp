@@ -7,6 +7,10 @@
 
 #include <QMessageBox>
 
+QString AddInputDialog::s_lastOwnerName;
+QString AddInputDialog::s_lastExternalRef;
+QUuid   AddInputDialog::s_lastMaterialId;   // ⬅️ ÚJ
+
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
@@ -15,14 +19,34 @@ AddInputDialog::AddInputDialog(QWidget *parent)
     ui->setupUi(this);
     populateMaterialCombo();
 
-    // ui->comboCategory->addItem("RollerTube");
-    // ui->comboCategory->addItem("BottomBar");
 
-    // // Ok gomb disable ha nincs értelmes adat
-    // connect(ui->editLength, &QLineEdit::textChanged, this, [=]() {
-    //     ui->buttonBox->button(QDialogButtonBox::Ok)
-    //         ->setEnabled(!ui->editLength->text().isEmpty());
-    // });
+    // Anyag ajánlása (ha volt korábbi)
+    if (!s_lastMaterialId.isNull()) {
+        int idx = ui->comboMaterial->findData(s_lastMaterialId);
+        if (idx >= 0)
+            ui->comboMaterial->setCurrentIndex(idx);
+    }
+
+    // Megrendelő név ajánlása
+    if (!s_lastOwnerName.isEmpty())
+        ui->editOwner->setText(s_lastOwnerName);
+
+    // Külső tételszám ajánlása (+1)
+    if (!s_lastExternalRef.isEmpty()) {
+        bool ok = false;
+        int num = s_lastExternalRef.toInt(&ok);
+        if (ok)
+            ui->editReference->setText(QString::number(num + 1));
+    }
+
+    // Ha mindkettő megvolt → fókusz a hossz mezőre
+    if (!ui->editOwner->text().isEmpty() &&
+        !ui->editReference->text().isEmpty())
+    {
+        ui->editLength->setFocus();
+        ui->editLength->selectAll();
+    }
+
 }
 
 AddInputDialog::~AddInputDialog()
@@ -108,6 +132,11 @@ bool AddInputDialog::validateInputs() {
 void AddInputDialog::accept() {
     if (!validateInputs())
         return;
+
+    // Mentjük a legutóbbi értékeket
+    s_lastOwnerName   = ui->editOwner->text().trimmed();
+    s_lastExternalRef = ui->editReference->text().trimmed();
+    s_lastMaterialId  = ui->comboMaterial->currentData().toUuid();   // ⬅️ ÚJ
 
     QDialog::accept(); // csak ha minden oké
 }

@@ -38,6 +38,7 @@
 
 #include "../service/snapshot/inventorysnapshotbuilder.h"
 #include "../service/snapshot/requestsnapshotbuilder.h"
+#include "materials/utils/material_group_utils.h"
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -284,8 +285,10 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         return;
     }
 
+    zInfo("OptimizationRunner::run started");
     // 1️⃣ Optimalizáció futtatása
     OptimizationRunner::run(model, heuristic);
+    zInfo("OptimizationRunner::run stopped");
 
     // 2️⃣ Nézet frissítése
     if (view) {
@@ -451,35 +454,148 @@ void CuttingPresenter::scrapShortLeftovers()
         ArchivedWasteUtils::exportToCSV(archivedEntries);
 }
 
+// void CuttingPresenter::syncModelWithRegistries() {
+//     // 🔁 Snapshotok építése a registrykből
+//     auto requests  = RequestSnapshotBuilder::build();
+//     auto inventory = InventorySnapshotBuilder::build(300);
+
+//     QStringList errors;
+
+//     // 📋 Validáció
+//     if (requests.isEmpty())
+//         errors << "Nincs megadva vágási igény.";
+
+//     if (inventory.profileInventory.isEmpty())
+//         errors << "A készlet üres.";
+
+//     // A reusableInventory opcionális, nem kötelező.
+//     // Ha üres, az NEM hiba.
+//     // if (inventory.reusableInventory.isEmpty())
+//     //     errors << "Nincs újrahasználható hulladék elérhető.";
+
+//     // ✅ Modell feltöltése vagy ❗ hibaüzenet
+//     if (errors.isEmpty()) {
+//         model.setCuttingRequests(requests);
+//         model.setInventorySnapshot(inventory);   // << pengeéles snapshot betöltés
+//         isModelSynced = true;
+//     } else {
+//         QString fullMessage = "Az optimalizálás nem indítható:\n\n• " + errors.join("\n• ");
+//         if (view)
+//             view->ShowWarningDialog(fullMessage);
+//         isModelSynced = false;
+//     }
+// }
+
+
 void CuttingPresenter::syncModelWithRegistries() {
-    // 🔁 Snapshotok építése a registrykből
     auto requests  = RequestSnapshotBuilder::build();
     auto inventory = InventorySnapshotBuilder::build(300);
 
     QStringList errors;
+    QStringList warnings;
 
-    // 📋 Validáció
-    if (requests.isEmpty())
+    // 1️⃣ Legyen legalább 1 request
+    if (requests.isEmpty()) {
         errors << "Nincs megadva vágási igény.";
+    }
 
-    if (inventory.profileInventory.isEmpty())
-        errors << "A készlet üres.";
+    // 2️⃣ Request anyagok összegyűjtése
+    QSet<QUuid> reqMaterials;
+    QMap<QUuid, int> reqTotalLength;
 
-    if (inventory.reusableInventory.isEmpty())
-        errors << "Nincs újrahasználható hulladék elérhető.";
+    for (const auto& r : requests) {
+        reqMaterials.insert(r.materialId);
+        reqTotalLength[r.materialId] += r.requiredLength;
+    }
 
-    // ✅ Modell feltöltése vagy ❗ hibaüzenet
-    if (errors.isEmpty()) {
-        model.setCuttingRequests(requests);
-        model.setInventorySnapshot(inventory);   // << pengeéles snapshot betöltés
-        isModelSynced = true;
-    } else {
-        QString fullMessage = "Az optimalizálás nem indítható:\n\n• " + errors.join("\n• ");
+    // 3️⃣ Stock anyagok összegyűjtése
+    QSet<QUuid> stockMaterials;
+    QMap<QUuid, int> stockTotalLength;
+
+    for (const auto& s : inventory.profileInventory) {
+        stockMaterials.insert(s.materialId);
+
+        const MaterialMaster* mm = s.master();
+        if (mm)
+            stockTotalLength[s.materialId] += mm->stockLength_mm * s.quantity;
+    }
+
+    // 4️⃣ Hiányzó anyagok (nincs a stockban)
+    QSet<QUuid> missingMaterials = reqMaterials - stockMaterials;
+
+    for (const QUuid& matId : missingMaterials) {
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+
+        if (!mat) {
+            errors << QString("Ismeretlen anyag (materialId=%1)").arg(matId.toString());
+            continue;
+        }
+
+        // 5️⃣ Csoporthelyettesítés vizsgálata
+        QSet<QUuid> group = GroupUtils::groupMembers(matId);
+
+        bool hasGroupAlternative = false;
+        for (const QUuid& altId : group) {
+            if (altId == matId) continue;
+            if (stockMaterials.contains(altId)) {
+                const MaterialMaster* alt = MaterialRegistry::instance().findById(altId);
+                warnings << QString("Az anyag (%1) nincs raktáron, de a csoportban van helyettesítő: %2")
+                                .arg(mat->name)
+                                .arg(alt ? alt->name : altId.toString());
+                hasGroupAlternative = true;
+                break;
+            }
+        }
+
+        if (!hasGroupAlternative) {
+            errors << QString("Hiányzó anyag a készletből: %1 (%2)")
+                          .arg(mat->name)
+                          .arg(matId.toString());
+        }
+    }
+
+    // 6️⃣ Mennyiséghiány (összhossz alapján)
+    for (auto it = reqTotalLength.begin(); it != reqTotalLength.end(); ++it) {
+        QUuid matId = it.key();
+        int need = it.value();
+        int have = stockTotalLength.value(matId, 0);
+
+        if (have < need) {
+            const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+            QString name = mat ? mat->name : matId.toString();
+
+            warnings << QString("Kevés készlet az anyagból: %1 (kell: %2 mm, van: %3 mm)")
+                            .arg(name)
+                            .arg(need)
+                            .arg(have);
+        }
+    }
+
+    // 7️⃣ Hibák → tiltás
+    if (!errors.isEmpty()) {
+        QString msg = "Az optimalizálás nem indítható:\n\n• " + errors.join("\n• ");
+        if (!warnings.isEmpty())
+            msg += "\n\nFigyelmeztetések:\n• " + warnings.join("\n• ");
+
         if (view)
-            view->ShowWarningDialog(fullMessage);
+            view->ShowWarningDialog(msg);
+
         isModelSynced = false;
+        return;
+    }
+
+    // 8️⃣ Modell betöltése
+    model.setCuttingRequests(requests);
+    model.setInventorySnapshot(inventory);
+    isModelSynced = true;
+
+    // 9️⃣ Warningok megjelenítése (nem tiltó)
+    if (!warnings.isEmpty() && view) {
+        QString msg = "Figyelmeztetések:\n\n• " + warnings.join("\n• ");
+        view->ShowWarningDialog(msg);
     }
 }
+
 
 bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
     bool loaded = CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry::instance(), path);

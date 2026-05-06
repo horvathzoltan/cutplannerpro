@@ -9,6 +9,8 @@
 //#include <numeric>
 #include <algorithm>
 #include <QSet>
+#include <QCoreApplication>
+#include <QThread>
 
 #include "materials/registry/material_registry.h"
 #include <QDebug>
@@ -85,8 +87,17 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
     int rodId = 0;
 
+    static int counter = 0;
+
     // 2. Optimalizációs ciklus
     while (anyPending()) {
+
+        if (counter % 10 == 0) {
+            zInfo("optCounter: " + QString::number(counter));
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
+            QThread::msleep(1); // 10 ms szünet minden 100 iterációban, hogy ne blokkoljuk a UI-t
+        }
+        counter++;
         // 2/a. Anyagcsoport kiválasztása
         QUuid targetMaterialId;
         int bestMetric = -1;
@@ -474,6 +485,14 @@ void OptimizerModel::cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial
                                          QVector<Cutting::Piece::PieceWithMaterial>& groupVec)
 {
     int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
+
+    // 🔒 Overfill-védelem
+    if (used > remainingLength) {
+        zError(QString("❌ Overfill detected in cutSinglePieceBatch: used=%1 > remaining=%2 (rodId=%3)")
+                   .arg(used).arg(remainingLength).arg(rod.rodId));
+        return;
+    }
+
     int waste = OptimizerUtils::computeWasteInt(remainingLength, used);
 
     // 📦 CutPlan
@@ -608,6 +627,15 @@ void OptimizerModel::cutComboBatch(const QVector<Cutting::Piece::PieceWithMateri
     int totalCut  = OptimizerUtils::sumLengths(combo);
     int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
     int used      = totalCut + kerfTotal;
+
+    // 🔒 Overfill-védelem
+    if (used > remainingLength) {
+        zError(QString("❌ Overfill detected: used=%1 > remaining=%2 (rodId=%3)")
+                   .arg(used).arg(remainingLength).arg(rod.rodId));
+        return; // a batch érvénytelen → nem vágunk
+    }
+
+
     int waste     = OptimizerUtils::computeWasteInt(remainingLength, used);
 
     // 📦 CutPlan
@@ -743,50 +771,176 @@ Kis hulladékot preferál	100–300
 Kiegyensúlyozott	500–800
 */
 
+// QVector<Cutting::Piece::PieceWithMaterial>
+// OptimizerModel::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
+//                             int lengthLimit,
+//                             double kerf_mm) const {
+//     QVector<Cutting::Piece::PieceWithMaterial> bestCombo;
+//     int bestScore = std::numeric_limits<int>::min();
+//     int n = available.size();
+//     int totalCombos = 1 << n;
+
+//     // ⚡ Quick path: ha minden darab belefér, nincs mit optimalizálni
+//     int totalRelevant = OptimizerUtils::sumLengths(available);
+//     int maxKerf = OptimizerUtils::roundKerfLoss(available.size(), kerf_mm);
+//     if (totalRelevant + maxKerf <= lengthLimit) {
+//         return available;
+//     }
+
+//     for (int mask = 1; mask < totalCombos; ++mask) {
+//         QVector<Cutting::Piece::PieceWithMaterial> combo;
+//         for (int i = 0; i < n; ++i) {
+//             if (mask & (1 << i)) {
+//                 combo.append(available[i]);
+//             }
+//         }
+//         if (combo.isEmpty()) continue;
+
+//         int totalCut = OptimizerUtils::sumLengths(combo);
+//         if (totalCut > lengthLimit) continue; // early discard
+
+//         int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+//         int used = totalCut + kerfTotal;
+
+//         if (used <= lengthLimit) {
+//             int waste = lengthLimit - used;
+//             int leftoverLength = lengthLimit - used;
+//             int score = OptimizerUtils::calcScore(combo.size(), waste, leftoverLength);
+
+//             if (score > bestScore) {
+//                 bestScore = score;
+//                 bestCombo = combo;
+//             }
+//         }
+//     }
+
+//     return bestCombo;
+// }
+
 QVector<Cutting::Piece::PieceWithMaterial>
 OptimizerModel::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                             int lengthLimit,
-                            double kerf_mm) const {
+                            double kerf_mm) const
+{
     QVector<Cutting::Piece::PieceWithMaterial> bestCombo;
-    int bestScore = std::numeric_limits<int>::min();
     int n = available.size();
-    int totalCombos = 1 << n;
 
-    // ⚡ Quick path: ha minden darab belefér, nincs mit optimalizálni
+    // 0) Ha nincs darab
+    if (n == 0)
+        return {};
+
+    // Gyors visszatérés: ha a teljes hossz + maximális kerf (darabszám × kerf) is belefér,
+    // akkor biztosan belefér a valóságos kerf-modellel is (ahol az első darab kerf=0).
+
     int totalRelevant = OptimizerUtils::sumLengths(available);
-    int maxKerf = OptimizerUtils::roundKerfLoss(available.size(), kerf_mm);
-    if (totalRelevant + maxKerf <= lengthLimit) {
+    int maxKerf = OptimizerUtils::roundKerfLoss(n, kerf_mm);
+    if (totalRelevant + maxKerf <= lengthLimit)
         return available;
-    }
 
-    for (int mask = 1; mask < totalCombos; ++mask) {
-        QVector<Cutting::Piece::PieceWithMaterial> combo;
-        for (int i = 0; i < n; ++i) {
-            if (mask & (1 << i)) {
-                combo.append(available[i]);
-            }
-        }
-        if (combo.isEmpty()) continue;
+    // 2) Ha n <= 20 → brute-force (tökéletes)
+    if (n <= 20) {
+        int bestScore = std::numeric_limits<int>::min();
+        int totalCombos = 1 << n;
 
-        int totalCut = OptimizerUtils::sumLengths(combo);
-        if (totalCut > lengthLimit) continue; // early discard
+        for (int mask = 1; mask < totalCombos; ++mask) {
+            QVector<Cutting::Piece::PieceWithMaterial> combo;
+            for (int i = 0; i < n; ++i)
+                if (mask & (1 << i))
+                    combo.append(available[i]);
 
-        int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
-        int used = totalCut + kerfTotal;
+            int totalCut = OptimizerUtils::sumLengths(combo);
+            if (totalCut > lengthLimit) continue;
 
-        if (used <= lengthLimit) {
+            int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+            int used = totalCut + kerfTotal;
+
+            // 🔒 Overfill-védelem
+            if (used > lengthLimit)
+                continue;
+
             int waste = lengthLimit - used;
-            int leftoverLength = lengthLimit - used;
-            int score = OptimizerUtils::calcScore(combo.size(), waste, leftoverLength);
+            int score = OptimizerUtils::calcScore(combo.size(), waste, waste);
 
             if (score > bestScore) {
                 bestScore = score;
                 bestCombo = combo;
             }
         }
+        return bestCombo;
     }
 
-    return bestCombo;
+    // 3) DP fallback (nagy n, de kezelhető hosszLimit)
+    if (lengthLimit <= 10000) {
+        struct Item { int len; Cutting::Piece::PieceWithMaterial piece; };
+        QVector<Item> items;
+        items.reserve(n);
+
+        for (const auto& p : available)
+            items.append({ p.info.length_mm, p });
+
+        QVector<int> dp(lengthLimit + 1, -1);
+        QVector<int> parent(lengthLimit + 1, -1);
+
+        dp[0] = 0;
+
+        for (int i = 0; i < n; ++i) {
+            int len = items[i].len; // kerf nélkül
+            for (int w = lengthLimit; w >= len; --w) {
+                if (dp[w - len] != -1 && dp[w - len] + len > dp[w]) {
+                    dp[w] = dp[w - len] + len;
+                    parent[w] = i;
+                }
+            }
+        }
+
+        int bestW = 0;
+        for (int w = 1; w <= lengthLimit; ++w)
+            if (dp[w] > dp[bestW])
+                bestW = w;
+
+        QVector<Cutting::Piece::PieceWithMaterial> result;
+        int w = bestW;
+        while (w > 0 && parent[w] != -1) {
+            int idx = parent[w];
+            result.append(items[idx].piece);
+            w -= items[idx].len;
+        }
+
+        // kerf utólagos számítása
+        int kerfTotal = OptimizerUtils::roundKerfLoss(result.size(), kerf_mm);
+        int used = OptimizerUtils::sumLengths(result) + kerfTotal;
+        if (used <= lengthLimit)
+            return result;
+        // greedy fallback
+    }
+
+    // 4) Greedy fallback (nagyon nagy n vagy nagy lengthLimit)
+    auto sorted = available;
+    std::sort(sorted.begin(), sorted.end(),
+              [](const auto& a, const auto& b){
+                  return a.info.length_mm > b.info.length_mm;
+              });
+
+    QVector<Cutting::Piece::PieceWithMaterial> greedy;
+    int used = 0;
+
+    for (const auto& p : sorted) {
+        // első darab: nincs vágás → 0 kerf
+        // további darabok: minden új darabhoz 1 vágás → kerf_mm
+
+        int kerf = greedy.isEmpty()
+        ? 0
+        : OptimizerUtils::roundKerfLoss(1, kerf_mm); // egységes kerf: első darab 0, továbbiak 1×kerf
+
+        int candidateUsed = used + p.info.length_mm + kerf;
+
+        if (candidateUsed <= lengthLimit) {
+            greedy.append(p);
+            used = candidateUsed;
+        }
+    }
+
+    return greedy;
 }
 
 
