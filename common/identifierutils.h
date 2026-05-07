@@ -1,4 +1,5 @@
 #pragma once
+#include "common/logger.h"
 #include <QString>
 #include <QUuid>
 
@@ -15,10 +16,11 @@ public:
             n /= base;
         }
 
-        return QString("Rod-%1").arg(prefix);
+
+        auto a =  QString("Rod-%1").arg(prefix);
+        zInfo(QString("makeRodId(counter=%1) -> %2").arg(counter).arg(a));
+        return a;
     }
-
-
 
     // 🆔 Darab azonosító (UUID rövidítve)
     static QString makePieceId(const QUuid& pieceUuid) {

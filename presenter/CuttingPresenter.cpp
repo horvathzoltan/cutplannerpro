@@ -764,7 +764,6 @@ void CuttingPresenter::update_LeftoverAuditActualQuantity(const QUuid& rowId, in
     });
 }
 
-
 /*relocation*/
 
 

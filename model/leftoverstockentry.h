@@ -4,6 +4,7 @@
 #include <QString>
 #include <QColor>
 
+#include "common/logger.h"
 #include "materials/model/material_master.h"
 //#include "model/cutting/result/cutresult.h"
 #include "cutting/result/leftoversource.h"
@@ -15,9 +16,8 @@ struct LeftoverStockEntry {
 
     // Csak itt generálódjon új GUID
     LeftoverStockEntry() : entryId(QUuid::createUuid()) {
-        qDebug() << "CTOR new entryId=" << entryId;
+        zInfo("CTOR new entryId=" + entryId.toString());
     }
-
 
     // Másoláskor és assignmentnél megtartja az eredeti entryId-t
     LeftoverStockEntry(const LeftoverStockEntry& other) = default;

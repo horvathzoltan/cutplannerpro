@@ -14,8 +14,13 @@
 #include "../cuttingmachine.h"
 #include "../../inventorysnapshot.h"
 
+
+
+
+
 namespace Cutting {
 namespace Optimizer {
+
 
 /**
  * @brief Beállítja, hogy az optimalizáló hogyan válassza ki a következő feldolgozandó anyagcsoportot.
@@ -44,6 +49,12 @@ class OptimizerModel : public QObject {
 
 public:
     explicit OptimizerModel(QObject *parent = nullptr);
+
+    enum class CutStatus {
+        Ok,
+        Overfill
+    };
+
 
     /**
  * @brief A teljes vágási tervek listáját adja vissza (referenciaként).
@@ -247,14 +258,14 @@ private:
         QUuid materialId,
         double kerf_mm
         ) const;
-    void cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial &piece,
+    CutStatus cutSinglePieceBatch(const Cutting::Piece::PieceWithMaterial &piece,
                              int &remainingLength, const SelectedRod &rod,
                              const CuttingMachine &machine,
                              int currentOpId,
                              int rodId,
                              double kerf_mm,
                              QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
-    void cutComboBatch(const QVector<Cutting::Piece::PieceWithMaterial> &combo,
+    CutStatus cutComboBatch(const QVector<Cutting::Piece::PieceWithMaterial> &combo,
                        int &remainingLength,
                        const SelectedRod &rod,
                        const CuttingMachine &machine,
@@ -262,6 +273,7 @@ private:
                        int rodId,
                        double kerf_mm,
                        QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    void logCutState(const Cutting::Plan::CutPlan &p, int remainingLengthBefore, int remainingLengthAfter);
 };
 
 } //end namespace Optimizer

@@ -78,6 +78,8 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc)
 {
     QStringList lines;
 
+    // 0) Szálanként vizuális szeparátor
+    lines << "──────────";
     lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
 
     for (const auto& ci : mc.cutInstructions) {
@@ -100,8 +102,8 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc)
                                  ? QString("%1. %2").arg(req->externalReference).arg(req->ownerName)
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
 
-        // 4) Sor összeállítása
-        lines << QString("%2. %3 | %4 | %1 %5 | %6")
+        // 4) Sor összeállítása + checkbox
+        lines << QString("%2. %3 | %4 | %1 %5 mm □ | %6")
                      .arg(icon)
                      .arg(ci.globalStepId)
                      .arg(ci.rodId)
