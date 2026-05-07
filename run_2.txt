@@ -1,37 +1,14 @@
-Én a diff helyet code snippet before/after kérek, ilyen formátumban:
-fájlnév + függvénynév + sorszám környék + régi kód / új kód.
-
-
-Mit kérj tőlem?
-Ha azt szeretnéd, hogy külön snippetet adjak:
-
-Egy snippet a régi kódról (ahogy most van a fájlban).
-
-Egy snippet az új kódról (ahogy át kell írni).
-
-És mindkettőhöz odaírom:
-
-fájlnév
-
-függvénynév
-
-sorszám környék
-
-
-👉 Tehát ha azt kéred tőlem, hogy "
-
-adj snippetet régi és új kóddal, +/‑ jelek nélkül, külön blokkban
-
-", akkor pontosan ilyen formátumban fogom adni.
-
-
-a project állapotát ebben a formátumban kérem:
-🧩 Állapottábla – 2025.10.xx. (frissítve, esti,reggeli,déli stb... állapot)
-# Tevékenység Terv Kész Új Köv Megjegyzés
-
-az sos és a tűzoltást jelölt tűz ikonnal
-ezek a blokkok kellenek:
-a táblázat, a 🚀 Sprint fókusz (🔥 SOS pontokkal), a 📌 Mai eredmények és az 👉 Holnap fókusz.
-
-
-***
+1. vágási utasítás : szálanként gap és szeparátor
+2. anyagonként: elejéből, végéből levág 15mm - törzs bővítés egy mezővel
+- optimalizálásnál figyelembe venni, pl napháló tok 5800
+3. többször kiosztotta a Rod-C szálazonosítót két külömböző szálra
+4. 5-10 tételes kategóriák szimbólummal - ez kész munkadarabra vonatkozik
+- napocska, halacska, házikó, holdacska
+5. a listában kell egy üres checkbox, amit ki lehet vágás után pipálni tollal
+6. minimális hulló megkövetelése
+- vékony falú nyitott idomoknál 10-15 cm, vastag falú vagy zárt idomoknál 3-5 cm
+- material törzsbe anyagonként felvenni mzőt és meghatározni az alapértéket
+7. 7-8 tételenként csoportokba szervezni ha nincsenek csoprtok kialakítva alapból
+- szimbólumösszerendelés
+8. előre generálni a szálra, és a munkadarabra írandó kódot,
+vagy nyomtatni egy azonosító címke készletet

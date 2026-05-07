@@ -978,7 +978,7 @@ OptimizerModel::findBestReusableFit(const QVector<LeftoverStockEntry>& mergedVie
             int used = single->info.length_mm + kerfTotal;
             int waste = OptimizerUtils::computeWasteInt(stock.availableLength_mm, used);
             if (waste == 0) {
-                return ReusableCandidate{ i, stock, QVector{ *single }, waste };
+                return ReusableCandidate{ i, stock, QVector<Cutting::Piece::PieceWithMaterial>{ *single }, waste };
             }
         }
 
