@@ -399,6 +399,9 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                            OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
                 remainingLength -= used;
                 remainingLength2 -= used;
+
+
+                    // 🔧 IDE jöhet a szegmens-utókezelés az utoljára létrejött CutPlan-re
             }
 
 

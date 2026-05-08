@@ -1,0 +1,644 @@
+Rendben, akkor csináljunk egy planId‑alapú, kívülről hívható front‑trim
+utókezelést, ami:
+
+-   nem nyúl a kereséshez (az már most jó: remainingLength2‑vel
+    iterálsz),
+-   nem borítja a leftover hosszát (össz‑waste változatlan marad),
+-   és csak stock rúdnál, rúdonként egyszer tesz be egy 15 mm + kerf
+    technológiai elejét.
+
+Az alábbi patch három részből áll:
+
+1.  SegmentModel kap egy minimális settert a hossz és index
+    módosításához.
+2.  cutComboBatch visszaadja a létrehozott planId‑t (out param).
+3.  optimize() rod‑loopjában, a sikeres combo után, planId alapján
+    utólag módosítjuk a megfelelő CutPlan szegmenslistáját.
+
+------------------------------------------------------------------------
+
+1. SegmentModel bővítése (hossz / index módosítás)
+
+    // segmentmodel.h
+
+    struct SegmentModel {
+    public:
+        // ... meglévő mezők, ctor, stb. ...
+
+        Type type() const { return _type;}
+        QString length_txt() const { return QString::number(_length_mm)+ "mm";}
+        double length_mm() const { return _length_mm; }
+        QString barcode() const { return _barcode; }
+
+        // 🔧 PATCH: minimális setterek utólagos szegmens‑korrekcióhoz
+        void shrinkLength(double delta) {
+            _length_mm -= delta;
+            if (_length_mm < 0) _length_mm = 0; // védőkorlát, auditbarát
+        }
+
+        void setIndex(int ix) {
+            _segIx = ix;
+        }
+
+        static QString segmentPrefix(SegmentModel::Type type) {
+            // ...
+        }
+
+        QString toLabelString() const {
+            // ...
+        }
+    };
+
+------------------------------------------------------------------------
+
+2. cutComboBatch – planId visszaadása out paramon
+
+2.1. Deklaráció módosítása (headerben)
+
+    // optimizermodel.h (ahol a cutComboBatch deklarálva van)
+
+    class OptimizerModel : public QObject {
+        // ...
+        CutStatus cutComboBatch(
+            const QVector<Cutting::Piece::PieceWithMaterial>& combo,
+            int& remainingLength,
+            const SelectedRod& rod,
+            const CuttingMachine& machine,
+            int currentOpId,
+            int rodId,
+            double kerf_mm,
+            QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
+            QUuid* outPlanId = nullptr   // 🔧 PATCH: opcionális out param
+        );
+        // ...
+    };
+
+2.2. Definíció módosítása
+
+    // optimizermodel.cpp
+
+    OptimizerModel::CutStatus OptimizerModel::cutComboBatch(
+        const QVector<Cutting::Piece::PieceWithMaterial>& combo,
+        int& remainingLength,
+        const SelectedRod& rod,
+        const CuttingMachine& machine,
+        int currentOpId,
+        int rodId,
+        double kerf_mm,
+        QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
+        QUuid* outPlanId   // 🔧 PATCH
+    )
+    {
+        int totalCut  = OptimizerUtils::sumLengths(combo);
+        int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+        int used      = totalCut + kerfTotal;
+
+        zInfo(QString("CUT: rodId=%1, barcode=%2, totalLength=%3, remainingBefore=%4, used=%5")
+                  .arg(rod.rodId)
+                  .arg(rod.barcode)
+                  .arg(rod.length)
+                  .arg(remainingLength)
+                  .arg(used));
+
+        // 🔒 Overfill-védelem
+        if (used > remainingLength) {
+            zError(QString("❌ Overfill detected in cutComboBatch: used=%1 > remaining=%2 (rodId=%3)")
+                       .arg(used).arg(remainingLength).arg(rod.rodId));
+            return CutStatus::Overfill;
+        }
+
+        int waste = OptimizerUtils::computeWasteInt(remainingLength, used);
+
+        // 📦 CutPlan
+        Cutting::Plan::CutPlan p;
+        p.planNumber = planCounter++;
+        p.piecesWithMaterial = combo;
+        p.kerfTotal = kerfTotal;
+        p.waste = remainingLength - used;
+        p.materialId = rod.materialId;
+        p.rodId = rod.rodId;
+        p.source = rod.isReusable ? Cutting::Plan::Source::Reusable
+                                  : Cutting::Plan::Source::Stock;
+        p.planId = QUuid::createUuid();
+        p.status = Cutting::Plan::Status::NotStarted;
+        p.totalLength = rod.length;
+        p.machineId   = machine.id;
+        p.machineName = machine.name;
+        p.kerfUsed_mm = kerf_mm;
+
+        // ⚠️ Itt még a "nyers" remainingLength‑re generálunk szegmenseket
+        p.generateSegments(kerf_mm, remainingLength);
+        p.sourceBarcode = rod.barcode;
+        p.optimizationId = currentOpId;
+        p.parentBarcode = rod.barcode;
+        p.parentPlanId  = std::nullopt;
+
+        QString wasteBarcode = p.getWasteBarcode();
+        p.leftoverBarcode = wasteBarcode;
+
+        zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
+
+        // ➕ ResultModel
+        Cutting::Result::ResultModel result;
+        result.cutPlanId = p.planId;
+        result.materialId = rod.materialId;
+        result.length = rod.length;
+        result.cuts = combo;
+        result.waste = waste;
+        result.source = rod.isReusable
+                            ? Cutting::Result::ResultSource::FromReusable
+                            : Cutting::Result::ResultSource::FromStock;
+        result.optimizationId = rod.isReusable
+                                    ? std::nullopt
+                                    : std::make_optional(currentOpId);
+        result.reusableBarcode = wasteBarcode;
+        result.isFinalWaste = (remainingLength - used <= 0);
+        result.parentBarcode = p.parentBarcode;
+        result.sourceBarcode = rod.barcode;
+
+        if (!result.isFinalWaste && result.waste > 0 && used <= remainingLength + used) {
+            LeftoverStockEntry entry;
+            entry.materialId = result.materialId;
+            entry.availableLength_mm = result.waste;
+            entry.used = false;
+            entry.barcode = result.reusableBarcode;
+            entry.parentBarcode = rod.barcode;
+            entry.source = Result::LeftoverSource::Optimization;
+            entry.optimizationId = std::make_optional(currentOpId);
+
+            zInfo(QString("♻️ Assigned RST barcode=%1 for leftover entryId=%2 (rodId=%3)")
+                      .arg(entry.barcode)
+                      .arg(entry.entryId.toString())
+                      .arg(rod.rodId));
+
+            leftoverRodMap.insert(entry.entryId, rod.rodId);
+            zInfo(QString("MAP-INSERT: %1 → %2")
+                      .arg(entry.entryId.toString())
+                      .arg(rod.rodId));
+
+            _localLeftovers.append(entry);
+
+            if (rod.isReusable) {
+                if (rod.entryId.has_value()) {
+                    _usedLeftoverEntryIds.insert(rod.entryId.value());
+                    zInfo(QString("TILTÁS: forrás leftover entryId=%1 (rodId=%2)")
+                              .arg(rod.entryId->toString())
+                              .arg(rod.rodId));
+                } else {
+                    zError(QString("❌ Inconsistent state: reusable rod without entryId (rodId=%1, barcode=%2)")
+                               .arg(rod.rodId)
+                               .arg(rod.barcode));
+                    Q_ASSERT(false);
+                }
+            }
+
+            zInfo(QString("ParentBarcode set in ResultModel=%1, entry.parentBarcode=%2")
+                      .arg(result.parentBarcode.value_or("∅"))
+                      .arg(entry.parentBarcode.value_or("∅")));
+        }
+
+        // 🔧 PATCH: planId visszaadása hívónak
+        if (outPlanId) {
+            *outPlanId = p.planId;
+        }
+
+        _result_plans.append(p);
+        _planned_leftovers.append(result);
+
+        // Darabok törlése
+        groupVec.erase(std::remove_if(groupVec.begin(), groupVec.end(),
+                                      [&](const auto& candidate){
+                                          return std::any_of(combo.begin(), combo.end(),
+                                                             [&](const auto& used){
+                                                                 return candidate.info.pieceId == used.info.pieceId;
+                                                             });
+                                      }), groupVec.end());
+
+        remainingLength -= used;
+
+        zInfo(QString("CUT-END: rodId=%1, remainingAfter=%2")
+                  .arg(rod.rodId)
+                  .arg(remainingLength));
+
+        return CutStatus::Ok;
+    }
+
+------------------------------------------------------------------------
+
+3. Front‑trim utókezelés planId alapján
+
+3.1. Helper a CutPlan szegmenseinek módosítására
+
+    // optimizermodel.h – private szekcióban
+
+    private:
+        void applyFrontTrimToPlan(const QUuid& planId,
+                                  double kerf_mm,
+                                  bool isStockRod);
+
+    // optimizermodel.cpp
+
+    void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
+                                              double kerf_mm,
+                                              bool isStockRod)
+    {
+        if (!isStockRod)
+            return; // reusable rudaknál nincs gyári 2×15 mm
+
+        // 1️⃣ Megkeressük a megfelelő CutPlan‑t
+        auto it = std::find_if(_result_plans.begin(), _result_plans.end(),
+                               [&](const Cutting::Plan::CutPlan& p){
+                                   return p.planId == planId;
+                               });
+        if (it == _result_plans.end())
+            return;
+
+        Cutting::Plan::CutPlan& plan = *it;
+        auto& segs = plan.segments;
+        if (segs.isEmpty())
+            return;
+
+        // 2️⃣ Utolsó Waste szegmens (végmaradék)
+        int lastWasteIx = -1;
+        for (int i = segs.size() - 1; i >= 0; --i) {
+            if (segs[i].type() == Cutting::Segment::SegmentModel::Type::Waste) {
+                lastWasteIx = i;
+                break;
+            }
+        }
+        if (lastWasteIx < 0)
+            return;
+
+        double frontTrim = OptimizerConstants::END_TRIM_MM; // 15 mm
+        double frontKerf = (kerf_mm > 0.0)
+                               ? kerf_mm
+                               : 0.0;
+
+        double delta = frontTrim + frontKerf;
+
+        // Ha a végmaradék ennél kisebb, nem piszkáljuk (védőfék)
+        if (segs[lastWasteIx].length_mm() <= delta)
+            return;
+
+        // 3️⃣ Végmaradék rövidítése
+        segs[lastWasteIx].shrinkLength(delta);
+
+        // 4️⃣ Elejére beszúrjuk: [Waste(15)] + [Kerf(frontKerf)]
+        //    RequestId itt nem releváns → üres QUuid
+        Cutting::Segment::SegmentModel frontWaste(
+            Cutting::Segment::SegmentModel::Type::Waste,
+            frontTrim,
+            /*ix*/ 0,
+            QUuid()
+        );
+
+        Cutting::Segment::SegmentModel frontKerfSeg(
+            Cutting::Segment::SegmentModel::Type::Kerf,
+            frontKerf,
+            /*ix*/ 0,
+            QUuid()
+        );
+
+        segs.insert(0, frontKerfSeg);
+        segs.insert(0, frontWaste);
+
+        // 5️⃣ Indexek újraszámozása típusonként (csak label célra)
+        int pieceIx = 1;
+        int kerfIx  = 1;
+        int wasteIx = 1;
+
+        for (auto& s : segs) {
+            using T = Cutting::Segment::SegmentModel::Type;
+            switch (s.type()) {
+            case T::Piece:
+                s.setIndex(pieceIx++);
+                break;
+            case T::Kerf:
+                s.setIndex(kerfIx++);
+                break;
+            case T::Waste:
+                s.setIndex(wasteIx++);
+                break;
+            }
+        }
+
+        // ⚖️ plan.waste, result.waste, leftover.availableLength_mm NEM változik:
+        // csak a waste szegmens eloszlását módosítottuk (eleje vs vége),
+        // az össz‑hossz változatlan.
+    }
+
+------------------------------------------------------------------------
+
+3.2. Rod‑loop módosítása – planId átadás + utókezelés
+
+    // optimize() – a rod‑loop elején, a rúd kiválasztása után:
+
+    bool frontTrimAppliedForCurrentRod = false;  // 🔧 PATCH: rúdonként egyszer
+
+    // ...
+
+    // 2/d. Rod‑loop stop feltételekkel
+    while (true) {
+        QVector<Cutting::Piece::PieceWithMaterial> combo =
+            findBestFit(groupVec, remainingLength2, kerf_mm);
+
+        zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
+                  .arg(groupVec.size())
+                  .arg(combo.size()));
+        if (combo.isEmpty())
+            break;
+
+        QUuid planId;  // 🔧 PATCH: ide kérjük vissza a plan azonosítót
+
+        auto cutStatus1 =
+            cutComboBatch(combo,
+                          remainingLength,
+                          rod,
+                          machine,
+                          currentOpId,
+                          rodId,
+                          kerf_mm,
+                          groupVec,
+                          &planId);   // 🔧 PATCH: outPlanId
+
+        if (cutStatus1 == CutStatus::Overfill) {
+            // ... (fallback ág – itt nincs front‑trim)
+            // itt is, ha sikeres single‑cut, hasonlóan kérhetsz planId‑t a
+            // cutSinglePieceBatch‑től, ha akarod ugyanazt a trükköt rá.
+            // (most fókuszáljunk a combo‑ágra, ahogy kérted)
+        } else {
+            int used = OptimizerUtils::sumLengths(combo) +
+                       OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+            remainingLength  -= used;
+            remainingLength2 -= used;
+
+            // 🔧 PATCH: front‑trim utókezelés – csak stock rúdra, rúdonként egyszer
+            if (!frontTrimAppliedForCurrentRod && !rod.isReusable && !planId.isNull()) {
+                applyFrontTrimToPlan(planId, kerf_mm, /*isStockRod=*/true);
+                frontTrimAppliedForCurrentRod = true;
+            }
+        }
+
+        // ... a további stop feltételek, leftover‑logika marad, ahogy most van ...
+    }
+
+------------------------------------------------------------------------
+
+Miért jó ez így?
+
+-   A keresés (findBestFit, findSingleBestPiece) továbbra is a „kisebb”
+    remainingLength2‑n fut, tehát sosem fog olyan combo‑t választani,
+    ami megeszi a 15+15+70 tartalékot.
+-   A fizikai rúd hossza (rod.length) és a waste / leftover számok nem
+    változnak, csak a waste szegmens eloszlása: a végmaradékból előre
+    hozunk 15 mm + kerf‑et.
+-   A módosítás planId‑val célzott, nem kell _result_plans‑t indexekkel
+    vadászni, és nem kell _planned_leftovers‑t piszkálni, mert az
+    össz‑waste nem változik.
+
+Ha szeretnéd, a következő körben megcsinálhatjuk ugyanezt a single‑piece
+fallback ágra is (külön outPlanId a cutSinglePieceBatch‑ben), hogy
+minden stock‑rúd első vágása ugyanígy front‑trimelt legyen.
+
+
+
+****
+*
+*
+*
+*
+*
+*
+*
+*
+
+Jó kérdés, ez már a „nem csak ne hibázzon, hanem legyen okos” szint. Menjünk végig rajta lépésről lépésre, konkrét, végrehajtható tervben.
+
+---
+
+### 1. DP scoring finomhangolás – mit jelent?
+
+Most a brute-force részben ezt csinálod:
+
+```cpp
+int waste = lengthLimit - used;
+int score = OptimizerUtils::calcScore(combo.size(), waste, waste);
+```
+
+Tehát a score főleg:
+
+- **darabszám** (combo.size)
+- **waste** (minél kisebb, annál jobb)
+
+A DP viszont csak a **teljes hossz maximalizálására** optimalizál (sumLengths), nem ugyanarra a score‑ra, mint a brute-force.
+
+#### Cél
+
+- A brute-force és a DP **ugyanarra az értékrendre optimalizáljon**.
+- Ne csak „minél hosszabb legyen”, hanem:
+  - minél kevesebb hulladék,
+  - minél több darab,
+  - esetleg preferált leftover‑tartományok.
+
+#### Lépésenkénti terv
+
+**1.1 – Dokumentáld a jelenlegi scoring logikát**
+
+- Nézd meg `OptimizerUtils::calcScore(...)` implementációját.
+- Írd le magadnak (kommentben is akár):
+  **Mi a prioritás?**
+  - kevesebb waste > több darab?
+  - vagy fordítva?
+
+**1.2 – Ugyanezt a scoringot vezesd be a DP‑ben is**
+
+Most a DP csak:
+
+```cpp
+if (dp[w - len] + len > dp[w]) ...
+```
+
+Ez „maximális hossz” logika.
+
+Terv:
+
+- A DP‑ben ne csak `len` legyen az érték, hanem egy **score**:
+  - pl. `value = alpha * totalLen - beta * waste - gamma * leftoverPenalty`
+- Ehhez két opció van:
+  - egyszerűbb: marad a „maximális hossz”, de a DP után több jelöltet is visszafejtesz, és scoring alapján választasz közülük,
+  - bonyolultabb: DP‑állapotban score‑t tárolsz (de ez már nagyobb átalakítás).
+
+**Javaslat első körre (konzervatív):**
+
+- DP marad „maximális hossz” alapú.
+- A DP után:
+  - visszafejted az optimális `bestW`‑t,
+  - de **nem csak egyet**, hanem:
+    - végigmész több `w` értéken, ahol `dp[w]` közel van a maxhoz,
+    - mindegyikből visszafejtesz egy kombinációt,
+    - mindegyikre kiszámolod a `calcScore(...)`‑t,
+    - a legjobb score‑út választod.
+
+Ez egy **PATCH‑szintű, lépésenként bevezethető** finomítás, nem rombolja szét a DP‑t.
+
+---
+
+### 2. Greedy kerf‑optimalizálás – mit jelent?
+
+A greedy rész most ezt csinálja:
+
+```cpp
+std::sort(sorted.begin(), sorted.end(),
+          [](const auto& a, const auto& b){
+              return a.info.length_mm > b.info.length_mm;
+          });
+```
+
+Tehát:
+
+- **csak hossz szerint rendez**, nagyobbtól a kisebb felé,
+- kerfet csak a bepakolásnál veszi figyelembe.
+
+#### Cél
+
+- A greedy ne csak „legnagyobb darab először” legyen,
+- hanem:
+  - vegye figyelembe a kerfet,
+  - vegye figyelembe, hogy **milyen leftover tartományt hagy maga után**,
+  - próbáljon **jó leftover tartományt** célozni (pl. 500–800 mm),
+  - kerülje a „rossz” 300–500 mm tartományt.
+
+#### Lépésenkénti terv
+
+**2.1 – Új rendezési kulcs bevezetése**
+
+Most:
+
+```cpp
+length_mm desc
+```
+
+Lehetne helyette pl.:
+
+- **effektív hossz**: `length_mm + kerf_estimate`
+- vagy egy scoring:
+
+```cpp
+score = length_mm - penalty_if_causes_bad_leftover
+```
+
+Első lépés (konzervatív):
+
+- marad a hossz szerinti rendezés,
+- de a bepakolásnál:
+
+```cpp
+int kerf = greedy.isEmpty() ? 0 : roundKerfLoss(1, kerf_mm);
+int candidateUsed = used + p.info.length_mm + kerf;
+int leftoverIfTake = lengthLimit - candidateUsed;
+```
+
+- ha `leftoverIfTake` a **rossz tartományba esik** (300–500),
+  és van még más darab is, amit be lehetne tenni → inkább ugorjuk át ezt a darabot, és nézzük a következőt.
+
+Ez egy **lokális, egyszerű szabály**, amit patchben könnyű bevezetni.
+
+---
+
+### 3. Leftover‑prioritás finomítása – mit jelent?
+
+Most a rod‑loopban:
+
+- vannak tartományok:
+  - **selejt alatt**: lezárás,
+  - **jó leftover tartomány**: lezárás,
+  - **köztes tartomány (300–500)**: próbálunk még egy darabot,
+  - **túl nagy leftover (> GOOD_LEFTOVER_MAX)**: próbálunk még egy darabot.
+
+#### Cél
+
+- A rendszer **tudatosan törekedjen**:
+  - minél több **jó leftover** (pl. 500–800),
+  - minél kevesebb **rossz leftover** (300–500),
+  - minél kevesebb **apró selejt**.
+
+#### Lépésenkénti terv
+
+**3.1 – Scoringba beépíteni a leftover tartományt**
+
+A `calcScore(...)` most waste‑et használ.
+Bővíthető:
+
+- ha a leftover (lengthLimit − used) a **jó tartományban van** → plusz pont,
+- ha a leftover a **rossz tartományban van** → mínusz pont,
+- ha a leftover nagyon kicsi (selejt) → kisebb mínusz, mint a rossz tartomány.
+
+Így:
+
+- brute-force már **preferálja a jó leftovereket**,
+- DP (ha scoringot bevezetünk) szintén.
+
+**3.2 – Rod‑loop döntési pontok finomhangolása**
+
+Most:
+
+- köztes tartományban egy darabot próbálsz még bepréselni,
+- túl nagy leftovernél is.
+
+Finomítás:
+
+- ha a greedy/DP olyan kombinációt ad, ami:
+  - **jó leftoverhez vezet** → preferáld,
+  - **rossz leftoverhez vezet** → próbálj alternatív kombinációt (pl. másik DP‑kimenet, lásd 1.2).
+
+Ez már egy **második hullámos** finomítás, miután a scoringot egységesítetted.
+
+---
+
+### 4. Konkrét, lépésenként végrehajtható roadmap
+
+#### LÉPÉS 1 – Dokumentáljuk és egységesítjük a scoringot
+
+- [ ] Nézd meg `OptimizerUtils::calcScore(...)`.
+- [ ] Írd le (kommentben is): mi a prioritás (waste vs. darabszám).
+- [ ] Döntsd el: szeretnél‑e leftover tartományt is beépíteni a score‑ba (jó/rossz leftover).
+
+#### LÉPÉS 2 – DP utáni többjelöltes scoring (konzervatív DP‑finomítás)
+
+- [ ] A DP után ne csak `bestW`‑t nézd, hanem:
+  - [ ] keress több `w`‑t, ahol `dp[w]` közel van `dp[bestW]`‑hez (pl. 95–100% sáv).
+  - [ ] mindegyikből visszafejtesz egy kombinációt.
+  - [ ] mindegyikre kiszámolod a `calcScore(...)`‑t.
+  - [ ] a legjobb score‑út választod.
+- [ ] Ez egy külön PATCH lesz, teljesen lokális a `findBestFit` DP ágában.
+
+#### LÉPÉS 3 – Greedy kerf‑aware bepakolás
+
+- [ ] A greedy ciklusban számold ki:
+
+  ```cpp
+  int leftoverIfTake = lengthLimit - candidateUsed;
+  ```
+
+- [ ] Ha `leftoverIfTake` a rossz tartományba esik (300–500), és van még más jelölt:
+  - [ ] próbáld inkább a következő darabot,
+  - [ ] csak ha semmi jobb nincs, engedd meg.
+
+Ez egy nagyon kicsi, jól körülhatárolható patch.
+
+#### LÉPÉS 4 – Leftover‑tartomány beépítése a scoringba
+
+- [ ] `calcScore(...)` bővítése:
+  - [ ] paraméterként kapja a leftover hosszát is (vagy már most is kapja).
+  - [ ] ha leftover ∈ [GOOD_MIN, GOOD_MAX] → +bonus,
+  - [ ] ha leftover ∈ [SELEJT_THRESHOLD, GOOD_MIN) → −penalty,
+  - [ ] ha leftover < SELEJT_THRESHOLD → kisebb penalty.
+- [ ] Ezt a scoringot használd:
+  - [ ] brute-force ágban,
+  - [ ] DP utáni többjelöltes kiválasztásnál,
+  - [ ] opcionálisan greedy döntéseknél is.
+
+---
+
+Ha akarod, a következő körben megcsinálhatjuk **PATCH #24 – DP utáni többjelöltes scoring** konkrét diffekkel, a mostani STRICT MODE formátumban.
+És onnan lépünk tovább a greedy finomhangolásra.

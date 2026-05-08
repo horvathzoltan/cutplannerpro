@@ -1,3 +1,8 @@
+1. vágási utasítás : szálanként gap és szeparátor
+  - sajnos nem kerül be szeparátor szálváltáskor
+  - ha szálváltás van, kell checkbox oda is, hogy elvégezte a fickó a szálváltást, és be tudja pipálni
+  - a rúd cimkéje után is kell checkbox, hogy "feljelöltem a rudat"
+
 0: megkövetelünk  MINIMUM_HULLO_MM -t de:
 
 [2026-05-07T23:53:22.890]  🔄 Optimize(1) run started (heuristic=ByCount)
@@ -23,252 +28,29 @@ azaz CutPlan #2: 0 mm, nem 70
 4. 5-10 tételes kategóriák szimbólummal - ez kész munkadarabra vonatkozik
 - napocska, halacska, házikó, holdacska
 
-6. minimális hulló megkövetelése
-- vékony falú nyitott idomoknál 10-15 cm, vastag falú vagy zárt idomoknál 3-5 cm
-- material törzsbe anyagonként felvenni mzőt és meghatározni az alapértéket
 
 7. 7-8 tételenként csoportokba szervezni ha nincsenek csoprtok kialakítva alapból
 - szimbólumösszerendelés
 
-8. előre generálni a szálra, és a munkadarabra írandó kódot,
+8. előre generálni a szálra, és a munkadarabra írandó/ragasztandó kódot,
 vagy nyomtatni egy azonosító címke készletet
+
 
 ************
 
+   KÉSZ
+
+************
+
+
 1. vágási utasítás : szálanként gap és szeparátor
+
 5. a listában kell egy üres checkbox, amit ki lehet vágás után pipálni tollal
 3. többször kiosztotta a Rod-C szálazonosítót két külömböző szálra
 
 
+6. minimális hulló megkövetelése
+- vékony falú nyitott idomoknál 10-15 cm, vastag falú vagy zárt idomoknál 3-5 cm
+- material törzsbe anyagonként felvenni mzőt és meghatározni az alapértéket
 ****
 
-Jó kérdés, ez már a „nem csak ne hibázzon, hanem legyen okos” szint. Menjünk végig rajta lépésről lépésre, konkrét, végrehajtható tervben.
-
----
-
-### 1. DP scoring finomhangolás – mit jelent?
-
-Most a brute-force részben ezt csinálod:
-
-```cpp
-int waste = lengthLimit - used;
-int score = OptimizerUtils::calcScore(combo.size(), waste, waste);
-```
-
-Tehát a score főleg:
-
-- **darabszám** (combo.size)
-- **waste** (minél kisebb, annál jobb)
-
-A DP viszont csak a **teljes hossz maximalizálására** optimalizál (sumLengths), nem ugyanarra a score‑ra, mint a brute-force.
-
-#### Cél
-
-- A brute-force és a DP **ugyanarra az értékrendre optimalizáljon**.
-- Ne csak „minél hosszabb legyen”, hanem:
-  - minél kevesebb hulladék,
-  - minél több darab,
-  - esetleg preferált leftover‑tartományok.
-
-#### Lépésenkénti terv
-
-**1.1 – Dokumentáld a jelenlegi scoring logikát**
-
-- Nézd meg `OptimizerUtils::calcScore(...)` implementációját.
-- Írd le magadnak (kommentben is akár):
-  **Mi a prioritás?**
-  - kevesebb waste > több darab?
-  - vagy fordítva?
-
-**1.2 – Ugyanezt a scoringot vezesd be a DP‑ben is**
-
-Most a DP csak:
-
-```cpp
-if (dp[w - len] + len > dp[w]) ...
-```
-
-Ez „maximális hossz” logika.
-
-Terv:
-
-- A DP‑ben ne csak `len` legyen az érték, hanem egy **score**:
-  - pl. `value = alpha * totalLen - beta * waste - gamma * leftoverPenalty`
-- Ehhez két opció van:
-  - egyszerűbb: marad a „maximális hossz”, de a DP után több jelöltet is visszafejtesz, és scoring alapján választasz közülük,
-  - bonyolultabb: DP‑állapotban score‑t tárolsz (de ez már nagyobb átalakítás).
-
-**Javaslat első körre (konzervatív):**
-
-- DP marad „maximális hossz” alapú.
-- A DP után:
-  - visszafejted az optimális `bestW`‑t,
-  - de **nem csak egyet**, hanem:
-    - végigmész több `w` értéken, ahol `dp[w]` közel van a maxhoz,
-    - mindegyikből visszafejtesz egy kombinációt,
-    - mindegyikre kiszámolod a `calcScore(...)`‑t,
-    - a legjobb score‑út választod.
-
-Ez egy **PATCH‑szintű, lépésenként bevezethető** finomítás, nem rombolja szét a DP‑t.
-
----
-
-### 2. Greedy kerf‑optimalizálás – mit jelent?
-
-A greedy rész most ezt csinálja:
-
-```cpp
-std::sort(sorted.begin(), sorted.end(),
-          [](const auto& a, const auto& b){
-              return a.info.length_mm > b.info.length_mm;
-          });
-```
-
-Tehát:
-
-- **csak hossz szerint rendez**, nagyobbtól a kisebb felé,
-- kerfet csak a bepakolásnál veszi figyelembe.
-
-#### Cél
-
-- A greedy ne csak „legnagyobb darab először” legyen,
-- hanem:
-  - vegye figyelembe a kerfet,
-  - vegye figyelembe, hogy **milyen leftover tartományt hagy maga után**,
-  - próbáljon **jó leftover tartományt** célozni (pl. 500–800 mm),
-  - kerülje a „rossz” 300–500 mm tartományt.
-
-#### Lépésenkénti terv
-
-**2.1 – Új rendezési kulcs bevezetése**
-
-Most:
-
-```cpp
-length_mm desc
-```
-
-Lehetne helyette pl.:
-
-- **effektív hossz**: `length_mm + kerf_estimate`
-- vagy egy scoring:
-
-```cpp
-score = length_mm - penalty_if_causes_bad_leftover
-```
-
-Első lépés (konzervatív):
-
-- marad a hossz szerinti rendezés,
-- de a bepakolásnál:
-
-```cpp
-int kerf = greedy.isEmpty() ? 0 : roundKerfLoss(1, kerf_mm);
-int candidateUsed = used + p.info.length_mm + kerf;
-int leftoverIfTake = lengthLimit - candidateUsed;
-```
-
-- ha `leftoverIfTake` a **rossz tartományba esik** (300–500),
-  és van még más darab is, amit be lehetne tenni → inkább ugorjuk át ezt a darabot, és nézzük a következőt.
-
-Ez egy **lokális, egyszerű szabály**, amit patchben könnyű bevezetni.
-
----
-
-### 3. Leftover‑prioritás finomítása – mit jelent?
-
-Most a rod‑loopban:
-
-- vannak tartományok:
-  - **selejt alatt**: lezárás,
-  - **jó leftover tartomány**: lezárás,
-  - **köztes tartomány (300–500)**: próbálunk még egy darabot,
-  - **túl nagy leftover (> GOOD_LEFTOVER_MAX)**: próbálunk még egy darabot.
-
-#### Cél
-
-- A rendszer **tudatosan törekedjen**:
-  - minél több **jó leftover** (pl. 500–800),
-  - minél kevesebb **rossz leftover** (300–500),
-  - minél kevesebb **apró selejt**.
-
-#### Lépésenkénti terv
-
-**3.1 – Scoringba beépíteni a leftover tartományt**
-
-A `calcScore(...)` most waste‑et használ.
-Bővíthető:
-
-- ha a leftover (lengthLimit − used) a **jó tartományban van** → plusz pont,
-- ha a leftover a **rossz tartományban van** → mínusz pont,
-- ha a leftover nagyon kicsi (selejt) → kisebb mínusz, mint a rossz tartomány.
-
-Így:
-
-- brute-force már **preferálja a jó leftovereket**,
-- DP (ha scoringot bevezetünk) szintén.
-
-**3.2 – Rod‑loop döntési pontok finomhangolása**
-
-Most:
-
-- köztes tartományban egy darabot próbálsz még bepréselni,
-- túl nagy leftovernél is.
-
-Finomítás:
-
-- ha a greedy/DP olyan kombinációt ad, ami:
-  - **jó leftoverhez vezet** → preferáld,
-  - **rossz leftoverhez vezet** → próbálj alternatív kombinációt (pl. másik DP‑kimenet, lásd 1.2).
-
-Ez már egy **második hullámos** finomítás, miután a scoringot egységesítetted.
-
----
-
-### 4. Konkrét, lépésenként végrehajtható roadmap
-
-#### LÉPÉS 1 – Dokumentáljuk és egységesítjük a scoringot
-
-- [ ] Nézd meg `OptimizerUtils::calcScore(...)`.
-- [ ] Írd le (kommentben is): mi a prioritás (waste vs. darabszám).
-- [ ] Döntsd el: szeretnél‑e leftover tartományt is beépíteni a score‑ba (jó/rossz leftover).
-
-#### LÉPÉS 2 – DP utáni többjelöltes scoring (konzervatív DP‑finomítás)
-
-- [ ] A DP után ne csak `bestW`‑t nézd, hanem:
-  - [ ] keress több `w`‑t, ahol `dp[w]` közel van `dp[bestW]`‑hez (pl. 95–100% sáv).
-  - [ ] mindegyikből visszafejtesz egy kombinációt.
-  - [ ] mindegyikre kiszámolod a `calcScore(...)`‑t.
-  - [ ] a legjobb score‑út választod.
-- [ ] Ez egy külön PATCH lesz, teljesen lokális a `findBestFit` DP ágában.
-
-#### LÉPÉS 3 – Greedy kerf‑aware bepakolás
-
-- [ ] A greedy ciklusban számold ki:
-
-  ```cpp
-  int leftoverIfTake = lengthLimit - candidateUsed;
-  ```
-
-- [ ] Ha `leftoverIfTake` a rossz tartományba esik (300–500), és van még más jelölt:
-  - [ ] próbáld inkább a következő darabot,
-  - [ ] csak ha semmi jobb nincs, engedd meg.
-
-Ez egy nagyon kicsi, jól körülhatárolható patch.
-
-#### LÉPÉS 4 – Leftover‑tartomány beépítése a scoringba
-
-- [ ] `calcScore(...)` bővítése:
-  - [ ] paraméterként kapja a leftover hosszát is (vagy már most is kapja).
-  - [ ] ha leftover ∈ [GOOD_MIN, GOOD_MAX] → +bonus,
-  - [ ] ha leftover ∈ [SELEJT_THRESHOLD, GOOD_MIN) → −penalty,
-  - [ ] ha leftover < SELEJT_THRESHOLD → kisebb penalty.
-- [ ] Ezt a scoringot használd:
-  - [ ] brute-force ágban,
-  - [ ] DP utáni többjelöltes kiválasztásnál,
-  - [ ] opcionálisan greedy döntéseknél is.
-
----
-
-Ha akarod, a következő körben megcsinálhatjuk **PATCH #24 – DP utáni többjelöltes scoring** konkrét diffekkel, a mostani STRICT MODE formátumban.
-És onnan lépünk tovább a greedy finomhangolásra.
