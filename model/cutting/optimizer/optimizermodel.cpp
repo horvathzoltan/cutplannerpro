@@ -140,6 +140,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
 
         int remainingLength = 0;
+        int remainingLength2 = 0;
         bool rodSelected = false;
 
         // Összefésült nézet készítése
@@ -147,6 +148,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         merged += _localLeftovers;
 
         // ♻️ Először próbáljunk reusable-t
+        // REUSEABLE ÁG
         std::optional<ReusableCandidate> candidate =
             findBestReusableFit(merged, globalSnapshot.size(), groupVec,targetMaterialId, kerf_mm);
         if (candidate.has_value() &&
@@ -221,8 +223,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                     _localLeftovers.end());
             }
 
-            // Reusable leftover: nincs gyári sérült vég → nincs 2×15 mm levonás
-            remainingLength = rod.length - OptimizerConstants::MINIMUM_HULLO_MM;;
+            remainingLength = rod.length;
+            //remainingLength2 = rod.length;
+            // Reusable leftover: nincs gyári sérült vég → nincs 2×15 mm levonás            
+            remainingLength2 = rod.length - OptimizerConstants::END_TRIM_MM - OptimizerConstants::MINIMUM_HULLO_MM;
             rodSelected = true;
             // reusable ág végén
             zInfo(QString("SELECTED REUSABLE ROD: rodId=%1, barcode=%2, length=%3, entryId=%4")
@@ -230,7 +234,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                       .arg(rod.barcode)
                       .arg(rod.length)
                       .arg(rod.entryId ? rod.entryId->toString() : "∅"));
-        } else {
+        }
+        else
+        //STOCK ÁG
+        {
             zInfo("♻️ No reusable leftover fits — falling back to stock.");
 
             // 🧱 Ha nincs, akkor stockból - Stock vizsgálata — ANYAGCSOPORT ALAPÚ
@@ -290,8 +297,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                           .arg(rod.barcode));
 
                 // Stock rúd: gyári sérült végek miatt 2×15 mm levonás
-                //remainingLength = rod.length;
-                remainingLength = rod.length - 2 * OptimizerConstants::END_TRIM_MM - OptimizerConstants::MINIMUM_HULLO_MM;
+                remainingLength = rod.length;
+                remainingLength2 = rod.length - 2 * OptimizerConstants::END_TRIM_MM - OptimizerConstants::MINIMUM_HULLO_MM;
                 rodSelected = true;
 
                 // stock ág végén
@@ -341,33 +348,57 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
-            auto combo = findBestFit(groupVec, remainingLength, kerf_mm);
-            zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
-                       .arg(groupVec.size()).arg(combo.size()));
-            if (combo.isEmpty()) break;
+            QVector<Cutting::Piece::PieceWithMaterial> combo =
+                findBestFit(groupVec, remainingLength2, kerf_mm);
 
-            auto cutStatus1 = cutComboBatch(combo, remainingLength, rod, machine, currentOpId, rodId, kerf_mm, groupVec);
+            zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
+                      .arg(groupVec.size())
+                      .arg(combo.size()));
+            if (combo.isEmpty())
+                break;
+
+            auto cutStatus1 =
+                cutComboBatch(combo, remainingLength, rod, machine, currentOpId,
+                                            rodId, kerf_mm, groupVec);
             if (cutStatus1 == CutStatus::Overfill) {
                 // próbáljunk single-piece fallbacket
-                auto single = OptimizerUtils::findSingleBestPiece(groupVec, remainingLength, kerf_mm);
+                std::optional<Cutting::Piece::PieceWithMaterial> single =
+                    OptimizerUtils::findSingleBestPiece(groupVec, remainingLength2, kerf_mm);
                 if (single.has_value()) {
-                    auto cutStatus2 = cutSinglePieceBatch(*single, remainingLength, rod, machine,
+                    auto cutStatus2 =
+                        cutSinglePieceBatch(*single, remainingLength, rod, machine,
                                                           currentOpId, rodId, kerf_mm, groupVec);
                     // ha ez is overfill → akkor tényleg lezárjuk
                     if (cutStatus2 == CutStatus::Overfill) {
                         remainingLength = 0;
+                        remainingLength2 = 0;
                         break;
                     }
+
+                    // PATCH #27 — remainingLength frissítése single-piece után
+                    int used = single->info.length_mm +
+                               OptimizerUtils::roundKerfLoss(1, kerf_mm);
+                    remainingLength -= used;
+
                     // ha sikerült → folytatjuk a rod-loopot
-                    // fallback sikeres → rúd lezárása (NEM folytatjuk ugyanazon a rúdon)
-                    //continue;
+                    // fallback sikeres → rúd lezárása (NEM folytatjuk ugyanazon a
+                    // rúdon)
+                    // continue;
                     remainingLength = 0;
+                    remainingLength2 = 0;
                     break;
                 }
 
                 // ha single-piece sem megy → lezárjuk
                 remainingLength = 0;
+                remainingLength2 = 0;
                 break;
+            } else {
+                // PATCH #27 — remainingLength frissítése combo után
+                int used = OptimizerUtils::sumLengths(combo) +
+                           OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+                remainingLength -= used;
+                remainingLength2 -= used;
             }
 
 
@@ -431,7 +462,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                     cutSinglePieceBatch(*onePieceFit, remainingLength, rod, machine, currentOpId, rodId, kerf_mm, groupVec);
                     continue; // folytatjuk a rod-loopot
                 }
-                break; // ha nincs, lezárjuk
+                break; // ha nincs, lezárjukResultModel
             }
 
 
@@ -472,6 +503,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         }// rod-loop vége
         rodSelected = false;   // ⛔ kötelező új rúd választása
         remainingLength = 0;   // ⛔ a rúd biztosan lezárult
+        remainingLength2 = 0;
         //rod = SelectedRod();
     }
     // A lokális leftoverokat commitoljuk a globális készletbe
@@ -543,9 +575,12 @@ OptimizerModel::CutStatus OptimizerModel::cutSinglePieceBatch(const Cutting::Pie
     p.planId = QUuid::createUuid();
     p.status = Cutting::Plan::Status::NotStarted;
     p.totalLength = rod.length;   // mindig a teljes rúd hossza;
+    //p.totalLength = remainingLength + used;   // effektív hossz
     p.machineId   = machine.id;
     p.machineName = machine.name;
     p.kerfUsed_mm = kerf_mm;
+
+    // ez a cutplan piecesWithMaterial-ből csinál szegmenseket, a maradék az waste
     p.generateSegments(kerf_mm, remainingLength);
     p.sourceBarcode = rod.barcode;   // MAT-xxx vagy RST-xxx
     p.optimizationId = currentOpId;
@@ -564,6 +599,7 @@ OptimizerModel::CutStatus OptimizerModel::cutSinglePieceBatch(const Cutting::Pie
     p.leftoverBarcode = wasteBarcode;
 
     zEvent(OptimizerUtils::formatCutPlanEvent(p, machine));
+
 
     // ➕ ResultModel
     Cutting::Result::ResultModel result;
@@ -705,6 +741,7 @@ OptimizerModel::CutStatus OptimizerModel::cutComboBatch(const QVector<Cutting::P
     p.planId = QUuid::createUuid();
     p.status = Cutting::Plan::Status::NotStarted;
     p.totalLength = rod.length;   // mindig a teljes rúd hossza;
+    //p.totalLength = remainingLength + used;   // effektív hossz
     p.machineId   = machine.id;
     p.machineName = machine.name;
     p.kerfUsed_mm = kerf_mm;
