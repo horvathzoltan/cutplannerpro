@@ -1,3 +1,198 @@
+# ⭐ Hol tartunk most?
+
+A tegnapi patch három nagy részből állt:
+
+1. **SegmentModel bővítése** (setterek: shrinkLength, setIndex)
+2. **cutComboBatch módosítása**, hogy visszaadja a `planId`‑t
+3. **Rod‑loop utókezelés**:
+   - planId alapján megtaláljuk a CutPlan‑t
+   - front‑trimet beszúrjuk
+   - waste szegmenst rövidítjük
+   - indexeket újraszámozzuk
+
+És te most azt mondtad:
+
+> **„most viszont kezdhetjük!”**
+
+Tehát most **nem új tervet írunk**, hanem ténylegesen beépítjük a patch‑et a kódodba.
+
+---
+
+# ⭐ A teljes PATCH integrációs sorrendje
+
+Ez a sorrend **biztonságos**, nem töröd el a buildet, és minden lépés után fordítható marad a projekt.
+
+---
+
+## ✅ 1. LÉPÉS — SegmentModel bővítése
+
+Ezt **már be is másoltad**, csak ellenőrizd, hogy a két új metódus benne van:
+
+```cpp
+void shrinkLength(double delta);
+void setIndex(int ix);
+```
+
+Ha igen → ✔ kész.
+
+---
+
+## ✅ 2. LÉPÉS — cutComboBatch szignatúra módosítása
+
+**optimizermodel.h**:
+
+```cpp
+CutStatus cutComboBatch(
+    const QVector<Cutting::Piece::PieceWithMaterial>& combo,
+    int& remainingLength,
+    const SelectedRod& rod,
+    const CuttingMachine& machine,
+    int currentOpId,
+    int rodId,
+    double kerf_mm,
+    QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
+    QUuid* outPlanId = nullptr   // 🔧 új paraméter
+);
+```
+
+Ha ez bent van → ✔ kész.
+
+---
+
+## ✅ 3. LÉPÉS — cutComboBatch implementáció módosítása
+
+A végén legyen:
+
+```cpp
+if (outPlanId) {
+    *outPlanId = p.planId;
+}
+
+_result_plans.append(p);
+_planned_leftovers.append(result);
+```
+
+Ha ez bent van → ✔ kész.
+
+---
+
+## 🔥 4. LÉPÉS — applyFrontTrimToPlan hozzáadása
+
+**optimizermodel.h** (private):
+
+```cpp
+void applyFrontTrimToPlan(const QUuid& planId,
+                          double kerf_mm,
+                          bool isStockRod);
+```
+
+**optimizermodel.cpp**:
+
+Illeszd be a teljes függvényt (amit tegnap küldtem).
+Ez a patch kulcsa.
+
+Ha ez bent van → ✔ kész.
+
+---
+
+## 🔥 5. LÉPÉS — Rod‑loop módosítása (planId átadás + utókezelés)
+
+A rod‑loopban, ahol most ez van:
+
+```cpp
+auto cutStatus1 =
+    cutComboBatch(combo, remainingLength, rod, machine, currentOpId,
+                  rodId, kerf_mm, groupVec);
+```
+
+→ módosítsd így:
+
+```cpp
+QUuid planId;
+
+auto cutStatus1 =
+    cutComboBatch(combo, remainingLength, rod, machine, currentOpId,
+                  rodId, kerf_mm, groupVec, &planId);
+```
+
+Majd a sikeres ágban:
+
+```cpp
+if (!frontTrimAppliedForCurrentRod && !rod.isReusable && !planId.isNull()) {
+    applyFrontTrimToPlan(planId, kerf_mm, true);
+    frontTrimAppliedForCurrentRod = true;
+}
+```
+
+Ha ez bent van → ✔ kész.
+
+---
+
+# ⭐ Mi következik ezután?
+
+Ha ezt az 5 lépést beépítetted, akkor:
+
+- a DP/greedy továbbra is a **csökkentett tartományon** dolgozik (remainingLength2),
+- a cutComboBatch továbbra is a **teljes rúdon** generál szegmenseket,
+- a front‑trim **utólag** kerül be a CutPlan elejére,
+- a waste szegmens **rövidül**, de a leftover hossza **változatlan** marad,
+- a vizuális modell **fizikailag helyes** lesz:
+  - [15 mm gyári sérült]
+  - [kerf]
+  - [darabok + kerfek]
+  - [végmaradék]
+
+Ez a modell **már most működni fog**.
+
+---
+
+# ⭐ Következő lépés (ha kéred)
+
+Most jönne:
+
+- **PATCH #36 — single‑piece fallback planId‑kezelése**
+- **PATCH #37 — front‑trim + back‑trim (70 mm) teljes rúd‑szintű konszolidáció**
+- **PATCH #38 — DP scoring finomhangolás**
+- **PATCH #39 — Greedy leftover‑optimalizálás**
+
+De előbb nézzük meg, hogy a mai patch **fordul‑e és fut‑e**.
+
+---
+
+Ha készen állsz, mondd:
+
+**„mehet a single‑piece fallback planId patch”**
+vagy
+**„teszteltem, nézzük a következő lépést”**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Rendben, akkor csináljunk egy planId‑alapú, kívülről hívható front‑trim
 utókezelést, ami:
 

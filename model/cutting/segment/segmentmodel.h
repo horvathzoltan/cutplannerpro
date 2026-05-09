@@ -23,7 +23,8 @@ public:
     enum class Type {
         Piece,   // ✂️ Kért darab
         Kerf,    // ⚙️ Vágási veszteség
-        Waste    // 🪓 Végmaradék / selejt
+        Waste,    // 🪓 Végmaradék / selejt
+        Technical // 🛠️ Gépi maradék (pl. minimális maradék a vágáshoz)
     };
 
 public:
@@ -63,10 +64,23 @@ public:
     double length_mm() const { return _length_mm; }
     QString barcode() const { return _barcode; }
 
+    // 🔧 PATCH #1: minimális setterek utólagos szegmens‑korrekcióhoz
+    void shrinkLength(double delta) {
+        _length_mm -= delta;
+        if (_length_mm < 0) _length_mm = 0;   // audit‑védőkorlát
+    }
+
+
+    void setIndex(int ix) {
+        _segIx = ix;
+    }
+
+
     static QString segmentPrefix(SegmentModel::Type type) {
         if(type == SegmentModel::Type::Piece) return "P";
         if(type == SegmentModel::Type::Waste) return "W";
         if(type == SegmentModel::Type::Kerf)  return "K";
+        if(type == SegmentModel::Type::Technical)  return "T";
         return "?";
     }
 
@@ -77,7 +91,7 @@ public:
     QString toLabelString() const {
         QString prefix = segmentPrefix(_type);
 
-        QString postfix = (_type == Type::Kerf)
+        QString postfix = (_type == Type::Kerf || _type == Type::Technical)
                               ? QString::number(_segIx)
                               : QString("%1:%2·%3mm")
                                     .arg(_segIx)

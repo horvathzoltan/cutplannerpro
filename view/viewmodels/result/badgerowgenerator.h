@@ -40,9 +40,20 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
     for (const Cutting::Segment::SegmentModel& s : plan.segments) {
         QString color;
         switch (s.type()) {
-        case Cutting::Segment::SegmentModel::Type::Piece:  color = s.length_mm() < 300 ? "#e74c3c" : s.length_mm() > 2000 ? "#f39c12" : "#27ae60"; break;
-        case Cutting::Segment::SegmentModel::Type::Kerf:   color = "#34495e"; break;
-        case Cutting::Segment::SegmentModel::Type::Waste:  color = "#bdc3c7"; break;
+        case Cutting::Segment::SegmentModel::Type::Piece:
+            color = s.length_mm() < 300 ? "#e74c3c"
+                    : s.length_mm() > 2000 ? "#f39c12"
+                                           : "#27ae60";
+            break;
+        case Cutting::Segment::SegmentModel::Type::Kerf:
+            color = "#34495e";
+            break;
+        case Cutting::Segment::SegmentModel::Type::Waste:
+            color = "#bdc3c7";
+            break;
+        case Cutting::Segment::SegmentModel::Type::Technical:
+            color = "#7f8c8d"; // pl. szürke-kék, jól elkülönül
+            break;
         }
 
         QString badgeLabel = s.toLabelString();
@@ -91,6 +102,8 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                  ).arg(color));
 
         if (s.type() == Cutting::Segment::SegmentModel::Type::Kerf)
+            label->setFixedWidth(60);
+        else if (s.type() == Cutting::Segment::SegmentModel::Type::Technical)
             label->setFixedWidth(60);
 
         layout->addWidget(label);

@@ -14,6 +14,11 @@ message( "TARGET = "$$TARGI )
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    model/cutting/optimizer/cutengine.cpp \
+    model/cutting/optimizer/fitengine.cpp \
+    model/cutting/optimizer/reusablefitengine.cpp \
+    model/cutting/optimizer/rodloopengine.cpp \
+    model/cutting/optimizer/stockfitengine.cpp \
     model/storageaudit/auditcontext.cpp \
     service/buildnumber.cpp \
     service/storageaudit/auditcontextbuilder.cpp \
@@ -98,6 +103,13 @@ HEADERS += \
     common/identifierutils.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
+    model/cutting/optimizer/cutengine.h \
+    model/cutting/optimizer/cuttypes.h \
+    model/cutting/optimizer/fitengine.h \
+    model/cutting/optimizer/reusablefitengine.h \
+    model/cutting/optimizer/rodloopengine.h \
+    model/cutting/optimizer/selectedrod.h \
+    model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
     model/inventorysnapshot.h \
     model/machine/machineutils.h \

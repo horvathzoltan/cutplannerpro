@@ -36,6 +36,28 @@ azaz CutPlan #2: 0 mm, nem 70
 vagy nyomtatni egy azonosító címke készletet
 
 
+9. StockFitEngine továbbfejlesztése (ST‑3)
+
+Ha szeretnéd, a stock engine‑t még tovább lehet finomítani:
+
+    anyagcsoport‑prioritás
+
+    hossz‑alapú preferencia
+
+    több stock rúd közötti scoring
+
+    „legkisebb veszteség” stock kiválasztás
+
+    „legnagyobb kompatibilitás” stock kiválasztás
+
+Ez már optimalizációs minőségjavítás.
+
+
+RL‑3 — Overfill fallback engine‑be szervezése
+
+vagy
+RL‑4 — RodDecisionEngine scoring finomítása
+
 ************
 
    KÉSZ
