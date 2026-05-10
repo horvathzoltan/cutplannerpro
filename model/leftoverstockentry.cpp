@@ -60,3 +60,9 @@ QString LeftoverStockEntry::storageName() const {
     return storage ? storage->name : "—";
 }
 
+inline QString LeftoverStockEntry::toLeftoverEvent(QString rodId) {
+    return QString("♻️ Hulló létrehozva: %1 (entryId=%2, rodId=%3)")
+        .arg(barcode)
+        .arg(entryId.toString())
+        .arg(rodId);
+}

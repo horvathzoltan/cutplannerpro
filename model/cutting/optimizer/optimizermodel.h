@@ -106,8 +106,8 @@ public:
         _inventorySnapshot = snapshot;
     }
 
-    CutResult cutCombo_WithLifecycle(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
-    CutResult cutSingle_WithLifecycle(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 
 
     void applyFrontTrimToPlan(const QUuid &planId, double kerf_mm, bool isStockRod);
@@ -148,11 +148,11 @@ private:
 
     void logCutState(const Cutting::Plan::CutPlan &p, int remainingLengthBefore, int remainingLengthAfter);
 
-    void finalizeRod(const SelectedRod& rod,
+    void createPhysicalLeftover(const SelectedRod& rod,
                      int remainingLength,
                      int currentOpId);
 
-    CutResult applyLifecycle(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 };
 
 } //end namespace Optimizer

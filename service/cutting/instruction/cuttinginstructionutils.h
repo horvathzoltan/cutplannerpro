@@ -8,6 +8,8 @@
 
 #include <model/registries/cuttingplanrequestregistry.h>
 
+#include <QSet>
+
 namespace CuttingInstructionUtils {
 
 enum class SortStrategy {
@@ -71,23 +73,45 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
     }
 }
 
-
-
-
 inline QString formatMachineCutsEvent(const MachineCuts& mc)
 {
     QStringList lines;
 
-    // 0) Szálanként vizuális szeparátor
-    lines << "──────────";
-    lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+    QString prevRod;
+
+    int maxStep = mc.cutInstructions.isEmpty()
+                      ? 0
+                      : mc.cutInstructions.last().globalStepId;
+
+    int width = qMax(3, QString::number(maxStep).length());
+
+    // ➊ max méret-szélesség kiszámítása
+    int maxSizeLen = 0;
+    QVector<QString> sizeStrings;
+    sizeStrings.reserve(mc.cutInstructions.size());
+
+    for (const auto& ci : mc.cutInstructions) {
+        QString s = QString::number(ci.cutSize_mm, 'f', 1); // pl. "1145.0"
+        sizeStrings.append(s);
+        if (s.length() > maxSizeLen)
+            maxSizeLen = s.length();
+    }
+
+    int idx = 0;
 
     for (const auto& ci : mc.cutInstructions) {
 
-        // 1) Ikon kiválasztása
+        bool rodChanged = (ci.rodId != prevRod);
+        prevRod = ci.rodId;
+
+        QString rodLabel = rodChanged
+                               ? QString("%1 □").arg(ci.rodId)
+                               : ci.rodId + "  ";
+
+        QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
+
         QString icon = ci.isManualCut ? "📏" : "✂️";
 
-        // 2) Material név + kód
         const MaterialMaster* mat =
             MaterialRegistry::instance().findById(ci.materialId);
 
@@ -95,20 +119,22 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc)
                                     ? QString("%1:%2").arg(mat->name).arg(ci.barcode)
                                     : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
 
-        // 3) Request → tételszám + ownerName
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
 
         QString pieceLabel = req
                                  ? QString("%1. %2").arg(req->externalReference).arg(req->ownerName)
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
 
-        // 4) Sor összeállítása + checkbox
-        lines << QString("%2. %3 | %4 | %1 %5 mm □ | %6")
-                     .arg(icon)
-                     .arg(ci.globalStepId)
-                     .arg(ci.rodId)
+        // ➋ méret jobbra igazítva, fix szélességgel
+        QString sizeStr = sizeStrings[idx++];
+        QString sizePadded = QString("%1").arg(sizeStr, maxSizeLen, QLatin1Char(' '));
+
+        lines << QString("%1 %2 | %3 | %4 %5 mm □ | %6 □")
+                     .arg(step)
+                     .arg(rodLabel)
                      .arg(materialLabel)
-                     .arg(QString::number(ci.cutSize_mm, 'f', 1))
+                     .arg(icon)
+                     .arg(sizePadded)
                      .arg(pieceLabel);
     }
 
@@ -116,4 +142,301 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc)
 }
 
 
+
+
+
+struct LabelPart {
+    QString text;
+    bool trimmable = false;
+};
+
+struct LabelModel {
+    QVector<LabelPart> parts;
+
+    QString toString() const {
+        QString out;
+        for (const auto& p : parts)
+            out += p.text;
+        return out;
+    }
+
+    int length() const {
+        int len = 0;
+        for (const auto& p : parts)
+            len += p.text.length();
+        return len;
+    }
+};
+
+
+
+inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& mc)
+{
+    QVector<LabelModel> out;
+    QSet<QString> rodSeen;
+
+    for (const auto& ci : mc.cutInstructions) {
+
+        // 1) Rúd címke
+        if (!rodSeen.contains(ci.rodId)) {
+            rodSeen.insert(ci.rodId);
+
+            LabelModel rod;
+            rod.parts.append({ ci.rodId, false });
+            out.append(rod);
+        }
+
+        // 2) Darab címke
+        auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+
+        QString ext = req ? req->externalReference : "req";
+        QString owner = req ? req->ownerName : ci.requestId.toString(QUuid::WithoutBraces);
+        QString sizeStr = QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
+
+        LabelModel lm;
+        lm.parts.append({ ext+'.', false });
+        lm.parts.append({ " ", false });
+        lm.parts.append({ owner, true });      // csak ez trimmelhető
+        lm.parts.append({ " | ", false });
+        lm.parts.append({ sizeStr, false });
+
+        out.append(lm);
+    }
+
+    return out;
 }
+
+inline void trimLabelToWidth(LabelModel& lm, int maxWidth)
+{
+    int L = lm.length();
+    if (L <= maxWidth)
+        return;
+
+    // 1) fix és trimmable részek szétválasztása
+    int fixedLen = 0;
+    QVector<int> trimIndices;
+
+    for (int i = 0; i < lm.parts.size(); ++i) {
+        if (lm.parts[i].trimmable)
+            trimIndices.append(i);
+        else
+            fixedLen += lm.parts[i].text.length();
+    }
+
+    // 2) nincs trimmable rész → kényszer-trimmelés
+    if (trimIndices.isEmpty()) {
+        QString& t = lm.parts.last().text;
+        int keep = qMax(1, maxWidth - 1);
+        t = t.left(keep) + "…";
+        return;
+    }
+
+    // 3) mennyi hely jut összes trimmable részre
+    int available = maxWidth - fixedLen;
+    if (available < (int)trimIndices.size())
+        available = trimIndices.size(); // minden trimmable résznek legalább 1 hely
+
+    // 4) összes trimmable hossz
+    int totalTrimLen = 0;
+    for (int i : trimIndices)
+        totalTrimLen += lm.parts[i].text.length();
+
+    // 5) ha belefér → kész
+    if (totalTrimLen <= available)
+        return;
+
+    // 6) szükséges vágás
+    int need = totalTrimLen - available;
+
+    // 7) trimmable részek rendezése hossz szerint
+    std::sort(trimIndices.begin(), trimIndices.end(),
+              [&](int a, int b){
+                  return lm.parts[a].text.length() > lm.parts[b].text.length();
+              });
+
+    // 8) vágás a leghosszabbtól lefelé
+    for (int idx : trimIndices) {
+        QString& t = lm.parts[idx].text;
+
+        int oldLen = t.length();
+        if (oldLen <= 1)
+            continue;
+
+        // ennyit vághatunk maximum ebből a részből
+        int canCut = oldLen - 1; // legalább 1 hely maradjon (karakter + ellipsis)
+
+        if (canCut <= 0)
+            continue;
+
+        int cut = qMin(canCut, need);
+
+        // vágás
+        t = t.left(oldLen - cut);
+
+        bool hadEllipsis = t.endsWith("…");
+        if (!hadEllipsis)
+            t += "…";
+
+        int newLen = t.length();
+        int actualReduction = oldLen - newLen;   // ez a VALÓDI hosszcsökkenés
+
+        need -= actualReduction;
+        if (need <= 0)
+            break;
+    }
+
+    // 9) ha még mindig maradt need → kényszer-trimmelés
+    // ha valamiért még mindig hosszabb (numerikus kerekítés, több ellipsis, stb.)
+    // akkor kényszerrel levágjuk az utolsó trimmable részt úgy, hogy biztosan beleférjen
+    if (lm.length() > maxWidth) {
+        int idx = trimIndices.last();
+        QString& t = lm.parts[idx].text;
+
+        int over = lm.length() - maxWidth;
+        int keep = qMax(1, t.length() - over - 1); // -1 az ellipsisnek
+        t = t.left(keep) + "…";
+    }
+}
+
+
+inline QString makeHLine(int count)
+{
+    const QChar h = QStringLiteral("─").at(0);
+    QString s;
+    s.reserve(count);
+    for (int i = 0; i < count; ++i)
+        s.append(h);
+    return s;
+}
+
+inline QString makeSpaces(int count)
+{
+    const QChar sp = QStringLiteral(" ").at(0);
+    QString s;
+    s.reserve(count);
+    for (int i = 0; i < count; ++i)
+        s.append(sp);
+    return s;
+}
+
+inline QString trimToWidth(const QString& s, int maxWidth)
+{
+    if (s.length() <= maxWidth)
+        return s;
+
+    // 1 karakter hely kell az ellipsisnek
+    return s.left(maxWidth - 1) + QStringLiteral("…");
+}
+
+inline QString makeLabel(const QString& externalRef,
+                         const QString& ownerName,
+                         double size_mm,
+                         int maxWidth)
+{
+    QString sizeStr = QString("%1 mm").arg(size_mm, 0, 'f', 0);
+
+    // mennyi hely jut az ownerName-nek?
+    int ownerMax = maxWidth
+                   - externalRef.length()
+                   - 1               // szóköz externalRef után
+                   - 3               // " | "
+                   - sizeStr.length();
+
+    if (ownerMax < 1)
+        ownerMax = 1;
+
+    // csak az ownerName trimmelődik
+    QString trimmedOwner = trimToWidth(ownerName, ownerMax);
+
+    // a teljes címke már NEM trimmelődik
+    return QString("%1 %2 | %3")
+        .arg(externalRef)
+        .arg(trimmedOwner)
+        .arg(sizeStr);
+}
+
+inline QString makeMiddleBorder(int cols, int cellWidth)
+{
+    QString mid = QStringLiteral("├");
+    for (int c = 0; c < cols; ++c) {
+        mid += makeHLine(cellWidth);
+        mid += (c == cols - 1 ? QStringLiteral("┤") : QStringLiteral("┼"));
+    }
+    return mid;
+}
+
+inline QString formatLabelTable4(const QVector<LabelModel>& models,
+                                 int pageWidth,
+                                 int cols,
+                                 int cellHeight)
+{
+    int cellWidth = (pageWidth - (cols + 1)) / cols;
+    if (cellWidth < 10) cellWidth = 10;
+
+    QStringList out;
+
+    int total = models.size();
+    int rows = (total + cols - 1) / cols;
+
+    int idx = 0;
+
+    for (int r = 0; r < rows; ++r) {
+
+        // felső vagy köztes keret
+        if (r == 0) {
+            QString top = "┌";
+            for (int c = 0; c < cols; ++c) {
+                top += makeHLine(cellWidth);
+                top += (c == cols - 1 ? "┐" : "┬");
+            }
+            out << top;
+        } else {
+            out << makeMiddleBorder(cols, cellWidth);
+        }
+
+        int contentRow = (cellHeight == 1 ? 0 : 1);
+
+        for (int h = 0; h < cellHeight; ++h) {
+
+            QString row = "│";
+
+            for (int c = 0; c < cols; ++c) {
+
+                QString text;
+
+                if (idx < total && h == contentRow) {
+                    LabelModel lm = models[idx];
+                    trimLabelToWidth(lm, cellWidth);
+                    text = lm.toString();
+                }
+
+                int pad = (cellWidth - text.length()) / 2;
+                if (pad < 0) pad = 0;
+
+                row += makeSpaces(pad)
+                       + text
+                       + makeSpaces(cellWidth - pad - text.length())
+                       + "│";
+
+                if (h == contentRow) idx++;
+            }
+
+            out << row;
+        }
+
+        if (r == rows - 1) {
+            QString bottom = "└";
+            for (int c = 0; c < cols; ++c) {
+                bottom += makeHLine(cellWidth);
+                bottom += (c == cols - 1 ? "┘" : "┴");
+            }
+            out << bottom;
+        }
+    }
+
+    return out.join("\n");
+}
+
+
+} // end namespace CuttingInstructionUtils
+

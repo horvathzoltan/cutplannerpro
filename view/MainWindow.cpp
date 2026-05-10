@@ -753,9 +753,30 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
     // === FÁZIS 3: Kirakás a táblába ===
     renderCuttingInstructions();
 
+    QStringList block;
+    block << "🧾 Vágási utasítások:";
+
     for (const auto& mc : _machineCutsList) {
-        zEvent(CuttingInstructionUtils::formatMachineCutsEvent(mc));
+        block << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+        block << CuttingInstructionUtils::formatMachineCutsEvent(mc);
+
+        block << "\n";
+        // ⬇️ IDE JÖN A CÍMKE-LISTA, SORRENDHELYESEN
+        QVector<CuttingInstructionUtils::LabelModel> labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+        // for (const QString& lbl : labels)
+        //     block << QString("🏷️ %1").arg(lbl);
+
+        int colums = 3;
+        int w = 80;
+        QString labelTable = CuttingInstructionUtils::formatLabelTable4(labels,w,colums,1);
+        block << QString("🏷️ Címketábla (%1/%2 oszlop):").arg(w).arg(colums);
+        block << labelTable;
+
+        block << ""; // üres sor gépek között
     }
+
+    zEvent(block);
+
 
 }
 
@@ -861,10 +882,28 @@ QStringList MainWindow::generateStatsStrings(
                                                 : static_cast<double>(totalPieceLength) /
                                                       static_cast<double>(totalPieceLength + totalKerfLength + totalWasteLength) * 100.0;
 
+
+    int rodCount = plans.size();
+    int totalRawLength_mm = 0;
+    for (const auto& plan : plans) totalRawLength_mm += plan.totalLength;
+
+
     // 📋 Stringek összeállítása
     QStringList stats;
-    stats << QString("📊 Darabolás: %1 darab, %2 kerf (%3 mm), %4 hulladék (%5 mm)")
-                 .arg(pieceCount).arg(kerfCount).arg(totalKerfLength).arg(wasteCount).arg(totalWasteLength);
+    stats << QString("📝 Darabolás összefoglaló:");
+    stats << QString("📊 %6 szál (%7 m) %1 darab (%8 m), %2 kerf (%3 mm), %4 hulladék (%5 mm)")
+                 .arg(pieceCount)
+                 .arg(kerfCount)
+                 .arg(totalKerfLength)
+                 .arg(wasteCount)
+                 .arg(totalWasteLength)
+                 .arg(rodCount)
+                 .arg(QString::number(totalRawLength_mm / 1000.0, 'f', 2))
+                 .arg(QString::number(totalPieceLength / 1000.0, 'f', 2));
+
+    // stats << QString("📊 Darabolás:\n %6 szál (%7 m) • %1 darab (%8 mm), %2 kerf (%3 mm), %4 hulladék (%5 mm)")
+    //              .arg(pieceCount).arg(kerfCount).arg(totalKerfLength).arg(wasteCount).arg(totalWasteLength)
+    //              .arg(rodCount).arg(QString::number(totalRawLength_mm / 1000.0, 'f', 2)).arg(totalPieceLength);
 
     stats << QString("📐 Szakaszok összesen: %1 (%2 darab + %3 kerf + %4 hulladék)")
                  .arg(segmentCount).arg(pieceCount).arg(kerfCount).arg(wasteCount);

@@ -1,5 +1,6 @@
 #pragma once  // 👑 Modern include guard
 
+#include "model/cutting/cuttingmachine.h"
 #include "status.h"
 #include "source.h"
 #include "../../../service/cutting/segment/segmentutils.h"
@@ -125,6 +126,8 @@ public:
     QString materialBarcode() const;
 
     QString machineLabel() const { return QString("%1 (kerf=%2 mm)").arg(machineName).arg(kerfUsed_mm); }
+
+    QString toLogEntry(const CuttingMachine& machine) const;
 };
 }  //endof namespace Plan
 }  //endof namespace Cutting

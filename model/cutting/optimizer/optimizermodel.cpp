@@ -353,7 +353,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
 
         }// rod-loop vége
-        finalizeRod(rod, remainingLength, currentOpId);
+        createPhysicalLeftover(rod, remainingLength, currentOpId);
 
         // UI yield
         QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
@@ -397,7 +397,7 @@ void OptimizerModel::logCutState(const Cutting::Plan::CutPlan& p,
 }
 
 
-CutResult OptimizerModel::applyLifecycle(
+CutResult OptimizerModel::commitCutResult(
     const CutResult& cr,
     int& remainingLength,
     int& remainingLength2,
@@ -421,19 +421,19 @@ CutResult OptimizerModel::applyLifecycle(
     }
 
     // 3️⃣ leftover lifecycle
-    if (!cr.result.isFinalWaste && cr.result.waste > 0) {
-        LeftoverStockEntry entry;
-        entry.materialId = cr.result.materialId;
-        entry.availableLength_mm = cr.result.waste;
-        entry.used = false;
-        entry.barcode = cr.result.reusableBarcode;
-        entry.parentBarcode = rod.barcode;
-        entry.source = Cutting::Result::LeftoverSource::Optimization;
-        entry.optimizationId = std::make_optional(currentOpId);
+    // if (!cr.result.isFinalWaste && cr.result.waste > 0) {
+    //     LeftoverStockEntry entry;
+    //     entry.materialId = cr.result.materialId;
+    //     entry.availableLength_mm = cr.result.waste;
+    //     entry.used = false;
+    //     entry.barcode = cr.result.reusableBarcode;
+    //     entry.parentBarcode = rod.barcode;
+    //     entry.source = Cutting::Result::LeftoverSource::Optimization;
+    //     entry.optimizationId = std::make_optional(currentOpId);
 
-        leftoverRodMap.insert(entry.entryId, rod.rodId);
-        _localLeftovers.append(entry);
-    }
+    //     leftoverRodMap.insert(entry.entryId, rod.rodId);
+    //     _localLeftovers.append(entry);
+    // }
 
     // 4️⃣ reusable tiltás
     if (rod.isReusable && rod.entryId.has_value())
@@ -447,7 +447,7 @@ CutResult OptimizerModel::applyLifecycle(
 }
 
 
-CutResult OptimizerModel::cutSingle_WithLifecycle(
+CutResult OptimizerModel::cutSingle_AndCommit(
     const Cutting::Piece::PieceWithMaterial& piece,
     int& remainingLength,
     int& remainingLength2,
@@ -469,10 +469,13 @@ CutResult OptimizerModel::cutSingle_WithLifecycle(
         planCounter
         );
 
-        return applyLifecycle(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
+    QString planTxt = cr.plan.toLogEntry(machine);
+    zEvent(planTxt);
+
+    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
 }
 
-CutResult OptimizerModel::cutCombo_WithLifecycle(
+CutResult OptimizerModel::cutCombo_AndCommit(
     const QVector<Cutting::Piece::PieceWithMaterial>& combo,
     int& remainingLength,
     int& remainingLength2,
@@ -494,7 +497,10 @@ CutResult OptimizerModel::cutCombo_WithLifecycle(
         planCounter
         );
 
-        return applyLifecycle(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
+    QString planTxt = cr.plan.toLogEntry(machine);
+    zEvent(planTxt);
+
+    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
 }
 
 
@@ -596,7 +602,7 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
 }
 
 
-void OptimizerModel::finalizeRod(const SelectedRod& rod,
+void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
                                  int remainingLength,
                                  int currentOpId)
 {

@@ -53,4 +53,5 @@ struct LeftoverStockEntry {
         return !barcode.isEmpty(); // vagy más logika, pl. hossz > 0 && nem selejt
     }
 
+    QString toLeftoverEvent(QString rodId);
 };

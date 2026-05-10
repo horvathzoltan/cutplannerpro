@@ -29,7 +29,7 @@ RodStepResult RodLoopEngine::step(
     if (combo.isEmpty())
         return RodStepResult::StopRod;
 
-    CutResult cr = model.cutCombo_WithLifecycle(
+    CutResult cr = model.cutCombo_AndCommit(
         combo, remainingLength, remainingLength2,
         rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
@@ -38,7 +38,7 @@ RodStepResult RodLoopEngine::step(
         std::optional<Cutting::Piece::PieceWithMaterial> single =
             OptimizerUtils::findSingleBestPiece(groupVec, remainingLength2, kerf_mm);
         if (single.has_value()) {
-            CutResult cr2 = model.cutSingle_WithLifecycle(
+            CutResult cr2 = model.cutSingle_AndCommit(
                 *single, remainingLength, remainingLength2,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
@@ -76,7 +76,7 @@ RodStepResult RodLoopEngine::step(
         if (onePieceFit.has_value()) {
             const Cutting::Piece::PieceWithMaterial& piece = *onePieceFit;
 
-            CutResult cr3 = model.cutSingle_WithLifecycle(
+            CutResult cr3 = model.cutSingle_AndCommit(
                 piece, remainingLength, remainingLength2,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
@@ -98,7 +98,7 @@ RodStepResult RodLoopEngine::step(
         auto onePieceFit =
             OptimizerUtils::findSingleBestPiece(groupVec, remainingLength, kerf_mm);
         if (onePieceFit.has_value()) {
-            CutResult cr4 = model.cutSingle_WithLifecycle(
+            CutResult cr4 = model.cutSingle_AndCommit(
                 *onePieceFit, remainingLength, remainingLength2,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 

@@ -163,73 +163,73 @@ findSingleExactFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
     return std::nullopt;
 }
 
-inline QString formatLeftoverEvent(const LeftoverStockEntry& entry, QString rodId) {
-    return QString("♻️ Hulló létrehozva: %1 (entryId=%2, rodId=%3)")
-        .arg(entry.barcode)
-        .arg(entry.entryId.toString())
-        .arg(rodId);
-}
+// inline QString formatLeftoverEvent(const LeftoverStockEntry& entry, QString rodId) {
+//     return QString("♻️ Hulló létrehozva: %1 (entryId=%2, rodId=%3)")
+//         .arg(entry.barcode)
+//         .arg(entry.entryId.toString())
+//         .arg(rodId);
+// }
 
 
-inline QString formatCutPlanEvent(const Cutting::Plan::CutPlan& plan,
-                                  const CuttingMachine& machine) {
-    // Forrás azonosító
-    QString sourceLabel;
-    if (plan.source == Cutting::Plan::Source::Reusable) {
-        sourceLabel = QString("Hulló: %1").arg(plan.sourceBarcode);
-    } else {
-        const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
-        sourceLabel = mat ? QString("Anyag: %1").arg(mat->name)
-                          : QString("Anyag: ? (%1)").arg(plan.materialId.toString());
-    }
+// inline QString makeCutPlanLogEntry(const Cutting::Plan::CutPlan& plan,
+//                                   const CuttingMachine& machine) {
+//     // Forrás azonosító
+//     QString sourceLabel;
+//     if (plan.source == Cutting::Plan::Source::Reusable) {
+//         sourceLabel = QString("Hulló: %1").arg(plan.sourceBarcode);
+//     } else {
+//         const MaterialMaster* mat = MaterialRegistry::instance().findById(plan.materialId);
+//         sourceLabel = mat ? QString("Anyag: %1").arg(mat->name)
+//                           : QString("Anyag: ? (%1)").arg(plan.materialId.toString());
+//     }
 
-    // Darablista
-    // QMap<int,int> pieceCount; // hossz → darabszám
-    // for (const auto& pw : plan.piecesWithMaterial) {
-    //     pieceCount[pw.info.length_mm] += 1;
-    // }
-    // QStringList pieceList;
-    // for (auto it = pieceCount.begin(); it != pieceCount.end(); ++it) {
-    //     pieceList << QString("%1×%2 mm").arg(it.value()).arg(it.key());
-    // }
+//     // Darablista
+//     // QMap<int,int> pieceCount; // hossz → darabszám
+//     // for (const auto& pw : plan.piecesWithMaterial) {
+//     //     pieceCount[pw.info.length_mm] += 1;
+//     // }
+//     // QStringList pieceList;
+//     // for (auto it = pieceCount.begin(); it != pieceCount.end(); ++it) {
+//     //     pieceList << QString("%1×%2 mm").arg(it.value()).arg(it.key());
+//     // }
 
-    // hossz → { darabszám, tételszámok listája }
-    // hossz → { darabszám, tételszámok listája }
-    struct PieceAgg { int count = 0; QStringList refs; };
-    QMap<int, PieceAgg> agg;
+//     // hossz → { darabszám, tételszámok listája }
+//     // hossz → { darabszám, tételszámok listája }
+//     struct PieceAgg { int count = 0; QStringList refs; };
+//     QMap<int, PieceAgg> agg;
 
-    for (const auto& pw : plan.piecesWithMaterial) {
-        int len = pw.info.length_mm;
-        agg[len].count += 1;
+//     for (const auto& pw : plan.piecesWithMaterial) {
+//         int len = pw.info.length_mm;
+//         agg[len].count += 1;
 
-        // 🔍 Request lekérdezése requestId alapján
-        auto req = CuttingPlanRequestRegistry::instance().findById(pw.info.requestId);
+//         // 🔍 Request lekérdezése requestId alapján
+//         auto req = CuttingPlanRequestRegistry::instance().findById(pw.info.requestId);
 
-        QString ref = req
-                          ? req->externalReference
-                          : "???";
+//         QString ref = req
+//                           ? req->externalReference
+//                           : "???";
 
-        agg[len].refs.append(ref);
-    }
+//         agg[len].refs.append(ref);
+//     }
 
-    QStringList pieceList;
-    for (auto it = agg.begin(); it != agg.end(); ++it) {
-        QString refs = it.value().refs.join(", ");
-        pieceList << QString("%1×%2 mm [%3]")
-                         .arg(it.value().count)
-                         .arg(it.key())
-                         .arg(refs);
-    }
+//     QStringList pieceList;
+//     for (auto it = agg.begin(); it != agg.end(); ++it) {
+//         QString refs = it.value().refs.join(", ");
+//         pieceList << QString("%1×%2 mm [%3]")
+//                          .arg(it.value().count)
+//                          .arg(it.key())
+//                          .arg(refs);
+//     }
 
 
-    return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm, darabok: %6, hulladék=%7 mm")
-        .arg(plan.planNumber)
-        .arg(sourceLabel)
-        .arg(plan.rodId)
-        .arg(machine.name)
-        .arg(QString::number(plan.kerfUsed_mm, 'f', 1)) // 🔧 pontos formázás
-        .arg(pieceList.join(", "))
-        .arg(plan.waste);
-}
+//     return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm, darabok: %6, hulladék=%7 mm")
+//         .arg(plan.planNumber)
+//         .arg(sourceLabel)
+//         .arg(plan.rodId)
+//         .arg(machine.name)
+//         .arg(QString::number(plan.kerfUsed_mm, 'f', 1)) // 🔧 pontos formázás
+//         .arg(pieceList.join(", "))
+//         .arg(plan.waste);
+// }
 
 } // namespace OptimizerUtils
