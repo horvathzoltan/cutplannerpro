@@ -40,7 +40,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     int currentOpId = nextOptimizationId++;
 
 
-    zEvent(QString("Optimize(%2) run started (heuristic=%1)")
+    zEvent(QString("⏳ Optimize(%2) run started (heuristic=%1)")
                .arg(heuristic == TargetHeuristic::ByCount ? "ByCount" : "ByTotalLength")
                .arg(currentOpId));
 
