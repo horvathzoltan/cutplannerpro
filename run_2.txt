@@ -1,24 +1,3 @@
-1. vágási utasítás : szálanként gap és szeparátor
-  - sajnos nem kerül be szeparátor szálváltáskor
-  - ha szálváltás van, kell checkbox oda is, hogy elvégezte a fickó a szálváltást, és be tudja pipálni
-  - a rúd cimkéje után is kell checkbox, hogy "feljelöltem a rudat"
-
-0: megkövetelünk  MINIMUM_HULLO_MM -t de:
-
-[2026-05-07T23:53:22.890]  🔄 Optimize(1) run started (heuristic=ByCount)
-[2026-05-07T23:53:22.929] 🪚 CutPlan #0 → Anyag: NaphálóTok, Rod=Rod-A, gép=Rivers, kerf=3.2 mm, darabok: 1×550 mm [1415], 1×1745 mm [1416], 1×1750 mm [1419], 1×1755 mm [1422], hulladék=90 mm
-[2026-05-07T23:53:23.006] 🪚 CutPlan #1 → Anyag: NaphálóTok, Rod=Rod-B, gép=Rivers, kerf=3.2 mm, darabok: 1×540 mm [1428], 3×555 mm [1435, 1430, 1421], 1×560 mm [1433], 1×945 mm [1424], 1×955 mm [1418], 1×1150 mm [1427], hulladék=63 mm
-[2026-05-07T23:53:26.256] 🪚 CutPlan #2 → Anyag: NaphálóTok, Rod=Rod-C, gép=Rivers, kerf=3.2 mm, darabok: 1×1145 mm [1420], 2×1155 mm [1414, 1431], 1×2435 mm [1439], hulladék=0 mm
-[2026-05-07T23:53:26.457] 🪚 CutPlan #3 → Anyag: NaphálóTok, Rod=Rod-D, gép=Rivers, kerf=3.2 mm, darabok: 2×955 mm [1425, 1438], 1×1150 mm [1436], 2×1160 mm [1432, 1434], hulladék=507 mm
-[2026-05-07T23:53:26.483] 🪚 CutPlan #4 → Anyag: NaphálóTok, Rod=Rod-E, gép=Rivers, kerf=3.2 mm, darabok: 1×1145 mm [1429], 1×2105 mm [1437], 1×2135 mm [1426], hulladék=509 mm
-[2026-05-07T23:53:26.505] 🪚 CutPlan #5 → Anyag: NaphálóTok, Rod=Rod-F, gép=Rivers, kerf=3.2 mm, darabok: 1×850 mm [1440], 1×2085 mm [1417], 1×2385 mm [1443], hulladék=574 mm
-[2026-05-07T23:53:26.521] 🪚 CutPlan #6 → Anyag: NaphálóTok, Rod=Rod-G, gép=Rivers, kerf=3.2 mm, darabok: 1×1740 mm [1413], 1×3610 mm [1444], hulladék=547 mm
-[2026-05-07T23:53:26.538] 🪚 CutPlan #7 → Anyag: NaphálóTok, Rod=Rod-H, gép=Rivers, kerf=3.2 mm, darabok: 1×2085 mm [1423], 1×2350 mm [1445], hulladék=1462 mm
-[2026-05-07T23:53:26.645] 📊 Darabolás: 31 darab, 31 kerf (93 mm), 7 hulladék (3726 mm)
-📐 Szakaszok összesen: 69 (31 darab + 31 kerf + 7 hulladék)
-
-
-azaz CutPlan #2: 0 mm, nem 70
 
 1: nem látszik, hány tétel van a cutting requestben - de látszik az, hogy hány db lett vágva: Darabolás: 31 darab, 31 kerf (93 mm), 7 hulladék (4285 mm)
 
@@ -28,51 +7,236 @@ azaz CutPlan #2: 0 mm, nem 70
 4. 5-10 tételes kategóriák szimbólummal - ez kész munkadarabra vonatkozik
 - napocska, halacska, házikó, holdacska
 
-
 7. 7-8 tételenként csoportokba szervezni ha nincsenek csoprtok kialakítva alapból
 - szimbólumösszerendelés
 
-8. előre generálni a szálra, és a munkadarabra írandó/ragasztandó kódot,
-vagy nyomtatni egy azonosító címke készletet
-
-
-9. StockFitEngine továbbfejlesztése (ST‑3)
-
-Ha szeretnéd, a stock engine‑t még tovább lehet finomítani:
-
-    anyagcsoport‑prioritás
-
-    hossz‑alapú preferencia
-
-    több stock rúd közötti scoring
-
-    „legkisebb veszteség” stock kiválasztás
-
-    „legnagyobb kompatibilitás” stock kiválasztás
-
-Ez már optimalizációs minőségjavítás.
-
-
-RL‑3 — Overfill fallback engine‑be szervezése
-
-vagy
-RL‑4 — RodDecisionEngine scoring finomítása
-
 ************
 
-   KÉSZ
+   TENNI
 
 ************
 
 
-1. vágási utasítás : szálanként gap és szeparátor
+Zoltán, itt a teljes, átfogó, pontonként végrehajtható, audit‑minőségű
+LOG OPTIMALIZÁCIÓS TERV, kifejezetten a te rendszeredre szabva, a fenti
+log alapján.
 
-5. a listában kell egy üres checkbox, amit ki lehet vágás után pipálni tollal
-3. többször kiosztotta a Rod-C szálazonosítót két külömböző szálra
+Ez nem „ötletelés”, hanem konkrét, lépésről lépésre végrehajtható
+műszaki terv, amely után:
 
+-   a log nem lesz zajos,
+-   értelmes aggregált információt ad,
+-   nem ismétel felesleges sorokat,
+-   nem terheli a felhasználót,
+-   debug módban viszont minden részlet megmarad.
 
-6. minimális hulló megkövetelése
-- vékony falú nyitott idomoknál 10-15 cm, vastag falú vagy zárt idomoknál 3-5 cm
-- material törzsbe anyagonként felvenni mzőt és meghatározni az alapértéket
-****
+------------------------------------------------------------------------
 
+⭐ 0. ALAPELV – három logszint bevezetése
+
+Ez a legfontosabb.
+
+INFO
+
+Felhasználónak, auditnak.
+Csak a lényeg:
+
+-   melyik stock lett kiválasztva
+-   hány rod
+-   mennyi hulladék
+-   exportok
+-   optimize start/finish
+
+DEBUG
+
+Fejlesztőnek.
+Aggregált statisztikák:
+
+-   stock scan summary
+-   findBestFit summary
+-   leftover/cut entry summary
+
+TRACE
+
+Mély debug.
+Minden iteráció, minden skip, minden DP próbálkozás.
+
+------------------------------------------------------------------------
+
+⭐ 1. FELADAT – StockFitEngine ciklus zajának megszüntetése
+
+Cél: ne legyen 15× „SKIP STOCK[…]”.
+
+1.1. Gyűjts statisztikát a ciklusban
+
+    int skipWrongGroup = 0;
+    int skipZeroQty = 0;
+    int total = stockInventory.size();
+    int selectedIndex = -1;
+
+A ciklusban:
+
+    if (!groupIds.contains(stock.materialId)) {
+        skipWrongGroup++;
+        continue;
+    }
+    if (stock.quantity <= 0) {
+        skipZeroQty++;
+        continue;
+    }
+    selectedIndex = i;
+    break;
+
+1.2. A ciklus után írj ki egyetlen összegző sort
+
+    zDebug(QString(
+        "STOCK SCAN SUMMARY: total=%1, selected=%2, skipWrongGroup=%3, skipZeroQty=%4")
+        .arg(total)
+        .arg(selectedIndex >= 0 ? 1 : 0)
+        .arg(skipWrongGroup)
+        .arg(skipZeroQty));
+
+Eredmény:
+
+    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
+
+Ez kivált 15–20 sor spamet.
+
+------------------------------------------------------------------------
+
+⭐ 2. FELADAT – findBestFit ismétlődő logok megszüntetése
+
+A jelenlegi log:
+
+    findBestFit: 2 darab, bestCombo size=0
+    findBestFit: 2 darab, bestCombo size=0
+    findBestFit: 2 darab, bestCombo size=0
+    ...
+
+Ez azért van, mert a DP több fallback stratégiát próbál, de a bemenet
+nem változik → a log ismétlődik.
+
+2.1. Gyűjtsd össze a próbálkozások számát
+
+    int attempts = 0;
+    int best = 0;
+
+    for (...) {
+        attempts++;
+        best = bestCombo.size();
+    }
+
+2.2. A végén egyetlen sorban logold
+
+    zDebug(QString("findBestFit summary: attempts=%1, bestCombo=%2")
+           .arg(attempts)
+           .arg(best));
+
+Eredmény:
+
+    findBestFit summary: attempts=6, bestCombo=0
+
+Ez kivált 6–12 sor spamet.
+
+------------------------------------------------------------------------
+
+⭐ 3. FELADAT – CTOR new entryId zaj megszüntetése
+
+A jelenlegi log:
+
+    CTOR new entryId={...}
+    CTOR new entryId={...}
+    CTOR new entryId={...}
+    ...
+
+Ez 8–12 sor, és nem ad értéket.
+
+3.1. Gyűjtsd össze a létrehozott entry-k számát
+
+    static thread_local int createdEntries = 0;
+    createdEntries++;
+
+3.2. A rod-loop végén:
+
+    zDebug(QString("Created %1 new cut/leftover entries").arg(createdEntries));
+    createdEntries = 0;
+
+Eredmény:
+
+    Created 9 new cut/leftover entries
+
+Ez kivált 9–12 sor spamet.
+
+------------------------------------------------------------------------
+
+⭐ 4. FELADAT – Optimize start/finish logok egységesítése
+
+A jelenlegi:
+
+    Optimize(1) run started
+    Optimize(1) finished
+
+4.1. Start emoji (keskeny, nem csúszik)
+
+    ⏳ Optimize(%2) run started (heuristic=%1)
+
+4.2. Finish emoji
+
+    🟢 Optimize(%1) finished in %2 ms — rods=%3, pieces=%4
+
+------------------------------------------------------------------------
+
+⭐ 5. FELADAT – Aggregált Optimize összefoglaló
+
+A futás végén:
+
+    OPTIMIZE SUMMARY:
+      rods=8
+      pieces=31
+      leftoverCount=8
+      totalWaste=...
+      efficiency=...
+
+Ez INFO szint.
+
+------------------------------------------------------------------------
+
+⭐ 6. FELADAT – A log teljes szerkezete futás közben
+
+INFO (felhasználó)
+
+    ⏳ Optimize(1) run started (heuristic=ByCount)
+    🟢 Optimize(1) finished in 3659 ms — rods=8, pieces=31
+
+DEBUG (fejlesztő)
+
+    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
+    findBestFit summary: attempts=6, bestCombo=0
+    Created 9 new cut/leftover entries
+
+TRACE (mély debug)
+
+    • STOCK[0]: ...
+    ⛔ SKIP STOCK[0]
+    ...
+
+TRACE csak akkor kell, ha isVerbose = true.
+
+------------------------------------------------------------------------
+
+⭐ 7. FELADAT – A log végső formája (példa)
+
+    ⏳ Optimize(1) run started (heuristic=ByCount)
+
+    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
+    findBestFit summary: attempts=6, bestCombo=4
+    Created 9 new cut/leftover entries
+
+    🟢 Optimize(1) finished in 3659 ms — rods=8, pieces=31
+
+Ez tiszta, érthető, auditálható, nem spameli tele a logot, és minden
+fontos információt tartalmaz.
+
+------------------------------------------------------------------------
+
+⭐ Ha kéred, megírom a teljes kész C++ patch-et is, amit csak be kell illesztened.
