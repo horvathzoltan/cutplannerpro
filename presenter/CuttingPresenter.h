@@ -75,6 +75,8 @@ public:
 
     void update_LeftoverAuditActualQuantity(const QUuid &rowId, int quantity);
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
+
+    void ExportCutPlanSummary();
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
 private:
     MainWindow* view;

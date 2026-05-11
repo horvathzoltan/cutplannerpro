@@ -158,6 +158,8 @@ struct Request {
     }
 
     QString toString() const;
+
+    QString displayText();
 };
 } //endof namespace Plan
 } //endof namespace Cutting

@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_6">
          <attribute name="title">
@@ -279,9 +279,16 @@
              </spacer>
             </item>
             <item>
+             <widget class="QPushButton" name="btn_ExportCutPlanSummary">
+              <property name="text">
+               <string>Export CutPlan Summary</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="btn_GenerateCuttingPlan">
               <property name="text">
-               <string>GenerateCutInstruction</string>
+               <string>Export CutInstruction</string>
               </property>
              </widget>
             </item>

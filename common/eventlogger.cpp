@@ -18,30 +18,51 @@ void EventLogger::setLogFile(const QString& path) {
 }
 
 QString EventLogger::timestamped(const QString& msg) {
-    // return QString("[%1] %2")
-    // .arg(QDateTime::currentDateTime().toString(Qt::ISODateWithMs))
-    //     .arg(msg);
-
     QStringList lines = msg.split("\n");
     QString ts = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
-
-    // indent kiszámítása: '[' + ts + ']' + space
-    int indentSize = ts.length() + 3;
-    QString indent(indentSize, ' ');
 
     if (lines.isEmpty())
         return QString("[%1] ").arg(ts);
 
-    QString first = QString("[%1] %2").arg(ts).arg(lines.first());
+    QString clean = lines.first();
 
-    // további sorok indentálása
+    // Láthatatlan whitespace-ek eltávolítása
+    static const QVector<QChar> badChars = {
+        QChar(0x200B), // ZERO-WIDTH SPACE
+        QChar(0xFEFF), // ZERO-WIDTH NO-BREAK SPACE
+        QChar(0x2060), // WORD JOINER
+        QChar(0x00A0), // NO-BREAK SPACE
+        QChar(0x202F)  // NARROW NO-BREAK SPACE
+    };
+    for (QChar c : badChars)
+        clean.remove(c);
+
+    clean = clean.trimmed();
+
+    // ⭐ Emoji padding fix:
+    // Ha az első karakter emoji (U+1F300 felett),
+    // akkor a timestamp utáni space és az emoji közé beszúrunk egy WORD JOINER-t.
+    QString spacer = " ";
+    if (!clean.isEmpty() && clean.at(0).unicode() >= 0x1F300) {
+        spacer.append(QChar(0x2060));  // WORD JOINER
+    }
+
+    QString first = QString("[%1]%2%3").arg(ts).arg(spacer).arg(clean);
+
+    // Többsoros indent
+    int indentSize = ts.length() + 2;
+    QString indent(indentSize, ' ');
     for (int i = 1; i < lines.size(); ++i)
         lines[i] = indent + lines[i];
 
     lines[0] = first;
-    return lines.join("\n");
 
+
+    return lines.join("\n");
 }
+
+
+
 
 QString EventLogger::toString(Level level) {
     switch (level) {
@@ -54,6 +75,11 @@ QString EventLogger::toString(Level level) {
 
 void EventLogger::zEvent_(const QString& msg) {
     QString line = timestamped(msg);
+
+    // if (msg.toLower().contains("optim")) {
+    //     qInfo("optim");
+    // }
+
     if(_isVerbose)
     {
         qInfo().noquote() << "EVENT:" << line;

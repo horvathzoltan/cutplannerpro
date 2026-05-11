@@ -57,7 +57,8 @@ inline void appendColoredLineWithTimestamp(QPlainTextEdit* widget, const QString
     // timestamp leválasztása
     int idx = line.indexOf("] ");
     if (idx != -1) {
-        QString ts = line.left(idx + 1) + " ";
+        QString ts = line.left(idx + 2);
+//        QString ts = line.left(idx + 1) + " ";
         QString payload = line.mid(idx + 2);
 
         // timestamp mindig alap színnel
@@ -77,7 +78,9 @@ inline void appendColoredLineWithTimestamp(QPlainTextEdit* widget, const QString
         // prefix mindig fehérrel
         QTextCharFormat prefixFmt;
         prefixFmt.setForeground(Qt::white);
-        cursor.insertText(prefix + " ", prefixFmt);
+        if (!prefix.isEmpty()) {
+            cursor.insertText(prefix + " ", prefixFmt);
+        }
 
         // üzenet színezve
         QTextCharFormat msgFmt;

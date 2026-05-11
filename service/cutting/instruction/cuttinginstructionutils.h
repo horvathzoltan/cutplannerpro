@@ -40,12 +40,12 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
                          });
         break;
 
-    // case SortStrategy::ByStatus:
-    //     std::stable_sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
-    //                      [](const CutInstruction& a, const CutInstruction& b){
-    //                          return static_cast<int>(a.status) < static_cast<int>(b.status);
-    //                      });
-    //     break;
+        // case SortStrategy::ByStatus:
+        //     std::stable_sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
+        //                      [](const CutInstruction& a, const CutInstruction& b){
+        //                          return static_cast<int>(a.status) < static_cast<int>(b.status);
+        //                      });
+        //     break;
 
     case SortStrategy::None:
         // nincs rendezés

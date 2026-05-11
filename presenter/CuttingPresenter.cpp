@@ -26,6 +26,7 @@
 #include "../service/storageaudit/leftoverauditservice.h"
 #include "../service/storageaudit/storageauditservice.h"
 
+#include "common/eventlogger.h"
 #include "materials/registry/material_registry.h"
 #include "../model/registries/storageregistry.h"
 
@@ -39,6 +40,12 @@
 #include "../service/snapshot/inventorysnapshotbuilder.h"
 #include "../service/snapshot/requestsnapshotbuilder.h"
 #include "materials/utils/material_group_utils.h"
+#include "service/cutting/summary/cutplansummary.h"
+
+#include <service/cutting/summary/cutplansummarybuilder.h>
+
+#include <QDir>
+#include <QFileInfo>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -296,7 +303,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     }
 
     // 3️⃣ Export (opcionális)
-    OptimizationExporter::exportPlans(model.getResult_PlansRef());
+    //OptimizationExporter::exportPlans(model.getResult_PlansRef());
 
     // 4️⃣ Audit sorok előállítása
     _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
@@ -763,6 +770,48 @@ void CuttingPresenter::update_LeftoverAuditActualQuantity(const QUuid& rowId, in
         row.isRowModified = (row.actualQuantity != row.originalQuantity);
     });
 }
+
+
+void CuttingPresenter::ExportCutPlanSummary() {
+
+    static const QString errevent = QStringLiteral("❌ Summary export nem hajtható végre. Részletek a logban.");
+    static const QString oklog = QStringLiteral("✅ Cut Plan Summary exportálva: %1");
+
+    const auto& plans = model.getResult_PlansRef();
+    const auto& leftovers = model.getResults_Leftovers();
+
+    CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers);
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+    if (baseName.isEmpty()) {
+        zWarning(errevent);
+        zEvent("❌ Nincs Cutting Plan fájlnév — a Summary export nem hajtható végre.");
+        return;
+    }
+
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);  // ha nincs, létrehozzuk
+    QString path = dir + "/" + baseName + "_CutPlanSummary.txt";
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        zWarning(errevent);
+        zEvent(QString("❌ Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
+        return;
+    }
+
+    QTextStream out(&file);
+    out.setEncoding(QStringConverter::Utf8);
+    out << summary.toText() << "\n";
+
+    file.close();
+
+    zInfo(oklog.arg(QDir::toNativeSeparators(path)));
+    zEvent(oklog.arg(QDir::toNativeSeparators(path)));
+}
+
 
 /*relocation*/
 

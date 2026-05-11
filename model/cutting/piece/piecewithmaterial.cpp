@@ -2,6 +2,8 @@
 
 #include "piecewithmaterial.h"
 
+#include <model/registries/cuttingplanrequestregistry.h>
+
 namespace Cutting {
 namespace Piece {
 
@@ -19,5 +21,13 @@ bool PieceWithMaterial::operator==(const PieceWithMaterial& other) const {
            materialId == other.materialId;
 }
 
+
+QString PieceWithMaterial::displayText() const{
+    Cutting::Plan::Request *p = CuttingPlanRequestRegistry::instance().findById(info.requestId);
+    if (p == nullptr)
+        return "";
+
+    return p->displayText();
+}
 } // endof namespace Piece
 } // endof namespace Cutting

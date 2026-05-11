@@ -21,6 +21,8 @@ SOURCES += \
     model/cutting/optimizer/stockfitengine.cpp \
     model/storageaudit/auditcontext.cpp \
     service/buildnumber.cpp \
+    service/cutting/summary/cutplansummary.cpp \
+    service/cutting/summary/cutplansummarybuilder.cpp \
     service/storageaudit/auditcontextbuilder.cpp \
     service/storageaudit/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
@@ -128,6 +130,8 @@ HEADERS += \
     service/cutting/optimizer/optimizerconstants.h \
     service/cutting/optimizer/optimizerutils.h \
     service/cutting/plan/requestutils.h \
+    service/cutting/summary/cutplansummary.h \
+    service/cutting/summary/cutplansummarybuilder.h \
     service/snapshot/inventorysnapshotbuilder.h \
     service/snapshot/requestsnapshotbuilder.h \
     service/storageaudit/auditcontextbuilder.h \

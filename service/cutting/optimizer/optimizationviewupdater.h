@@ -20,7 +20,7 @@ struct OptimizationViewUpdater {
         Q_UNUSED(reusable);
 
         view->refresh_LeftoversTable();
-        view->updateStats(plans, leftovers);
+        //view->updateStats(plans, leftovers);
     }
 };
 

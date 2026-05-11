@@ -12,6 +12,9 @@ namespace Cutting {
 namespace Optimizer {
 
 class StockFitEngine {
+
+private:
+    static bool _isVerbose;
 public:
     static std::optional<SelectedRod> pickStockRod(
         QVector<StockEntry>& stockInventory,

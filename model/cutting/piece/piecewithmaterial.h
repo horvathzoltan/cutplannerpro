@@ -24,6 +24,7 @@ public:
     PieceWithMaterial(const PieceInfo& i, const QUuid& matId);
 
     bool operator==(const PieceWithMaterial& other) const;
+    QString displayText() const;
 };
 
 } //endof namespace Piece

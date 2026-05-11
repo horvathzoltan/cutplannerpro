@@ -6,22 +6,28 @@
 namespace Cutting {
 namespace Optimizer {
 
+bool StockFitEngine::_isVerbose = false;
+
 std::optional<SelectedRod> StockFitEngine::pickStockRod(
     QVector<StockEntry>& stockInventory,
     const QSet<QUuid>& groupIds,
     int& rodCounter)
 {
-    zInfo(QString("🔍 STOCK SCAN START: groupIds=%1, stockCount=%2")
+    if(_isVerbose){
+        zInfo(QString("🔍 STOCK SCAN START: groupIds=%1, stockCount=%2")
               .arg(groupIds.size())
               .arg(stockInventory.size()));
+    }
 
     for (int i = 0; i < stockInventory.size(); ++i) {
         StockEntry& stock = stockInventory[i];
 
-        zInfo(QString("   • STOCK[%1]: materialId=%2, quantity=%3")
-                  .arg(i)
-                  .arg(stock.materialId.toString())
-                  .arg(stock.quantity));
+        if(_isVerbose){
+            zInfo(QString("   • STOCK[%1]: materialId=%2, quantity=%3")
+                      .arg(i)
+                      .arg(stock.materialId.toString())
+                      .arg(stock.quantity));
+        }
 
         if (!groupIds.contains(stock.materialId)) {
             zInfo(QString("     ⛔ SKIP STOCK[%1]: materialId not in groupIds").arg(i));
@@ -32,10 +38,12 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
             continue;
         }
 
+
         zInfo(QString("     ✅ STOCK[%1] SELECTED: materialId=%2, newQuantity=%3")
                   .arg(i)
                   .arg(stock.materialId.toString())
                   .arg(stock.quantity - 1));
+
 
         stock.quantity--;
 
@@ -49,11 +57,13 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
 
         rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
 
-        zInfo(QString("NEW STOCK ROD: rodCounter=%1, rodId=%2, materialId=%3, barcode=%4")
-                  .arg(rodCounter)
-                  .arg(rod.rodId)
-                  .arg(rod.materialId.toString())
-                  .arg(rod.barcode));
+        if(_isVerbose){
+            zInfo(QString("NEW STOCK ROD: rodCounter=%1, rodId=%2, materialId=%3, barcode=%4")
+                      .arg(rodCounter)
+                      .arg(rod.rodId)
+                      .arg(rod.materialId.toString())
+                      .arg(rod.barcode));
+        }
 
         return rod;
     }

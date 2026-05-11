@@ -5,6 +5,17 @@
 #include <QDir>
 #include "../../../model/registries/cuttingplanrequestregistry.h"
 
+
+// QString OptimizationExporter::displayText(const Cutting::Piece::PieceWithMaterial& m){
+//     auto p = CuttingPlanRequestRegistry::instance().findById(m.info.requestId);
+//     if(p == nullptr) return "";
+
+//     return QString("%1 • %2 • %3 mm")
+//         .arg(p->ownerName)
+//         .arg(p->externalReference)
+//         .arg(p->requiredLength);
+// }
+
 void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan>& plans, const QString& folderPath)
 {
     // 📁 Export mappa előkészítése
@@ -27,7 +38,7 @@ void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan
     for (const auto& plan : plans) {
         QStringList cutLabels;
         for (const Cutting::Piece::PieceWithMaterial& pwm : plan.piecesWithMaterial){
-            cutLabels.append(displayText(pwm)); // pl. "Kovács BT • MEGR-4022 • 1800 mm"
+            cutLabels.append(pwm.displayText()); // pl. "Kovács BT • MEGR-4022 • 1800 mm"
         }
 
         QStringList segmentLabels;
@@ -45,17 +56,8 @@ void OptimizationExporter::exportPlansToCSV(const QVector<Cutting::Plan::CutPlan
             << "\"" << segmentLabels.join(" ") << "\"\n";
     }
 
+    zInfo(QString("📤 CSV export completed: %1").arg(file.fileName()));
     file.close();
-}
-
-QString OptimizationExporter::displayText(const Cutting::Piece::PieceWithMaterial& m){
-    auto p = CuttingPlanRequestRegistry::instance().findById(m.info.requestId);
-    if(p == nullptr) return "";
-
-    return QString("%1 • %2 • %3 mm")
-        .arg(p->ownerName)
-        .arg(p->externalReference)
-        .arg(p->requiredLength);
 }
 
 void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan::CutPlan>& plans, const QString& folderPath)
@@ -94,7 +96,7 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan
         } else {
             for (int i = 0; i < plan.piecesWithMaterial.size(); ++i) {
                 const auto& pwm = plan.piecesWithMaterial[i];
-                out << QString("  %1. %2\n").arg(i + 1).arg(displayText(pwm));
+                out << QString("  %1. %2\n").arg(i + 1).arg(pwm.displayText());
             }
         }
 
@@ -111,6 +113,7 @@ void OptimizationExporter::exportPlansAsWorkSheetTXT(const QVector<Cutting::Plan
         out << "-------------------------------------------\n";
     }
 
+    zInfo(QString("📤 Worksheet TXT export completed: %1").arg(file.fileName()));
     file.close();
 }
 

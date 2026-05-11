@@ -60,6 +60,14 @@ QString Request::toString() const {
     return parts.join(" | ");
 }
 
+QString Request::displayText()
+{
+    return QString("%1 • %2 • %3 mm")
+        .arg(ownerName)
+        .arg(externalReference)
+        .arg(requiredLength);
+}
+
 
 } //endof namespace Plan
 } //endof namespace Cutting

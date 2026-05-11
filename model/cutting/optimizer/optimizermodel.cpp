@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QDebug>
+#include <QElapsedTimer>
 
 #include "cutengine.h"
 #include "cuttypes.h"
@@ -39,9 +40,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     int currentOpId = nextOptimizationId++;
 
 
-    zEvent(QString("🔄 Optimize(%2) run started (heuristic=%1)")
+    zEvent(QString("Optimize(%2) run started (heuristic=%1)")
                .arg(heuristic == TargetHeuristic::ByCount ? "ByCount" : "ByTotalLength")
                .arg(currentOpId));
+
+    QElapsedTimer timer;
+    timer.start();
 
     rodCounter = 0;
     _result_plans.clear();
@@ -377,6 +381,20 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         bool isStockRod = !plan.isReusable();   // vagy plan.source == Stock
         this->applyFrontTrimToPlan(plan.planId, plan.kerfUsed_mm, isStockRod);
     }
+
+    // --- IDE JÖN A VÉGÉRE ---
+    double ms = timer.elapsed();
+
+    int rodCount   = _result_plans.size();
+    int pieceCount = 0;
+    for (const auto& p : _result_plans)
+        pieceCount += p.piecesWithMaterial.size();
+
+    zEvent(QString("🟢 Optimize(%1) finished in %2 ms: rods=%3, pieces=%4")
+               .arg(currentOpId)
+               .arg(ms, 0, 'f', 0)
+               .arg(rodCount)
+               .arg(pieceCount));
 }
 
 void OptimizerModel::logCutState(const Cutting::Plan::CutPlan& p,
@@ -469,8 +487,8 @@ CutResult OptimizerModel::cutSingle_AndCommit(
         planCounter
         );
 
-    QString planTxt = cr.plan.toLogEntry(machine);
-    zEvent(planTxt);
+    // QString planTxt = cr.plan.toLogEntry(machine);
+    // zEvent(planTxt);
 
     return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
 }
@@ -497,8 +515,8 @@ CutResult OptimizerModel::cutCombo_AndCommit(
         planCounter
         );
 
-    QString planTxt = cr.plan.toLogEntry(machine);
-    zEvent(planTxt);
+    // QString planTxt = cr.plan.toLogEntry(machine);
+    // zEvent(planTxt);
 
     return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
 }

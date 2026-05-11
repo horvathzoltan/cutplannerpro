@@ -32,7 +32,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void updateStats(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &results);
+    //void updateStats(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &results);
     void setInputFileLabel(const QString &label, const QString &tooltip);
     void ShowWarningDialog(const QString &msg);
 
@@ -67,6 +67,8 @@ private slots:
     void handle_btn_OpenRequest_clicked();
 
     void handle_btn_Optimize_clicked();
+    void handle_btn_ExportCutPlanSummary_clicked();
+
     void handle_btn_AddStockEntry_clicked();
 
     void handle_btn_LeftoverDisposal_clicked();
@@ -117,6 +119,6 @@ private:
     void refreshSummaryRows();
     void postProcessMachineCuts(MachineCuts &mc);
     void renderCuttingInstructions();
-    static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
+    //static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
 };
 #endif // MAINWINDOW_H
