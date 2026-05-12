@@ -14,6 +14,7 @@
 #include "../cuttingmachine.h"
 #include "../../inventorysnapshot.h"
 #include "cuttypes.h"
+#include "fitengine.h"
 #include "selectedrod.h"
 
 
@@ -111,6 +112,12 @@ public:
 
 
     void applyFrontTrimToPlan(const QUuid &planId, double kerf_mm, bool isStockRod);
+
+    FitEngine::FitEngineTelemetry _fitTelemetry;
+
+    int rodLoopIteration = 0; // rod-loop iteráció számláló
+
+
 private:
 
     // A felhasználótól érkező vágási igények (darabok listája).
@@ -153,6 +160,7 @@ private:
                      int currentOpId);
 
     CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+
 };
 
 } //end namespace Optimizer

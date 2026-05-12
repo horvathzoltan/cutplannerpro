@@ -13,11 +13,16 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                                        const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
                                        QUuid materialId,
                                        double kerf_mm,
-                                       const QSet<QUuid>& usedLeftoverEntryIds)
+                                       const QSet<QUuid>& usedLeftoverEntryIds,
+                                       Cutting::Optimizer::OptimizerModel& model)
 {
     std::optional<ReusableCandidate> best;
     int bestScore = std::numeric_limits<int>::min();
     QSet<QUuid> groupIds = GroupUtils::groupMembers(materialId);
+
+    QVector<int> _aff_limits;
+    QVector<int> _aff_results;
+
 
     // 🔎 releváns darabok kiszűrése
     QVector<Cutting::Piece::PieceWithMaterial> relevantPieces;
@@ -27,6 +32,11 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
 
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
+
+        zInfo(QString("leftoverLoop iteration #%1 → limit=%2")
+                  .arg(i + 1)
+                  .arg(stock.availableLength_mm));
+
         if (stock.used) continue;
         if (!groupIds.contains(stock.materialId)) continue;
         if (usedLeftoverEntryIds.contains(stock.entryId)) continue; // ezt a hullót már elhasználtuk
@@ -43,36 +53,61 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         }
 
         // Egyébként: keresd a legjobb részhalmazt
-        auto combo = FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm);
-        zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
-                  .arg(relevantPieces.size()).arg(combo.size()));
+        FitEngine::FitResult fit =
+            FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm);
 
-        if (combo.isEmpty()) continue;
+        model._fitTelemetry.accumulate(fit);
 
-        int totalCut = OptimizerUtils::sumLengths(combo);
-        int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
-        int used = totalCut + kerfTotal;
-        if (used > stock.availableLength_mm) continue; // early discard
+        zInfo(QString("    strategy=%1, picks=%2, waste=%3")
+                  .arg(fit.strategyString())
+                  .arg(fit.pieceCount)
+                  .arg(fit.waste));
 
-        int waste = OptimizerUtils::computeWasteInt(stock.availableLength_mm, used);
+        if (fit.combo.isEmpty()) {
+            zInfo("    result: FAILED");
+            continue;
+        }
+
+        zInfo("    result: SUCCESS");
+
+        _aff_limits.append(stock.availableLength_mm);
+        _aff_results.append(fit.pieceCount);
+
+        if (fit.combo.isEmpty()) continue;
+
+        // A FitResult már tartalmazza:
+        int used           = fit.used;
+        int waste          = fit.waste;
         int leftoverLength = stock.availableLength_mm - used;
 
+        if (used > stock.availableLength_mm) continue;
 
-        int score = OptimizerUtils::calcScore(combo.size(), waste, leftoverLength);
+
+        int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength);
 
         if (score > bestScore) {
             bestScore = score;
             ReusableCandidate cand;
             cand.indexInView = i;
-            cand.stock = stock;
-            cand.combo = combo;
-            cand.waste = waste;
-            cand.source = (i < globalCount)
+            cand.stock       = stock;
+            cand.combo       = fit.combo;
+            cand.waste       = waste;
+            cand.source      = (i < globalCount)
                               ? ReusableCandidate::Source::GlobalSnapshot
                               : ReusableCandidate::Source::LocalPool;
             best = cand;
         }
     }
+
+    QStringList limitsStr, resultsStr;
+    for (int v : _aff_limits)  limitsStr << QString::number(v);
+    for (int v : _aff_results) resultsStr << QString::number(v);
+
+    zInfo(QString("🧩 ReusableFitEngine::findBestFit attempts=%1 limits=%2 results=%3")
+              .arg(_aff_limits.size())
+              .arg(limitsStr.join(","))
+              .arg(resultsStr.join(",")));
+
     return best;
 }
 

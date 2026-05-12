@@ -54,6 +54,13 @@ LeftoverStockEntry AddWasteDialog::getModel() const {
     entry.barcode = barcode();
     entry.source = source();
     entry.optimizationId = std::nullopt;
+
+    zInfo(QString("USER CREATED LEFTOVER: entryId=%1, material=%2, length=%3, barcode=%4")
+              .arg(entry.entryId.toString())
+              .arg(entry.materialId.toString())
+              .arg(entry.availableLength_mm)
+              .arg(entry.barcode));
+
     return entry;
 }
 

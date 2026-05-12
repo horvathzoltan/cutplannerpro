@@ -292,10 +292,10 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         return;
     }
 
-    zInfo("OptimizationRunner::run started");
+    zInfo("▶️ OptimizationRunner::run started");
     // 1️⃣ Optimalizáció futtatása
     OptimizationRunner::run(model, heuristic);
-    zInfo("OptimizationRunner::run stopped");
+    zInfo("⏹️ OptimizationRunner::run stopped");
 
     // 2️⃣ Nézet frissítése
     if (view) {

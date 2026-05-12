@@ -47,7 +47,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     QElapsedTimer timer;
     timer.start();
 
+    _fitTelemetry = {};
+    rodLoopIteration = 0;
     rodCounter = 0;
+
     _result_plans.clear();
     _planned_leftovers.clear();
     _usedLeftoverEntryIds.clear();
@@ -159,7 +162,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         // ♻️ Először próbáljunk reusable-t
         // REUSEABLE ÁG
         std::optional<ReusableCandidate> candidate =
-            ReusableFitEngine::findBestReusableFit(merged,globalSnapshot.size(), groupVec,targetMaterialId, kerf_mm, _usedLeftoverEntryIds);
+            ReusableFitEngine::findBestReusableFit(merged,globalSnapshot.size(),
+                groupVec,targetMaterialId, kerf_mm, _usedLeftoverEntryIds, *this);
         if (candidate.has_value() &&
             candidate->stock.source == Cutting::Result::LeftoverSource::Optimization)
 
@@ -188,6 +192,11 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                           .arg(best.stock.barcode));
             } else {
                 rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
+                zInfo(QString("🆔 NEW ROD ID: %1 (source=stock, material=%2, length=%3)")
+                          .arg(rod.rodId)
+                          .arg(rod.materialId.toString())
+                          .arg(rod.length));
+
                 zWarning(QString("NEW ROD FOR LEFTOVER: entryId=%1, rodCounter=%2, rodId=%3, barcode=%4")
                              .arg(best.stock.entryId.toString())
                              .arg(rodCounter)
@@ -221,7 +230,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                                                 return e.entryId ==
                                         best.stock.entryId;
                              }),
-                             global.end());              
+                             global.end());
             } else {
                 // Lokális poolból törlünk barcode alapján
                 _localLeftovers.erase(
@@ -390,11 +399,100 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     for (const auto& p : _result_plans)
         pieceCount += p.piecesWithMaterial.size();
 
+    const auto& t = _fitTelemetry;
+
+    double avgPicked = (t.calls > 0)
+                           ? double(t.totalPicked) / double(t.calls)
+                           : 0.0;
+    double avgWaste = (t.calls > 0)
+                          ? double(t.totalWaste) / double(t.calls)
+                          : 0.0;
+    double avgKerf  = (t.calls > 0)
+                         ? double(t.totalKerf) / double(t.calls)
+                         : 0.0;
+    double avgKerfRatio = (t.totalUsed > 0)
+                              ? (double(t.totalKerf) / double(t.totalUsed)) * 100.0
+                              : 0.0;
+
+    double avgElapsed_ms = (t.calls > 0)
+                               ? double(t.totalElapsed_us) / 1000.0 / double(t.calls)
+                               : 0.0;
+    double avgBF_ms = (t.bruteForce > 0)
+                          ? double(t.totalBFElapsed_us) / 1000.0 / double(t.bruteForce)
+                          : 0.0;
+    double avgDP_ms = ((t.dpPlain + t.dpScoring) > 0)
+                          ? double(t.totalDPElapsed_us) / 1000.0 / double(t.dpPlain + t.dpScoring)
+                          : 0.0;
+    double avgGreedy_ms = (t.greedy > 0)
+                              ? double(t.totalGreedyElapsed_us) / 1000.0 / double(t.greedy)
+                              : 0.0;
+
+    double avgBFCombos = (t.bruteForce > 0)
+                             ? double(t.bf_totalCombos) / double(t.bruteForce)
+                             : 0.0;
+    double avgBFEvaluated = (t.bruteForce > 0)
+                                ? double(t.bf_totalEvaluated) / double(t.bruteForce)
+                                : 0.0;
+    double avgBFSkipped = (t.bruteForce > 0)
+                              ? double(t.bf_totalSkipped) / double(t.bruteForce)
+                              : 0.0;
+
+    double avgDPLimit = ((t.dpPlain + t.dpScoring) > 0)
+                            ? double(t.dp_totalLimit) / double(t.dpPlain + t.dpScoring)
+                            : 0.0;
+    double avgDPFilled = ((t.dpPlain + t.dpScoring) > 0)
+                             ? double(t.dp_totalFilledCells) / double(t.dpPlain + t.dpScoring)
+                             : 0.0;
+    double avgDPChain = ((t.dpPlain + t.dpScoring) > 0)
+                            ? double(t.dp_totalChainLength) / double(t.dpPlain + t.dpScoring)
+                            : 0.0;
+
+    double avgGreedySorted = (t.greedy > 0)
+                                 ? double(t.greedy_totalSortedSize) / double(t.greedy)
+                                 : 0.0;
+    double avgGreedyPicks = (t.greedy > 0)
+                                ? double(t.greedy_totalPicks) / double(t.greedy)
+                                : 0.0;
+
+    zInfo("=== FitEngine Telemetry ===");
+    zInfo(QString("calls=%1").arg(t.calls));
+    zInfo(QString("fullFit=%1").arg(t.fullFit));
+    zInfo(QString("bruteForce=%1").arg(t.bruteForce));
+    zInfo(QString("dpPlain=%1").arg(t.dpPlain));
+    zInfo(QString("dpScoring=%1").arg(t.dpScoring));
+    zInfo(QString("greedy=%1").arg(t.greedy));
+
+    zInfo(QString("avgPicked=%1").arg(avgPicked, 0, 'f', 2));
+    zInfo(QString("avgWaste=%1").arg(avgWaste, 0, 'f', 2));
+    zInfo(QString("maxWaste=%1").arg(t.maxWaste));
+    zInfo(QString("minWaste=%1").arg(t.minWaste));
+
+    zInfo(QString("avgKerf=%1").arg(avgKerf, 0, 'f', 2));
+    zInfo(QString("avgKerfRatio=%1 %%").arg(avgKerfRatio, 0, 'f', 3));
+
+    zInfo(QString("avgElapsed_ms=%1").arg(avgElapsed_ms, 0, 'f', 3));
+    zInfo(QString("avgBF_ms=%1").arg(avgBF_ms, 0, 'f', 3));
+    zInfo(QString("avgDP_ms=%1").arg(avgDP_ms, 0, 'f', 3));
+    zInfo(QString("avgGreedy_ms=%1").arg(avgGreedy_ms, 0, 'f', 3));
+
+    zInfo(QString("bf_avgCombos=%1").arg(avgBFCombos, 0, 'f', 2));
+    zInfo(QString("bf_avgEvaluated=%1").arg(avgBFEvaluated, 0, 'f', 2));
+    zInfo(QString("bf_avgSkipped=%1").arg(avgBFSkipped, 0, 'f', 2));
+
+    zInfo(QString("dp_avgLimit=%1").arg(avgDPLimit, 0, 'f', 2));
+    zInfo(QString("dp_avgFilledCells=%1").arg(avgDPFilled, 0, 'f', 2));
+    zInfo(QString("dp_avgChainLength=%1").arg(avgDPChain, 0, 'f', 2));
+
+    zInfo(QString("greedy_avgSortedSize=%1").arg(avgGreedySorted, 0, 'f', 2));
+    zInfo(QString("greedy_avgPicks=%1").arg(avgGreedyPicks, 0, 'f', 2));
+    zInfo("===========================");
+
     zEvent(QString("🟢 Optimize(%1) finished in %2 ms: rods=%3, pieces=%4")
                .arg(currentOpId)
                .arg(ms, 0, 'f', 0)
                .arg(rodCount)
                .arg(pieceCount));
+
 }
 
 void OptimizerModel::logCutState(const Cutting::Plan::CutPlan& p,
@@ -644,6 +742,12 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
     entry.parentBarcode = rod.barcode;
     entry.source = Cutting::Result::LeftoverSource::Optimization;
     entry.optimizationId = std::make_optional(currentOpId);
+
+    zInfo(QString("CREATE PHYSICAL LEFTOVER: entryId=%1, length=%2, rodId=%3, parentBarcode=%4")
+              .arg(entry.entryId.toString())
+              .arg(entry.availableLength_mm)
+              .arg(rod.rodId)
+              .arg(rod.barcode));
 
     leftoverRodMap.insert(entry.entryId, rod.rodId);
     _localLeftovers.append(entry);

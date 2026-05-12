@@ -184,6 +184,12 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
     entry.optimizationId     = row.optimizationId;
     entry.storageId = storage->id;
 
+    zInfo(QString("LOAD REUSABLE LEFTOVER: entryId=%1, length=%2, material=%3, storage=%4")
+              .arg(entry.entryId.toString())
+              .arg(entry.availableLength_mm)
+              .arg(entry.materialId.toString())
+              .arg(entry.storageId.toString()));
+
     return entry;
 }
 

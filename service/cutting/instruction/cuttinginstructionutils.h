@@ -25,10 +25,17 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
     // 1️⃣ Rendezés a stratégiának megfelelően
     switch (strategy) {
     case SortStrategy::BySizeDesc:
-        std::sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
-                  [](const CutInstruction& a, const CutInstruction& b){
-                      return a.cutSize_mm > b.cutSize_mm;
-                  });
+        // std::sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
+        //           [](const CutInstruction& a, const CutInstruction& b){
+        //               return a.cutSize_mm > b.cutSize_mm;
+        //           });
+        std::stable_sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
+                         [](const CutInstruction& a, const CutInstruction& b){
+                             if (a.cutSize_mm != b.cutSize_mm)
+                                 return a.cutSize_mm > b.cutSize_mm;    // 1️⃣ méret szerint
+                             return a.rodId < b.rodId;                  // 2️⃣ rúd szerint
+                         });
+
         break;
 
     case SortStrategy::ByMaterialThenSize:

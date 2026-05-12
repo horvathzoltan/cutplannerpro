@@ -13,37 +13,24 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
     const QSet<QUuid>& groupIds,
     int& rodCounter)
 {
-    if(_isVerbose){
-        zInfo(QString("🔍 STOCK SCAN START: groupIds=%1, stockCount=%2")
-              .arg(groupIds.size())
-              .arg(stockInventory.size()));
-    }
+    int skipWrongGroup = 0;
+    int skipZeroQty = 0;
+    int total = stockInventory.size();
+    int selectedIndex = -1;
 
     for (int i = 0; i < stockInventory.size(); ++i) {
         StockEntry& stock = stockInventory[i];
 
-        if(_isVerbose){
-            zInfo(QString("   • STOCK[%1]: materialId=%2, quantity=%3")
-                      .arg(i)
-                      .arg(stock.materialId.toString())
-                      .arg(stock.quantity));
-        }
-
         if (!groupIds.contains(stock.materialId)) {
-            zInfo(QString("     ⛔ SKIP STOCK[%1]: materialId not in groupIds").arg(i));
+            skipWrongGroup++;
             continue;
         }
         if (stock.quantity <= 0) {
-            zInfo(QString("     ⛔ SKIP STOCK[%1]: quantity=0").arg(i));
+            skipZeroQty++;
             continue;
         }
 
-
-        zInfo(QString("     ✅ STOCK[%1] SELECTED: materialId=%2, newQuantity=%3")
-                  .arg(i)
-                  .arg(stock.materialId.toString())
-                  .arg(stock.quantity - 1));
-
+        selectedIndex = i;
 
         stock.quantity--;
 
@@ -54,22 +41,39 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
 
         int matId = SettingsManager::instance().nextMaterialCounter();
         rod.barcode = IdentifierUtils::makeMaterialId(matId);
-
         rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
 
-        if(_isVerbose){
-            zInfo(QString("NEW STOCK ROD: rodCounter=%1, rodId=%2, materialId=%3, barcode=%4")
-                      .arg(rodCounter)
-                      .arg(rod.rodId)
-                      .arg(rod.materialId.toString())
-                      .arg(rod.barcode));
-        }
+        zInfo(QString("🆔 NEW STOCK ROD ID: %1 (counter=%2, material=%3, length=%4)")
+                  .arg(rod.rodId)
+                  .arg(rodCounter)
+                  .arg(rod.materialId.toString())
+                  .arg(rod.length));
+
+        zInfo(QString("✅ STOCK[%1] SELECTED: materialId=%2, newQuantity=%3")
+                  .arg(i)
+                  .arg(stock.materialId.toString())
+                  .arg(stock.quantity));
+
+        // AGGREGÁLT ÖSSZEFOGLALÓ
+        zInfo(QString(
+                   "🛠️ STOCK SCAN SUMMARY: total=%1, selected=1, skipWrongGroup=%2, skipZeroQty=%3")
+                   .arg(total)
+                   .arg(skipWrongGroup)
+                   .arg(skipZeroQty));
 
         return rod;
     }
 
+    // NEM TALÁLT SEMMIT → összegzés
+    zInfo(QString(
+               "🛠️ STOCK SCAN SUMMARY: total=%1, selected=0, skipWrongGroup=%2, skipZeroQty=%3")
+               .arg(total)
+               .arg(skipWrongGroup)
+               .arg(skipZeroQty));
+
     return std::nullopt;
 }
+
 
 } // namespace Optimizer
 } // namespace Cutting

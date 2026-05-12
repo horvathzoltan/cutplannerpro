@@ -3,6 +3,7 @@
 #include <optional>
 #include <QVector>
 #include "cuttypes.h"
+#include "optimizermodel.h"
 #include "../piece/piecewithmaterial.h"
 #include "../../leftoverstockentry.h"
 
@@ -37,5 +38,6 @@ public:
                         const QVector<Cutting::Piece::PieceWithMaterial>& pieces,
                         QUuid materialId,
                         double kerf_mm,
-                        const QSet<QUuid>& usedLeftoverEntryIds);
+                        const QSet<QUuid>& usedLeftoverEntryIds,
+                        Cutting::Optimizer::OptimizerModel& model);
 };

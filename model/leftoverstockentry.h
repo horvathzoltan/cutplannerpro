@@ -15,9 +15,7 @@ struct LeftoverStockEntry {
     QUuid entryId;
 
     // Csak itt generálódjon új GUID
-    LeftoverStockEntry() : entryId(QUuid::createUuid()) {
-        zInfo("CTOR new entryId=" + entryId.toString());
-    }
+    LeftoverStockEntry() : entryId(QUuid::createUuid()) {}
 
     // Másoláskor és assignmentnél megtartja az eredeti entryId-t
     LeftoverStockEntry(const LeftoverStockEntry& other) = default;

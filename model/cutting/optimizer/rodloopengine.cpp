@@ -19,19 +19,51 @@ RodStepResult RodLoopEngine::step(
     double kerf_mm,
     OptimizerModel& model)
 {
-    QVector<Cutting::Piece::PieceWithMaterial> combo =
+
+    QVector<int> _aff_limits;
+    QVector<int> _aff_results;
+
+
+    model.rodLoopIteration++;
+    //zInfo(QString("rodLoop iteration #%1").arg(model.rodLoopIteration));
+
+    FitEngine::FitResult fr =
         FitEngine::findBestFit(groupVec, remainingLength2, kerf_mm);
 
-    zInfo(QString("findBestFit: %1 darab, bestCombo size=%2")
-              .arg(groupVec.size())
-              .arg(combo.size()));
+    zInfo(QString("rodLoop iteration #%1 → limit=%2")
+              .arg(model.rodLoopIteration)
+              .arg(remainingLength2));
 
-    if (combo.isEmpty())
+    // zInfo(QString("rodLoop iteration #%1 → bestFit → strategy=%2, picks=%3, waste=%4, limit=%5")
+    //           .arg(model.rodLoopIteration)
+    //           .arg(static_cast<int>(fr.strategy))
+    //           .arg(fr.pieceCount)
+    //           .arg(fr.waste)
+    //           .arg(remainingLength2));
+
+    model._fitTelemetry.accumulate(fr);
+
+    zInfo(QString("    strategy=%1, picks=%2, waste=%3")
+              .arg(fr.strategyString())
+              .arg(fr.pieceCount)
+              .arg(fr.waste));
+
+    _aff_limits.append(remainingLength2);
+    _aff_results.append(fr.pieceCount);
+
+    if (fr.combo.isEmpty()){
+            zInfo("    result: FAILED");
         return RodStepResult::StopRod;
+    }
+
+    zInfo("    result: SUCCESS");
+
+    const QVector<Cutting::Piece::PieceWithMaterial>& combo = fr.combo;
 
     CutResult cr = model.cutCombo_AndCommit(
         combo, remainingLength, remainingLength2,
         rod, machine, currentOpId, rodId, kerf_mm, groupVec);
+
 
     if (cr.status == CutResultStatus::Overfill)
     {
@@ -56,15 +88,19 @@ RodStepResult RodLoopEngine::step(
 
         remainingLength  = 0;
         remainingLength2 = 0;
+
+        zInfo("rodLoop result: STOP (overfill)");
         return RodStepResult::StopRod;
     }
 
     if (remainingLength < OptimizerConstants::SELEJT_THRESHOLD) {
+        zInfo("rodLoop result: STOP (below SELEJT_THRESHOLD)");
         return RodStepResult::StopRod;
     }
 
     if (remainingLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
         remainingLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+        zInfo("rodLoop result: STOP (good leftover range)");
         return RodStepResult::StopRod;
     }
 
@@ -87,8 +123,10 @@ RodStepResult RodLoopEngine::step(
             int newRemaining = remainingLength;
 
             if (newRemaining < OptimizerConstants::SELEJT_THRESHOLD) {
+                zInfo("rodLoop result: START_NEW_ROD");
                 return RodStepResult::StartNewRod;
             } else {
+                zInfo("rodLoop result: STOP (after single cut)");
                 return RodStepResult::StopRod;
             }
         }
@@ -103,10 +141,21 @@ RodStepResult RodLoopEngine::step(
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             Q_UNUSED(cr4);
+            zInfo("rodLoop result: CONTINUE_SAME_ROD");
             return RodStepResult::ContinueSameRod;
         }
         return RodStepResult::StopRod;
     }
+
+    QStringList limitsStr, resultsStr;
+    for (int v : _aff_limits)  limitsStr << QString::number(v);
+    for (int v : _aff_results) resultsStr << QString::number(v);
+
+    zInfo(QString("🧩 FitEngine::findBestFit attempts=%1 limits=%2 results=%3")
+              .arg(_aff_limits.size())
+              .arg(limitsStr.join(","))
+              .arg(resultsStr.join(",")));
+
 
     return RodStepResult::StopRod;
 }

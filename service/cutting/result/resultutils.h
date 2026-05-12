@@ -30,6 +30,10 @@ static inline QVector<LeftoverStockEntry> toReusableEntries(const QVector<Result
         entry.availableLength_mm = res.waste;
         entry.source = convertToLeftoverSource(res.source);
 
+        zInfo(QString("CONVERT RESULT → LEFTOVER: material=%1, waste=%2")
+                  .arg(res.materialId.toString())
+                  .arg(res.waste));
+
         result.append(entry);
     }
 
@@ -42,6 +46,10 @@ static inline LeftoverStockEntry toReusableEntry(const ResultModel& res) {
     entry.materialId = res.materialId;
     entry.availableLength_mm = res.waste;
     entry.source = convertToLeftoverSource(res.source);;
+
+    zInfo(QString("CONVERT RESULT → LEFTOVER (single): material=%1, waste=%2")
+              .arg(res.materialId.toString())
+              .arg(res.waste));
 
     return entry;
 }
