@@ -21,6 +21,10 @@ SOURCES += \
     model/cutting/optimizer/stockfitengine.cpp \
     model/storageaudit/auditcontext.cpp \
     service/buildnumber.cpp \
+    service/cutting/summary/cutplan_input_summary.cpp \
+    service/cutting/summary/cutplan_input_summary_builder.cpp \
+    service/cutting/summary/cutplan_output_summary.cpp \
+    service/cutting/summary/cutplan_output_summary_builder.cpp \
     service/cutting/summary/cutplansummary.cpp \
     service/cutting/summary/cutplansummarybuilder.cpp \
     service/storageaudit/auditcontextbuilder.cpp \
@@ -105,6 +109,7 @@ HEADERS += \
     common/identifierutils.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
+    common/texthelper.h \
     model/cutting/optimizer/cutengine.h \
     model/cutting/optimizer/cuttypes.h \
     model/cutting/optimizer/fitengine.h \
@@ -130,6 +135,10 @@ HEADERS += \
     service/cutting/optimizer/optimizerconstants.h \
     service/cutting/optimizer/optimizerutils.h \
     service/cutting/plan/requestutils.h \
+    service/cutting/summary/cutplan_input_summary.h \
+    service/cutting/summary/cutplan_input_summary_builder.h \
+    service/cutting/summary/cutplan_output_summary.h \
+    service/cutting/summary/cutplan_output_summary_builder.h \
     service/cutting/summary/cutplansummary.h \
     service/cutting/summary/cutplansummarybuilder.h \
     service/snapshot/inventorysnapshotbuilder.h \

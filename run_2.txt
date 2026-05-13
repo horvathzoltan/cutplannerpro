@@ -1,242 +1,500 @@
+⭐ 1. SZEMPONT
 
-1: nem látszik, hány tétel van a cutting requestben - de látszik az, hogy hány db lett vágva: Darabolás: 31 darab, 31 kerf (93 mm), 7 hulladék (4285 mm)
+CutPlanSummary → tényleg a CutPlan‑ről szóljon
 
-2. OptimizerConstants::END_TRIM_MM anyagonként: elejéből, végéből levág 15mm - törzs bővítés egy mezővel
-- optimalizálásnál figyelembe venni, pl napháló tok 5800
+🔍 Jelenlegi állapot
 
-4. 5-10 tételes kategóriák szimbólummal - ez kész munkadarabra vonatkozik
-- napocska, halacska, házikó, holdacska
+A Summary most ezt tartalmazza:
 
-7. 7-8 tételenként csoportokba szervezni ha nincsenek csoprtok kialakítva alapból
-- szimbólumösszerendelés
+-   szálak száma
+-   szálak teljes hossza
+-   levágott darabok
+-   kerf
+-   hulladék
+-   hatékonyság
 
-************
+❌ Mi hiányzik?
 
-   TENNI
+A CutPlan-ek tulajdonságai NEM jelennek meg.
 
-************
+Nincs:
 
+-   rúdankénti vágási sorrend
+-   rúdankénti darabszám
+-   rúdankénti hulladék
+-   rúdankénti hatékonyság
+-   rúdankénti leftover barcode
+-   rúdankénti kerf összesítés
+-   rúdankénti darablista
 
-Zoltán, itt a teljes, átfogó, pontonként végrehajtható, audit‑minőségű
-LOG OPTIMALIZÁCIÓS TERV, kifejezetten a te rendszeredre szabva, a fenti
-log alapján.
+Pedig egy „CutPlanSummary” definíció szerint:
 
-Ez nem „ötletelés”, hanem konkrét, lépésről lépésre végrehajtható
-műszaki terv, amely után:
+  A CutPlan-ek összefoglalója.
 
--   a log nem lesz zajos,
--   értelmes aggregált információt ad,
--   nem ismétel felesleges sorokat,
--   nem terheli a felhasználót,
--   debug módban viszont minden részlet megmarad.
+✔ Mi teljesült?
+
+– A globális összegzés jó.
+– A Summary szép, auditálható.
+
+❌ Mi hiányzik?
+
+– A CutPlan-ek valódi összefoglalása.
+
+📌 Következtetés
+
+Ez a pont csak 40%-ban teljesült.
+A Summary‑t bővíteni kell rúdankénti adatokkal.
 
 ------------------------------------------------------------------------
 
-⭐ 0. ALAPELV – három logszint bevezetése
+⭐ 2. SZEMPONT
 
-Ez a legfontosabb.
+END_TRIM_MM anyagonként (15 mm eleje + 15 mm vége)
 
-INFO
+🔍 Jelenlegi állapot
 
-Felhasználónak, auditnak.
-Csak a lényeg:
+A CutInstructions.txt NEM tartalmaz:
 
--   melyik stock lett kiválasztva
--   hány rod
--   mennyi hulladék
--   exportok
--   optimize start/finish
+-   trim információt
+-   trim műveletet
+-   trim címkét
+-   trim hosszát
+-   trim helyét a rúd elején/végén
 
-DEBUG
+❌ Mi hiányzik?
 
-Fejlesztőnek.
-Aggregált statisztikák:
+Minden.
 
--   stock scan summary
+A trim:
+
+-   nincs anyagtörzsben
+-   nincs CutPlan-ben
+-   nincs a vágási utasításban
+-   nincs a LabelTable-ben
+-   nincs a Summary-ban
+
+✔ Mi teljesült?
+
+– Semmi, ez még nem lett implementálva.
+
+📌 Következtetés
+
+Ez a pont 0%-ban teljesült.
+
+------------------------------------------------------------------------
+
+⭐ 3. SZEMPONT
+
+5–10 tételes kategóriák szimbólummal (napocska, halacska, házikó, holdacska)
+
+🔍 Jelenlegi állapot
+
+A CutInstructions és a LabelTable:
+
+-   nem tartalmaz szimbólumot
+-   nem tartalmaz kategóriát
+-   nem tartalmaz groupingot
+
+❌ Mi hiányzik?
+
+– kategorizálás
+– szimbólum hozzárendelés
+– megjelenítés a vágási utasításban
+– megjelenítés a címketáblában
+
+📌 Következtetés
+
+Ez a pont 0%-ban teljesült.
+
+------------------------------------------------------------------------
+
+⭐ 4. SZEMPONT
+
+7–8 tételenként automatikus csoportképzés
+
+🔍 Jelenlegi állapot
+
+A CutInstructions.txt egyetlen nagy lista.
+
+Nincs:
+
+-   csoporthatár
+-   vizuális szeparátor
+-   grouping
+-   szimbólum
+-   megrendelés szerinti rendezés
+
+❌ Mi hiányzik?
+
+– grouping algoritmus
+– grouping megjelenítés
+– grouping szimbólumok
+
+📌 Következtetés
+
+Ez a pont 0%-ban teljesült.
+
+------------------------------------------------------------------------
+
+⭐ 5. SZEMPONT
+
+LOG optimalizáció (INFO / DEBUG / TRACE)
+
+🔍 Jelenlegi állapot
+
+A logger modul már tudja a szinteket.
+A logban már látszik:
+
+-   Optimize start/finish ✔
+-   STOCK SCAN SUMMARY ✔
+-   rodLoop iteration ✔
+-   leftoverLoop iteration ✔
+-   FitEngine Telemetry ✔
+
+❌ Mi hiányzik?
+
+– findBestFit summary
+– Created entries summary
+– Optimize summary a végén
+– INFO/DEBUG/TRACE tényleges szétválasztása
+
+📌 Következtetés
+
+Ez a pont kb. 60%-ban teljesült.
+
+------------------------------------------------------------------------
+
+⭐ 6. SZEMPONT
+
+Outputok vizuális minősége → „kinek mijét vágjuk?”
+
+🔍 Jelenlegi állapot
+
+A CutInstructions.txt jelenleg így néz ki:
+
+    29. Rod-G | NaphálóTok:MAT-G-178 | 3610 mm | 1444. PrémiumHoliday
+
+Ez tartalmazza:
+
+-   rúd azonosító
+-   anyag + barcode
+-   méret
+-   tételszám + megrendelő neve
+
+✔ Mi teljesült jól?
+
+– A tételszám és a megrendelő neve már ott van a végén.
+– A LabelTable is tartalmazza.
+
+❌ Mi hiányzik?
+
+– A megrendelés azonosítója (pl. OrderID)
+– A cutrequest azonosítója
+– A grouping (megrendelésenként)
+– A vizuális szeparátorok
+
+📌 Következtetés
+
+Ez a pont kb. 70%-ban teljesült.
+A megrendelő neve már látszik, de a grouping hiányzik.
+
+------------------------------------------------------------------------
+
+⭐ VÉGSŐ ÖSSZESÍTÉS
+
+A 6 szempont teljesülése (százalékosan)
+
+  Szempont                               Állapot      Teljesülés
+  -------------------------------------- ------------ ------------
+  1. CutPlanSummary valódi tartalom      ⚠️ Részben   40%
+  2. END_TRIM_MM anyagonként             ❌ Nincs     0%
+  3. Szimbólumok (napocska, halacska…)   ❌ Nincs     0%
+  4. Automatikus grouping                ❌ Nincs     0%
+  5. LOG optimalizáció                   ⚠️ Részben   60%
+  6. Output vizuális minőség             ⚠️ Részben   70%
+
+------------------------------------------------------------------------
+
+⭐ MIT JELENT EZ?
+
+A rendszer:
+
+-   stabil,
+-   gyors,
+-   auditálható,
+-   szépen rendezett,
+-   jó minőségű outputot ad,
+
+DE a felhasználói élmény és a megrendelés‑orientált struktúra még
+hiányzik.
+
+A következő nagy lépések:
+
+1.  CutPlanSummary kibővítése rúdankénti adatokkal
+2.  END_TRIM_MM beépítése
+3.  Megrendelés szerinti grouping + szimbólumok
+4.  CutInstructions vizuális továbbfejlesztése
+
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+
+⭐ RÉSZLETES, PONTONKÉNTI TERV
+
+A CutPlanSummary, CutInstructions és LabelTable fejlesztésére
+
+------------------------------------------------------------------------
+
+1. SZEMPONT — CutPlanSummary valódi tartalommal
+
+🎯 Cél
+
+A CutPlanSummary ne csak globális számokat tartalmazzon, hanem valódi
+CutPlan adatokat:
+
+-   input tételszám
+-   feldolgozott tételszám
+-   kimaradt tételszám
+-   rúdankénti összefoglaló
+-   rúdankénti hatékonyság
+-   rúdankénti leftover
+-   rúdankénti kerf összesítés
+
+📌 Feladatok
+
+1.1. CutPlanSummary modell bővítése
+- inputPieceCount
+- processedPieceCount
+- skippedPieceCount
+- rodSummaries: vector<RodSummary>
+
+1.2. RodSummary struktúra létrehozása
+- rodId
+- barcode
+- totalCuts
+- totalKerf
+- leftoverLength
+- efficiency
+
+1.3. Summary generálás módosítása
+- input tételszám beolvasása
+- processed tételszám számítása
+- kimaradt tételszám számítása
+- rúdankénti aggregáció
+
+1.4. Summary output bővítése
+- új szekció: „Rúdankénti összefoglaló”
+- minden rúd külön blokkban
+
+------------------------------------------------------------------------
+
+2. SZEMPONT — END_TRIM_MM anyagonként
+
+🎯 Cél
+
+A rúd elejéről és végéről levágott 15–15 mm:
+
+-   legyen anyagonként konfigurálható
+-   jelenjen meg a CutInstructions-ben
+-   jelenjen meg a LabelTable-ben
+-   jelenjen meg a Summary-ban
+
+📌 Feladatok
+
+2.1. Anyagtörzs bővítése
+- új mező: endTrim_mm (default: 15)
+
+2.2. CutPlan számítás módosítása
+- effektív rúd hossz = stockLength − 2×endTrim
+- leftover számítás módosítása
+- kerf számítás változatlan
+
+2.3. CutInstructions bővítése
+Minden rúd elején:
+
+    Rod-A előkészítés: −15 mm eleje, −15 mm vége (anyag: NaphálóTok)
+
+2.4. LabelTable bővítése
+- trim információ megjelenítése a rúd címkéjén
+
+2.5. Summary bővítése
+- összes trim mennyiség
+- anyagonkénti trim
+
+------------------------------------------------------------------------
+
+3. SZEMPONT — 5–10 tételes kategóriák szimbólummal
+
+🎯 Cél
+
+A megrendelések tételei kapjanak:
+
+-   kategóriát
+-   szimbólumot
+-   vizuális jelölést a CutInstructions-ben
+-   vizuális jelölést a LabelTable-ben
+
+📌 Feladatok
+
+3.1. Kategorizáló algoritmus
+- tételszám alapján:
+- 1–5: 🌞
+- 6–10: 🐟
+- 11–15: 🏠
+- 16+: 🌙
+
+3.2. Szimbólum hozzárendelés
+- requestId → symbol
+
+3.3. CutInstructions bővítése
+Minden sor elejére:
+
+    🌞 29. Rod-G | ...
+
+3.4. LabelTable bővítése
+- szimbólum megjelenítése a cellában
+
+------------------------------------------------------------------------
+
+4. SZEMPONT — 7–8 tételenként automatikus csoportképzés
+
+🎯 Cél
+
+A megrendelések tételei legyenek:
+
+-   csoportokba rendezve
+-   vizuálisan elkülönítve
+-   szimbólummal jelölve
+
+📌 Feladatok
+
+4.1. Grouping algoritmus
+- input: rendezett tétellista
+- output: groupId → list of items
+- szabály: 7–8 tétel / csoport
+
+4.2. CutInstructions csoporthatár
+Minden csoport elé:
+
+    ──────── Csoport #1 (🌞) — 8 tétel ────────
+
+4.3. LabelTable csoporthatár
+- üres sor
+- csoportcím
+
+------------------------------------------------------------------------
+
+5. SZEMPONT — LOG optimalizáció
+
+🎯 Cél
+
+A log:
+
+-   INFO szinten legyen tiszta
+-   DEBUG szinten legyen részletes
+-   TRACE szinten legyen mély
+
+📌 Feladatok
+
+5.1. findBestFit summary
+- attempts
+- bestCombo
+- strategy breakdown
+
+5.2. Created entries summary
+- cut entries
+- leftover entries
+
+5.3. Optimize summary
+- rods
+- pieces
+- leftover count
+- efficiency
+
+5.4. Szintenkénti logolás
+- INFO: csak a lényeg
+- DEBUG: aggregált statisztika
+- TRACE: iterációk
+
+------------------------------------------------------------------------
+
+6. SZEMPONT — Output vizuális minőség
+
+🎯 Cél
+
+A CutInstructions tartalmazza:
+
+-   megrendelés azonosító
+-   cutrequest azonosító
+-   grouping
+-   szimbólum
+-   trim
+-   rúdankénti blokk
+
+📌 Feladatok
+
+6.1. CutInstructions sorformátum bővítése
+Új formátum:
+
+    🌞 [REQ-1422] Rod-A | MAT-G-140 | ✂️ 1755 mm | PrémiumHoliday
+
+6.2. Rúdankénti blokk
+Minden rúd előtt:
+
+    ===== Rod-A (MAT-G-140) =====
+
+6.3. Trim megjelenítése
+A rúd elején:
+
+    Előkészítés: −15 mm eleje, −15 mm vége
+
+------------------------------------------------------------------------
+
+⭐ 7. PONT — PATCHING TERV (STRICT MODE)
+
+Ez lesz a végrehajtható, lépésről lépésre követhető patch-sorozat.
+
+PATCH #1 — CutPlanSummary bővítése
+
+-   új mezők hozzáadása
+-   RodSummary struktúra
+-   Summary generálás módosítása
+-   Summary output bővítése
+
+PATCH #2 — END_TRIM_MM implementálása
+
+-   anyagtörzs bővítése
+-   effektív rúd hossz számítása
+-   leftover számítás módosítása
+-   CutInstructions és LabelTable bővítése
+
+PATCH #3 — Szimbólumok és kategóriák
+
+-   kategorizáló algoritmus
+-   symbol mapping
+-   CutInstructions sorformátum bővítése
+-   LabelTable bővítése
+
+PATCH #4 — Automatikus grouping
+
+-   grouping algoritmus
+-   csoporthatárok megjelenítése
+-   LabelTable grouping
+
+PATCH #5 — LOG optimalizáció
+
 -   findBestFit summary
--   leftover/cut entry summary
+-   created entries summary
+-   optimize summary
+-   szintenkénti logolás
 
-TRACE
+PATCH #6 — CutInstructions vizuális továbbfejlesztése
 
-Mély debug.
-Minden iteráció, minden skip, minden DP próbálkozás.
-
-------------------------------------------------------------------------
-
-⭐ 1. FELADAT – StockFitEngine ciklus zajának megszüntetése
-
-Cél: ne legyen 15× „SKIP STOCK[…]”.
-
-1.1. Gyűjts statisztikát a ciklusban
-
-    int skipWrongGroup = 0;
-    int skipZeroQty = 0;
-    int total = stockInventory.size();
-    int selectedIndex = -1;
-
-A ciklusban:
-
-    if (!groupIds.contains(stock.materialId)) {
-        skipWrongGroup++;
-        continue;
-    }
-    if (stock.quantity <= 0) {
-        skipZeroQty++;
-        continue;
-    }
-    selectedIndex = i;
-    break;
-
-1.2. A ciklus után írj ki egyetlen összegző sort
-
-    zDebug(QString(
-        "STOCK SCAN SUMMARY: total=%1, selected=%2, skipWrongGroup=%3, skipZeroQty=%4")
-        .arg(total)
-        .arg(selectedIndex >= 0 ? 1 : 0)
-        .arg(skipWrongGroup)
-        .arg(skipZeroQty));
-
-Eredmény:
-
-    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
-
-Ez kivált 15–20 sor spamet.
+-   új sorformátum
+-   rúdankénti blokk
+-   trim megjelenítése
+-   megrendelés azonosító megjelenítése
 
 ------------------------------------------------------------------------
 
-⭐ 2. FELADAT – findBestFit ismétlődő logok megszüntetése
-
-A jelenlegi log:
-
-    findBestFit: 2 darab, bestCombo size=0
-    findBestFit: 2 darab, bestCombo size=0
-    findBestFit: 2 darab, bestCombo size=0
-    ...
-
-Ez azért van, mert a DP több fallback stratégiát próbál, de a bemenet
-nem változik → a log ismétlődik.
-
-2.1. Gyűjtsd össze a próbálkozások számát
-
-    int attempts = 0;
-    int best = 0;
-
-    for (...) {
-        attempts++;
-        best = bestCombo.size();
-    }
-
-2.2. A végén egyetlen sorban logold
-
-    zDebug(QString("findBestFit summary: attempts=%1, bestCombo=%2")
-           .arg(attempts)
-           .arg(best));
-
-Eredmény:
-
-    findBestFit summary: attempts=6, bestCombo=0
-
-Ez kivált 6–12 sor spamet.
-
-------------------------------------------------------------------------
-
-⭐ 3. FELADAT – CTOR new entryId zaj megszüntetése
-
-A jelenlegi log:
-
-    CTOR new entryId={...}
-    CTOR new entryId={...}
-    CTOR new entryId={...}
-    ...
-
-Ez 8–12 sor, és nem ad értéket.
-
-3.1. Gyűjtsd össze a létrehozott entry-k számát
-
-    static thread_local int createdEntries = 0;
-    createdEntries++;
-
-3.2. A rod-loop végén:
-
-    zDebug(QString("Created %1 new cut/leftover entries").arg(createdEntries));
-    createdEntries = 0;
-
-Eredmény:
-
-    Created 9 new cut/leftover entries
-
-Ez kivált 9–12 sor spamet.
-
-------------------------------------------------------------------------
-
-⭐ 4. FELADAT – Optimize start/finish logok egységesítése
-
-A jelenlegi:
-
-    Optimize(1) run started
-    Optimize(1) finished
-
-4.1. Start emoji (keskeny, nem csúszik)
-
-    ⏳ Optimize(%2) run started (heuristic=%1)
-
-4.2. Finish emoji
-
-    🟢 Optimize(%1) finished in %2 ms — rods=%3, pieces=%4
-
-------------------------------------------------------------------------
-
-⭐ 5. FELADAT – Aggregált Optimize összefoglaló
-
-A futás végén:
-
-    OPTIMIZE SUMMARY:
-      rods=8
-      pieces=31
-      leftoverCount=8
-      totalWaste=...
-      efficiency=...
-
-Ez INFO szint.
-
-------------------------------------------------------------------------
-
-⭐ 6. FELADAT – A log teljes szerkezete futás közben
-
-INFO (felhasználó)
-
-    ⏳ Optimize(1) run started (heuristic=ByCount)
-    🟢 Optimize(1) finished in 3659 ms — rods=8, pieces=31
-
-DEBUG (fejlesztő)
-
-    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
-    findBestFit summary: attempts=6, bestCombo=0
-    Created 9 new cut/leftover entries
-
-TRACE (mély debug)
-
-    • STOCK[0]: ...
-    ⛔ SKIP STOCK[0]
-    ...
-
-TRACE csak akkor kell, ha isVerbose = true.
-
-------------------------------------------------------------------------
-
-⭐ 7. FELADAT – A log végső formája (példa)
-
-    ⏳ Optimize(1) run started (heuristic=ByCount)
-
-    STOCK SCAN SUMMARY: total=16, selected=1, skipWrongGroup=15, skipZeroQty=0
-    findBestFit summary: attempts=6, bestCombo=4
-    Created 9 new cut/leftover entries
-
-    🟢 Optimize(1) finished in 3659 ms — rods=8, pieces=31
-
-Ez tiszta, érthető, auditálható, nem spameli tele a logot, és minden
-fontos információt tartalmaz.
-
-------------------------------------------------------------------------
-
-⭐ Ha kéred, megírom a teljes kész C++ patch-et is, amit csak be kell illesztened.

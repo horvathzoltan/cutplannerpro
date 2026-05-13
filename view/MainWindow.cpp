@@ -671,6 +671,7 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
     //static const QString errevent = QStringLiteral("❌ CutInstructions export nem hajtható végre. Részletek a logban.");
     //static const QString oklog    = QStringLiteral("✅ CutInstructions exportálva: %1");
 
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
 
     _machineCutsList.clear();
     // 1️⃣ Adatok összegyűjtése a Presenterből
@@ -768,8 +769,11 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
     renderCuttingInstructions();
 
     QStringList block;
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
 
-    block << "🧾 Vágási utasítások:";
+    //block << "🧾 Vágási utasítások:";
 
     QStringList labelBlock;
     labelBlock << "🏷️ Címketáblák:";
@@ -780,12 +784,15 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
 
     for (const auto& mc : _machineCutsList) {
         // --- Vágási utasítások ---
-        block << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
-        block << CuttingInstructionUtils::formatMachineCutsEvent(mc);
+        //block << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+        // A CutInstructions (MachineCuts) IGEN, gépenkénti
+        block << CuttingInstructionUtils::formatMachineCutsEvent(mc, baseName);
         block << ""; // üres sor gépek között
 
         // --- Címketábla külön ---
-        QVector<CuttingInstructionUtils::LabelModel> labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+        // A CutInstructions (MachineCuts) IGEN, gépenkénti
+        QVector<CuttingInstructionUtils::LabelModel> labels =
+            CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
 
         labelBlock << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
         labelBlock << CuttingInstructionUtils::formatLabelTable4(labels,w,colums,1);
@@ -795,14 +802,13 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
 
     // === FÁZIS 4: Fájlba írás ===
 
-    QString fileName = SettingsManager::instance().cuttingPlanFileName();
-    QFileInfo fi(fileName);
-    QString baseName = fi.completeBaseName();
+
 
     if (baseName.isEmpty()) {
         zEvent("❌ Nincs Cutting Plan fájlnév — az export nem hajtható végre.");
         return;
     }
+
 
     // Export mappa
     QString dir = fi.absolutePath() + "/_reports";
@@ -843,7 +849,12 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked()
             QTextStream out(&file);
             out.setEncoding(QStringConverter::Utf8);
 
-            out << "🏷️ Címketáblák (gépenként):\n\n";
+            out << QString("🏷️ Címketáblák (gépenként) - CutPlan: %1").arg(baseName);
+            out<<"\n";
+            out << QString("📅 Dátum: %1").arg(dateStr);
+            out<<"\n";
+            //out << "────────────────────────────────";
+            //out<<"\n";
 
             for (const auto& mc : _machineCutsList) {
 

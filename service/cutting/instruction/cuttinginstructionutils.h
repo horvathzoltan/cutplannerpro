@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../model/cutting/instruction/cutinstruction.h"
+#include "common/texthelper.h"
 
 #include <materials/model/material_master.h>
 
@@ -8,6 +9,7 @@
 
 #include <model/registries/cuttingplanrequestregistry.h>
 
+#include <QDateTime>
 #include <QSet>
 
 namespace CuttingInstructionUtils {
@@ -80,9 +82,62 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
     }
 }
 
-inline QString formatMachineCutsEvent(const MachineCuts& mc)
+// A CutInstructions (MachineCuts) IGEN, gépenkénti
+inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& planIdStr)
 {
     QStringList lines;
+    //QString planId = mc.machineHeader.planId.toString();
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    int inputCount = 0;
+    QStringList refs;
+    for (const auto& ci : mc.cutInstructions) {
+        auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+        if (req) {
+            inputCount += req->quantity;
+            //bool ok = false;
+            //int v = req->externalReference.toInt(&ok);
+            //if (ok) refs.append(v);
+            refs.append(req->externalReference);
+        }
+    }
+
+    //std::sort(refs.begin(), refs.end());
+    // QVector<QString> refBlocks;
+    // int i = 0;
+    // while (i < refs.size()) {
+    //     int start = refs[i];
+    //     int end = start;
+    //     int j = i + 1;
+    //     while (j < refs.size() && refs[j] == end + 1) {
+    //         end = refs[j];
+    //         j++;
+    //     }
+    //     if (start == end)
+    //         refBlocks.append(QString("%1.").arg(start));
+    //     else
+    //         refBlocks.append(QString("%1–%2.").arg(start).arg(end));
+    //     i = j;
+    // }
+    QString compressed = TextHelper::compressRanges_String(refs);
+
+    int outputCount = 0;
+    for (const auto& ci : mc.cutInstructions)
+        outputCount++;
+
+    int diff = outputCount - inputCount;
+
+    lines << QString("🧾 Vágási utasítások (gépenkénti) — CutPlan: %1").arg(planIdStr);
+    lines << QString("📅 Dátum: %1").arg(dateStr);
+    lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+    lines << "────────────────────────────────";
+    lines << "📥 Gyártási input:";
+    lines << QString("  • Kért darabszám: %1 db").arg(inputCount);
+    lines << QString("  • Kért tételszámok: %1").arg(compressed);
+    lines << "📤 Gyártási output:";
+    lines << QString("  • Levágott darabok: %1 db").arg(outputCount);
+    lines << QString("  • Eltérés: %1 db").arg(diff);
+    lines << "────────────────────────────────";
 
     QString prevRod;
 
@@ -109,6 +164,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc)
     for (const auto& ci : mc.cutInstructions) {
 
         bool rodChanged = (ci.rodId != prevRod);
+
+        if (rodChanged && !prevRod.isEmpty())
+            lines << "────────────────────────────────";
+
         prevRod = ci.rodId;
 
         QString rodLabel = rodChanged

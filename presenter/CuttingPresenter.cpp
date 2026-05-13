@@ -780,16 +780,18 @@ void CuttingPresenter::ExportCutPlanSummary() {
     const auto& plans = model.getResult_PlansRef();
     const auto& leftovers = model.getResults_Leftovers();
 
-    CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers);
 
     QString fileName = SettingsManager::instance().cuttingPlanFileName();
     QFileInfo fi(fileName);
     QString baseName = fi.completeBaseName();
+
     if (baseName.isEmpty()) {
         zWarning(errevent);
         zEvent("❌ Nincs Cutting Plan fájlnév — a Summary export nem hajtható végre.");
         return;
     }
+
+    CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers, baseName);
 
     QString dir = fi.absolutePath() + "/_reports";
     QDir().mkpath(dir);  // ha nincs, létrehozzuk
