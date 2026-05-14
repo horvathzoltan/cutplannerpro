@@ -51,7 +51,7 @@ void CutPlan::setStatus(Status newStatus)
 QString CutPlan::pieceLengthsAsString() const {
     QStringList out;
     for (const Cutting::Segment::SegmentModel& s : segments) {
-        if (s.type() == Cutting::Segment::SegmentModel::Type::Piece)
+        if (s.isPiece())
             out << s.length_txt();
     }
     return out.join(";");

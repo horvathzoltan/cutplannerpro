@@ -650,7 +650,7 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
     // 2️⃣ Utolsó Waste szegmens (végmaradék)
     int lastWasteIx = -1;
     for (int i = segs.size() - 1; i >= 0; --i) {
-        if (segs[i].type() == Cutting::Segment::SegmentModel::Type::Waste) {
+        if (segs[i].isWaste()) {
             lastWasteIx = i;
             break;
         }
@@ -696,19 +696,17 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
 
     for (auto& s : segs) {
         using T = Cutting::Segment::SegmentModel::Type;
-        switch (s.type()) {
-        case T::Piece:
+        if (s.isPiece()) {
             s.setIndex(pieceIx++);
-            break;
-        case T::Kerf:
+        }
+        else if (s.isKerf()) {
             s.setIndex(kerfIx++);
-            break;
-        case T::Waste:
+        }
+        else if (s.isWaste()) {
             s.setIndex(wasteIx++);
-            break;
-        case T::Technical:
+        }
+        else if (s.isTechnical()) {
             s.setIndex(techIx++);
-            break;
         }
     }
 

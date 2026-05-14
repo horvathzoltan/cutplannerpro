@@ -2,12 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../model/cutting/result/resultmodel.h"
 #include "managers/inputtable_manager.h"
 #include "managers/leftovertable_manager.h"
 #include "managers/resultstable_manager.h"
 #include "managers/stocktable_manager.h"
-#include "cutanalyticspanel.h"
 #include "../model/storageaudit/storageauditentry.h"
 #include "../presenter/CuttingPresenter.h"
 #include "managers/cuttinginstructiontable_manager.h"
@@ -60,6 +58,11 @@ public:
     void update_StorageAuditTable(const QVector<StorageAuditRow> &entries);
     void updateRow_StorageAuditTable(const StorageAuditRow &row);
     void showAuditCheckbox(const QUuid &rowId);
+
+    void renderCuttingInstructions(const QVector<MachineCuts>& list);
+
+    void switchToCuttingPlanTab();
+    void switchToInstructionsPlanTab();
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -84,6 +87,8 @@ private slots:
 
     void handle_btn_OptRad_clicked(bool checked);
 
+    void handle_btn_ExportCutInstruction_clicked();
+
     void onRowFinalized(int rowIx);
     void onCompensationChanged(const QUuid& machineId, double newVal);
 
@@ -92,7 +97,6 @@ private:
     CuttingPresenter* presenter = nullptr;
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
-    QVector<MachineCuts> _machineCutsList;
 
     // input tábla - vágási terv
     std::unique_ptr<InputTableManager> inputTableManager = nullptr;
@@ -118,7 +122,7 @@ private:
     void translate();
     void refreshSummaryRows();
     void postProcessMachineCuts(MachineCuts &mc);
-    void renderCuttingInstructions();
+    //void renderCuttingInstructions();
     //static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
 };
 #endif // MAINWINDOW_H

@@ -39,21 +39,19 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                   .arg(baseColor.name()));
     for (const Cutting::Segment::SegmentModel& s : plan.segments) {
         QString color;
-        switch (s.type()) {
-        case Cutting::Segment::SegmentModel::Type::Piece:
-            color = s.length_mm() < 300 ? "#e74c3c"
-                    : s.length_mm() > 2000 ? "#f39c12"
-                                           : "#27ae60";
-            break;
-        case Cutting::Segment::SegmentModel::Type::Kerf:
+        if (s.isPiece()) {
+            color = (s.length_mm() < 300)  ? "#e74c3c"   // rövid
+                    : (s.length_mm() > 2000) ? "#f39c12"   // hosszú
+                                             : "#27ae60";  // normál
+        }
+        else if (s.isKerf()) {
             color = "#34495e";
-            break;
-        case Cutting::Segment::SegmentModel::Type::Waste:
+        }
+        else if (s.isWaste()) {
             color = "#bdc3c7";
-            break;
-        case Cutting::Segment::SegmentModel::Type::Technical:
-            color = "#7f8c8d"; // pl. szürke-kék, jól elkülönül
-            break;
+        }
+        else if (s.isTechnical()) {
+            color = "#7f8c8d";
         }
 
         QString badgeLabel = s.toLabelString();
@@ -79,7 +77,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    .arg(plan.materialName())
                                    .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
                                    .arg(s.length_mm())
-                                   .arg(s.type() == Cutting::Segment::SegmentModel::Type::Waste ? QString::number(s.length_mm()) : "—")
+                                   .arg(s.isWaste() ? QString::number(s.length_mm()) : "—")
                                    .arg(plan.parentBarcode.value_or("—"))
                                    .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
                                         : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
@@ -101,9 +99,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                  "QLabel { background-color: %1; color: white; font-weight: bold; padding: 3px 8px; border-radius: 6px; }"
                                  ).arg(color));
 
-        if (s.type() == Cutting::Segment::SegmentModel::Type::Kerf)
+        if (s.isKerf())
             label->setFixedWidth(60);
-        else if (s.type() == Cutting::Segment::SegmentModel::Type::Technical)
+        else if (s.isTechnical())
             label->setFixedWidth(60);
 
         layout->addWidget(label);

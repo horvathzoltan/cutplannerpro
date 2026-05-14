@@ -58,7 +58,7 @@ inline QString forSegment(const Cutting::Segment::SegmentModel& s,
     lines << QString("Csoport: %1").arg(groupName.isEmpty() ? "—" : groupName);
     lines << QString("CutSize: %1 mm").arg(s.length_mm());
 
-    if (s.type() == Cutting::Segment::SegmentModel::Type::Waste)
+    if (s.isWaste())
         lines << QString("Remaining: %1 mm").arg(s.length_mm());
     else
         lines << "Remaining: —";
@@ -70,7 +70,7 @@ inline QString forSegment(const Cutting::Segment::SegmentModel& s,
     lines << QString("Gép: %1").arg(plan.machineName);
     lines << QString("Státusz: %1").arg(Cutting::Plan::statusText(plan.status));
 
-    if (s.type() == Cutting::Segment::SegmentModel::Type::Waste) {
+    if (s.isWaste()) {
         lines << QString("Hulló azonosító: %1").arg(s.barcode().isEmpty() ? "—" : s.barcode());
         if (plan.parentBarcode.has_value()) {
             lines << QString("Forrás rúd: %1").arg(plan.parentBarcode.value());

@@ -40,12 +40,15 @@
 #include "../service/snapshot/inventorysnapshotbuilder.h"
 #include "../service/snapshot/requestsnapshotbuilder.h"
 #include "materials/utils/material_group_utils.h"
+#include "service/cutting/instruction/cuttinginstructionutils.h"
 #include "service/cutting/summary/cutplansummary.h"
 
 #include <service/cutting/summary/cutplansummarybuilder.h>
 
 #include <QDir>
 #include <QFileInfo>
+
+#include <model/registries/cuttingmachineregistry.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -300,6 +303,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     // 2️⃣ Nézet frissítése
     if (view) {
         OptimizationViewUpdater::update(view, model);
+        view->switchToCuttingPlanTab();   // ⬅️ EZT ADJUK HOZZÁ
     }
 
     // 3️⃣ Export (opcionális)
@@ -361,10 +365,18 @@ void CuttingPresenter::logPlans(){
         QStringList pieceLabels, kerfLabels, wasteLabels;
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            switch (s.type()) {
-            case Cutting::Segment::SegmentModel::Type::Piece:  pieceLabels << s.toLabelString(); break;
-            case Cutting::Segment::SegmentModel::Type::Kerf:   kerfLabels  << s.toLabelString(); break;
-            case Cutting::Segment::SegmentModel::Type::Waste:  wasteLabels << s.toLabelString(); break;
+            if (s.isPiece()) {
+                pieceLabels << s.toLabelString();
+            }
+            else if (s.isKerf()) {
+                kerfLabels << s.toLabelString();
+            }
+            else if (s.isWaste()) {
+                wasteLabels << s.toLabelString();
+            }
+            else if (s.isTechnical()) {
+                // ha kell külön lista, ide jön
+                // pl.: technicalLabels << s.toLabelString();
             }
         }
 
@@ -408,14 +420,11 @@ void CuttingPresenter::logPlans(){
         totalSegments += plan.segments.size();
 
         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            switch(s.type())
-            {
-            case Cutting::Segment::SegmentModel::Type::Kerf:
+            if (s.isKerf()) {
                 kerfSegs++;
-                break;
-            case Cutting::Segment::SegmentModel::Type::Waste:
+            }
+            else if (s.isWaste()) {
                 wasteSegs++;
-                break;
             }
         }
     }
@@ -778,8 +787,18 @@ void CuttingPresenter::ExportCutPlanSummary() {
     static const QString oklog = QStringLiteral("✅ Cut Plan Summary exportálva: %1");
 
     const auto& plans = model.getResult_PlansRef();
-    const auto& leftovers = model.getResults_Leftovers();
 
+    // 1️⃣ Guard: nincs optimalizációs eredmény
+    if (plans.isEmpty()) {
+        if (view)
+            view->ShowWarningDialog(
+                "Nincs optimalizációs eredmény.\n"
+                "A Summary export nem hajtható végre."
+                );
+        return;
+    }
+
+    const auto& leftovers = model.getResults_Leftovers();
 
     QString fileName = SettingsManager::instance().cuttingPlanFileName();
     QFileInfo fi(fileName);
@@ -812,6 +831,193 @@ void CuttingPresenter::ExportCutPlanSummary() {
 
     zInfo(oklog.arg(QDir::toNativeSeparators(path)));
     zEvent(oklog.arg(QDir::toNativeSeparators(path)));
+}
+
+
+void CuttingPresenter::GenerateCutInstructions()
+{
+
+    auto& cutPlans = model.getResult_PlansRef();
+
+    if (cutPlans.isEmpty()) {
+        if (view)
+            view->ShowWarningDialog(
+                "Nincs optimalizációs eredmény.\n"
+                "Előbb futtasd az Optimize műveletet."
+                );
+        return;
+    }
+
+    _machineCutsList.clear();
+
+    //auto& cutPlans = model.getResult_PlansRef();
+    auto leftovers = model.getResults_Leftovers();
+
+    QHash<QUuid,int> requestPieceCounters;
+    QSet<QString> reusedLeftovers;
+
+    for (const auto& plan : cutPlans)
+        if (!plan.sourceBarcode.isEmpty())
+            reusedLeftovers.insert(plan.sourceBarcode);
+
+    int globalStep = 1;
+
+    for (const auto& plan : cutPlans) {
+
+        const CuttingMachine* machine =
+            CuttingMachineRegistry::instance().findById(plan.machineId);
+        if (!machine) continue;
+
+        // gép-blokk keresése vagy létrehozása
+        auto it = std::find_if(_machineCutsList.begin(), _machineCutsList.end(),
+                               [&](const MachineCuts& mc){ return mc.machineHeader.machineId == plan.machineId; });
+
+        if (it == _machineCutsList.end()) {
+            MachineCuts mc;
+            mc.machineHeader.machineId = plan.machineId;
+            mc.machineHeader.machineName = machine->name;
+            mc.machineHeader.comment = machine->comment;
+            mc.machineHeader.kerf_mm = machine->kerf_mm;
+            mc.machineHeader.stellerMaxLength_mm = machine->stellerMaxLength_mm;
+            mc.machineHeader.stellerCompensation_mm = machine->stellerCompensation_mm;
+            _machineCutsList.push_back(std::move(mc));
+            it = _machineCutsList.end() - 1;
+        }
+
+        // utolsó piece index
+        int lastPieceIdx = -1;
+        for (int j = plan.segments.size() - 1; j >= 0; --j)
+            if (plan.segments[j].isPiece()) { lastPieceIdx = j; break; }
+
+        double remaining = plan.totalLength;
+
+        for (int i = 0; i < plan.segments.size(); ++i) {
+            const auto& seg = plan.segments[i];
+            if (!seg.isPiece()) continue;
+
+            CutInstruction ci;
+            ci.globalStepId = globalStep++;
+            ci.rodId = plan.rodId;
+            ci.materialId = plan.materialId;
+            ci.barcode = plan.sourceBarcode;
+            ci.cutSize_mm = seg.length_mm();
+            ci.kerf_mm = machine->kerf_mm;
+            ci.lengthBefore_mm = remaining;
+            ci.computeRemaining();
+            ci.requestId = seg._requestId;
+            ci.status = CutStatus::Pending;
+            ci.leftoverBarcode = plan.leftoverBarcode;
+
+            ci.pieceCounter = ++requestPieceCounters[seg._requestId];
+
+            if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
+                if (!reusedLeftovers.contains(plan.leftoverBarcode))
+                    ci.isFinalLeftover = true;
+
+            it->cutInstructions.push_back(ci);
+            remaining = ci.lengthAfter_mm;
+        }
+    }
+
+    // utófeldolgozás
+    for (auto& mc : _machineCutsList)
+        CuttingInstructionUtils::postProcessMachineCuts(mc);
+
+    // UI frissítés
+    if (view){
+        view->renderCuttingInstructions(_machineCutsList);
+        view->switchToInstructionsPlanTab();   // ⬅️ EZT ADJUK HOZZÁ
+
+    }
+}
+
+
+void CuttingPresenter::ExportCutInstructions()
+{
+
+    if (_machineCutsList.isEmpty()) {
+        if (view)
+            view->ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+        return;
+    }
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    if (baseName.isEmpty()) {
+        zEvent("❌ Nincs Cutting Plan fájlnév — export nem lehetséges.");
+        return;
+    }
+
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    // --- 1) CutInstructions.txt ---
+    {
+        QString path = dir + "/" + baseName + "_CutInstructions.txt";
+        QFile f(path);
+        if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            zEvent("❌ Nem sikerült megnyitni a CutInstructions fájlt.");
+            return;
+        }
+
+        QTextStream out(&f);
+        out.setEncoding(QStringConverter::Utf8);
+
+        for (const auto& mc : _machineCutsList) {
+            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, baseName) << "\n\n";
+        }
+
+        zEvent(QString("📄 CutInstructions exportálva: %1").arg(path));
+    }
+
+    // --- 2) LabelTable ---
+    {
+        QString path = dir + "/" + baseName + "_CutInstructions_Labels.txt";
+        QFile f(path);
+        if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            zEvent("❌ Nem sikerült megnyitni a LabelTable fájlt.");
+            return;
+        }
+
+        QTextStream out(&f);
+        out.setEncoding(QStringConverter::Utf8);
+
+        out << QString("🏷️ Címketáblák (gépenként) - CutPlan: %1\n").arg(baseName);
+        out << QString("📅 Dátum: %1\n\n").arg(dateStr);
+
+        for (const auto& mc : _machineCutsList) {
+            out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
+
+            auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+            out << CuttingInstructionUtils::formatLabelTable4(labels, 80, 3, 1);
+            out << "\n\n";
+        }
+
+        zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
+    }
+}
+
+
+void CuttingPresenter::UpdateCompensation(const QUuid& machineId, double newVal)
+{
+    for (auto& mc : _machineCutsList) {
+        if (mc.machineHeader.machineId == machineId) {
+            mc.machineHeader.stellerCompensation_mm = newVal;
+
+            CuttingInstructionUtils::postProcessMachineCuts(
+                mc,
+                CuttingInstructionUtils::SortStrategy::BySizeDesc
+                );
+            break;
+        }
+    }
+
+    if (view)
+        view->renderCuttingInstructions(_machineCutsList);
 }
 
 

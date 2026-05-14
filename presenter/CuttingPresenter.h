@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <model/cutting/instruction/cutinstruction.h>
 #include "../model/cutting/optimizer/optimizermodel.h"
 #include "../service/storageaudit/auditstatemanager.h"
 #include "../model/archivedwasteentry.h"
@@ -77,11 +78,16 @@ public:
     void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
 
     void ExportCutPlanSummary();
+    void GenerateCutInstructions();
+    void ExportCutInstructions();
+
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
+    void UpdateCompensation(const QUuid &machineId, double newVal);
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
     QVector<StorageAuditRow> lastAuditRows;
+    QVector<MachineCuts> _machineCutsList;
 
     bool isModelSynced = false;
     QMap<QUuid, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);

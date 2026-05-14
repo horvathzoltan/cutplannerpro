@@ -62,32 +62,23 @@ CutPlanOutputSummary CutPlanOutputSummaryBuilder::build(
         //
         for (const auto& seg : p.segments) {
 
-            switch (seg.type()) {
-
-            case Cutting::Segment::SegmentModel::Type::Piece:
+            if(seg.isPiece()){
                 // Levágott darab
                 s.pieceCount++;
                 s.pieceTotal_m += seg.length_mm() / 1000.0;
 
                 ms.pieceCount++;
                 ms.pieceTotal_m += seg.length_mm() / 1000.0;
-                break;
-
-            case Cutting::Segment::SegmentModel::Type::Kerf:
+            } else if (seg.isKerf()){
                 // Kerf
                 s.kerfCount++;
                 s.kerfTotal_mm += seg.length_mm();
-                break;
-
-            case Cutting::Segment::SegmentModel::Type::Waste:
+            } else if(seg.isWaste()){
                 // Hulladék
                 s.wasteCount++;
                 s.wasteTotal_mm += seg.length_mm();
-                break;
-
-            case Cutting::Segment::SegmentModel::Type::Technical:
+            } else if(seg.isTechnical()){
                 // Technikai szakasz – nem számít semmibe
-                break;
             }
         }
 
@@ -96,7 +87,7 @@ CutPlanOutputSummary CutPlanOutputSummaryBuilder::build(
         //
         for (const auto& seg : p.segments) {
 
-            if (seg.type() != Cutting::Segment::SegmentModel::Type::Piece)
+            if (seg.isPiece())
                 continue;
 
             auto req = CuttingPlanRequestRegistry::instance().findById(seg._requestId);

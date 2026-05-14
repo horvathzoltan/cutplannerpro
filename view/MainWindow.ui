@@ -286,9 +286,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_GenerateCuttingPlan">
+             <widget class="QPushButton" name="btn_GenerateCutInstruction">
               <property name="text">
-               <string>Export CutInstruction</string>
+               <string>Generate CutInstruction</string>
               </property>
              </widget>
             </item>
@@ -516,6 +516,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_ExportCutInstruction">
+              <property name="text">
+               <string>Export CutInstruction</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

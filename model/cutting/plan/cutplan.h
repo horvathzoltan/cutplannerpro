@@ -114,7 +114,7 @@ public:
 
     QString getWasteBarcode(){
         for(auto&a:this->segments){
-            if(a.type() == Cutting::Segment::SegmentModel::Type::Waste){
+            if(a.isWaste()){
                 return a.barcode();
             }
         }

@@ -59,7 +59,6 @@ public:
         }
     }
 
-    Type type() const { return _type;}
     QString length_txt() const { return QString::number(_length_mm)+ "mm";}
     double length_mm() const { return _length_mm; }
     QString barcode() const { return _barcode; }
@@ -70,11 +69,9 @@ public:
         if (_length_mm < 0) _length_mm = 0;   // audit‑védőkorlát
     }
 
-
     void setIndex(int ix) {
         _segIx = ix;
     }
-
 
     static QString segmentPrefix(SegmentModel::Type type) {
         if(type == SegmentModel::Type::Piece) return "P";
@@ -100,6 +97,11 @@ public:
 
         return prefix+postfix;
     }
+
+    bool isPiece() const { return _type == Type::Piece; }
+    bool isKerf()  const { return _type == Type::Kerf; }
+    bool isWaste() const { return _type == Type::Waste; }
+    bool isTechnical() const { return _type == Type::Technical; }
 
     //QVector<SegmentModel> generateSegments(double kerf_mm, double totalLength_mm) const;
 };

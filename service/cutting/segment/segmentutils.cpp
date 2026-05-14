@@ -40,7 +40,7 @@ bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>&
         return false;
 
     const SegmentModel& last = segments.last();
-    return (last.type() == SegmentModel::Type::Waste && last.length_mm() == wasteLength);
+    return (last.isWaste() && last.length_mm() == wasteLength);
 }
 
 QVector<SegmentModel> SegmentUtils::generateSegments(
