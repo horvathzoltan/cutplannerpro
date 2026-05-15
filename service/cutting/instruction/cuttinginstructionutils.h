@@ -167,7 +167,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         bool rodChanged = (ci.rodId != prevRod);
 
         if (rodChanged && !prevRod.isEmpty())
-            lines << "────────────────────────────────";
+            lines << "──────────────";
 
         prevRod = ci.rodId;
 
@@ -182,8 +182,12 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         const MaterialMaster* mat =
             MaterialRegistry::instance().findById(ci.materialId);
 
+        // QString materialLabel = mat
+        //                             ? QString("%1:%2").arg(mat->name).arg(ci.barcode)
+        //                             : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
+
         QString materialLabel = mat
-                                    ? QString("%1:%2").arg(mat->name).arg(ci.barcode)
+                                    ? QString("%1").arg(mat->name)
                                     : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
