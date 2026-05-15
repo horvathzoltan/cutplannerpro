@@ -271,7 +271,7 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         // 2) Darab címke
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
 
-        QString ext = ci.externalReference;   // ⭐ DARAB-SZINTŰ TÉTELSZÁM
+        QString ext = ci.externalReference+".";   // ⭐ DARAB-SZINTŰ TÉTELSZÁM
         QString owner;
 
         if (req)
