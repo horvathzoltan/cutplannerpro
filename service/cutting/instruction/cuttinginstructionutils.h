@@ -94,7 +94,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     for (const auto& ci : mc.cutInstructions) {
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         if (req) {
-            inputCount += req->quantity;
+            inputCount += 1;//req->quantity;
             //bool ok = false;
             //int v = req->externalReference.toInt(&ok);
             //if (ok) refs.append(v);

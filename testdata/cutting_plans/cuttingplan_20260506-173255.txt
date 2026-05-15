@@ -1,5 +1,5 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
-"1413";"PrémiumHoliday";0;0;1740;;1;Unknown;"";NP-T-7016;Width;false
+"1413";"PrémiumHoliday";0;0;1740;;5;Unknown;"";NP-T-7016;Width;false
 "1414";"PrémiumHoliday";0;0;1155;;1;Unknown;"";NP-T-7016;Width;false
 "1415";"PrémiumHoliday";0;0;550;;1;Unknown;"";NP-T-7016;Width;false
 "1416";"PrémiumHoliday";0;0;1745;;1;Unknown;"";NP-T-7016;Width;false
