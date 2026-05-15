@@ -60,7 +60,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
 
         QString badgeTooltip = QString(
-                                   "RodId: %1\n"
+                                   "Szálazonosító: %1\n"
                                    "Barcode: %2\n"
                                    "Material: %3\n"
                                    "Csoport: %4\n"
@@ -86,6 +86,10 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    .arg(plan.machineName)
                                    .arg(Cutting::Plan::statusText(plan.status))
                                    ;
+        if (s.isPiece()) {
+            badgeTooltip = QString("Tételszám: %1.\n\n").arg(s.externalReference) + badgeTooltip;
+        }
+
         if(req){
             QString rodTooltip;
             rodTooltip = CuttingPlanRequestUtils::cuttingPlanRequestToDisplay(*req,DisplayType::Tooltip);
