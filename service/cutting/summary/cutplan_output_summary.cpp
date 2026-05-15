@@ -34,7 +34,6 @@ QString CutPlanOutputSummary::toText() const {
 
             out << QString("    - Tételszámok: %1").arg(compressed);
         }
-
     }
 
     out << "────────────────────────────────";

@@ -421,8 +421,11 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                           ? double(t.totalBFElapsed_us) / 1000.0 / double(t.bruteForce)
                           : 0.0;
     double avgDP_ms = ((t.dpPlain + t.dpScoring) > 0)
-                          ? double(t.totalDPElapsed_us) / 1000.0 / double(t.dpPlain + t.dpScoring)
+                          ? double(t.totalDPPlainElapsed_us + t.totalDPScoringElapsed_us)
+                                / 1000.0
+                                / double(t.dpPlain + t.dpScoring)
                           : 0.0;
+
     double avgGreedy_ms = (t.greedy > 0)
                               ? double(t.totalGreedyElapsed_us) / 1000.0 / double(t.greedy)
                               : 0.0;

@@ -83,7 +83,7 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
 }
 
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
-inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& planIdStr)
+inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& planIdStr, const int printedLW)
 {
     QStringList lines;
     //QString planId = mc.machineHeader.planId.toString();
@@ -127,7 +127,8 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
     int diff = outputCount - inputCount;
 
-    lines << QString("🧾 Vágási utasítások (gépenkénti) — CutPlan: %1").arg(planIdStr);
+    lines << QString("🧾 Vágási utasítások (gépenkénti)");
+    lines << QString("CutPlan: %1").arg(planIdStr);
     lines << QString("📅 Dátum: %1").arg(dateStr);
     lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
     lines << "────────────────────────────────";
@@ -172,7 +173,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
         QString rodLabel = rodChanged
                                ? QString("%1 □").arg(ci.rodId)
-                               : ci.rodId + "  ";
+                               : ci.rodId + "   ";
 
         QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
 
@@ -195,13 +196,28 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         QString sizeStr = sizeStrings[idx++];
         QString sizePadded = QString("%1").arg(sizeStr, maxSizeLen, QLatin1Char(' '));
 
+        // ➌ pieceLabel vágása printedLW alapján
+        int fixedLen =
+            step.length() + 1 +
+            rodLabel.length() + 3 +
+            materialLabel.length() + 3 +
+            icon.length() + 1 +
+            sizePadded.length() + 5; // " mm □ | "
+
+        int maxPieceLen = printedLW - fixedLen - 2; // " □"
+        if (maxPieceLen < 5) maxPieceLen = 5;
+
+        QString piece = pieceLabel;
+        if (piece.length() > maxPieceLen)
+            piece = piece.left(maxPieceLen - 1) + "…";
+
         lines << QString("%1 %2 | %3 | %4 %5 mm □ | %6 □")
                      .arg(step)
                      .arg(rodLabel)
                      .arg(materialLabel)
                      .arg(icon)
                      .arg(sizePadded)
-                     .arg(pieceLabel);
+                     .arg(piece);
     }
 
     return lines.join("\n");

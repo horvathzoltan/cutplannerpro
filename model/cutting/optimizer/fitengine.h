@@ -78,11 +78,18 @@ public:
 
     struct FitEngineTelemetry {
         long calls = 0;
+
         long fullFit = 0;
         long bruteForce = 0;
         long dpPlain = 0;
         long dpScoring = 0;
         long greedy = 0;
+
+        long fullFitFound = 0;
+        long bruteForceFound = 0;
+        long dpPlainFound = 0;
+        long dpScoringFound = 0;
+        long greedyFound = 0;
 
         long totalPicked = 0;
         long totalWaste = 0;
@@ -97,8 +104,10 @@ public:
         // időprofil összesítve
         qint64 totalElapsed_us = 0;
         qint64 totalBFElapsed_us = 0;
-        qint64 totalDPElapsed_us = 0;
+        qint64 totalDPPlainElapsed_us = 0;
+        qint64 totalDPScoringElapsed_us = 0;
         qint64 totalGreedyElapsed_us = 0;
+        qint64 totalFullFitElapsed_us = 0;
 
         // bruteforce aggregált
         long bf_totalCombos = 0;
@@ -114,6 +123,44 @@ public:
         long greedy_totalSortedSize = 0;
         long greedy_totalPicks = 0;
 
+
+        // leftover statisztika algoritmusonként
+        long fullFit_goodCount = 0;
+        long fullFit_goodTotal = 0;
+        long fullFit_badCount = 0;
+        long fullFit_badTotal = 0;
+        long fullFit_oversizeCount = 0;
+        long fullFit_oversizeTotal = 0;
+
+        long bruteForce_goodCount = 0;
+        long bruteForce_goodTotal = 0;
+        long bruteForce_badCount = 0;
+        long bruteForce_badTotal = 0;
+        long bruteForce_oversizeCount = 0;
+        long bruteForce_oversizeTotal = 0;
+
+        long dpPlain_goodCount = 0;
+        long dpPlain_goodTotal = 0;
+        long dpPlain_badCount = 0;
+        long dpPlain_badTotal = 0;
+        long dpPlain_oversizeCount = 0;
+        long dpPlain_oversizeTotal = 0;
+
+        long dpScoring_goodCount = 0;
+        long dpScoring_goodTotal = 0;
+        long dpScoring_badCount = 0;
+        long dpScoring_badTotal = 0;
+        long dpScoring_oversizeCount = 0;
+        long dpScoring_oversizeTotal = 0;
+
+        long greedy_goodCount = 0;
+        long greedy_goodTotal = 0;
+        long greedy_badCount = 0;
+        long greedy_badTotal = 0;
+        long greedy_oversizeCount = 0;
+        long greedy_oversizeTotal = 0;
+
+
         void accumulate(const FitResult& fr) {
             calls++;
             totalPicked += fr.pieceCount;
@@ -125,38 +172,94 @@ public:
             totalUsed += fr.used;
             totalElapsed_us += fr.elapsed_us;
 
+            bool hasHit = (fr.pieceCount > 0);
+
+            auto classifyLeftover = [&](int waste,
+                                        long& goodCount, long& goodTotal,
+                                        long& badCount, long& badTotal,
+                                        long& overCount, long& overTotal)
+            {
+                if (waste >= 500 && waste <= 800) {
+                    goodCount++;
+                    goodTotal += waste;
+                } else if (waste > 0 && waste < 300) {
+                    badCount++;
+                    badTotal += waste;
+                } else if (waste > 800) {
+                    overCount++;
+                    overTotal += waste;
+                }
+            };
+
+
             switch (fr.strategy) {
             case FitResult::Strategy::FullFit:
                 fullFit++;
+                if (hasHit) fullFitFound++;
+                totalFullFitElapsed_us += fr.elapsed_us;
+
+                classifyLeftover(fr.waste,
+                                 fullFit_goodCount, fullFit_goodTotal,
+                                 fullFit_badCount, fullFit_badTotal,
+                                 fullFit_oversizeCount, fullFit_oversizeTotal);
                 break;
+
             case FitResult::Strategy::BruteForce:
                 bruteForce++;
+                if (hasHit) bruteForceFound++;
                 totalBFElapsed_us += fr.elapsed_us;
                 bf_totalCombos    += fr.bf_totalCombos;
                 bf_totalEvaluated += fr.bf_evaluated;
                 bf_totalSkipped   += fr.bf_skipped;
+
+                classifyLeftover(fr.waste,
+                                 bruteForce_goodCount, bruteForce_goodTotal,
+                                 bruteForce_badCount, bruteForce_badTotal,
+                                 bruteForce_oversizeCount, bruteForce_oversizeTotal);
                 break;
+
             case FitResult::Strategy::DPPlain:
                 dpPlain++;
-                totalDPElapsed_us += fr.elapsed_us;
+                if (hasHit) dpPlainFound++;
+                totalDPPlainElapsed_us += fr.elapsed_us;
                 dp_totalLimit      += fr.dpLimit;
                 dp_totalFilledCells+= fr.dp_filledCells;
                 dp_totalChainLength+= fr.dp_chainLength;
+
+                classifyLeftover(fr.waste,
+                                 dpPlain_goodCount, dpPlain_goodTotal,
+                                 dpPlain_badCount, dpPlain_badTotal,
+                                 dpPlain_oversizeCount, dpPlain_oversizeTotal);
                 break;
+
             case FitResult::Strategy::DPScoring:
                 dpScoring++;
-                totalDPElapsed_us += fr.elapsed_us;
+                if (hasHit) dpScoringFound++;
+                totalDPScoringElapsed_us += fr.elapsed_us;
                 dp_totalLimit      += fr.dpLimit;
                 dp_totalFilledCells+= fr.dp_filledCells;
                 dp_totalChainLength+= fr.dp_chainLength;
+
+                classifyLeftover(fr.waste,
+                                 dpScoring_goodCount, dpScoring_goodTotal,
+                                 dpScoring_badCount, dpScoring_badTotal,
+                                 dpScoring_oversizeCount, dpScoring_oversizeTotal);
                 break;
+
             case FitResult::Strategy::Greedy:
                 greedy++;
+                if (hasHit) greedyFound++;
                 totalGreedyElapsed_us += fr.elapsed_us;
                 greedy_totalSortedSize += fr.greedy_sortedSize;
                 greedy_totalPicks      += fr.greedy_picks;
+
+                classifyLeftover(fr.waste,
+                                 greedy_goodCount, greedy_goodTotal,
+                                 greedy_badCount, greedy_badTotal,
+                                 greedy_oversizeCount, greedy_oversizeTotal);
                 break;
-                }
+            }
+
         }
     };
 

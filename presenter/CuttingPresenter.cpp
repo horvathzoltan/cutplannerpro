@@ -810,7 +810,7 @@ void CuttingPresenter::ExportCutPlanSummary() {
         return;
     }
 
-    CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers, baseName);
+    CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers, baseName, model._fitTelemetry);
 
     QString dir = fi.absolutePath() + "/_reports";
     QDir().mkpath(dir);  // ha nincs, létrehozzuk
@@ -822,6 +822,7 @@ void CuttingPresenter::ExportCutPlanSummary() {
         zEvent(QString("❌ Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
         return;
     }
+
 
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
@@ -968,7 +969,7 @@ void CuttingPresenter::ExportCutInstructions()
         out.setEncoding(QStringConverter::Utf8);
 
         for (const auto& mc : _machineCutsList) {
-            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, baseName) << "\n\n";
+            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, baseName, printedLineWidth) << "\n\n";
         }
 
         zEvent(QString("📄 CutInstructions exportálva: %1").arg(path));
@@ -986,14 +987,15 @@ void CuttingPresenter::ExportCutInstructions()
         QTextStream out(&f);
         out.setEncoding(QStringConverter::Utf8);
 
-        out << QString("🏷️ Címketáblák (gépenként) - CutPlan: %1\n").arg(baseName);
+        out << QString("🏷️ Címketáblák (gépenként)");
+        out << QString("CutPlan: %1\n").arg(baseName);
         out << QString("📅 Dátum: %1\n\n").arg(dateStr);
 
         for (const auto& mc : _machineCutsList) {
             out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
 
             auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-            out << CuttingInstructionUtils::formatLabelTable4(labels, 80, 3, 1);
+            out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 3, 1);
             out << "\n\n";
         }
 

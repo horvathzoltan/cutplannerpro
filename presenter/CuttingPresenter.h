@@ -83,6 +83,9 @@ public:
 
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);
+
+    static constexpr int printedLineWidth = 70;
+
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

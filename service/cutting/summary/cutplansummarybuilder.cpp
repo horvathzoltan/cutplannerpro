@@ -13,12 +13,14 @@
 CutPlanSummary CutPlanSummaryBuilder::build(
     const QVector<Cutting::Plan::CutPlan>& plans,
     const QVector<Cutting::Result::ResultModel>& leftovers,
-    const QString& planIdStr)
+    const QString& planIdStr,
+    const FitEngine::FitEngineTelemetry& fitTelemetry)
 {
     CutPlanSummary s;
     s.input  = CutPlanInputSummaryBuilder().build();
     s.output = CutPlanOutputSummaryBuilder().build(plans, leftovers);
     s.planIdStr = planIdStr;
+    s.fitTelemetry = fitTelemetry;
     return s;
 }
 

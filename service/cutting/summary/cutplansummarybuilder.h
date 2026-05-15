@@ -9,5 +9,6 @@ public:
     static CutPlanSummary build(
         const QVector<Cutting::Plan::CutPlan>& plans,
         const QVector<Cutting::Result::ResultModel>& leftovers,
-        const QString& planIdStr);
+        const QString& planIdStr,
+        const FitEngine::FitEngineTelemetry& fitTelemetry);
 };
