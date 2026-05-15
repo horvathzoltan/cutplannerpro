@@ -36,6 +36,7 @@ struct CutInstruction {
     double effectiveCutSize_mm = 0.0; // kompenzációval számolt méret
 
     QUuid requestId;        // 🔗 Request azonosító
+    QString externalReference;     // ⭐ darab-szintű externalReference (pl. 1444.1/5)
 
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;

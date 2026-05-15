@@ -293,11 +293,17 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     QString pieceTooltip;
 
     if(req){
-        pieceText = QString("%1").arg(req->externalReference);
-        if(req->quantity>1){
-            pieceText.append(QString(".%1.").arg(ci.pieceCounter));
-        }
-        pieceText.append(QString(" %1 %2").arg(req->ownerName).arg(req->primaryDimension()));
+        // pieceText = QString("%1").arg(req->externalReference);
+        // if(req->quantity>1){
+        //     pieceText.append(QString(".%1.").arg(ci.pieceCounter));
+        // }
+        // pieceText.append(QString(" %1 %2").arg(req->ownerName).arg(req->primaryDimension()));
+        pieceText = ci.externalReference;   // ⭐ DARAB-SZINTŰ TÉTELSZÁM
+
+        pieceText.append(QString(" %1 %2")
+                             .arg(req ? req->ownerName : "")
+                             .arg(req ? QString::number(req->primaryDimension()) : ""));
+
 
         pieceTooltip = CuttingPlanRequestUtils::cuttingPlanRequestToDisplay(*req,DisplayType::Tooltip);
     } else{

@@ -82,10 +82,24 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         for (int i = 0; i < req.quantity; ++i) {
             Cutting::Piece::PieceInfo info;
             info.length_mm = req.requiredLength;
-            //info.ownerName = req.ownerName.isEmpty() ? "Ismeretlen" : req.ownerName;
-            //info.externalReference = req.externalReference;
             info.requestId = req.requestId;
             info.isCompleted = false;
+
+            // ⭐ DARAB-SZÁMOZÁS BEÉPÍTÉSE
+            // pl. 1444.1/5, 1444.2/5, ...
+            if (req.quantity > 1) {
+                info.externalReference = QString("%1 %2/%3")
+                .arg(req.externalReference)
+                    .arg(i + 1)
+                    .arg(req.quantity);
+            } else {
+                info.externalReference = req.externalReference;
+            }
+
+
+            // ownerName továbbra is jön a requestből
+            //info.ownerName = req.ownerName;
+
             piecesByMaterial[req.materialId].append(
                 Cutting::Piece::PieceWithMaterial(info, req.materialId));
         }
@@ -678,14 +692,14 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
         Cutting::Segment::SegmentModel::Type::Technical,
         frontTrim,
         /*ix*/ 0,
-        QUuid()
+        QUuid(), QUuid(),""
         );
 
     Cutting::Segment::SegmentModel frontKerfSeg(
         Cutting::Segment::SegmentModel::Type::Kerf,
         frontKerf,
         /*ix*/ 0,
-        QUuid()
+        QUuid(), QUuid(),""
         );
 
     segs.insert(0, frontKerfSeg);

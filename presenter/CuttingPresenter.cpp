@@ -507,6 +507,18 @@ void CuttingPresenter::syncModelWithRegistries() {
     auto requests  = RequestSnapshotBuilder::build();
     auto inventory = InventorySnapshotBuilder::build(300);
 
+    // 🔍 DEBUG: request lista kiírása
+    zInfo("📦 RequestSnapshotBuilder::build() eredménye:");
+    zInfo(QString("   → request count = %1").arg(requests.size()));
+
+    for (const Cutting::Plan::Request &r : requests) {
+        zInfo(QString("   • requestId=%1  extRef=%2  qty=%3  len=%4")
+                  .arg(r.requestId.toString(QUuid::WithoutBraces))
+                  .arg(r.externalReference)
+                  .arg(r.quantity)
+                  .arg(r.requiredLength));
+    }
+
     QStringList errors;
     QStringList warnings;
 
@@ -910,6 +922,8 @@ void CuttingPresenter::GenerateCutInstructions()
             ci.leftoverBarcode = plan.leftoverBarcode;
 
             ci.pieceCounter = ++requestPieceCounters[seg._requestId];
+            ci.externalReference = seg.externalReference;
+            //ci.pieceId = seg._pieceId;                       // opcionális, de ajánlott
 
             if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
                 if (!reusedLeftovers.contains(plan.leftoverBarcode))

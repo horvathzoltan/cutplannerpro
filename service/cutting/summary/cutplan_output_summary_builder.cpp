@@ -85,18 +85,27 @@ CutPlanOutputSummary CutPlanOutputSummaryBuilder::build(
         //
         // Tételszámok gyűjtése (Piece szegmensek alapján)
         //
-        for (const auto& seg : p.segments) {
+        // for (const auto& seg : p.segments) {
 
-            if (seg.isPiece())
-                continue;
+        //     if (seg.isPiece())
+        //         continue;
 
-            auto req = CuttingPlanRequestRegistry::instance().findById(seg._requestId);
-            if (!req)
-                continue;
+        //     auto req = CuttingPlanRequestRegistry::instance().findById(seg._requestId);
+        //     if (!req)
+        //         continue;
 
-            if (!req->externalReference.isEmpty())
-                ms.itemRefs.insert(req->externalReference);
+        //     if (!req->externalReference.isEmpty())
+        //         ms.itemRefs.insert(req->externalReference);
+        // }
+        //
+        // 4) Tételszámok gyűjtése – DARAB SZINTEN
+        //
+        for (const auto& pw : p.piecesWithMaterial) {
+            const QString& ref = pw.info.externalReference;
+            if (!ref.isEmpty())
+                ms.itemRefs.insert(ref);
         }
+
     }
 
     //

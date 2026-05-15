@@ -76,9 +76,14 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
         int len = pw.info.length_mm;
         agg[len].count += 1;
 
-        auto req = CuttingPlanRequestRegistry::instance().findById(pw.info.requestId);
-        QString ref = req ? req->externalReference : "???";
+        //auto req = CuttingPlanRequestRegistry::instance().findById(pw.info.requestId);
+        //QString ref = req ? req->externalReference : "???";
+        //agg[len].refs.append(ref);
+        QString ref = pw.info.externalReference.isEmpty()
+                          ? "???"
+                          : pw.info.externalReference;
         agg[len].refs.append(ref);
+
     }
 
     QStringList pieceList;

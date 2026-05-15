@@ -98,7 +98,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
             //bool ok = false;
             //int v = req->externalReference.toInt(&ok);
             //if (ok) refs.append(v);
-            refs.append(req->externalReference);
+            refs.append(ci.externalReference);
         }
     }
 
@@ -189,7 +189,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
 
         QString pieceLabel = req
-                                 ? QString("%1. %2").arg(req->externalReference).arg(req->ownerName)
+                                 ? QString("%1. %2").arg(ci.externalReference).arg(req->ownerName)
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
 
         // ➋ méret jobbra igazítva, fix szélességgel
@@ -271,16 +271,23 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         // 2) Darab címke
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
 
-        QString ext = req ? req->externalReference : "req";
-        QString owner = req ? req->ownerName : ci.requestId.toString(QUuid::WithoutBraces);
+        QString ext = ci.externalReference;   // ⭐ DARAB-SZINTŰ TÉTELSZÁM
+        QString owner;
+
+        if (req)
+            owner = req->ownerName;
+        else
+            owner = ci.requestId.toString(QUuid::WithoutBraces);
+
         QString sizeStr = QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
 
         LabelModel lm;
-        lm.parts.append({ ext+'.', false });
+        lm.parts.append({ ext, false });      // ❗ NEM kell pontot tenni, ext már tartalmazhatja
         lm.parts.append({ " ", false });
-        lm.parts.append({ owner, true });      // csak ez trimmelhető
+        lm.parts.append({ owner, true });
         lm.parts.append({ " | ", false });
         lm.parts.append({ sizeStr, false });
+
 
         out.append(lm);
     }

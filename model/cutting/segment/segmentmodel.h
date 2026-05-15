@@ -35,12 +35,18 @@ public:
     int _segIx;
     QUuid _requestId;        // 🔗 Request azonosító
 
-    SegmentModel(Type t, double len, int ix, QUuid reqId):
+    QUuid _pieceId;   // Darab egyedi azonosítója
+    QString externalReference; // Darab-szintű tételszám (pl. 1444.1/5)
+
+    SegmentModel(Type t, double len, int ix, QUuid reqId, QUuid pieceId, QString externalRef = "")
+         :
         _segId(QUuid::createUuid()),
         _type(t),
         _length_mm(len),
         _segIx(ix),
-        _requestId(reqId)
+        _requestId(reqId),
+        _pieceId(pieceId),
+        externalReference(externalRef)
     {
         switch(t){
         case Type::Piece:{

@@ -21,6 +21,9 @@ struct PieceInfo
     QUuid requestId;               // 🔗 Eredeti igény azonosító
     bool isCompleted = false;         // ✅ Elkészült-e a darab
 
+
+    QString externalReference;   // ⭐ darab-szintű tételszám (pl. 1444.1/5)
+
     // bool isValid() const {
     //     return length_mm > 0 && !requestId.isNull();
     // }
