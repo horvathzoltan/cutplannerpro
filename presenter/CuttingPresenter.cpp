@@ -1009,7 +1009,7 @@ void CuttingPresenter::ExportCutInstructions()
             out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
 
             auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-            out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 3, 1);
+            out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, 3);
             out << "\n\n";
         }
 

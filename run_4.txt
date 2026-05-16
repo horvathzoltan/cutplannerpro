@@ -1,0 +1,13 @@
+1. vágási utasításban tudni kellene mennyi anyagot igényel,
+ebből mennyi van a vágási tárhelyen, mennyi van a raktárban,
+azaz mennyit kell bevinni
+
+2. vágási utasításban a rod-a után nem kell a dupla space
+3. vágási utasításban indexntálni kell a méretet
+
+4. címke: a megrendelő nevét nem lehet elvágni
+
+4.1. Legyen a címke 2 vagy 3 sor magas - KÉSZ
+    a középső sorban kezdjük, és ha kell plusz sor be kell szurni egy plusz sort
+
+5. 2 oszlopos címke lesz - ha hosszú a címke akkor 2 sorba kell
