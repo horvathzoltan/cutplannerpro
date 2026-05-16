@@ -923,7 +923,9 @@ void CuttingPresenter::GenerateCutInstructions()
 
             ci.pieceCounter = ++requestPieceCounters[seg._requestId];
             ci.externalReference = seg.externalReference;
-            //ci.pieceId = seg._pieceId;                       // opcionális, de ajánlott
+
+            ci.source = plan.source;
+            ci.sourceBarcode = plan.sourceBarcode;
 
             if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
                 if (!reusedLeftovers.contains(plan.leftoverBarcode))
@@ -1009,7 +1011,9 @@ void CuttingPresenter::ExportCutInstructions()
             out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
 
             auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-            out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, 3);
+            //out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, printedPageHeight);
+            //out << CuttingInstructionUtils::formatLabelStackPaged(labels, printedLineWidth, 2, printedPageHeight);
+            out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
             out << "\n\n";
         }
 

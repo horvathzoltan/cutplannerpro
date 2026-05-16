@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/plan/source.h"
 #include <QString>
 #include <QUuid>
 #include <QVector>
@@ -20,7 +21,7 @@ struct CutInstruction {
     QString rodId;               // Rúd azonosító (A, B, C…)
     QUuid materialId;            // Anyag UUID
 
-    QString barcode;                  // Konkrét rúd azonosítója
+    QString barcode;                // Konkrét rúd azonosítója
     double cutSize_mm = 0.0;        // Vágandó hossz
     double kerf_mm = 0.0;           // Vágásveszteség
     double lengthBefore_mm = 0.0;// Vágás előtti hossz
@@ -35,7 +36,7 @@ struct CutInstruction {
     bool isManualCut = false;
     double effectiveCutSize_mm = 0.0; // kompenzációval számolt méret
 
-    QUuid requestId;        // 🔗 Request azonosító
+    QUuid requestId;        // 🔗 Request azonosító - az eredeti, ahol kérünk egy tételszámon ötöt
     QString externalReference;     // ⭐ darab-szintű externalReference (pl. 1444.1/5)
 
     // 🔹 Új: tényleges darab azonosító
@@ -47,6 +48,10 @@ struct CutInstruction {
     void computeRemaining() {
         lengthAfter_mm = lengthBefore_mm - cutSize_mm - kerf_mm;
     }
+
+    Cutting::Plan::Source source = Cutting::Plan::Source::Stock;         // 🔥 új
+    QString sourceBarcode;                        // 🔥 új
+    //std::optional<QUuid> leftoverEntryId;         // 🔥 új
 
     CutInstruction() : rowId(QUuid::createUuid()) {}
 };
@@ -64,4 +69,6 @@ struct MachineHeader {
 struct MachineCuts{
     MachineHeader machineHeader;
     QVector<CutInstruction> cutInstructions;
+
+
 };

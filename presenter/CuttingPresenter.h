@@ -85,6 +85,7 @@ public:
     void UpdateCompensation(const QUuid &machineId, double newVal);
 
     static constexpr int printedLineWidth = 67;
+    static constexpr int printedPageHeight = 45;
 
 private:
     MainWindow* view;

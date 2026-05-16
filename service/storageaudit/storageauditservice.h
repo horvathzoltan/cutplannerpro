@@ -20,7 +20,6 @@ public:
 
     static StorageAuditRow createAuditRow(const StockEntry& stock, const QUuid& rootStorageId);
     static QVector<StorageAuditRow> generateAuditRows_All();
-private:
     //static AuditMode _mode;
     static QVector<StorageAuditRow> auditMachineStorage(const CuttingMachine& machine);
 };
