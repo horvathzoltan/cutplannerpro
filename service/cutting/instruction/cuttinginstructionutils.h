@@ -227,11 +227,11 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
     for (const auto& ci : mc.cutInstructions) {
         if (ci.source == Cutting::Plan::Source::Reusable)
-            usedLeftoverRods.insert(ci.rodId);
+            usedLeftoverRods.insert(ci.rodId+ " → " + ci.barcode);
     }
 
     QStringList scrapList = usedLeftoverRods.values();
-    scrapList.sort();
+    // scrapList.sort();
 
     if (!scrapList.isEmpty()) {
         lines << "♻️ Érintett hullók:";
@@ -240,6 +240,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
                      .arg(scrapList.join(", "));
         lines << "────────────────────────────────";
     }
+
+
+    //
+
     lines << "📥 Gyártási input:";
     lines << QString("  • Kért darabszám: %1 db").arg(inputCount);
     lines << QString("  • Kért tételszámok: %1").arg(compressed);
