@@ -159,7 +159,7 @@ private:
                      int remainingLength,
                      int currentOpId);
 
-    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
 
 };
 

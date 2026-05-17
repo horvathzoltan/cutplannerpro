@@ -576,7 +576,7 @@ CutResult OptimizerModel::commitCutResult(
     int& remainingLength2,
     const SelectedRod& rod,
     int currentOpId,
-    QVector<Cutting::Piece::PieceWithMaterial>& groupVec)
+    QVector<Cutting::Piece::PieceWithMaterial>& groupVec, double kerf_mm)
 {
     if (cr.status == CutResultStatus::Overfill)
         return cr;
@@ -613,8 +613,29 @@ CutResult OptimizerModel::commitCutResult(
         _usedLeftoverEntryIds.insert(rod.entryId.value());
 
     // 5️⃣ remainingLength frissítés
-    remainingLength  -= cr.used;
-    remainingLength2 -= cr.used;
+    // remainingLength  -= cr.used;
+    // remainingLength2 -= cr.used;
+
+    // 5️⃣ Fizikai maradék
+    remainingLength -= cr.used;
+    if (remainingLength < 0)
+        remainingLength = 0;
+
+    // 6️⃣ DP-limit újraszámolása
+    if (rod.isReusable) {
+        // leftover továbbvágása → nincs új end-trim
+        remainingLength2 = remainingLength;
+    } else {
+        // stock rúd → új end-trim + minimum hulló
+        remainingLength2 = remainingLength
+                           - OptimizerConstants::END_TRIM_MM
+                           - OptimizerConstants::MINIMUM_HULLO_MM
+                           - OptimizerUtils::roundKerfLoss(1, kerf_mm);
+
+        if (remainingLength2 < 0)
+            remainingLength2 = 0;
+    }
+
 
     return cr;
 }
@@ -645,7 +666,7 @@ CutResult OptimizerModel::cutSingle_AndCommit(
     // QString planTxt = cr.plan.toLogEntry(machine);
     // zEvent(planTxt);
 
-    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
+    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec, kerf_mm);
 }
 
 CutResult OptimizerModel::cutCombo_AndCommit(
@@ -673,7 +694,7 @@ CutResult OptimizerModel::cutCombo_AndCommit(
     // QString planTxt = cr.plan.toLogEntry(machine);
     // zEvent(planTxt);
 
-    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec);
+    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec, kerf_mm);
 }
 
 
