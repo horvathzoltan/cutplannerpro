@@ -14,7 +14,6 @@
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), _table(table), _parent(parent)
-    //,_rowId(table, ColName)
 {}
 
 void StockTableManager::addRow(const StockEntry& entry) {

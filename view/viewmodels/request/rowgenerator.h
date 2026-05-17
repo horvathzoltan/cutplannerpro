@@ -53,13 +53,27 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     vm.cells[InputTableColumns::Tolerance] =
         TableCellViewModel::fromText(tolStr,"",baseColor, fgColor, true);
 
-    QString handlerTxt = HandlerSideUtils::toString(request.handlerSide);
-    vm.cells[InputTableColumns::HandlerSide] =
-        TableCellViewModel::fromText(handlerTxt,"",baseColor, fgColor, true);
+    QString sideTxt = "";
 
+    if(request.rightCount>0){
+        sideTxt = QString("J:%1")
+                      .arg(request.rightCount);
+    }
+    if(request.leftCount>0){
+        if(!sideTxt.isEmpty()) sideTxt += "-";
+        sideTxt += QString("B:%1")
+        .arg(request.leftCount);
+    }
+
+    vm.cells[InputTableColumns::HandlerSide] =
+        TableCellViewModel::fromText(sideTxt, "", baseColor, fgColor, true);
     // Quantity
     vm.cells[InputTableColumns::Quantity] =
         TableCellViewModel::fromText(QString::number(request.quantity), "",baseColor, fgColor, true);
+
+    QString subtypeTxt = request.subtype != Subtype::None? SubtypeUtils::toDisplayText(request.subtype):"";
+    vm.cells[InputTableColumns::SubType] =
+        TableCellViewModel::fromText(subtypeTxt, "",baseColor, fgColor, true);
 
     // Color
     auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color);

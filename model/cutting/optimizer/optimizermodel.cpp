@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
+#include <model/registries/storageregistry.h>
+
 #include "cutengine.h"
 #include "cuttypes.h"
 #include "optimizermodel.h"
@@ -57,8 +59,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     _localLeftovers.clear();
     leftoverRodMap.clear();
 
-
-
     // plusz a lokális pool, ha van
     // 🔹 Lokális leftover snapshot
     //QVector<LeftoverStockEntry> leftovers = _inventorySnapshot.reusableInventory;
@@ -69,24 +69,36 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     // 🔹 Csak globális snapshot készül – lokális pool külön marad
     QVector<LeftoverStockEntry> globalSnapshot = _inventorySnapshot.reusableInventory;
 
-    // auto mergeView = [&](const QVector<LeftoverStockEntry>& globalSnap,
-    //                      const QVector<LeftoverStockEntry>& localPool) {
-    //     QVector<LeftoverStockEntry> view = globalSnap;
-    //     view += localPool; // csak olvasási célra fésüljük össze
-    //     return view;
-    // };
+    zInfo("=== INVENTORY SNAPSHOT — REUSABLE LEFTOVERS ===");
+    for (const auto& e : _inventorySnapshot.reusableInventory) {
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(e.materialId);
+        const StorageEntry* st = StorageRegistry::instance().findById(e.storageId);
 
-    // 1. Anyagigény - a Darabok előkészítése anyag szerint
+        zInfo(QString(" • barcode=%1 | len=%2 | materialId=%3 |  | storageId=%4 | source=%5")
+                  .arg(e.barcode)
+                  .arg(e.availableLength_mm)
+                  .arg(mat?mat->toDisplay():e.materialId.toString())
+                  .arg(st?st->name:"(?)")
+                  .arg(e.sourceAsString()));
+    }
+    zInfo("=== END SNAPSHOT ===");
+
+
     QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial;
+
     for (const Cutting::Plan::Request &req : _requests) {
+
+        int leftRemaining  = req.leftCount;
+        int rightRemaining = req.rightCount;
+
         for (int i = 0; i < req.quantity; ++i) {
+
             Cutting::Piece::PieceInfo info;
             info.length_mm = req.requiredLength;
             info.requestId = req.requestId;
             info.isCompleted = false;
 
-            // ⭐ DARAB-SZÁMOZÁS BEÉPÍTÉSE
-            // pl. 1444.1/5, 1444.2/5, ...
+            // ⭐ DARAB-SZÁMOZÁS
             if (req.quantity > 1) {
                 info.externalReference = QString("%1 %2/%3")
                 .arg(req.externalReference)
@@ -96,12 +108,26 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 info.externalReference = req.externalReference;
             }
 
+            // ⭐ HandlerSide kiosztása
+            HandlerSide side = HandlerSide::None;
+            if (leftRemaining > 0) {
+                side = HandlerSide::Left;
+                leftRemaining--;
+            } else if (rightRemaining > 0) {
+                side = HandlerSide::Right;
+                rightRemaining--;
+            }
 
-            // ownerName továbbra is jön a requestből
-            //info.ownerName = req.ownerName;
+            // ⭐ PieceWithMaterial létrehozása
+            Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
 
-            piecesByMaterial[req.materialId].append(
-                Cutting::Piece::PieceWithMaterial(info, req.materialId));
+            // ⭐ Oldal beállítása
+            pwm.side = side;
+
+            // ⭐ Altípus átadása
+            pwm.subtype = req.subtype;
+
+            piecesByMaterial[req.materialId].append(pwm);
         }
     }
 
@@ -115,11 +141,11 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
     static int counter = 0;
 
+    zInfo("OPTIMIZER LOOP START");
     // 2. Optimalizációs ciklus
     while (anyPending()) {
-
-        if (counter % 50 == 0) {
-            zInfo("optCounter: " + QString::number(counter));
+        zInfo("OPTIMIZER LOOP: #" + QString::number(counter));
+        if (counter % 50 == 0) {            
             QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
             //QThread::msleep(1); // 10 ms szünet minden 100 iterációban, hogy ne blokkoljuk a UI-t
         }
@@ -149,16 +175,27 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         //2/c. Rúd kiválasztása
 
-        zInfo(QString("🔍 MATERIAL SELECT: targetMaterialId=%1, pendingPieces=%2")
-                  .arg(targetMaterialId.toString())
+        const MaterialMaster* mat1 = MaterialRegistry::instance().findById(targetMaterialId);
+
+        zInfo(QString("🔍 MATERIAL SELECT: targetMaterial=%1, pendingPieces=%2")
+                  .arg(mat1?mat1->toDisplay():targetMaterialId.toString())
                   .arg(groupVec.size()));
 
-        QSet<QUuid> groupIds = GroupUtils::groupMembers(targetMaterialId);
-        QStringList groupIdStrings;
-        for (const QUuid &id : groupIds)
-            groupIdStrings << id.toString();
+        QSet<QUuid> groupedMaterialIds = GroupUtils::groupMembers(targetMaterialId);
 
-        zInfo(QString("🔍 GROUP IDS FOR MATERIAL: %1")
+        QStringList groupIdStrings;
+        for (const QUuid &id : groupedMaterialIds){
+            const MaterialMaster* mat1 = MaterialRegistry::instance().findById(targetMaterialId);
+
+            if(mat1){
+                groupIdStrings << mat1->toDisplay();
+            } else{
+                groupIdStrings << id.toString();
+            }
+
+        }
+
+       zInfo(QString("🔍 GROUPED MATERIALS: %1")
                   .arg(groupIdStrings.join(", ")));
 
 
@@ -178,8 +215,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         std::optional<ReusableCandidate> candidate =
             ReusableFitEngine::findBestReusableFit(merged,globalSnapshot.size(),
                 groupVec,targetMaterialId, kerf_mm, _usedLeftoverEntryIds, *this);
-        if (candidate.has_value() &&
-            candidate->stock.source == Cutting::Result::LeftoverSource::Optimization)
+        if (candidate.has_value()
+            && (
+                candidate->stock.source == Cutting::Result::LeftoverSource::Optimization
+                ||  candidate->stock.source == Cutting::Result::LeftoverSource::Manual
+                )
+            )
 
         {
             const auto &best = *candidate;
@@ -200,22 +241,21 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 // zInfo(QString("MAP-LOOKUP: %1 → %2")
                 //           .arg(best.stock.entryId.toString())
                 //           .arg(rod.rodId));
-                zInfo(QString("REUSE ROD FROM LEFTOVER: entryId=%1, rodId=%2, barcode=%3")
-                          .arg(best.stock.entryId.toString())
+                zInfo(QString("REUSE ROD FROM LEFTOVER: rodId=%2, stock=%3")
                           .arg(rod.rodId)
                           .arg(best.stock.barcode));
             } else {
                 rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
+                const MaterialMaster* m = MaterialRegistry::instance().findById(rod.materialId);
                 zInfo(QString("🆔 NEW ROD ID: %1 (source=stock, material=%2, length=%3)")
                           .arg(rod.rodId)
-                          .arg(rod.materialId.toString())
+                          .arg(m?m->toDisplay():rod.materialId.toString())
                           .arg(rod.length));
 
-                zWarning(QString("NEW ROD FOR LEFTOVER: entryId=%1, rodCounter=%2, rodId=%3, barcode=%4")
-                             .arg(best.stock.entryId.toString())
+                zWarning(QString("NEW ROD FOR LEFTOVER: stock=%1, rodCounter=%2, rodId=%3")
+                             .arg(best.stock.barcode)
                              .arg(rodCounter)
-                             .arg(rod.rodId)
-                             .arg(best.stock.barcode));
+                             .arg(rod.rodId));
 
                 // zWarning(QString("⚠️ Missing rodId mapping for leftover %1, new rodId=%2")
                 //           .arg(best.stock.entryId.toString())
@@ -223,7 +263,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 // 🔑 Azonnal regisztráljuk, hogy a lánc ne szakadjon meg
                 leftoverRodMap.insert(best.stock.entryId, rod.rodId);
                 zInfo(QString("MAP-INSERT (on select): %1 → %2")
-                          .arg(best.stock.entryId.toString())
+                          .arg(best.stock.barcode)
                           .arg(rod.rodId));
             }
 
@@ -269,11 +309,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             rodSelected = true;
             // reusable ág végén
-            zInfo(QString("SELECTED REUSABLE ROD: rodId=%1, barcode=%2, length=%3, entryId=%4")
+            zInfo(QString("SELECTED REUSABLE ROD: rodId=%1, barcode=%2, length=%3")
                       .arg(rod.rodId)
                       .arg(rod.barcode)
-                      .arg(rod.length)
-                      .arg(rod.entryId ? rod.entryId->toString() : "∅"));
+                      .arg(rod.length));
         }
         else
         {
@@ -329,7 +368,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             }
 
             QStringList groupIdStrings2;
-            for (const QUuid &id : groupIds)
+            for (const QUuid &id : groupedMaterialIds)
                 groupIdStrings2 << id.toString();
 
             zError(QString("❌ GROUP IDS WERE: %1")
@@ -341,16 +380,17 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         ++rodId; // új rúd
 
-        zInfo(QString("ROD-LOOP START: rodId=%1, barcode=%2, length=%3, isReusable=%4, entryId=%5")
+        zInfo(QString("ROD LOOP START: rodId=%1, barcode=%2, length=%3, isReusable=%4, entryId=%5")
                   .arg(rod.rodId)
                   .arg(rod.barcode)
                   .arg(rod.length)
                   .arg(rod.isReusable)
                   .arg(rod.entryId ? rod.entryId->toString() : "∅"));
 
+        int rodloopcounter = 0;
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
-
+            zInfo("ROD LOOP: #" + QString::number(rodloopcounter));
             RodStepResult stepResult = RodLoopEngine::step(
                 groupVec,
                 remainingLength,
@@ -376,10 +416,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             if (stepResult == RodStepResult::StopRod) {
                 break;
             }
-
-
-
         }// rod-loop vége
+
+        zInfo("ROD LOOP EXITED");
+
         createPhysicalLeftover(rod, remainingLength, currentOpId);
 
         // UI yield
@@ -387,7 +427,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         QThread::msleep(1);
 
     }
-
+    zInfo("OPTIMIZER LOOP EXITED");
 
 
     // A lokális leftoverokat commitoljuk a globális készletbe
@@ -758,8 +798,8 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
     entry.source = Cutting::Result::LeftoverSource::Optimization;
     entry.optimizationId = std::make_optional(currentOpId);
 
-    zInfo(QString("CREATE PHYSICAL LEFTOVER: entryId=%1, length=%2, rodId=%3, parentBarcode=%4")
-              .arg(entry.entryId.toString())
+    zInfo(QString("CREATE PHYSICAL LEFTOVER: barcode=%1, length=%2, rodId=%3, parentBarcode=%4")
+              .arg(entry.barcode)
               .arg(entry.availableLength_mm)
               .arg(rod.rodId)
               .arg(rod.barcode));

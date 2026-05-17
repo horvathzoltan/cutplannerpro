@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QTableWidget>
+
+#include <view/tableutils/RowTracker.h>
 //#include "model/cutresult.h"
 #include "../tableutils/rowid.h"
 #include "../../model/leftoverstockentry.h"
@@ -13,11 +15,11 @@ public:
     explicit LeftoverTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
     //QVector<LeftoverStockEntry> readAll() const;                 // 🔍 Beolvasás optimalizáláshoz
-    void clear();                                       // 🧹 Tábla ürítése
+    //void clear();                                       // 🧹 Tábla ürítése
 
     //void fillTestData();
     void addRow(const LeftoverStockEntry &res);
-    void appendRows(const QVector<LeftoverStockEntry> &newResults);
+    //void appendRows(const QVector<LeftoverStockEntry> &newResults);
     //std::optional<LeftoverStockEntry> readRow(int row) const;
 
 signals:
@@ -28,7 +30,8 @@ signals:
 private:
     QTableWidget* table;
     QWidget* parent;  // 🔍 UI-hoz, hibajelzéshez, stb.
-    RowId _rowId;
+    //RowId _rowId;
+    RowTracker _rows;
 //    static constexpr int ReusableStockEntryIdIdRole = Qt::UserRole + 1;
 
 

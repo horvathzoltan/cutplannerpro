@@ -4,6 +4,8 @@
 #include "../../../model/cutting/result/leftoversource.h"
 #include "../../../model/leftoverstockentry.h"
 
+#include <materials/registry/material_registry.h>
+
 namespace Cutting{
 namespace Result{
 
@@ -30,8 +32,9 @@ static inline QVector<LeftoverStockEntry> toReusableEntries(const QVector<Result
         entry.availableLength_mm = res.waste;
         entry.source = convertToLeftoverSource(res.source);
 
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
         zInfo(QString("CONVERT RESULT → LEFTOVER: material=%1, waste=%2")
-                  .arg(res.materialId.toString())
+                  .arg(mat?mat->toDisplay():res.materialId.toString())
                   .arg(res.waste));
 
         result.append(entry);
@@ -47,8 +50,9 @@ static inline LeftoverStockEntry toReusableEntry(const ResultModel& res) {
     entry.availableLength_mm = res.waste;
     entry.source = convertToLeftoverSource(res.source);;
 
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
     zInfo(QString("CONVERT RESULT → LEFTOVER (single): material=%1, waste=%2")
-              .arg(res.materialId.toString())
+              .arg(mat?mat->toDisplay():res.materialId.toString())
               .arg(res.waste));
 
     return entry;

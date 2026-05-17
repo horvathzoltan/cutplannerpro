@@ -47,9 +47,25 @@ private:
         QString barcode;             ///< Anyag azonosító (lookuphoz)
         QString relevantDimStr;      ///< Releváns dimenzió (Width/Height)
         bool isMeasurementNeeded = false; ///< Mérési terv jelző
+        int leftCount = 0;           ///< J darabszám (V2)
+        int rightCount = 0;          ///< B darabszám (V2)
+        QString subtypeStr;         ///< Altípus szöveges formátumban (V2)
     };
 
-    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V1(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V1(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
+
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V2(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V2(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
+
+
     static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::FileContext& ctx);
-    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
+
+    enum class CSVVersion {
+        V1_OldHandlerSide,
+        V2_LeftRightSubtype,
+        Unknown
+    };
+
+    static CuttingRequestRepository::CSVVersion detectCsvVersion(const QString& filepath);
 };

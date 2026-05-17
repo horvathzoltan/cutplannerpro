@@ -3,6 +3,7 @@
 #pragma once
 
 #include <QUuid>
+#include "model/cutting/plan/request.h"
 #include "pieceinfo.h"
 
 /**
@@ -19,6 +20,9 @@ class PieceWithMaterial
 public:
     PieceInfo info;
     QUuid materialId = QUuid(); // Anyag azonosítója (UUID);
+
+    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+    HandlerSide side = HandlerSide::None; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
 
     PieceWithMaterial();
     PieceWithMaterial(const PieceInfo& i, const QUuid& matId);

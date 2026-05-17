@@ -2,6 +2,7 @@
 #include "ui_addwastedialog.h"
 #include "materials/registry/material_registry.h"
 #include <QMessageBox>
+#include <model/registries/storageregistry.h>
 
 AddWasteDialog::AddWasteDialog(QWidget *parent)
     : QDialog(parent)
@@ -10,6 +11,7 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 {
     ui->setupUi(this);
     populateMaterialCombo();
+        populateStorageCombo();   // 🆕
 }
 
 AddWasteDialog::~AddWasteDialog()
@@ -38,9 +40,9 @@ int AddWasteDialog::availableLength() const {
     return ui->editLength->text().toInt(); // validáció később
 }
 
-QString AddWasteDialog::comment() const {
-    return ui->editComment->text().trimmed();
-}
+// QString AddWasteDialog::comment() const {
+//     return ui->editComment->text().trimmed();
+// }
 
 Cutting::Result::LeftoverSource AddWasteDialog::source() const {
     return static_cast<Cutting::Result::LeftoverSource>(ui->editSourceValue->text().toInt()); // vagy szöveges → értelmezés
@@ -49,11 +51,16 @@ Cutting::Result::LeftoverSource AddWasteDialog::source() const {
 LeftoverStockEntry AddWasteDialog::getModel() const {
     LeftoverStockEntry entry;
     entry.entryId = current_entryId;
+
     entry.materialId = selectedMaterialId();
     entry.availableLength_mm = availableLength();
     entry.barcode = barcode();
     entry.source = source();
     entry.optimizationId = std::nullopt;
+
+    // 🆕 STORAGE
+    QUuid sid = selectedStorageId();
+    entry.storageId = sid.isNull() ? current_storageId : sid;
 
     zInfo(QString("USER CREATED LEFTOVER: entryId=%1, material=%2, length=%3, barcode=%4")
               .arg(entry.entryId.toString())
@@ -65,8 +72,9 @@ LeftoverStockEntry AddWasteDialog::getModel() const {
 }
 
 void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
-    //currentBarcode = entry.barcode;
     current_entryId = entry.entryId; // ha szerkesztés módban vagyunk
+    current_storageId  = entry.storageId;
+
     ui->editBarcode->setText(entry.barcode);
     ui->editLength->setText(QString::number(entry.availableLength_mm));
     ui->editSourceValue->setText(entry.sourceAsString());
@@ -74,6 +82,12 @@ void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
     int index = ui->comboMaterial->findData(entry.materialId);
     if (index >= 0)
         ui->comboMaterial->setCurrentIndex(index);
+
+    if (!entry.storageId.isNull()) {
+        int sidx = ui->comboStorage->findData(entry.storageId);
+        if (sidx >= 0)
+            ui->comboStorage->setCurrentIndex(sidx);
+    }
 }
 
 bool AddWasteDialog::validateInputs() {
@@ -92,6 +106,8 @@ bool AddWasteDialog::validateInputs() {
         return false;
     }
 
+        // ❗ Hullóknál a storage opcionális → NEM ellenőrizzük
+
     return true;
 }
 
@@ -100,4 +116,16 @@ void AddWasteDialog::accept() {
         return;
 
     QDialog::accept();
+}
+
+void AddWasteDialog::populateStorageCombo() {
+    ui->comboStorage->clear();
+    const auto& storages = StorageRegistry::instance().readAll();
+    for (const auto& s : storages) {
+        ui->comboStorage->addItem(s.name, s.id);
+    }
+}
+
+QUuid AddWasteDialog::selectedStorageId() const {
+    return ui->comboStorage->currentData().toUuid();
 }

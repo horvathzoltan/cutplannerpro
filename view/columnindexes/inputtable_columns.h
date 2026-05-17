@@ -26,6 +26,7 @@ enum Column {
     Tolerance,       ///< Tűrés szöveges formátumban
     Quantity,        ///< Darabszám
     HandlerSide, /// < Kezelő oldal (Left/Right)
+    SubType,
     Color,           ///< Igényelt szín
     Measurement,     ///< Mérési terv jelző (checkbox vagy ikon)
     Actions          ///< Műveletek (Update/Delete gombok)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/plan/request.h"
 #include "model/cutting/plan/source.h"
 #include <QString>
 #include <QUuid>
@@ -38,6 +39,9 @@ struct CutInstruction {
 
     QUuid requestId;        // 🔗 Request azonosító - az eredeti, ahol kérünk egy tételszámon ötöt
     QString externalReference;     // ⭐ darab-szintű externalReference (pl. 1444.1/5)
+
+    HandlerSide side = HandlerSide::None; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
+    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
 
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;

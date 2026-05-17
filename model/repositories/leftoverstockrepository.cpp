@@ -151,10 +151,10 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
     }
 
     row.storageBarcode = parts[5].trimmed();
-    if (row.storageBarcode.isEmpty()) {        
-        QString msg = L("⚠️ Hiányzó tároló barcode");
-        ctx.addError(ctx.currentLineNumber(), msg);
-        return std::nullopt;
+    // Ha nincs storage barcode → engedjük meg
+    if (row.storageBarcode.isEmpty()) {
+        // nincs storage → később storageId = QUuid()
+        row.storageBarcode = "";
     }
 
     return row;
@@ -169,12 +169,12 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
         return std::nullopt;
     }
 
-    const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
-    if (!storage) {
-        QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
-        ctx.addError(ctx.currentLineNumber(), msg);
-        return std::nullopt;
-    }
+    // const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
+    // if (!storage) {
+    //     QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
+    //     ctx.addError(ctx.currentLineNumber(), msg);
+    //     return std::nullopt;
+    // }
 
     LeftoverStockEntry entry;
     entry.materialId         = mat->id;
@@ -182,13 +182,31 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
     entry.barcode            = row.barcode;
     entry.source             = row.source;
     entry.optimizationId     = row.optimizationId;
-    entry.storageId = storage->id;
+    //entry.storageId = storage->id;
+
+    // ⭐ Storage NEM kötelező
+    if (!row.storageBarcode.isEmpty()) {
+        const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
+        if (storage)
+            entry.storageId = storage->id;
+        else {
+            // ismeretlen storage → engedjük meg, csak logoljuk
+            ctx.addError(ctx.currentLineNumber(),
+                         L("⚠️ Ismeretlen tároló barcode '%1' – üres storageId lesz")
+                             .arg(row.storageBarcode));
+            entry.storageId = QUuid();
+        }
+    } else {
+        // nincs storage → üres ID
+        entry.storageId = QUuid();
+    }
+
 
     zInfo(QString("LOAD REUSABLE LEFTOVER: entryId=%1, length=%2, material=%3, storage=%4")
-              .arg(entry.entryId.toString())
-              .arg(entry.availableLength_mm)
-              .arg(entry.materialId.toString())
-              .arg(entry.storageId.toString()));
+               .arg(entry.entryId.toString())
+               .arg(entry.availableLength_mm)
+               .arg(entry.materialId.toString())
+               .arg(entry.storageId.toString()));
 
     return entry;
 }

@@ -21,36 +21,8 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelComment">
-     <property name="text">
-      <string>Megjegyzés</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelSource">
-     <property name="text">
-      <string>Forrás</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelLength">
-     <property name="text">
-      <string>Elérhető hossz (mm)	</string>
-     </property>
-    </widget>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboMaterial"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="labelBarcode">
@@ -59,22 +31,50 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="comboMaterial"/>
-   </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="editBarcode"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelLength">
+     <property name="text">
+      <string>Elérhető hossz (mm)	</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="1">
     <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="editComment"/>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelSource">
+     <property name="text">
+      <string>Forrás</string>
+     </property>
+    </widget>
    </item>
    <item row="3" column="1">
     <widget class="QLineEdit" name="editSourceValue">
      <property name="readOnly">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Tárhely</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="comboStorage"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>

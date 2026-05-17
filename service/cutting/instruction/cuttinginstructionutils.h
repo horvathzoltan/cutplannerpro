@@ -457,11 +457,23 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         QString sizeStr = QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
 
         LabelModel lm;
-
         lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
         lm.parts.append({ owner,     true,  true,  0, Qt::AlignCenter });
-        lm.parts.append({ " | "+sizeStr,   false, false, 0, Qt::AlignRight });
 
+        QString a = "";
+        if(ci.subtype != Subtype::None){
+            a+= SubtypeUtils::toDisplayText(ci.subtype);
+        }
+
+        if(ci.side != HandlerSide::None) {
+            if(!a.isEmpty()) a += ", ";
+            a += HandlerSideUtils::toDisplayText(ci.side);;
+        }
+
+        if(!a.isEmpty()){
+            lm.parts.append({ " ("+a+")",   false, false, 0, Qt::AlignRight });
+        }
+        lm.parts.append({ " | "+sizeStr,   false, false, 0, Qt::AlignRight });
         out.append(lm);
     }
 

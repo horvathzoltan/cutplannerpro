@@ -16,29 +16,102 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                                        const QSet<QUuid>& usedLeftoverEntryIds,
                                        Cutting::Optimizer::OptimizerModel& model)
 {
+
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(materialId);
+    QString mat1 = mat ? mat->name +":"+mat->barcode : materialId.toString();
+
+
+
+    zInfo("findBestReusableFit: "+mat1);
+
+    if(pieces.size()>0){
+        zInfo("pieces:");
+
+        for(const auto& p : pieces){
+            const MaterialMaster* mat2 = MaterialRegistry::instance().findById(p.materialId);
+            auto a = QString("len=%1 material=%2 extRef=%3")
+                      .arg(p.info.length_mm)
+                      .arg(mat2?mat2->toDisplay():p.materialId.toString())
+                      .arg(p.info.externalReference);
+
+            zInfo("   •"+a);
+        }
+    } else{
+        zInfo("pieces: (empty)");
+    }
+
+    if(mergedView.size()>0){
+        zInfo("reuseables:");
+        for (const auto& e : mergedView) {
+            const MaterialMaster* mat2 = MaterialRegistry::instance().findById(e.materialId);
+            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 used=%5 source=%6")
+                      .arg(mat2?mat2->toDisplay():e.materialId.toString())
+                      .arg(e.barcode)
+                      .arg(e.availableLength_mm)
+                      .arg(e.materialBarcode())
+                      .arg(e.used)
+                      .arg(e.sourceAsString()));
+        }
+    } else{
+        zInfo("reuseables: (empty)");
+    }
+
     std::optional<ReusableCandidate> best;
     int bestScore = std::numeric_limits<int>::min();
-    QSet<QUuid> groupIds = GroupUtils::groupMembers(materialId);
+
+    // ha csoporttag, a materialid, akkor a csoport összes material tagját adja
+    // ha nem csoporttag, akkor egy önmagát tartalmazó csoportot adunk viassza
+    QSet<QUuid> groupedMaterialIds = GroupUtils::groupMembers(materialId);
 
     QVector<int> _aff_limits;
     QVector<int> _aff_results;
 
 
     // 🔎 releváns darabok kiszűrése
+    // itt azt keressük, hogy a paraméterben megkapott materialId-hez anyagcsoportjához
+    // melyik piecesek tartoznak  - tehát itt a materialId szerinti anyagcsoport szerint szűrünk
     QVector<Cutting::Piece::PieceWithMaterial> relevantPieces;
     for (const auto& p : pieces)
-        if (groupIds.contains(p.materialId))
+    {
+        if (groupedMaterialIds.contains(p.materialId))
             relevantPieces.append(p);
+    }
 
+    // zInfo("=== RELEVANT PIECES START ===");
+
+    // zInfo(QString("pieces count = %1").arg(pieces.size()));
+    // for (const auto& p : pieces) {
+    //     const MaterialMaster* mat = MaterialRegistry::instance().findById(p.materialId);
+
+    //     zInfo(QString("PIECE: len=%1  material=%2  extRef=%3  MaterialGroupMember=%4")
+    //               .arg(p.info.length_mm)
+    //               .arg(mat?mat->barcode:"(?)")
+    //               .arg(p.info.externalReference)
+    //               .arg(groupedMaterialIds.contains(p.materialId) ? "YES" : "NO"));
+    // }
+
+    // // releváns darabok kiírása
+    // zInfo(QString("relevantPieces count = %1").arg(relevantPieces.size()));
+    // for (const auto& p : relevantPieces) {
+    //     const MaterialMaster* mat = MaterialRegistry::instance().findById(p.materialId);
+    //     zInfo(QString("RELEVANT_PIECE: len=%1  material=%2  extRef=%3")
+    //               .arg(p.info.length_mm)
+    //               .arg(mat?mat->barcode:"(?)")
+    //               .arg(p.info.externalReference));
+    // }
+
+    // zInfo("=== RELEVANT PIECES END ===");
+
+    zInfo("LEFTOVER LOOP START");
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
 
-        zInfo(QString("leftoverLoop iteration #%1 → limit=%2")
-                  .arg(i + 1)
+        zInfo(QString("LEFTOVER LOOP: #%1 → loength_limit=%2")
+                  .arg(i)
                   .arg(stock.availableLength_mm));
 
         if (stock.used) continue;
-        if (!groupIds.contains(stock.materialId)) continue;
+        if (!groupedMaterialIds.contains(stock.materialId)) continue;
         if (usedLeftoverEntryIds.contains(stock.entryId)) continue; // ezt a hullót már elhasználtuk
 
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
@@ -48,7 +121,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             int used = single->info.length_mm + kerfTotal;
             int waste = OptimizerUtils::computeWasteInt(stock.availableLength_mm, used);
             if (waste == 0) {
-                return ReusableCandidate{ i, stock, QVector<Cutting::Piece::PieceWithMaterial>{ *single }, waste };
+                return ReusableCandidate{ i, stock, QVector<Cutting::Piece::PieceWithMaterial>{ *single }, waste, ReusableCandidate::Source::GlobalSnapshot };
             }
         }
 
@@ -69,6 +142,18 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         }
 
         zInfo("    result: SUCCESS");
+        // 🔍 LOG: FitEngine combo tartalma
+        zInfo("    combo:");
+        for (const auto& cp : fit.combo) {
+            const MaterialMaster* m = MaterialRegistry::instance().findById(cp.materialId);
+            //QString mat2 = m ? m->name + ":" + m->barcode : cp.materialId.toString();
+
+            zInfo(QString("        • len=%1  material=%2  extRef=%3")
+                      .arg(cp.info.length_mm)
+                      .arg(m?m->toDisplay():cp.materialId.toString())
+                      .arg(cp.info.externalReference));
+        }
+
 
         _aff_limits.append(stock.availableLength_mm);
         _aff_results.append(fit.pieceCount);
@@ -86,6 +171,8 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength);
 
         if (score > bestScore) {
+                zInfo("    → new BEST reusable candidate selected");
+
             bestScore = score;
             ReusableCandidate cand;
             cand.indexInView = i;
@@ -97,16 +184,36 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                               : ReusableCandidate::Source::LocalPool;
             best = cand;
         }
+
+        zInfo(QString("    scoring: pieces=%1 waste=%2 leftover=%3 → score=%4, bestScore=%5")
+                  .arg(fit.combo.size())
+                  .arg(waste)
+                  .arg(leftoverLength)
+                  .arg(score)
+                  .arg(bestScore));
+
     }
 
-    QStringList limitsStr, resultsStr;
-    for (int v : _aff_limits)  limitsStr << QString::number(v);
-    for (int v : _aff_results) resultsStr << QString::number(v);
+    zInfo("LEFTOVER LOOP EXITED");
 
-    zInfo(QString("🧩 ReusableFitEngine::findBestFit attempts=%1 limits=%2 results=%3")
-              .arg(_aff_limits.size())
-              .arg(limitsStr.join(","))
-              .arg(resultsStr.join(",")));
+    // QStringList limitsStr, resultsStr;
+    // for (int v : _aff_limits)  limitsStr << QString::number(v);
+    // for (int v : _aff_results) resultsStr << QString::number(v);
+
+    // zInfo(QString("🧩 ReusableFitEngine::findBestFit attempts=%1 limits=%2 results=%3")
+    //           .arg(_aff_limits.size())
+    //           .arg(limitsStr.join(","))
+    //           .arg(resultsStr.join(",")));
+
+    // if (best.has_value()) {
+    //     zInfo(QString("✅ ReusableFitEngine::findBestReusableFit → FOUND candidate: idx=%1 len=%2 waste=%3 source=%4")
+    //               .arg(best->indexInView)
+    //               .arg(best->stock.availableLength_mm)
+    //               .arg(best->waste)
+    //               .arg(static_cast<int>(best->source)));
+    // } else {
+    //     zInfo("❌ ReusableFitEngine::findBestReusableFit → NO candidate (best is nullopt)");
+    // }
 
     return best;
 }

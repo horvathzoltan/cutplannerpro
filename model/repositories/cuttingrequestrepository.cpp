@@ -68,12 +68,27 @@ bool CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry& registry
 }
 
 QVector<Cutting::Plan::Request>
-CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx) {
-    return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest, true);
+CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
+{
+//    return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest, true);
+    CSVVersion ver = detectCsvVersion(ctx.filepath());
+
+    switch (ver) {
+    case CSVVersion::V1_OldHandlerSide:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V1, true);
+
+    case CSVVersion::V2_LeftRightSubtype:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V2, true);
+
+    default:
+        ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
+        return {};
+    }
+
 }
 
 std::optional<CuttingRequestRepository::CuttingRequestRow>
-CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
+CuttingRequestRepository::convertRowToCuttingRequestRow_V1(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
     if (parts.size() < 12) {
         QString msg = L("⚠️ Kevés adat");
         ctx.addError(ctx.currentLineNumber(), msg);
@@ -93,6 +108,11 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     row.barcode           = parts[9].trimmed();
     row.relevantDimStr    = parts[10].trimmed();
     row.isMeasurementNeeded = (parts[11].trimmed().toLower() == "true");
+//V2
+    auto side = HandlerSideUtils::parse(row.handlerSide);
+    row.leftCount         = side == HandlerSide::Left ? row.quantity : 0;
+    row.rightCount        = side == HandlerSide::Right ? row.quantity : 0;
+    row.subtypeStr        = "none";
 
     if (row.barcode.isEmpty() || row.requiredLength <= 0 || row.quantity <= 0) {
         QString msg = L("⚠️ Érvénytelen mező");
@@ -103,6 +123,32 @@ CuttingRequestRepository::convertRowToCuttingRequestRow(const QVector<QString>& 
     return row;
 }
 
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V2(const QVector<QString>& parts, CsvReader::FileContext& ctx)
+{
+    if (parts.size() < 14)
+        return std::nullopt;
+
+    CuttingRequestRepository::CuttingRequestRow row;
+    row.externalReference = parts[0].trimmed();
+    row.ownerName         = parts[1].trimmed();
+    row.fullWidth_mm      = parts[2].trimmed().toInt();
+    row.fullHeight_mm     = parts[3].trimmed().toInt();
+    row.requiredLength    = parts[4].trimmed().toInt();
+    row.toleranceStr      = parts[5].trimmed();
+    row.quantity          = parts[6].trimmed().toInt();
+
+    row.leftCount         = parts[7].trimmed().toInt();
+    row.rightCount        = parts[8].trimmed().toInt();
+    row.subtypeStr        = parts[9].trimmed();
+
+    row.requiredColorName = parts[10].trimmed();
+    row.barcode           = parts[11].trimmed();
+    row.relevantDimStr    = parts[12].trimmed();
+    row.isMeasurementNeeded = (parts[13].trimmed().toLower() == "true");
+
+    return row;
+}
 
 
 std::optional<Cutting::Plan::Request>
@@ -122,8 +168,9 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.fullHeight_mm     = row.fullHeight_mm;
     req.requiredLength    = row.requiredLength;
     req.quantity          = row.quantity;
-    req.handlerSide = HandlerSideUtils::parse(row.handlerSide);
-    //req.requiredColorName = row.requiredColorName;
+    req.leftCount  = row.leftCount;
+    req.rightCount = row.rightCount;
+    req.subtype    = SubtypeUtils::parse(row.subtypeStr);
     req.isMeasurementNeeded = row.isMeasurementNeeded;
 
     // 🔍 Tűrés beolvasása
@@ -169,8 +216,16 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
 
 
 std::optional<Cutting::Plan::Request>
-CuttingRequestRepository::convertRowToCuttingRequest(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    const auto rowOpt = convertRowToCuttingRequestRow(parts, ctx);
+CuttingRequestRepository::convertRowToCuttingRequest_V1(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
+    const auto rowOpt = convertRowToCuttingRequestRow_V1(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
+
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V2(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
+    const auto rowOpt = convertRowToCuttingRequestRow_V2(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 
     return buildCuttingRequestFromRow(rowOpt.value(), ctx);
@@ -188,7 +243,11 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     QTextStream out(&file);
 
     // 📋 CSV fejléc
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
+    // régi fejléc (V1):
+    // externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+
+    // új fejléc (V2):
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
@@ -208,7 +267,9 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << req.requiredLength << ";"
             << toleranceStr << ";"
             << req.quantity << ";"
-            << HandlerSideUtils::toString(req.handlerSide) << ";"
+            << req.leftCount << ";"
+            << req.rightCount << ";"
+            << SubtypeUtils::toString_CSV(req.subtype) << ";"
             << "\"" << req.requiredColor.name() << "\";"
             << material->barcode << ";"
             << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
@@ -220,4 +281,32 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     return true;
 }
 
+CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(const QString& filepath)
+{
+    QFile f(filepath);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        return CuttingRequestRepository::CSVVersion::Unknown;
+
+    QTextStream in(&f);
+    in.setEncoding(QStringConverter::Utf8);
+
+    QString headerLine = in.readLine().trimmed();
+    if (headerLine.isEmpty())
+        return CuttingRequestRepository::CSVVersion::Unknown;
+
+    QStringList cols = headerLine.split(';', Qt::KeepEmptyParts);
+
+    bool hasHandlerSide = cols.contains("handlerSide", Qt::CaseInsensitive);
+    bool hasLeft        = cols.contains("leftCount", Qt::CaseInsensitive);
+    bool hasRight       = cols.contains("rightCount", Qt::CaseInsensitive);
+    bool hasSubtype     = cols.contains("subtype", Qt::CaseInsensitive);
+
+    if (hasHandlerSide && !hasLeft)
+        return CuttingRequestRepository::CSVVersion::V1_OldHandlerSide;
+
+    if (hasLeft && hasRight && hasSubtype)
+        return CuttingRequestRepository::CSVVersion::V2_LeftRightSubtype;
+
+    return CuttingRequestRepository::CSVVersion::Unknown;
+}
 

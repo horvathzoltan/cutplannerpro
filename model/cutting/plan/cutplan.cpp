@@ -106,6 +106,37 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
 }
 
 
+Cutting::Piece::PieceWithMaterial CutPlan::getPieceMaterialBy_pieceId(const QUuid& id) const
+{
+    for (const auto& pwm : piecesWithMaterial) {
+        if (pwm.info.pieceId == id)
+            return pwm;
+    }
+    return {};
+}
+
+Cutting::Piece::PieceInfo CutPlan::getPieceInfoBy_pieceId(const QUuid& id) const
+{
+    for (const auto& pwm : piecesWithMaterial) {
+        if (pwm.info.pieceId == id)
+            return pwm.info;
+    }
+    return {};
+}
+
+Cutting::Segment::SegmentModel CutPlan::getSegmentModelBy_pieceId(const QUuid& id) const
+{
+    for (const auto& seg : segments) {
+        if (seg._pieceId == id)
+            return seg;
+    }
+    return Cutting::Segment::SegmentModel(
+        Cutting::Segment::SegmentModel::Type::Technical,
+        0, 0, QUuid(), QUuid(), ""
+        );
+}
+
+
 } //endof namespace Plan
 } //endof namespace Cutting
 

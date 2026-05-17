@@ -43,15 +43,15 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
         rod.barcode = IdentifierUtils::makeMaterialId(matId);
         rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
 
-        zInfo(QString("🆔 NEW STOCK ROD ID: %1 (counter=%2, material=%3, length=%4)")
+        zInfo(QString("🆔 NEW STOCK ROD ID: %1 (counter=%2, rod_barcode=%3, length=%4)")
                   .arg(rod.rodId)
                   .arg(rodCounter)
-                  .arg(rod.materialId.toString())
+                  .arg(rod.barcode)
                   .arg(rod.length));
 
-        zInfo(QString("✅ STOCK[%1] SELECTED: materialId=%2, newQuantity=%3")
+        zInfo(QString("✅ STOCK[%1] SELECTED: material_barcode=%2, newQuantity=%3")
                   .arg(i)
-                  .arg(stock.materialId.toString())
+                  .arg(stock.materialBarcode())
                   .arg(stock.quantity));
 
         // AGGREGÁLT ÖSSZEFOGLALÓ

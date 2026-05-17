@@ -66,6 +66,10 @@ public:
     // bemenő adatok- ezeket "keressük"
     QVector<Cutting::Piece::PieceWithMaterial> piecesWithMaterial; // ✂️ Levágott darabok — anyaggal együtt
 
+    Cutting::Piece::PieceWithMaterial getPieceMaterialBy_pieceId(const QUuid& id) const;
+    Cutting::Piece::PieceInfo getPieceInfoBy_pieceId(const QUuid& id) const;
+    Cutting::Segment::SegmentModel getSegmentModelBy_pieceId(const QUuid& id) const;
+
     // 🧠 Viselkedésalapú metódusok
     bool isReusable() const;
     bool isFinalized() const;

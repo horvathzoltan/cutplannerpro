@@ -35,11 +35,14 @@ private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből
     bool validateInputs();
+    Subtype parseSubtypeFromRadioButtons() const;
 
     QUuid current_requestId; // 🔒 Megőrzi az eredeti ID-t
 
     static QString s_lastOwnerName;
     static QString s_lastExternalRef;
     static QUuid s_lastMaterialId;
+    static Subtype s_lastSubtype;
+
 };
 

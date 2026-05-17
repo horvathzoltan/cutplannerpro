@@ -19,7 +19,7 @@ public:
     QUuid selectedMaterialId() const;
     QString barcode() const;
     int availableLength() const;
-    QString comment() const;
+    //QString comment() const;
     Cutting::Result::LeftoverSource source() const;
 
     void accept() override;
@@ -33,4 +33,8 @@ private:
 
     //QString currentBarcode;
     QUuid current_entryId; // Az aktuális anyag ID, ha szerkesztés módban vagyunk
+
+    QUuid current_storageId;     // 🆕
+    void populateStorageCombo(); // 🆕
+    QUuid selectedStorageId() const; // 🆕
 };

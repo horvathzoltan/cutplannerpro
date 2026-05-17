@@ -336,109 +336,116 @@ void logReusableStatus(const QString& title, const QVector<LeftoverStockEntry>& 
 
 /*finalize*/
 
-void CuttingPresenter::logPlans(){
-    QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef(); // vagy getMutablePlans()
-    const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
+// void CuttingPresenter::logPlans(){
+//     QVector<Cutting::Plan::CutPlan>& plans = model.getResult_PlansRef(); // vagy getMutablePlans()
+//     const QVector<Cutting::Result::ResultModel> results = model.getResults_Leftovers();
 
-    zInfo(L("✅ VÁGÁSI TERVEK — CutPlan-ek:"));
+//     zInfo(L("✅ VÁGÁSI TERVEK — CutPlan-ek:"));
 
-    // for (const auto& plan : plans) {
-    //     qDebug() << "✅ VÁGÁSI TERV #" << plan.rodNumber
-    //              << "| Anyag:" << plan.materialId
-    //              << "| Hossz:" << plan.totalLength << "mm"
-    //              << "| Hulló:" << (plan.source == Cutting::Plan::Source::Reusable ? "Igen" : "Nem")
-    //              << "| Veszteség:" << plan.waste << "mm"
-    //              << "| Vágások száma:" << plan.piecesWithMaterial.size();
+//     // for (const auto& plan : plans) {
+//     //     qDebug() << "✅ VÁGÁSI TERV #" << plan.rodNumber
+//     //              << "| Anyag:" << plan.materialId
+//     //              << "| Hossz:" << plan.totalLength << "mm"
+//     //              << "| Hulló:" << (plan.source == Cutting::Plan::Source::Reusable ? "Igen" : "Nem")
+//     //              << "| Veszteség:" << plan.waste << "mm"
+//     //              << "| Vágások száma:" << plan.piecesWithMaterial.size();
 
-    //     for (const auto& cut : plan.piecesWithMaterial) {
-    //         const auto& info = cut.info;
-    //         qDebug() << "  ✂️ Darab:" << info.length_mm << "mm"
-    //                  << "| Megrendelő:" << info.ownerName
-    //                  << "| Tételszám:" << info.externalReference
-    //                  << "| Kérelem anyag:" << cut.materialId;
-    //     }
+//     //     for (const auto& cut : plan.piecesWithMaterial) {
+//     //         const auto& info = cut.info;
+//     //         qDebug() << "  ✂️ Darab:" << info.length_mm << "mm"
+//     //                  << "| Megrendelő:" << info.ownerName
+//     //                  << "| Tételszám:" << info.externalReference
+//     //                  << "| Kérelem anyag:" << cut.materialId;
+//     //     }
 
-    //     qDebug() << "--------------------------------------------";
-    // }
+//     //     qDebug() << "--------------------------------------------";
+//     // }
 
-    for (const Cutting::Plan::CutPlan& plan : plans) {
-        QStringList pieceLabels, kerfLabels, wasteLabels;
+//     for (const Cutting::Plan::CutPlan& plan : plans) {
+//         QStringList pieceLabels, kerfLabels, wasteLabels;
 
-        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            if (s.isPiece()) {
-                pieceLabels << s.toLabelString();
-            }
-            else if (s.isKerf()) {
-                kerfLabels << s.toLabelString();
-            }
-            else if (s.isWaste()) {
-                wasteLabels << s.toLabelString();
-            }
-            else if (s.isTechnical()) {
-                // ha kell külön lista, ide jön
-                // pl.: technicalLabels << s.toLabelString();
-            }
-        }
+//         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+//             if (s.isPiece()) {
+//                 pieceLabels << s.toLabelString();
+//             }
+//             else if (s.isKerf()) {
+//                 kerfLabels << s.toLabelString();
+//             }
+//             else if (s.isWaste()) {
+//                 wasteLabels << s.toLabelString();
+//             }
+//             else if (s.isTechnical()) {
+//                 // ha kell külön lista, ide jön
+//                 // pl.: technicalLabels << s.toLabelString();
+//             }
+//         }
 
-        QString msg =
-            L("  → %1").arg(plan.rodId) +
-            L(" | PlanId: %1").arg(plan.planId.toString()) +
-            L(" | Forrás: %1").arg(plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK") +
-            L("\n     Azonosító: %1").arg(plan.isReusable() ? plan.rodId : plan.materialName()) +
-            L(" | Vágások száma: %1").arg(plan.piecesWithMaterial.size()) +
-            L(" | Kerf: %1 mm").arg(plan.kerfTotal) +
-            L(" | Hulladék: %1 mm").arg(plan.waste) +
-            L("\n     Darabok: %1").arg(pieceLabels.join(" ")) +
-            L("\n     Kerf-ek: %1").arg(kerfLabels.join(" ")) +
-            L("\n     Hulladék szakaszok: %1").arg(wasteLabels.join(" "));
+//         QStringList segmentstxt;
 
-        zInfo(msg);
-    }
+//         for(const auto& p : plan.piecesWithMaterial) {
+//             const MaterialMaster* mat = MaterialRegistry::instance().findById(p.materialId);
+//             segmentstxt << QString("%1 %2 mm)").arg(mat?mat->toDisplay():"(?)").arg(p.info.length_mm);
+//         }
 
-    zInfo(L("♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:"));
+//         QString msg =
+//             L("  → %1").arg(plan.rodId) +
+//             L(" | segments: %1").arg(segmentstxt.join(',')) +
+//             L(" | Forrás: %1").arg(plan.source == Cutting::Plan::Source::Reusable ? "♻️ REUSABLE" : "🧱 STOCK") +
+//             L("\n     Azonosító: %1").arg(plan.isReusable() ? plan.rodId : plan.materialName()) +
+//             L(" | Vágások száma: %1").arg(plan.piecesWithMaterial.size()) +
+//             L(" | Kerf: %1 mm").arg(plan.kerfTotal) +
+//             L(" | Hulladék: %1 mm").arg(plan.waste) +
+//             L("\n     Darabok: %1").arg(pieceLabels.join(" ")) +
+//             L("\n     Kerf-ek: %1").arg(kerfLabels.join(" ")) +
+//             L("\n     Hulladék szakaszok: %1").arg(wasteLabels.join(" "));
 
-    for (const Cutting::Result::ResultModel& result : results) {
-        QString msg =
-            L("  - Hulladék: %1 mm").arg(result.waste) +
-            L(" | Forrás: %1").arg(result.sourceAsString()) +
-            L(" | MaterialId: %1").arg(result.materialId.toString()) +
-            L(" | Barcode: %1").arg(result.reusableBarcode) +
-            L("\n    Darabok: %1").arg(result.cutsAsString());
+//         zInfo(msg);
+//     }
 
-        zInfo(msg);
-    }
+//     zInfo(L("♻️ KELETKEZETT HULLADÉKOK — CutResult-ek:"));
+
+//     for (const Cutting::Result::ResultModel& result : results) {
+//         QString msg =
+//             L("  - Hulladék: %1 mm").arg(result.waste) +
+//             L(" | Forrás: %1").arg(result.sourceAsString()) +
+//             L(" | MaterialId: %1").arg(result.materialId.toString()) +
+//             L(" | Barcode: %1").arg(result.reusableBarcode) +
+//             L("\n    Darabok: %1").arg(result.cutsAsString());
+
+//         zInfo(msg);
+//     }
 
 
-    // 📊 Összesítés
-    int totalKerf = 0, totalWaste = 0, totalCuts = 0;
-    int totalSegments = 0, kerfSegs = 0, wasteSegs = 0;
+//     // 📊 Összesítés
+//     int totalKerf = 0, totalWaste = 0, totalCuts = 0;
+//     int totalSegments = 0, kerfSegs = 0, wasteSegs = 0;
 
-    for (const Cutting::Plan::CutPlan& plan : plans) {
-        totalKerf += plan.kerfTotal;
-        totalWaste += plan.waste;
-        totalCuts += plan.piecesWithMaterial.size();
-        totalSegments += plan.segments.size();
+//     for (const Cutting::Plan::CutPlan& plan : plans) {
+//         totalKerf += plan.kerfTotal;
+//         totalWaste += plan.waste;
+//         totalCuts += plan.piecesWithMaterial.size();
+//         totalSegments += plan.segments.size();
 
-        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            if (s.isKerf()) {
-                kerfSegs++;
-            }
-            else if (s.isWaste()) {
-                wasteSegs++;
-            }
-        }
-    }
+//         for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+//             if (s.isKerf()) {
+//                 kerfSegs++;
+//             }
+//             else if (s.isWaste()) {
+//                 wasteSegs++;
+//             }
+//         }
+//     }
 
-    QString msg =
-        L("📈 Összesítés:\n") +
-        L("  Vágások összesen:         %1").arg(totalCuts) + "\n" +
-        L("  Kerf összesen:            %1 mm (%2 szakasz)").arg(totalKerf).arg(kerfSegs) + "\n" +
-        L("  Hulladék összesen:        %1 mm (%2 szakasz)").arg(totalWaste).arg(wasteSegs) + "\n" +
-        L("  Teljes szakaszszám:       %1").arg(totalSegments);
+//     QString msg =
+//         L("📈 Összesítés:\n") +
+//         L("  Vágások összesen:         %1").arg(totalCuts) + "\n" +
+//         L("  Kerf összesen:            %1 mm (%2 szakasz)").arg(totalKerf).arg(kerfSegs) + "\n" +
+//         L("  Hulladék összesen:        %1 mm (%2 szakasz)").arg(totalWaste).arg(wasteSegs) + "\n" +
+//         L("  Teljes szakaszszám:       %1").arg(totalSegments);
 
-    zInfo(msg);
+//     zInfo(msg);
 
-}
+// }
 
 void CuttingPresenter::scrapShortLeftovers()
 {
@@ -508,16 +515,17 @@ void CuttingPresenter::syncModelWithRegistries() {
     auto inventory = InventorySnapshotBuilder::build(300);
 
     // 🔍 DEBUG: request lista kiírása
-    zInfo("📦 RequestSnapshotBuilder::build() eredménye:");
-    zInfo(QString("   → request count = %1").arg(requests.size()));
-
+    zInfo("📦 RequestSnapshotBuilder::build():");
     for (const Cutting::Plan::Request &r : requests) {
-        zInfo(QString("   • requestId=%1  extRef=%2  qty=%3  len=%4")
-                  .arg(r.requestId.toString(QUuid::WithoutBraces))
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(r.materialId);
+        zInfo(QString("   •  %1. %2 %3, %4 mm, %5 db ")
                   .arg(r.externalReference)
-                  .arg(r.quantity)
-                  .arg(r.requiredLength));
+                  .arg(r.ownerName)
+                  .arg(mat?mat->toDisplay():"(?)")
+                  .arg(r.requiredLength)
+                  .arg(r.quantity));
     }
+    zInfo(QString("   → összesen %1 db").arg(requests.size()));
 
     QStringList errors;
     QStringList warnings;
@@ -926,6 +934,10 @@ void CuttingPresenter::GenerateCutInstructions()
 
             ci.source = plan.source;
             ci.sourceBarcode = plan.sourceBarcode;
+
+            auto pwm = plan.getPieceMaterialBy_pieceId(seg._pieceId);
+            ci.side = pwm.side;
+            ci.subtype = pwm.subtype;
 
             if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
                 if (!reusedLeftovers.contains(plan.leftoverBarcode))

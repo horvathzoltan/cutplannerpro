@@ -37,6 +37,13 @@ static inline QSet<QUuid> groupMembers(const QUuid& materialId) {
                  : QSet<QUuid>{ materialId };
 }
 
+// static inline QSet<QUuid> groupMembers2(const QUuid& materialId) {
+//     const MaterialGroup*group = MaterialGroupRegistry::instance().findByMaterialId(materialId);
+//     if(!group) return QSet<QUuid>{}; // ha nincs csoport, akkor csak önmagát tartalmazza a csoport
+//     return group ? QSet<QUuid>(group->materialIds.begin(), group->materialIds.end())
+//                  : QSet<QUuid>();
+// }
+
 }
 
 // #pragma once

@@ -10,6 +10,7 @@
 QString AddInputDialog::s_lastOwnerName;
 QString AddInputDialog::s_lastExternalRef;
 QUuid   AddInputDialog::s_lastMaterialId;   // ⬅️ ÚJ
+Subtype AddInputDialog::s_lastSubtype = Subtype::None;
 
 AddInputDialog::AddInputDialog(QWidget *parent)
     : QDialog(parent)
@@ -88,35 +89,59 @@ QString AddInputDialog::externalReference() const {
 
 Cutting::Plan::Request AddInputDialog::getModel() const {
     Cutting::Plan::Request req;
-    req.requestId = current_requestId; // ✅ ez volt a hiányzó láncszem
-    // 🔗 Anyag ID kinyerése a comboBox-ból
+    req.requestId = current_requestId;
+
+    // Anyag
     QVariant matData = ui->comboMaterial->currentData();
     if (matData.isValid())
         req.materialId = matData.toUuid();
 
-    // 📏 Vágási hossz kiolvasása
+    // Hossz
     bool okLen = false;
     req.requiredLength = ui->editLength->text().toInt(&okLen);
     if (!okLen)
-        req.requiredLength = -1; // Hibás hossz
+        req.requiredLength = -1;
 
-    // 🔢 Darabszám
-    req.quantity = quantity(); // <- ha már van quantity() metódusod
+    // Darabszám
+    req.quantity = ui->spinQuantity->value();
 
-    // 👤 Megrendelő neve
-    req.ownerName = ownerName(); // <- ha már van ownerName() getter
+    // Megrendelő
+    req.ownerName = ui->editOwner->text().trimmed();
 
-    // 🧾 Külső tételszám
-    req.externalReference = externalReference(); // <- ha van ilyen getter
+    // Külső tételszám
+    req.externalReference = ui->editReference->text().trimmed();
+
+    // ⭐ J/B darabszámok
+    req.leftCount  = ui->spinBox_left->value();
+    req.rightCount = ui->spinBox_right->value();
+
+    // ⭐ Altípus
+    req.subtype = parseSubtypeFromRadioButtons();
 
     return req;
 }
 
 
-bool AddInputDialog::validateInputs() {
-    Cutting::Plan::Request req = getModel(); // <- új metódusod, lásd korábban
 
-    QStringList errors = req.invalidReasons(); // <- centralizált validáció
+bool AddInputDialog::validateInputs() {
+
+    // ⭐ J/B darabszám ellenőrzés
+    int qty = ui->spinQuantity->value();
+    int l   = ui->spinBox_left->value();
+    int r   = ui->spinBox_right->value();
+
+    if ((l + r != qty) && !(l==0 &&r ==0)) {
+        QMessageBox::warning(this,
+                             "Hibás J/B megadás",
+                             "A balos és jobbos darabszám összege nem egyezik meg a teljes darabszámmal.");
+        return false;
+    }
+
+    // ⭐ Altípushoz nem kell külön validáció (mindig van választás)
+
+    // ⭐ A többi mező validálása
+    Cutting::Plan::Request req = getModel();
+    QStringList errors = req.invalidReasons();
 
     if (!errors.isEmpty()) {
         QMessageBox::warning(this,
@@ -129,6 +154,18 @@ bool AddInputDialog::validateInputs() {
 }
 
 
+Subtype AddInputDialog::parseSubtypeFromRadioButtons() const
+{
+    if (ui->radioButton_alap->isChecked())
+        return Subtype::Alap;
+    else if (ui->radioButton_rugos->isChecked())
+        return Subtype::Rugos;
+    else if (ui->radioButton_tetoteri->isChecked())
+        return Subtype::Tetoteri;
+    else
+        return Subtype::None;
+}
+
 void AddInputDialog::accept() {
     if (!validateInputs())
         return;
@@ -137,6 +174,9 @@ void AddInputDialog::accept() {
     s_lastOwnerName   = ui->editOwner->text().trimmed();
     s_lastExternalRef = ui->editReference->text().trimmed();
     s_lastMaterialId  = ui->comboMaterial->currentData().toUuid();   // ⬅️ ÚJ
+
+    // ⭐ ÚJ: altípus mentése
+    s_lastSubtype = parseSubtypeFromRadioButtons();
 
     QDialog::accept(); // csak ha minden oké
 }
@@ -160,6 +200,19 @@ void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
 
     // 🧾 Külső azonosító
     ui->editReference->setText(request.externalReference);
+
+    // ⭐ J/B visszatöltés
+    ui->spinBox_left->setValue(request.leftCount);
+    ui->spinBox_right->setValue(request.rightCount);
+
+    // ⭐ Altípus visszatöltés
+    switch (request.subtype) {
+    case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
+    case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
+    case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
+    default:                ui->radioButton_nincs->setChecked(true); break;
+    }
+
 }
 
 

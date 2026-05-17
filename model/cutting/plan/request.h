@@ -15,27 +15,74 @@
 enum HandlerSide{
     Left,    ///< Balos kivitel – kezelő/hajtómű bal oldalon
     Right,   ///< Jobbos kivitel – kezelő/hajtómű jobb oldalon
-    Unknown   ///< Nem megadott – figyelmeztetés szükséges
+    None   ///< Nem megadott – figyelmeztetés szükséges
 };
 
 namespace HandlerSideUtils {
 
-inline QString toString(HandlerSide side) {
-    switch (side) {
-    case HandlerSide::Left:    return "L";
-    case HandlerSide::Right:   return "R";
-    case HandlerSide::Unknown: return "Unknown";
-    }
-    return "Unknown";
+inline QString toDisplayText(HandlerSide side){
+    if(side == HandlerSide::Left) return "bal";
+    if(side == HandlerSide::Right) return "jobb";
+    return {};
 }
 
-inline HandlerSide parse(const QString& str) {
-    if (str.compare("Left", Qt::CaseInsensitive) == 0 || str =="L")   return HandlerSide::Left;
-    if (str.compare("Right", Qt::CaseInsensitive) == 0 || str=="R")  return HandlerSide::Right;
-    return HandlerSide::Unknown;
+// inline QString toCSVText(HandlerSide side){
+//     if(side == HandlerSide::Left) return "L";
+//     if(side == HandlerSide::Right) return "R";
+//     return {};
+// }
+
+inline HandlerSide parse(const QString& str2) {
+    QString str = str2.trimmed().toLower();
+    if (str == "left" || str == "l")   return HandlerSide::Left;
+    if (str == "right" || str == "r")  return HandlerSide::Right;
+
+    if (str == "bal" || str =="b")   return HandlerSide::Left;
+    if (str == "jobb" || str=="j")  return HandlerSide::Right;
+    return HandlerSide::None;
 }
 
 } // namespace HandlerSideUtils
+
+enum class Subtype {
+    None,
+    Alap,
+    Rugos,
+    Tetoteri
+};
+
+namespace SubtypeUtils {
+
+inline QString toString_CSV(Subtype t) {
+    switch (t) {
+    case Subtype::None:     return "none";
+    case Subtype::Alap:     return "alap";
+    case Subtype::Rugos:    return "rugos";
+    case Subtype::Tetoteri: return "tetoteri";
+    }
+    return "none";
+}
+
+inline QString toDisplayText(Subtype t) {
+    switch (t) {
+    case Subtype::None:     return "none";
+    case Subtype::Alap:     return "alap";
+    case Subtype::Rugos:    return "rugós";
+    case Subtype::Tetoteri: return "tetőtéri";
+    }
+    return "none";
+}
+
+inline Subtype parse(const QString& s) {
+    QString v = s.trimmed().toLower();
+    if (v == "alap")     return Subtype::Alap;
+    if (v == "rugos")    return Subtype::Rugos;
+    if (v == "tetoteri") return Subtype::Tetoteri;
+    return Subtype::None;
+}
+
+} //endof namespace SubtypeUtils
+
 
 struct Tolerance{
     double min_mm; ///< negatív eltérés mm-ben
@@ -135,7 +182,11 @@ struct Request {
 
     std::optional<Tolerance> requiredTolerance;
 
-    HandlerSide handlerSide = HandlerSide::Unknown; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
+    //HandlerSide handlerSide = HandlerSide::Unknown; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
+    int leftCount = 0;   ///< Balos darabok száma
+    int rightCount = 0;  ///< Jobbos darabok száma
+
+    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
 
     NamedColor requiredColor; // 🎨 Anyag színe (RAL vagy HEX kód)
 

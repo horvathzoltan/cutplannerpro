@@ -60,18 +60,24 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
         double len = pwm.info.length_mm;
 
         // ➕ Piece szakasz
-        segments.append(SegmentModel(SegmentModel::Type::Piece,
-                                     len,
-                                     pieceIx++,
-                                     pwm.info.requestId,pwm.info.pieceId, pwm.info.externalReference));
+        auto seg1 = SegmentModel(SegmentModel::Type::Piece,
+                                 len,
+                                 pieceIx++,
+                                 pwm.info.requestId,
+                                 pwm.info.pieceId,
+                                 pwm.info.externalReference);
+        segments.append(seg1);
         usedLength += len;
 
         // ➕ Kerf szakasz
         if (kerf_mm > 0) {
-            segments.append(SegmentModel(SegmentModel::Type::Kerf,
-                                         kerf_mm,
-                                         kerfIx++,
-                                         pwm.info.requestId,pwm.info.pieceId, pwm.info.externalReference));
+            auto seg2 = SegmentModel(SegmentModel::Type::Kerf,
+                                     kerf_mm,
+                                     kerfIx++,
+                                     pwm.info.requestId,
+                                     pwm.info.pieceId,
+                                     pwm.info.externalReference);
+            segments.append(seg2);
             usedLength += kerf_mm;
         }
     }

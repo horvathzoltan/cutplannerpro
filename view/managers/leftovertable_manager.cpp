@@ -11,8 +11,8 @@
 #include "materials/registry/material_registry.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
-    : QObject(parent), table(table), parent(parent),
-    _rowId(table, ColName ) {}
+    : QObject(parent), table(table), parent(parent)
+{}
 
 void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     if (!table)
@@ -30,7 +30,8 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
                                     mat->name,
                                     mat->color.color(),
                                     mat->color.name());
-    _rowId.set(rowIx,entry.entryId);
+    //_rowId.set(rowIx,entry.entryId);
+    _rows.registerRow(rowIx, entry.entryId); // opcionálisan extra: entry.storageId
 
     // 🧾 Vonalkód
     auto* itemBarcode = new QTableWidgetItem(mat ? mat->barcode : "-");
@@ -114,12 +115,25 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
 
-    for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
-        QUuid currentId = _rowId.get(rowIx);
+    std::optional<int> rowIxOpt = _rows.rowOf(entry.entryId);
 
-        if (currentId == entry.entryId) {
+    if (!rowIxOpt.has_value())
+        return;
+
+    int rowIx = rowIxOpt.value();
+
+
+    zInfo("LeftoverTableManager::updateRow id:"+entry.entryId.toString());
+    //for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
+      //  QUuid currentId = _rowId.get(rowIx);
+
+        //zInfo("rowIx:"+QString::number(rowIx)+ "rowid:"+currentId.toString());
+        //if (currentId == entry.entryId) {
+
+            zInfo("updaterow ok");
+
             const MaterialMaster* mat = entry.master();
-            if(!mat) continue;
+            if(!mat) return;
 
             QString materialName = mat ? mat->name : "(ismeretlen)";
             QString barcode = mat ? mat->barcode : "-";
@@ -169,49 +183,45 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
                 TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
             }
 
+          //  QUuid currentId2 = _rowId.get(rowIx);
+          //  zInfo("rowIx:"+QString::number(rowIx)+ "currentId2:"+currentId2.toString());
+
             // 🎨 Sor stílus újraalkalmazása
             LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 
+          //  QUuid currentId3 = _rowId.get(rowIx);
+          //  zInfo("rowIx:"+QString::number(rowIx)+ "currentId3:"+currentId3.toString());
             return;
-        }
-    }
+  //      }
+//    }
 
-    qWarning() << "⚠️ updateRow: Nem található sor azonosítóval:" << entry.entryId;
+  //  qWarning() << "⚠️ updateRow: Nem található sor azonosítóval:" << entry.entryId;
 }
 
 
 
-void LeftoverTableManager::appendRows(const QVector<LeftoverStockEntry>& newResults) {
-    if (!table)
-        return;
+// void LeftoverTableManager::appendRows(const QVector<LeftoverStockEntry>& newResults) {
+//     if (!table)
+//         return;
 
-    for (const auto& e : newResults)
-        addRow(e);
-}
+//     for (const auto& e : newResults)
+//         addRow(e);
+// }
 
-void LeftoverTableManager::removeRowById(const QUuid& id) {
-    for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
 
-        QUuid currentId = _rowId.get(rowIx);
-        if (currentId == id) {
-            table->removeRow(rowIx);
-            return;
-        }
-    }
 
-    qWarning() << "❌ Nem található sor ezzel az entryId-vel:" << id;
-}
-
-void LeftoverTableManager::clear() {
-    table->clearContents();
-    table->setRowCount(0);
-}
+// void LeftoverTableManager::clear() {
+//     table->clearContents();
+//     table->setRowCount(0);
+// }
 
 void LeftoverTableManager::refresh_TableFromRegistry() {
     if (!table)
         return;
 
+    // 🧹 Tábla törlése
     TableUtils::clearSafely(table);
+    _rows.clear();
 
     const auto& stockEntries = LeftoverStockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();
@@ -228,4 +238,12 @@ void LeftoverTableManager::refresh_TableFromRegistry() {
 }
 
 
-
+void LeftoverTableManager::removeRowById(const QUuid& id) {
+    if (auto rowIxOpt = _rows.rowOf(id)) {
+        int rowIx = *rowIxOpt;
+        table->removeRow(rowIx);
+        _rows.unregisterRowByIndex(rowIx);
+        _rows.syncAfterRemove(rowIx);
+        return;
+    }
+}
