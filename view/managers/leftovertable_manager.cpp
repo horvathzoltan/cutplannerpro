@@ -123,14 +123,14 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
     int rowIx = rowIxOpt.value();
 
 
-    zInfo("LeftoverTableManager::updateRow id:"+entry.entryId.toString());
+    //zInfo("LeftoverTableManager::updateRow id:"+entry.entryId.toString());
     //for (int rowIx = 0; rowIx < table->rowCount(); ++rowIx) {
       //  QUuid currentId = _rowId.get(rowIx);
 
         //zInfo("rowIx:"+QString::number(rowIx)+ "rowid:"+currentId.toString());
         //if (currentId == entry.entryId) {
 
-            zInfo("updaterow ok");
+      //      zInfo("updaterow ok");
 
             const MaterialMaster* mat = entry.master();
             if(!mat) return;
