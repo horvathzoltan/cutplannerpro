@@ -25,38 +25,41 @@ RodStepResult RodLoopEngine::step(
 
 
     model.rodLoopIteration++;
-    //zInfo(QString("rodLoop iteration #%1").arg(model.rodLoopIteration));
+    zInfo(QString("🔍 RÚD‑LOOP ITERÁCIÓ #%1 — rodId=%2, remaining=%3 mm, dpLimit=%4 mm, pending=%5, kerf=%6")
+              .arg(model.rodLoopIteration)
+              .arg(rod.rodId)
+              .arg(remainingLength)
+              .arg(remainingLength2)
+              .arg(groupVec.size())
+              .arg(kerf_mm));
 
     FitEngine::FitResult fr =
         FitEngine::findBestFit(groupVec, remainingLength2, kerf_mm);
 
-    zInfo(QString("rodLoop iteration #%1 → limit=%2")
-              .arg(model.rodLoopIteration)
-              .arg(remainingLength2));
+    zInfo(QString("🔎 FitEngine hívás — dpLimit=%1 mm, pending=%2")
+              .arg(remainingLength2)
+              .arg(groupVec.size()));
 
-    // zInfo(QString("rodLoop iteration #%1 → bestFit → strategy=%2, picks=%3, waste=%4, limit=%5")
-    //           .arg(model.rodLoopIteration)
-    //           .arg(static_cast<int>(fr.strategy))
-    //           .arg(fr.pieceCount)
-    //           .arg(fr.waste)
-    //           .arg(remainingLength2));
 
     model._fitTelemetry.accumulate(fr);
 
-    zInfo(QString("    strategy=%1, picks=%2, waste=%3")
+    zInfo(QString("   • FitEngine eredmény — strategy=%1, picks=%2, waste=%3, rodId=%4")
               .arg(fr.strategyString())
               .arg(fr.pieceCount)
-              .arg(fr.waste));
+              .arg(fr.waste)
+              .arg(rod.rodId));
 
     _aff_limits.append(remainingLength2);
     _aff_results.append(fr.pieceCount);
 
     if (fr.combo.isEmpty()){
-            zInfo("    result: FAILED");
+        zInfo("   ✖ Nincs több vágható darab — rúd lezárása");
         return RodStepResult::StopRod;
     }
 
-    zInfo("    result: SUCCESS");
+    zInfo(QString("   ✔ Combo sikeres — %1 darab kiválasztva, used=%2 mm")
+              .arg(fr.pieceCount)
+              .arg(fr.used));
 
     const QVector<Cutting::Piece::PieceWithMaterial>& combo = fr.combo;
 
@@ -67,6 +70,7 @@ RodStepResult RodLoopEngine::step(
 
     if (cr.status == CutResultStatus::Overfill)
     {
+        zInfo("   ⚠ Overfill — single‑piece fallback vizsgálata");
         std::optional<Cutting::Piece::PieceWithMaterial> single =
             OptimizerUtils::findSingleBestPiece(groupVec, remainingLength2, kerf_mm);
         if (single.has_value()) {
@@ -89,18 +93,18 @@ RodStepResult RodLoopEngine::step(
         remainingLength  = 0;
         remainingLength2 = 0;
 
-        zInfo("rodLoop result: STOP (overfill)");
+        zInfo("⛔ ROD-STEP — rúd lezárva (túlvágás elleni védelem aktiválva)");
         return RodStepResult::StopRod;
     }
 
     if (remainingLength < OptimizerConstants::SELEJT_THRESHOLD) {
-        zInfo("rodLoop result: STOP (below SELEJT_THRESHOLD)");
+        zInfo("⛔ ROD-STEP — Rúd lezárva — leftover köszöbérték alatti tartomány");
         return RodStepResult::StopRod;
     }
 
     if (remainingLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
         remainingLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
-        zInfo("rodLoop result: STOP (good leftover range)");
+        zInfo("⛔ ROD-STEP — rúd lezárva (jó leftover tartomány, fizikai hulló képződik)");
         return RodStepResult::StopRod;
     }
 
@@ -123,10 +127,10 @@ RodStepResult RodLoopEngine::step(
             int newRemaining = remainingLength;
 
             if (newRemaining < OptimizerConstants::SELEJT_THRESHOLD) {
-                zInfo("rodLoop result: START_NEW_ROD");
+                zInfo("⏭ ROD-STEP — új rúd indítása (aktuális rúd nem vágható tovább)");
                 return RodStepResult::StartNewRod;
             } else {
-                zInfo("rodLoop result: STOP (after single cut)");
+                zInfo("⛔ ROD-STEP — rúd lezárva (single cut, nincs további darab)");
                 return RodStepResult::StopRod;
             }
         }
@@ -141,7 +145,7 @@ RodStepResult RodLoopEngine::step(
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             Q_UNUSED(cr4);
-            zInfo("rodLoop result: CONTINUE_SAME_ROD");
+            zInfo("➡ ROD-STEP — folytatás ugyanazzal a rúddal (van még vágható darab)");
             return RodStepResult::ContinueSameRod;
         }
         return RodStepResult::StopRod;
@@ -151,10 +155,12 @@ RodStepResult RodLoopEngine::step(
     for (int v : _aff_limits)  limitsStr << QString::number(v);
     for (int v : _aff_results) resultsStr << QString::number(v);
 
-    zInfo(QString("🧩 FitEngine::findBestFit attempts=%1 limits=%2 results=%3")
+    zInfo(QString("📊 Iteráció összegzés — attempts=%1, limits=[%2], results=[%3], rodId=%4")
               .arg(_aff_limits.size())
               .arg(limitsStr.join(","))
-              .arg(resultsStr.join(",")));
+              .arg(resultsStr.join(","))
+              .arg(rod.rodId));
+
 
 
     return RodStepResult::StopRod;

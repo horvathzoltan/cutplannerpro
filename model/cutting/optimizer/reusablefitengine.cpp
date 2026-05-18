@@ -20,9 +20,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     const MaterialMaster* mat = MaterialRegistry::instance().findById(materialId);
     QString mat1 = mat ? mat->name +":"+mat->barcode : materialId.toString();
 
-
-
-    zInfo("findBestReusableFit: "+mat1);
+    zInfo(QString("🔍 HULLÓ KERESÉSE — anyag=%1").arg(mat1));
 
     if(pieces.size()>0){
         zInfo("pieces:");
@@ -106,13 +104,21 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
 
-        zInfo(QString("LEFTOVER LOOP: #%1 → loength_limit=%2")
-                  .arg(i)
-                  .arg(stock.availableLength_mm));
+        zInfo(QString("🔎 Vizsgálat: leftover[%1] — hossz=%2 mm").arg(i).arg(stock.availableLength_mm));
 
-        if (stock.used) continue;
-        if (!groupedMaterialIds.contains(stock.materialId)) continue;
-        if (usedLeftoverEntryIds.contains(stock.entryId)) continue; // ezt a hullót már elhasználtuk
+        if (stock.used) {
+            zInfo("   ✖ Elutasítva — már felhasznált leftover");
+            continue;
+        }
+        if (!groupedMaterialIds.contains(stock.materialId)) {
+            zInfo("   ✖ Elutasítva — rossz anyagcsoport");
+            continue;
+        }
+        if (usedLeftoverEntryIds.contains(stock.entryId)) {
+            zInfo("   ✖ Elutasítva — már tiltott leftover");
+            continue;
+        }
+
 
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
         const auto single = OptimizerUtils::findSingleExactFit(relevantPieces, stock.availableLength_mm, kerf_mm);
@@ -141,7 +147,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
 
-        zInfo("    result: SUCCESS");
+        zInfo("   ✔ Találat — combo sikeres");
         // 🔍 LOG: FitEngine combo tartalma
         zInfo("    combo:");
         for (const auto& cp : fit.combo) {
@@ -171,7 +177,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength);
 
         if (score > bestScore) {
-                zInfo("    → new BEST reusable candidate selected");
+            zInfo("   ➡ Új legjobb jelölt kiválasztva");
 
             bestScore = score;
             ReusableCandidate cand;
@@ -194,7 +200,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
 
     }
 
-    zInfo("LEFTOVER LOOP EXITED");
+    zInfo("📊 HULLÓ KERESÉS LEZÁRVA");
 
     // QStringList limitsStr, resultsStr;
     // for (int v : _aff_limits)  limitsStr << QString::number(v);

@@ -13,6 +13,11 @@ CutResult CutEngine::cutSingle(
     double kerf_mm,
     int& planCounter)
 {
+    zInfo(QString("🔍 CUT SINGLE — piece=%1 mm, remaining=%2 mm, rodId=%3")
+              .arg(piece.info.length_mm)
+              .arg(remainingLength)
+              .arg(rod.rodId));
+
     CutResult cr;
     cr.status = CutResultStatus::Unknown;
     cr.planId = QUuid();
@@ -22,6 +27,9 @@ CutResult CutEngine::cutSingle(
     int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
 
     if (used > remainingLength) {
+        zInfo(QString("✖ CUT SINGLE — túlvágás történt (used=%1 > remaining=%2)")
+                  .arg(used)
+                  .arg(remainingLength));
         cr.status = CutResultStatus::Overfill;
         return cr;
     }
@@ -72,6 +80,10 @@ CutResult CutEngine::cutSingle(
     cr.result = result;
     cr.usedPieceIds = { piece.info.pieceId };
 
+    zInfo(QString("🎯 CUT SINGLE — OK (used=%1, waste=%2, rodId=%3)")
+              .arg(cr.used)
+              .arg(cr.waste)
+              .arg(rod.rodId));
     return cr;
 }
 
@@ -85,6 +97,12 @@ CutResult CutEngine::cutCombo(
     double kerf_mm,
     int& planCounter)
 {
+    zInfo(QString("🔍 CUT COMBO — pieces=%1, remaining=%2 mm, rodId=%3")
+              .arg(combo.size())
+              .arg(remainingLength)
+              .arg(rod.rodId));
+
+
     CutResult cr;
     cr.status = CutResultStatus::Unknown;
     cr.used = 0;
@@ -95,6 +113,9 @@ CutResult CutEngine::cutCombo(
     int used      = totalCut + kerfTotal;
 
     if (used > remainingLength) {
+        zInfo(QString("✖ CUT COMBO — túlvágás történt (used=%1 > remaining=%2)")
+                  .arg(used)
+                  .arg(remainingLength));
         cr.status = CutResultStatus::Overfill;
         return cr;
     }
@@ -148,6 +169,11 @@ CutResult CutEngine::cutCombo(
     for (auto& pc : combo)
         cr.usedPieceIds.append(pc.info.pieceId);
 
+    zInfo(QString("🎯 CUT COMBO — OK (pieces=%1, used=%2, waste=%3, rodId=%4)")
+              .arg(combo.size())
+              .arg(cr.used)
+              .arg(cr.waste)
+              .arg(rod.rodId));
     return cr;
 }
 

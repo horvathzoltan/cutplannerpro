@@ -119,21 +119,52 @@ findSingleBestPiece(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                     int lengthLimit,
                     double kerf_mm)
 {
+
+    zInfo(QString("🔍 SingleCut keresés indult — candidates=%1, limit=%2 mm, kerf=%.2f")
+              .arg(available.size())
+              .arg(lengthLimit)
+              .arg(kerf_mm));
+
     std::optional<Cutting::Piece::PieceWithMaterial> best;
     int bestScore = std::numeric_limits<int>::min();
 
     for (const auto& piece : available) {
         int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
-        if (used > lengthLimit) continue;
+        if (used > lengthLimit){
+            zInfo(QString("   ✖ Elutasítva: piece=%1 mm — used=%2 > limit=%3")
+                      .arg(piece.info.length_mm)
+                      .arg(used)
+                      .arg(lengthLimit));
+            continue;
+        }
 
         int waste = OptimizerUtils::computeWasteInt(lengthLimit, used);
         int leftoverLength = lengthLimit - used;
         int score = OptimizerUtils::calcScore(1, waste, leftoverLength);
 
+        zInfo(QString("   • Vizsgálat: piece=%1 mm → used=%2, waste=%3, leftover=%4, score=%5")
+                  .arg(piece.info.length_mm)
+                  .arg(used)
+                  .arg(waste)
+                  .arg(leftoverLength)
+                  .arg(score));
+
         if (score > bestScore) {
             bestScore = score;
             best = piece;
+            zInfo(QString("     ✔ Új legjobb jelölt: piece=%1 mm (score=%2)")
+                      .arg(piece.info.length_mm)
+                      .arg(score));
         }
+
+        if (best.has_value()) {
+            zInfo(QString("🎯 SingleCut találat — bestPiece=%1 mm, bestScore=%2")
+                      .arg(best->info.length_mm)
+                      .arg(bestScore));
+        } else {
+            zInfo("♻️ SingleCut — nincs egyetlen darab sem, ami beleférne");
+        }
+
     }
     return best;
 }
@@ -154,12 +185,28 @@ findSingleExactFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                    int lengthLimit,
                    double kerf_mm)
 {
-    for (const auto& piece : available) {
+    zInfo(QString("🔍 SingleExactFit — keresés indítása (n=%1, limit=%2 mm, kerf=%3)")
+              .arg(available.size())
+              .arg(lengthLimit)
+              .arg(kerf_mm));
+
+    for (const auto& piece : available)
+    {
         int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
-        if (used == lengthLimit) {
+        zInfo(QString("   • Vizsgálat: piece=%1 mm (kerf-fel=%2 mm)")
+                  .arg(piece.info.length_mm)
+                  .arg(used));
+        if (used == lengthLimit)
+        {
+            zInfo(QString("🎯 SingleExactFit — pontos illeszkedés: %1 mm (used=%2)")
+                      .arg(piece.info.length_mm)
+                      .arg(used));
             return piece; // pontos illeszkedés
         }
+        zInfo("     ✖ Nem pontos illeszkedés");
     }
+
+    zInfo("❌ SingleExactFit — nincs pontos illeszkedés");
     return std::nullopt;
 }
 

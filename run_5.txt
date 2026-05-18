@@ -1,0 +1,212 @@
+Oké, nézzük végig Rod‑J életútját, lépésről lépésre, számokkal, hogy
+minden a helyére kerüljön.
+
+------------------------------------------------------------------------
+
+1. Rod‑J kiválasztása a készletből
+
+-   Stock scan: a szokásos kör: STOCK[0]–STOCK[14] rossz anyagcsoport,
+    STOCK[15] jó.
+    Részlet:
+    ✔ TALÁLAT: STOCK[15] → új rúd kiválasztva (rodId=Rod-J, barcode=MAT-P-607, length=6000)
+
+-   Állapot:
+
+    -   rodId = Rod‑J
+    -   barcode = MAT-P-607
+    -   hossz = 6000 mm
+    -   reusable = 0 (friss stock rúd)
+
+------------------------------------------------------------------------
+
+2. Rúd‑loop #9 – az első vágáskombó (3610 + nagy hulladék)
+
+2.1 FitEngine hívás
+
+-   Iteráció:
+    RÚD‑LOOP ITERÁCIÓ #9 — rodId=Rod-J, remaining=6000 mm, dpLimit=5900 mm, pending=2, kerf=3.2
+
+-   FitEngine eredmény:
+    FitEngine találat — BRUTE_FORCE (picks=1, used=3610, waste=2290, evaluated=2, skipped=1)
+
+    Itt két fontos szám van:
+
+    -   dpLimit = 5900 mm → a DP/BruteForce “logikai” limitje (6000‑ból
+        100 mm technikai tartalék levonva).
+    -   dpWaste = 2290 mm → 5900 − 3610 = 2290 (ez a FitEngine “waste”
+        mezője).
+
+2.2 Fizikai vágás és waste
+
+-   CUT COMBO log:
+    CUT COMBO — OK (pieces=1, used=3610, waste=2390, rodId=Rod-J)
+
+    Itt már fizikai waste szerepel:
+
+    -   rúd hossza: 6000
+    -   felhasznált: 3610
+    -   maradék: 6000 − 3610 = 2390 mm → ezt írja “waste”-nek a CUT
+        COMBO.
+
+-   Commit:
+    COMMIT CUT RESULT — rodId=Rod-J, used=3610, waste=2390
+    COMMIT — ... remaining=2390 mm, dpLimit=2305 mm
+
+    Tehát:
+
+    -   remaining = 2390 mm (fizikai maradék a rúdban)
+    -   dpLimit = 2305 mm → a következő FitEngine hívás már erre a
+        maradékra számol (2390‑ből újabb technikai/kerf tartalék
+        levonva).
+
+------------------------------------------------------------------------
+
+3. CUT SINGLE – a 2350 mm-es darab és a 40 mm-es maradék
+
+Miután az első kombó csak a 3610‑es darabot vágta ki, maradt még egy
+2350‑es pending darab.
+
+-   Single cut:
+    CUT SINGLE — piece=2350 mm, remaining=2390 mm, rodId=Rod-J
+    CUT SINGLE — OK (used=2350, waste=40, rodId=Rod-J)
+
+    Számok:
+
+    -   induló remaining: 2390 mm
+    -   kivágott darab: 2350 mm
+    -   új remaining: 2390 − 2350 = 40 mm
+    -   ezt a log waste=40‑ként jelöli ennél a commitnél.
+
+-   Commit:
+    COMMIT CUT RESULT — rodId=Rod-J, used=2350, waste=40
+    COMMIT — ... remaining=40 mm, dpLimit=0 mm
+
+    Tehát a rúd állapota:
+
+    -   kivágott darabok: 3610 mm + 2350 mm = 5960 mm
+    -   maradék: 40 mm
+    -   dpLimit = 0 → nincs értelmes további kombináció.
+
+------------------------------------------------------------------------
+
+4. Rúd‑loop #10 – lezárás, nincs több vágható darab
+
+-   Iteráció:
+    RÚD‑LOOP ITERÁCIÓ #10 — rodId=Rod-J, remaining=40 mm, dpLimit=0 mm, pending=0, kerf=3.2
+
+-   FitEngine:
+    FitEngine találat — üres combo (strategy=Greedy, used=0, waste=0)
+    ✖ Nincs több vágható darab — rúd lezárása
+
+    Itt már nincs pending darab, a rúd lezáródik.
+
+------------------------------------------------------------------------
+
+5. Fizikai hulló vizsgálat – a 40 mm-es maradék sorsa
+
+-   Physical leftover check:
+    FIZIKAI HULLÓ KERESÉSE — remaining=40 mm
+    ✖ Fizikai hulló nem hozható létre — corrected=-60 mm
+
+    Ez a sor a fizikai, újrahasznosítható hulló létrehozásáról szól.
+    A “corrected” érték azt mutatja, hogy ha levonod a technikai front
+    trimet, kerfet stb., a hasznosítható tartomány negatívba megy (−60
+    mm), tehát:
+
+    -   nem jön létre RST-P típusú fizikai leftover a 40 mm‑ből,
+    -   ez gyakorlatilag “túl kicsi, nem érdemes tárolni” kategória.
+
+------------------------------------------------------------------------
+
+6. Front trim fázis – Rod‑J terveinek utólagos módosítása
+
+A teljes optimalizáció után jön a FRONT TRIM passz, ami minden stock‑rúd
+CutPlanjét utólag korrigálja:
+
+-   Rod‑J első planId:
+    FRONT TRIM — planId={97e2bd1e-6c1c-46cb-80a2-884e6573e540}, isStock=1
+    FRONT TRIM — waste rövidítve delta=18.2 mm
+    technikai és kerf szegmens beszúrva (trim=15 mm, kerf=3.2 mm)
+
+-   Rod‑J második planId:
+    FRONT TRIM — planId={326843f2-2467-4a5b-9165-38c022425127}, isStock=1
+    FRONT TRIM — waste rövidítve delta=18.2 mm
+    technikai és kerf szegmens beszúrva (trim=15 mm, kerf=3.2 mm)
+
+Ez azt jelenti:
+
+-   Mindkét Rod‑J‑hez tartozó CutPlan elején:
+    -   beszúrsz egy 15 mm front trim szegmenst,
+    -   és egy 3.2 mm kerf szegmenst,
+    -   a waste mezőt pedig csökkented ~18.2 mm‑rel (logikailag, a belső
+        reprezentációban).
+
+A végső, UI‑ban látható “Waste” értékek ezért nem egyeznek a nyers
+COMMIT waste‑számokkal, mert a front trim passz utólag rövidíti a
+hulladék szegmenst.
+
+------------------------------------------------------------------------
+
+7. Végső CutPlan összefoglaló – Rod‑J két sorban
+
+A log végén a CutPlan összefoglalóban Rod‑J így jelenik meg:
+
+  Rod-J  segments: 1444. 3610 mm, Hulladék: 2390 mm
+  Rod-J  segments: 1445. 2350 mm, Hulladék: 40 mm
+
+Ez a logikai (pre‑front‑trim) waste értékeket mutatja, de már két külön
+CutPlan‑ként:
+
+-   Első Rod‑J plan:
+    -   darab: 1444. 3610 mm
+    -   waste (nyers): 2390 mm
+-   Második Rod‑J plan:
+    -   darab: 1445. 2350 mm
+    -   waste (nyers): 40 mm
+
+A front trim passz után mindkettő waste‑je 18.2 mm‑rel kisebb lesz a
+belső modellben, és a vizuális táblában már ezek a korrigált értékek
+jelennek meg.
+
+------------------------------------------------------------------------
+
+8. Leftover konverzió – Rod‑J hulladékai mint “LEFTOVER”
+
+A legvégén:
+
+  CONVERT RESULT → LEFTOVER: material=NaphálóTok [NP-T-7016], waste=2390
+  CONVERT RESULT → LEFTOVER: material=NaphálóTok [NP-T-7016], waste=40
+
+Ez a lépés nem a fizikai RST-P hullók létrehozása, hanem a vágási terv
+eredményének átkonvertálása “LEFTOVER” entitásokká (pl. RST‑B‑266,
+RST‑B‑267).
+A 40 mm‑es darab tehát:
+
+-   nem lett fizikai, újrahasznosítható leftover (RST-P)
+-   igen, megjelenik mint logikai leftover a végeredményben (RST‑B‑267,
+    hulladék: 40 mm).
+
+------------------------------------------------------------------------
+
+9. Fizikai realitás ellenőrzése – miért nem lehetett egy kombóban 3610 + 2350?
+
+Gyors sanity check:
+
+-   3610 + 2350 = 5960 mm
+-   ha ehhez hozzászámolod a vágások kerfjét (legalább 1 vágás: 3.2 mm),
+    akkor:
+    -   5960 + 3.2 = 5963.2 mm > 6000 mm
+
+Tehát fizikailag nem fér el egy rúdba a 3610 + 2350 egyetlen kombóban a
+kerffel együtt, ezért teljesen korrekt, hogy:
+
+1.  először csak a 3610‑es darab kerül a kombóba,
+2.  utána külön CUT SINGLE vágással jön a 2350‑es darab,
+3.  és így lesz két külön Rod‑J plan.
+
+------------------------------------------------------------------------
+
+Ha szeretnéd, a következő körben szét tudjuk szedni konkrétan a UI‑ban
+látott két Rod‑J sort (kerf=0, nagy waste) és a front trim + kerf
+beszúrás hatását úgy, hogy pontosan megmutatjuk: melyik log sorból
+melyik vizuális szegmens jön.

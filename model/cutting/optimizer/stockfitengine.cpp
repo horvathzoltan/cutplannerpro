@@ -8,11 +8,43 @@ namespace Optimizer {
 
 bool StockFitEngine::_isVerbose = false;
 
+/*
+🧭 STOCK ROD KERESÉS — MIT CSINÁL EZ A FÜGGVÉNY?
+
+Ez a függvény megkeresi, hogy a STOCK készletből van‑e olyan rúd,
+amely:
+
+  ✔ az adott anyagcsoportba tartozik
+  ✔ van belőle készlet (quantity > 0)
+  ✔ és még nem fogyott el
+
+A keresés lépései:
+
+1️⃣ Végigmegyünk az összes stock tételen (stockInventory)
+2️⃣ Minden tételnél eldöntjük:
+      • anyagcsoport egyezik?      → ha nem: skipWrongGroup++
+      • quantity > 0?              → ha nem: skipZeroQty++
+      • ha mindkettő OK → TALÁLAT
+3️⃣ Az első megfelelő tételt kiválasztjuk:
+      • quantity--
+      • új rodId generálása
+      • új barcode generálása
+      • SelectedRod visszaadása
+4️⃣ Ha nem találtunk semmit:
+      • visszatérünk std::nullopt‑tal
+      • és logoljuk a keresés összegzését
+
+Röviden:
+Ez a “stock‑vadász”, amely megmondja,
+hogy van‑e még használható gyári szál az adott anyaghoz.
+*/
+
 std::optional<SelectedRod> StockFitEngine::pickStockRod(
     QVector<StockEntry>& stockInventory,
     const QSet<QUuid>& groupIds,
     int& rodCounter)
 {
+    zInfo("🔍 STOCK RÚD KERESÉSE — keresés indítása");
     int skipWrongGroup = 0;
     int skipZeroQty = 0;
     int total = stockInventory.size();
@@ -22,14 +54,17 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
         StockEntry& stock = stockInventory[i];
 
         if (!groupIds.contains(stock.materialId)) {
+            zInfo(QString("   ✖ Elutasítva: STOCK[%1] — rossz anyagcsoport").arg(i));
             skipWrongGroup++;
             continue;
         }
         if (stock.quantity <= 0) {
+            zInfo(QString("   ✖ Elutasítva: STOCK[%1] — nincs készlet (qty=0)").arg(i));
             skipZeroQty++;
             continue;
         }
 
+        zInfo(QString("   ✔ Vizsgálat OK: STOCK[%1] — anyag és készlet rendben").arg(i));
         selectedIndex = i;
 
         stock.quantity--;
@@ -43,33 +78,32 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
         rod.barcode = IdentifierUtils::makeMaterialId(matId);
         rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
 
-        zInfo(QString("🆔 NEW STOCK ROD ID: %1 (counter=%2, rod_barcode=%3, length=%4)")
+        zInfo(QString("✔ TALÁLAT: STOCK[%1] → új rúd kiválasztva (rodId=%2, barcode=%3, length=%4)")
+                  .arg(i)
                   .arg(rod.rodId)
-                  .arg(rodCounter)
                   .arg(rod.barcode)
                   .arg(rod.length));
 
-        zInfo(QString("✅ STOCK[%1] SELECTED: material_barcode=%2, newQuantity=%3")
-                  .arg(i)
+        zInfo(QString("   → Készlet frissítve: material=%1, newQuantity=%2")
                   .arg(stock.materialBarcode())
                   .arg(stock.quantity));
 
         // AGGREGÁLT ÖSSZEFOGLALÓ
-        zInfo(QString(
-                   "🛠️ STOCK SCAN SUMMARY: total=%1, selected=1, skipWrongGroup=%2, skipZeroQty=%3")
-                   .arg(total)
-                   .arg(skipWrongGroup)
-                   .arg(skipZeroQty));
+        // zInfo(QString("📊 STOCK KERESÉS ÖSSZEGZÉS: total=%1, találat=0, skipWrongGroup=%2, skipZeroQty=%3")
+        //           .arg(total)
+        //           .arg(skipWrongGroup)
+        //           .arg(skipZeroQty));
+
 
         return rod;
     }
 
     // NEM TALÁLT SEMMIT → összegzés
-    zInfo(QString(
-               "🛠️ STOCK SCAN SUMMARY: total=%1, selected=0, skipWrongGroup=%2, skipZeroQty=%3")
-               .arg(total)
-               .arg(skipWrongGroup)
-               .arg(skipZeroQty));
+    zInfo(QString("📊 STOCK KERESÉS ÖSSZEGZÉS: total=%1, találat=0, skipWrongGroup=%2, skipZeroQty=%3")
+              .arg(total)
+              .arg(skipWrongGroup)
+              .arg(skipZeroQty));
+
 
     return std::nullopt;
 }

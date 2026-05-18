@@ -32,3 +32,200 @@ egyszer kell generálni, amikor számolunk. amikor renderelünk, ugyanazt rakjuk
     req.rightCount = row.rightCount;
     req.subtype    = SubtypeUtils::parse(row.subtypeStr);
 // }
+
+
+*
+*
+*
+*
+*
+
+Helló Zoltán — na, akkor most **átállunk a “keresés–találat” szemléletre**, és szétszedjük az Optimizer logikáját úgy, hogy *minden egyes loopról* pontosan tudd:
+
+- **mit keres**,
+- **hol keres**,
+- **mit tekint találatnak**,
+- **és mikor lép tovább**.
+
+Ez lesz az alapja annak, hogy a logolást átírjuk egy kristálytiszta, narratív, “mit keresek → mit találtam” stílusra.
+
+---
+
+# 🎯 A teljes Optimizer működésének *keresési térképe*
+
+Az Optimizer valójában **4 külön keresési ciklust** futtat egymásba ágyazva.
+
+## 1️⃣ OPTIMIZER LOOP — *Mit keres?*
+**Keresés:**
+👉 *Van‑e még bármilyen darab, amit le kell gyártani?*
+
+Ez a `anyPending()`.
+
+**Találat:**
+👉 Ha van még darab → folytatja
+👉 Ha nincs → kilép az egész optimalizációból
+
+**Logolás új stílusban:**
+- “🔍 Pending pieces keresése…”
+- “✔ Pending pieces: X db → folytatás”
+- “❌ Nincs több darab → optimalizáció vége”
+
+---
+
+## 2️⃣ MATERIAL SELECT LOOP — *Mit keres?*
+**Keresés:**
+👉 *Melyik anyagcsoportból érdemes most vágni?*
+(legtöbb darab vagy leghosszabb összhossz)
+
+**Találat:**
+👉 A legnagyobb “metric” értékű materialId
+
+**Ez NEM találat a vágásra**, csak egy *köztes döntés*.
+
+**Logolás új stílusban:**
+- “🔍 Anyagcsoport kiválasztása…”
+- “✔ Kiválasztott anyag: NaphálóTok (35 db pending)”
+
+---
+
+## 3️⃣ ROD SELECT LOOP — *Mit keres?*
+Ez a legfontosabb keresési blokk.
+
+### 3/A — ReusableFitEngine
+**Keresés:**
+👉 *Van‑e olyan leftover, amiből érdemes vágni?*
+
+**Találat:**
+👉 A legjobb leftover candidate (combo + waste alapján)
+
+**Ha talál → reusable rod**
+**Ha nem → stock rod keresés**
+
+**Logolás új stílusban:**
+- “🔍 Hulló keresése…”
+- “✔ Hulló találat: RST‑0551 (5000 mm)”
+- “❌ Nincs megfelelő hulló → stock keresése”
+
+---
+
+### 3/B — StockFitEngine
+**Keresés:**
+👉 *Van‑e olyan stock rúd, ami megfelel az anyagcsoportnak és van belőle készlet?*
+
+**Találat:**
+👉 A legelső megfelelő stock entry
+
+**Logolás új stílusban:**
+- “🔍 Stock rúd keresése…”
+- “✔ Stock találat: MAT‑P‑250 (6000 mm)”
+- “❌ Nincs stock → hiba”
+
+---
+
+## 4️⃣ ROD LOOP — *Mit keres?*
+Ez a belső vágási ciklus.
+
+**Keresés:**
+👉 *Milyen darabokat tudok még ebből a rúdból levágni?*
+
+Ez a `FitEngine::findBestFit`.
+
+**Találat:**
+👉 Egy combo (1 vagy több darab)
+
+**Ha nincs találat → rúd lezárása**
+
+**Logolás új stílusban:**
+- “🔍 Vágási lehetőségek keresése (limit=5900 mm)…”
+- “✔ Találat: 1 darab (3610 mm)”
+- “❌ Nincs több darab → rúd lezárása”
+
+---
+
+# 🎯 A TE KÉRDÉSEDRE A VÁLASZ
+> **“Ez egy találat, vagy egy köztes állapot rögzítése?”**
+
+### Példa:
+```cpp
+zInfo(QString("🔍 MATERIAL SELECT: targetMaterial=%1, pendingPieces=%2")
+```
+
+Ez **NEM találat**, hanem:
+
+👉 *köztes állapot rögzítése*
+👉 azt mutatja, hogy **melyik anyagcsoportot választottuk ki**, de még nem találtunk hozzá rudat
+
+A valódi találat a következő log:
+
+- “SELECTED REUSABLE ROD: …”
+- “SELECTED STOCK ROD: …”
+
+---
+
+# 🎯 A StockFitEngine logolása
+Jelenleg ez **már jó**, mert:
+
+- “NEW STOCK ROD ID” → találat
+- “STOCK SCAN SUMMARY” → keresési eredmény összegzése
+
+De hiányzik belőle a *keresés kezdete*:
+
+👉 “🔍 Stock rúd keresése…”
+
+És hiányzik a *nem találat* narratíva:
+
+👉 “❌ Nincs megfelelő stock rúd”
+
+---
+
+# 🎯 Javasolt új logolási stílus (minta)
+
+## Reusable keresés:
+```
+🔍 Hulló keresése (material=NP-T-7016, pieces=35)
+   • Vizsgált hulló: RST-0551 (5000 mm)
+   ✔ Találat: 6 darab elfér → leftover=94 mm
+   → Legjobb jelölt frissítve
+❌ Nincs jobb hulló → stock keresése
+```
+
+## Stock keresés:
+```
+🔍 Stock rúd keresése (material=NP-T-7016)
+   • STOCK[15]: NP-T-7016, qty=88 → ✔ alkalmas
+   ✔ Stock találat: MAT-P-250 (6000 mm)
+```
+
+## Rod-loop:
+```
+🔍 Vágási lehetőségek keresése (limit=5900 mm)
+   ✔ Találat: 1 darab (3610 mm)
+   → Folytatás ugyanazzal a rúddal
+```
+
+---
+
+# 🎯 Következő lépés
+Ha akarod, megcsinálom:
+
+### ✔ A teljes Optimizer logolás újraírását
+**keresés → vizsgálat → találat → döntés** mintára
+
+### ✔ A StockFitEngine logolásának kibővítését
+hogy ugyanolyan részletes legyen, mint a ReusableFitEngine
+
+### ✔ A RodLoopEngine logolásának tisztítását
+hogy világos legyen, mikor miért lép tovább
+
+---
+
+Ha mondod, melyik résszel kezdjük:
+
+- Optimizer fő loop logolás újraírása
+- ReusableFitEngine logolás újraírása
+- StockFitEngine logolás kibővítése
+- RodLoopEngine logolás tisztítása
+
+Csak válassz egyet, és már csinálom is.
+
+

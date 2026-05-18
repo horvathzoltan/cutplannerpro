@@ -69,19 +69,20 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     // 🔹 Csak globális snapshot készül – lokális pool külön marad
     QVector<LeftoverStockEntry> globalSnapshot = _inventorySnapshot.reusableInventory;
 
-    zInfo("=== INVENTORY SNAPSHOT — REUSABLE LEFTOVERS ===");
+    zInfo("📦 INVENTORY SNAPSHOT — újrahasznosítható hullók");
     for (const auto& e : _inventorySnapshot.reusableInventory) {
         const MaterialMaster* mat = MaterialRegistry::instance().findById(e.materialId);
         const StorageEntry* st = StorageRegistry::instance().findById(e.storageId);
 
-        zInfo(QString(" • barcode=%1 | len=%2 | materialId=%3 |  | storageId=%4 | source=%5")
+        zInfo(QString("   • Hulló: barcode=%1, hossz=%2 mm, anyag=%3, tároló=%4, forrás=%5")
                   .arg(e.barcode)
                   .arg(e.availableLength_mm)
-                  .arg(mat?mat->toDisplay():e.materialId.toString())
-                  .arg(st?st->name:"(?)")
+                  .arg(mat ? mat->toDisplay() : e.materialId.toString())
+                  .arg(st ? st->name : "ismeretlen")
                   .arg(e.sourceAsString()));
+
     }
-    zInfo("=== END SNAPSHOT ===");
+    zInfo("📘 SNAPSHOT — vége");
 
 
     QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial;
@@ -141,10 +142,45 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
     static int counter = 0;
 
-    zInfo("OPTIMIZER LOOP START");
+    zInfo("🔍 OPTIMALIZÁCIÓ INDÍTÁSA — pending darabok keresése");
     // 2. Optimalizációs ciklus
     while (anyPending()) {
-        zInfo("OPTIMIZER LOOP: #" + QString::number(counter));
+        zInfo(QString("🔎 OPTIMIZER LOOP #%1 — pending darabok vizsgálata").arg(counter));
+        // PATCH #15 — pending statisztika
+
+        int totalPending = 0;
+        int totalLength = 0;
+        QUuid maxMat;
+        int maxCount = 0;
+
+        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+            int count = it.value().size();
+            if (count == 0) continue;
+
+            int sumLen = OptimizerUtils::sumLengths(it.value());
+            totalPending += count;
+            totalLength += sumLen;
+
+            if (count > maxCount) {
+                maxCount = count;
+                maxMat = it.key();
+            }
+
+            const MaterialMaster* mm = MaterialRegistry::instance().findById(it.key());
+            zInfo(QString("   • Anyag=%1 → %2 db, összhossz=%3 mm")
+                      .arg(mm ? mm->toDisplay() : it.key().toString())
+                      .arg(count)
+                      .arg(sumLen));
+        }
+
+        const MaterialMaster* maxMatPtr = MaterialRegistry::instance().findById(maxMat);
+        zInfo(QString("📊 Pending összegzés — összes=%1 db, összhossz=%2 mm, legnagyobb anyagcsoport=%3 (%4 db)")
+                  .arg(totalPending)
+                  .arg(totalLength)
+                  .arg(maxMatPtr ? maxMatPtr->toDisplay() : maxMat.toString())
+                  .arg(maxCount));
+
+
         if (counter % 50 == 0) {            
             QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
             //QThread::msleep(1); // 10 ms szünet minden 100 iterációban, hogy ne blokkoljuk a UI-t
@@ -164,21 +200,46 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         }
 
         auto &groupVec = piecesByMaterial[targetMaterialId];
-        if (groupVec.isEmpty()) continue;
+        if (groupVec.isEmpty()) {
+            zInfo("✖ Nincs több darab ehhez az anyagcsoporthoz — továbblépés");
+            continue;
+        }
+        zInfo(QString("✔ Aktuális anyagcsoport pending: %1 db").arg(groupVec.size()));
+
 
         // 2/b. Gép kiválasztása
+
+        // PATCH #16 — MachineSelect logolás
+        const MaterialMaster* matForMachine = MaterialRegistry::instance().findById(targetMaterialId);
+        zInfo(QString("🔍 GÉP KERESÉSE — anyag=%1")
+                  .arg(matForMachine ? matForMachine->toDisplay() : targetMaterialId.toString()));
+
+
         auto machineOpt = MachineUtils::pickMachineForMaterial(targetMaterialId);
-        if (!machineOpt) { groupVec.removeFirst(); continue; }
+        if (!machineOpt) {
+                zInfo("✖ Nincs kompatibilis gép — pending darab eldobása");
+                groupVec.removeFirst();
+                continue;
+        }
         const CuttingMachine machine = *machineOpt;
 
+
+        zInfo(QString("✔ Kiválasztott gép: %1 (kerf=%2 mm, maxLen=%3)")
+                  .arg(machine.name)
+                  .arg(machine.kerf_mm)
+                  .arg(machine.stellerMaxLength_mm.has_value()
+                           ? QString::number(*machine.stellerMaxLength_mm)
+                           : "n/a"));
+
         const double kerf_mm = machine.kerf_mm;
+        zInfo(QString("   • Gép kerf érték: %1 mm").arg(kerf_mm));
 
         //2/c. Rúd kiválasztása
 
         const MaterialMaster* mat1 = MaterialRegistry::instance().findById(targetMaterialId);
 
-        zInfo(QString("🔍 MATERIAL SELECT: targetMaterial=%1, pendingPieces=%2")
-                  .arg(mat1?mat1->toDisplay():targetMaterialId.toString())
+        zInfo(QString("🔍 ANYAGCSOPORT KERESÉSE — jelölt: %1 (%2 db pending)")
+                  .arg(mat1 ? mat1->toDisplay() : targetMaterialId.toString())
                   .arg(groupVec.size()));
 
         QSet<QUuid> groupedMaterialIds = GroupUtils::groupMembers(targetMaterialId);
@@ -195,8 +256,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         }
 
-       zInfo(QString("🔍 GROUPED MATERIALS: %1")
-                  .arg(groupIdStrings.join(", ")));
+        zInfo(QString("✔ Kiválasztott anyagcsoport: %1").arg(groupIdStrings.join(", ")));
+
 
 
         SelectedRod rod;
@@ -212,6 +273,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         // ♻️ Először próbáljunk reusable-t
         // REUSEABLE ÁG
+
+        zInfo("🔍 RÚD KERESÉSE — először hulló, majd stock vizsgálata");
+
+
         std::optional<ReusableCandidate> candidate =
             ReusableFitEngine::findBestReusableFit(merged,globalSnapshot.size(),
                 groupVec,targetMaterialId, kerf_mm, _usedLeftoverEntryIds, *this);
@@ -380,12 +445,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         ++rodId; // új rúd
 
-        zInfo(QString("ROD LOOP START: rodId=%1, barcode=%2, length=%3, isReusable=%4, entryId=%5")
+        zInfo(QString("🔎 RÚD‑LOOP INDÍTÁSA — rodId=%1, barcode=%2, length=%3, reusable=%4")
                   .arg(rod.rodId)
                   .arg(rod.barcode)
                   .arg(rod.length)
-                  .arg(rod.isReusable)
-                  .arg(rod.entryId ? rod.entryId->toString() : "∅"));
+                  .arg(rod.isReusable));
+
 
         int rodloopcounter = 0;
         // 2/d. Rod‑loop stop feltételekkel
@@ -418,7 +483,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             }
         }// rod-loop vége
 
-        zInfo("ROD LOOP EXITED");
+        zInfo("➡ RÚD‑LOOP LEZÁRVA");
 
         createPhysicalLeftover(rod, remainingLength, currentOpId);
 
@@ -427,7 +492,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         QThread::msleep(1);
 
     }
-    zInfo("OPTIMIZER LOOP EXITED");
+    zInfo("🟢 OPTIMALIZÁCIÓ BEFEJEZVE — nincs több pending darab");
 
 
     // A lokális leftoverokat commitoljuk a globális készletbe
@@ -511,63 +576,61 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                                 ? double(t.greedy_totalPicks) / double(t.greedy)
                                 : 0.0;
 
-    zInfo("=== FitEngine Telemetry ===");
-    zInfo(QString("calls=%1").arg(t.calls));
-    zInfo(QString("fullFit=%1").arg(t.fullFit));
-    zInfo(QString("bruteForce=%1").arg(t.bruteForce));
-    zInfo(QString("dpPlain=%1").arg(t.dpPlain));
-    zInfo(QString("dpScoring=%1").arg(t.dpScoring));
-    zInfo(QString("greedy=%1").arg(t.greedy));
+    zInfo("📊 OPTIMALIZÁCIÓS TELEMETRIA — összegzés");
+    zInfo(QString("   • Hívások száma: %1").arg(t.calls));
+    zInfo(QString("   • FullFit: %1").arg(t.fullFit));
+    zInfo(QString("   • BruteForce: %1").arg(t.bruteForce));
+    zInfo(QString("   • DP (plain): %1").arg(t.dpPlain));
+    zInfo(QString("   • DP (scoring): %1").arg(t.dpScoring));
+    zInfo(QString("   • Greedy: %1").arg(t.greedy));
 
-    zInfo(QString("avgPicked=%1").arg(avgPicked, 0, 'f', 2));
-    zInfo(QString("avgWaste=%1").arg(avgWaste, 0, 'f', 2));
-    zInfo(QString("maxWaste=%1").arg(t.maxWaste));
-    zInfo(QString("minWaste=%1").arg(t.minWaste));
 
-    zInfo(QString("avgKerf=%1").arg(avgKerf, 0, 'f', 2));
-    zInfo(QString("avgKerfRatio=%1 %%").arg(avgKerfRatio, 0, 'f', 3));
+    zInfo(QString("   • Átlag pick count: %1").arg(avgPicked, 0, 'f', 2));
+    zInfo(QString("   • Átlag waste: %1 mm").arg(avgWaste, 0, 'f', 2));
+    zInfo(QString("   • Max waste: %1 mm").arg(t.maxWaste));
+    zInfo(QString("   • Min waste: %1 mm").arg(t.minWaste));
+    zInfo(QString("   • Átlag kerf: %1 mm").arg(avgKerf, 0, 'f', 2));
+    zInfo(QString("   • Kerf arány: %1 %%").arg(avgKerfRatio, 0, 'f', 3));
+    zInfo(QString("   • Átlag futási idő: %1 ms").arg(avgElapsed_ms, 0, 'f', 3));
+    zInfo(QString("   • Átlag BF idő: %1 ms").arg(avgBF_ms, 0, 'f', 3));
+    zInfo(QString("   • Átlag DP idő: %1 ms").arg(avgDP_ms, 0, 'f', 3));
+    zInfo(QString("   • Átlag Greedy idő: %1 ms").arg(avgGreedy_ms, 0, 'f', 3));
 
-    zInfo(QString("avgElapsed_ms=%1").arg(avgElapsed_ms, 0, 'f', 3));
-    zInfo(QString("avgBF_ms=%1").arg(avgBF_ms, 0, 'f', 3));
-    zInfo(QString("avgDP_ms=%1").arg(avgDP_ms, 0, 'f', 3));
-    zInfo(QString("avgGreedy_ms=%1").arg(avgGreedy_ms, 0, 'f', 3));
 
-    zInfo(QString("bf_avgCombos=%1").arg(avgBFCombos, 0, 'f', 2));
-    zInfo(QString("bf_avgEvaluated=%1").arg(avgBFEvaluated, 0, 'f', 2));
-    zInfo(QString("bf_avgSkipped=%1").arg(avgBFSkipped, 0, 'f', 2));
+    zInfo(QString("   • BF átlag kombinációk: %1").arg(avgBFCombos, 0, 'f', 2));
+    zInfo(QString("   • BF átlag vizsgált: %1").arg(avgBFEvaluated, 0, 'f', 2));
+    zInfo(QString("   • BF átlag skip: %1").arg(avgBFSkipped, 0, 'f', 2));
+    zInfo(QString("   • DP átlag limit: %1").arg(avgDPLimit, 0, 'f', 2));
+    zInfo(QString("   • DP átlag filled cells: %1").arg(avgDPFilled, 0, 'f', 2));
+    zInfo(QString("   • DP átlag chain length: %1").arg(avgDPChain, 0, 'f', 2));
+    zInfo(QString("   • Greedy átlag rendezett elemszám: %1").arg(avgGreedySorted, 0, 'f', 2));
+    zInfo(QString("   • Greedy átlag picks: %1").arg(avgGreedyPicks, 0, 'f', 2));
 
-    zInfo(QString("dp_avgLimit=%1").arg(avgDPLimit, 0, 'f', 2));
-    zInfo(QString("dp_avgFilledCells=%1").arg(avgDPFilled, 0, 'f', 2));
-    zInfo(QString("dp_avgChainLength=%1").arg(avgDPChain, 0, 'f', 2));
-
-    zInfo(QString("greedy_avgSortedSize=%1").arg(avgGreedySorted, 0, 'f', 2));
-    zInfo(QString("greedy_avgPicks=%1").arg(avgGreedyPicks, 0, 'f', 2));
-    zInfo("===========================");
-
-    zEvent(QString("🟢 Optimize(%1) finished in %2 ms: rods=%3, pieces=%4")
-               .arg(currentOpId)
+    zInfo("📘 TELEMETRIA — vége");
+    zEvent(QString("🟢 OPTIMALIZÁCIÓ KÉSZ — idő=%1 ms, rudak=%2, darabok=%3")
                .arg(ms, 0, 'f', 0)
                .arg(rodCount)
                .arg(pieceCount));
 
+
 }
 
-void OptimizerModel::logCutState(const Cutting::Plan::CutPlan& p,
-                                 int remainingLengthBefore,
-                                 int remainingLengthAfter)
-{
-    zInfo(QString("CUT-STATE: rodId=%1, sourceBarcode=%2, totalLength=%3, "
-                  "pieces=%4, kerfTotal=%5, wasteField=%6, "
-                  "remainingBefore=%7, remainingAfter=%8")
-              .arg(p.rodId)
-              .arg(p.sourceBarcode)
-              .arg(p.totalLength)
-              .arg(p.piecesWithMaterial.size())
-              .arg(p.kerfTotal)
-              .arg(p.waste)
-              .arg(remainingLengthBefore)
-              .arg(remainingLengthAfter));
-}
+// void OptimizerModel::logCutState(const Cutting::Plan::CutPlan& p,
+//                                  int remainingLengthBefore,
+//                                  int remainingLengthAfter)
+// {
+//     zInfo(QString("CUT-STATE: rodId=%1, sourceBarcode=%2, totalLength=%3, "
+//                   "pieces=%4, kerfTotal=%5, wasteField=%6, "
+//                   "remainingBefore=%7, remainingAfter=%8")
+//               .arg(p.rodId)
+//               .arg(p.sourceBarcode)
+//               .arg(p.totalLength)
+//               .arg(p.piecesWithMaterial.size())
+//               .arg(p.kerfTotal)
+//               .arg(p.waste)
+//               .arg(remainingLengthBefore)
+//               .arg(remainingLengthAfter));
+// }
 
 
 CutResult OptimizerModel::commitCutResult(
@@ -578,12 +641,27 @@ CutResult OptimizerModel::commitCutResult(
     int currentOpId,
     QVector<Cutting::Piece::PieceWithMaterial>& groupVec, double kerf_mm)
 {
-    if (cr.status == CutResultStatus::Overfill)
+    zInfo(QString("🔍 COMMIT CUT RESULT — rodId=%1, used=%2, waste=%3")
+              .arg(rod.rodId)
+              .arg(cr.used)
+              .arg(cr.waste));
+
+
+    if (cr.status == CutResultStatus::Overfill){
+        zInfo("✖ COMMIT — overfill, nincs mentés");
         return cr;
+    }
+
+    zInfo(QString("🎯 COMMIT — plan mentve (planId=%1, pieces=%2)")
+              .arg(cr.plan.planId.toString())
+              .arg(cr.plan.piecesWithMaterial.size()));
 
     // 1️⃣ Result + Plan mentése
     _result_plans.append(cr.plan);
     _planned_leftovers.append(cr.result);
+
+    zInfo(QString("   • COMMIT — %1 darab eltávolítva a pending listából")
+              .arg(cr.usedPieceIds.size()));
 
     // 2️⃣ groupVec törlése
     for (auto id : cr.usedPieceIds) {
@@ -592,6 +670,8 @@ CutResult OptimizerModel::commitCutResult(
                            [&](const auto& c){ return c.info.pieceId == id; }),
             groupVec.end());
     }
+
+
 
     // 3️⃣ leftover lifecycle
     // if (!cr.result.isFinalWaste && cr.result.waste > 0) {
@@ -635,6 +715,10 @@ CutResult OptimizerModel::commitCutResult(
         if (remainingLength2 < 0)
             remainingLength2 = 0;
     }
+
+    zInfo(QString("➡ COMMIT — remaining=%1 mm, dpLimit=%2 mm")
+              .arg(remainingLength)
+              .arg(remainingLength2));
 
 
     return cr;
@@ -708,6 +792,10 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
                                           double kerf_mm,
                                           bool isStockRod)
 {
+    zInfo(QString("🔍 FRONT TRIM — planId=%1, isStock=%2")
+              .arg(planId.toString())
+              .arg(isStockRod));
+
     // Csak stock rúdra alkalmazzuk
     if (!isStockRod)
         return;
@@ -733,6 +821,10 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
             break;
         }
     }
+
+
+    zInfo(QString("🔎 FRONT TRIM — utolsó waste index=%1").arg(lastWasteIx));
+
     if (lastWasteIx < 0)
         return;
 
@@ -742,11 +834,18 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
     double delta = frontTrim + frontKerf;
 
     // Ha a végmaradék ennél kisebb, nem piszkáljuk (védőfék)
-    if (segs[lastWasteIx].length_mm() <= delta)
+    if (segs[lastWasteIx].length_mm() <= delta) {
+        zInfo(QString("✖ FRONT TRIM — waste túl kicsi (waste=%1 mm, delta=%2 mm)")
+                  .arg(segs[lastWasteIx].length_mm())
+                  .arg(delta));
         return;
+    }
 
     // 3️⃣ Végmaradék rövidítése
     segs[lastWasteIx].shrinkLength(delta);
+
+    zInfo(QString("🎯 FRONT TRIM — waste rövidítve delta=%1 mm").arg(delta));
+
 
     // 4️⃣ Elejére beszúrjuk: [Technical(15)] + [Kerf(frontKerf)]
     Cutting::Segment::SegmentModel frontTech(
@@ -762,6 +861,10 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
         /*ix*/ 0,
         QUuid(), QUuid(),""
         );
+
+    zInfo(QString("➡ FRONT TRIM — technikai és kerf szegmens beszúrva (trim=%1 mm, kerf=%2 mm)")
+              .arg(frontTrim)
+              .arg(frontKerf));
 
     segs.insert(0, frontKerfSeg);
     segs.insert(0, frontTech);
@@ -788,6 +891,8 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
         }
     }
 
+    zInfo("📊 FRONT TRIM — kész, indexek újraszámozva");
+
     // ⚖️ plan.waste, result.waste, leftover.availableLength_mm NEM változik
     // csak a waste szegmens eloszlását módosítottuk (eleje vs vége),
     // az össz‑hossz változatlan.
@@ -798,6 +903,7 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
                                  int remainingLength,
                                  int currentOpId)
 {
+    zInfo(QString("🔍 FIZIKAI HULLÓ KERESÉSE — remaining=%1 mm").arg(remainingLength));
     if (remainingLength <= 0)
         return;
 
@@ -807,8 +913,11 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
     int minHull  = OptimizerConstants::MINIMUM_HULLO_MM;   // 70 mm minimum hulló
 
     int corrected = remainingLength - frontTrim - backTrim - minHull;
-    if (corrected <= 0)
+    if (corrected <= 0) {
+        zInfo(QString("✖ Fizikai hulló nem hozható létre — corrected=%1 mm").arg(corrected));
         return;
+    }
+
 
     LeftoverStockEntry entry;
     entry.materialId = rod.materialId;
@@ -819,7 +928,7 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
     entry.source = Cutting::Result::LeftoverSource::Optimization;
     entry.optimizationId = std::make_optional(currentOpId);
 
-    zInfo(QString("CREATE PHYSICAL LEFTOVER: barcode=%1, length=%2, rodId=%3, parentBarcode=%4")
+    zInfo(QString("🎯 Fizikai hulló létrehozva — barcode=%1, length=%2 mm, rodId=%3, parent=%4")
               .arg(entry.barcode)
               .arg(entry.availableLength_mm)
               .arg(rod.rodId)

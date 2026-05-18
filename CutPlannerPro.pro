@@ -311,6 +311,7 @@ DISTFILES += \
     run_2.txt \
     run_3.txt \
     run_4.txt \
+    run_5.txt \
     run_Refaktor_terv_fokuszpontok \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \

@@ -153,7 +153,7 @@ private:
 private:
     QVector<LeftoverStockEntry> _localLeftovers;  // csak az aktuális optimize futás idejére
 
-    void logCutState(const Cutting::Plan::CutPlan &p, int remainingLengthBefore, int remainingLengthAfter);
+    //void logCutState(const Cutting::Plan::CutPlan &p, int remainingLengthBefore, int remainingLengthAfter);
 
     void createPhysicalLeftover(const SelectedRod& rod,
                      int remainingLength,

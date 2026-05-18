@@ -12,6 +12,11 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
                        int lengthLimit,
                        double kerf_mm)
 {
+    zInfo(QString("🔍 FitEngine — legjobb combo keresése (n=%1, limit=%2 mm, kerf=%3)")
+              .arg(available.size())
+              .arg(lengthLimit)
+              .arg(kerf_mm));
+
     FitResult fr;
     QElapsedTimer timer;
     timer.start();
@@ -27,6 +32,10 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
         fr.used       = 0;
         fr.waste      = lengthLimit;
         fr.elapsed_us = timer.nsecsElapsed() / 1000;
+        zInfo(QString("🎯 FitEngine találat — üres combo (strategy=%1, used=%2, waste=%3)")
+                  .arg(fr.strategyString())
+                  .arg(fr.used)
+                  .arg(fr.waste));
         return fr;
     }
 
@@ -41,12 +50,16 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
         fr.used       = totalRelevant + maxKerf;
         fr.waste      = lengthLimit - fr.used;
         fr.elapsed_us = timer.nsecsElapsed() / 1000;
+        zInfo(QString("🎯 FitEngine találat — FULL_FIT (picks=%1, used=%2, waste=%3)")
+                  .arg(fr.pieceCount)
+                  .arg(fr.used)
+                  .arg(fr.waste));
         return fr;
     }
 
     // 2) Ha n <= 20 → brute-force
     if (n <= 20) {
-        zInfo(QString("FitEngine::findBestFit strategy=BRUTE_FORCE n=%1 limit=%2 kerf=%3")
+        zInfo(QString("🔎 FitEngine keresés — stratégia=BRUTE_FORCE (n=%1, limit=%2, kerf=%3)")
                   .arg(n)
                   .arg(lengthLimit)
                   .arg(kerf_mm));
@@ -105,12 +118,18 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
         fr.bf_evaluated    = evaluated;
         fr.bf_skipped      = skipped;
         fr.elapsed_us      = timer.nsecsElapsed() / 1000;
+        zInfo(QString("🎯 FitEngine találat — BRUTE_FORCE (picks=%1, used=%2, waste=%3, evaluated=%4, skipped=%5)")
+                  .arg(fr.pieceCount)
+                  .arg(fr.used)
+                  .arg(fr.waste)
+                  .arg(fr.bf_evaluated)
+                  .arg(fr.bf_skipped));
         return fr;
     }
 
     // 3) DP fallback (nagy n, de kezelhető lengthLimit)
     if (lengthLimit <= 10000) {
-        zInfo(QString("FitEngine::findBestFit strategy=DP n=%1 limit=%2 kerf=%3")
+        zInfo(QString("🔎 FitEngine keresés — stratégia=DP (n=%1, limit=%2, kerf=%3)")
                   .arg(n)
                   .arg(lengthLimit)
                   .arg(kerf_mm));
@@ -174,6 +193,12 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
             fr.dp_filledCells  = filledCells;
             fr.dp_chainLength  = result.size();
             fr.elapsed_us      = timer.nsecsElapsed() / 1000;
+            zInfo(QString("🎯 FitEngine találat — DP_PLAIN (picks=%1, used=%2, waste=%3, dpLimit=%4, filled=%5)")
+                      .arg(fr.pieceCount)
+                      .arg(fr.used)
+                      .arg(fr.waste)
+                      .arg(fr.dpLimit)
+                      .arg(fr.dp_filledCells));
             return fr;
         }
 
@@ -214,6 +239,12 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
             fr.dp_filledCells  = filledCells;
             fr.dp_chainLength  = bestCombo.size();
             fr.elapsed_us      = timer.nsecsElapsed() / 1000;
+            zInfo(QString("🎯 FitEngine találat — DP_SCORING (picks=%1, used=%2, waste=%3, dpLimit=%4, filled=%5)")
+                      .arg(fr.pieceCount)
+                      .arg(fr.used)
+                      .arg(fr.waste)
+                      .arg(fr.dpLimit)
+                      .arg(fr.dp_filledCells));
             return fr;
         }
 
@@ -221,7 +252,7 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
     }
 
     // 4) Greedy fallback
-    zInfo(QString("FitEngine::findBestFit strategy=GREEDY n=%1 limit=%2 kerf=%3")
+    zInfo(QString("🔎 FitEngine keresés — stratégia=GREEDY (n=%1, limit=%2, kerf=%3)")
               .arg(n)
               .arg(lengthLimit)
               .arg(kerf_mm));
@@ -268,6 +299,13 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
     fr.greedy_sortedSize  = sorted.size();
     fr.greedy_picks       = greedy.size();
     fr.elapsed_us         = timer.nsecsElapsed() / 1000;
+
+    zInfo(QString("🎯 FitEngine találat — GREEDY (picks=%1, used=%2, waste=%3, sorted=%4)")
+              .arg(fr.pieceCount)
+              .arg(fr.used)
+              .arg(fr.waste)
+              .arg(fr.greedy_sortedSize));
+
     return fr;
 
 }
