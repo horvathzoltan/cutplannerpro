@@ -303,7 +303,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
                                        : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
 
         QString sizeStrTmp = sizeStrings[idxTmp++];
-        QString sizeFullTmp = QString("%1 mm").arg(sizeStrTmp);
+        QString sizeFullTmp = QString("%1 mm □").arg(sizeStrTmp);
 
         auto reqTmp = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabelTmp = reqTmp
@@ -359,7 +359,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
                                     : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
 
         QString sizeStr = sizeStrings[idx++];
-        QString sizeFull = QString("%1 mm").arg(sizeStr);
+        QString sizeFull = QString("%1 mm □").arg(sizeStr);
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabel = req

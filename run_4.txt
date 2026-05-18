@@ -1,3 +1,6 @@
+0: amikor a rod iteráció fut, akkor is legyen ugyanolyan log mint a leftover esetén
+a logika: keresés - találat
+
 1. ha egy tételszámon volt már anyag megrendelve, de mi 
 egy új futtatás alkalmával új requesteket vennénk fel a korábbi tételszámhoz,
 
@@ -8,10 +11,14 @@ static QString s_lastExternalRef;
 static QUuid s_lastMaterialId;
 static Subtype s_lastSubtype;
 
-1: a perzisztált requesteket olvasgatjuk vissza és abból keressük ki
-2: ezt beletesszük valamiféle cache-be, és onnan olvassuk ki
+a: a perzisztált requesteket olvasgatjuk vissza és abból keressük ki
+b: ezt beletesszük valamiféle cache-be, és onnan olvassuk ki
 
+2: formatMachineCutsEvent
+először kiszáémoljuk az oszlop szélességreket, mindet, keressük a maximumot, majd amikor ez megvan, mindent újra generálunk.
+egyszer kell generálni, amikor számolunk. amikor renderelünk, ugyanazt rakjuk ki. hibázás kizárva!
 
+3: ha az utasításban egy szálon azonos méretek vannakm kéne egy szám jobb oldalra, hogy mennyi
 
 // // V1 → handlerSide konverzió
 // if (!row.handlerSide.isEmpty()) {
