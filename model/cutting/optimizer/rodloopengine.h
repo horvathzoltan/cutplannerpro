@@ -21,7 +21,7 @@ public:
     static RodStepResult step(
         QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
         int& remainingLength,
-        int& remainingLength2,
+        int& dpLimit,
         const SelectedRod& rod,
         const CuttingMachine& machine,
         int currentOpId,

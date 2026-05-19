@@ -21,6 +21,7 @@ static inline LeftoverSource convertToLeftoverSource(ResultSource source) {
     }
 }
 
+static bool isVerbose = false;
 
 // 🔁 Több CutResult → reusable készlet
 static inline QVector<LeftoverStockEntry> toReusableEntries(const QVector<ResultModel>& input) {
@@ -32,11 +33,13 @@ static inline QVector<LeftoverStockEntry> toReusableEntries(const QVector<Result
         entry.availableLength_mm = res.waste;
         entry.source = convertToLeftoverSource(res.source);
 
-        const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
-        zInfo(QString("CONVERT RESULT → LEFTOVER: material=%1, waste=%2")
-                  .arg(mat?mat->toDisplay():res.materialId.toString())
-                  .arg(res.waste));
-
+        if(isVerbose)
+        {
+            const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
+            zInfo(QString("CONVERT RESULT → LEFTOVER: material=%1, waste=%2")
+                      .arg(mat?mat->toDisplay():res.materialId.toString())
+                      .arg(res.waste));
+        }
         result.append(entry);
     }
 
@@ -50,11 +53,13 @@ static inline LeftoverStockEntry toReusableEntry(const ResultModel& res) {
     entry.availableLength_mm = res.waste;
     entry.source = convertToLeftoverSource(res.source);;
 
-    const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
-    zInfo(QString("CONVERT RESULT → LEFTOVER (single): material=%1, waste=%2")
-              .arg(mat?mat->toDisplay():res.materialId.toString())
-              .arg(res.waste));
-
+    if(isVerbose)
+    {
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(res.materialId);
+        zInfo(QString("CONVERT RESULT → LEFTOVER (single): material=%1, waste=%2")
+                  .arg(mat?mat->toDisplay():res.materialId.toString())
+                  .arg(res.waste));
+    }
     return entry;
 }
 

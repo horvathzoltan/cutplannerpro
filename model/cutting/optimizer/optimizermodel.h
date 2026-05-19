@@ -107,8 +107,8 @@ public:
         _inventorySnapshot = snapshot;
     }
 
-    CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
-    CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &remainingLength2, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 
 
     void applyFrontTrimToPlan(const QUuid &planId, double kerf_mm, bool isStockRod);
@@ -159,7 +159,7 @@ private:
                      int remainingLength,
                      int currentOpId);
 
-    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &remainingLength2, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
+    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
 
 };
 

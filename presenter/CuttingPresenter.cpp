@@ -299,6 +299,8 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     // 1️⃣ Optimalizáció futtatása
     OptimizationRunner::run(model, heuristic);
     zInfo("⏹️ OptimizationRunner::run stopped");
+    // 5️⃣ Logolás
+    OptimizationLogger::logPlans(model.getResult_PlansRef(), model.getResults_Leftovers());
 
     // 2️⃣ Nézet frissítése
     if (view) {
@@ -313,8 +315,6 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
     //lastAuditRows = OptimizationAuditBuilder::build(model);
 
-    // 5️⃣ Logolás
-    OptimizationLogger::logPlans(model.getResult_PlansRef(), model.getResults_Leftovers());
 
     isModelSynced = false;
 }

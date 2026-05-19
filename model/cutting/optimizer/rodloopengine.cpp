@@ -8,10 +8,13 @@
 namespace Cutting {
 namespace Optimizer {
 
+// remainingLength  = fizikai maradék
+// dpLimit = DP-limit (csak ennyit használhat a FitEngine)
+
 RodStepResult RodLoopEngine::step(
     QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
     int& remainingLength,
-    int& remainingLength2,
+    int& dpLimit,
     const SelectedRod& rod,
     const CuttingMachine& machine,
     int currentOpId,
@@ -19,25 +22,26 @@ RodStepResult RodLoopEngine::step(
     double kerf_mm,
     OptimizerModel& model)
 {
-
     QVector<int> _aff_limits;
     QVector<int> _aff_results;
 
 
     model.rodLoopIteration++;
-    zInfo(QString("🔍 RÚD‑LOOP ITERÁCIÓ #%1 — rodId=%2, remaining=%3 mm, dpLimit=%4 mm, pending=%5, kerf=%6")
+    zInfo(QString("🔍 ROD-LOOP ITERÁCIÓ #%1 — rodId=%2, pending=%3, kerf=%4")
               .arg(model.rodLoopIteration)
               .arg(rod.rodId)
-              .arg(remainingLength)
-              .arg(remainingLength2)
               .arg(groupVec.size())
               .arg(kerf_mm));
 
+    zInfo(QString("🟦 ROD-LOOP LIMITS — remaining=%1, dpLimit=%2")
+              .arg(remainingLength)
+              .arg(dpLimit));
+
     FitEngine::FitResult fr =
-        FitEngine::findBestFit(groupVec, remainingLength2, kerf_mm);
+        FitEngine::findBestFit(groupVec, dpLimit, kerf_mm);
 
     zInfo(QString("🔎 FitEngine hívás — dpLimit=%1 mm, pending=%2")
-              .arg(remainingLength2)
+              .arg(dpLimit)
               .arg(groupVec.size()));
 
 
@@ -49,7 +53,7 @@ RodStepResult RodLoopEngine::step(
               .arg(fr.waste)
               .arg(rod.rodId));
 
-    _aff_limits.append(remainingLength2);
+    _aff_limits.append(dpLimit);
     _aff_results.append(fr.pieceCount);
 
     if (fr.combo.isEmpty()){
@@ -64,7 +68,7 @@ RodStepResult RodLoopEngine::step(
     const QVector<Cutting::Piece::PieceWithMaterial>& combo = fr.combo;
 
     CutResult cr = model.cutCombo_AndCommit(
-        combo, remainingLength, remainingLength2,
+        combo, remainingLength, dpLimit,
         rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
 
@@ -72,26 +76,26 @@ RodStepResult RodLoopEngine::step(
     {
         zInfo("   ⚠ Overfill — single‑piece fallback vizsgálata");
         std::optional<Cutting::Piece::PieceWithMaterial> single =
-            OptimizerUtils::findSingleBestPiece(groupVec, remainingLength2, kerf_mm);
+            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, kerf_mm);
         if (single.has_value()) {
             CutResult cr2 = model.cutSingle_AndCommit(
-                *single, remainingLength, remainingLength2,
+                *single, remainingLength, dpLimit,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             if (cr2.status == CutResultStatus::Overfill)
             {
                 remainingLength  = 0;
-                remainingLength2 = 0;
+                dpLimit = 0;
                 return RodStepResult::StopRod;
             }
 
             remainingLength  = 0;
-            remainingLength2 = 0;
+            dpLimit = 0;
             return RodStepResult::StopRod;
         }
 
         remainingLength  = 0;
-        remainingLength2 = 0;
+        dpLimit = 0;
 
         zInfo("⛔ ROD-STEP — rúd lezárva (túlvágás elleni védelem aktiválva)");
         return RodStepResult::StopRod;
@@ -117,7 +121,7 @@ RodStepResult RodLoopEngine::step(
             const Cutting::Piece::PieceWithMaterial& piece = *onePieceFit;
 
             CutResult cr3 = model.cutSingle_AndCommit(
-                piece, remainingLength, remainingLength2,
+                piece, remainingLength, dpLimit,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             if (cr3.status == CutResultStatus::Overfill) {
@@ -141,7 +145,7 @@ RodStepResult RodLoopEngine::step(
             OptimizerUtils::findSingleBestPiece(groupVec, remainingLength, kerf_mm);
         if (onePieceFit.has_value()) {
             CutResult cr4 = model.cutSingle_AndCommit(
-                *onePieceFit, remainingLength, remainingLength2,
+                *onePieceFit, remainingLength, dpLimit,
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             Q_UNUSED(cr4);

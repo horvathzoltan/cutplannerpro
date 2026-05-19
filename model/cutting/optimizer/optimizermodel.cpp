@@ -257,14 +257,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         }
 
         zInfo(QString("✔ Kiválasztott anyagcsoport: %1").arg(groupIdStrings.join(", ")));
-
-
-
         SelectedRod rod;
 
-
+        // fizikai rúd hossza (vágás után csökken)
         int remainingLength = 0;
-        int remainingLength2 = 0;
+        //  DP limit (ami a FitEngine számára engedélyezett maximum)
+        int dpLimit = 0;
         bool rodSelected = false;
 
         // Összefésült nézet készítése
@@ -367,7 +365,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             // [ 70 mm min. hulló ]
             // [ 15 mm gyári vég ]  ← ebből vesszük el a front trimet
 
-            remainingLength2 = rod.length
+            dpLimit = rod.length
                                - OptimizerConstants::END_TRIM_MM        // gyári vég
                                - OptimizerConstants::MINIMUM_HULLO_MM   // mechanikai minimum
                                - OptimizerUtils::roundKerfLoss(1, kerf_mm);
@@ -396,7 +394,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 rod = *stockRod;
 
                 remainingLength = rod.length;
-                remainingLength2 = rod.length
+                dpLimit = rod.length
                                    - OptimizerConstants::END_TRIM_MM        // front trim
                                    - OptimizerConstants::END_TRIM_MM        // gyári vég
                                    - OptimizerConstants::MINIMUM_HULLO_MM   // mechanikai minimum
@@ -404,10 +402,17 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
                 rodSelected = true;
 
-                zInfo(QString("SELECTED STOCK ROD: rodId=%1, barcode=%2, length=%3")
+                zInfo(QString("🟦 ROD SELECTED — rodId=%1, barcode=%2, length=%3, reusable=%4, entryId=%5")
                           .arg(rod.rodId)
                           .arg(rod.barcode)
-                          .arg(rod.length));
+                          .arg(rod.length)
+                          .arg(rod.isReusable)
+                          .arg(rod.entryId.has_value() ? rod.entryId->toString() : "—"));
+
+                zInfo(QString("🟦 ROD INITIAL LIMITS — remaining=%1, dpLimit=%2")
+                          .arg(remainingLength)
+                          .arg(dpLimit));
+
             } else {
                 zInfo("❌ No suitable stock rod found.");
             }
@@ -456,10 +461,11 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
             zInfo("ROD LOOP: #" + QString::number(rodloopcounter));
+
             RodStepResult stepResult = RodLoopEngine::step(
                 groupVec,
                 remainingLength,
-                remainingLength2,
+                dpLimit,
                 rod,
                 machine,
                 currentOpId,
@@ -636,7 +642,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 CutResult OptimizerModel::commitCutResult(
     const CutResult& cr,
     int& remainingLength,
-    int& remainingLength2,
+    int& dpLimit,
     const SelectedRod& rod,
     int currentOpId,
     QVector<Cutting::Piece::PieceWithMaterial>& groupVec, double kerf_mm)
@@ -696,6 +702,11 @@ CutResult OptimizerModel::commitCutResult(
     // remainingLength  -= cr.used;
     // remainingLength2 -= cr.used;
 
+
+    zInfo(QString("🟦 COMMIT BEFORE LIMITS — remaining=%1, dpLimit=%2")
+              .arg(remainingLength)
+              .arg(dpLimit));
+
     // 5️⃣ Fizikai maradék
     remainingLength -= cr.used;
     if (remainingLength < 0)
@@ -704,21 +715,21 @@ CutResult OptimizerModel::commitCutResult(
     // 6️⃣ DP-limit újraszámolása
     if (rod.isReusable) {
         // leftover továbbvágása → nincs új end-trim
-        remainingLength2 = remainingLength;
+        dpLimit = remainingLength;
     } else {
         // stock rúd → új end-trim + minimum hulló
-        remainingLength2 = remainingLength
+        dpLimit = remainingLength
                            - OptimizerConstants::END_TRIM_MM
                            - OptimizerConstants::MINIMUM_HULLO_MM
                            - OptimizerUtils::roundKerfLoss(1, kerf_mm);
 
-        if (remainingLength2 < 0)
-            remainingLength2 = 0;
+        if (dpLimit < 0)
+            dpLimit = 0;
     }
 
-    zInfo(QString("➡ COMMIT — remaining=%1 mm, dpLimit=%2 mm")
+    zInfo(QString("🟦 COMMIT AFTER LIMITS — remaining=%1, dpLimit=%2")
               .arg(remainingLength)
-              .arg(remainingLength2));
+              .arg(dpLimit));
 
 
     return cr;
@@ -728,7 +739,7 @@ CutResult OptimizerModel::commitCutResult(
 CutResult OptimizerModel::cutSingle_AndCommit(
     const Cutting::Piece::PieceWithMaterial& piece,
     int& remainingLength,
-    int& remainingLength2,
+    int& dpLimit,
     const SelectedRod& rod,
     const CuttingMachine& machine,
     int currentOpId,
@@ -750,13 +761,13 @@ CutResult OptimizerModel::cutSingle_AndCommit(
     // QString planTxt = cr.plan.toLogEntry(machine);
     // zEvent(planTxt);
 
-    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec, kerf_mm);
+    return commitCutResult(cr, remainingLength, dpLimit, rod, currentOpId, groupVec, kerf_mm);
 }
 
 CutResult OptimizerModel::cutCombo_AndCommit(
     const QVector<Cutting::Piece::PieceWithMaterial>& combo,
     int& remainingLength,
-    int& remainingLength2,
+    int& dpLimit,
     const SelectedRod& rod,
     const CuttingMachine& machine,
     int currentOpId,
@@ -778,7 +789,7 @@ CutResult OptimizerModel::cutCombo_AndCommit(
     // QString planTxt = cr.plan.toLogEntry(machine);
     // zEvent(planTxt);
 
-    return commitCutResult(cr, remainingLength, remainingLength2, rod, currentOpId, groupVec, kerf_mm);
+    return commitCutResult(cr, remainingLength, dpLimit, rod, currentOpId, groupVec, kerf_mm);
 }
 
 

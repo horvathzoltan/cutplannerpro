@@ -57,6 +57,9 @@ public:
             case Type::Kerf:
                 _barcode = "KERF";
                 break;
+            case Type::Technical:
+                _barcode = "TECH";
+                break;
             case Type::Waste:{
                 int wasteId = SettingsManager::instance().nextLeftoverCounter();
                 _barcode = IdentifierUtils::makeLeftoverId(wasteId);
