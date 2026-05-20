@@ -712,20 +712,22 @@ CutResult OptimizerModel::commitCutResult(
     if (remainingLength < 0)
         remainingLength = 0;
 
-    // 6️⃣ DP-limit újraszámolása
-    if (rod.isReusable) {
-        // leftover továbbvágása → nincs új end-trim
-        dpLimit = remainingLength;
-    } else {
-        // stock rúd → új end-trim + minimum hulló
-        dpLimit = remainingLength
-                           - OptimizerConstants::END_TRIM_MM
-                           - OptimizerConstants::MINIMUM_HULLO_MM
-                           - OptimizerUtils::roundKerfLoss(1, kerf_mm);
+    dpLimit -= cr.used;
 
-        if (dpLimit < 0)
-            dpLimit = 0;
-    }
+    // // 6️⃣ DP-limit újraszámolása
+    // if (rod.isReusable) {
+    //     // leftover továbbvágása → nincs új end-trim
+    //     dpLimit = remainingLength;
+    // } else {
+    //     // stock rúd → új end-trim + minimum hulló
+    //     dpLimit = remainingLength
+    //                        - OptimizerConstants::END_TRIM_MM
+    //                        - OptimizerConstants::MINIMUM_HULLO_MM
+    //                        - OptimizerUtils::roundKerfLoss(1, kerf_mm);
+
+         if (dpLimit < 0)
+             dpLimit = 0;
+    // }
 
     zInfo(QString("🟦 COMMIT AFTER LIMITS — remaining=%1, dpLimit=%2")
               .arg(remainingLength)

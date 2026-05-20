@@ -66,8 +66,12 @@ struct OptimizationLogger {
             }
 
             // 3) SZEGMENSEK LISTÁJA
+            // 3) SZEGMENSEK LISTÁJA
             zInfo(L("   🧱 Szakaszok (segments):"));
+            double segSum_mm = 0.0;
             for (const auto& s : plan.segments) {
+                segSum_mm += s.length_mm();
+
                 QString type;
                 if (s.isPiece())      type = "Piece";
                 else if (s.isKerf())  type = "Kerf";
@@ -81,6 +85,30 @@ struct OptimizationLogger {
                           .arg(s._segIx)
                           .arg(s.barcode()));
             }
+
+            double diff_mm = segSum_mm - plan.totalLength;
+            zInfo(QString("   • SegmentSumCheck: rod=%1 mm, segmentsSum=%2 mm, diff=%3 mm")
+                      .arg(plan.totalLength)
+                      .arg(segSum_mm, 0, 'f', 1)
+                      .arg(diff_mm, 0, 'f', 3));
+
+
+            // 3/b) SZEGMENS ÖSSZEG VALIDÁCIÓ A RÚDHOSSZRA
+            // const double rod_mm  = static_cast<double>(plan.totalLength);
+            // const double diff_mm = segSum_mm - rod_mm;
+
+            // zInfo(QString("   • SegmentSumCheck: rod=%1 mm, segmentsSum=%2 mm, diff=%3 mm")
+            //           .arg(plan.totalLength)
+            //           .arg(segSum_mm, 0, 'f', 1)   // 1 tizedes
+            //           .arg(diff_mm,   0, 'f', 3)); // 3 tizedes
+
+            // // opcionális: ha nagyon elcsúszik, jelöljük meg
+            // const double tol_mm = 0.05; // vagy amit fizikailag elfogadhatónak tartasz
+            // if (std::fabs(diff_mm) > tol_mm) {
+            //     zWarning(QString("   ⚠️ SegmentSum MISMATCH: |diff|=%1 mm > tol=%2 mm")
+            //               .arg(std::fabs(diff_mm), 0, 'f', 3)
+            //               .arg(tol_mm,            0, 'f', 3));
+            // }
 
             // 4) HULLÓ BLOKK
             zInfo(QString("   • result.cutPlanId=%1").arg(plan.planId.toString(QUuid::WithoutBraces)));
