@@ -24,10 +24,10 @@ CutPlanOutputSummary CutPlanOutputSummaryBuilder::build(
         s.rodCount++;
 
         // Globális rúd hossz (mm → m)
-        s.rodTotal_m += p.totalLength / 1000.0;
+        s.rodTotal_m += p._segments.totalLength_m();
 
         // Globális szegmensszám
-        s.segmentCount += p.segments.size();
+        s.segmentCount += p._segments.size();
 
         //
         // Anyag szerinti összesítés előkészítése
@@ -49,38 +49,55 @@ CutPlanOutputSummary CutPlanOutputSummaryBuilder::build(
             idx = materialIndex.value(p.materialId);
         }
 
-        auto& ms = s.materials[idx];
+        CutPlanOutputSummary::MaterialSummary &ms = s.materials[idx];
 
         //
         // Anyagonkénti rúdösszegzés
         //
         ms.rodCount++;
-        ms.rodTotal_m += p.totalLength / 1000.0;
+        ms.rodTotal_m += p._segments.totalLength_m();
 
         //
         // Szegmensek feldolgozása
         //
-        for (const auto& seg : p.segments) {
 
-            if(seg.isPiece()){
-                // Levágott darab
-                s.pieceCount++;
-                s.pieceTotal_m += seg.length_mm() / 1000.0;
+        auto pi1 = p._segments.piecesInfo();
+        s.pieceCount = +pi1.count;
+        s.pieceTotal_m += pi1.length  / 1000.0;
+        ms.pieceCount = +pi1.count;
+        ms.pieceTotal_m += pi1.length / 1000.0;
 
-                ms.pieceCount++;
-                ms.pieceTotal_m += seg.length_mm() / 1000.0;
-            } else if (seg.isKerf()){
-                // Kerf
-                s.kerfCount++;
-                s.kerfTotal_mm += seg.length_mm();
-            } else if(seg.isWaste()){
-                // Hulladék
-                s.wasteCount++;
-                s.wasteTotal_mm += seg.length_mm();
-            } else if(seg.isTechnical()){
-                // Technikai szakasz – nem számít semmibe
-            }
-        }
+        auto kerf1 = p._segments.kerfInfo();
+        s.kerfCount = +kerf1.count;
+        s.kerfTotal_mm += kerf1.length;
+
+        //auto waste1 = p._segments.wasteInfo();
+        //s.wasteCount = waste1.count;
+        s.wasteTotal_mm += p._segments.waste_mm();
+
+        //auto technical1 = p.segments_technical();
+
+        // for (const auto& seg : p.segments) {
+
+        //     if(seg.isPiece()){
+        //         // Levágott darab
+        //         s.pieceCount++;
+        //         s.pieceTotal_m += seg.length_mm() / 1000.0;
+
+        //         ms.pieceCount++;
+        //         ms.pieceTotal_m += seg.length_mm() / 1000.0;
+        //     } else if (seg.isKerf()){
+        //         // Kerf
+        //         s.kerfCount++;
+        //         s.kerfTotal_mm += seg.length_mm();
+        //     } else if(seg.isWaste()){
+        //         // Hulladék
+        //         s.wasteCount++;
+        //         s.wasteTotal_mm += seg.length_mm();
+        //     } else if(seg.isTechnical()){
+        //         // Technikai szakasz – nem számít semmibe
+        //     }
+        // }
 
         //
         // Tételszámok gyűjtése (Piece szegmensek alapján)

@@ -7,6 +7,7 @@
 #include <QString>
 #include <QUuid>
 #include <QVector>
+#include <model/cutting/plan/parentinfo.h>
 
 namespace Cutting{
 namespace Result{
@@ -45,7 +46,8 @@ struct ResultModel {
     QString materialName() const;           // 🧪 megjelenítéshez
     QColor materialGroupColor() const;           // 🎨 badge háttér (UI-hoz)
 
-    std::optional<QString> parentBarcode;
+    std::optional<Cutting::Plan::ParentInfo> _parent = std::nullopt;
+
     QString sourceBarcode; // miből vágtuk ténylegesen
     bool isReusable() const { return source == ResultSource::FromReusable; }
 };

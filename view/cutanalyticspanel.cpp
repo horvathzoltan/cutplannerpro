@@ -54,20 +54,28 @@ void CutAnalyticsPanel::updateStats(const QVector<Cutting::Plan::CutPlan>& plans
     // 📊 Tervek bejárása
     for (const Cutting::Plan::CutPlan& plan : plans) {
         totalCuts += plan.piecesWithMaterial.size();          // vágások száma
-        segmentCount += plan.segments.size();   // teljes szakaszszám
+        segmentCount += plan._segments.size();   // teljes szakaszszám
 
-        for (const Cutting::Segment::SegmentModel& s : plan.segments) {
-            if(s.isPiece()){
-                pieceCount++;
-                totalPieceLength += s.length_mm();
-            }else if(s.isKerf()){
-                kerfCount++;
-                totalKerfLength += s.length_mm();
-            } else if(s.isWaste()){
-                wasteCount++;
-                totalWasteLength += s.length_mm();
-            }
-        }
+        auto pieceInfo = plan._segments.piecesInfo();
+        pieceCount = pieceInfo.count;
+        totalPieceLength += pieceInfo.length;
+        auto kerfInfo = plan._segments.kerfInfo();
+        kerfCount = kerfInfo.count;
+        totalKerfLength += kerfInfo.length;
+        totalWasteLength = plan._segments.waste_mm();
+
+        // for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+        //     if(s.isPiece()){
+        //         pieceCount++;
+        //         totalPieceLength += s.length_mm();
+        //     }else if(s.isKerf()){
+        //         kerfCount++;
+        //         totalKerfLength += s.length_mm();
+        //     } else if(s.isWaste()){
+        //         wasteCount++;
+        //         totalWasteLength += s.length_mm();
+        //     }
+        // }
     }
 
     // ♻️ Újrahasznosítható maradékok száma (min. 300mm)

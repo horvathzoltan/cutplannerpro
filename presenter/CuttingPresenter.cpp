@@ -300,7 +300,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     OptimizationRunner::run(model, heuristic);
     zInfo("⏹️ OptimizationRunner::run stopped");
     // 5️⃣ Logolás
-    OptimizationLogger::logPlans(model.getResult_PlansRef(), model.getResults_Leftovers());
+    OptimizationLogger::logPlans(model.getResult_PlansRef());
 
     // 2️⃣ Nézet frissítése
     if (view) {
@@ -906,14 +906,18 @@ void CuttingPresenter::GenerateCutInstructions()
         }
 
         // utolsó piece index
-        int lastPieceIdx = -1;
-        for (int j = plan.segments.size() - 1; j >= 0; --j)
-            if (plan.segments[j].isPiece()) { lastPieceIdx = j; break; }
+        //int lastPieceIdx = -1;
+        // for (int j = plan._segments.size() - 1; j >= 0; --j){
+        //     if (plan._segments.segment(j).isPiece())
+        //     {
+        //         lastPieceIdx = j; break;
+        //     }
+        // }
 
-        double remaining = plan.totalLength;
+        double remaining = plan._segments.totalLength_mm();
 
-        for (int i = 0; i < plan.segments.size(); ++i) {
-            const auto& seg = plan.segments[i];
+        for (int i = 0; i < plan._segments.size(); ++i) {
+            const auto& seg = plan._segments.segment(i);
             if (!seg.isPiece()) continue;
 
             CutInstruction ci;
@@ -927,7 +931,7 @@ void CuttingPresenter::GenerateCutInstructions()
             ci.computeRemaining();
             ci.requestId = seg._requestId;
             ci.status = CutStatus::Pending;
-            ci.leftoverBarcode = plan.leftoverBarcode;
+            ci.leftoverBarcode = plan._segments.leftoverBarcode();
 
             ci.pieceCounter = ++requestPieceCounters[seg._requestId];
             ci.externalReference = seg.externalReference;
@@ -939,9 +943,9 @@ void CuttingPresenter::GenerateCutInstructions()
             ci.side = pwm.side;
             ci.subtype = pwm.subtype;
 
-            if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
-                if (!reusedLeftovers.contains(plan.leftoverBarcode))
-                    ci.isFinalLeftover = true;
+            // if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
+            //     if (!reusedLeftovers.contains(plan.leftoverBarcode))
+            //         ci.isFinalLeftover = true;
 
             it->cutInstructions.push_back(ci);
             remaining = ci.lengthAfter_mm;

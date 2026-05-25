@@ -79,7 +79,9 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                   .arg(e.availableLength_mm)
                   .arg(mat ? mat->toDisplay() : e.materialId.toString())
                   .arg(st ? st->name : "ismeretlen")
-                  .arg(e.sourceAsString()));
+                  .arg(e._parent.has_value()
+                           ? QString("parent=%1").arg(e._parent->toString())
+                           : "parent=—"));
 
     }
     zInfo("📘 SNAPSHOT — vége");
@@ -295,12 +297,18 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             rod.length = best.stock.availableLength_mm;
             rod.isReusable = true;
             rod.barcode = best.stock.barcode;
+            //rod.entryId = best.stock.entryId;
             rod.entryId = best.stock.entryId;
+            rod._parent = best.stock._parent;
+
 
 
             // 🔍 RodId hozzárendelés a map alapján, fallback + azonnali regisztráció
             if (leftoverRodMap.contains(best.stock.entryId)) {
-                rod.rodId = leftoverRodMap.value(best.stock.entryId);
+                auto lineage = leftoverRodMap.value(best.stock.entryId);
+                rod.rodId = lineage.rodId;
+                rod._parent = lineage.parent;   // lineage továbbvitele!
+
                 // zInfo(QString("MAP-LOOKUP: %1 → %2")
                 //           .arg(best.stock.entryId.toString())
                 //           .arg(rod.rodId));
@@ -324,10 +332,13 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 //           .arg(best.stock.entryId.toString())
                 //           .arg(rod.rodId));
                 // 🔑 Azonnal regisztráljuk, hogy a lánc ne szakadjon meg
-                leftoverRodMap.insert(best.stock.entryId, rod.rodId);
-                zInfo(QString("MAP-INSERT (on select): %1 → %2")
+                leftoverRodMap.insert(best.stock.entryId, RodLineage{ rod.rodId, rod._parent });
+
+                zInfo(QString("MAP-INSERT (on select): %1 → %2 (parent=%3)")
                           .arg(best.stock.barcode)
-                          .arg(rod.rodId));
+                          .arg(rod.rodId)
+                          .arg(rod._parent ? rod._parent->toString() : "—"));
+
             }
 
             // ⛔ Azonnali tiltás, hogy ne válasszuk újra ugyanebben az iterációban
@@ -392,6 +403,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             if (stockRod.has_value()) {
                 rod = *stockRod;
+                rod._parent = std::nullopt;
 
                 remainingLength = rod.length;
                 dpLimit = rod.length
@@ -476,6 +488,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 1);
 
             if (stepResult == RodStepResult::ContinueSameRod) {
+                // semmi rod újrainicializálás
+                // semmi új rúd keresés
+                // csak folytatjuk a rod-loopot a friss remainingLength/dpLimit értékekkel
+                rodloopcounter++;
                 continue;
             }
 
@@ -513,7 +529,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
     for (auto& plan : _result_plans) {
         bool isStockRod = !plan.isReusable();   // vagy plan.source == Stock
-        this->applyFrontTrimToPlan(plan.planId, plan.kerfUsed_mm, isStockRod);
+        this->applyFrontTrimToPlan(
+            plan.planId,
+            plan._segments.kerfInfo().length,
+            isStockRod);
     }
 
     // --- IDE JÖN A VÉGÉRE ---
@@ -652,7 +671,6 @@ CutResult OptimizerModel::commitCutResult(
               .arg(cr.used)
               .arg(cr.waste));
 
-
     if (cr.status == CutResultStatus::Overfill){
         zInfo("✖ COMMIT — overfill, nincs mentés");
         return cr;
@@ -698,6 +716,7 @@ CutResult OptimizerModel::commitCutResult(
     if (rod.isReusable && rod.entryId.has_value())
         _usedLeftoverEntryIds.insert(rod.entryId.value());
 
+
     // 5️⃣ remainingLength frissítés
     // remainingLength  -= cr.used;
     // remainingLength2 -= cr.used;
@@ -712,27 +731,31 @@ CutResult OptimizerModel::commitCutResult(
     if (remainingLength < 0)
         remainingLength = 0;
 
-    dpLimit -= cr.used;
+    //rod.length = remainingLength; // PATCH #3 — fizikai rúd hossz frissítése
 
-    // // 6️⃣ DP-limit újraszámolása
-    // if (rod.isReusable) {
-    //     // leftover továbbvágása → nincs új end-trim
-    //     dpLimit = remainingLength;
-    // } else {
-    //     // stock rúd → új end-trim + minimum hulló
-    //     dpLimit = remainingLength
-    //                        - OptimizerConstants::END_TRIM_MM
-    //                        - OptimizerConstants::MINIMUM_HULLO_MM
-    //                        - OptimizerUtils::roundKerfLoss(1, kerf_mm);
+    // 🔧 6️⃣ DP-limit frissítése (inkrementális, nem újraszámolás!)
+    if (rod.isReusable) {
+        // leftover → nincs front trim, de a MIN_HULLO + kerf csomag
+        // már az elején le lett foglalva a dpLimit-ben
+        dpLimit -= cr.used;
+    } else {
+        // stock rúd → az elején már LEFOGLALTUK az END_TRIM + MIN_HULLO + 1 kerf csomagot,
+        // itt csak a ténylegesen elhasznált hossz megy le a dpLimit-ből
+        dpLimit -= cr.used;
+        // ha visszarakod a kerfet, akkor itt:
+        // dpLimit -= kerfLoss_rounded;
+    }
 
-         if (dpLimit < 0)
-             dpLimit = 0;
-    // }
+    if (dpLimit < 0)
+        dpLimit = 0;
+
 
     zInfo(QString("🟦 COMMIT AFTER LIMITS — remaining=%1, dpLimit=%2")
               .arg(remainingLength)
               .arg(dpLimit));
 
+    validateLineage(cr.plan);
+    zInfo(lineageTree(cr.plan));
 
     return cr;
 }
@@ -822,23 +845,8 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
         return;
 
     Cutting::Plan::CutPlan& plan = *it;
-    auto& segs = plan.segments;
-    if (segs.isEmpty())
-        return;
-
-    // 2️⃣ Utolsó Waste szegmens (végmaradék)
-    int lastWasteIx = -1;
-    for (int i = segs.size() - 1; i >= 0; --i) {
-        if (segs[i].isWaste()) {
-            lastWasteIx = i;
-            break;
-        }
-    }
-
-
-    zInfo(QString("🔎 FRONT TRIM — utolsó waste index=%1").arg(lastWasteIx));
-
-    if (lastWasteIx < 0)
+    //auto& segs = plan.segments();
+    if (plan._segments.isEmpty())
         return;
 
     double frontTrim = OptimizerConstants::END_TRIM_MM; // 15 mm
@@ -847,18 +855,14 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
     double delta = frontTrim + frontKerf;
 
     // Ha a végmaradék ennél kisebb, nem piszkáljuk (védőfék)
-    if (segs[lastWasteIx].length_mm() <= delta) {
+    if (plan._segments.waste_mm() <= delta) {
         zInfo(QString("✖ FRONT TRIM — waste túl kicsi (waste=%1 mm, delta=%2 mm)")
-                  .arg(segs[lastWasteIx].length_mm())
+                  .arg(plan._segments.waste_mm())
                   .arg(delta));
         return;
     }
 
-    // 3️⃣ Végmaradék rövidítése
-    segs[lastWasteIx].shrinkLength(delta);
-
     zInfo(QString("🎯 FRONT TRIM — waste rövidítve delta=%1 mm").arg(delta));
-
 
     // 4️⃣ Elejére beszúrjuk: [Technical(15)] + [Kerf(frontKerf)]
     Cutting::Segment::SegmentModel frontTech(
@@ -879,30 +883,9 @@ void OptimizerModel::applyFrontTrimToPlan(const QUuid& planId,
               .arg(frontTrim)
               .arg(frontKerf));
 
-    segs.insert(0, frontKerfSeg);
-    segs.insert(0, frontTech);
 
-    // 5️⃣ Indexek újraszámozása típusonként
-    int pieceIx = 1;
-    int kerfIx  = 1;
-    int wasteIx = 1;
-    int techIx  = 1;
-
-    for (auto& s : segs) {
-        using T = Cutting::Segment::SegmentModel::Type;
-        if (s.isPiece()) {
-            s.setIndex(pieceIx++);
-        }
-        else if (s.isKerf()) {
-            s.setIndex(kerfIx++);
-        }
-        else if (s.isWaste()) {
-            s.setIndex(wasteIx++);
-        }
-        else if (s.isTechnical()) {
-            s.setIndex(techIx++);
-        }
-    }
+    plan._segments.insert(0, frontKerfSeg);
+    plan._segments.insert(0, frontTech);
 
     zInfo("📊 FRONT TRIM — kész, indexek újraszámozva");
 
@@ -931,13 +914,14 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
         return;
     }
 
-
     LeftoverStockEntry entry;
     entry.materialId = rod.materialId;
     entry.availableLength_mm = corrected;
     entry.used = false;
     entry.barcode = IdentifierUtils::makeLeftoverId(SettingsManager::instance().nextMaterialCounter());
-    entry.parentBarcode = rod.barcode;
+    //entry.parentBarcode = rod.barcode;
+    entry._parent = rod._parent;
+
     entry.source = Cutting::Result::LeftoverSource::Optimization;
     entry.optimizationId = std::make_optional(currentOpId);
 
@@ -945,11 +929,173 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
               .arg(entry.barcode)
               .arg(entry.availableLength_mm)
               .arg(rod.rodId)
-              .arg(rod.barcode));
+              .arg(entry._parent ? entry._parent->toString() : "—"));
 
-    leftoverRodMap.insert(entry.entryId, rod.rodId);
+    leftoverRodMap.insert(entry.entryId, RodLineage{ rod.rodId, rod._parent });
+
     _localLeftovers.append(entry);
+
+    validateLineage(entry);
+    zInfo(lineageTree(entry));
 }
+
+void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan) const
+{
+    // 1) Gyökér: nincs parent → stock rúd
+    if (!plan._parent.has_value()) {
+        zInfo(QString("🔎 Lineage OK — ROOT (stock), barcode=%1")
+                  .arg(plan.sourceBarcode));
+        return;
+    }
+
+    const auto& parent = plan._parent.value();
+
+    // 2) Barcode ellenőrzés
+    if (parent.barcode.trimmed().isEmpty()) {
+        zWarning(QString("⚠️ Lineage WARNING — empty parent barcode (planId=%1)")
+                     .arg(plan.planId.toString()));
+    }
+
+    // 3) Ha nincs parent planId → stock gyökér
+    if (!parent.planId.has_value()) {
+        zInfo(QString("🔎 Lineage OK — parent is STOCK (barcode=%1)")
+                  .arg(parent.barcode));
+        return;
+    }
+
+    // 4) Parent planId visszakeresése
+    auto it = std::find_if(
+        _result_plans.begin(), _result_plans.end(),
+        [&](const Cutting::Plan::CutPlan& p){
+            return p.planId == parent.planId.value();
+        });
+
+    if (it == _result_plans.end()) {
+        zWarning(QString("⚠️ Lineage WARNING — parent planId=%1 not found")
+                     .arg(parent.planId->toString()));
+        return;
+    }
+
+    // 5) Ciklusdetektálás
+    if (parent.planId.value() == plan.planId) {
+        zError(QString("❌ Lineage ERROR — plan references itself! planId=%1")
+                   .arg(plan.planId.toString()));
+        return;
+    }
+
+    zInfo(QString("🔎 Lineage OK — parent=%1").arg(parent.toString()));
+}
+
+void OptimizerModel::validateLineage(const LeftoverStockEntry& entry) const
+{
+    if (!entry._parent.has_value()) {
+        zInfo("🔎 Lineage OK — leftover has no parent");
+        return;
+    }
+
+    const auto& parent = entry._parent.value();
+
+    if (parent.barcode.trimmed().isEmpty()) {
+        zWarning(QString("⚠️ Lineage WARNING — leftover parent barcode empty (entryId=%1)")
+                     .arg(entry.entryId.toString()));
+    }
+
+    if (parent.planId.has_value() && parent.planId->isNull()) {
+        zWarning(QString("⚠️ Lineage WARNING — leftover parent planId NULL (entryId=%1)")
+                     .arg(entry.entryId.toString()));
+    }
+
+    zInfo(QString("🔎 Lineage OK — leftover parent=%1").arg(parent.toString()));
+}
+
+QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan) const
+{
+    QString out;
+    out += "📐 LINEAGE TREE\n";
+    out += QString("PLAN %1\n").arg(plan.planId.toString());
+
+    // 1) Ha nincs parent → stock gyökér
+    if (!plan._parent.has_value()) {
+        out += QString(" └─ STOCK ROOT (barcode=%1)\n")
+                   .arg(plan.sourceBarcode);
+        return out;
+    }
+
+    const Cutting::Plan::ParentInfo* current = &plan._parent.value();
+    QString prefix = " └─ ";
+
+    while (current) {
+        // 2) Node kiírása
+        if (!current->planId.has_value()) {
+            out += QString("%1STOCK (barcode=%2)\n")
+            .arg(prefix)
+                .arg(current->barcode);
+            break;
+        }
+
+        out += QString("%1%2\n").arg(prefix, current->toString());
+
+        // 3) Parent plan visszakeresése
+        auto it = std::find_if(
+            _result_plans.begin(), _result_plans.end(),
+            [&](const Cutting::Plan::CutPlan& p){
+                return p.planId == current->planId.value();
+            });
+
+        if (it == _result_plans.end())
+            break;
+
+        if (!it->_parent.has_value())
+            break;
+
+        current = &it->_parent.value();
+        prefix = "     " + prefix;
+    }
+
+    return out;
+}
+
+QString OptimizerModel::lineageTree(const LeftoverStockEntry& entry) const
+{
+    QString out;
+    out += "📐 LINEAGE TREE (Leftover)\n";
+    out += QString("LEFTOVER %1 (%2 mm)\n")
+               .arg(entry.barcode)
+               .arg(entry.availableLength_mm);
+
+    if (!entry._parent.has_value()) {
+        out += " └─ no parent\n";
+        return out;
+    }
+
+    const auto* current = &entry._parent.value();
+    QString prefix = " └─ ";
+
+    while (current) {
+        out += QString("%1%2\n").arg(prefix, current->toString());
+
+        if (!current->planId.has_value())
+            break;
+
+        auto it = std::find_if(
+            _result_plans.begin(), _result_plans.end(),
+            [&](const Cutting::Plan::CutPlan& p){
+                return p.planId == current->planId.value();
+            });
+
+        if (it == _result_plans.end())
+            break;
+
+        if (!it->_parent.has_value())
+            break;
+
+        current = &it->_parent.value();
+        prefix = "     " + prefix;
+    }
+
+    return out;
+}
+
 
 } //end namespace Optimizer
 } //end namespace Cutting

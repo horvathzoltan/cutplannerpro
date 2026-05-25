@@ -29,4 +29,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1440";"PrémiumHoliday";0;0;732;;1;Unknown;"";NP-CLB-9016;Width;false
 "1443";"PrémiumHoliday";0;0;2267;;1;Unknown;"";NP-CLB-9016;Width;false
 "1444";"PrémiumHoliday";0;0;3492;;1;Unknown;"";NP-CLB-9016;Width;false
-"1445";"PrémiumHoliday";0;0;2232;;1;Unknown;"";NP-CLB-9016;Width;false
+"1445";"PrémiumHoliday";0;0;2132;;1;Unknown;"";NP-CLB-9016;Width;false

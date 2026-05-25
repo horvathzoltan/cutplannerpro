@@ -17,7 +17,6 @@ public:
         }
 
         auto a =  QString("Rod-%1").arg(prefix);
-//        zInfo(QString("IdentifierUtils::makeRodId(counter=%1) -> %2").arg(counter).arg(a));
         return a;
     }
 

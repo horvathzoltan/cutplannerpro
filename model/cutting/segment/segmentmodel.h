@@ -23,7 +23,7 @@ public:
     enum class Type {
         Piece,   // ✂️ Kért darab
         Kerf,    // ⚙️ Vágási veszteség
-        Waste,    // 🪓 Végmaradék / selejt
+       // Waste,    // 🪓 Végmaradék / selejt
         Technical // 🛠️ Gépi maradék (pl. minimális maradék a vágáshoz)
     };
 
@@ -32,7 +32,7 @@ public:
     Type _type;
     double _length_mm;
     QString _barcode;
-    int _segIx;
+    //int _segIx;
     QUuid _requestId;        // 🔗 Request azonosító
 
     QUuid _pieceId;   // Darab egyedi azonosítója
@@ -43,7 +43,7 @@ public:
         _segId(QUuid::createUuid()),
         _type(t),
         _length_mm(len),
-        _segIx(ix),
+//        _segIx(ix),
         _requestId(reqId),
         _pieceId(pieceId),
         externalReference(externalRef)
@@ -60,11 +60,6 @@ public:
             case Type::Technical:
                 _barcode = "TECH";
                 break;
-            case Type::Waste:{
-                int wasteId = SettingsManager::instance().nextLeftoverCounter();
-                _barcode = IdentifierUtils::makeLeftoverId(wasteId);
-                break;
-            }
         }
     }
 
@@ -72,44 +67,31 @@ public:
     double length_mm() const { return _length_mm; }
     QString barcode() const { return _barcode; }
 
-    // 🔧 PATCH #1: minimális setterek utólagos szegmens‑korrekcióhoz
-    void shrinkLength(double delta) {
-        _length_mm -= delta;
-        if (_length_mm < 0) _length_mm = 0;   // audit‑védőkorlát
-    }
-
-    void setIndex(int ix) {
-        _segIx = ix;
-    }
-
     static QString segmentPrefix(SegmentModel::Type type) {
         if(type == SegmentModel::Type::Piece) return "P";
-        if(type == SegmentModel::Type::Waste) return "W";
         if(type == SegmentModel::Type::Kerf)  return "K";
         if(type == SegmentModel::Type::Technical)  return "T";
         return "?";
     }
 
-
     /**
      * @brief Rövid string a munkalaphoz (pl. [1800], [K3], [W194])
      */
-    QString toLabelString() const {
+    QString toLabelString(int segIx) const {
         QString prefix = segmentPrefix(_type);
 
         QString postfix = (_type == Type::Kerf || _type == Type::Technical)
-                              ? QString::number(_segIx)
+                              ? QString::number(segIx)
                               : QString("%1:%2·%3mm")
-                                    .arg(_segIx)
-                                    .arg(_barcode.isEmpty() ? "∅" : _barcode)
+                                    .arg(segIx)
+                                    .arg(_barcode.isEmpty() ? "-" : _barcode)
                                     .arg(_length_mm, 0, 'f', 0);
-
         return prefix+postfix;
     }
 
     bool isPiece() const { return _type == Type::Piece; }
     bool isKerf()  const { return _type == Type::Kerf; }
-    bool isWaste() const { return _type == Type::Waste; }
+    //bool isWaste() const { return _type == Type::Waste; }
     bool isTechnical() const { return _type == Type::Technical; }
 
     //QVector<SegmentModel> generateSegments(double kerf_mm, double totalLength_mm) const;

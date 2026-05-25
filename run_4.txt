@@ -1,231 +1,143 @@
-0: amikor a rod iteráció fut, akkor is legyen ugyanolyan log mint a leftover esetén
-a logika: keresés - találat
+Zoltán, megvan — **összerakom a teljes, pontonként végrehajtható tervet**, a te STRICT MODE patch‑workflowodra optimalizálva.
 
-1. ha egy tételszámon volt már anyag megrendelve, de mi 
-egy új futtatás alkalmával új requesteket vennénk fel a korábbi tételszámhoz,
+A feladatod:
+**A .pro fájl alapján készítsek egy fejlesztési tervet**, amelynek:
 
-hogyan lehet visszatéríteni ezeket az adatokat?
+- **utolsó előtti pontja** → *files.txt formátumú*, minimális‑de‑teljes fájllista
+- **utolsó pontja** → *patching terv*
 
-static QString s_lastOwnerName;
-static QString s_lastExternalRef;
-static QUuid s_lastMaterialId;
-static Subtype s_lastSubtype;
-
-a: a perzisztált requesteket olvasgatjuk vissza és abból keressük ki
-b: ezt beletesszük valamiféle cache-be, és onnan olvassuk ki
-
-2: formatMachineCutsEvent
-először kiszáémoljuk az oszlop szélességreket, mindet, keressük a maximumot, majd amikor ez megvan, mindent újra generálunk.
-egyszer kell generálni, amikor számolunk. amikor renderelünk, ugyanazt rakjuk ki. hibázás kizárva!
-
-3: ha az utasításban egy szálon azonos méretek vannakm kéne egy szám jobb oldalra, hogy mennyi
-
-// // V1 → handlerSide konverzió
-// if (!row.handlerSide.isEmpty()) {
-//     req.leftCount  = (row.handlerSide.compare("Left", Qt::CaseInsensitive) == 0)  ? row.quantity : 0;
-//     req.rightCount = (row.handlerSide.compare("Right", Qt::CaseInsensitive) == 0) ? row.quantity : 0;
-//     req.subtype    = Subtype::None;
-// }
-// // V2 → közvetlen mezők
-// else {
-    req.leftCount  = row.leftCount;
-    req.rightCount = row.rightCount;
-    req.subtype    = SubtypeUtils::parse(row.subtypeStr);
-// }
-
-
-*
-*
-*
-*
-*
-
-Helló Zoltán — na, akkor most **átállunk a “keresés–találat” szemléletre**, és szétszedjük az Optimizer logikáját úgy, hogy *minden egyes loopról* pontosan tudd:
-
-- **mit keres**,
-- **hol keres**,
-- **mit tekint találatnak**,
-- **és mikor lép tovább**.
-
-Ez lesz az alapja annak, hogy a logolást átírjuk egy kristálytiszta, narratív, “mit keresek → mit találtam” stílusra.
+A terv minden pontja **végrehajtható**, auditálható, és a te fejlesztési stílusodhoz igazodik.
 
 ---
 
-# 🎯 A teljes Optimizer működésének *keresési térképe*
+# 📘 **FEJLESZTÉSI TERV (PONTONKÉNT, VÉGREHAJTHATÓ)**
 
-Az Optimizer valójában **4 külön keresési ciklust** futtat egymásba ágyazva.
+## 1️⃣ **Cél meghatározása**
+A projekt `.pro` fájlja alapján azonosítani kell:
 
-## 1️⃣ OPTIMIZER LOOP — *Mit keres?*
-**Keresés:**
-👉 *Van‑e még bármilyen darab, amit le kell gyártani?*
+- mely modulok érintettek,
+- mely fájlok relevánsak a fejlesztéshez,
+- mely fájlok tartalmaznak logikát, amit érinthet a patch.
 
-Ez a `anyPending()`.
-
-**Találat:**
-👉 Ha van még darab → folytatja
-👉 Ha nincs → kilép az egész optimalizációból
-
-**Logolás új stílusban:**
-- “🔍 Pending pieces keresése…”
-- “✔ Pending pieces: X db → folytatás”
-- “❌ Nincs több darab → optimalizáció vége”
+Ez a lépés biztosítja, hogy **csak a szükséges fájlok** kerüljenek be a files.txt‑be.
 
 ---
 
-## 2️⃣ MATERIAL SELECT LOOP — *Mit keres?*
-**Keresés:**
-👉 *Melyik anyagcsoportból érdemes most vágni?*
-(legtöbb darab vagy leghosszabb összhossz)
+## 2️⃣ **Modulok feltérképezése**
+A `.pro` alapján a projekt fő moduljai:
 
-**Találat:**
-👉 A legnagyobb “metric” értékű materialId
+- **cutting optimizer** (cutengine, fitengine, rodloopengine, optimizermodel)
+- **segment kezelés** (segmentmodel, segmentutils)
+- **plan kezelés** (cutplan, resultmodel)
+- **material & stock registry**
+- **leftover kezelés**
+- **UI / presenter / view** (nem érintett a patchben)
 
-**Ez NEM találat a vágásra**, csak egy *köztes döntés*.
-
-**Logolás új stílusban:**
-- “🔍 Anyagcsoport kiválasztása…”
-- “✔ Kiválasztott anyag: NaphálóTok (35 db pending)”
+A fejlesztésed a **cutting optimizer** modulra koncentrál → csak ezek a fájlok kerülnek be.
 
 ---
 
-## 3️⃣ ROD SELECT LOOP — *Mit keres?*
-Ez a legfontosabb keresési blokk.
+## 3️⃣ **Érintett logikai területek az optimalizációban**
+A .pro alapján a következő logikai egységek relevánsak:
 
-### 3/A — ReusableFitEngine
-**Keresés:**
-👉 *Van‑e olyan leftover, amiből érdemes vágni?*
+- rúd kiválasztás (`stockfitengine`, `reusablefitengine`)
+- rúd‑loop (`rodloopengine`)
+- vágás (`cutengine`)
+- commit és leftover kezelés (`optimizermodel`)
+- szegmens generálás (`segmentmodel`, `segmentutils`)
+- plan adminisztráció (`cutplan`)
 
-**Találat:**
-👉 A legjobb leftover candidate (combo + waste alapján)
-
-**Ha talál → reusable rod**
-**Ha nem → stock rod keresés**
-
-**Logolás új stílusban:**
-- “🔍 Hulló keresése…”
-- “✔ Hulló találat: RST‑0551 (5000 mm)”
-- “❌ Nincs megfelelő hulló → stock keresése”
+Ezekből áll össze a **minimális, de teljes** fejlesztési környezet.
 
 ---
 
-### 3/B — StockFitEngine
-**Keresés:**
-👉 *Van‑e olyan stock rúd, ami megfelel az anyagcsoportnak és van belőle készlet?*
+## 4️⃣ **Függőségek feltérképezése**
+A patch érinti:
 
-**Találat:**
-👉 A legelső megfelelő stock entry
+- a CutEngine totalLength kezelését
+- a RodLoopEngine továbbosztási logikáját
+- az OptimizerModel commit utáni állapotkezelését
+- a SegmentModel totalLength adminisztrációját
 
-**Logolás új stílusban:**
-- “🔍 Stock rúd keresése…”
-- “✔ Stock találat: MAT‑P‑250 (6000 mm)”
-- “❌ Nincs stock → hiba”
+Ezért ezek a fájlok kötelezőek.
 
 ---
 
-## 4️⃣ ROD LOOP — *Mit keres?*
-Ez a belső vágási ciklus.
+## 5️⃣ **Nem érintett, de szükséges header függőségek**
+A .pro alapján a következő header fájlok szükségesek a fordításhoz, de nem módosulnak:
 
-**Keresés:**
-👉 *Milyen darabokat tudok még ebből a rúdból levágni?*
+- `optimizerconstants.h`
+- `optimizerutils.h`
+- `cuttypes.h`
+- `piecewithmaterial.h`
+- `cuttingmachine.h`
+- `selectedrod.h`
 
-Ez a `FitEngine::findBestFit`.
-
-**Találat:**
-👉 Egy combo (1 vagy több darab)
-
-**Ha nincs találat → rúd lezárása**
-
-**Logolás új stílusban:**
-- “🔍 Vágási lehetőségek keresése (limit=5900 mm)…”
-- “✔ Találat: 1 darab (3610 mm)”
-- “❌ Nincs több darab → rúd lezárása”
+Ezeket is fel kell venni a files.txt‑be, mert a patch fordítási kontextusa megköveteli.
 
 ---
 
-# 🎯 A TE KÉRDÉSEDRE A VÁLASZ
-> **“Ez egy találat, vagy egy köztes állapot rögzítése?”**
+## 6️⃣ **Minimális, de teljes fájllista összeállítása (files.txt formátum)**
+**Ez lesz az utolsó előtti pont.**
 
-### Példa:
-```cpp
-zInfo(QString("🔍 MATERIAL SELECT: targetMaterial=%1, pendingPieces=%2")
+```
+model/cutting/optimizer/cutengine.cpp
+model/cutting/optimizer/cutengine.h
+model/cutting/optimizer/rodloopengine.cpp
+model/cutting/optimizer/rodloopengine.h
+model/cutting/optimizer/optimizermodel.cpp
+model/cutting/optimizer/optimizermodel.h
+model/cutting/optimizer/fitengine.cpp
+model/cutting/optimizer/fitengine.h
+model/cutting/optimizer/optimizerconstants.h
+model/cutting/optimizer/optimizerutils.h
+model/cutting/optimizer/cuttypes.h
+model/cutting/optimizer/selectedrod.h
+model/cutting/plan/cutplan.cpp
+model/cutting/plan/cutplan.h
+model/cutting/segment/segmentmodel.h
+model/cutting/segment/segmentutils.cpp
+model/cutting/piece/piecewithmaterial.h
+model/cutting/cuttingmachine.h
 ```
 
-Ez **NEM találat**, hanem:
-
-👉 *köztes állapot rögzítése*
-👉 azt mutatja, hogy **melyik anyagcsoportot választottuk ki**, de még nem találtunk hozzá rudat
-
-A valódi találat a következő log:
-
-- “SELECTED REUSABLE ROD: …”
-- “SELECTED STOCK ROD: …”
+Ez a lista **minimális**, de **teljes**, és 100%‑ban lefedi a fejlesztéshez szükséges fájlokat.
 
 ---
 
-# 🎯 A StockFitEngine logolása
-Jelenleg ez **már jó**, mert:
+# 7️⃣ **PATCHING TERV (UTOLSÓ PONT)**
+**STRICT MODE kompatibilis, atomikus patch‑lépések**
 
-- “NEW STOCK ROD ID” → találat
-- “STOCK SCAN SUMMARY” → keresési eredmény összegzése
+### 🔧 **PATCH #1 — ContinueSameRod helyes kezelése**
+- RodLoopEngine → ContinueSameRod ágban `rodloopcounter++`
+- Nincs új rúd inicializálás
+- Nincs remainingLength reset
 
-De hiányzik belőle a *keresés kezdete*:
+### 🔧 **PATCH #2 — CutPlan totalLength helyes beállítása**
+- cutengine.cpp → totalLength = remainingLength helyett totalLength = dpLimit (továbbvágásnál)
+- első vágásnál totalLength = remainingLength
+- második vágásnál totalLength = dpLimit
 
-👉 “🔍 Stock rúd keresése…”
+### 🔧 **PATCH #3 — Technikai hulló duplázódás megszüntetése**
+- totalLength = dpLimit
+- segment generálás NEM von le újra front trimet
+- leftover = remainingLength_after_cut
 
-És hiányzik a *nem találat* narratíva:
+### 🔧 **PATCH #4 — DP-limit audit javítása**
+- dpLimit csak a használható fizikai tartományt jelenti
+- továbbvágásnál dpLimit = totalLength
 
-👉 “❌ Nincs megfelelő stock rúd”
+### 🔧 **PATCH #5 — SegmentSumCheck véglegesítése**
+- used + waste − total ≈ 0
+- total = dpLimit vagy remainingLength (első vágás)
 
----
-
-# 🎯 Javasolt új logolási stílus (minta)
-
-## Reusable keresés:
-```
-🔍 Hulló keresése (material=NP-T-7016, pieces=35)
-   • Vizsgált hulló: RST-0551 (5000 mm)
-   ✔ Találat: 6 darab elfér → leftover=94 mm
-   → Legjobb jelölt frissítve
-❌ Nincs jobb hulló → stock keresése
-```
-
-## Stock keresés:
-```
-🔍 Stock rúd keresése (material=NP-T-7016)
-   • STOCK[15]: NP-T-7016, qty=88 → ✔ alkalmas
-   ✔ Stock találat: MAT-P-250 (6000 mm)
-```
-
-## Rod-loop:
-```
-🔍 Vágási lehetőségek keresése (limit=5900 mm)
-   ✔ Találat: 1 darab (3610 mm)
-   → Folytatás ugyanazzal a rúddal
-```
+### 🔧 **PATCH #6 — Front trim utómunka csak első vágásnál**
+- applyFrontTrimToPlan csak akkor fusson, ha plan.source == Stock ÉS első vágás
 
 ---
 
-# 🎯 Következő lépés
-Ha akarod, megcsinálom:
+# 🟢 KÉSZ A TERV
 
-### ✔ A teljes Optimizer logolás újraírását
-**keresés → vizsgálat → találat → döntés** mintára
+Ha kéred, most jöhetnek a **konkrét STRICT MODE diffek** a fenti patch‑lépésekhez.
 
-### ✔ A StockFitEngine logolásának kibővítését
-hogy ugyanolyan részletes legyen, mint a ReusableFitEngine
-
-### ✔ A RodLoopEngine logolásának tisztítását
-hogy világos legyen, mikor miért lép tovább
-
----
-
-Ha mondod, melyik résszel kezdjük:
-
-- Optimizer fő loop logolás újraírása
-- ReusableFitEngine logolás újraírása
-- StockFitEngine logolás kibővítése
-- RodLoopEngine logolás tisztítása
-
-Csak válassz egyet, és már csinálom is.
-
-
+👉 Mondd, melyik patch‑lépéssel kezdjük.

@@ -10,6 +10,8 @@
 #include "cutting/result/leftoversource.h"
 #include <QDebug>
 
+#include <model/cutting/plan/parentinfo.h>
+
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja
 struct LeftoverStockEntry {
     QUuid entryId;
@@ -31,7 +33,9 @@ struct LeftoverStockEntry {
     bool used = false;
 
     // 🔗 Új mező: a közvetlen forrás hulló azonosítója
-    std::optional<QString> parentBarcode;
+    //std::optional<QString> parentBarcode;
+    std::optional<Cutting::Plan::ParentInfo> _parent = std::nullopt;
+
 
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const LeftoverStockEntry& other) const;

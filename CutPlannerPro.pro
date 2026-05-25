@@ -118,6 +118,7 @@ HEADERS += \
     model/cutting/optimizer/selectedrod.h \
     model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
+    model/cutting/plan/parentinfo.h \
     model/inventorysnapshot.h \
     model/machine/machineutils.h \
     materials/model/cutting_mode.h \

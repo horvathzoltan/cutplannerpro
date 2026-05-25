@@ -37,7 +37,13 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
     cutsWidget->setStyleSheet(QString("background-color: %1;"
                                       "padding-top: 6px; padding-bottom: 6px;")
                                   .arg(baseColor.name()));
-    for (const Cutting::Segment::SegmentModel& s : plan.segments) {
+
+    int kerfCounter = 0;
+    int techCounter = 0;
+    int pieceCounter = 0;
+    int otherCounter = 0;
+
+    for (const Cutting::Segment::SegmentModel& s : plan._segments.segments()) {
         QString color;
         if (s.isPiece()) {
             color = (s.length_mm() < 300)  ? "#e74c3c"   // rövid
@@ -47,17 +53,22 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
         else if (s.isKerf()) {
             color = "#34495e";
         }
-        else if (s.isWaste()) {
-            color = "#bdc3c7";
-        }
+        // else if (s.isWaste()) {
+        //     color = "#bdc3c7";
+        // }
         else if (s.isTechnical()) {
             color = "#7f8c8d";
         }
 
-        QString badgeLabel = s.toLabelString();
+        QString badgeLabel;
+        if(s.isKerf()) badgeLabel=s.toLabelString(++kerfCounter);
+        else if(s.isTechnical()) badgeLabel=s.toLabelString(++techCounter);
+        else if(s.isPiece()) badgeLabel=s.toLabelString(++pieceCounter);
+        else badgeLabel=s.toLabelString(++otherCounter);
 
         const auto* req = CuttingPlanRequestRegistry::instance().findById(s._requestId);
 
+        QString parentText = plan._parent.has_value()?plan._parent.value().toString() : "-";
 
         QString badgeTooltip = QString(
                                    "Szálazonosító: %1\n"
@@ -65,7 +76,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    "Material: %3\n"
                                    "Csoport: %4\n"
                                    "CutSize: %5 mm\n"
-                                   "Remaining: %6 mm\n"
+                                   //"Remaining: %6 mm\n"
                                    "Parent: %7\n"
                                    "Forrás: %8\n"
                                    "OptimizationId: %9\n"
@@ -77,8 +88,8 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    .arg(plan.materialName())
                                    .arg(groupName.isEmpty() ? "Nincs csoport" : groupName)
                                    .arg(s.length_mm())
-                                   .arg(s.isWaste() ? QString::number(s.length_mm()) : "—")
-                                   .arg(plan.parentBarcode.value_or("—"))
+                                   //.arg(s.isWaste() ? QString::number(s.length_mm()) : "—")
+                                   .arg(parentText)
                                    .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
                                         : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
                                                                                          : "Optimization")
@@ -110,6 +121,15 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
         layout->addWidget(label);
     }
+
+    if (plan._segments.waste_mm() > 0) {
+        QLabel* w = new QLabel(QString("Hulló: %1 mm").arg(plan._segments.waste_mm()));
+        w->setToolTip("A rúd végén megmaradó hossz.");
+        w->setStyleSheet("background:#bdc3c7; color:black; padding:3px 8px; border-radius:6px;");
+        layout->addWidget(w);
+    }
+
+
 
     vm.cells[0] = TableCellViewModel::fromWidget(cutsWidget, "Vágási szegmensek");
 

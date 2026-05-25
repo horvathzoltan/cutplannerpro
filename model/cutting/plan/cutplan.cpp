@@ -48,14 +48,14 @@ void CutPlan::setStatus(Status newStatus)
     status = newStatus;
 }
 
-QString CutPlan::pieceLengthsAsString() const {
-    QStringList out;
-    for (const Cutting::Segment::SegmentModel& s : segments) {
-        if (s.isPiece())
-            out << s.length_txt();
-    }
-    return out.join(";");
-}
+// QString CutPlan::pieceLengthsAsString() const {
+//     QStringList out;
+//     for (const Cutting::Segment::SegmentModel& s : _segments) {
+//         if (s.isPiece())
+//             out << s.length_txt();
+//     }
+//     return out.join(";");
+// }
 
 
 QString CutPlan::toLogEntry(const CuttingMachine& machine) const
@@ -95,14 +95,29 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
                          .arg(refs);
     }
 
-    return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm\n%6\nhulladék=%7 mm")
+    QString parentTxt;
+    if (!_parent.has_value()) {
+        parentTxt = "ROOT (stock)";
+    } else {
+        const auto& parent = _parent.value();
+        if (!parent.planId.has_value())
+            parentTxt = QString("%1 (stock)").arg(parent.barcode);
+        else
+            parentTxt = QString("%1 (plan=%2)")
+                            .arg(parent.barcode)
+                            .arg(parent.planId->toString(QUuid::WithoutBraces));
+    }
+
+    return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm\nParent=%8\n%6\nhulladék=%7 mm")
         .arg(planNumber)
         .arg(sourceLabel)
         .arg(rodId)
         .arg(machine.name)
-        .arg(QString::number(kerfUsed_mm, 'f', 1))
+        .arg(QString::number(_segments.kerfInfo().length, 'f', 1))
         .arg(pieceList.join(", "))
-        .arg(waste);
+        .arg(_segments.waste_mm())
+        .arg(parentTxt);
+
 }
 
 
@@ -124,17 +139,17 @@ Cutting::Piece::PieceInfo CutPlan::getPieceInfoBy_pieceId(const QUuid& id) const
     return {};
 }
 
-Cutting::Segment::SegmentModel CutPlan::getSegmentModelBy_pieceId(const QUuid& id) const
-{
-    for (const auto& seg : segments) {
-        if (seg._pieceId == id)
-            return seg;
-    }
-    return Cutting::Segment::SegmentModel(
-        Cutting::Segment::SegmentModel::Type::Technical,
-        0, 0, QUuid(), QUuid(), ""
-        );
-}
+// Cutting::Segment::SegmentModel CutPlan::getSegmentModelBy_pieceId(const QUuid& id) const
+// {
+//     for (const auto& seg : _segments) {
+//         if (seg._pieceId == id)
+//             return seg;
+//     }
+//     return Cutting::Segment::SegmentModel(
+//         Cutting::Segment::SegmentModel::Type::Technical,
+//         0, 0, QUuid(), QUuid(), ""
+//         );
+// }
 
 
 } //endof namespace Plan

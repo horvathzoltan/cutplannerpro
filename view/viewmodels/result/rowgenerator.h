@@ -33,6 +33,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
     // 🧩 RodId
     //QString rodLabel = QString("%1|%2").arg(plan.rodId, plan.sourceBarcode);
+
+    QString parentText = plan._parent.has_value()?plan._parent.value().toString() : "-";
+
     QString rodTooltip = QString("RodId: %1\n"
                                  "Barcode: %2\n"
                                  "Parent: %3\n"
@@ -40,7 +43,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                  "OptimizationId: %5")
                              .arg(plan.rodId)
                              .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode)
-                             .arg(plan.parentBarcode.value_or("—"))
+                             .arg(parentText)
                              .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
                                   : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
                                                                                    : "Optimization")
@@ -63,19 +66,21 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
     // 📏 Length
     vm.cells[ResultsTableColumns::Length] =
-        TableCellViewModel::fromText(QString::number(plan.totalLength),
+        TableCellViewModel::fromText(QString::number(plan._segments.totalLength_mm()),
                                      "Teljes rúd hossz (mm)",
                                      baseColor, fgColor);
 
     // 📏 Kerf
+    auto kerfinfo = plan._segments.kerfInfo();
     vm.cells[ResultsTableColumns::Kerf] =
-        TableCellViewModel::fromText(QString::number(plan.kerfTotal),
+        TableCellViewModel::fromText(QString::number(kerfinfo.length),
                                      "Összes kerf (mm)",
                                      baseColor, fgColor);
 
     // 📏 Waste
+    auto wasteLength = plan._segments.waste_mm();
     vm.cells[ResultsTableColumns::Waste] =
-        TableCellViewModel::fromText(QString::number(plan.waste),
+        TableCellViewModel::fromText(QString::number(wasteLength),
                                      "Hulladék (mm)",
                                      baseColor, fgColor);
 

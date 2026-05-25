@@ -34,14 +34,14 @@
 namespace Cutting{
 namespace Segment{
 
-bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>& segments)
-{
-    if (segments.isEmpty())
-        return false;
+// bool SegmentUtils::isTrailingWaste(int wasteLength, const QVector<SegmentModel>& segments)
+// {
+//     if (segments.isEmpty())
+//         return false;
 
-    const SegmentModel& last = segments.last();
-    return (last.isWaste() && last.length_mm() == wasteLength);
-}
+//     const SegmentModel& last = segments.last();
+//     return (last.isWaste() && last.length_mm() == wasteLength);
+// }
 
 QVector<SegmentModel> SegmentUtils::generateSegments(
     const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
@@ -53,7 +53,7 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
 
     int pieceIx = 1;
     int kerfIx  = 1;
-    int wasteIx = 1;
+   // int wasteIx = 1;
 
     for (int i = 0; i < cuts.size(); ++i) {
         const auto& pwm = cuts[i];
@@ -84,12 +84,13 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
 
     // ➕ Waste szakasz
     double waste = totalLength_mm - usedLength;
-    if (waste > 0) {
+    /*if (waste > 0) {
         segments.append(SegmentModel(SegmentModel::Type::Waste,
                                      waste,
                                      wasteIx++,
                                      QUuid(), QUuid(), QString()));
-    } else if (waste < 0) {
+    } else*/
+    if (waste < 0) {
         qWarning() << "Vágáshossz + kerf túllépi a rudat!";
     }
 

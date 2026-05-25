@@ -118,6 +118,7 @@ public:
     int rodLoopIteration = 0; // rod-loop iteráció számláló
 
 
+
 private:
 
     // A felhasználótól érkező vágási igények (darabok listája).
@@ -147,7 +148,12 @@ private:
 
     //QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
 
-    QMap<QUuid, QString> leftoverRodMap;   // entryId → rodId
+    struct RodLineage {
+        QString rodId;
+        std::optional<Cutting::Plan::ParentInfo> parent;
+    };
+
+    QMap<QUuid, RodLineage> leftoverRodMap;   // entryId → lineage
     QSet<QUuid> _usedLeftoverEntryIds; // ♻️ már felhasznált leftover entryId-k
 
 private:
@@ -161,6 +167,10 @@ private:
 
     CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
 
+    void validateLineage(const Cutting::Plan::CutPlan &plan) const;
+    void validateLineage(const LeftoverStockEntry &entry) const;
+    QString lineageTree(const Cutting::Plan::CutPlan &plan) const;
+    QString lineageTree(const LeftoverStockEntry &entry) const;
 };
 
 } //end namespace Optimizer

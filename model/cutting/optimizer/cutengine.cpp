@@ -39,38 +39,42 @@ CutResult CutEngine::cutSingle(
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
     p.piecesWithMaterial = { piece };
-    p.kerfTotal = OptimizerUtils::roundKerfLoss(1, kerf_mm);
-    p.waste = waste;
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;
     p.source = rod.isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
     p.planId = QUuid::createUuid();
     p.status = Cutting::Plan::Status::NotStarted;
-    p.totalLength = rod.length;
     p.machineId = machine.id;
     p.machineName = machine.name;
-    p.kerfUsed_mm = kerf_mm;
-    p.generateSegments(kerf_mm, rod.length);
+    p.machineKerf = kerf_mm;
+    p._segments.generateSegments({piece}, kerf_mm, remainingLength);//rod.length);
+p._segments.SetTotalLength_mm(remainingLength);
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
-    p.parentBarcode = rod.barcode;
-    p.parentPlanId = std::nullopt;
-    p.leftoverBarcode = p.getWasteBarcode();
+
+    if (rod.isReusable) {
+        p._parent = rod._parent;   // leftover → örökli a szülőt
+    } else {
+        p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
+    }
+
+    //p._segments.SetTotalLength_mm(remainingLength_before_cut);
 
     Cutting::Result::ResultModel result;
     result.cutPlanId = p.planId;
     result.materialId = rod.materialId;
-    result.length = rod.length;
+    result.length = remainingLength; // PATCH 1-gyel összhangban
     result.cuts = { piece };
     result.waste = waste;
     result.source = rod.isReusable
                         ? Cutting::Result::ResultSource::FromReusable
                         : Cutting::Result::ResultSource::FromStock;
     result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
-    result.reusableBarcode = p.leftoverBarcode;
+
+    result.reusableBarcode = p._segments.leftoverBarcode();
     result.isFinalWaste = (waste <= 0);
-    result.parentBarcode = p.parentBarcode;
-    result.sourceBarcode = rod.barcode;
+    result._parent = p._parent; // ParentInfo öröklése
+    result.sourceBarcode = p.sourceBarcode;
 
     cr.status = CutResultStatus::Ok;
     cr.planId = p.planId;
@@ -125,38 +129,40 @@ CutResult CutEngine::cutCombo(
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
     p.piecesWithMaterial = combo;
-    p.kerfTotal = kerfTotal;
-    p.waste = waste;
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;
     p.source = rod.isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
     p.planId = QUuid::createUuid();
     p.status = Cutting::Plan::Status::NotStarted;
-    p.totalLength = rod.length;
     p.machineId = machine.id;
     p.machineName = machine.name;
-    p.kerfUsed_mm = kerf_mm;
-    p.generateSegments(kerf_mm, rod.length);
+    p.machineKerf = kerf_mm;
+    p._segments.generateSegments(combo, kerf_mm, remainingLength);//rod.length);
+    p._segments.SetTotalLength_mm(remainingLength);
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
-    p.parentBarcode = rod.barcode;
-    p.parentPlanId = std::nullopt;
-    p.leftoverBarcode = p.getWasteBarcode();
+
+    if (rod.isReusable) {
+        p._parent = rod._parent;   // leftover → örökli a szülőt
+    } else {
+        p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
+    }
+
 
     Cutting::Result::ResultModel result;
     result.cutPlanId = p.planId;
     result.materialId = rod.materialId;
-    result.length = rod.length;
+    result.length = remainingLength;      // PATCH 1-gyel összhangban
     result.cuts = combo;
     result.waste = waste;
     result.source = rod.isReusable
                         ? Cutting::Result::ResultSource::FromReusable
                         : Cutting::Result::ResultSource::FromStock;
     result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
-    result.reusableBarcode = p.leftoverBarcode;
+    result.reusableBarcode = p._segments.leftoverBarcode();
     result.isFinalWaste = (waste <= 0);
-    result.parentBarcode = p.parentBarcode;
-    result.sourceBarcode = rod.barcode;
+    result._parent = p._parent;           // ParentInfo öröklése
+    result.sourceBarcode = p.sourceBarcode;
 
     cr.status = CutResultStatus::Ok;
     cr.planId = p.planId;
