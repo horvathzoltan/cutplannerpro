@@ -7,8 +7,6 @@
 
 class CutEngine {
 public:
-
-
     static CutResult cutSingle(
         const Cutting::Piece::PieceWithMaterial& piece,
         int remainingLength,
@@ -17,6 +15,7 @@ public:
         int currentOpId,
         int rodId,
         double kerf_mm,
+        int dpLimit,
         int& planCounter);
 
     static CutResult cutCombo(
@@ -27,6 +26,7 @@ public:
         int currentOpId,
         int rodId,
         double kerf_mm,
+        int dpLimit,
         int& planCounter);
 
 };

@@ -5,6 +5,8 @@
 
 #include <model/cutting/plan/parentinfo.h>
 
+enum class RodOrigin { Stock, Reusable, Continuation };
+
 struct SelectedRod {
     QUuid materialId;
     int length = 0;
@@ -13,5 +15,6 @@ struct SelectedRod {
     QString rodId;     // belső identitás (ROD-xxxx)
     std::optional<QUuid> entryId; // csak ha reusable
 
+    RodOrigin origin = RodOrigin::Stock;
     std::optional<Cutting::Plan::ParentInfo> _parent = std::nullopt;
 };

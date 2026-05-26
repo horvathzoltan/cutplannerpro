@@ -11,6 +11,7 @@ CutResult CutEngine::cutSingle(
     int currentOpId,
     int rodId,
     double kerf_mm,
+    int dpLimit,
     int& planCounter)
 {
     zInfo(QString("🔍 CUT SINGLE — piece=%1 mm, remaining=%2 mm, rodId=%3")
@@ -47,8 +48,11 @@ CutResult CutEngine::cutSingle(
     p.machineId = machine.id;
     p.machineName = machine.name;
     p.machineKerf = kerf_mm;
-    p._segments.generateSegments({piece}, kerf_mm, remainingLength);//rod.length);
-p._segments.SetTotalLength_mm(remainingLength);
+
+    int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
+    p._segments.generateSegments({piece}, kerf_mm, physicalLength);
+    p._segments.SetTotalLength_mm(physicalLength);
+
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
 
@@ -99,6 +103,7 @@ CutResult CutEngine::cutCombo(
     int currentOpId,
     int rodId,
     double kerf_mm,
+    int dpLimit,
     int& planCounter)
 {
     zInfo(QString("🔍 CUT COMBO — pieces=%1, remaining=%2 mm, rodId=%3")
@@ -137,8 +142,11 @@ CutResult CutEngine::cutCombo(
     p.machineId = machine.id;
     p.machineName = machine.name;
     p.machineKerf = kerf_mm;
-    p._segments.generateSegments(combo, kerf_mm, remainingLength);//rod.length);
-    p._segments.SetTotalLength_mm(remainingLength);
+
+    int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
+    p._segments.generateSegments(combo, kerf_mm, physicalLength);
+    p._segments.SetTotalLength_mm(physicalLength);
+
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
 

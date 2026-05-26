@@ -529,10 +529,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
     for (auto& plan : _result_plans) {
         bool isStockRod = !plan.isReusable();   // vagy plan.source == Stock
-        this->applyFrontTrimToPlan(
-            plan.planId,
-            plan._segments.kerfInfo().length,
-            isStockRod);
+        this->applyFrontTrimToPlan( plan.planId, plan.machineKerf, isStockRod);
     }
 
     // --- IDE JÖN A VÉGÉRE ---
@@ -754,8 +751,8 @@ CutResult OptimizerModel::commitCutResult(
               .arg(remainingLength)
               .arg(dpLimit));
 
-    validateLineage(cr.plan);
-    zInfo(lineageTree(cr.plan));
+    validateLineage(cr.plan, _result_plans);
+    zInfo(lineageTree(cr.plan, _result_plans));
 
     return cr;
 }
@@ -779,7 +776,7 @@ CutResult OptimizerModel::cutSingle_AndCommit(
         machine,
         currentOpId,
         rodId,
-        kerf_mm,
+        kerf_mm,dpLimit,
         planCounter
         );
 
@@ -807,7 +804,7 @@ CutResult OptimizerModel::cutCombo_AndCommit(
         machine,
         currentOpId,
         rodId,
-        kerf_mm,
+        kerf_mm,dpLimit,
         planCounter
         );
 
@@ -935,11 +932,11 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
 
     _localLeftovers.append(entry);
 
-    validateLineage(entry);
-    zInfo(lineageTree(entry));
+    validateLineage(entry, _result_plans);
+    zInfo(lineageTree(entry, _result_plans));
 }
 
-void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan) const
+void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan, const QVector<Cutting::Plan::CutPlan>& result_plans)
 {
     // 1) Gyökér: nincs parent → stock rúd
     if (!plan._parent.has_value()) {
@@ -965,12 +962,12 @@ void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan) const
 
     // 4) Parent planId visszakeresése
     auto it = std::find_if(
-        _result_plans.begin(), _result_plans.end(),
+        result_plans.begin(), result_plans.end(),
         [&](const Cutting::Plan::CutPlan& p){
             return p.planId == parent.planId.value();
         });
 
-    if (it == _result_plans.end()) {
+    if (it == result_plans.end()) {
         zWarning(QString("⚠️ Lineage WARNING — parent planId=%1 not found")
                      .arg(parent.planId->toString()));
         return;
@@ -986,7 +983,7 @@ void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan) const
     zInfo(QString("🔎 Lineage OK — parent=%1").arg(parent.toString()));
 }
 
-void OptimizerModel::validateLineage(const LeftoverStockEntry& entry) const
+void OptimizerModel::validateLineage(const LeftoverStockEntry& entry, const QVector<Cutting::Plan::CutPlan>& result_plans)
 {
     if (!entry._parent.has_value()) {
         zInfo("🔎 Lineage OK — leftover has no parent");
@@ -1008,7 +1005,7 @@ void OptimizerModel::validateLineage(const LeftoverStockEntry& entry) const
     zInfo(QString("🔎 Lineage OK — leftover parent=%1").arg(parent.toString()));
 }
 
-QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan) const
+QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan, const QVector<Cutting::Plan::CutPlan>& result_plans)
 {
     QString out;
     out += "📐 LINEAGE TREE\n";
@@ -1037,12 +1034,12 @@ QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan) const
 
         // 3) Parent plan visszakeresése
         auto it = std::find_if(
-            _result_plans.begin(), _result_plans.end(),
+            result_plans.begin(), result_plans.end(),
             [&](const Cutting::Plan::CutPlan& p){
                 return p.planId == current->planId.value();
             });
 
-        if (it == _result_plans.end())
+        if (it == result_plans.end())
             break;
 
         if (!it->_parent.has_value())
@@ -1055,7 +1052,7 @@ QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan) const
     return out;
 }
 
-QString OptimizerModel::lineageTree(const LeftoverStockEntry& entry) const
+QString OptimizerModel::lineageTree(const LeftoverStockEntry& entry, const QVector<Cutting::Plan::CutPlan>& result_plans)
 {
     QString out;
     out += "📐 LINEAGE TREE (Leftover)\n";
@@ -1078,12 +1075,12 @@ QString OptimizerModel::lineageTree(const LeftoverStockEntry& entry) const
             break;
 
         auto it = std::find_if(
-            _result_plans.begin(), _result_plans.end(),
+            result_plans.begin(), result_plans.end(),
             [&](const Cutting::Plan::CutPlan& p){
                 return p.planId == current->planId.value();
             });
 
-        if (it == _result_plans.end())
+        if (it == result_plans.end())
             break;
 
         if (!it->_parent.has_value())

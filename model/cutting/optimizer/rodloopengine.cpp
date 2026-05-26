@@ -144,12 +144,19 @@ RodStepResult RodLoopEngine::step(
         auto onePieceFit =
             OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, kerf_mm);
         if (onePieceFit.has_value()) {
+
+            SelectedRod rod2 = rod;
+            rod2.origin = RodOrigin::Continuation; // PATCH #4 — folytatólagos rúd jelzése a cut engine-nek, hogy ne számoljon front trimet
+
             CutResult cr4 = model.cutSingle_AndCommit(
                 *onePieceFit, remainingLength, dpLimit,
-                rod, machine, currentOpId, rodId, kerf_mm, groupVec);
+                rod2,
+                machine, currentOpId,
+                rodId, kerf_mm, groupVec);
 
             Q_UNUSED(cr4);
-            zInfo("➡ ROD-STEP — folytatás ugyanazzal a rúddal (van még vágható darab)");
+            zInfo("➡ ROD-STEP — folytatás ugyanazzal a rúddal (van még vágható "
+                  "darab)");
             return RodStepResult::ContinueSameRod;
         }
         return RodStepResult::StopRod;

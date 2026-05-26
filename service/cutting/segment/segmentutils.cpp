@@ -55,29 +55,59 @@ QVector<SegmentModel> SegmentUtils::generateSegments(
     int kerfIx  = 1;
    // int wasteIx = 1;
 
+    // for (int i = 0; i < cuts.size(); ++i) {
+    //     const auto& pwm = cuts[i];
+    //     double len = pwm.info.length_mm;
+
+    //     // ➕ Piece szakasz
+    //     auto seg1 = SegmentModel(SegmentModel::Type::Piece,
+    //                              len,
+    //                              pieceIx++,
+    //                              pwm.info.requestId,
+    //                              pwm.info.pieceId,
+    //                              pwm.info.externalReference);
+    //     segments.append(seg1);
+    //     usedLength += len;
+
+    //     // ➕ Kerf szakasz
+    //     if (kerf_mm > 0) {
+    //         auto seg2 = SegmentModel(SegmentModel::Type::Kerf,
+    //                                  kerf_mm,
+    //                                  kerfIx++,
+    //                                  pwm.info.requestId,
+    //                                  pwm.info.pieceId,
+    //                                  pwm.info.externalReference);
+    //         segments.append(seg2);
+    //         usedLength += kerf_mm;
+    //     }
+    // }
+
     for (int i = 0; i < cuts.size(); ++i) {
         const auto& pwm = cuts[i];
         double len = pwm.info.length_mm;
 
-        // ➕ Piece szakasz
-        auto seg1 = SegmentModel(SegmentModel::Type::Piece,
+        // Piece
+        segments.append(SegmentModel(SegmentModel::Type::Piece,
                                  len,
                                  pieceIx++,
                                  pwm.info.requestId,
                                  pwm.info.pieceId,
-                                 pwm.info.externalReference);
-        segments.append(seg1);
+                                 pwm.info.externalReference));
         usedLength += len;
 
-        // ➕ Kerf szakasz
-        if (kerf_mm > 0) {
-            auto seg2 = SegmentModel(SegmentModel::Type::Kerf,
+        // Kerf csak akkor kell, ha:
+        // 1) nem az utolsó darab, VAGY
+        // 2) az utolsó darab után maradék van
+        bool isLast = (i == cuts.size() - 1);
+        bool hasRemainder = (usedLength < totalLength_mm);
+
+        if (kerf_mm > 0 && (!isLast || hasRemainder)) {
+            segments.append(SegmentModel(SegmentModel::Type::Kerf,
                                      kerf_mm,
                                      kerfIx++,
                                      pwm.info.requestId,
                                      pwm.info.pieceId,
-                                     pwm.info.externalReference);
-            segments.append(seg2);
+                                     pwm.info.externalReference));
             usedLength += kerf_mm;
         }
     }

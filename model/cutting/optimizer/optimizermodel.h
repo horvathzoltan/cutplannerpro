@@ -167,10 +167,10 @@ private:
 
     CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
 
-    void validateLineage(const Cutting::Plan::CutPlan &plan) const;
-    void validateLineage(const LeftoverStockEntry &entry) const;
-    QString lineageTree(const Cutting::Plan::CutPlan &plan) const;
-    QString lineageTree(const LeftoverStockEntry &entry) const;
+    static void validateLineage(const Cutting::Plan::CutPlan &plan, const QVector<Cutting::Plan::CutPlan>& result_plans);
+    static void validateLineage(const LeftoverStockEntry &entry, const QVector<Cutting::Plan::CutPlan>& result_plans);
+    static QString lineageTree(const Cutting::Plan::CutPlan &plan, const QVector<Cutting::Plan::CutPlan>& result_plans);
+    static QString lineageTree(const LeftoverStockEntry &entry, const QVector<Cutting::Plan::CutPlan>& result_plans);
 };
 
 } //end namespace Optimizer
