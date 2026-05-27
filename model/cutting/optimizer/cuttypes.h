@@ -19,6 +19,8 @@ struct CutResult {
     Cutting::Plan::CutPlan plan;
     Cutting::Result::ResultModel result;
     QVector<QUuid> usedPieceIds;  // ← OptimizerModel törli majd a darabokat
+
+    QString leftoverBarcode;   // ⭐ PATCH #5 — új mező
 };
 
 

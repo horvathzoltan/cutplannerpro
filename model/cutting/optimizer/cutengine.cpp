@@ -49,15 +49,20 @@ CutResult CutEngine::cutSingle(
     p.machineName = machine.name;
     p.machineKerf = kerf_mm;
 
+    //int physicalLength = remainingLength;
+
+
     int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
     p._segments.generateSegments({piece}, kerf_mm, physicalLength);
     p._segments.SetTotalLength_mm(physicalLength);
 
+    if(rod.barcode=="1")
+        zInfo("egy");
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
 
-    if (rod.isReusable) {
-        p._parent = rod._parent;   // leftover → örökli a szülőt
+    if (rod._parent.has_value()) {
+        p._parent = rod._parent;
     } else {
         p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
     }
@@ -87,6 +92,7 @@ CutResult CutEngine::cutSingle(
     cr.plan = p;
     cr.result = result;
     cr.usedPieceIds = { piece.info.pieceId };
+    cr.leftoverBarcode = p._segments.leftoverBarcode();   // ⭐ PATCH #5
 
     zInfo(QString("🎯 CUT SINGLE — OK (used=%1, waste=%2, rodId=%3)")
               .arg(cr.used)
@@ -143,6 +149,7 @@ CutResult CutEngine::cutCombo(
     p.machineName = machine.name;
     p.machineKerf = kerf_mm;
 
+    //int physicalLength = remainingLength;
     int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
     p._segments.generateSegments(combo, kerf_mm, physicalLength);
     p._segments.SetTotalLength_mm(physicalLength);
@@ -150,8 +157,8 @@ CutResult CutEngine::cutCombo(
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
 
-    if (rod.isReusable) {
-        p._parent = rod._parent;   // leftover → örökli a szülőt
+    if (rod._parent.has_value()) {
+        p._parent = rod._parent;
     } else {
         p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
     }
@@ -178,6 +185,7 @@ CutResult CutEngine::cutCombo(
     cr.waste = waste;
     cr.plan = p;
     cr.result = result;
+    cr.leftoverBarcode = p._segments.leftoverBarcode();   // ⭐ PATCH #5
 
     // több darab → több pieceId
     for (auto& pc : combo)

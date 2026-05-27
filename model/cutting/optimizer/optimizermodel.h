@@ -165,7 +165,7 @@ private:
                      int remainingLength,
                      int currentOpId);
 
-    CutResult commitCutResult(const CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
+    CutResult commitCutResult(CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
 
     static void validateLineage(const Cutting::Plan::CutPlan &plan, const QVector<Cutting::Plan::CutPlan>& result_plans);
     static void validateLineage(const LeftoverStockEntry &entry, const QVector<Cutting::Plan::CutPlan>& result_plans);

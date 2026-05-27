@@ -123,7 +123,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
     }
 
     if (plan._segments.waste_mm() > 0) {
-        QLabel* w = new QLabel(QString("Hulló: %1 mm").arg(plan._segments.waste_mm()));
+        QLabel* w = new QLabel(QString("Hulló: %1 mm | %2")
+                                   .arg(plan._segments.waste_mm())
+                                   .arg(plan._segments.leftoverBarcode()));
         w->setToolTip("A rúd végén megmaradó hossz.");
         w->setStyleSheet("background:#bdc3c7; color:black; padding:3px 8px; border-radius:6px;");
         layout->addWidget(w);

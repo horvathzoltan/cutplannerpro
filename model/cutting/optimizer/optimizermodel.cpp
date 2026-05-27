@@ -656,7 +656,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
 
 CutResult OptimizerModel::commitCutResult(
-    const CutResult& cr,
+    CutResult& cr,
     int& remainingLength,
     int& dpLimit,
     const SelectedRod& rod,
@@ -672,6 +672,18 @@ CutResult OptimizerModel::commitCutResult(
         zInfo("✖ COMMIT — overfill, nincs mentés");
         return cr;
     }
+
+    if (rod.origin == RodOrigin::Continuation) {
+        for (int i = _result_plans.size() - 1; i >= 0; --i) {
+            const auto& prevPlan = _result_plans[i];
+            if (prevPlan.rodId == cr.plan.rodId && prevPlan.optimizationId == cr.plan.optimizationId) {
+                cr.plan._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::make_optional(prevPlan.planId) };
+                cr.result._parent = cr.plan._parent;
+                break;
+            }
+        }
+    }
+
 
     zInfo(QString("🎯 COMMIT — plan mentve (planId=%1, pieces=%2)")
               .arg(cr.plan.planId.toString())

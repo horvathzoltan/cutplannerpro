@@ -48,7 +48,24 @@ public:
         double used = 0;
         for (auto& s : _segments)
             used += s.length_mm();
-        return _totalLength_mm - used;
+        double w = _totalLength_mm - used;
+
+        // ha kerfre végződik, és a maradék kisebb mint a kerf → a fűrész megeszi
+        if (!_segments.isEmpty()) {
+            const auto& last = _segments.last();
+            if (last.isKerf()) {
+                double kerf = last.length_mm();
+
+                // ha a maradék a kerf tartományába esik (pozitív vagy negatív)
+                if (w <= 0.0 && w >= -kerf)
+                    return 0.0;
+
+                if (w > 0.0 && w <= kerf)
+                    return 0.0;
+            }
+        }
+
+        return w;
     }
 
     int size() const { return _segments.size(); }
@@ -75,7 +92,7 @@ public:
 
     void setSegments(QVector<Segment::SegmentModel> s1){ _segments = s1; }
 
-    void setLeftoverBarcode(const QString& bc){ _leftoverBarcode = bc; }
+    //void setLeftoverBarcode(const QString& bc){ _leftoverBarcode = bc; }
 
     void generateSegments(const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
                           double kerf_mm, int totalLength_mm){
@@ -90,7 +107,10 @@ public:
         if (w >= 300) {
             int id = SettingsManager::instance().nextLeftoverCounter();
             auto barcode = IdentifierUtils::makeLeftoverId(id);
-            setLeftoverBarcode(barcode);
+            //setLeftoverBarcode(barcode);
+            _leftoverBarcode = barcode;
+        } else{
+            _leftoverBarcode = "selejt";
         }
     }
 };
