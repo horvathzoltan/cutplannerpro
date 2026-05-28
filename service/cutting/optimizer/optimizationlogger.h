@@ -30,21 +30,23 @@ struct OptimizationLogger {
                       .arg(plan.sourceBarcode));
 
             // PATCH 9 — ParentInfo audit‑minőségű kiírása
-            if (!plan._parent.has_value()) {
+            if (!plan.parent().has_value()) {
                 zInfo("   • Parent: ROOT (stock)");
             } else {
-                const auto& parent = plan._parent.value();
+                zInfo(QString("   • Parent: %1").arg(plan.parent()->toString()));
 
-                if (!parent.planId.has_value()) {
-                    // stock gyökér (csak barcode ismert)
-                    zInfo(QString("   • Parent: %1 (stock)")
-                              .arg(parent.barcode));
-                } else {
-                    // leftover → plan lánc
-                    zInfo(QString("   • Parent: %1 (plan=%2)")
-                              .arg(parent.barcode)
-                              .arg(parent.planId->toString(QUuid::WithoutBraces)));
-                }
+                // const auto& parent = plan.parent().value();
+
+                // if (!parent.planId().has_value()) {
+                //     // stock gyökér (csak barcode ismert)
+                //     zInfo(QString("   • Parent: %1 (stock)")
+                //               .arg(parent.barcode()));
+                // } else {
+                //     // leftover → plan lánc
+                //     zInfo(QString("   • Parent: %1 (plan=%2)")
+                //               .arg(parent.barcode())
+                //               .arg(parent.planId(->toString(QUuid::WithoutBraces)));
+                // }
             }
 
 

@@ -7,17 +7,32 @@ namespace Cutting {
 namespace Plan {
 
 struct ParentInfo{
-    //annak a rúdnak a fizikai azonosítója, amelyből ez a CutPlan készült, ha ez egy leftover-ből készült új CutPlan, akkor a leftover forráskódja (RST-xxx), ha stockból készült, akkor a stock mesterséges kódja (MAT-xxx)
-    QString barcode;
-    //annak a CutPlan-nek az azonosítója, amely létrehozta a leftover-t, amiből ez a CutPlan készült
-    std::optional<QUuid> planId;
+private:
+    // Annak az entitásnak az azonosítója, amelyből ez a CutPlan készült.
+    // Lehet:
+    //  • stock rúd mesterséges kódja (MAT-xxxx)
+    //  • leftover kódja (RST-xxxx)
+    //  • előző CutPlan sourceBarcode-ja (folytatás esetén)
+    QString _barcode;
+
+    // Annak a CutPlan-nek az azonosítója, amely létrehozta a leftovert,
+    // vagy folytatás esetén az előző CutPlan azonosítója.
+    // Stock esetén nincs értéke.
+    std::optional<QUuid> _planId;
+
+public:
+    ParentInfo(QString barcode, std::optional<QUuid> planId)
+        : _barcode(std::move(barcode)), _planId(std::move(planId)) {}
+
+    const QString& barcode() const { return _barcode; }
+    const std::optional<QUuid>& planId() const { return _planId; }
 
     QString toString() const {
-        QString planText = planId.has_value()
-        ? planId->toString()
-        : "—";
-        return QString("%1 (plan=%2)").arg(barcode, planText);
+        return _planId.has_value()
+        ? QString("%1 (from plan %2)").arg(_barcode, _planId->toString())
+        : QString("%1 (stock)").arg(_barcode);
     }
+
 };
 
 } //namespace Plan

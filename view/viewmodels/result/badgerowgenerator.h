@@ -68,7 +68,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
         const auto* req = CuttingPlanRequestRegistry::instance().findById(s._requestId);
 
-        QString parentText = plan._parent.has_value()?plan._parent.value().toString() : "-";
+        QString parentText = plan.parent().has_value()
+                                 ? plan.parent()->toString()
+                                 : "-";
 
         QString badgeTooltip = QString(
                                    "Szálazonosító: %1\n"

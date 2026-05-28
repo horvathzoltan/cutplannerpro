@@ -673,16 +673,18 @@ CutResult OptimizerModel::commitCutResult(
         return cr;
     }
 
-    if (rod.origin == RodOrigin::Continuation) {
-        for (int i = _result_plans.size() - 1; i >= 0; --i) {
-            const auto& prevPlan = _result_plans[i];
-            if (prevPlan.rodId == cr.plan.rodId && prevPlan.optimizationId == cr.plan.optimizationId) {
-                cr.plan._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::make_optional(prevPlan.planId) };
-                cr.result._parent = cr.plan._parent;
-                break;
-            }
-        }
-    }
+    // if (rod.origin == RodOrigin::Continuation) {
+    //     for (int i = _result_plans.size() - 1; i >= 0; --i) {
+    //         const auto& prevPlan = _result_plans[i];
+    //         if (prevPlan.rodId == cr.plan.rodId && prevPlan.optimizationId == cr.plan.optimizationId) {
+
+    //             auto parent = Cutting::Plan::ParentInfo{ rod.barcode, std::make_optional(prevPlan.planId) };
+    //             cr.plan.setParent(parent, "a");
+    //             cr.result._parent = parent;
+    //             break;
+    //         }
+    //     }
+    // }
 
 
     zInfo(QString("🎯 COMMIT — plan mentve (planId=%1, pieces=%2)")
@@ -951,24 +953,24 @@ void OptimizerModel::createPhysicalLeftover(const SelectedRod& rod,
 void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan, const QVector<Cutting::Plan::CutPlan>& result_plans)
 {
     // 1) Gyökér: nincs parent → stock rúd
-    if (!plan._parent.has_value()) {
+    if (!plan.parent().has_value()) {
         zInfo(QString("🔎 Lineage OK — ROOT (stock), barcode=%1")
                   .arg(plan.sourceBarcode));
         return;
     }
 
-    const auto& parent = plan._parent.value();
+    const auto& parent = plan.parent().value();
 
     // 2) Barcode ellenőrzés
-    if (parent.barcode.trimmed().isEmpty()) {
+    if (parent.barcode().trimmed().isEmpty()) {
         zWarning(QString("⚠️ Lineage WARNING — empty parent barcode (planId=%1)")
                      .arg(plan.planId.toString()));
     }
 
     // 3) Ha nincs parent planId → stock gyökér
-    if (!parent.planId.has_value()) {
+    if (!parent.planId().has_value()) {
         zInfo(QString("🔎 Lineage OK — parent is STOCK (barcode=%1)")
-                  .arg(parent.barcode));
+                  .arg(parent.barcode()));
         return;
     }
 
@@ -976,17 +978,17 @@ void OptimizerModel::validateLineage(const Cutting::Plan::CutPlan& plan, const Q
     auto it = std::find_if(
         result_plans.begin(), result_plans.end(),
         [&](const Cutting::Plan::CutPlan& p){
-            return p.planId == parent.planId.value();
+            return p.planId == parent.planId().value();
         });
 
     if (it == result_plans.end()) {
         zWarning(QString("⚠️ Lineage WARNING — parent planId=%1 not found")
-                     .arg(parent.planId->toString()));
+                     .arg(parent.planId()->toString()));
         return;
     }
 
     // 5) Ciklusdetektálás
-    if (parent.planId.value() == plan.planId) {
+    if (parent.planId().value() == plan.planId) {
         zError(QString("❌ Lineage ERROR — plan references itself! planId=%1")
                    .arg(plan.planId.toString()));
         return;
@@ -1004,12 +1006,12 @@ void OptimizerModel::validateLineage(const LeftoverStockEntry& entry, const QVec
 
     const auto& parent = entry._parent.value();
 
-    if (parent.barcode.trimmed().isEmpty()) {
+    if (parent.barcode().trimmed().isEmpty()) {
         zWarning(QString("⚠️ Lineage WARNING — leftover parent barcode empty (entryId=%1)")
                      .arg(entry.entryId.toString()));
     }
 
-    if (parent.planId.has_value() && parent.planId->isNull()) {
+    if (parent.planId().has_value() && parent.planId()->isNull()) {
         zWarning(QString("⚠️ Lineage WARNING — leftover parent planId NULL (entryId=%1)")
                      .arg(entry.entryId.toString()));
     }
@@ -1024,21 +1026,21 @@ QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan, const QV
     out += QString("PLAN %1\n").arg(plan.planId.toString());
 
     // 1) Ha nincs parent → stock gyökér
-    if (!plan._parent.has_value()) {
+    if (!plan.parent().has_value()) {
         out += QString(" └─ STOCK ROOT (barcode=%1)\n")
                    .arg(plan.sourceBarcode);
         return out;
     }
 
-    const Cutting::Plan::ParentInfo* current = &plan._parent.value();
+    const Cutting::Plan::ParentInfo* current = &plan.parent().value();
     QString prefix = " └─ ";
 
     while (current) {
         // 2) Node kiírása
-        if (!current->planId.has_value()) {
+        if (!current->planId().has_value()) {
             out += QString("%1STOCK (barcode=%2)\n")
-            .arg(prefix)
-                .arg(current->barcode);
+                       .arg(prefix)
+                       .arg(current->barcode());
             break;
         }
 
@@ -1048,16 +1050,16 @@ QString OptimizerModel::lineageTree(const Cutting::Plan::CutPlan& plan, const QV
         auto it = std::find_if(
             result_plans.begin(), result_plans.end(),
             [&](const Cutting::Plan::CutPlan& p){
-                return p.planId == current->planId.value();
+                return p.planId == current->planId().value();
             });
 
         if (it == result_plans.end())
             break;
 
-        if (!it->_parent.has_value())
+        if (!it->parent().has_value())
             break;
 
-        current = &it->_parent.value();
+        current = &it->parent().value();
         prefix = "     " + prefix;
     }
 
@@ -1083,22 +1085,22 @@ QString OptimizerModel::lineageTree(const LeftoverStockEntry& entry, const QVect
     while (current) {
         out += QString("%1%2\n").arg(prefix, current->toString());
 
-        if (!current->planId.has_value())
+        if (!current->planId().has_value())
             break;
 
         auto it = std::find_if(
             result_plans.begin(), result_plans.end(),
             [&](const Cutting::Plan::CutPlan& p){
-                return p.planId == current->planId.value();
+                return p.planId == current->planId().value();
             });
 
         if (it == result_plans.end())
             break;
 
-        if (!it->_parent.has_value())
+        if (!it->parent().has_value())
             break;
 
-        current = &it->_parent.value();
+        current = &it->parent().value();
         prefix = "     " + prefix;
     }
 

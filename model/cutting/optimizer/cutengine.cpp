@@ -56,15 +56,15 @@ CutResult CutEngine::cutSingle(
     p._segments.generateSegments({piece}, kerf_mm, physicalLength);
     p._segments.SetTotalLength_mm(physicalLength);
 
-    if(rod.barcode=="1")
-        zInfo("egy");
+    // if(rod.barcode=="1")
+    //     zInfo("egy");
     p.sourceBarcode = rod.barcode;
     p.optimizationId = currentOpId;
 
     if (rod._parent.has_value()) {
-        p._parent = rod._parent;
+        p.setParent(*rod._parent);
     } else {
-        p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
+        p.setParent(Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt});
     }
 
     //p._segments.SetTotalLength_mm(remainingLength_before_cut);
@@ -82,7 +82,7 @@ CutResult CutEngine::cutSingle(
 
     result.reusableBarcode = p._segments.leftoverBarcode();
     result.isFinalWaste = (waste <= 0);
-    result._parent = p._parent; // ParentInfo öröklése
+    result._parent = p.parent(); // ParentInfo öröklése
     result.sourceBarcode = p.sourceBarcode;
 
     cr.status = CutResultStatus::Ok;
@@ -158,9 +158,9 @@ CutResult CutEngine::cutCombo(
     p.optimizationId = currentOpId;
 
     if (rod._parent.has_value()) {
-        p._parent = rod._parent;
+        p.setParent(*rod._parent);
     } else {
-        p._parent = Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt };
+        p.setParent(Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt});
     }
 
 
@@ -176,7 +176,7 @@ CutResult CutEngine::cutCombo(
     result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
     result.reusableBarcode = p._segments.leftoverBarcode();
     result.isFinalWaste = (waste <= 0);
-    result._parent = p._parent;           // ParentInfo öröklése
+    result._parent = p.parent();           // ParentInfo öröklése
     result.sourceBarcode = p.sourceBarcode;
 
     cr.status = CutResultStatus::Ok;

@@ -96,16 +96,11 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
     }
 
     QString parentTxt;
+
     if (!_parent.has_value()) {
         parentTxt = "ROOT (stock)";
     } else {
-        const auto& parent = _parent.value();
-        if (!parent.planId.has_value())
-            parentTxt = QString("%1 (stock)").arg(parent.barcode);
-        else
-            parentTxt = QString("%1 (plan=%2)")
-                            .arg(parent.barcode)
-                            .arg(parent.planId->toString(QUuid::WithoutBraces));
+        parentTxt = _parent->toString();
     }
 
     return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm\nParent=%8\n%6\nhulladék=%7 mm")

@@ -120,10 +120,10 @@ findSingleBestPiece(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                     double kerf_mm)
 {
 
-    zInfo(QString("🔍 SingleCut keresés indult — candidates=%1, limit=%2 mm, kerf=%.2f")
+    zInfo(QString("🔍 SingleCut keresés indult — candidates=%1, limit=%2 mm, kerf=%3")
               .arg(available.size())
               .arg(lengthLimit)
-              .arg(kerf_mm));
+              .arg(QString::number(kerf_mm, 'f', 2)));
 
     std::optional<Cutting::Piece::PieceWithMaterial> best;
     int bestScore = std::numeric_limits<int>::min();

@@ -34,7 +34,9 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
     // 🧩 RodId
     //QString rodLabel = QString("%1|%2").arg(plan.rodId, plan.sourceBarcode);
 
-    QString parentText = plan._parent.has_value()?plan._parent.value().toString() : "-";
+    QString parentText = plan.parent().has_value()
+                             ? plan.parent()->toString()
+                             : "-";
 
     QString rodTooltip = QString("RodId: %1\n"
                                  "Barcode: %2\n"

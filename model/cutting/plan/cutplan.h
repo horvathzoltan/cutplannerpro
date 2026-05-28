@@ -62,7 +62,6 @@ public:
 
 
 
-    std::optional<ParentInfo> _parent = std::nullopt;
 
     int optimizationId; // 🔢 Az optimalizációs futás azonosítója (kötelező)
 
@@ -119,6 +118,24 @@ public:
     QString materialBarcode() const;
 
     QString toLogEntry(const CuttingMachine& machine) const;
+private:
+    std::optional<ParentInfo> _parent = std::nullopt;
+
+public:
+    void setParent(const ParentInfo& parent) {
+        zInfo("⚠ CutPlan::setParent WRITE: " + parent.barcode());
+        _parent = parent;
+    }
+
+    void clearParent() {
+        zInfo("⚠ CutPlan::clearParent");
+        _parent.reset();
+    }
+
+    const std::optional<ParentInfo>& parent() const {
+        return _parent;
+    }
+
 };
 }  //endof namespace Plan
 }  //endof namespace Cutting

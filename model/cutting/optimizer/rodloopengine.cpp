@@ -149,14 +149,11 @@ RodStepResult RodLoopEngine::step(
             rod2.origin = RodOrigin::Continuation; // PATCH #4 — folytatólagos rúd jelzése a cut engine-nek, hogy ne számoljon front trimet
 
             if (!cr.leftoverBarcode.isEmpty()) {
-                rod2.barcode = "1";//cr.leftoverBarcode;
-                rod2._parent = Cutting::Plan::ParentInfo{
-                    "2",
-                    //cr.result.sourceBarcode,        // eredeti fizikai forrás (stock / reusable)
-                    //cr.leftoverBarcode,
+                rod2.barcode = cr.leftoverBarcode;
+                rod2._parent = Cutting::Plan::ParentInfo{                    
+                    cr.result.sourceBarcode,        // eredeti fizikai forrás (stock / reusable)
                     std::make_optional(cr.planId)   // szülő plan UUID (pl. PLAN #8)
                 };
-
             }
 
             CutResult cr4 = model.cutSingle_AndCommit(
