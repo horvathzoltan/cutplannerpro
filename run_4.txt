@@ -6,339 +6,573 @@
 4. batch anyag módosít
 5. batch length módosít
 
-Zoltán, ez most egy nagyon nagy falat, de végre minden bukfencet egyben
-látok, és így már lehet rendszerszintű, audit‑barát, tiszta megoldási
-tervet adni.
-A válaszom két részből áll:
 
-1.  Bukfencenkénti diagnózis + javítási terv
-2.  SelectedRod + ParentInfo + CutEngine refaktor terv (ahogy kérted)
+leftover felvétele
+1. emlékezzen az utolsó típusra, tárhelyre, hosszra
 
-Minden pontot úgy írom, hogy auditálható, determinisztikus,
-edge‑case‑biztos legyen — a te stílusodban.
+*
+*
+*
+*
+*
+*
 
-------------------------------------------------------------------------
+Tökéletesen látod, Zoltán — a klónozás valójában nem egy új rendszer,
+hanem egy nagyon elegáns fájlnév‑váltás + registry‑upgrade + persist
+művelet.
 
-✅ 1. BUKFENCENKÉNTI JAVÍTÁSI TERV
-
-------------------------------------------------------------------------
-
-1. BUKFENC – QString %.2f → megoldva
-
-✔ Már rendeztük: printf‑formátum keveredett QString::arg‑gal.
-Ez stabilan javítva.
+Amit most leírtál, az a helyes architekturális megoldás, és erre építve
+adom a végleges, pontonként végrehajtható fejlesztési tervet.
 
 ------------------------------------------------------------------------
 
-2. BUKFENC — SingleCut túlcsúszás: “Vágáshossz + kerf túllépi a rudat!” → mégis OK
+⭐ REQUEST‑KLÓNOZÁS – PONTONKÉNT VÉGREHAJTHATÓ FEJLESZTÉSI TERV
 
-🔍 Diagnózis
+(a végén patching tervvel)
 
-Ez a jelenség pontosan akkor történik, amikor:
+Ez a terv pontosan azt csinálja, amit szeretnél:
 
--   a remainingLength = 2391 mm
--   a piece = 2290 mm
--   kerf = 3.2 mm
--   used = 2290 + 3.2 = 2293.2 mm
--   waste = 2391 − 2293.2 = 97.8 mm → kerekítve 101 mm
-
-A logban viszont ez jelenik meg:
-
-    Vágáshossz + kerf túllépi a rudat!
-
-Majd:
-
-    CUT SINGLE — OK
-
-🔥 Miért?
-
-Mert a túlvágás ellenőrzés ezt használja:
-
-    int used = piece.length + roundKerfLoss(1, kerf);
-    if (used > remainingLength) → Overfill
-
-De a generateSegments() a kerfet NEM ugyanúgy kerekíti, mint a
-DP/SingleCut logika.
-
-Ezért:
-
--   a matematikai used (DP/SingleCut) = 2293.2
--   a szegmens‑modell used = 2290 + 3.2 = 2293.2
--   a waste viszont a fizikai hossz miatt másképp kerekedik
--   emiatt a logban túlvágás látszik, de a CutEngine mégis OK‑nak veszi
-
-🎯 Megoldás
-
-Egységes kerf‑kerekítés:
-
--   DP
--   SingleCut
--   Combo
--   generateSegments
--   SegmentSumCheck
-
-→ ugyanazt a roundKerfLoss() függvényt kell használni mindenhol.
-
-Ez megszünteti a “túlvágás → mégis OK” paradoxont.
+-   kiválasztasz egy requestet,
+-   klónozod,
+-   módosítod az anyagot + hosszt,
+-   új fájlnév taggel mented,
+-   a registry perzisztál → létrejön az új CSV fájl,
+-   a régi fájl érintetlen marad.
 
 ------------------------------------------------------------------------
 
-3. BUKFENC — “leftover nem tud befogadni egyetlen darabot sem (minSingleFit=540 mm)”
+1️⃣ A klónozás helye: CuttingPresenter
 
-🔍 Diagnózis
+A funkció nem UI‑szintű, nem InputTableManager‑szintű, hanem:
 
-Ez a log félrevezető, mert:
+✔ CuttingPresenter → cloneRequest()
 
--   a leftover 100 mm
--   a minSingleFit = 540 mm
--   a log azt sugallja, hogy “nem tud befogadni darabot”, pedig
-    valójában:
+Ez kezeli:
 
-👉 “A legkisebb darab 540 mm, ezért ez a leftover túl rövid.”
-
-🎯 Javítás
-
-A logot így kell átírni:
-
-    ✖ Elutasítva — leftover túl rövid (len=100 mm, minPiece=540 mm)
-
-Ez audit‑barát, egyértelmű, nem félrevezető.
+-   registry műveleteket
+-   fájlnév módosítást
+-   SettingsManager frissítést
+-   persist hívást
 
 ------------------------------------------------------------------------
 
-4. BUKFENC — SegmentSumCheck eltérés (PLAN #9)
+2️⃣ UI: új gomb a CutRequest tabon
 
-🔍 Diagnózis
+A btn_NewCuttingPlan mellé jön:
 
-PLAN #9 egy Continuation rúd, ahol:
+btn_CloneRequest
 
--   physicalLength = dpLimit
--   dpLimit = 2291 mm
--   piece = 2290 mm
--   kerf = 3.2 mm
--   segmentsSum = 2293.2 mm
--   totalLength = 2291 mm
+Ez csak annyit csinál:
 
-→ 2.2 mm eltérés
+    connect(ui->btn_CloneRequest, &QPushButton::clicked,
+            this, &MainWindow::onCloneRequestClicked);
 
-Ez NEM hiba.
-Ez a kerf mint méretre szabályozó vágás esete.
+A MainWindow:
 
-🎯 Javítás
-
-A logot így kell módosítani:
-
-    ⚠ SegmentSumCheck: kerf szabályozás miatt ±3.2 mm eltérés lehetséges (expected)
-
-Ez nem bukfenc, hanem ismert edge‑case, amit a rendszer helyesen kezel.
+    void MainWindow::onCloneRequestClicked() {
+        presenter->cloneRequestDialog();
+    }
 
 ------------------------------------------------------------------------
 
-5. BUKFENC — Parent lineage: selejt / — keveredés
+3️⃣ Új dialog: CloneRequestDialog
 
-🔍 Diagnózis
+A dialog bekéri:
 
-A gond oka:
+-   új anyag (combo)
+-   hossz delta (double spin)
+-   fájlnév tag (line edit)
 
--   leftoverBarcode = “selejt” → ez a CutPlan._segments leftover mezője
--   parentInfo.barcode = rod.barcode → ez a fizikai rúd azonosítója
--   a kettő nem ugyanazt jelenti, de a logban összemosódik
+A dialog visszaad:
 
-🎯 Javítás
-
-ParentInfo.barcode = mindig a fizikai rúd (RST‑xxx vagy MAT‑xxx)
-LeftoverBarcode = mindig a hulló új azonosítója (RST‑U‑xxx vagy selejt)
-
-A logban külön kell írni:
-
-    Parent: MAT‑V‑190 (stock)
-    Leftover: RST‑B‑775 (hulló)
-
-Soha nem szabad a parent helyén “selejt”‑et látni.
-
-------------------------------------------------------------------------
-
-6. BUKFENC — SingleCut miatt remainingLength “egyszár”
-
-🔍 Diagnózis
-
-SingleCut nem frissíti a dpLimit‑et, csak a remainingLength‑et.
-Ez okozza:
-
--   dpLimit = 1 mm
--   remainingLength = 101 mm
--   a kettő nincs összhangban
-
-Ez a rendszer sajátossága, de logolni kell.
-
-🎯 Javítás
-
-A commitCutResult végén:
-
-    🟦 LIMITS — remaining=101, dpLimit=1 (SingleCut miatt eltérés normális)
-
-------------------------------------------------------------------------
-
-7. BUKFENC — “Hulló blokk: leftoverBarcode=selejt” vs RST‑V‑xxx
-
-🔍 Diagnózis
-
-Ez teljesen helyes:
-
--   ha leftover < MIN_REUSABLE (pl. 300 mm) → selejt
--   ha leftover >= MIN_REUSABLE → RST‑U‑xxx
-
-A log félrevezető, mert nem írja oda, hogy miért selejt.
-
-🎯 Javítás
-
-    ♻️ Hulló blokk: leftoverBarcode=selejt (túl rövid, <300 mm)
-
-------------------------------------------------------------------------
-
-✅ 2. SelectedRod + ParentInfo + CutEngine refaktor terv
-
-------------------------------------------------------------------------
-
-A) ParentInfo refaktor
-
-Jelenlegi:
-
-    struct ParentInfo {
-        QString barcode;
-        std::optional<QUuid> planId;
+    struct CloneParams {
+        QUuid newMaterialId;
+        double delta;
+        QString tag;
     };
 
-Javasolt:
+------------------------------------------------------------------------
 
-    struct ParentInfo {
-    private:
-        QString _barcode;
-        std::optional<QUuid> _planId;
+4️⃣ Presenter: cloneRequestDialog()
 
-    public:
-        ParentInfo(QString bc, std::optional<QUuid> pid)
-            : _barcode(std::move(bc)), _planId(pid) {}
+Ez:
 
-        const QString& barcode() const { return _barcode; }
-        const std::optional<QUuid>& planId() const { return _planId; }
-
-        QString toString() const {
-            return _planId
-                ? QString("%1 (plan=%2)").arg(_barcode, _planId->toString(QUuid::WithoutBraces))
-                : QString("%1 (stock)").arg(_barcode);
-        }
-    };
-
-Miért jó?
-
--   immutable
--   audit‑barát
--   nem lehet véletlenül átírni
--   mindenhol egységes a megjelenítés
+1.  lekéri a kijelölt requestet a view‑tól
+2.  megnyitja a dialogot
+3.  átadja a paramétereket a cloneRequest()‑nek
 
 ------------------------------------------------------------------------
 
-B) SelectedRod refaktor
+5️⃣ Presenter: cloneRequest() – a tényleges klónozás
 
-Jelenlegi:
+Ez a lényeg.
 
-    QString barcode;
-    RodOrigin origin;
-    std::optional<ParentInfo> _parent;
+5.1. Eredeti request lekérése
 
-Javasolt:
+    auto oldReq = original;
 
-    struct RodIdentity {
-        QString barcode;     // RST-xxx vagy MAT-xxx
-        RodOrigin origin;    // Stock / Reusable / Continuation
-        ParentInfo parent;   // mindig van parent (stock esetén planId=nullopt)
-    };
+5.2. Új request létrehozása
 
-A SelectedRod így:
+    Cutting::Plan::Request newReq = oldReq;
+    newReq.requestId = QUuid::createUuid();
 
-    struct SelectedRod {
-        QUuid materialId;
-        int length = 0;
-        bool isReusable = false;
-        QString rodId;
-        std::optional<QUuid> entryId;
+5.3. Anyag módosítása
 
-        RodIdentity identity;
-    };
+    newReq.materialId = params.newMaterialId;
 
-Miért jó?
+5.4. Hossz módosítása
 
--   minden rúdnak van parentje
--   nem kell optional
--   lineage sosem keveredik
--   logok tiszták lesznek
+    newReq.requiredLength = qRound(oldReq.requiredLength + params.delta);
+
+5.5. Registry frissítése
+
+    CuttingPlanRequestRegistry::instance().registerRequest(newReq);
 
 ------------------------------------------------------------------------
 
-C) CutEngine::cutSingle / cutCombo refaktor
+6️⃣ Új fájlnév generálása taggel
 
-Jelenlegi probléma
+A jelenlegi fájlnév:
 
--   külön p és cr.plan → duplikáció
--   sok mezőt kétszer állítasz
--   parent öröklés kézzel történik
--   result._parent = p.parent() → redundáns
+    cuttingplan_20260506-173255.txt
 
-Javasolt:
+A user beírja:
 
-1.  CutResult tartalmazzon egy CutPlan‑t konstruktorban
-2.  A CutPlan épüljön fel közvetlenül cr.plan‑ben
-3.  A ResultModel épüljön fel cr.result‑ben
+    _ALSO
 
-Példa:
+6.1. Ha még nincs tag → hozzáadjuk
 
-    CutResult cr(piece, rod, machine, currentOpId, kerf_mm, planCounter);
-    cr.buildSingle(remainingLength, dpLimit);
-    return cr;
+    cuttingplan_20260506-173255_ALSO.txt
 
-A CutResult így tiszta, egyértelmű, nincs duplikáció.
+6.2. Ha már van tag → lecseréljük
 
-------------------------------------------------------------------------
+Regex:
 
-🎯 Összefoglaló – Bukfenc‑kezelési Terv (audit‑barát)
+    cuttingplan_(.*?)(_[A-Za-z0-9]+)?\.txt
 
-  -----------------------------------------------------------------------------------
-  Bukfenc                     Ok                       Javítás
-  --------------------------- ------------------------ ------------------------------
-  1                           QString %.2f             egységes QString::number
+Cseréljük:
 
-  2                           kerf‑kerekítés eltérés   roundKerfLoss egységesítése
-
-  3                           félrevezető leftover log “túl rövid” szöveg
-
-  4                           SegmentSumCheck eltérés  kerf‑szabályozás megjelölése
-
-  5                           parent=selejt keveredés  ParentInfo ≠ leftoverBarcode
-                                                       szétválasztása
-
-  6                           SingleCut dpLimit        logolni kell, nem hiba
-                              mismatch
-
-  7                           selejt vs RST‑U‑xxx      ok megjelölése (<300 mm)
-
-  8                           SelectedRod/ParentInfo   immutable ParentInfo +
-                                                       RodIdentity
-
-  9                           CutEngine duplikáció     CutResult építse a CutPlan‑t
-                                                       közvetlenül
-  -----------------------------------------------------------------------------------
+    cuttingplan_\1_<newtag>.txt
 
 ------------------------------------------------------------------------
 
-Ha szeretnéd, megírom a konkrét patch diffet is
+7️⃣ SettingsManager frissítése
 
-A teljes refaktorhoz tudok adni:
+    SettingsManager::instance().setCuttingPlanFileName(newFileName);
 
--   ParentInfo új verzió
--   RodIdentity + SelectedRod új verzió
--   CutEngine::cutSingle / cutCombo új, tiszta verzió
--   commitCutResult új verzió
--   minden log egységesítve
+Ez azonnal átállítja, hogy a registry persist() már az új fájlba írjon.
 
-👉 Csak mondd: Kérem a teljes patch diffet
+------------------------------------------------------------------------
+
+8️⃣ Registry persist() → új CSV fájl létrejön
+
+A persist() így működik:
+
+    const QString fn = SettingsManager::instance().cuttingPlanFileName();
+    const QString path = FileNameHelper::instance().getCuttingPlanFilePath(fn);
+    CuttingRequestRepository::saveToFile(*this, path);
+
+Tehát:
+
+-   új fájlnév beállítása →
+-   registry módosítása →
+-   persist() →
+-   új CSV fájl létrejön
+
+A régi fájl érintetlen marad.
+
+------------------------------------------------------------------------
+
+9️⃣ GUI frissítése
+
+-   InputTableManager → refresh_TableFromRegistry()
+-   MainWindow → setInputFileLabel(newFileName)
+
+------------------------------------------------------------------------
+
+🔟 (Opcionális) Automatikus optimalizálás
+
+Ha szeretnéd:
+
+    syncModelWithRegistries();
+    runOptimization(TargetHeuristic::ByCount);
+
+------------------------------------------------------------------------
+
+⭐ PATCHING TERV – KONKRÉT KÓD MÓDOSÍTÁSOK
+
+Ez a kért utolsó pont.
+
+------------------------------------------------------------------------
+
+PATCH #1 — mainwindow.ui
+
+Új gomb:
+
+    btn_CloneRequest
+
+------------------------------------------------------------------------
+
+PATCH #2 — MainWindow.cpp
+
+    void MainWindow::onCloneRequestClicked() {
+        presenter->cloneRequestDialog();
+    }
+
+------------------------------------------------------------------------
+
+PATCH #3 — CloneRequestDialog (új fájlok)
+
+-   CloneRequestDialog.ui
+-   CloneRequestDialog.h
+-   CloneRequestDialog.cpp
+
+------------------------------------------------------------------------
+
+PATCH #4 — CuttingPresenter.h
+
+    void cloneRequestDialog();
+    void cloneRequest(const Cutting::Plan::Request& original,
+                      const CloneParams& params);
+
+------------------------------------------------------------------------
+
+PATCH #5 — CuttingPresenter.cpp
+
+Implementálni:
+
+-   cloneRequestDialog()
+-   cloneRequest()
+-   fájlnév tag kezelés
+-   SettingsManager::setCuttingPlanFileName()
+-   registry.registerRequest()
+-   registry.persist()
+
+------------------------------------------------------------------------
+
+PATCH #6 — CuttingPlanRequestRegistry
+
+Semmi extra — a persist() már jó.
+
+------------------------------------------------------------------------
+
+PATCH #7 — InputTableManager
+
+Presenter hívja:
+
+    view->refresh_InputTable();
+
+------------------------------------------------------------------------
+
+⭐ Készen állok a patch megírására
+
+Ha kéred, megírom:
+
+-   a teljes CloneRequestDialog UI‑t,
+-   a presenter patch‑et,
+-   a fájlnév‑tag kezelő kódot,
+-   a MainWindow módosítást,
+-   a registry frissítést.
+
+Csak mondd:
+
+👉 „Kérem a patch‑et”
+
+*
+*
+*
+*
+*
+
+
+Zoltán, akkor jön a nagy, lineárisan végrehajtható, audit‑tiszta,
+pontonkénti refaktor‑terv, amelynek utolsó pontja a patching terv —
+ahogy mindig kéred.
+
+Ez a terv nem változtat a működésen, csak szétszedi az OptimizerModel‑t
+jól elkülönülő modulokra, hogy:
+
+-   átlátható legyen,
+-   auditálható legyen,
+-   ne legyen több rejtett mellékhatás,
+-   és a jövőbeli fejlesztések ne okozzanak regressziót.
+
+A terv szigorúan lineáris, minden pont önállóan végrehajtható, és minden
+pont után a rendszer működőképes marad.
+
+------------------------------------------------------------------------
+
+⭐ OPTIMALIZERMODEL REFAKTOR – PONTONKÉNT VÉGREHAJTHATÓ TERV
+
+(utolsó pont: patching terv)
+
+------------------------------------------------------------------------
+
+1️⃣ PONT — Pending statisztika kiszervezése (alacsony kockázat)
+
+Cél
+
+A optimize() elején lévő 80+ soros pending‑elemző blokk kiszervezése.
+
+Lépések
+
+1.  Hozz létre egy új fájlt:
+    pendinganalyzer.h / pendinganalyzer.cpp
+
+2.  Hozz létre egy struktúrát:
+
+        struct PendingStats {
+            QUuid targetMaterialId;
+            int totalPending;
+            int totalLength;
+            QUuid maxMat;
+            int maxCount;
+        };
+
+3.  Hozz létre egy függvényt:
+
+        PendingStats PendingAnalyzer::analyze(
+            const QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>>& piecesByMaterial,
+            TargetHeuristic heuristic);
+
+4.  A optimize() elejéről kivágod a teljes pending‑elemző blokkot, és
+    átteszed ide.
+
+5.  A optimize()‑ban csak ennyi marad:
+
+        auto stats = PendingAnalyzer::analyze(piecesByMaterial, heuristic);
+
+Eredmény
+
+-   optimize() eleje 80 sorral rövidebb
+-   pending logika külön modulban, auditálható
+
+------------------------------------------------------------------------
+
+2️⃣ PONT — Rod‑init logika szétszedése (LEGNAGYOBB NYERESÉG)
+
+Cél
+
+A reusable + stock + lineage + dpLimit logika külön modulba szervezése.
+
+Lépések
+
+1.  Hozz létre három új fájlt:
+
+    -   reusablerodselector.h/cpp
+    -   stockrodselector.h/cpp
+    -   rodinitializer.h/cpp
+
+2.  A reusable keresést tedd át a ReusableRodSelector‑ba.
+
+3.  A stock fallback‑et tedd át a StockRodSelector‑ba.
+
+4.  A lineage mapping + dpLimit számítást tedd át a RodInitializer‑be.
+
+5.  Az OptimizerModel::initRodForMaterial() → csak delegáljon:
+
+        return RodInitializer::init(...);
+
+Eredmény
+
+-   a rúdválasztás logikája 150 sor helyett 3×20 sor
+-   könnyen tesztelhető
+-   nincs több rejtett mellékhatás
+
+------------------------------------------------------------------------
+
+3️⃣ PONT — Rod‑loop kiszervezése külön osztályba
+
+Cél
+
+A rod‑loop (step hívások, break feltételek, leftover commit) külön
+modulba kerüljön.
+
+Lépések
+
+1.  Hozz létre egy új fájlt:
+    rodloopcontroller.h/cpp
+
+2.  Hozz létre egy függvényt:
+
+        RodLoopController::run(
+            groupVec,
+            rod,
+            machine,
+            currentOpId,
+            rodId,
+            kerf_mm,
+            model);
+
+3.  A optimize() rod‑loop részét teljes egészében átteszed ide.
+
+4.  A optimize()‑ban csak ennyi marad:
+
+        RodLoopController::run(...);
+
+Eredmény
+
+-   optimize() közepe 150 sorral rövidebb
+-   rod‑loop logika egy helyen, auditálható
+
+------------------------------------------------------------------------
+
+4️⃣ PONT — Leftover lifecycle teljes kiszervezése
+
+Cél
+
+A leftover kezelés (tiltás, commit, lineage mapping) ne legyen
+szétszórva.
+
+Lépések
+
+1.  A LeftoverLifecycle‑t bővítsd ki:
+    -   registerUsedReusable()
+    -   commitLocalLeftovers()
+    -   mapRodLineage()
+2.  A optimize()‑ból és commitCutResult‑ból kivágod a leftover‑kezelést.
+
+Eredmény
+
+-   leftover logika egy helyen
+-   nincs több rejtett mellékhatás
+
+------------------------------------------------------------------------
+
+5️⃣ PONT — Telemetry kiszervezése (befejezés)
+
+Cél
+
+A telemetry logolás teljesen külön modulba kerüljön.
+
+Lépések
+
+1.  A TelemetryHelper‑be tedd át:
+
+    -   pending statisztika logolása
+    -   rod‑loop összegzés
+    -   leftover összegzés
+
+2.  optimize() végén csak ennyi marad:
+
+        TelemetryHelper::logSummary(_fitTelemetry);
+
+Eredmény
+
+-   optimize() vége letisztul
+-   telemetry egy helyen
+
+------------------------------------------------------------------------
+
+6️⃣ PONT — commitCutResult tisztítása
+
+Cél
+
+A commitCutResult csak a commitért feleljen.
+
+Lépések
+
+1.  A leftover tiltást átteszed a LeftoverLifecycle‑ba.
+2.  A lineage validálást meghagyod.
+3.  A dpLimit / remainingLength frissítést meghagyod.
+4.  A groupVec törlést meghagyod.
+
+Eredmény
+
+-   commitCutResult 40%-kal rövidebb
+-   felelőssége tiszta
+
+------------------------------------------------------------------------
+
+7️⃣ PONT — OptimizerModel::optimize() végső tisztítása
+
+Cél
+
+A optimize() narratív, olvasható, 150–200 soros legyen.
+
+Lépések
+
+1.  A fenti modulokra bontás után a optimize() így fog kinézni:
+
+    1. pending statisztika
+    2. gép választás
+    3. rúd inicializálás
+    4. rod-loop futtatása
+    5. leftover commit
+    6. telemetry
+
+Eredmény
+
+-   optimize() végre olvasható
+-   auditálható
+-   nem kell többé „szétszórt logikát” keresni
+
+------------------------------------------------------------------------
+
+⭐ 8️⃣ PONT — PATCHING TERV (végrehajtási sorrend)
+
+(ez a kért utolsó pont)
+
+Ez a konkrét végrehajtási sorrend, amelyet követve a rendszer minden
+lépés után működőképes marad.
+
+PATCH #1 — PendingAnalyzer bevezetése
+
+-   új fájl
+-   pending logika áthelyezése
+-   optimize() módosítása
+
+PATCH #2 — ReusableRodSelector + StockRodSelector bevezetése
+
+-   reusable logika kivágása
+-   stock logika kivágása
+-   initRodForMaterial delegálása
+
+PATCH #3 — RodInitializer bevezetése
+
+-   dpLimit számítás
+-   lineage mapping
+-   snapshot frissítés
+-   initRodForMaterial tisztítása
+
+PATCH #4 — RodLoopController bevezetése
+
+-   rod‑loop kivágása
+-   optimize() tisztítása
+
+PATCH #5 — LeftoverLifecycle bővítése
+
+-   leftover tiltás
+-   leftover commit
+-   leftover lineage mapping
+
+PATCH #6 — TelemetryHelper bővítése
+
+-   pending log
+-   rod‑loop log
+-   leftover log
+
+PATCH #7 — commitCutResult tisztítása
+
+-   leftover tiltás áthelyezése
+-   felelősség tisztítása
+
+PATCH #8 — optimize() végső tisztítása
+
+-   felesleges logok eltávolítása
+-   narratív pipeline kialakítása
+
+------------------------------------------------------------------------
+
+⭐ KÉSZ
+
+Ez a terv:
+
+-   lineáris,
+-   végrehajtható,
+-   audit‑tiszta,
+-   nem változtat a működésen,
+-   és a végén egy patching tervvel zárul, ahogy kérted.
+
+Ha szeretnéd, most megcsinálom PATCH #1‑et (PendingAnalyzer skeleton +
+diff).

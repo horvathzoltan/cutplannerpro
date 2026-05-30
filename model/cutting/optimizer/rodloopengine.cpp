@@ -76,7 +76,7 @@ RodStepResult RodLoopEngine::step(
     {
         zInfo("   ⚠ Overfill — single‑piece fallback vizsgálata");
         std::optional<Cutting::Piece::PieceWithMaterial> single =
-            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, kerf_mm);
+            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
         if (single.has_value()) {
             CutResult cr2 = model.cutSingle_AndCommit(
                 *single, remainingLength, dpLimit,
@@ -116,7 +116,7 @@ RodStepResult RodLoopEngine::step(
         remainingLength < OptimizerConstants::GOOD_LEFTOVER_MIN) {
 
         auto onePieceFit =
-            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, kerf_mm);
+            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
         if (onePieceFit.has_value()) {
             const Cutting::Piece::PieceWithMaterial& piece = *onePieceFit;
 
@@ -142,7 +142,7 @@ RodStepResult RodLoopEngine::step(
 
     if (remainingLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
         auto onePieceFit =
-            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, kerf_mm);
+            OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
         if (onePieceFit.has_value()) {
 
             SelectedRod rod2 = rod;

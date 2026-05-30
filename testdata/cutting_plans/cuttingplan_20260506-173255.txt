@@ -29,4 +29,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1440";"PrémiumHoliday";0;0;850;;1;0;0;none;"";NP-T-7016;Width;false
 "1443";"PrémiumHoliday";0;0;2385;;1;0;0;none;"";NP-T-7016;Width;false
 "1444";"PrémiumHoliday";0;0;3609;;1;0;0;none;"";NP-T-7016;Width;false
-"1445";"PrémiumHoliday";0;0;2290;;1;0;0;none;"";NP-T-7016;Width;false
+"1445";"PrémiumHoliday";0;0;2280;;1;0;0;none;"";NP-T-7016;Width;false

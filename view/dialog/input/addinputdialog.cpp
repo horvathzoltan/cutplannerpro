@@ -20,7 +20,6 @@ AddInputDialog::AddInputDialog(QWidget *parent)
     ui->setupUi(this);
     populateMaterialCombo();
 
-
     // Anyag ajánlása (ha volt korábbi)
     if (!s_lastMaterialId.isNull()) {
         int idx = ui->comboMaterial->findData(s_lastMaterialId);
@@ -47,6 +46,35 @@ AddInputDialog::AddInputDialog(QWidget *parent)
         ui->editLength->setFocus();
         ui->editLength->selectAll();
     }
+
+
+    ui->editLength->setValidator(new QIntValidator(0, 100000, this));
+
+    connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged),
+            this, [this](int qty){
+                if (qty == 1) {
+                    ui->spinBox_left->setMaximum(1);
+                    ui->spinBox_right->setMaximum(1);
+                } else {
+                    ui->spinBox_left->setMaximum(qty);
+                    ui->spinBox_right->setMaximum(qty);
+                }
+            });
+
+    QString bigArrows = R"(
+QSpinBox::up-button {
+    width: 24px;
+    height: 18px;
+}
+QSpinBox::down-button {
+    width: 24px;
+    height: 18px;
+}
+)";
+
+    ui->spinBox_left->setStyleSheet(bigArrows);
+    ui->spinBox_right->setStyleSheet(bigArrows);
+    ui->spinQuantity->setStyleSheet(bigArrows);
 
 }
 
@@ -147,6 +175,23 @@ bool AddInputDialog::validateInputs() {
         QMessageBox::warning(this,
                              "Adatellenőrzés",
                              "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
+        return false;
+    }
+
+    int len = ui->editLength->text().toInt();
+    if (len < 100) {
+        QMessageBox::warning(this,
+                             "Hibás hossz",
+                             "A vágási hossz nem lehet 100 mm alatt. "
+                             "Ha tizedespontot írtál, javítsd ki egész számra.");
+        return false;
+    }
+
+    if (len < 200) {
+        QMessageBox::warning(this,
+                             "Túl rövid darab",
+                             "200 mm alatti darabot nem vágunk. "
+                             "A gyorsdaraboló nem szalámiszeletelő.");
         return false;
     }
 

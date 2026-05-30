@@ -25,17 +25,34 @@ CutResult CutEngine::cutSingle(
     cr.used = 0;
     cr.waste = 0;
 
-    int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss(1, kerf_mm);
+    //int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss_1(1, kerf_mm);
+    auto info = OptimizerUtils::computePhysicalCut({ piece }, kerf_mm, remainingLength);
 
-    if (used > remainingLength) {
-        zInfo(QString("✖ CUT SINGLE — túlvágás történt (used=%1 > remaining=%2)")
-                  .arg(used)
+    double usedNoKerf    = info.totalCut;   // darabhossz
+    double usedPhysical  = info.used;       // darabhossz + kerf
+
+    // 1) DP-limit ellenőrzés — kerf nélkül
+    if (usedNoKerf > dpLimit) {
+        zInfo(QString("✖ CUT SINGLE — DP túllépés (usedNoKerf=%1 > dpLimit=%2)")
+                  .arg(usedNoKerf)
+                  .arg(dpLimit));
+        cr.status = CutResultStatus::Overfill;
+        return cr;
+    }
+
+    // 2) Fizikai Overfill — kerf-fel
+    if (usedPhysical > remainingLength) {
+        zInfo(QString("✖ CUT SINGLE — fizikai túlvágás (usedPhysical=%1 > remaining=%2)")
+                  .arg(usedPhysical)
                   .arg(remainingLength));
         cr.status = CutResultStatus::Overfill;
         return cr;
     }
 
-    int waste = remainingLength - used;
+    double waste = remainingLength - usedPhysical;
+
+
+    //t waste = remainingLength - used;
 
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
@@ -87,7 +104,7 @@ CutResult CutEngine::cutSingle(
 
     cr.status = CutResultStatus::Ok;
     cr.planId = p.planId;
-    cr.used = used;
+    cr.used = usedPhysical;
     cr.waste = waste;
     cr.plan = p;
     cr.result = result;
@@ -123,19 +140,36 @@ CutResult CutEngine::cutCombo(
     cr.used = 0;
     cr.waste = 0;
 
-    int totalCut  = OptimizerUtils::sumLengths(combo);
-    int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
-    int used      = totalCut + kerfTotal;
+   // int totalCut  = OptimizerUtils::sumLengths(combo);
+   // int kerfTotal = OptimizerUtils::roundKerfLoss(combo.size(), kerf_mm);
+   // int used      = totalCut + kerfTotal;
+    auto info = OptimizerUtils::computePhysicalCut(combo, kerf_mm, remainingLength);
 
-    if (used > remainingLength) {
-        zInfo(QString("✖ CUT COMBO — túlvágás történt (used=%1 > remaining=%2)")
-                  .arg(used)
+    double usedNoKerf    = info.totalCut;   // darabhossz
+    double usedPhysical  = info.used;       // darabhossz + kerf
+
+    // 1) DP-limit ellenőrzés — kerf nélkül
+    if (usedNoKerf > dpLimit) {
+        zInfo(QString("✖ CUT COMBO — DP túllépés (usedNoKerf=%1 > dpLimit=%2)")
+                  .arg(usedNoKerf)
+                  .arg(dpLimit));
+        cr.status = CutResultStatus::Overfill;
+        return cr;
+    }
+
+    // 2) Fizikai Overfill — kerf-fel
+    if (usedPhysical > remainingLength) {
+        zInfo(QString("✖ CUT COMBO — fizikai túlvágás (usedPhysical=%1 > remaining=%2)")
+                  .arg(usedPhysical)
                   .arg(remainingLength));
         cr.status = CutResultStatus::Overfill;
         return cr;
     }
 
-    int waste = remainingLength - used;
+    double waste = remainingLength - usedPhysical;
+
+
+    //int waste = remainingLength - used;
 
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
@@ -181,7 +215,7 @@ CutResult CutEngine::cutCombo(
 
     cr.status = CutResultStatus::Ok;
     cr.planId = p.planId;
-    cr.used = used;
+    cr.used = usedPhysical;
     cr.waste = waste;
     cr.plan = p;
     cr.result = result;

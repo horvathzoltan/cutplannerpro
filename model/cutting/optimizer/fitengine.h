@@ -30,9 +30,9 @@ public:
             return "Unknown";
         }
 
-        int waste = 0;
-        int used = 0;
-        int kerfTotal = 0;
+        double waste = 0;
+        double used = 0;
+        double kerfTotal = 0;
         int pieceCount = 0;
 
         // időprofil

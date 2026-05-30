@@ -42,6 +42,13 @@ namespace Optimizer {
  * - ByTotalLength = "ahol több az anyag"
  */
 
+struct RodInitResult {
+    bool ok = false;
+    SelectedRod rod;
+    int remainingLength = 0;
+    int dpLimit = 0;
+};
+
 
 class OptimizerModel : public QObject {
     Q_OBJECT
@@ -110,13 +117,16 @@ public:
     CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
     CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 
-
-    void applyFrontTrimToPlan(const QUuid &planId, double kerf_mm, bool isStockRod);
-
     FitEngine::FitEngineTelemetry _fitTelemetry;
 
     int rodLoopIteration = 0; // rod-loop iteráció számláló
 
+
+    RodInitResult initRodForMaterial(
+        const QUuid& targetMaterialId,
+        QVector<LeftoverStockEntry>& globalSnapshot,
+        QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
+        double kerf_mm);
 
 
 private:
@@ -159,19 +169,9 @@ private:
 private:
     QVector<LeftoverStockEntry> _localLeftovers;  // csak az aktuális optimize futás idejére
 
-    //void logCutState(const Cutting::Plan::CutPlan &p, int remainingLengthBefore, int remainingLengthAfter);
-
-    void createPhysicalLeftover(const SelectedRod& rod,
-                     int remainingLength,
-                     int currentOpId);
-
     CutResult commitCutResult(CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
-
-    static void validateLineage(const Cutting::Plan::CutPlan &plan, const QVector<Cutting::Plan::CutPlan>& result_plans);
-    static void validateLineage(const LeftoverStockEntry &entry, const QVector<Cutting::Plan::CutPlan>& result_plans);
-    static QString lineageTree(const Cutting::Plan::CutPlan &plan, const QVector<Cutting::Plan::CutPlan>& result_plans);
-    static QString lineageTree(const LeftoverStockEntry &entry, const QVector<Cutting::Plan::CutPlan>& result_plans);
 };
+
 
 } //end namespace Optimizer
 } //end namespace Cutting

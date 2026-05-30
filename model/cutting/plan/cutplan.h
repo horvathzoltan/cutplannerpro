@@ -77,6 +77,7 @@ public:
 
     // 🧠 Viselkedésalapú metódusok
     bool isReusable() const;
+    bool isStockRod() const;
     bool isFinalized() const;
 
     QString materialName() const;        // Anyag neve — materialId alapján

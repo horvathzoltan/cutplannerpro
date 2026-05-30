@@ -2,6 +2,7 @@
 #include "reusablefitengine.h"
 #include "service/cutting/optimizer/optimizerutils.h"
 #include "materials/utils/material_group_utils.h"
+#include <materials/registry/material_registry.h>
 
 /*
 ♻️ A reusable rudak sorbarendezése garantálja, hogy előbb próbáljuk a kisebb, „kockáztathatóbb” rudakat
@@ -81,9 +82,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     if (smallestPending == std::numeric_limits<int>::max())
         smallestPending = 0;
 
-    int minUsefulLimit = smallestPending > 0
-                             ? smallestPending + OptimizerUtils::roundKerfLoss(1, kerf_mm)
-                             : 0;
+    double minUsefulLimit = smallestPending;
+    // double minUsefulLimit = smallestPending > 0
+    //                          ? smallestPending + kerf_mm
+    //                          : 0.0;
 
     zInfo("LEFTOVER LOOP START");
     for (int i = 0; i < mergedView.size(); ++i) {
@@ -110,9 +112,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
 
-        int minSingleFit = smallestPending > 0
-                               ? smallestPending + OptimizerUtils::roundKerfLoss(1, kerf_mm)
-                               : 0;
+        double minSingleFit = smallestPending;/* > 0
+                               ? smallestPending + kerf_mm
+                               : 0;*/
+
         if (minSingleFit > 0 && stock.availableLength_mm < minSingleFit) {
             zInfo(QString("   ✖ Elutasítva — leftover nem tud befogadni egyetlen darabot sem (minSingleFit=%1 mm)")
                       .arg(minSingleFit));
@@ -124,13 +127,24 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
-        const auto single = OptimizerUtils::findSingleExactFit(relevantPieces, stock.availableLength_mm, kerf_mm);
+        const auto single = OptimizerUtils::findSingleExactFit(
+            relevantPieces, stock.availableLength_mm, 0.0);
         if (single.has_value()) {
-            int kerfTotal = OptimizerUtils::roundKerfLoss(1, kerf_mm);
-            int used = single->info.length_mm + kerfTotal;
-            int waste = OptimizerUtils::computeWasteInt(stock.availableLength_mm, used);
+            // Fizikai kerf modell
+            auto info = OptimizerUtils::computePhysicalCut({ *single }, 0.0, stock.availableLength_mm);
+
+            double used  = info.used;
+            double waste = stock.availableLength_mm - used;
+
+
             if (waste == 0) {
-                return ReusableCandidate{ i, stock, QVector<Cutting::Piece::PieceWithMaterial>{ *single }, waste, ReusableCandidate::Source::GlobalSnapshot };
+                return ReusableCandidate{
+                    i,
+                    stock,
+                    QVector<Cutting::Piece::PieceWithMaterial>{ *single },
+                    static_cast<int>(waste),
+                    ReusableCandidate::Source::GlobalSnapshot
+                };
             }
         }
 
@@ -170,12 +184,12 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         if (fit.combo.isEmpty()) continue;
 
         // A FitResult már tartalmazza:
-        int used           = fit.used;
-        int waste          = fit.waste;
-        int leftoverLength = stock.availableLength_mm - used;
+        int usedNoKerf     = fit.used;                     // darabhossz kerf nélkül
+        int waste          = fit.waste;                    // leftoverLimit - usedNoKerf
+        int leftoverLength = stock.availableLength_mm - usedNoKerf;
 
-        if (used > stock.availableLength_mm) continue;
-
+        if (usedNoKerf > stock.availableLength_mm)         // elvileg sosem igaz, de maradhat guardnak
+            continue;
 
         int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength);
 

@@ -12,6 +12,11 @@ bool CutPlan::isReusable() const
         return source == Cutting::Plan::Source::Reusable;
 }
 
+bool CutPlan::isStockRod() const
+{
+    return source == Cutting::Plan::Source::Stock;
+}
+
 bool CutPlan::isFinalized() const
 {
     // Completed vagy manuálisan lezárt (Abandoned) tervek már nem módosíthatók

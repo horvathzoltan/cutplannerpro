@@ -16,6 +16,7 @@ message( "TARGET = "$$TARGI )
 SOURCES += \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
+    model/cutting/optimizer/leftoverlifecycle.cpp \
     model/cutting/optimizer/reusablefitengine.cpp \
     model/cutting/optimizer/rodloopengine.cpp \
     model/cutting/optimizer/stockfitengine.cpp \
@@ -113,11 +114,15 @@ HEADERS += \
     model/cutting/optimizer/cutengine.h \
     model/cutting/optimizer/cuttypes.h \
     model/cutting/optimizer/fitengine.h \
+    model/cutting/optimizer/leftoverlifecycle.h \
+    model/cutting/optimizer/lineagehelper.h \
     model/cutting/optimizer/reusablefitengine.h \
     model/cutting/optimizer/rodloopengine.h \
+    model/cutting/optimizer/segmentpostprocess.h \
     model/cutting/optimizer/selectedrod.h \
     model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
+    model/cutting/optimizer/telemetryhelper.h \
     model/cutting/plan/parentinfo.h \
     model/cutting/plan/segments.h \
     model/inventorysnapshot.h \
