@@ -47,8 +47,11 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <ui_clonerequestdialog.h>
 
 #include <model/registries/cuttingmachineregistry.h>
+
+#include <model/repositories/cuttingrequestrepository.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -1054,6 +1057,66 @@ void CuttingPresenter::UpdateCompensation(const QUuid& machineId, double newVal)
 
     if (view)
         view->renderCuttingInstructions(_machineCutsList);
+}
+
+void CuttingPresenter::cloneRequestDialog() {
+
+    CloneRequestDialog dlg(view);
+    if (dlg.exec() != QDialog::Accepted) return;
+
+    auto rules = dlg.result();     // material‑wise szabályok
+    QString tag = dlg.tag();       // fájlnév tag
+
+    cloneRequest(rules, tag);
+
+}
+
+void CuttingPresenter::cloneRequest(const QVector<CloneMaterialRule>& rules, const QString& tag)
+{
+    QVector<Cutting::Plan::Request> all = CuttingPlanRequestRegistry::instance().readAll();
+    QVector<Cutting::Plan::Request> cloned;
+
+    for (const auto& req : all) {
+
+        Cutting::Plan::Request r = req;
+        r.requestId = QUuid::createUuid();
+
+        // Megkeressük a request materialjához tartozó szabályt
+        for (const auto& rule : rules) {
+            if (rule.originalMaterialId == req.materialId) {
+
+                // Anyagcsere csak akkor, ha a user választott újat
+                if (!rule.newMaterialId.isNull())
+                    r.materialId = rule.newMaterialId;
+
+                // Hossz delta csak akkor, ha nem 0
+                if (rule.delta != 0)
+                    r.requiredLength = req.requiredLength + rule.delta;
+
+                break;
+            }
+        }
+
+        cloned.append(r);
+    }
+
+    // Új fájlnév generálása
+    QString oldName = SettingsManager::instance().cuttingPlanFileName();
+    QString base = QFileInfo(oldName).completeBaseName();
+    int idx = base.indexOf('_', QString("cuttingplan_YYYYMMDD-HHMMSS").size());
+    QString prefix = (idx == -1) ? base : base.left(idx);
+    QString newName = prefix + "_" + tag + ".txt";
+
+    // Mentés
+    SettingsManager::instance().setCuttingPlanFileName(newName);
+    CuttingPlanRequestRegistry::instance().setData(cloned);
+
+    // GUI frissítés
+    if (view) {
+        QString full = FileNameHelper::instance().getCuttingPlanFilePath(newName);
+        view->setInputFileLabel(newName, full);
+        view->refresh_InputTableFromRegistry();
+    }
 }
 
 

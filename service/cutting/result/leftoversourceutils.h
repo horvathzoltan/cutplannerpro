@@ -4,7 +4,7 @@
 #include <QString>
 
 namespace LeftoverSourceUtils {
-QString toString(Cutting::Result::LeftoverSource source) {
+inline QString toString(Cutting::Result::LeftoverSource source) {
     switch (source) {
     case Cutting::Result::LeftoverSource::Manual: return "Manual";
     case Cutting::Result::LeftoverSource::Optimization: return "Optimization";
@@ -12,9 +12,10 @@ QString toString(Cutting::Result::LeftoverSource source) {
     }
 }
 
-Cutting::Result::LeftoverSource fromString(const QString& str) {
-    if (str == "Manual") return Cutting::Result::LeftoverSource::Manual;
-    if (str == "Optimization") return Cutting::Result::LeftoverSource::Optimization;
+inline Cutting::Result::LeftoverSource fromString(const QString& str) {
+    QString k = str.trimmed().toLower();
+    if (k == "manual") return Cutting::Result::LeftoverSource::Manual;
+    if (k == "optimization") return Cutting::Result::LeftoverSource::Optimization;
     return Cutting::Result::LeftoverSource::Undefined;
 }
 }

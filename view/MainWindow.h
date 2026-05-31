@@ -63,11 +63,15 @@ public:
 
     void switchToCuttingPlanTab();
     void switchToInstructionsPlanTab();
+
+    void refresh_InputTableFromRegistry();
+
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
     void handle_btn_ClearRequest_clicked();
     void handle_btn_OpenRequest_clicked();
+    void handle_btn_CloneRequest_clicked();
 
     void handle_btn_Optimize_clicked();
     void handle_btn_ExportCutPlanSummary_clicked();

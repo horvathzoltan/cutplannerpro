@@ -88,4 +88,9 @@ public:
     static QString makeLeftoverId(int counter) {
         return makeGenericId("RST", counter);
     }
+
+    static QString makeManualLeftoverId(int counter) {
+        return makeGenericId("RSM", counter);
+    }
+
 };

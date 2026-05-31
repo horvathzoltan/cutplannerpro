@@ -116,4 +116,19 @@ std::optional<LeftoverStockEntry> LeftoverStockRegistry::findById(const QUuid& e
     return std::nullopt;
 }
 
+bool LeftoverStockRegistry::existsBarcode(const QString& barcode,
+                                          const QUuid& ignoreId) const
+{
+    QString bc = barcode.trimmed();
+
+    for (const auto& entry : _data) {
+        if (entry.entryId == ignoreId)
+            continue; // szerkesztésnél ne önmagával ütközzön
+
+        if (entry.barcode.compare(bc, Qt::CaseInsensitive) == 0)
+            return true;
+    }
+    return false;
+}
+
 

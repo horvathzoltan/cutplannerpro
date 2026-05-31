@@ -42,4 +42,6 @@ public:
     void setDataEphemeral(const QVector<Cutting::Plan::Request>& v) {
         _data = v;   // csak memóriába tölt, nem hív persist()
     }
+
+    void clone(const QString& newFileName);
 };

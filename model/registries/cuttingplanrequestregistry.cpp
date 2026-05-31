@@ -91,3 +91,7 @@ Cutting::Plan::Request* CuttingPlanRequestRegistry::findById(const QUuid& reques
     return nullptr;
 }
 
+void CuttingPlanRequestRegistry::clone(const QString& newFileName){
+    SettingsManager::instance().setCuttingPlanFileName(newFileName);
+    persist();
+}

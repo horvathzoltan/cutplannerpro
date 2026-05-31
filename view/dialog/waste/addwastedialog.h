@@ -37,4 +37,11 @@ private:
     QUuid current_storageId;     // 🆕
     void populateStorageCombo(); // 🆕
     QUuid selectedStorageId() const; // 🆕
+
+    static QUuid s_lastMaterialId;
+    static int   s_lastLength;
+    static QUuid s_lastStorageId;
+    static QString s_lastBarcode;   // 🆕
+
+
 };

@@ -25,7 +25,7 @@ inline constexpr auto CuttingStrategy = "cutting_strategy";
 // optimize számlálók
 inline constexpr auto MaterialCounter = "material_counter";
 inline constexpr auto LeftoverCounter = "leftover_counter";
-
+inline constexpr auto ManualLeftoverCounter = "manual_leftover_counter";
 }
 
 enum class TestMode {
@@ -89,6 +89,11 @@ public:
     int nextMaterialCounter();
     int nextLeftoverCounter();
 
+    int manualLeftoverCounter() const;
+    int nextManualLeftoverCounter();
+
+    //void setManualLeftoverCounter(int value);
+
     void save();
     void load(int argc, char* argv[]);
 
@@ -111,4 +116,5 @@ private:
 
     void detectTestMode(int argc, char *argv[]);
 };
+
 

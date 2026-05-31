@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <model/cutting/instruction/cutinstruction.h>
+#include <view/dialog/input/clonerequestdialog.h>
 #include "../model/cutting/optimizer/optimizermodel.h"
 #include "../service/storageaudit/auditstatemanager.h"
 #include "../model/archivedwasteentry.h"
@@ -27,6 +28,10 @@ public:
     void add_CuttingPlanRequest(const Cutting::Plan::Request& req);
     void update_CuttingPlanRequest(const Cutting::Plan::Request& updated);
     void remove_CuttingPlanRequest(const QUuid &id);
+
+    void cloneRequestDialog();
+    void cloneRequest(const QVector<CloneMaterialRule>& rules, const QString& tag);
+
     //
     void removeAll_CuttingPlanRequests();
 
@@ -86,6 +91,8 @@ public:
 
     static constexpr int printedLineWidth = 67;
     static constexpr int printedPageHeight = 46;
+
+
 
 private:
     MainWindow* view;

@@ -1,18 +1,57 @@
 #include "addwastedialog.h"
+#include "service/cutting/result/leftoversourceutils.h"
 #include "ui_addwastedialog.h"
 #include "materials/registry/material_registry.h"
 #include <QMessageBox>
+#include <common/identifierutils.h>
+#include <common/settingsmanager.h>
+#include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
+
+QUuid AddWasteDialog::s_lastMaterialId;
+int   AddWasteDialog::s_lastLength = 0;
+QUuid AddWasteDialog::s_lastStorageId;
+QString AddWasteDialog::s_lastBarcode;
 
 AddWasteDialog::AddWasteDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddWasteDialog)
-    , current_entryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
+    , current_entryId(QUuid::createUuid())
 {
     ui->setupUi(this);
     populateMaterialCombo();
-        populateStorageCombo();   // 🆕
+    populateStorageCombo();
+
+    // Anyag ajánlása
+    if (!s_lastMaterialId.isNull()) {
+        int idx = ui->comboMaterial->findData(s_lastMaterialId);
+        if (idx >= 0)
+            ui->comboMaterial->setCurrentIndex(idx);
+    }
+
+    // Hossz ajánlása
+    if (s_lastLength > 0)
+        ui->editLength->setText(QString::number(s_lastLength));
+
+    // Tárhely ajánlása
+    if (!s_lastStorageId.isNull()) {
+        int sidx = ui->comboStorage->findData(s_lastStorageId);
+        if (sidx >= 0)
+            ui->comboStorage->setCurrentIndex(sidx);
+    }
+
+   //  // Vonalkód ajánlása → következő érték mindíg az előzőből!
+   //  QString bc;
+   //  if (!s_lastBarcode.isEmpty()) {
+   //      bool ok = false;
+   //      int num = s_lastBarcode.toInt(&ok);
+   //      if (ok)
+   //          bc = QString::number(num + 1);
+   //  }
+
+   //  ui->editBarcode->setText(bc);
 }
+
 
 AddWasteDialog::~AddWasteDialog()
 {
@@ -33,7 +72,7 @@ QUuid AddWasteDialog::selectedMaterialId() const {
 }
 
 QString AddWasteDialog::barcode() const {
-    return ui->editBarcode->text().trimmed();
+    return ui->editBarcode->text().trimmed().toUpper();
 }
 
 int AddWasteDialog::availableLength() const {
@@ -45,7 +84,9 @@ int AddWasteDialog::availableLength() const {
 // }
 
 Cutting::Result::LeftoverSource AddWasteDialog::source() const {
-    return static_cast<Cutting::Result::LeftoverSource>(ui->editSourceValue->text().toInt()); // vagy szöveges → értelmezés
+    QString a = ui->editSourceValue->text();
+    Cutting::Result::LeftoverSource b = LeftoverSourceUtils::fromString(a);
+    return b;
 }
 
 LeftoverStockEntry AddWasteDialog::getModel() const {
@@ -75,9 +116,37 @@ void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
     current_entryId = entry.entryId; // ha szerkesztés módban vagyunk
     current_storageId  = entry.storageId;
 
-    ui->editBarcode->setText(entry.barcode);
+    QString bc = entry.barcode.trimmed().toUpper();
+
+    // 🔥 Ha a modelben nincs barcode → generáljunk egyet
+    if (bc.isEmpty()) {
+
+        // 1) Ha volt előző kézi érték → próbáljuk +1-ezni
+        if (!s_lastBarcode.isEmpty()) {
+            bool ok = false;
+            int num = s_lastBarcode.toInt(&ok);
+            if (ok)
+                bc = QString::number(num + 1);
+        }
+
+        // 2) Ha még mindig üres → számlálóból generálunk
+        if (bc.isEmpty()) {
+            int next = SettingsManager::instance().nextManualLeftoverCounter();
+            bc = IdentifierUtils::makeManualLeftoverId(next);
+        }
+
+        // 3) Ütközés ellenőrzése → lépkedünk tovább
+        while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
+            int next = SettingsManager::instance().nextManualLeftoverCounter();
+            bc = IdentifierUtils::makeManualLeftoverId(next);
+        }
+    }
+    ui->editBarcode->setText(bc);
+
     ui->editLength->setText(QString::number(entry.availableLength_mm));
-    ui->editSourceValue->setText(entry.sourceAsString());
+
+    auto leftoverTxt = LeftoverSourceUtils::toString(entry.source);
+    ui->editSourceValue->setText(leftoverTxt);
 
     int index = ui->comboMaterial->findData(entry.materialId);
     if (index >= 0)
@@ -101,12 +170,21 @@ bool AddWasteDialog::validateInputs() {
         return false;
     }
 
-    if (barcode().isEmpty()) {
-        QMessageBox::warning(this, "Hiányzó vonalkód", "Add meg a hulladékdarab azonosítóját!");
+    // ❗ Hullóknál a storage opcionális → NEM ellenőrizzük
+
+    QString bc = barcode().trimmed();
+    if (bc.isEmpty()) {
+        QMessageBox::warning(this, "Hiányzó vonalkód", "Adj meg egy érvényes vonalkódot!");
         return false;
     }
 
-        // ❗ Hullóknál a storage opcionális → NEM ellenőrizzük
+    // 🔥 Barcode egyediség ellenőrzése
+    if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
+        QMessageBox::warning(this,
+                             "Duplikált vonalkód",
+                             "Ez a vonalkód már létezik a hullók között!");
+        return false;
+    }
 
     return true;
 }
@@ -115,8 +193,25 @@ void AddWasteDialog::accept() {
     if (!validateInputs())
         return;
 
+    s_lastMaterialId = selectedMaterialId();
+
+    bool ok = false;
+    int len = ui->editLength->text().toInt(&ok);
+    if (ok && len > 0)
+        s_lastLength = len;
+
+    QUuid sid = selectedStorageId();
+    if (!sid.isNull())
+        s_lastStorageId = sid;
+
+    // Vonalkód mentése → következő ajánláshoz
+    QString bc = barcode();
+    if (!bc.isEmpty())
+        s_lastBarcode = bc;
+
     QDialog::accept();
 }
+
 
 void AddWasteDialog::populateStorageCombo() {
     ui->comboStorage->clear();

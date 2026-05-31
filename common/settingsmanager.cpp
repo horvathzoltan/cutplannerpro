@@ -180,6 +180,8 @@ int SettingsManager::materialCounter() const { return _settings.value(SettingsKe
 
 int SettingsManager::leftoverCounter() const { return _settings.value(SettingsKeys::LeftoverCounter, 0).toInt(); }
 
+int SettingsManager::manualLeftoverCounter() const { return _settings.value(SettingsKeys::ManualLeftoverCounter, 0).toInt(); }
+
 int SettingsManager::nextMaterialCounter() {
     int c = materialCounter() + 1;
     persist(SettingsKeys::MaterialCounter, QString::number(c));
@@ -191,3 +193,13 @@ int SettingsManager::nextLeftoverCounter() {
     persist(SettingsKeys::LeftoverCounter, QString::number(c));
     return c;
 }
+
+int SettingsManager::nextManualLeftoverCounter() {
+    int c = manualLeftoverCounter() + 1;
+    persist(SettingsKeys::ManualLeftoverCounter, QString::number(c));
+    return c;
+}
+
+// void SettingsManager::setManualLeftoverCounter(int m){
+//     persist(SettingsKeys::ManualLeftoverCounter, QString::number(m));
+// }

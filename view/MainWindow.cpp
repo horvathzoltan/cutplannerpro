@@ -183,6 +183,9 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_ClearCuttingPlan, &QPushButton::clicked,
                this, &MainWindow::handle_btn_ClearRequest_clicked);
 
+    connect(ui->btn_CloneRequest, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_CloneRequest_clicked);
+
     // stock table
     connect(ui->btn_AddStockEntry, &QPushButton::clicked,
                this, &MainWindow::handle_btn_AddStockEntry_clicked);
@@ -401,6 +404,12 @@ void MainWindow::handle_btn_AddStockEntry_clicked()
 /*leftover stock*/
 void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
     AddWasteDialog dialog(this);
+
+    LeftoverStockEntry request0;
+    request0.source = Cutting::Result::LeftoverSource::Manual;
+    request0.availableLength_mm = 0; // alapérték, hogy ne legyen üres mező
+
+    dialog.setModel(request0); // előfeltöltés a forrással
 
     if (dialog.exec() != QDialog::Accepted)
         return;
@@ -924,6 +933,11 @@ void MainWindow::onCompensationChanged(const QUuid& machineId, double newVal) {
 
 }
 
+void MainWindow::refresh_InputTableFromRegistry()
+{
+    inputTableManager->refresh_TableFromRegistry();
+}
+
 
 // MainWindow.cpp
 void MainWindow::renderCuttingInstructions(const QVector<MachineCuts>& machineCutsList) {
@@ -1044,4 +1058,9 @@ void MainWindow::switchToCuttingPlanTab()
 void MainWindow::switchToInstructionsPlanTab()
 {
     ui->midBox->setCurrentWidget(ui->tab_5);
+}
+
+void MainWindow::handle_btn_CloneRequest_clicked()
+{
+    presenter->cloneRequestDialog();
 }

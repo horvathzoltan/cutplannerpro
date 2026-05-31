@@ -1,8 +1,5 @@
-1.1 a request length nem lehet benne se tizedes pont sem vessző
-1.2 ha a request length <100 az tizedespont hiba.
-1.3 200 mm alatt semmit nem vágunk. a gyorsdaraboló nem szalámiszeletelő
-2. ha egy darabos, checkbox a j/b, ha sok, akkor spin
-3. spin túl kicsi a nyíl
+
+
 4. batch anyag módosít
 5. batch length módosít
 

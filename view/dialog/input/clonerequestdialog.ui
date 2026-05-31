@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CloneRequestDialog</class>
+ <widget class="QDialog" name="CloneRequestDialog">
+  <property name="minimumSize">
+   <size>
+    <width>700</width>
+    <height>350</height>
+   </size>
+  </property>
+
+  <layout class="QVBoxLayout" name="mainLayout">
+
+   <!-- Fájlnév tag -->
+   <item>
+    <widget class="QLabel" name="labelTag">
+     <property name="text">
+      <string>Fájlnév tag</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="editTag"/>
+   </item>
+
+   <!-- Anyagonkénti beállítások -->
+   <item>
+    <widget class="QLabel" name="labelPerMaterial">
+     <property name="text">
+      <string>Anyagonkénti beállítások</string>
+     </property>
+    </widget>
+   </item>
+
+   <!-- ScrollArea a dinamikus soroknak -->
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidget">
+      <layout class="QVBoxLayout" name="perMaterialLayout"/>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- Gombok -->
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+
+<connections>
+  <connection>
+    <sender>buttonBox</sender>
+    <signal>accepted()</signal>
+    <receiver>CloneRequestDialog</receiver>
+    <slot>accept()</slot>
+  </connection>
+  <connection>
+    <sender>buttonBox</sender>
+    <signal>rejected()</signal>
+    <receiver>CloneRequestDialog</receiver>
+    <slot>reject()</slot>
+  </connection>
+</connections>
+
+</ui>

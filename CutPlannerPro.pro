@@ -41,6 +41,7 @@ SOURCES += \
     common/startup/startupmanager.cpp \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
+    view/dialog/input/clonerequestdialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -175,6 +176,7 @@ HEADERS += \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
+    view/dialog/input/clonerequestdialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
@@ -300,6 +302,7 @@ HEADERS += \
 FORMS += \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \
+    view/dialog/input/clonerequestdialog.ui \
     view/dialog/waste/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
     view/dialog/relocation/relocationquantitydialog.ui \

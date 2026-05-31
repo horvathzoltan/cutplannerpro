@@ -61,6 +61,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="btn_CloneRequest">
+              <property name="text">
+               <string>Clone</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Orientation::Horizontal</enum>

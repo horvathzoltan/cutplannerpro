@@ -34,4 +34,5 @@ public:
     void setData(const QVector<LeftoverStockEntry>& v) { _data = v;}
 
     std::optional<LeftoverStockEntry> findByBarcode(const QString &barcode) const;
+    bool existsBarcode(const QString& barcode, const QUuid& ignoreId = QUuid()) const;
 };
