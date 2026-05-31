@@ -1,3 +1,229 @@
+Zoltán, itt a tiszta, audit‑biztos, árnyék‑számlálós megoldás teljes
+pontonkénti terve, úgy felépítve, ahogy a patch‑session workflow‑d
+megköveteli: lineáris, egyértelmű, minden lépés egymásra épül, és az
+utolsó pont a patching‑terv.
+
+------------------------------------------------------------------------
+
+1. pont – A probléma pontos definiálása
+
+A manuális leftover ID‑k számlálója (ManualLeftoverCounter) jelenleg:
+
+-   már a dialog megnyitásakor növekszik, mert a generálás
+    nextManualLeftoverCounter()‑t hív
+-   akkor is nő, ha a user ESC‑pel kilép
+-   akkor is nő, ha a validáció hibás
+-   akkor is nő, ha a user soha nem menti el
+-   ütközés esetén többször is nő, még commit előtt
+
+Ez számláló‑szennyezést, audit‑hibát és lyukakat okoz.
+
+------------------------------------------------------------------------
+
+2. pont – A kívánt viselkedés definiálása
+
+A helyes működés:
+
+-   A számláló nem nőhet addig, amíg a user nem nyom OK‑t.
+-   A számláló csak accept() + valid esetén nőhet.
+-   A generálás során át kell ugrani a foglalt értékeket, de ez nem
+    írhatja a számlálót.
+-   A generálás során használt számláló ideiglenes, csak a dialog
+    életciklusára érvényes.
+-   A commitkor a számláló pontosan oda áll, ahol a generálás
+    abbahagyta.
+
+Ez a klasszikus shadow counter + commit counter modell.
+
+------------------------------------------------------------------------
+
+3. pont – A shadow counter szerepe
+
+A shadow counter:
+
+-   nem persistálódik
+-   nem írja a Settings‑et
+-   nem commitol
+-   csak a dialog idejére él
+-   generáláskor ebből léptetünk
+-   ütközés esetén ebből léptetünk
+-   a végén commitkor átadjuk az éles számlálónak
+
+Ez garantálja:
+
+-   nincs számláló‑szennyezés
+-   nincs lyuk
+-   nincs visszaugrás
+-   nincs audit‑hiba
+
+------------------------------------------------------------------------
+
+4. pont – A commit counter szerepe
+
+A commit counter:
+
+-   a Settings‑ben tárolt ManualLeftoverCounter
+-   csak accept() esetén növeljük
+-   a shadow counter végső értékére állítjuk
+-   így a következő dialog pontosan onnan folytatja, ahol az előző
+    abbahagyta
+
+------------------------------------------------------------------------
+
+5. pont – A szükséges új API a SettingsManager‑ben
+
+Szükség van egy új függvényre:
+
+✔ peekManualLeftoverCounter()
+
+→ csak lekérdezi a következő értéket, nem persistál.
+
+Példa:
+
+    int SettingsManager::peekManualLeftoverCounter() const {
+        return manualLeftoverCounter() + 1;
+    }
+
+------------------------------------------------------------------------
+
+6. pont – A shadow counter bevezetése a dialogban
+
+A dialog kap egy új mezőt:
+
+    int shadowManualCounter = 0;
+
+A setModel() elején:
+
+    shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter();
+
+------------------------------------------------------------------------
+
+7. pont – A barcode generálása shadow counterrel
+
+A generálás így néz ki:
+
+    int next = shadowManualCounter;
+    QString bc = IdentifierUtils::makeManualLeftoverId(next);
+
+    while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
+        next++;
+        bc = IdentifierUtils::makeManualLeftoverId(next);
+    }
+
+    shadowManualCounter = next;
+
+Ez:
+
+-   átugorja a foglalt értékeket
+-   nem írja a Settings‑et
+-   nem commitol
+-   nem növeli az éles számlálót
+
+------------------------------------------------------------------------
+
+8. pont – A commit a dialog accept() metódusában
+
+Az accept() végén:
+
+    SettingsManager::instance().setManualLeftoverCounter(shadowManualCounter);
+
+Ez:
+
+-   csak akkor fut, ha validáció sikeres
+-   csak akkor fut, ha a user OK‑t nyom
+-   commitolja a shadow countert
+-   az éles számláló pontosan oda áll, ahol a generálás abbahagyta
+
+------------------------------------------------------------------------
+
+9. pont – A teljes folyamat ellenőrzése
+
+✔ ESC → shadow counter eldobódik → éles számláló nem nő
+
+✔ Hibás input → shadow counter eldobódik → éles számláló nem nő
+
+✔ Ütközés → shadow counter lépked → éles számláló nem nő
+
+✔ OK → shadow counter commit → éles számláló nő
+
+✔ Következő dialog → shadow counter = commit counter + 1
+
+Ez tökéletes, audit‑biztos, determinisztikus működés.
+
+------------------------------------------------------------------------
+
+10. pont – PATCHING TERV (végső pont)
+
+PATCH #1 — SettingsManager
+
+Új függvény:
+
+    int peekManualLeftoverCounter() const;
+
+Implementáció:
+
+    int SettingsManager::peekManualLeftoverCounter() const {
+        return manualLeftoverCounter() + 1;
+    }
+
+------------------------------------------------------------------------
+
+PATCH #2 — AddWasteDialog: új mező
+
+    int shadowManualCounter = 0;
+
+------------------------------------------------------------------------
+
+PATCH #3 — setModel(): shadow counter inicializálása
+
+    shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter();
+
+------------------------------------------------------------------------
+
+PATCH #4 — barcode generálás shadow counterrel
+
+    int next = shadowManualCounter;
+    QString bc = IdentifierUtils::makeManualLeftoverId(next);
+
+    while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
+        next++;
+        bc = IdentifierUtils::makeManualLeftoverId(next);
+    }
+
+    shadowManualCounter = next;
+    ui->editBarcode->setText(bc);
+
+------------------------------------------------------------------------
+
+PATCH #5 — accept(): commit
+
+    SettingsManager::instance().setManualLeftoverCounter(shadowManualCounter);
+
+------------------------------------------------------------------------
+
+Kész. Ez a végleges, audit‑biztos, ipari megoldás.
+
+Ha kéred, megírom egyben a teljes diff‑patch formátumot, a te
+strict‑mode snippet workflow‑d szerint.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 4. batch anyag módosít
