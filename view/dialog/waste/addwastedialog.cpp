@@ -40,16 +40,22 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
             ui->comboStorage->setCurrentIndex(sidx);
     }
 
-   //  // Vonalkód ajánlása → következő érték mindíg az előzőből!
-   //  QString bc;
-   //  if (!s_lastBarcode.isEmpty()) {
-   //      bool ok = false;
-   //      int num = s_lastBarcode.toInt(&ok);
-   //      if (ok)
-   //          bc = QString::number(num + 1);
-   //  }
+    // Prefix-aware ajánlás (pl. RSM-129 → RSM-130, maki-55 → maki-56)
+    QString bc;
+    if (!s_lastBarcode.isEmpty()) {
+        QRegularExpression re("^(.*?)(\\d+)$");
+        QRegularExpressionMatch m = re.match(s_lastBarcode);
+        if (m.hasMatch()) {
+            QString prefix = m.captured(1);
+            QString numStr = m.captured(2);
+            int num = numStr.toInt();
+            int inc = num + 1;
+            QString padded = QString("%1").arg(inc, numStr.length(), 10, QChar('0'));
+            bc = prefix + padded;
+        }
+    }
+    ui->editBarcode->setText(bc);
 
-   //  ui->editBarcode->setText(bc);
 }
 
 
@@ -116,31 +122,39 @@ void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
     current_entryId = entry.entryId; // ha szerkesztés módban vagyunk
     current_storageId  = entry.storageId;
 
+    shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter(); // shadow counter init
+
     QString bc = entry.barcode.trimmed().toUpper();
 
     // 🔥 Ha a modelben nincs barcode → generáljunk egyet
     if (bc.isEmpty()) {
 
-        // 1) Ha volt előző kézi érték → próbáljuk +1-ezni
-        if (!s_lastBarcode.isEmpty()) {
-            bool ok = false;
-            int num = s_lastBarcode.toInt(&ok);
-            if (ok)
-                bc = QString::number(num + 1);
+        // 1) Prefix-aware +1 (pl. RSM-129 → RSM-130, maki-55 → maki-56)
+        QRegularExpression re("^(.*?)(\\d+)$");
+        QRegularExpressionMatch m = re.match(s_lastBarcode);
+        if (m.hasMatch()) {
+            QString prefix = m.captured(1);
+            QString numStr = m.captured(2);
+            int num = numStr.toInt();
+            int inc = num + 1;
+            QString padded = QString("%1").arg(inc, numStr.length(), 10, QChar('0'));
+            bc = prefix + padded;
+        } else {
+            // 2) Shadow counter fallback → csak ha nincs prefix-match
+            int next = shadowManualCounter;
+            bc = IdentifierUtils::makeManualLeftoverId(next);
+
+            while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
+                next++;
+                bc = IdentifierUtils::makeManualLeftoverId(next);
+            }
+
+            shadowManualCounter = next;
         }
 
-        // 2) Ha még mindig üres → számlálóból generálunk
-        if (bc.isEmpty()) {
-            int next = SettingsManager::instance().nextManualLeftoverCounter();
-            bc = IdentifierUtils::makeManualLeftoverId(next);
-        }
-
-        // 3) Ütközés ellenőrzése → lépkedünk tovább
-        while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
-            int next = SettingsManager::instance().nextManualLeftoverCounter();
-            bc = IdentifierUtils::makeManualLeftoverId(next);
-        }
+        ui->editBarcode->setText(bc);
     }
+
     ui->editBarcode->setText(bc);
 
     ui->editLength->setText(QString::number(entry.availableLength_mm));
@@ -208,6 +222,10 @@ void AddWasteDialog::accept() {
     QString bc = barcode();
     if (!bc.isEmpty())
         s_lastBarcode = bc;
+
+    // shadow counter commit → csak RSM prefix esetén
+    if (bc.startsWith("RSM"))
+        SettingsManager::instance().commitManualLeftoverCounter(shadowManualCounter);
 
     QDialog::accept();
 }

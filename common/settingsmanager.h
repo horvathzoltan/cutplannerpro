@@ -90,7 +90,9 @@ public:
     int nextLeftoverCounter();
 
     int manualLeftoverCounter() const;
+    int peekManualLeftoverCounter() const; // shadow counter lekérdezés
     int nextManualLeftoverCounter();
+    void commitManualLeftoverCounter(int c);
 
     //void setManualLeftoverCounter(int value);
 

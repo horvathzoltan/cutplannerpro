@@ -80,6 +80,7 @@ private slots:
 
     void handle_btn_LeftoverDisposal_clicked();
     void handle_btn_AddLeftoverStockEntry_clicked();
+    void handle_btn_ExportLeftoverForm_clicked();
 
     void handle_btn_RelocationPlanFinalize_clicked();
 

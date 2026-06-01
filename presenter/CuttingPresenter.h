@@ -89,11 +89,10 @@ public:
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);
 
-    static constexpr int printedLineWidth = 67;
+    static constexpr int printedLineWidth = 64;
     static constexpr int printedPageHeight = 46;
 
-
-
+    void ExportLeftoverIntakeForm();
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

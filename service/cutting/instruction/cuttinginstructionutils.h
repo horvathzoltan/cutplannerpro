@@ -1,24 +1,20 @@
 #pragma once
-
-#include "../../../model/cutting/instruction/cutinstruction.h"
-#include "common/texthelper.h"
-
-#include <materials/model/material_master.h>
-
-#include <materials/registry/material_registry.h>
-
-#include <model/registries/cuttingmachineregistry.h>
-#include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/stockregistry.h>
-
 #include <QDateTime>
 #include <QSet>
 
+#include "../../../model/cutting/instruction/cutinstruction.h"
+#include "common/texthelper.h"
+#include <materials/model/material_master.h>
+#include <materials/registry/material_registry.h>
+#include <model/registries/cuttingmachineregistry.h>
+#include <model/registries/cuttingplanrequestregistry.h>
+#include <model/registries/stockregistry.h>
 #include <model/cutting/cuttingmachine.h>
-
 #include <model/storageaudit/storageauditrow.h>
-
 #include <service/storageaudit/storageauditservice.h>
+#include <common/identifierutils.h>
+#include <common/settingsmanager.h>
+
 
 namespace CuttingInstructionUtils {
 
@@ -920,11 +916,127 @@ inline QString formatLabelColumnFlow(const QVector<LabelModel>& models,
 
         // lapok között csak üres sor, szeparátor NEM kell
         if (p + 1 < pages.size())
-            out << "";
+            out << "\f"; // form feed - új oldal
 
     }
 
     return out.join("\n");
+}
+
+
+inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
+{
+    // 1) Oszlopszélességek (4 oszlop + 5 db '|' + 3*1 szóköz)
+    int innerWidth = pageWidth - 5; // 4 oszlop + 1 záró '|' → nagyjából
+    if (innerWidth < 40)
+        innerWidth = 40; // minimális biztonsági érték
+
+    int col1 = innerWidth * 30 / 100; // Material barcode (kézzel)
+    int col2 = innerWidth * 15 / 100; // Length (kézzel)
+    int col3 = innerWidth * 25 / 100; // RSM kód (nyomtatott)
+    int col4 = innerWidth - (col1 + col2 + col3); // Cut-off label
+
+    auto makeCell = [](const QString& text, int w) {
+        QString t = text;
+        if (t.length() > w)
+            t = t.left(w - 1) + "…";
+        return t.leftJustified(w, ' ');
+    };
+
+    QStringList lines;
+
+    // 2) Fejléc
+    lines << QString("🧾 Leftover felvételi űrlap (manual RSM címkék)");
+    lines << QString("📅 Dátum: %1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm"));
+    lines << "";
+
+    // 3) Táblázat fejléce
+    QString header1 =
+        "|" + makeCell("Material", col1) +
+        "|" + makeCell("Length",       col2) +
+        "|" + makeCell("LeftoverStock",          col3) +
+        "|" + makeCell("Cut-off label",     col4) +
+        "|";
+    QString header2 =
+        "|" + makeCell("barcode", col1) +
+        "|" + makeCell("[mm]",       col2) +
+        "|" + makeCell("barcode",          col3) +
+        "|" + makeCell("",     col4) +
+        "|";
+    lines << header1 << header2;
+
+    QString sep =
+        "|" + QString(col1, '-') +
+        "|" + QString(col2, '-') +
+        "|" + QString(col3, '-') +
+        "|" + QString(col4, '-') +
+        "|";
+    lines << sep;
+
+    // 4) RSM kódok generálása – PEEK alapú, COMMIT NÉLKÜL
+    int next = SettingsManager::instance().peekManualLeftoverCounter();
+
+    for (int i = 0; i < rowsPerPage; ++i) {
+        QString code = IdentifierUtils::makeManualLeftoverId(next++);
+
+        // 1) Üres felső sor
+        QString rowTop =
+            "|" + makeCell("", col1) +
+            "|" + makeCell("", col2) +
+            "|" + makeCell("", col3) +
+            "|" + makeCell("", col4) +
+            "|";
+
+        // 2) Középre rendezett RSM kód
+        auto centerCell = [&](const QString& text, int w){
+            int pad = (w - text.length()) / 2;
+            if (pad < 0) pad = 0;
+            return QString(pad, ' ') + text + QString(w - pad - text.length(), ' ');
+        };
+
+        QString rowMid =
+            "|" + makeCell("", col1) +
+            "|" + makeCell("", col2) +
+            "|" + centerCell(code, col3) +
+            "|" + centerCell(code, col4) +
+            "|";
+
+        // 3) Üres alsó sor
+        QString rowBot =
+            "|" + makeCell("", col1) +
+            "|" + makeCell("", col2) +
+            "|" + makeCell("", col3) +
+            "|" + makeCell("", col4) +
+            "|";
+
+        lines << rowTop;
+        lines << rowMid;
+        lines << rowBot;
+
+        // 4) Szeparátor
+        QString sepRow =
+            "|" + QString(col1, QChar(0x2500)) +
+            "|" + QString(col2, QChar(0x2500)) +
+            "|" + QString(col3, QChar(0x2500)) +
+            "|" + QString(col4, QChar(0x2500)) +
+            "|";
+
+        lines << sepRow;
+
+
+        // 🔥 ÚJ: sorok közötti szeparátor
+        // QString sepRow =
+        //     "|" + QString(col1, QChar(0x2500)) +
+        //     "|" + QString(col2, QChar(0x2500)) +
+        //     "|" + QString(col3, QChar(0x2500)) +
+        //     "|" + QString(col4, QChar(0x2500)) +
+        //     "|";
+
+        // lines << sepRow;
+
+    }
+
+    return lines.join("\n");
 }
 
 } // end namespace CuttingInstructionUtils

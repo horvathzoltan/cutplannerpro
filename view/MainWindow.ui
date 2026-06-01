@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="tab_6">
          <attribute name="title">
@@ -702,6 +702,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_ExportLeftoverForm">
+              <property name="text">
+               <string>Leftover Intake Form</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btn_LeftoverDisposal">

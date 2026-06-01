@@ -43,5 +43,6 @@ private:
     static QUuid s_lastStorageId;
     static QString s_lastBarcode;   // 🆕
 
+    int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
 
 };

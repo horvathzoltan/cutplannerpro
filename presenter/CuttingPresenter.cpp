@@ -1040,6 +1040,48 @@ void CuttingPresenter::ExportCutInstructions()
     }
 }
 
+void CuttingPresenter::ExportLeftoverIntakeForm()
+{
+    int rowsPerPage = 12; // tetszőleges, később paraméterezhető
+
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    if (baseName.isEmpty()) {
+        zEvent("❌ Nincs Cutting Plan fájlnév — leftover űrlap export nem lehetséges.");
+        return;
+    }
+
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    int start = SettingsManager::instance().peekManualLeftoverCounter();
+    int end   = start + rowsPerPage - 1;
+
+    QString path = QString("%1/leftoverintakeform_RSM-%2-%3.txt")
+                       .arg(dir)
+                       .arg(start, 3, 10, QChar('0'))
+                       .arg(end,   3, 10, QChar('0'));
+
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        zEvent("❌ Nem sikerült megnyitni a LeftoverIntakeForm fájlt.");
+        return;
+    }
+
+    QTextStream out(&f);
+    out.setEncoding(QStringConverter::Utf8);
+
+    // 1 lapnyi leftover intake form
+    out << CuttingInstructionUtils::formatLeftoverIntakeForm_OnePage(printedLineWidth, rowsPerPage);
+
+    zEvent(QString("📄 Leftover Intake Form exportálva: %1").arg(path));
+}
+
 
 void CuttingPresenter::UpdateCompensation(const QUuid& machineId, double newVal)
 {

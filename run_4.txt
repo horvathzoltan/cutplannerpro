@@ -1,238 +1,278 @@
-Zoltán, itt a tiszta, audit‑biztos, árnyék‑számlálós megoldás teljes
-pontonkénti terve, úgy felépítve, ahogy a patch‑session workflow‑d
-megköveteli: lineáris, egyértelmű, minden lépés egymásra épül, és az
-utolsó pont a patching‑terv.
+Zoltán, megvan minden, ami kell ahhoz, hogy most már összerakjam neked a
+pontonként végrehajtható, audit‑tiszta, ipari best‑practice alapú
+tervezési dokumentumot a Leftover Felvételi Űrlap Generátor funkcióhoz.
+
+Ez lesz a master plan, amelynek utolsó pontja a patching terv, és amely
+alapján teljesen tisztán, konfliktusmentesen és visszakereshetően tudjuk
+implementálni a funkciót.
+
+A tervezéshez minden szükséges fájlt megkaptam, így most már össze tudom
+rakni a teljes, lépésről‑lépésre végrehajtható tervet.
 
 ------------------------------------------------------------------------
 
-1. pont – A probléma pontos definiálása
+⭐ LEFTOVER FELVÉTELI ŰRLAP GENERÁTOR – TELJES TERV (AUDIT‑TISZTA)
 
-A manuális leftover ID‑k számlálója (ManualLeftoverCounter) jelenleg:
-
--   már a dialog megnyitásakor növekszik, mert a generálás
-    nextManualLeftoverCounter()‑t hív
--   akkor is nő, ha a user ESC‑pel kilép
--   akkor is nő, ha a validáció hibás
--   akkor is nő, ha a user soha nem menti el
--   ütközés esetén többször is nő, még commit előtt
-
-Ez számláló‑szennyezést, audit‑hibát és lyukakat okoz.
+(Ez lesz a végleges, ipari minőségű blueprint.)
 
 ------------------------------------------------------------------------
 
-2. pont – A kívánt viselkedés definiálása
+1. Cél és funkciódefiníció
 
-A helyes működés:
+A leftover felvételi űrlap célja:
 
--   A számláló nem nőhet addig, amíg a user nem nyom OK‑t.
--   A számláló csak accept() + valid esetén nőhet.
--   A generálás során át kell ugrani a foglalt értékeket, de ez nem
-    írhatja a számlálót.
--   A generálás során használt számláló ideiglenes, csak a dialog
-    életciklusára érvényes.
--   A commitkor a számláló pontosan oda áll, ahol a generálás
-    abbahagyta.
+-   papír alapú, levágható címkéket tartalmazó form generálása
+-   minden sorban:
+    1.  Material barcode (kézzel írható mező)
+    2.  Measured length (kézzel írható mező)
+    3.  Generated RSM barcode (nyomtatható)
+    4.  Cut‑off barcode label (levágható, ragasztható)
 
-Ez a klasszikus shadow counter + commit counter modell.
+A form:
 
-------------------------------------------------------------------------
-
-3. pont – A shadow counter szerepe
-
-A shadow counter:
-
--   nem persistálódik
--   nem írja a Settings‑et
--   nem commitol
--   csak a dialog idejére él
--   generáláskor ebből léptetünk
--   ütközés esetén ebből léptetünk
--   a végén commitkor átadjuk az éles számlálónak
-
-Ez garantálja:
-
--   nincs számláló‑szennyezés
--   nincs lyuk
--   nincs visszaugrás
--   nincs audit‑hiba
+-   több oldalas lehet
+-   oldaltörést használ (\f)
+-   nem commitál számlálót
+-   RSM kódokat generál peek alapján
+-   4 oszlopos táblázatot nyomtat
+-   levágható cellákat tartalmaz
 
 ------------------------------------------------------------------------
 
-4. pont – A commit counter szerepe
+2. Ipari best practice – számozási stratégia
 
-A commit counter:
+A leftover kódok:
 
--   a Settings‑ben tárolt ManualLeftoverCounter
--   csak accept() esetén növeljük
--   a shadow counter végső értékére állítjuk
--   így a következő dialog pontosan onnan folytatja, ahol az előző
-    abbahagyta
+-   nem sorozatszámok, hanem egyedi azonosítók
+-   nem kell folytonosnak lenniük
+-   a számláló soha nem megy vissza
+-   a számláló csak akkor commitálódik, ha a user ténylegesen felvesz
+    egy leftover‑t
 
-------------------------------------------------------------------------
+Ezért:
 
-5. pont – A szükséges új API a SettingsManager‑ben
+✔ A form generátor peekManualLeftoverCounter() alapján indul
 
-Szükség van egy új függvényre:
+✔ A form generátor NEM commitál
 
-✔ peekManualLeftoverCounter()
+✔ A leftover dialog commitál, ha a user ténylegesen felhasználja a kódot
 
-→ csak lekérdezi a következő értéket, nem persistál.
+✔ Ha lapok elvesznek → nem baj
 
-Példa:
+✔ Ha nem használják fel → nem baj
 
-    int SettingsManager::peekManualLeftoverCounter() const {
-        return manualLeftoverCounter() + 1;
-    }
+✔ A számláló tiszta marad
 
-------------------------------------------------------------------------
-
-6. pont – A shadow counter bevezetése a dialogban
-
-A dialog kap egy új mezőt:
-
-    int shadowManualCounter = 0;
-
-A setModel() elején:
-
-    shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter();
+Ez ipari standard (GS1, ISO 15459, Zebra, SAP, Oracle, Infor, Navision).
 
 ------------------------------------------------------------------------
 
-7. pont – A barcode generálása shadow counterrel
+3. A form generátor helye a UI‑ban
 
-A generálás így néz ki:
+A leftover fülön:
 
-    int next = shadowManualCounter;
-    QString bc = IdentifierUtils::makeManualLeftoverId(next);
+-   egy új gomb: „Leftover Intake Form”
 
-    while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
-        next++;
-        bc = IdentifierUtils::makeManualLeftoverId(next);
-    }
+-   megnyomásakor:
 
-    shadowManualCounter = next;
+    -   megkérdezi: hány lapot generáljunk? (pl. 1–10)
+    -   vagy fixen 1 lapot generál
+
+-   lefut a generátor
+
+-   létrehoz egy fájlt:
+
+        _reports/<basename>_LeftoverIntakeForm.txt
+
+------------------------------------------------------------------------
+
+4. A generátor működése (logikai lépések)
+
+4.1. Meghatározzuk a következő kiosztható RSM kódot
+
+    int next = SettingsManager::instance().peekManualLeftoverCounter();
+
+4.2. Meghatározzuk, hány sor fér egy lapra
+
+Ez a jelenlegi printing pipeline alapján:
+
+-   printedLineWidth
+-   printedPageHeight
+
+A leftover form fix layout lesz → pl. 4 sor / lap, vagy 10 sor / lap.
+
+4.3. Minden sorhoz generálunk egy RSM kódot
+
+    QString code = IdentifierUtils::makeManualLeftoverId(next++);
+
+4.4. A sor layoutja:
+
+  Material barcode   Length   RSM code   Cut‑off label
+  ------------------ -------- ---------- ---------------
+
+Mindegyik cella:
+
+-   keretezett (| + padding + |)
+-   fix szélességű
+-   levágható
+
+4.5. Ha megtelik a lap → oldaltörés
+
+    out << "\f";
+
+4.6. A generátor nem commitálja a számlálót
+
+A leftover dialog commitálja majd, amikor ténylegesen felhasználják a
+kódot.
+
+------------------------------------------------------------------------
+
+5. A generátor outputja
+
+A fájl neve:
+
+    <basename>_LeftoverIntakeForm.txt
+
+A tartalom:
+
+-   fejléc (dátum, plan ID, stb.)
+-   4 oszlopos táblázat
+-   több oldal esetén \f oldaltörés
+
+------------------------------------------------------------------------
+
+6. Integráció a CuttingPresenter‑be
+
+A CuttingPresenter::ExportCutInstructions() mintájára:
+
+Új metódus:
+
+    CuttingPresenter::ExportLeftoverIntakeForm()
 
 Ez:
 
--   átugorja a foglalt értékeket
--   nem írja a Settings‑et
--   nem commitol
--   nem növeli az éles számlálót
+-   megnyitja a _reports könyvtárat
+-   létrehozza a fájlt
+-   meghívja a generátort
+-   kiírja a tartalmat
 
 ------------------------------------------------------------------------
 
-8. pont – A commit a dialog accept() metódusában
+7. Új util: LeftoverIntakeFormUtils
 
-Az accept() végén:
+A CuttingInstructionUtils mintájára:
 
-    SettingsManager::instance().setManualLeftoverCounter(shadowManualCounter);
+Új fájl:
 
-Ez:
+    leftoverintakeformutils.h
+    leftoverintakeformutils.cpp
 
--   csak akkor fut, ha validáció sikeres
--   csak akkor fut, ha a user OK‑t nyom
--   commitolja a shadow countert
--   az éles számláló pontosan oda áll, ahol a generálás abbahagyta
+Benne:
 
-------------------------------------------------------------------------
-
-9. pont – A teljes folyamat ellenőrzése
-
-✔ ESC → shadow counter eldobódik → éles számláló nem nő
-
-✔ Hibás input → shadow counter eldobódik → éles számláló nem nő
-
-✔ Ütközés → shadow counter lépked → éles számláló nem nő
-
-✔ OK → shadow counter commit → éles számláló nő
-
-✔ Következő dialog → shadow counter = commit counter + 1
-
-Ez tökéletes, audit‑biztos, determinisztikus működés.
+-   buildLeftoverFormRow()
+-   formatLeftoverFormPage()
+-   formatLeftoverFormDocument()
 
 ------------------------------------------------------------------------
 
-10. pont – PATCHING TERV (végső pont)
+8. A layout definíciója
 
-PATCH #1 — SettingsManager
+8.1. CellWidth számítás
 
-Új függvény:
+Ugyanúgy, mint a label table‑ben:
 
-    int peekManualLeftoverCounter() const;
+    int cellWidth = (pageWidth - 3*columns + 1) / columns;
 
-Implementáció:
+8.2. Cellák:
 
-    int SettingsManager::peekManualLeftoverCounter() const {
-        return manualLeftoverCounter() + 1;
-    }
+1.  Material barcode (kézzel írható)
+2.  Length (kézzel írható)
+3.  RSM code (nyomtatott)
+4.  Cut‑off label (nyomtatott)
 
-------------------------------------------------------------------------
+8.3. Minden cella:
 
-PATCH #2 — AddWasteDialog: új mező
+    | <content padded> |
 
-    int shadowManualCounter = 0;
+8.4. Oldaltörés:
 
-------------------------------------------------------------------------
-
-PATCH #3 — setModel(): shadow counter inicializálása
-
-    shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter();
+    out << "\f";
 
 ------------------------------------------------------------------------
 
-PATCH #4 — barcode generálás shadow counterrel
+9. Hibakezelés
 
-    int next = shadowManualCounter;
-    QString bc = IdentifierUtils::makeManualLeftoverId(next);
-
-    while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
-        next++;
-        bc = IdentifierUtils::makeManualLeftoverId(next);
-    }
-
-    shadowManualCounter = next;
-    ui->editBarcode->setText(bc);
+-   Ha nem sikerül megnyitni a fájlt → warning
+-   Ha nincs leftover számláló → fallback 1‑re
+-   Ha printedPageHeight túl kicsi → minimum 20 sor
 
 ------------------------------------------------------------------------
 
-PATCH #5 — accept(): commit
+10. PATCHING TERV (végső pont)
 
-    SettingsManager::instance().setManualLeftoverCounter(shadowManualCounter);
+Ez lesz a végrehajtási sorrend:
 
 ------------------------------------------------------------------------
 
-Kész. Ez a végleges, audit‑biztos, ipari megoldás.
+PATCH #13 – Új util modul létrehozása
 
-Ha kéred, megírom egyben a teljes diff‑patch formátumot, a te
-strict‑mode snippet workflow‑d szerint.
+Fájlok:
 
+-   leftoverintakeformutils.h
+-   leftoverintakeformutils.cpp
 
+Tartalom:
 
+-   RSM kód generálás (peek alapján)
+-   4 oszlopos sor generálás
+-   oldaltörés
+-   teljes dokumentum generálás
 
+------------------------------------------------------------------------
 
+PATCH #14 – CuttingPresenter integráció
 
+-   Új metódus: ExportLeftoverIntakeForm()
+-   Fájlnév: <basename>_LeftoverIntakeForm.txt
+-   Hívja a utilt
+-   Kiírja a fájlt
 
+------------------------------------------------------------------------
 
+PATCH #15 – UI integráció
 
+-   Leftover fülre új gomb: „Leftover Intake Form”
+-   Gomb → presenter->ExportLeftoverIntakeForm()
 
+------------------------------------------------------------------------
 
+PATCH #16 – SettingsManager / számláló kezelés
 
+-   NINCS commit a generátorban
+-   Csak peek
+-   Commit továbbra is a leftover dialogban
 
+------------------------------------------------------------------------
 
+PATCH #17 – Tesztelés és finomhangolás
 
+-   1 lap generálása
+-   több lap generálása
+-   oldaltörés ellenőrzése
+-   RSM kódok folytonossága
+-   elveszett lapok kezelése
 
+------------------------------------------------------------------------
 
+⭐ Készen állok a PATCH #13 implementálására.
 
+Ha azt mondod:
 
+„jöhet a PATCH #13”
 
+→ elkezdem a konkrét diffeket, teljesen strict‑mode szerint.
 
-4. batch anyag módosít
-5. batch length módosít
-
-
-leftover felvétele
-1. emlékezzen az utolsó típusra, tárhelyre, hosszra
-
+**
 *
 *
 *
@@ -240,291 +280,10 @@ leftover felvétele
 *
 *
 
-Tökéletesen látod, Zoltán — a klónozás valójában nem egy új rendszer,
-hanem egy nagyon elegáns fájlnév‑váltás + registry‑upgrade + persist
-művelet.
-
-Amit most leírtál, az a helyes architekturális megoldás, és erre építve
-adom a végleges, pontonként végrehajtható fejlesztési tervet.
-
-------------------------------------------------------------------------
-
-⭐ REQUEST‑KLÓNOZÁS – PONTONKÉNT VÉGREHAJTHATÓ FEJLESZTÉSI TERV
-
-(a végén patching tervvel)
-
-Ez a terv pontosan azt csinálja, amit szeretnél:
-
--   kiválasztasz egy requestet,
--   klónozod,
--   módosítod az anyagot + hosszt,
--   új fájlnév taggel mented,
--   a registry perzisztál → létrejön az új CSV fájl,
--   a régi fájl érintetlen marad.
-
-------------------------------------------------------------------------
-
-1️⃣ A klónozás helye: CuttingPresenter
-
-A funkció nem UI‑szintű, nem InputTableManager‑szintű, hanem:
-
-✔ CuttingPresenter → cloneRequest()
-
-Ez kezeli:
-
--   registry műveleteket
--   fájlnév módosítást
--   SettingsManager frissítést
--   persist hívást
-
-------------------------------------------------------------------------
-
-2️⃣ UI: új gomb a CutRequest tabon
-
-A btn_NewCuttingPlan mellé jön:
-
-btn_CloneRequest
-
-Ez csak annyit csinál:
-
-    connect(ui->btn_CloneRequest, &QPushButton::clicked,
-            this, &MainWindow::onCloneRequestClicked);
-
-A MainWindow:
-
-    void MainWindow::onCloneRequestClicked() {
-        presenter->cloneRequestDialog();
-    }
-
-------------------------------------------------------------------------
-
-3️⃣ Új dialog: CloneRequestDialog
-
-A dialog bekéri:
-
--   új anyag (combo)
--   hossz delta (double spin)
--   fájlnév tag (line edit)
-
-A dialog visszaad:
-
-    struct CloneParams {
-        QUuid newMaterialId;
-        double delta;
-        QString tag;
-    };
-
-------------------------------------------------------------------------
-
-4️⃣ Presenter: cloneRequestDialog()
-
-Ez:
-
-1.  lekéri a kijelölt requestet a view‑tól
-2.  megnyitja a dialogot
-3.  átadja a paramétereket a cloneRequest()‑nek
-
-------------------------------------------------------------------------
-
-5️⃣ Presenter: cloneRequest() – a tényleges klónozás
-
-Ez a lényeg.
-
-5.1. Eredeti request lekérése
-
-    auto oldReq = original;
-
-5.2. Új request létrehozása
-
-    Cutting::Plan::Request newReq = oldReq;
-    newReq.requestId = QUuid::createUuid();
-
-5.3. Anyag módosítása
-
-    newReq.materialId = params.newMaterialId;
-
-5.4. Hossz módosítása
-
-    newReq.requiredLength = qRound(oldReq.requiredLength + params.delta);
-
-5.5. Registry frissítése
-
-    CuttingPlanRequestRegistry::instance().registerRequest(newReq);
-
-------------------------------------------------------------------------
-
-6️⃣ Új fájlnév generálása taggel
-
-A jelenlegi fájlnév:
-
-    cuttingplan_20260506-173255.txt
-
-A user beírja:
-
-    _ALSO
-
-6.1. Ha még nincs tag → hozzáadjuk
-
-    cuttingplan_20260506-173255_ALSO.txt
-
-6.2. Ha már van tag → lecseréljük
-
-Regex:
-
-    cuttingplan_(.*?)(_[A-Za-z0-9]+)?\.txt
-
-Cseréljük:
-
-    cuttingplan_\1_<newtag>.txt
-
-------------------------------------------------------------------------
-
-7️⃣ SettingsManager frissítése
-
-    SettingsManager::instance().setCuttingPlanFileName(newFileName);
-
-Ez azonnal átállítja, hogy a registry persist() már az új fájlba írjon.
-
-------------------------------------------------------------------------
-
-8️⃣ Registry persist() → új CSV fájl létrejön
-
-A persist() így működik:
-
-    const QString fn = SettingsManager::instance().cuttingPlanFileName();
-    const QString path = FileNameHelper::instance().getCuttingPlanFilePath(fn);
-    CuttingRequestRepository::saveToFile(*this, path);
-
-Tehát:
-
--   új fájlnév beállítása →
--   registry módosítása →
--   persist() →
--   új CSV fájl létrejön
-
-A régi fájl érintetlen marad.
-
-------------------------------------------------------------------------
-
-9️⃣ GUI frissítése
-
--   InputTableManager → refresh_TableFromRegistry()
--   MainWindow → setInputFileLabel(newFileName)
-
-------------------------------------------------------------------------
-
-🔟 (Opcionális) Automatikus optimalizálás
-
-Ha szeretnéd:
-
-    syncModelWithRegistries();
-    runOptimization(TargetHeuristic::ByCount);
-
-------------------------------------------------------------------------
-
-⭐ PATCHING TERV – KONKRÉT KÓD MÓDOSÍTÁSOK
-
-Ez a kért utolsó pont.
-
-------------------------------------------------------------------------
-
-PATCH #1 — mainwindow.ui
-
-Új gomb:
-
-    btn_CloneRequest
-
-------------------------------------------------------------------------
-
-PATCH #2 — MainWindow.cpp
-
-    void MainWindow::onCloneRequestClicked() {
-        presenter->cloneRequestDialog();
-    }
-
-------------------------------------------------------------------------
-
-PATCH #3 — CloneRequestDialog (új fájlok)
-
--   CloneRequestDialog.ui
--   CloneRequestDialog.h
--   CloneRequestDialog.cpp
-
-------------------------------------------------------------------------
-
-PATCH #4 — CuttingPresenter.h
-
-    void cloneRequestDialog();
-    void cloneRequest(const Cutting::Plan::Request& original,
-                      const CloneParams& params);
-
-------------------------------------------------------------------------
-
-PATCH #5 — CuttingPresenter.cpp
-
-Implementálni:
-
--   cloneRequestDialog()
--   cloneRequest()
--   fájlnév tag kezelés
--   SettingsManager::setCuttingPlanFileName()
--   registry.registerRequest()
--   registry.persist()
-
-------------------------------------------------------------------------
-
-PATCH #6 — CuttingPlanRequestRegistry
-
-Semmi extra — a persist() már jó.
-
-------------------------------------------------------------------------
-
-PATCH #7 — InputTableManager
-
-Presenter hívja:
-
-    view->refresh_InputTable();
-
-------------------------------------------------------------------------
-
-⭐ Készen állok a patch megírására
-
-Ha kéred, megírom:
-
--   a teljes CloneRequestDialog UI‑t,
--   a presenter patch‑et,
--   a fájlnév‑tag kezelő kódot,
--   a MainWindow módosítást,
--   a registry frissítést.
-
-Csak mondd:
-
-👉 „Kérem a patch‑et”
-
 *
 *
 *
 *
-*
-
-
-Zoltán, akkor jön a nagy, lineárisan végrehajtható, audit‑tiszta,
-pontonkénti refaktor‑terv, amelynek utolsó pontja a patching terv —
-ahogy mindig kéred.
-
-Ez a terv nem változtat a működésen, csak szétszedi az OptimizerModel‑t
-jól elkülönülő modulokra, hogy:
-
--   átlátható legyen,
--   auditálható legyen,
--   ne legyen több rejtett mellékhatás,
--   és a jövőbeli fejlesztések ne okozzanak regressziót.
-
-A terv szigorúan lineáris, minden pont önállóan végrehajtható, és minden
-pont után a rendszer működőképes marad.
-
-------------------------------------------------------------------------
-
 ⭐ OPTIMALIZERMODEL REFAKTOR – PONTONKÉNT VÉGREHAJTHATÓ TERV
 
 (utolsó pont: patching terv)

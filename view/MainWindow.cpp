@@ -197,6 +197,9 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_LeftoverDisposal, &QPushButton::clicked,
                this, &MainWindow::handle_btn_LeftoverDisposal_clicked);
 
+    // Leftover Intake Form export
+    connect(ui->btn_ExportLeftoverForm, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_ExportLeftoverForm_clicked);
     // cutting plan
 
     connect(ui->btn_Optimize, &QPushButton::clicked,
@@ -1064,3 +1067,9 @@ void MainWindow::handle_btn_CloneRequest_clicked()
 {
     presenter->cloneRequestDialog();
 }
+
+void MainWindow::handle_btn_ExportLeftoverForm_clicked()
+{
+    presenter->ExportLeftoverIntakeForm();
+}
+
