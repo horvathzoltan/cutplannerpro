@@ -26,6 +26,10 @@
 //#include <numeric>
 #include "../../../common/identifierutils.h"
 //#include "../../../common/settingsmanager.h"
+#include "inventoryhelper.h"
+#include "machineselecthelper.h"
+#include "pendinganalyzer.h"
+#include "piecebuilder.h"
 #include "rodloopengine.h"
 
 
@@ -63,80 +67,14 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     _localLeftovers.clear();
     leftoverRodMap.clear();
 
-    // plusz a lokális pool, ha van
-    // 🔹 Lokális leftover snapshot
-    //QVector<LeftoverStockEntry> leftovers = _inventorySnapshot.reusableInventory;
-    //leftovers += _localLeftovers;
-    //_localLeftovers.clear();
-    //_localLeftovers.clear(); // tisztán indulunk
-
     // 🔹 Csak globális snapshot készül – lokális pool külön marad
     QVector<LeftoverStockEntry> globalSnapshot = _inventorySnapshot.reusableInventory;
 
-    zInfo("📦 INVENTORY SNAPSHOT — újrahasznosítható hullók");
-    for (const auto& e : _inventorySnapshot.reusableInventory) {
-        const MaterialMaster* mat = MaterialRegistry::instance().findById(e.materialId);
-        const StorageEntry* st = StorageRegistry::instance().findById(e.storageId);
+    InventoryHelper::logSnapshot(_inventorySnapshot.reusableInventory);
+    QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial = PieceBuilder::buildPiecesByMaterial(_requests);
 
-        zInfo(QString("   • Hulló: barcode=%1, hossz=%2 mm, anyag=%3, tároló=%4, forrás=%5")
-                  .arg(e.barcode)
-                  .arg(e.availableLength_mm)
-                  .arg(mat ? mat->toDisplay() : e.materialId.toString())
-                  .arg(st ? st->name : "ismeretlen")
-                  .arg(e._parent.has_value()
-                           ? QString("parent=%1").arg(e._parent->toString())
-                           : "parent=—"));
-
-    }
-    zInfo("📘 SNAPSHOT — vége");
-
-
-    QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial;
-
-    for (const Cutting::Plan::Request &req : _requests) {
-
-        int leftRemaining  = req.leftCount;
-        int rightRemaining = req.rightCount;
-
-        for (int i = 0; i < req.quantity; ++i) {
-
-            Cutting::Piece::PieceInfo info;
-            info.length_mm = req.requiredLength;
-            info.requestId = req.requestId;
-            info.isCompleted = false;
-
-            // ⭐ DARAB-SZÁMOZÁS
-            if (req.quantity > 1) {
-                info.externalReference = QString("%1 %2/%3")
-                .arg(req.externalReference)
-                    .arg(i + 1)
-                    .arg(req.quantity);
-            } else {
-                info.externalReference = req.externalReference;
-            }
-
-            // ⭐ HandlerSide kiosztása
-            HandlerSide side = HandlerSide::None;
-            if (leftRemaining > 0) {
-                side = HandlerSide::Left;
-                leftRemaining--;
-            } else if (rightRemaining > 0) {
-                side = HandlerSide::Right;
-                rightRemaining--;
-            }
-
-            // ⭐ PieceWithMaterial létrehozása
-            Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
-
-            // ⭐ Oldal beállítása
-            pwm.side = side;
-
-            // ⭐ Altípus átadása
-            pwm.subtype = req.subtype;
-
-            piecesByMaterial[req.materialId].append(pwm);
-        }
-    }
+    int rodId = 0;
+    static int counter = 0;
 
     auto anyPending = [&]() {
         for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it)
@@ -144,75 +82,18 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         return false;
     };
 
-    int rodId = 0;
-
-    static int counter = 0;
-
     zInfo("🔍 OPTIMALIZÁCIÓ INDÍTÁSA — pending darabok keresése");
     // 2. Optimalizációs ciklus
     while (anyPending()) {
         zInfo(QString("🔎 OPTIMIZER LOOP #%1 — pending darabok vizsgálata").arg(counter));
-        // PATCH #15 — pending statisztika
 
-        int totalPending = 0;
-        int totalLength = 0;
-        QUuid maxMat;
-        int maxCount = 0;
-
-        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
-            int count = it.value().size();
-            if (count == 0) continue;
-
-            //int sumLen = OptimizerUtils::sumLengths(it.value());
-            auto info = OptimizerUtils::computePhysicalCut(it.value(), 0.0, INT_MAX);
-            double sumLen = info.totalCut;
-
-            totalPending += count;
-            totalLength += sumLen;
-
-            if (count > maxCount) {
-                maxCount = count;
-                maxMat = it.key();
-            }
-
-            const MaterialMaster* mm = MaterialRegistry::instance().findById(it.key());
-            zInfo(QString("   • Anyag=%1 → %2 db, összhossz=%3 mm")
-                      .arg(mm ? mm->toDisplay() : it.key().toString())
-                      .arg(count)
-                      .arg(sumLen));
-        }
-
-        const MaterialMaster* maxMatPtr = MaterialRegistry::instance().findById(maxMat);
-        zInfo(QString("📊 Pending összegzés — összes=%1 db, összhossz=%2 mm, legnagyobb anyagcsoport=%3 (%4 db)")
-                  .arg(totalPending)
-                  .arg(totalLength)
-                  .arg(maxMatPtr ? maxMatPtr->toDisplay() : maxMat.toString())
-                  .arg(maxCount));
-
+        auto stats = PendingAnalyzer::analyze(piecesByMaterial, heuristic);
+        QUuid targetMaterialId = stats.targetMaterialId;
 
         if (counter % 50 == 0) {            
             QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
-            //QThread::msleep(1); // 10 ms szünet minden 100 iterációban, hogy ne blokkoljuk a UI-t
         }
         counter++;
-        // 2/a. Anyagcsoport kiválasztása
-        QUuid targetMaterialId;
-        double bestMetric = -1;
-        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
-            double metric = 0;
-
-            if (heuristic == TargetHeuristic::ByCount) {
-                metric = it.value().size();
-            } else {
-                auto info = OptimizerUtils::computePhysicalCut(it.value(), 0.0, INT_MAX);
-                metric = info.totalCut;   // vagy static_cast<int>(info.totalCut)
-            }
-
-            if (metric > bestMetric) {
-                bestMetric = metric;
-                targetMaterialId = it.key();
-            }
-        }
 
         auto &groupVec = piecesByMaterial[targetMaterialId];
         if (groupVec.isEmpty()) {
@@ -221,39 +102,17 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         }
         zInfo(QString("✔ Aktuális anyagcsoport pending: %1 db").arg(groupVec.size()));
 
-
         // 2/b. Gép kiválasztása
-
-        // PATCH #16 — MachineSelect logolás
-        const MaterialMaster* matForMachine = MaterialRegistry::instance().findById(targetMaterialId);
-        zInfo(QString("🔍 GÉP KERESÉSE — anyag=%1")
-                  .arg(matForMachine ? matForMachine->toDisplay() : targetMaterialId.toString()));
-
-
-        auto machineOpt = MachineUtils::pickMachineForMaterial(targetMaterialId);
-        if (!machineOpt) {
-                zInfo("✖ Nincs kompatibilis gép — pending darab eldobása");
-                groupVec.removeFirst();
-                continue;
-        }
+        std::optional<CuttingMachine> machineOpt =
+            MachineSelectHelper::pickAndLog(targetMaterialId); // adhatna pointert, tisztább lenne mint az opt
+        if (!machineOpt) { groupVec.removeFirst(); continue; }
         const CuttingMachine machine = *machineOpt;
-
-
-        zInfo(QString("✔ Kiválasztott gép: %1 (kerf=%2 mm, maxLen=%3)")
-                  .arg(machine.name)
-                  .arg(machine.kerf_mm)
-                  .arg(machine.stellerMaxLength_mm.has_value()
-                           ? QString::number(*machine.stellerMaxLength_mm)
-                           : "n/a"));
-
-        const double kerf_mm = machine.kerf_mm;
-        zInfo(QString("   • Gép kerf érték: %1 mm").arg(kerf_mm));
 
         auto init = initRodForMaterial(
             targetMaterialId,
             globalSnapshot,
             groupVec,
-            kerf_mm);
+            machine.kerf_mm);
 
         if (!init.ok) {
             zError(QString("❌ NO ROD AVAILABLE: materialId=%1, pendingPieces=%2")
@@ -274,16 +133,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                   .arg(rod.length)
                   .arg(rod.isReusable));
 
-
-        ++rodId; // új rúd
-
-        zInfo(QString("🔎 RÚD‑LOOP INDÍTÁSA — rodId=%1, barcode=%2, length=%3, reusable=%4")
-                  .arg(rod.rodId)
-                  .arg(rod.barcode)
-                  .arg(rod.length)
-                  .arg(rod.isReusable));
-
-
         int rodloopcounter = 0;
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
@@ -297,7 +146,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 machine,
                 currentOpId,
                 rodId,
-                kerf_mm,
+                machine.kerf_mm,
                 *this);
 
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 1);
@@ -338,7 +187,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             _localLeftovers.append(entry);
         }
 
-
         // UI yield
         QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
         QThread::msleep(1);
@@ -346,20 +194,15 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     }
     zInfo("🟢 OPTIMALIZÁCIÓ BEFEJEZVE — nincs több pending darab");
 
-
     // A lokális leftoverokat commitoljuk a globális készletbe
     // A lokális leftoverokat commitoljuk a globális készletbe
     for (const auto& entry : _localLeftovers) {
         _inventorySnapshot.reusableInventory.append(entry);
-        // zEvent(QString("📦 Commit leftover: %1 (%2 mm)")
-        //            .arg(entry.barcode).arg(entry.availableLength_mm));
     }
     _localLeftovers.clear();
 
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
     for (auto& plan : _result_plans) {
-        //bool isStockRod = !plan.isReusable();   // vagy plan.source == Stock
-        //this->applyFrontTrimToPlan( plan.planId, plan.machineKerf, isStockRod);
         SegmentPostProcess::applyFrontTrimToPlan(plan);
     }
 

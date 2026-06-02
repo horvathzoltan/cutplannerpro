@@ -115,8 +115,12 @@ HEADERS += \
     model/cutting/optimizer/cutengine.h \
     model/cutting/optimizer/cuttypes.h \
     model/cutting/optimizer/fitengine.h \
+    model/cutting/optimizer/inventoryhelper.h \
     model/cutting/optimizer/leftoverlifecycle.h \
     model/cutting/optimizer/lineagehelper.h \
+    model/cutting/optimizer/machineselecthelper.h \
+    model/cutting/optimizer/pendinganalyzer.h \
+    model/cutting/optimizer/piecebuilder.h \
     model/cutting/optimizer/reusablefitengine.h \
     model/cutting/optimizer/rodloopengine.h \
     model/cutting/optimizer/segmentpostprocess.h \

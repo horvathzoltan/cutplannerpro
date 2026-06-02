@@ -1,280 +1,274 @@
+Zoltán, itt a teljes, átgondolt, pontonkénti terv, kifejezetten a
+material‑specifikus fizikai paraméterek és a termékcsoport‑specifikus
+leftover‑tartományok bevezetésére.
+A végén pedig ott lesz a részletes patching terv, ahogy kérted.
 
+A terv minimális kockázatú, lineáris, auditálható, és nem borítja fel a
+jelenlegi stabil baseline‑t.
 
-*
-*
-*
-*
-⭐ OPTIMALIZERMODEL REFAKTOR – PONTONKÉNT VÉGREHAJTHATÓ TERV
+------------------------------------------------------------------------
+
+⭐ OPTIMALIZERMODEL – MATERIAL‑SPECIFIKUS FIZIKAI PARAMÉTEREK TERV
 
 (utolsó pont: patching terv)
 
 ------------------------------------------------------------------------
 
-1️⃣ PONT — Pending statisztika kiszervezése (alacsony kockázat)
+1️⃣ PONT — A jelenlegi fizikai konstansok feltérképezése
 
-Cél
+A rendszerben jelenleg globális konstansok vannak:
 
-A optimize() elején lévő 80+ soros pending‑elemző blokk kiszervezése.
+    END_TRIM_MM = 15
+    MINIMUM_HULLO_MM = 70
+    SELEJT_THRESHOLD = 300
+    GOOD_LEFTOVER_MIN = 500
+    GOOD_LEFTOVER_MAX = 800
 
-Lépések
+Ezek minden anyagra azonosak, ami a valóságban nem igaz.
 
-1.  Hozz létre egy új fájlt:
-    pendinganalyzer.h / pendinganalyzer.cpp
-
-2.  Hozz létre egy struktúrát:
-
-        struct PendingStats {
-            QUuid targetMaterialId;
-            int totalPending;
-            int totalLength;
-            QUuid maxMat;
-            int maxCount;
-        };
-
-3.  Hozz létre egy függvényt:
-
-        PendingStats PendingAnalyzer::analyze(
-            const QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>>& piecesByMaterial,
-            TargetHeuristic heuristic);
-
-4.  A optimize() elejéről kivágod a teljes pending‑elemző blokkot, és
-    átteszed ide.
-
-5.  A optimize()‑ban csak ennyi marad:
-
-        auto stats = PendingAnalyzer::analyze(piecesByMaterial, heuristic);
-
-Eredmény
-
--   optimize() eleje 80 sorral rövidebb
--   pending logika külön modulban, auditálható
+Cél:
+A fizikai paraméterek (trim, minimális maradék) legyenek
+material‑specifikusak.
+A leftover „jó tartományai” legyenek termékcsoport‑specifikusak.
 
 ------------------------------------------------------------------------
 
-2️⃣ PONT — Rod‑init logika szétszedése (LEGNAGYOBB NYERESÉG)
+2️⃣ PONT — MaterialMaster bővítése fizikai paraméterekkel
 
-Cél
+A MaterialMaster jelenleg nem tartalmaz:
 
-A reusable + stock + lineage + dpLimit logika külön modulba szervezése.
+-   endTrim_mm
+-   minimumLeftover_mm
+-   goodLeftoverMin_mm
+-   goodLeftoverMax_mm
 
-Lépések
+Bővítés:
 
-1.  Hozz létre három új fájlt:
+    int endTrim_mm = 15;
+    int minimumLeftover_mm = 70;
+    int goodLeftoverMin_mm = 500;
+    int goodLeftoverMax_mm = 800;
 
-    -   reusablerodselector.h/cpp
-    -   stockrodselector.h/cpp
-    -   rodinitializer.h/cpp
-
-2.  A reusable keresést tedd át a ReusableRodSelector‑ba.
-
-3.  A stock fallback‑et tedd át a StockRodSelector‑ba.
-
-4.  A lineage mapping + dpLimit számítást tedd át a RodInitializer‑be.
-
-5.  Az OptimizerModel::initRodForMaterial() → csak delegáljon:
-
-        return RodInitializer::init(...);
-
-Eredmény
-
--   a rúdválasztás logikája 150 sor helyett 3×20 sor
--   könnyen tesztelhető
--   nincs több rejtett mellékhatás
+Indok:
+Ezek a paraméterek anyagfüggők (pl. alumínium vs. acél vs. roletta cső).
 
 ------------------------------------------------------------------------
 
-3️⃣ PONT — Rod‑loop kiszervezése külön osztályba
+3️⃣ PONT — MaterialRegistry betöltés módosítása
 
-Cél
+A MaterialMaster értékei:
 
-A rod‑loop (step hívások, break feltételek, leftover commit) külön
-modulba kerüljön.
+-   vagy adatbázisból jönnek
+-   vagy JSON‑ból
+-   vagy XML‑ből
+-   vagy SettingsManager‑ből
 
-Lépések
+Feladat:
+A betöltő kódot bővíteni kell, hogy a fenti mezőket is olvassa.
 
-1.  Hozz létre egy új fájlt:
-    rodloopcontroller.h/cpp
-
-2.  Hozz létre egy függvényt:
-
-        RodLoopController::run(
-            groupVec,
-            rod,
-            machine,
-            currentOpId,
-            rodId,
-            kerf_mm,
-            model);
-
-3.  A optimize() rod‑loop részét teljes egészében átteszed ide.
-
-4.  A optimize()‑ban csak ennyi marad:
-
-        RodLoopController::run(...);
-
-Eredmény
-
--   optimize() közepe 150 sorral rövidebb
--   rod‑loop logika egy helyen, auditálható
+Fallback értékek maradnak a globális OptimizerConstants‑ban.
 
 ------------------------------------------------------------------------
 
-4️⃣ PONT — Leftover lifecycle teljes kiszervezése
+4️⃣ PONT — dpLimit számítás material‑specifikussá tétele
 
-Cél
+Jelenleg:
 
-A leftover kezelés (tiltás, commit, lineage mapping) ne legyen
-szétszórva.
+    dpLimit = rod.length
+              - END_TRIM_MM
+              - END_TRIM_MM
+              - MINIMUM_HULLO_MM;
 
-Lépések
+Új:
 
-1.  A LeftoverLifecycle‑t bővítsd ki:
-    -   registerUsedReusable()
-    -   commitLocalLeftovers()
-    -   mapRodLineage()
-2.  A optimize()‑ból és commitCutResult‑ból kivágod a leftover‑kezelést.
+    const MaterialMaster* mm = MaterialRegistry::instance().findById(targetMaterialId);
 
-Eredmény
+    int endTrim = mm ? mm->endTrim_mm : OptimizerConstants::END_TRIM_MM;
+    int minLeftover = mm ? mm->minimumLeftover_mm : OptimizerConstants::MINIMUM_HULLO_MM;
 
--   leftover logika egy helyen
--   nincs több rejtett mellékhatás
+    dpLimit = rod.length - endTrim - endTrim - minLeftover;
 
-------------------------------------------------------------------------
-
-5️⃣ PONT — Telemetry kiszervezése (befejezés)
-
-Cél
-
-A telemetry logolás teljesen külön modulba kerüljön.
-
-Lépések
-
-1.  A TelemetryHelper‑be tedd át:
-
-    -   pending statisztika logolása
-    -   rod‑loop összegzés
-    -   leftover összegzés
-
-2.  optimize() végén csak ennyi marad:
-
-        TelemetryHelper::logSummary(_fitTelemetry);
-
-Eredmény
-
--   optimize() vége letisztul
--   telemetry egy helyen
+Nyereség:
+Pontosabb fizikai modell → kevesebb overfill → kevesebb hibás leftover.
 
 ------------------------------------------------------------------------
 
-6️⃣ PONT — commitCutResult tisztítása
+5️⃣ PONT — createPhysicalLeftover material‑specifikussá tétele
 
-Cél
+Jelenleg:
 
-A commitCutResult csak a commitért feleljen.
+    int frontTrim = rod.isReusable ? 0 : END_TRIM_MM;
+    int backTrim  = END_TRIM_MM;
+    int minHull   = MINIMUM_HULLO_MM;
 
-Lépések
+Új:
 
-1.  A leftover tiltást átteszed a LeftoverLifecycle‑ba.
-2.  A lineage validálást meghagyod.
-3.  A dpLimit / remainingLength frissítést meghagyod.
-4.  A groupVec törlést meghagyod.
+    int frontTrim = rod.isReusable ? 0 : mm->endTrim_mm;
+    int backTrim  = mm->endTrim_mm;
+    int minHull   = mm->minimumLeftover_mm;
 
-Eredmény
-
--   commitCutResult 40%-kal rövidebb
--   felelőssége tiszta
-
-------------------------------------------------------------------------
-
-7️⃣ PONT — OptimizerModel::optimize() végső tisztítása
-
-Cél
-
-A optimize() narratív, olvasható, 150–200 soros legyen.
-
-Lépések
-
-1.  A fenti modulokra bontás után a optimize() így fog kinézni:
-
-    1. pending statisztika
-    2. gép választás
-    3. rúd inicializálás
-    4. rod-loop futtatása
-    5. leftover commit
-    6. telemetry
-
-Eredmény
-
--   optimize() végre olvasható
--   auditálható
--   nem kell többé „szétszórt logikát” keresni
+Nyereség:
+A fizikai leftover hossza valósághű lesz.
 
 ------------------------------------------------------------------------
 
-⭐ 8️⃣ PONT — PATCHING TERV (végrehajtási sorrend)
+6️⃣ PONT — ReusableFitEngine material‑specifikus minimum leftover ellenőrzése
 
-(ez a kért utolsó pont)
+Jelenleg:
 
-Ez a konkrét végrehajtási sorrend, amelyet követve a rendszer minden
-lépés után működőképes marad.
+    if (stock.availableLength_mm < MINIMUM_HULLO_MM) reject;
 
-PATCH #1 — PendingAnalyzer bevezetése
+Új:
 
--   új fájl
--   pending logika áthelyezése
--   optimize() módosítása
+    if (stock.availableLength_mm < mm->minimumLeftover_mm) reject;
 
-PATCH #2 — ReusableRodSelector + StockRodSelector bevezetése
+Nyereség:
+A leftover‑szűrés anyagfüggő lesz.
 
--   reusable logika kivágása
--   stock logika kivágása
--   initRodForMaterial delegálása
+------------------------------------------------------------------------
 
-PATCH #3 — RodInitializer bevezetése
+7️⃣ PONT — GOOD_LEFTOVER_MIN/MAX termékcsoport‑specifikussá tétele
 
--   dpLimit számítás
--   lineage mapping
--   snapshot frissítés
--   initRodForMaterial tisztítása
+A leftover „jó tartománya” NEM anyagfüggő, hanem termékcsalád‑függő:
 
-PATCH #4 — RodLoopController bevezetése
+-   roletta cső → 300–600 mm
+-   napháló cső → 800–1500 mm
+-   alumínium profil → 500–900 mm
 
--   rod‑loop kivágása
--   optimize() tisztítása
+Megoldás:
 
-PATCH #5 — LeftoverLifecycle bővítése
+MaterialMaster:
 
--   leftover tiltás
--   leftover commit
--   leftover lineage mapping
+    int goodLeftoverMin_mm;
+    int goodLeftoverMax_mm;
 
-PATCH #6 — TelemetryHelper bővítése
+Score számítás:
 
--   pending log
--   rod‑loop log
--   leftover log
+    int goodMin = mm ? mm->goodLeftoverMin_mm : OptimizerConstants::GOOD_LEFTOVER_MIN;
+    int goodMax = mm ? mm->goodLeftoverMax_mm : OptimizerConstants::GOOD_LEFTOVER_MAX;
 
-PATCH #7 — commitCutResult tisztítása
+    if (leftoverLength >= goodMin && leftoverLength <= goodMax)
+        score += 300;
 
--   leftover tiltás áthelyezése
--   felelősség tisztítása
+Nyereség:
+A score sokkal jobban illeszkedik a valós gyártáshoz.
 
-PATCH #8 — optimize() végső tisztítása
+------------------------------------------------------------------------
 
--   felesleges logok eltávolítása
--   narratív pipeline kialakítása
+8️⃣ PONT — Score material‑specifikus finomhangolása (csak a leftover tartományokra)
+
+A score többi része:
+
+-   darabszám preferencia
+-   hulladék büntetés
+-   teljes elfogyasztás jutalma
+-   túl nagy leftover büntetése
+
+→ maradjon globális, mert nem anyagfüggő.
+
+------------------------------------------------------------------------
+
+9️⃣ PONT — Visszafelé kompatibilitás biztosítása
+
+Ha egy MaterialMaster nem tartalmazza az új mezőket:
+
+-   fallback a globális OptimizerConstants értékekre
+-   semmi nem törik el
+-   minden anyag működik tovább
+
+Ez kritikus.
+
+------------------------------------------------------------------------
+
+🔟 PONT — Tesztelési terv
+
+A) Unit tesztek
+
+-   dpLimit számítás különböző anyagokra
+-   leftover létrehozás különböző trim értékekkel
+-   score számítás különböző leftover tartományokkal
+
+B) Integrációs tesztek
+
+-   roletta cső + kis leftover
+-   napháló cső + nagy leftover
+-   alumínium profil + közepes leftover
+
+C) Regresszió
+
+-   régi anyagok fallback értékekkel ugyanúgy működjenek
+
+------------------------------------------------------------------------
+
+1️⃣1️⃣ PONT — Dokumentáció
+
+MaterialMaster új mezői:
+
+-   endTrim_mm
+-   minimumLeftover_mm
+-   goodLeftoverMin_mm
+-   goodLeftoverMax_mm
+
+OptimizerConstants fallback értékek.
+
+------------------------------------------------------------------------
+
+⭐ 1️⃣2️⃣ PONT — PATCHING TERV (végrehajtási sorrend)
+
+Ez a konkrét, lineáris, biztonságos patch‑sorozat.
+
+------------------------------------------------------------------------
+
+PATCH #1 — MaterialMaster bővítése
+
+-   új mezők hozzáadása
+-   default értékek beállítása
+-   MaterialRegistry betöltés módosítása
+
+------------------------------------------------------------------------
+
+PATCH #2 — dpLimit material‑specifikussá tétele
+
+-   initRodForMaterial módosítása
+-   fallback értékek megtartása
+
+------------------------------------------------------------------------
+
+PATCH #3 — createPhysicalLeftover material‑specifikussá tétele
+
+-   frontTrim / backTrim / minHull material‑specifikus
+-   fallback értékek megtartása
+
+------------------------------------------------------------------------
+
+PATCH #4 — ReusableFitEngine leftover‑szűrés módosítása
+
+-   minimum leftover material‑specifikus
+-   fallback megtartása
+
+------------------------------------------------------------------------
+
+PATCH #5 — Score leftover tartomány material‑specifikussá tétele
+
+-   goodLeftoverMin / goodLeftoverMax material‑specifikus
+-   fallback megtartása
+
+------------------------------------------------------------------------
+
+PATCH #6 — Tesztek + sanity run
+
+-   dpLimit
+-   leftover
+-   score
+-   regresszió
 
 ------------------------------------------------------------------------
 
 ⭐ KÉSZ
 
-Ez a terv:
+Ez egy teljes, lineáris, biztonságos, auditálható terv,
+amely a fizikai paramétereket material‑specifikussá,
+a leftover tartományokat termékcsoport‑specifikussá teszi,
+miközben a rendszer stabil marad.
 
--   lineáris,
--   végrehajtható,
--   audit‑tiszta,
--   nem változtat a működésen,
--   és a végén egy patching tervvel zárul, ahogy kérted.
-
-Ha szeretnéd, most megcsinálom PATCH #1‑et (PendingAnalyzer skeleton +
-diff).
+Ha kéred, indulhatunk a PATCH #1‑gyel.
