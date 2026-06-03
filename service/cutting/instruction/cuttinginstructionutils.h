@@ -351,7 +351,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
             MaterialRegistry::instance().findById(ci.materialId);
 
         QString materialLabel = mat
-                                    ? QString("%1").arg(mat->name)
+                                    ? QString("%1").arg(mat->barcode)
                                     : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
 
         QString sizeStr = sizeStrings[idx++];

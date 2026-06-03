@@ -89,8 +89,8 @@ public:
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);
 
-    static constexpr int printedLineWidth = 64;
-    static constexpr int printedPageHeight = 46;
+    static constexpr int printedLineWidth = 75;
+    static constexpr int printedPageHeight = 60;
 
     void ExportLeftoverIntakeForm();
 private:
