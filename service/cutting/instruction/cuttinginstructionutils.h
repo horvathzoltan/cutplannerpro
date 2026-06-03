@@ -477,7 +477,7 @@ inline QString priorityIconFor(const QDate& dueDate)
 static const QStringList GROUP_ICONS = {
     "🍎", // A - Alma
     "🐸", // B - Béka
-    "🐈", // C - Cica
+    "🐈‍⬛", // C - Macska
     "🦇", // D - Denevér
     "🐭", // E - Egér
     "🍦", // F - Fagyi

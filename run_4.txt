@@ -33,6 +33,15 @@ A végén pedig ott lesz a részletes patching terv, ahogy kérted.
 A terv minimális kockázatú, lineáris, auditálható, és nem borítja fel a
 jelenlegi stabil baseline‑t.
 
+Tétel szám:,H. idő:,Név:,Szél:,X,Mag:,Kezelő:,Sávroló tok,Típus:,,Vászon színe:,Színkód:,Kezelő magassága:,Megjegyzés:,,,Ár:,,Típus:,,,Méreten felül:,,Sávroló tokkal:,,
+,,,,,,,,Gyöngyös,Rugós,,,,,,,,,Gyöngyös,Rugós,,240 cm magasság felett,,,,
+1.,2025.10.31.,"GENERÁLKIV., PÉCS",38,x,120,J,,23 (Alap),,Ara,34,,,,,8470,,0,0,,,,0,,
+218.,2025.12.10.,HAJDU ALU ZRT.,136,x,145,J,,36 (Erősített),,Velux,1,,,,,30755,,7065,0,,,,0,,
+316.,2025.12.22.,"NAPEX, PÉCS","58,4",x,"58,6",J,,"Tokozott,sínes",,Velux,2,,RAL 8014,,,20550,,0,0,,,,0,,
+435.,2026.01.22.,"GENERÁL,PÉCS","92,5",x,110,B,,"Tokozott,sínes",,Natural,11,,"MINI TOKOS, ANYAG MÉRET!!!!!",,,18195,,0,0,,,,0,,
+548.,,HAJDU ALU ZRT._FSZ,114,x,160,J,,36 (Erősített),,Velux,1,,,,,28250,,7065,0,,,,0,,
+1485.,2026.06.10.,"ZENTAI ABLAK, EGER",105,x,160,J,,32 (Új),,Natural,21,,,,,13490,,1570,0,,,,0,,
+1472.,2026.06.15.,"HÖR-MI, GYŐR","60,5",x,110,,,,Tetőtéri,Natural,1101,,,,,8470,,0,0,,,,0,,
 ------------------------------------------------------------------------
 
 ⭐ OPTIMALIZERMODEL – MATERIAL‑SPECIFIKUS FIZIKAI PARAMÉTEREK TERV
