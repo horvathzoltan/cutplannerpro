@@ -44,9 +44,9 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="tab_6">
+        <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
           <string>CutRequest</string>
          </attribute>

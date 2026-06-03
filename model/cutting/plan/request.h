@@ -2,6 +2,7 @@
 
 #include <QUuid>
 #include <QStringList>
+#include <QDate>
 
 #include "../../../common/color/namedcolor.h"
 
@@ -189,6 +190,8 @@ struct Request {
     Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
 
     NamedColor requiredColor; // 🎨 Anyag színe (RAL vagy HEX kód)
+
+    QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 
     /**
      * @brief Ellenőrzi, hogy az igény érvényes-e.

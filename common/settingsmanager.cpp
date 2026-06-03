@@ -209,3 +209,11 @@ int SettingsManager::peekManualLeftoverCounter() const {
 void SettingsManager::commitManualLeftoverCounter(int c)  {
     persist(SettingsKeys::ManualLeftoverCounter, QString::number(c));
 }
+
+int SettingsManager::lastActiveTab() const {
+    return _settings.value(SettingsKeys::LastActiveTab, 0).toInt();
+}
+
+void SettingsManager::setLastActiveTab(int ix) {
+    persist(SettingsKeys::LastActiveTab, QString::number(ix));
+}

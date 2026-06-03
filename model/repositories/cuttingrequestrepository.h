@@ -50,6 +50,7 @@ private:
         int leftCount = 0;           ///< J darabszám (V2)
         int rightCount = 0;          ///< B darabszám (V2)
         QString subtypeStr;         ///< Altípus szöveges formátumban (V2)
+        QDate dueDate;
     };
 
     static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V1(const QVector<QString>& parts, CsvReader::FileContext& ctx);
@@ -58,12 +59,15 @@ private:
     static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V2(const QVector<QString>& parts, CsvReader::FileContext& ctx);
     static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V2(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
 
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V3(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V3(const QVector<QString>& parts,  CsvReader::FileContext& ctx);
 
     static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::FileContext& ctx);
 
     enum class CSVVersion {
         V1_OldHandlerSide,
         V2_LeftRightSubtype,
+        V3_WithDueDate,
         Unknown
     };
 

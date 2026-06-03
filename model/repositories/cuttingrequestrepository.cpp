@@ -80,6 +80,9 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
     case CSVVersion::V2_LeftRightSubtype:
         return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V2, true);
 
+    case CSVVersion::V3_WithDueDate:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V3, true);
+
     default:
         ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
         return {};
@@ -150,6 +153,50 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V2(const QVector<QString
     return row;
 }
 
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V3(const QVector<QString>& parts,
+                                                           CsvReader::FileContext& ctx)
+{
+    if (parts.size() < 15) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V3)"));
+        return std::nullopt;
+    }
+
+    CuttingRequestRow row;
+    row.externalReference = parts[0].trimmed();
+    row.ownerName         = parts[1].trimmed();
+    row.fullWidth_mm      = parts[2].trimmed().toInt();
+    row.fullHeight_mm     = parts[3].trimmed().toInt();
+    row.requiredLength    = parts[4].trimmed().toInt();
+    row.toleranceStr      = parts[5].trimmed();
+    row.quantity          = parts[6].trimmed().toInt();
+
+    row.leftCount         = parts[7].trimmed().toInt();
+    row.rightCount        = parts[8].trimmed().toInt();
+    row.subtypeStr        = parts[9].trimmed();
+
+    row.requiredColorName = parts[10].trimmed();
+    row.barcode           = parts[11].trimmed();
+    row.relevantDimStr    = parts[12].trimmed();
+    row.isMeasurementNeeded = (parts[13].trimmed().toLower() == "true");
+
+    // ⭐ dueDate (YYYY-MM-DD)
+    QString dueStr = parts[14].trimmed();
+    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+    row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+    return row;
+}
+
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V3(const QVector<QString>& parts,
+                                                        CsvReader::FileContext& ctx)
+{
+    const auto rowOpt = convertRowToCuttingRequestRow_V3(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
 
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
@@ -211,6 +258,10 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         req.requiredColor = NamedColor(); // nincs festve
     }
 
+    req.dueDate = row.dueDate.isValid()
+                      ? row.dueDate
+                      : QDate::currentDate();
+
     return req;
 }
 
@@ -247,7 +298,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     // externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
 
     // új fejléc (V2):
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate\n";
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
         const auto* material = MaterialRegistry::instance().findById(req.materialId);
@@ -259,6 +310,8 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
         QString toleranceStr = req.requiredTolerance.has_value()
                                    ? req.requiredTolerance->toCsvString()
                                    : "";
+
+        QString dueStr = req.dueDate.toString("yyyy-MM-dd");
 
         out << "\"" << req.externalReference << "\";"
             << "\"" << req.ownerName << "\";"
@@ -273,7 +326,10 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << "\"" << req.requiredColor.name() << "\";"
             << material->barcode << ";"
             << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
-            << (req.isMeasurementNeeded ? "true" : "false") << "\n";
+            << (req.isMeasurementNeeded ? "true" : "false") << ";"
+            << dueStr
+            << "\n";
+
     }
 
 
@@ -300,12 +356,18 @@ CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(
     bool hasLeft        = cols.contains("leftCount", Qt::CaseInsensitive);
     bool hasRight       = cols.contains("rightCount", Qt::CaseInsensitive);
     bool hasSubtype     = cols.contains("subtype", Qt::CaseInsensitive);
+    bool hasDueDate     = cols.contains("dueDate", Qt::CaseInsensitive);
 
     if (hasHandlerSide && !hasLeft)
-        return CuttingRequestRepository::CSVVersion::V1_OldHandlerSide;
+        return CSVVersion::V1_OldHandlerSide;
 
+    // ⭐ V3: ugyanaz mint V2, de dueDate is van
+    if (hasLeft && hasRight && hasSubtype && hasDueDate)
+        return CSVVersion::V3_WithDueDate;
+
+    // ⭐ V2: nincs dueDate
     if (hasLeft && hasRight && hasSubtype)
-        return CuttingRequestRepository::CSVVersion::V2_LeftRightSubtype;
+        return CSVVersion::V2_LeftRightSubtype;
 
     return CuttingRequestRepository::CSVVersion::Unknown;
 }

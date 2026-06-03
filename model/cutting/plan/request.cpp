@@ -31,6 +31,8 @@ QStringList Request::invalidReasons() const {
     if (unsafe.match(externalReference).hasMatch())
         errors << "• A külső hivatkozás veszélyes karaktert tartalmaz.";
 
+    if (!dueDate.isValid())
+        errors << "Érvénytelen határidő.";
 
     return errors;
 }
@@ -55,6 +57,8 @@ QString Request::toString() const {
 
     // 🔗 Anyag UUID (mindig legyen benne)
     parts << QString("Anyag ID: %1").arg(materialId.toString());
+
+    parts << QString("Határidő: %1").arg(dueDate.toString("yyyy.MM.dd"));
 
     // 💡 Végső összefűzés
     return parts.join(" | ");

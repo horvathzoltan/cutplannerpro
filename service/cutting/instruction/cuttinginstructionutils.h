@@ -327,6 +327,9 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     int wIcon = maxWidth(colIcon);
     int wSize = maxWidth(colSize);
 
+    QString prevSizeStr;
+    int repeatCount = 1;
+    bool firstOfBlock = true;
 
 
     // --- 2. FÁZIS: RENDERELÉS DINAMIKUS OSZLOPSZÉLESSÉGGEL ---
@@ -357,6 +360,18 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         QString sizeStr = sizeStrings[idx++];
         QString sizeFull = QString("%1 mm □").arg(sizeStr);
 
+        // ismétlődés detektálása
+        bool sameAsPrev = (sizeStr == prevSizeStr);
+
+        if (sameAsPrev) {
+            repeatCount++;
+            firstOfBlock = false;
+        } else {
+            // ha új méret jön, az előző blokkot lezárjuk
+            repeatCount = 1;
+            firstOfBlock = true;
+        }
+
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabel = req
                                  ? QString("%1. %2").arg(ci.externalReference).arg(req->ownerName)
@@ -378,14 +393,26 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         if (piece.length() > maxPieceLen)
             piece = piece.left(maxPieceLen - 1) + "…";
 
+
+        QString sepAfterSize = sameAsPrev ? " ║ " : " | ";
+
+        QString multiplier = "";
+        if (firstOfBlock && repeatCount > 1) {
+            multiplier = QString("  ×%1").arg(repeatCount);
+        }
+
         // --- végső sor ---
-        lines << QString("%1 %2 | %3 | %4 %5 | %6 □")
+        lines << QString("%1 %2 | %3 | %4 %5%6%7%8")
                      .arg(stepP)
                      .arg(rodP)
                      .arg(matP)
                      .arg(iconP)
                      .arg(sizeP)
-                     .arg(piece);
+                     .arg(sepAfterSize)
+                     .arg(piece+" □")
+                     .arg(multiplier);
+
+        prevSizeStr = sizeStr;
     }
 
 
@@ -408,6 +435,8 @@ struct LabelPart {
 
 struct LabelModel {
     QVector<LabelPart> parts;
+    QString priorityIcon;   // 🔥💧☁️🪨
+    QString groupIcon;      // 🦌🐸🐱… ABC állatok
 
     QString toString() const {
         QString out;
@@ -424,12 +453,115 @@ struct LabelModel {
     }
 };
 
+inline QString priorityIconFor(const QDate& dueDate)
+{
+    if (!dueDate.isValid())
+        return "🌞";   // nincs határidő → nincs prio
 
+    QDate today = QDate::currentDate();
+    int daysLeft = today.daysTo(dueDate);
+
+    if (daysLeft <= 1)
+        return "🔥";   // Tűz – SOS
+    if (daysLeft <= 3)
+        return "💧";   // Víz – sürgős
+    if (daysLeft <= 6)
+        return "☁️";  // Levegő – normál
+    return "⏳";       // Föld – ráér
+}
+
+static const QStringList GROUP_ICONS = {
+    "🐒", // A - Amajom
+    "🐸", // B - Béka
+    "🐈", // C - Cica
+    "🦇", // D - Denevér
+    "🐭", // E - Egér
+    "🐻", // F - Medve
+    "🦎", // G - Gekkó
+    "🐜", // H - Hangya
+    "🐛", // I - Kukac
+    "🐆", // J - Jaguár
+    "🦘", // K - Kenguru
+    "🦋", // L - Lepke
+    "🐿️", // M - Mókus
+    "🐰", // N - Nyúl
+    "🦁", // O - Oroszlán
+    "🐼", // P - Panda
+    "🦊", // R - Róka
+    "🦔", // S - Süni
+    "🐢", // T - Teknős
+    "🦦", // V - Vidra
+    "🦓"  // Z - Zebra
+};
+
+inline QMap<QString, QString> computeGroupIconsForRequests(const QVector<Cutting::Plan::Request>& reqs)
+{
+    QMap<QString, QString> out;
+
+    // 1) stabil rendezés
+    QVector<Cutting::Plan::Request> sorted = reqs;
+    std::sort(sorted.begin(), sorted.end(),
+              [](const auto& a, const auto& b){
+                  if (a.ownerName != b.ownerName)
+                      return a.ownerName < b.ownerName;
+                  return a.externalReference < b.externalReference;
+              });
+
+    // 2) rotációs állapot
+    int groupIndex = -1;
+    int groupCount = 0;
+    QString prevOwner;
+
+    const int MAX_GROUP_SIZE = 10;
+
+    // 3) végigmegyünk a rendezett requesteken
+    for (const auto& r : sorted) {
+
+        QString owner = r.ownerName;
+        QString ext   = r.externalReference;
+
+        // megrendelőváltás → új ikon
+        if (owner != prevOwner) {
+            groupIndex++;
+            groupCount = 0;
+        }
+
+        // túl nagy csoport → új ikon
+        if (groupCount >= MAX_GROUP_SIZE) {
+            groupIndex++;
+            groupCount = 0;
+        }
+
+        // ikon kiválasztása
+        QString icon = GROUP_ICONS[groupIndex % GROUP_ICONS.size()];
+
+        out[ext] = icon;
+
+        groupCount++;
+        prevOwner = owner;
+    }
+
+    return out;
+}
 
 inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& mc)
 {
     QVector<LabelModel> out;
     QSet<QString> rodSeen;
+    QVector<Cutting::Plan::Request> reqs;
+
+    for (const auto& ci : mc.cutInstructions) {
+        Cutting::Plan::Request *req =
+            CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+        if(req)
+            reqs.append(*req);
+    }
+
+    QMap<QString, QString> groupIcons = computeGroupIconsForRequests(reqs);
+
+    for(auto& g : groupIcons.keys()){
+        zInfo(L("Group icon: %1 → %2").arg(g).arg(groupIcons[g]));
+    }
 
     for (const auto& ci : mc.cutInstructions) {
 
@@ -450,14 +582,28 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
 
         // 2) Darab címke
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-
         QString ext = ci.externalReference + ".";
+
+        // 🔥💧☁️⏳ prioritás ikon
+        QString prio = req ? priorityIconFor(req->dueDate) : "🌞";
+
+        // 🐸🐱🦭… csoportikon
+        QString baseRef = ci.externalReference.split(' ').first();
+        QString group = groupIcons.value(baseRef, "🐞");
+
+        // zInfo(QStringLiteral("prio(%1) -> %2").arg(req->dueDate.toString()).arg(prio));
+        // zInfo(QStringLiteral("group(%1)-> %2").arg(ci.externalReference).arg(group));
+
         QString owner = req ? req->ownerName
                             : ci.requestId.toString(QUuid::WithoutBraces);
         QString sizeStr = QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
 
         LabelModel lm;
-        lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
+        lm.priorityIcon = prio;
+        lm.groupIcon = group;
+
+        //lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
+        lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
         lm.parts.append({ owner,     true,  true,  0, Qt::AlignCenter });
 
         QString a = "";
@@ -955,22 +1101,19 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
         "|" + makeCell("Material", col1) +
         "|" + makeCell("Length",       col2) +
         "|" + makeCell("LeftoverStock",          col3) +
-        "|" + makeCell("Cut-off label",     col4) +
-        "|";
+        "|" + makeCell("Cut-off label",     col4);
     QString header2 =
         "|" + makeCell("barcode", col1) +
         "|" + makeCell("[mm]",       col2) +
         "|" + makeCell("barcode",          col3) +
-        "|" + makeCell("",     col4) +
-        "|";
+        "|" + makeCell("",     col4);
     lines << header1 << header2;
 
     QString sep =
         "|" + QString(col1, '-') +
         "|" + QString(col2, '-') +
         "|" + QString(col3, '-') +
-        "|" + QString(col4, '-') +
-        "|";
+        "|" + QString(col4, '-');
     lines << sep;
 
     // 4) RSM kódok generálása – PEEK alapú, COMMIT NÉLKÜL
@@ -984,8 +1127,7 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
             "|" + makeCell("", col1) +
             "|" + makeCell("", col2) +
             "|" + makeCell("", col3) +
-            "|" + makeCell("", col4) +
-            "|";
+            "|" + makeCell("", col4);
 
         // 2) Középre rendezett RSM kód
         auto centerCell = [&](const QString& text, int w){
@@ -998,16 +1140,14 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
             "|" + makeCell("", col1) +
             "|" + makeCell("", col2) +
             "|" + centerCell(code, col3) +
-            "|" + centerCell(code, col4) +
-            "|";
+            "|" + centerCell(code, col4);
 
         // 3) Üres alsó sor
         QString rowBot =
             "|" + makeCell("", col1) +
             "|" + makeCell("", col2) +
             "|" + makeCell("", col3) +
-            "|" + makeCell("", col4) +
-            "|";
+            "|" + makeCell("", col4);
 
         lines << rowTop;
         lines << rowMid;
@@ -1018,11 +1158,9 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
             "|" + QString(col1, QChar(0x2500)) +
             "|" + QString(col2, QChar(0x2500)) +
             "|" + QString(col3, QChar(0x2500)) +
-            "|" + QString(col4, QChar(0x2500)) +
-            "|";
+            "|" + QString(col4, QChar(0x2500));
 
         lines << sepRow;
-
 
         // 🔥 ÚJ: sorok közötti szeparátor
         // QString sepRow =
@@ -1033,7 +1171,6 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
         //     "|";
 
         // lines << sepRow;
-
     }
 
     return lines.join("\n");

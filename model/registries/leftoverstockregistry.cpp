@@ -11,6 +11,7 @@ LeftoverStockRegistry &LeftoverStockRegistry::instance() {
 
 void LeftoverStockRegistry::registerEntry(const LeftoverStockEntry& entry) {
     _data.append(entry);
+    persist();
 }
 
 void LeftoverStockRegistry::clearAll() {

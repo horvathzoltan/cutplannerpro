@@ -1,22 +1,29 @@
-1. leftover tétel nem rögzül
-2. request rögzítés a flow nem tökéletes
-    - sok kurzormozgás jobbról balra -> szerkesztés hotkey
-    - J/B UX, EX nem megfelelő
-        - dedikált felületet kell tervezni a funkcóra
-    - Megrendelő: gyorsítótárazni kell
+1. leftover tétel nem rögzül - OK
+
+2. request rögzítés a flow nem tökéletes - KÉSZ
+    - sok kurzormozgás jobbról balra -> szerkesztés hotkey -KÉSZ
+    - J/B UX, EX nem megfelelő - KÉSŰZ
+        - dedikált felületet kell tervezni a funkcóra - KÉSZ
+    - Megrendelő: gyorsítótárazni kell - Megrendelő perzisztens autocomplete -> run_5.txt
         - az első tételnél meggyorsítja az adatbevitelt
-3. cimkén egymást követő azonos méreteket
-    - jelölni, számolni, összesítőt adni, pl 6 db
-4. selejt felvételi űrlap:
+
+4. selejt felvételi űrlap: - KÉSZ
     - cutoff label jobb oldali keret nem kell
-5. csoportosítani kell:
+
+3. vágási utasításban az egy azonos rúdon egy rúdcserébe eső egymást követő azonos méreteket - KÉSZ
+    - jelölni, számolni, összesítőt adni, pl 6 db
+
+5. csoportosítani kell: - KÉSZ
     - megrendelés szerint
     - dátum szerint
     - szimbólumokat kell használni
+
+******************
+
 x: XLSX adatbemenet
     - .xlsx -> .csv tool -> .csv import
-
-
+soffice -invisible -convert-to csv _ROLETTA_GYÁRTÁS_2025.10.14-TŐL_LEGÚJABB.xlsx
+libreoffice --headless --convert-to csv --outdir conv/ SampleData.xlsx
 
 Zoltán, itt a teljes, átgondolt, pontonkénti terv, kifejezetten a
 material‑specifikus fizikai paraméterek és a termékcsoport‑specifikus

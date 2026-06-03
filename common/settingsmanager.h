@@ -26,6 +26,8 @@ inline constexpr auto CuttingStrategy = "cutting_strategy";
 inline constexpr auto MaterialCounter = "material_counter";
 inline constexpr auto LeftoverCounter = "leftover_counter";
 inline constexpr auto ManualLeftoverCounter = "manual_leftover_counter";
+
+inline constexpr auto LastActiveTab = "last_active_tab";
 }
 
 enum class TestMode {
@@ -82,6 +84,9 @@ public:
     // CuttingStrategy
     void setCuttingStrategy(Cutting::Optimizer::TargetHeuristic h);
     Cutting::Optimizer::TargetHeuristic cuttingStrategy() const;
+
+    int lastActiveTab() const;
+    void setLastActiveTab(int ix);
 
     // optimizercounters
     int materialCounter() const;

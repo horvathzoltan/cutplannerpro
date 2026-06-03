@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QFileDialog>
 #include <QCheckBox>
+#include <QShortcut>
 
 //#include "cutanalyticspanel.h"
 #include "../model/stockentry.h"
@@ -164,6 +165,19 @@ MainWindow::MainWindow(QWidget *parent)
         zEvent("ismeretlen cutting strategy beállítás");
     }
 
+    int ix = SettingsManager::instance().lastActiveTab();
+    ui->midBox->setCurrentIndex(ix);
+
+    auto scNewRequest = new QShortcut(QKeySequence("Ctrl+N"), this);
+    connect(scNewRequest, &QShortcut::activated, this, [this]() {
+        handle_btn_AddCuttingPlanRequest_clicked();
+    });
+
+    auto scGoToCutRequest = new QShortcut(QKeySequence("Alt+1"), this);
+    connect(scGoToCutRequest, &QShortcut::activated, this, [this]() {
+        ui->midBox->setCurrentIndex(0); // vagy a CutRequest tab indexe
+    });
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
@@ -271,6 +285,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
     SettingsManager::instance().setWindowGeometry(saveGeometry());
     // splitter
     SettingsManager::instance().setMainSplitterState(ui->mainSplitter->saveState());
+
+    SettingsManager::instance().setLastActiveTab(ui->midBox->currentIndex());
 
     SettingsManager::instance().save();
 
@@ -391,6 +407,14 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
 
     Cutting::Plan::Request request = dialog.getModel();
     presenter->add_CuttingPlanRequest(request);
+
+    // ⭐ Shift+Enter → új tétel újranyitása
+    if (dialog.wasShiftEnter()) {
+        QTimer::singleShot(0, this, [this]() {
+            handle_btn_AddCuttingPlanRequest_clicked();
+        });
+    }
+
 }
 
 /*stock*/

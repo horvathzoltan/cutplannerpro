@@ -23,26 +23,32 @@ public:
     QString ownerName() const;
     QString externalReference() const;
 
-    ;
-
-    // ❗️Ide jön az override metódus
     void accept() override;
     Cutting::Plan::Request getModel() const;
+    void setModel(const Cutting::Plan::Request& request);
+    bool wasShiftEnter() const { return _shiftEnterAccepted; }
 
-    void setModel(const Cutting::Plan::Request& request); // ⬅️ új metódus
+protected:
+    void keyPressEvent(QKeyEvent *e) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     Ui::AddInputDialog *ui;
-    void populateMaterialCombo(); // új: feltölti a comboBox-ot törzsből
+    void populateMaterialCombo();
     bool validateInputs();
     Subtype parseSubtypeFromRadioButtons() const;
 
-    QUuid current_requestId; // 🔒 Megőrzi az eredeti ID-t
+    void onQuantityChanged(int totalPieces);
+    void updateHandlerSideControls();
+    void updateSliderLabels();
+
+    QUuid current_requestId;
 
     static QString s_lastOwnerName;
     static QString s_lastExternalRef;
-    static QUuid s_lastMaterialId;
+    static QUuid   s_lastMaterialId;
     static Subtype s_lastSubtype;
 
+    bool _shiftEnterAccepted = false;
+    QString _sliderInputBuffer;
 };
-
