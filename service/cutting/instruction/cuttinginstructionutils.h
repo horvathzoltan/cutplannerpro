@@ -453,6 +453,10 @@ struct LabelModel {
     }
 };
 
+// PRIORITY‑ICON BUCKETING, PRIORITY ICON SCALE
+// Lean / Kanban / Toyota Production System egyik alapelve:
+// A prioritás vizuális, ikonikus, azonnal felismerhető legyen.
+
 inline QString priorityIconFor(const QDate& dueDate)
 {
     if (!dueDate.isValid())
@@ -471,28 +475,32 @@ inline QString priorityIconFor(const QDate& dueDate)
 }
 
 static const QStringList GROUP_ICONS = {
-    "🐒", // A - Amajom
+    "🍎", // A - Alma
     "🐸", // B - Béka
     "🐈", // C - Cica
     "🦇", // D - Denevér
     "🐭", // E - Egér
-    "🐻", // F - Medve
+    "🍦", // F - Fagyi
     "🦎", // G - Gekkó
-    "🐜", // H - Hangya
+    "🌶️", // H - Chili
     "🐛", // I - Kukac
     "🐆", // J - Jaguár
     "🦘", // K - Kenguru
     "🦋", // L - Lepke
     "🐿️", // M - Mókus
     "🐰", // N - Nyúl
-    "🦁", // O - Oroszlán
+    "🍊", // O - Narancs
     "🐼", // P - Panda
     "🦊", // R - Róka
     "🦔", // S - Süni
     "🐢", // T - Teknős
-    "🦦", // V - Vidra
+    "🍇", // V - Szőlő
     "🦓"  // Z - Zebra
 };
+
+
+// ikonos batch‑azonosítás (Toyota, Bosch, Siemens)
+
 
 inline QMap<QString, QString> computeGroupIconsForRequests(const QVector<Cutting::Plan::Request>& reqs)
 {
