@@ -44,267 +44,243 @@ Tétel szám:,H. idő:,Név:,Szél:,X,Mag:,Kezelő:,Sávroló tok,Típus:,,Vász
 1472.,2026.06.15.,"KOR-MI, GYŐR","60,5",x,110,,,,Tetőtéri,Natural,1101,,,,,8470,,0,0,,,,0,,
 ------------------------------------------------------------------------
 
-⭐ OPTIMALIZERMODEL – MATERIAL‑SPECIFIKUS FIZIKAI PARAMÉTEREK TERV
+Zoltán, ez most a lényeg legmélyebb magja:
+mit szabályoznak pontosan ezek a paraméterek, és milyen kézzelfogható
+különbséget okoz, ha napháló / sávroló / roletta anyagoknál eltérő
+értékeket adsz meg?
 
-(utolsó pont: patching terv)
+A válasz:
+ezek a paraméterek közvetlenül meghatározzák a hullókeletkezést, a
+selejtarányt, a leftover‑minőséget, a reusable logikát, a DP‑keresést, a
+FitEngine scoringot, a RodLoop döntéseit, és végső soron a teljes
+optimalizálási viselkedést.
 
-------------------------------------------------------------------------
-
-1️⃣ PONT — A jelenlegi fizikai konstansok feltérképezése
-
-A rendszerben jelenleg globális konstansok vannak:
-
-    END_TRIM_MM = 15
-    MINIMUM_HULLO_MM = 70
-    SELEJT_THRESHOLD = 300
-    GOOD_LEFTOVER_MIN = 500
-    GOOD_LEFTOVER_MAX = 800
-
-Ezek minden anyagra azonosak, ami a valóságban nem igaz.
-
-Cél:
-A fizikai paraméterek (trim, minimális maradék) legyenek
-material‑specifikusak.
-A leftover „jó tartományai” legyenek termékcsoport‑specifikusak.
+És most szétszedem őket anyag‑specifikus, fizikai, és algoritmikus hatás
+szerint.
 
 ------------------------------------------------------------------------
 
-2️⃣ PONT — MaterialMaster bővítése fizikai paraméterekkel
+⭐ 1) trim_mm — technikai vágás eleje/vége
 
-A MaterialMaster jelenleg nem tartalmaz:
+Mit jelent?
+A rúd elején/ végén levágandó fix technikai darab (pl. deformált vég,
+préselési maradék).
 
--   endTrim_mm
--   minimumLeftover_mm
--   goodLeftoverMin_mm
--   goodLeftoverMax_mm
+Közvetlen hatás:
 
-Bővítés:
+-   csökkenti a hasznosítható rúd hosszát
+-   stock rúd esetén: frontTrim + backTrim levonódik
+-   leftover rúd esetén: csak frontTrim vagy semmi (attól függ,
+    reusable‑e)
 
-    int endTrim_mm = 15;
-    int minimumLeftover_mm = 70;
-    int goodLeftoverMin_mm = 500;
-    int goodLeftoverMax_mm = 800;
+Közvetett hatás:
 
-Indok:
-Ezek a paraméterek anyagfüggők (pl. alumínium vs. acél vs. roletta cső).
+-   kevesebb darab fér egy rúdba
+-   több rúd kell
+-   több leftover keletkezik
+-   DP‑limit csökken → FitEngine kevesebb kombinációt talál
+-   a leftover hossza kisebb lesz → több selejt keletkezhet
 
-------------------------------------------------------------------------
-
-3️⃣ PONT — MaterialRegistry betöltés módosítása
-
-A MaterialMaster értékei:
-
--   vagy adatbázisból jönnek
--   vagy JSON‑ból
--   vagy XML‑ből
--   vagy SettingsManager‑ből
-
-Feladat:
-A betöltő kódot bővíteni kell, hogy a fenti mezőket is olvassa.
-
-Fallback értékek maradnak a globális OptimizerConstants‑ban.
+Ha naphálónál 15 mm, sávrolónál 20 mm:
+→ sávrolónál több rúd kell, mert a hasznos hossz rövidebb.
 
 ------------------------------------------------------------------------
 
-4️⃣ PONT — dpLimit számítás material‑specifikussá tétele
+⭐ 2) minLeftOver_mm — minimális maradék, ami még „használható”
 
-Jelenleg:
+Mit jelent?
+Ez az a hossz, ami alatt a leftover nem kerül reusable készletbe, hanem
+selejt.
 
-    dpLimit = rod.length
-              - END_TRIM_MM
-              - END_TRIM_MM
-              - MINIMUM_HULLO_MM;
+Közvetlen hatás:
 
-Új:
+-   ha a rúd végén maradék < minLeftOver → nem tároljuk → kidobjuk
+-   ha >= minLeftOver → leftoverként bekerül a készletbe
 
-    const MaterialMaster* mm = MaterialRegistry::instance().findById(targetMaterialId);
+Közvetett hatás:
 
-    int endTrim = mm ? mm->endTrim_mm : OptimizerConstants::END_TRIM_MM;
-    int minLeftover = mm ? mm->minimumLeftover_mm : OptimizerConstants::MINIMUM_HULLO_MM;
+-   reusableFitEngine csak ezeket a leftovereket vizsgálja
+-   minél nagyobb a minLeftOver, annál kevesebb leftover lesz
+    újrahasznosítható
+-   minél kisebb, annál több reusable rúd keletkezik → kevesebb stock
+    fogy
 
-    dpLimit = rod.length - endTrim - endTrim - minLeftover;
-
-Nyereség:
-Pontosabb fizikai modell → kevesebb overfill → kevesebb hibás leftover.
-
-------------------------------------------------------------------------
-
-5️⃣ PONT — createPhysicalLeftover material‑specifikussá tétele
-
-Jelenleg:
-
-    int frontTrim = rod.isReusable ? 0 : END_TRIM_MM;
-    int backTrim  = END_TRIM_MM;
-    int minHull   = MINIMUM_HULLO_MM;
-
-Új:
-
-    int frontTrim = rod.isReusable ? 0 : mm->endTrim_mm;
-    int backTrim  = mm->endTrim_mm;
-    int minHull   = mm->minimumLeftover_mm;
-
-Nyereség:
-A fizikai leftover hossza valósághű lesz.
+Ha rolettánál minLeftOver=100, naphálónál 70:
+→ rolettánál kevesebb reusable maradék keletkezik, több lesz a kidobott
+selejt.
 
 ------------------------------------------------------------------------
 
-6️⃣ PONT — ReusableFitEngine material‑specifikus minimum leftover ellenőrzése
+⭐ 3) scrap_mm — ez alatt selejt
 
-Jelenleg:
+Mit jelent?
+A leftover hossza, ami alatt már nem érdemes tárolni, mert fizikailag
+nem használható.
 
-    if (stock.availableLength_mm < MINIMUM_HULLO_MM) reject;
+Közvetlen hatás:
 
-Új:
+-   RodLoopEngine: ha remainingLength < scrap_mm → StopRod
+-   UI: piros szín (selejt)
+-   LeftoverLifecycle: nem kerül be a reusable készletbe
 
-    if (stock.availableLength_mm < mm->minimumLeftover_mm) reject;
+Közvetett hatás:
 
-Nyereség:
-A leftover‑szűrés anyagfüggő lesz.
+-   minél nagyobb scrap_mm, annál több lesz a kidobott selejt
+-   minél kisebb, annál több „kicsi” leftover kerül be → de ezek ritkán
+    használhatók → FitEngine sokszor elutasítja őket
 
-------------------------------------------------------------------------
-
-7️⃣ PONT — GOOD_LEFTOVER_MIN/MAX termékcsoport‑specifikussá tétele
-
-A leftover „jó tartománya” NEM anyagfüggő, hanem termékcsalád‑függő:
-
--   roletta cső → 300–600 mm
--   napháló cső → 800–1500 mm
--   alumínium profil → 500–900 mm
-
-Megoldás:
-
-MaterialMaster:
-
-    int goodLeftoverMin_mm;
-    int goodLeftoverMax_mm;
-
-Score számítás:
-
-    int goodMin = mm ? mm->goodLeftoverMin_mm : OptimizerConstants::GOOD_LEFTOVER_MIN;
-    int goodMax = mm ? mm->goodLeftoverMax_mm : OptimizerConstants::GOOD_LEFTOVER_MAX;
-
-    if (leftoverLength >= goodMin && leftoverLength <= goodMax)
-        score += 300;
-
-Nyereség:
-A score sokkal jobban illeszkedik a valós gyártáshoz.
+Ha sávrolónál scrap=300, rolettánál scrap=100:
+→ sávrolónál szigorúbb a selejt → több hulladék keletkezik, de kevesebb
+értéktelen leftover kerül be.
 
 ------------------------------------------------------------------------
 
-8️⃣ PONT — Score material‑specifikus finomhangolása (csak a leftover tartományokra)
+⭐ 4) goodLeftOver_Min_mm / goodLeftOver_Max_mm
 
-A score többi része:
+Mit jelentenek?
+Ez a tartomány az, amit a rendszer jó minőségű, értékes leftovernek
+tekint.
 
--   darabszám preferencia
--   hulladék büntetés
--   teljes elfogyasztás jutalma
--   túl nagy leftover büntetése
+Közvetlen hatás:
 
-→ maradjon globális, mert nem anyagfüggő.
+-   RodLoopEngine: ha remainingLength ebben a tartományban → StopRod (jó
+    leftover képződik)
+-   FitEngine scoring: +300 pont (előnyben részesíti az ilyen
+    kombinációkat)
+-   UI: sárga szín
+-   ReusableFitEngine: előnyben részesíti ezeket a leftovereket
 
-------------------------------------------------------------------------
+Közvetett hatás:
 
-9️⃣ PONT — Visszafelé kompatibilitás biztosítása
+-   a rendszer törekszik arra, hogy ilyen leftover keletkezzen
+-   DP és brute‑force is preferálja azokat a kombinációkat, amelyek
+    ilyen leftoverhez vezetnek
+-   több „jó” leftover kerül a reusable készletbe
+-   kevesebb selejt keletkezik
 
-Ha egy MaterialMaster nem tartalmazza az új mezőket:
-
--   fallback a globális OptimizerConstants értékekre
--   semmi nem törik el
--   minden anyag működik tovább
-
-Ez kritikus.
-
-------------------------------------------------------------------------
-
-🔟 PONT — Tesztelési terv
-
-A) Unit tesztek
-
--   dpLimit számítás különböző anyagokra
--   leftover létrehozás különböző trim értékekkel
--   score számítás különböző leftover tartományokkal
-
-B) Integrációs tesztek
-
--   roletta cső + kis leftover
--   napháló cső + nagy leftover
--   alumínium profil + közepes leftover
-
-C) Regresszió
-
--   régi anyagok fallback értékekkel ugyanúgy működjenek
+Ha naphálónál good=1000–1800, rolettánál good=600–1200:
+→ naphálónál a rendszer nagy leftovereket szeret, rolettánál
+közepeseket.
 
 ------------------------------------------------------------------------
 
-1️⃣1️⃣ PONT — Dokumentáció
+⭐ 5) Összefoglaló: hogyan befolyásolja ez a hullókeletkezést?
 
-MaterialMaster új mezői:
+  ------------------------------------------------------------------------
+  Paraméter              Ha nagyobb                Ha kisebb
+  ---------------------- ------------------------- -----------------------
+  trim_mm                több hulló, kevesebb      kevesebb hulló
+                         hasznos hossz
 
--   endTrim_mm
--   minimumLeftover_mm
--   goodLeftoverMin_mm
--   goodLeftoverMax_mm
+  minLeftOver_mm         kevesebb reusable, több   több reusable, több
+                         selejt                    „kicsi” leftover
 
-OptimizerConstants fallback értékek.
+  scrap_mm               több selejt, kevesebb     kevesebb selejt, több
+                         tárolt hulló              tárolt hulló
 
-------------------------------------------------------------------------
-
-⭐ 1️⃣2️⃣ PONT — PATCHING TERV (végrehajtási sorrend)
-
-Ez a konkrét, lineáris, biztonságos patch‑sorozat.
-
-------------------------------------------------------------------------
-
-PATCH #1 — MaterialMaster bővítése
-
--   új mezők hozzáadása
--   default értékek beállítása
--   MaterialRegistry betöltés módosítása
+  goodLeftOver_Min/Max   rendszer nagy             rendszer kisebb
+                         leftovereket preferál     leftovereket preferál
+  ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
-PATCH #2 — dpLimit material‑specifikussá tétele
+⭐ 6) Napháló / Sávroló / Roletta — konkrét különbségek
 
--   initRodForMaterial módosítása
--   fallback értékek megtartása
+Napháló
 
-------------------------------------------------------------------------
+-   hosszú profilok (6000–7000 mm)
+-   jó leftover tartomány: 1000–1800 mm
+-   scrap: 300 mm
+-   minLeftOver: 70 mm
 
-PATCH #3 — createPhysicalLeftover material‑specifikussá tétele
+Hatás:
 
--   frontTrim / backTrim / minHull material‑specifikus
--   fallback értékek megtartása
-
-------------------------------------------------------------------------
-
-PATCH #4 — ReusableFitEngine leftover‑szűrés módosítása
-
--   minimum leftover material‑specifikus
--   fallback megtartása
+-   a rendszer szeret nagy leftovereket hagyni
+-   sok reusable maradék keletkezik
+-   kevés selejt
+-   DP preferálja a nagy darabokat, hogy jó leftover maradjon
 
 ------------------------------------------------------------------------
 
-PATCH #5 — Score leftover tartomány material‑specifikussá tétele
+Sávroló
 
--   goodLeftoverMin / goodLeftoverMax material‑specifikus
--   fallback megtartása
+-   jó leftover tartomány: 600–1500 mm
+-   scrap: 300 mm
+-   minLeftOver: 50–100 mm
+-   trim_mm: 15–20 mm
+
+Hatás:
+
+-   a rendszer közepes leftovereket preferál
+-   több selejt keletkezhet, mert scrap=300
+-   a trim nagyobb → kevesebb hasznos hossz → több rúd kell
 
 ------------------------------------------------------------------------
 
-PATCH #6 — Tesztek + sanity run
+Roletta
 
--   dpLimit
--   leftover
--   score
--   regresszió
+-   jó leftover tartomány: 600–1200 mm
+-   scrap: 300 mm
+-   minLeftOver: 70–100 mm
+-   trim_mm: 15–30 mm
+
+Hatás:
+
+-   a rendszer közepes leftovereket preferál
+-   több selejt keletkezik (scrap=300)
+-   minLeftOver nagy → kevés reusable maradék
+-   több stock fogy
 
 ------------------------------------------------------------------------
 
-⭐ KÉSZ
+⭐ 7) Hogyan szabályozhatod a hullókeletkezést?
 
-Ez egy teljes, lineáris, biztonságos, auditálható terv,
-amely a fizikai paramétereket material‑specifikussá,
-a leftover tartományokat termékcsoport‑specifikussá teszi,
-miközben a rendszer stabil marad.
+Ha kevesebb selejtet akarsz:
 
-Ha kéred, indulhatunk a PATCH #1‑gyel.
+-   scrap_mm → lejjebb
+-   minLeftOver_mm → lejjebb
+-   goodLeftOver_Min_mm → lejjebb
+-   goodLeftOver_Max_mm → lejjebb
+
+Ha több reusable hullót akarsz:
+
+-   minLeftOver_mm → lejjebb
+-   scrap_mm → lejjebb
+-   goodLeftOver_Min_mm → szűkebbre
+-   goodLeftOver_Max_mm → szűkebbre
+
+Ha kevesebb leftovert akarsz:
+
+-   goodLeftOver_Min_mm → feljebb
+-   scrap_mm → feljebb
+-   trim_mm → feljebb
+
+------------------------------------------------------------------------
+
+⭐ 8) Hogyan hat ez az újrahasznosításra?
+
+Több reusable leftover →
+
+-   ReusableFitEngine több jelöltet talál
+-   kevesebb stock fogy
+-   több rúd lesz „folytatva”
+-   DP több kombinációt talál leftoverekre
+
+Kevesebb reusable leftover →
+
+-   több stock fogy
+-   kevesebb leftover kerül vissza
+-   egyszerűbb készlet, de drágább gyártás
+
+------------------------------------------------------------------------
+
+⭐ Röviden
+
+Ezek a paraméterek szabályozzák a teljes hullókeletkezési,
+selejtkezelési, leftover‑minősítési és újrahasznosítási viselkedést.
+A különböző értékekkel teljesen eltérő optimalizálási karaktert kapsz
+napháló / sávroló / roletta esetén.
+
+Ha szeretnéd, megcsinálom a három termékcsalád összehasonlító
+táblázatát, vagy segítek optimalizálni a paramétereket a kívánt gyártási
+stratégia szerint.
