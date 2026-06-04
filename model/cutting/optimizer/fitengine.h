@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QVector>
+#include <materials/model/scoringparams.h>
 #include "../piece/piecewithmaterial.h"
 
 class FitEngine {
@@ -74,7 +75,7 @@ public:
     static FitResult
     findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                 int lengthLimit,
-                double kerf_mm);
+                double kerf_mm, const MaterialScoringParams& sp);
 
     struct FitEngineTelemetry {
         long calls = 0;

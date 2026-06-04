@@ -37,8 +37,12 @@ RodStepResult RodLoopEngine::step(
               .arg(remainingLength)
               .arg(dpLimit));
 
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(rod.materialId);
+    MaterialScoringParams sp = mat ? mat->scoringParams()
+                                   : MaterialScoringParams::getDefault();
+
     FitEngine::FitResult fr =
-        FitEngine::findBestFit(groupVec, dpLimit, kerf_mm);
+        FitEngine::findBestFit(groupVec, dpLimit, kerf_mm, sp);
 
     zInfo(QString("🔎 FitEngine hívás — dpLimit=%1 mm, pending=%2")
               .arg(dpLimit)
@@ -101,19 +105,20 @@ RodStepResult RodLoopEngine::step(
         return RodStepResult::StopRod;
     }
 
-    if (remainingLength < OptimizerConstants::SELEJT_THRESHOLD) {
+    if (remainingLength < sp.scrap_mm) {
         zInfo("⛔ ROD-STEP — Rúd lezárva — leftover köszöbérték alatti tartomány");
         return RodStepResult::StopRod;
     }
 
-    if (remainingLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
-        remainingLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+    if (remainingLength >= sp.goodLeftOver_Min_mm &&
+        remainingLength <= sp.goodLeftOver_Max_mm)
+    {
         zInfo("⛔ ROD-STEP — rúd lezárva (jó leftover tartomány, fizikai hulló képződik)");
         return RodStepResult::StopRod;
     }
 
-    if (remainingLength >= OptimizerConstants::SELEJT_THRESHOLD &&
-        remainingLength < OptimizerConstants::GOOD_LEFTOVER_MIN) {
+    if (remainingLength >= sp.scrap_mm &&
+        remainingLength < sp.goodLeftOver_Min_mm) {
 
         auto onePieceFit =
             OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
@@ -130,7 +135,7 @@ RodStepResult RodLoopEngine::step(
 
             int newRemaining = remainingLength;
 
-            if (newRemaining < OptimizerConstants::SELEJT_THRESHOLD) {
+            if (newRemaining < sp.scrap_mm) {
                 zInfo("⏭ ROD-STEP — új rúd indítása (aktuális rúd nem vágható tovább)");
                 return RodStepResult::StartNewRod;
             } else {
@@ -140,7 +145,7 @@ RodStepResult RodLoopEngine::step(
         }
     }
 
-    if (remainingLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
+    if (remainingLength > sp.goodLeftOver_Max_mm) {
         auto onePieceFit =
             OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
         if (onePieceFit.has_value()) {

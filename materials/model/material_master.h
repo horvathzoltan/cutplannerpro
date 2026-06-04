@@ -8,7 +8,8 @@
 #include "model/crosssectionshape.h"
 #include "materials/model/cutting_mode.h"
 #include "materials/model/painting_mode.h"
-
+#include "scoringparams.h"
+#include "trimmingparams.h"
 
 // 📦 Anyagdefiníció: szálhossz, forma, méret, szín, típus, súly, gép
 struct MaterialMaster : public IdentifiableEntity {
@@ -33,5 +34,31 @@ struct MaterialMaster : public IdentifiableEntity {
     PaintingMode paintingMode = PaintingMode::Paintable; // jelzi, ha az anyag festhető
     CuttingMode cuttingMode = CuttingMode::Length; // 🔧 Alapértelmezés: szálhossz vágás
 
-    QString comment;       // opcionális, UI-ba is jó    
+    QString comment;       // opcionális, UI-ba is jó
+
+    int trim_mm = 15;          // technikai vágás eleje/vége
+    int minLeftOver_mm = 70;       // minimális maradék (usable leftover)
+    int scrap_mm = 300;        // ez alatt selejt
+
+    int goodLeftOver_Min_mm = 500;  // jó leftover tartomány alsó határa
+    int goodLeftOver_Max_mm = 800;  // jó leftover tartomány felső határa
+
+    QString externalCode;
+
+    MaterialScoringParams scoringParams() const {
+        return {
+            scrap_mm,
+            goodLeftOver_Min_mm,
+            goodLeftOver_Max_mm
+        };
+    }
+
+    MaterialTrimmingParams trimmingParams(bool isReusable) const {
+        return {
+            isReusable ? 0 : trim_mm, // frontTrim
+            trim_mm,                  // backTrim
+            minLeftOver_mm            // minHull
+        };
+    }
+
 };

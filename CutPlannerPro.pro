@@ -112,6 +112,8 @@ HEADERS += \
     common/signalhelper.h \
     common/sysinfohelper.h \
     common/texthelper.h \
+    materials/model/scoringparams.h \
+    materials/model/trimmingparams.h \
     model/cutting/optimizer/cutengine.h \
     model/cutting/optimizer/cuttypes.h \
     model/cutting/optimizer/fitengine.h \

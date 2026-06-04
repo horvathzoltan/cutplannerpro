@@ -4,6 +4,8 @@
 #include "common/settingsmanager.h"
 #include "model/cutting/optimizer/lineagehelper.h"
 
+#include <materials/registry/material_registry.h>
+
 namespace Cutting {
 namespace Optimizer {
 namespace LeftoverLifecycle {
@@ -21,11 +23,11 @@ LeftoverStockEntry createPhysicalLeftover(
     if (remainingLength <= 0)
         return {};
 
-    int frontTrim = rod.isReusable ? 0 : OptimizerConstants::END_TRIM_MM;
-    int backTrim  = OptimizerConstants::END_TRIM_MM;
-    int minHull   = OptimizerConstants::MINIMUM_HULLO_MM;
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(rod.materialId);
+    MaterialTrimmingParams tp = mat ? mat->trimmingParams(rod.isReusable)
+                                    : MaterialTrimmingParams::getDefault();
 
-    int corrected = remainingLength - frontTrim - backTrim - minHull;
+    int corrected = remainingLength - tp.frontTrim_mm - tp.backTrim_mm - tp.minLeftOver_mm;
     if (corrected <= 0) {
         zInfo(QString("✖ Fizikai hulló nem hozható létre — corrected=%1 mm").arg(corrected));
         return {};

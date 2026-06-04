@@ -216,7 +216,9 @@ QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
     QStringList lines;
     while (!st->atEnd() && lines.size() < 2) {
         QString line = st->readLine().trimmed();
-        if (!line.isEmpty()) lines.append(line);
+        if (line.isEmpty()) continue;
+        if (line.startsWith('#')) continue;   // ⬅️ komment átugrása
+        lines.append(line);
     }
 
     if (lines.size() < 2) return QChar(); // ❌ Nem elég sor

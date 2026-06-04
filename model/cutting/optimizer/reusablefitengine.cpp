@@ -87,6 +87,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     //                          ? smallestPending + kerf_mm
     //                          : 0.0;
 
+    //const MaterialMaster* mat = MaterialRegistry::instance().findById(materialId);
+    MaterialScoringParams sp = mat ? mat->scoringParams()
+                                   : MaterialScoringParams::getDefault();
+
     zInfo("LEFTOVER LOOP START");
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
@@ -106,9 +110,9 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
 
-        if (stock.availableLength_mm < OptimizerConstants::MINIMUM_HULLO_MM) {
+        if (stock.availableLength_mm < sp.goodLeftOver_Min_mm) {
             zInfo(QString("   ✖ Elutasítva — leftover túl rövid a biztonságos vágáshoz (min=%1 mm)")
-                      .arg(OptimizerConstants::MINIMUM_HULLO_MM));
+                      .arg( sp.goodLeftOver_Min_mm));
             continue;
         }
 
@@ -150,7 +154,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
 
         // Egyébként: keresd a legjobb részhalmazt
         FitEngine::FitResult fit =
-            FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm);
+            FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm, sp);
 
         model._fitTelemetry.accumulate(fit);
 
@@ -191,7 +195,7 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         if (usedNoKerf > stock.availableLength_mm)         // elvileg sosem igaz, de maradhat guardnak
             continue;
 
-        int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength);
+        int score = OptimizerUtils::calcScore(fit.combo.size(), waste, leftoverLength, sp);
 
         if (score > bestScore) {
             zInfo("   ➡ Új legjobb jelölt kiválasztva");

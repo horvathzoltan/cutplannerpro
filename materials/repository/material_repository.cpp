@@ -18,6 +18,7 @@
 #include <common/color/namedcolor.h>
 #include "materials/model/cutting_mode.h"
 #include "materials/model/painting_mode.h"
+#include "service/cutting/optimizer/optimizerconstants.h"
 // bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 //     auto& helper = FileNameHelper::instance();
 //     if (!helper.isInited()) return false;
@@ -115,6 +116,14 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
         return std::nullopt;
     }
 
+    // új mezők opcionális beolvasása
+    if (parts.size() >= 12) row.trimStr            = parts[11].trimmed();
+    if (parts.size() >= 13) row.minLeftOverStr     = parts[12].trimmed();
+    if (parts.size() >= 14) row.scrapStr           = parts[13].trimmed();
+    if (parts.size() >= 15) row.goodLeftOverMinStr = parts[14].trimmed();
+    if (parts.size() >= 16) row.goodLeftOverMaxStr = parts[15].trimmed();
+    if (parts.size() >= 17) row.externalCodeStr    = parts[16].trimmed();
+
     return row;
 }
 
@@ -162,7 +171,25 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::File
         m.color = NamedColor(); // nincs festve
     }
 
+    // új mezők parse + fallback
+    bool okTrim, okMinLeft, okScrap, okGoodMin, okGoodMax;
+
+    m.trim_mm              = row.trimStr.toInt(&okTrim);
+    m.minLeftOver_mm       = row.minLeftOverStr.toInt(&okMinLeft);
+    m.scrap_mm             = row.scrapStr.toInt(&okScrap);
+    m.goodLeftOver_Min_mm  = row.goodLeftOverMinStr.toInt(&okGoodMin);
+    m.goodLeftOver_Max_mm  = row.goodLeftOverMaxStr.toInt(&okGoodMax);
+
+    if (!okTrim)        m.trim_mm             = OptimizerConstants_2::END_TRIM_MM;
+    if (!okMinLeft)     m.minLeftOver_mm      = OptimizerConstants_2::MINIMUM_HULLO_MM;
+    if (!okScrap)       m.scrap_mm            = OptimizerConstants_2::SELEJT_THRESHOLD;
+    if (!okGoodMin)     m.goodLeftOver_Min_mm = OptimizerConstants_2::GOOD_LEFTOVER_MIN;
+    if (!okGoodMax)     m.goodLeftOver_Max_mm = OptimizerConstants_2::GOOD_LEFTOVER_MAX;
+
+    m.externalCode = row.externalCodeStr;
+
     return m;
+
 }
 
 

@@ -203,7 +203,10 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
     for (auto& plan : _result_plans) {
-        SegmentPostProcess::applyFrontTrimToPlan(plan);
+        auto* m = MaterialRegistry::instance().findById(plan.materialId);
+        MaterialTrimmingParams tp = m ? m->trimmingParams(plan.isReusable())
+                                     : MaterialTrimmingParams::getDefault();
+        SegmentPostProcess::applyFrontTrimToPlan(plan, tp);
     }
 
     // --- IDE JÖN A VÉGÉRE ---
@@ -396,6 +399,11 @@ RodInitResult OptimizerModel::initRodForMaterial(
         rod.entryId = best.stock.entryId;
         rod._parent = best.stock._parent;
 
+        const MaterialMaster* material = MaterialRegistry::instance().findById(rod.materialId);
+        MaterialTrimmingParams tp = material ? material->trimmingParams(rod.isReusable)
+                                             : MaterialTrimmingParams::getDefault();
+
+
         // rodId mapping
         if (leftoverRodMap.contains(best.stock.entryId)) {
             auto lineage = leftoverRodMap.value(best.stock.entryId);
@@ -408,10 +416,9 @@ RodInitResult OptimizerModel::initRodForMaterial(
         } else {
             rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
 
-            const MaterialMaster* m = MaterialRegistry::instance().findById(rod.materialId);
             zInfo(QString("🆔 NEW ROD ID: %1 (source=stock, material=%2, length=%3)")
                       .arg(rod.rodId)
-                      .arg(m ? m->toDisplay() : rod.materialId.toString())
+                      .arg(material ? material->toDisplay() : rod.materialId.toString())
                       .arg(rod.length));
 
             leftoverRodMap.insert(best.stock.entryId, RodLineage{ rod.rodId, rod._parent });
@@ -441,9 +448,10 @@ RodInitResult OptimizerModel::initRodForMaterial(
 
         remainingLength = rod.length;
 
+
         dpLimit = rod.length
-                  - OptimizerConstants::END_TRIM_MM
-                  - OptimizerConstants::MINIMUM_HULLO_MM;
+                  - tp.frontTrim_mm
+                  - tp.minLeftOver_mm;
 
         rodSelected = true;
 
@@ -471,10 +479,14 @@ RodInitResult OptimizerModel::initRodForMaterial(
 
             remainingLength = rod.length;
 
+            const MaterialMaster* material = MaterialRegistry::instance().findById(rod.materialId);
+            MaterialTrimmingParams tp = material ? material->trimmingParams(rod.isReusable)
+                                                 : MaterialTrimmingParams::getDefault();
+
             dpLimit = rod.length
-                      - OptimizerConstants::END_TRIM_MM
-                      - OptimizerConstants::END_TRIM_MM
-                      - OptimizerConstants::MINIMUM_HULLO_MM;
+                      - tp.frontTrim_mm
+                      - tp.backTrim_mm
+                      - tp.minLeftOver_mm;
 
             rodSelected = true;
 

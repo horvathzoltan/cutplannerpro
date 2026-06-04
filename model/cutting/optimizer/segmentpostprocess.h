@@ -2,11 +2,13 @@
 
 #include "model/cutting/plan/cutplan.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
+
+#include <materials/model/trimmingparams.h>
 namespace Cutting {
 namespace Optimizer {
 namespace SegmentPostProcess {
 
-inline void applyFrontTrimToPlan(Cutting::Plan::CutPlan& plan)
+inline void applyFrontTrimToPlan(Cutting::Plan::CutPlan& plan, MaterialTrimmingParams tp)
 {
     //double kerf_mm
     //bool isStockRod = plan.isReusable();
@@ -31,7 +33,7 @@ inline void applyFrontTrimToPlan(Cutting::Plan::CutPlan& plan)
     // if (plan._segments.isEmpty())
     //     return;
 
-    double frontTrim = OptimizerConstants::END_TRIM_MM; // 15 mm
+    double frontTrim = tp.backTrim_mm; // 15 mm
     double frontKerf = plan.machineKerf;
 
     double delta = frontTrim + frontKerf;

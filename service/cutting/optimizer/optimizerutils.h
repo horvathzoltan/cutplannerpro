@@ -1,5 +1,8 @@
 #pragma once
 #include <QVector>
+#include <materials/model/material_master.h>
+#include <materials/model/scoringparams.h>
+#include <materials/registry/material_registry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
 #include "../../../model/cutting/piece/piecewithmaterial.h"
 #include "common/logger.h"
@@ -52,7 +55,7 @@ inline PhysicalCutInfo computePhysicalCut(
 }
 
 
-inline int calcScore(int pieceCount, int waste, int leftoverLength) {
+inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScoringParams sp) {
     int score = 0;
 
     // 🎯 Alap: darabszám preferálása
@@ -72,20 +75,20 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength) {
     }
 
     // 😊 Jó leftover tartomány – „jó érzésű” maradék
-    if (leftoverLength >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
-        leftoverLength <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+    if (leftoverLength >= sp.goodLeftOver_Min_mm &&
+        leftoverLength <= sp.goodLeftOver_Max_mm) {
         score += 300;
     }
 
     // 😬 Selejt leftover – erősebb büntetés
-    if (leftoverLength > 0 && leftoverLength < OptimizerConstants::SELEJT_THRESHOLD) {
+    if (leftoverLength > 0 && leftoverLength < sp.scrap_mm) {
         score -= 300; // visszaállítva az eredeti szigorra
     }
 
     // 🧱 Túl nagy leftover – dinamikus büntetés
-    if (leftoverLength > OptimizerConstants::GOOD_LEFTOVER_MAX) {
+    if (leftoverLength > sp.goodLeftOver_Max_mm) {
         // Alapbüntetés −100, de skálázva a mérettel
-        int oversize = leftoverLength - OptimizerConstants::GOOD_LEFTOVER_MAX;
+        int oversize = leftoverLength - sp.goodLeftOver_Max_mm;
         score -= 100 + oversize / 100;
         // pl. 900 mm leftover → −110, 1500 mm leftover → −1150
     }
@@ -136,7 +139,12 @@ findSingleBestPiece(const QVector<Cutting::Piece::PieceWithMaterial>& available,
 
         int waste = static_cast<int>(lengthLimit - used);
         int leftoverLength = waste;
-        int score = OptimizerUtils::calcScore(1, waste, leftoverLength);
+
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(piece.materialId);
+        MaterialScoringParams sp = mat ? mat->scoringParams()
+                                       : MaterialScoringParams::getDefault();
+
+        int score = OptimizerUtils::calcScore(1, waste, leftoverLength, sp);
 
         zInfo(QString("   • Vizsgálat: piece=%1 mm → used=%2, waste=%3, leftover=%4, score=%5")
                   .arg(piece.info.length_mm)

@@ -10,7 +10,8 @@
 FitEngine::FitResult
 FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& available,
                        int lengthLimit,
-                       double kerf_mm)
+                       double kerf_mm,
+                       const MaterialScoringParams& sp)
 {
     zInfo(QString("🔍 FitEngine — legjobb combo keresése (n=%1, limit=%2 mm, kerf=%3)")
               .arg(available.size())
@@ -99,7 +100,12 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
 
             int waste          = static_cast<int>(lengthLimit - usedNoKerf);
             int leftoverLength = waste;
-            int score          = OptimizerUtils::calcScore(combo.size(), waste, leftoverLength);
+
+            // const MaterialMaster* mat = MaterialRegistry::instance().findById(available[0].materialId);
+            // MaterialScoringParams sp = mat ? mat->scoringParams()
+            //                                : MaterialScoringParams::getDefault();
+
+            int score          = OptimizerUtils::calcScore(combo.size(), waste, leftoverLength, sp);
 
 
             if (score > bestScore) {
@@ -237,7 +243,7 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
 
             int waste2          = static_cast<int>(lengthLimit - usedNoKerf2);
             int leftoverLength2 = waste2;
-            int score2          = OptimizerUtils::calcScore(combo.size(), waste2, leftoverLength2);
+            int score2          = OptimizerUtils::calcScore(combo.size(), waste2, leftoverLength2, sp);
 
             if (score2 > bestScore) {
                 bestScore = score2;
@@ -290,8 +296,8 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
                   int wasteA = lengthLimit - a.info.length_mm;
                   int wasteB = lengthLimit - b.info.length_mm;
 
-                  int scoreA = OptimizerUtils::calcScore(1, wasteA, wasteA);
-                  int scoreB = OptimizerUtils::calcScore(1, wasteB, wasteB);
+                  int scoreA = OptimizerUtils::calcScore(1, wasteA, wasteA, sp);
+                  int scoreB = OptimizerUtils::calcScore(1, wasteB, wasteB, sp);
 
                   return scoreA > scoreB;
               });

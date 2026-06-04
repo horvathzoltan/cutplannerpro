@@ -260,11 +260,14 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     if (ci.isFinalLeftover && ci.lengthAfter_mm > 0) {
         double len = ci.lengthAfter_mm;
 
-        if (len < OptimizerConstants::SELEJT_THRESHOLD) {
+        MaterialScoringParams sp = mat ? mat->scoringParams()
+                                       : MaterialScoringParams::getDefault();
+
+        if (len < sp.scrap_mm) {
             bg = QColor("#e74c3c"); // selejt → piros
             fg = Qt::white;
-        } else if (len >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
-                   len <= OptimizerConstants::GOOD_LEFTOVER_MAX) {
+        } else if (len >= sp.goodLeftOver_Min_mm &&
+                   len <= sp.goodLeftOver_Max_mm) {
             bg = QColor("#f1c40f"); // jó leftover → sárga
             fg = Qt::black;
         } else {
@@ -275,9 +278,9 @@ inline TableRowViewModel generate(const CutInstruction& ci,
         afterText.append(QString("  [%1]").arg(ci.leftoverBarcode));
         afterTooltip = QString("Végső leftover (%1 mm, kategória: %2)")
                            .arg(len)
-                           .arg(len < OptimizerConstants::SELEJT_THRESHOLD ? "Selejt"
-                                : (len >= OptimizerConstants::GOOD_LEFTOVER_MIN &&
-                                   len <= OptimizerConstants::GOOD_LEFTOVER_MAX) ? "Jó"
+                           .arg(len < sp.scrap_mm ? "Selejt"
+                                : (len >= sp.goodLeftOver_Min_mm &&
+                                   len <= sp.goodLeftOver_Max_mm) ? "Jó"
                                                                                 : "Köztes");
     }
 
