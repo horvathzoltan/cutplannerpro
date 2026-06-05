@@ -123,6 +123,7 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     if (parts.size() >= 15) row.goodLeftOverMinStr = parts[14].trimmed();
     if (parts.size() >= 16) row.goodLeftOverMaxStr = parts[15].trimmed();
     if (parts.size() >= 17) row.externalCodeStr    = parts[16].trimmed();
+    if (parts.size() >= 18) row.description    = parts[17].trimmed();
 
     return row;
 }
@@ -187,6 +188,7 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::File
     if (!okGoodMax)     m.goodLeftOver_Max_mm = OptimizerConstants_2::GOOD_LEFTOVER_MAX;
 
     m.externalCode = row.externalCodeStr;
+    m.description = row.description;
 
     return m;
 

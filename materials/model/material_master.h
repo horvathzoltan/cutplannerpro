@@ -45,6 +45,8 @@ struct MaterialMaster : public IdentifiableEntity {
 
     QString externalCode;
 
+    QString description;   // hosszabb szöveges leírás
+
     MaterialScoringParams scoringParams() const {
         return {
             scrap_mm,

@@ -70,6 +70,9 @@ static inline QString materialToDisplay(const MaterialMaster& mat, DisplayType d
                  groupName.isEmpty() ? "—" : groupName,
                  barcode.isEmpty() ? "—" : barcode,
                        materialColorName);
+        if(!mat.description.isEmpty()){
+            out += "\n\n"+mat.description;
+        }
     }
     else if(dt == Label){
         out = materialName;

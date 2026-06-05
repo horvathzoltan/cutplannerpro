@@ -35,6 +35,7 @@ private:
         QString goodLeftOverMinStr;
         QString goodLeftOverMaxStr;
         QString externalCodeStr;
+        QString description;
     };
 
     static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, CsvReader::FileContext& ctx);
