@@ -1,12 +1,12 @@
 1. vágási utasítások
-    - Anyagfelhasználás: hulló látszik rod -> barcode
-    - stock anyag nem látszik  - "A géphez nem tartozik készlet a tárolókban"
-    - azonos méreteknél az első még szimpla függőleges vonal, a másodiktól dupla
-    - nincs az azonos méretekre összesítő
-    - utasításlistában hulló esetén a barcode legyen kint ne a rodid
+    - Anyagfelhasználás: hulló látszik rod -> barcode - KÉSZ
+    - stock anyag nem látszik  - "A géphez nem tartozik készlet a tárolókban" - KÉSZ
+    - azonos méreteknél az első még szimpla függőleges vonal, a másodiktól dupla - KÉSZ
+    - nincs az azonos méretekre összesítő - KÉSZ
+    - utasításlistában hulló esetén a barcode legyen kint ne a rodid - KÉSZ
 
 2. optimalizáció:
-    - hulló készlet használata legyen kikapcsolható
+    - hulló készlet használata legyen kikapcsolható - KÉSZ
 
 3. anyagkereső:
     - megad egy anyagot, egy méretet , illetve méret tartományt - a minimummal, ebből:

@@ -178,6 +178,15 @@ MainWindow::MainWindow(QWidget *parent)
         ui->midBox->setCurrentIndex(0); // vagy a CutRequest tab indexe
     });
 
+    ui->chkUseLeftovers->setChecked(
+        SettingsManager::instance().useReusableLeftovers()
+        );
+
+    connect(ui->chkUseLeftovers, &QCheckBox::toggled,
+            [](bool checked){
+                SettingsManager::instance().setUseReusableLeftovers(checked);
+            });
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
@@ -963,6 +972,12 @@ void MainWindow::onCompensationChanged(const QUuid& machineId, double newVal) {
 void MainWindow::refresh_InputTableFromRegistry()
 {
     inputTableManager->refresh_TableFromRegistry();
+}
+
+bool MainWindow::isChkUseLeftoversChecked()
+{
+    bool v = ui->chkUseLeftovers->isChecked();
+    return v;
 }
 
 

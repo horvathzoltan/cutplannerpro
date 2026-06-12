@@ -45,68 +45,98 @@ QVector<StorageAuditRow> StorageAuditService::generateAuditRows_All()
                   .arg(machine.name)
                   .arg(machine.rootStorageId.toString()));
 
-        auto machineEntries = auditMachineStorage(machine); // minden anyag
+        MachineStorageAudit audit = auditMachineStorage(machine);
+        result += audit.rows;
 
         zInfo(L("📋 Audit bejegyzések száma géphez [%1]: %2")
                   .arg(machine.name)
-                  .arg(machineEntries.size()));
-
-        result += machineEntries;
+                  .arg(audit.rows.size()));
     }
 
     zInfo(L("✅ Összes audit bejegyzés (stock): %1").arg(result.size()));
     return result;
 }
 
-QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingMachine& machine)
+StorageAuditService::MachineStorageAudit StorageAuditService::auditMachineStorage(const CuttingMachine& machine)
 {
-    QVector<StorageAuditRow> rows;
+    MachineStorageAudit result;
 
-    const auto& storageEntries = StorageRegistry::instance().findByParentId(machine.rootStorageId);
-    zInfo(L("Tárolók száma géphez [%1]: %2").arg(machine.name).arg(storageEntries.size()));
+    // 1) Storage-ek lekérése
+    const auto& storageEntries =
+        StorageRegistry::instance().findByParentId(machine.rootStorageId);
 
-    const auto& stockEntries = StockRegistry::instance().readAll();
-    zInfo(L("Összes készletbejegyzés: %1").arg(stockEntries.size()));
+    result.hasStorage = !storageEntries.isEmpty();
 
-
-    for (const auto& storage : storageEntries) {
-        zInfo(L("Tároló [%1] ID: %2").arg(storage.name).arg(storage.id.toString()));
-    }
-
-    for (const auto& stock : stockEntries) {
-        zInfo(L("Készlet [%1] storageId: %2").arg(stock.materialName()).arg(stock.storageId.toString()));
-    }
-
+    // 2) Stock lekérése
     QMultiMap<QUuid, StockEntry> stockByStorage;
-    for (const auto& stock : StockRegistry::instance().readAll()) {
+    for (const auto& stock : StockRegistry::instance().readAll())
         stockByStorage.insert(stock.storageId, stock);
-    }
 
-    // tároló gyökérelem tartalmának a kigyűjtése
+    // 3) Root storage tartalma
     const auto rootStocks = stockByStorage.values(machine.rootStorageId);
-    for (const auto& stock : rootStocks) {
-        rows.append(createAuditRow(stock, machine.rootStorageId));
+    for (const auto& stock : rootStocks)
+        result.rows.append(createAuditRow(stock, machine.rootStorageId));
 
-        zInfo(L("Talált készlet [%1], mennyiség: %2")
-                  .arg(stock.materialName())
-                  .arg(stock.quantity));
-    }
-
-    // tároló gyökérelem alatti tárolók tartalmának a kigyűjtése
+    // 4) Alárendelt storage-ek tartalma
     for (const auto& storage : storageEntries) {
         const auto stocks = stockByStorage.values(storage.id);
-        for (const auto& stock : stocks) {
-            rows.append(createAuditRow(stock, machine.rootStorageId));
-
-            zInfo(L("Talált készlet [%1] a tárolóban [%2], mennyiség: %3")
-                                   .arg(stock.materialName())
-                                   .arg(storage.name)
-                                   .arg(stock.quantity));
-        }
+        for (const auto& stock : stocks)
+            result.rows.append(createAuditRow(stock, machine.rootStorageId));
     }
 
-    return rows;
+    result.hasStockInStorage = !result.rows.isEmpty();
+    return result;
 }
+
+// QVector<StorageAuditRow> StorageAuditService::auditMachineStorage(const CuttingMachine& machine)
+// {
+//     QVector<StorageAuditRow> rows;
+
+//     const auto& storageEntries = StorageRegistry::instance().findByParentId(machine.rootStorageId);
+//     zInfo(L("Tárolók száma géphez [%1]: %2").arg(machine.name).arg(storageEntries.size()));
+
+//     const auto& stockEntries = StockRegistry::instance().readAll();
+//     zInfo(L("Összes készletbejegyzés: %1").arg(stockEntries.size()));
+
+
+//     for (const auto& storage : storageEntries) {
+//         zInfo(L("Tároló [%1] ID: %2").arg(storage.name).arg(storage.id.toString()));
+//     }
+
+//     for (const auto& stock : stockEntries) {
+//         zInfo(L("Készlet [%1] storageId: %2").arg(stock.materialName()).arg(stock.storageId.toString()));
+//     }
+
+//     QMultiMap<QUuid, StockEntry> stockByStorage;
+//     for (const auto& stock : StockRegistry::instance().readAll()) {
+//         stockByStorage.insert(stock.storageId, stock);
+//     }
+
+//     // tároló gyökérelem tartalmának a kigyűjtése
+//     const auto rootStocks = stockByStorage.values(machine.rootStorageId);
+//     for (const auto& stock : rootStocks) {
+//         rows.append(createAuditRow(stock, machine.rootStorageId));
+
+//         zInfo(L("Talált készlet [%1], mennyiség: %2")
+//                   .arg(stock.materialName())
+//                   .arg(stock.quantity));
+//     }
+
+//     // tároló gyökérelem alatti tárolók tartalmának a kigyűjtése
+//     for (const auto& storage : storageEntries) {
+//         const auto stocks = stockByStorage.values(storage.id);
+//         for (const auto& stock : stocks) {
+//             rows.append(createAuditRow(stock, machine.rootStorageId));
+
+//             zInfo(L("Talált készlet [%1] a tárolóban [%2], mennyiség: %3")
+//                                    .arg(stock.materialName())
+//                                    .arg(storage.name)
+//                                    .arg(stock.quantity));
+//         }
+//     }
+
+//     return rows;
+// }
 
 StorageAuditRow StorageAuditService::createAuditRow(
     const StockEntry& stock,

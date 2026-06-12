@@ -66,6 +66,7 @@ public:
 
     void refresh_InputTableFromRegistry();
 
+    bool isChkUseLeftoversChecked();
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();

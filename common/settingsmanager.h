@@ -28,6 +28,8 @@ inline constexpr auto LeftoverCounter = "leftover_counter";
 inline constexpr auto ManualLeftoverCounter = "manual_leftover_counter";
 
 inline constexpr auto LastActiveTab = "last_active_tab";
+
+inline constexpr auto UseReusableLeftovers = "use_reusable_leftovers";
 }
 
 enum class TestMode {
@@ -84,6 +86,10 @@ public:
     // CuttingStrategy
     void setCuttingStrategy(Cutting::Optimizer::TargetHeuristic h);
     Cutting::Optimizer::TargetHeuristic cuttingStrategy() const;
+
+    // useReusableLeftovers
+    void setUseReusableLeftovers(bool enabled);
+    bool useReusableLeftovers() const;
 
     int lastActiveTab() const;
     void setLastActiveTab(int ix);

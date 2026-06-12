@@ -91,94 +91,88 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
     QStringList out;
     out << "📦 Anyagfelhasználás (szálak anyagonként):";
 
-    //
-    // 0) Gép lekérése az mc alapján
-    //
     const CuttingMachine* machine =
         CuttingMachineRegistry::instance().findById(mc.machineHeader.machineId);
 
     if (!machine) {
-        zWarning(L("buildMaterialStockReportForMachine_AUDIT: Gép nem található a registry-ben. machineId=%1")
-                     .arg(mc.machineHeader.machineId.toString()));
         out << "⚠️ A gép nem található a CuttingMachineRegistry-ben.";
         return out.join("\n");
     }
 
-    //
-    // 1) Anyagonként: érintett szálak száma (csak STOCK forrás!)
-    //
+    // 1) Stockból vágott szálak összegyűjtése
     QHash<QUuid, QSet<QString>> rodsByMaterial;
-
     for (const auto& ci : mc.cutInstructions) {
-        if (ci.source == Cutting::Plan::Source::Stock) {
+        if (ci.source == Cutting::Plan::Source::Stock)
             rodsByMaterial[ci.materialId].insert(ci.rodId);
-        }
     }
 
     if (rodsByMaterial.isEmpty()) {
-        zInfo(L("buildMaterialStockReportForMachine_AUDIT: Nincs stockból vágott szál."));
         out << "ℹ️ Nincs stockból vágott szál.";
         return out.join("\n");
     }
 
-    //
-    // 2) A gép saját készlete (AUDIT alapján!)
-    //
-    QVector<StorageAuditRow> auditRows =
-        StorageAuditService::auditMachineStorage(*machine);
+    // 2) Tároló audit lekérése (modell)
+    auto storageAudit = StorageAuditService::auditMachineStorage(*machine);
+    //bool hasStorage = audit.hasStorage;
+    //bool hasStockInStorage = audit.hasStockInStorage;
+    //QVector<StorageAuditRow> auditRows = audit.rows;
 
-    if (auditRows.isEmpty()) {
-        zWarning(L("buildMaterialStockReportForMachine_AUDIT: A géphez nem tartozik készlet a tárolókban. machine=%1")
-                     .arg(machine->name));
-        out << "⚠️ A géphez nem tartozik készlet a tárolókban.";
-        return out.join("\n");
+
+    if (storageAudit.rows.isEmpty()) {
+        if (!storageAudit.hasStorage) {
+            out << "⚠️ A géphez nincs saját tároló rendelve.";
+        } else {
+            out << "ℹ️ A gép saját tárolója üres.";
+        }
+        // ettől függetlenül a szükséges anyag mennyisége kiszámolódik
     }
 
-    //
-    // 3) Anyagonként összesítjük a gép stockját
-    //
+
+    // 3) Gép stockjának összesítése
     QHash<QUuid, int> stockByMaterial;
-
-    for (const auto& row : auditRows) {
+    for (const auto& row : storageAudit.rows)
         stockByMaterial[row.materialId] += row.actualQuantity;
-    }
 
-    //
-    // 4) Riport összeállítása
-    //
+    // 4) Anyagonkénti riport
+    int totalNeeded = 0;
+    int totalBringIn = 0;
+
     for (auto it = rodsByMaterial.begin(); it != rodsByMaterial.end(); ++it) {
         QUuid matId = it.key();
         int needed = it.value().size();
         int available = stockByMaterial.value(matId, 0);
         int bringIn = qMax(0, needed - available);
 
-        const MaterialMaster* mat =
-            MaterialRegistry::instance().findById(matId);
+        totalNeeded += needed;
+        totalBringIn += bringIn;
 
-        QString matName = mat ? mat->name
-                              : QString("Material:%1").arg(matId.toString());
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+        QString matName = mat ? mat->name : QString("Material:%1").arg(matId.toString());
 
-        // --- hossz számítása (m) ---
-        double rodLength_m = 0.0;
-        if (mat && mat->stockLength_mm > 0)
-            rodLength_m = mat->stockLength_mm / 1000.0;
-
-        double needed_m  = needed  * rodLength_m;
-        double bringIn_m = bringIn * rodLength_m;
+        double rodLength_m = mat && mat->stockLength_mm > 0
+                                 ? mat->stockLength_mm / 1000.0
+                                 : 0.0;
 
         out << QString("  • %1:").arg(matName);
         out << QString("      – szükséges: %1 szál (%2 m)")
                    .arg(needed)
-                   .arg(QString::number(needed_m, 'f', 2));
+                   .arg(QString::number(needed * rodLength_m, 'f', 2));
         out << QString("      – gép stockján: %1 szál").arg(available);
         out << QString("      – bevinni: %1 szál (%2 m)")
                    .arg(bringIn)
-                   .arg(QString::number(bringIn_m, 'f', 2));
+                   .arg(QString::number(bringIn * rodLength_m, 'f', 2));
     }
 
+    // 5) Összesítő
+
+    if (rodsByMaterial.size() > 1) {
+        out << QString("📊 Összesen érintett szál: %1").arg(totalNeeded);
+        out << QString("📦 Bevinni szükséges összesen: %1 szál").arg(totalBringIn);
+    }
 
     return out.join("\n");
 }
+
 
 
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
@@ -223,7 +217,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
     for (const auto& ci : mc.cutInstructions) {
         if (ci.source == Cutting::Plan::Source::Reusable)
-            usedLeftoverRods.insert(ci.rodId+ " → " + ci.barcode);
+            usedLeftoverRods.insert(ci.barcode);//.insert(ci.rodId+ " → " + ci.barcode);
     }
 
     QStringList scrapList = usedLeftoverRods.values();
@@ -268,6 +262,13 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
             maxSizeLen = s.length();
     }
 
+    // ismétrődő méret kiszámolás
+    QHash<QString, int> sizeCount;
+    for (const auto& ci : mc.cutInstructions) {
+        QString s = QString::number(ci.cutSize_mm, 'f', 1);
+        sizeCount[s] += 1;
+    }
+
     int idx = 0;
 
     // --- 1. FÁZIS: OSZLOPOK ELŐGYŰJTÉSE ---
@@ -283,9 +284,19 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     int idxTmp = 0;
     for (const auto& ci : mc.cutInstructions) {
 
-        QString rodLabelTmp = (ci.rodId != prevRodTmp)
-        ? QString("%1 □").arg(ci.rodId)
-        : ci.rodId + "  ";
+        // QString rodLabelTmp = (ci.rodId != prevRodTmp)
+        // ? QString("%1 □").arg(ci.rodId)
+        // : ci.rodId + "  ";
+
+        QString rodIdOrBarcodeTmp = (ci.source == Cutting::Plan::Source::Reusable)
+                                        ? ci.barcode
+                                        : ci.rodId;
+
+        QString rodLabelTmp = (rodIdOrBarcodeTmp != prevRodTmp)
+                                  ? QString("%1 □").arg(rodIdOrBarcodeTmp)
+                                  : rodIdOrBarcodeTmp + "  ";
+
+
         prevRodTmp = ci.rodId;
 
         QString stepTmp = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
@@ -343,9 +354,16 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
             lines << "──────────────";
         prevRod = ci.rodId;
 
+        // QString rodLabel = (rodChanged)
+        //                        ? QString("%1 □").arg(ci.rodId)
+        //                        : ci.rodId + "  ";
+        QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
+                                     ? ci.barcode
+                                     : ci.rodId;
+
         QString rodLabel = (rodChanged)
-                               ? QString("%1 □").arg(ci.rodId)
-                               : ci.rodId + "  ";
+                               ? QString("%1 □").arg(rodIdOrBarcode)
+                               : rodIdOrBarcode + "  ";
 
         QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
         QString icon = ci.isManualCut ? "📏" : "✂️";
@@ -393,12 +411,31 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         if (piece.length() > maxPieceLen)
             piece = piece.left(maxPieceLen - 1) + "…";
 
+        // bool isRepeatedSize = (sizeCount.value(sizeStr, 0) > 1);
+        // QString sepAfterSize = isRepeatedSize ? " ║ " : " | ";
 
-        QString sepAfterSize = sameAsPrev ? " ║ " : " | ";
+        // QString multiplier = "";
+        // if (isRepeatedSize && firstOfBlock) {
+        //     multiplier = QString("  ×%1").arg(sizeCount[sizeStr]);
+        // }
+
+        int count = sizeCount.value(sizeStr, 0);
+        bool isRepeated = (count > 1);
+
+        QString sepAfterSize;
+        if (!isRepeated) {
+            sepAfterSize = " | ";
+        } else if (firstOfBlock) {
+            sepAfterSize = " ╦ ";
+        } else if (repeatCount == count) {
+            sepAfterSize = " ╩ ";
+        } else {
+            sepAfterSize = " ║ ";
+        }
 
         QString multiplier = "";
-        if (firstOfBlock && repeatCount > 1) {
-            multiplier = QString("  ×%1").arg(repeatCount);
+        if (isRepeated && firstOfBlock) {
+            multiplier = QString("  ×%1").arg(count);
         }
 
         // --- végső sor ---

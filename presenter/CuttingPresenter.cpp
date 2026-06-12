@@ -298,6 +298,11 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         return;
     }
 
+        // 🔧 Hulló készlet használatának beállítása
+    model.setUseReusableLeftovers(
+        view->isChkUseLeftoversChecked()
+        );
+
     zInfo("▶️ OptimizationRunner::run started");
     // 1️⃣ Optimalizáció futtatása
     OptimizationRunner::run(model, heuristic);
@@ -633,6 +638,7 @@ void CuttingPresenter::syncModelWithRegistries() {
         QString msg = "Figyelmeztetések:\n\n• " + warnings.join("\n• ");
         view->ShowWarningDialog(msg);
     }
+
 }
 
 

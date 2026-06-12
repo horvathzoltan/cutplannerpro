@@ -128,9 +128,11 @@ public:
         QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
         double kerf_mm);
 
+    void setUseReusableLeftovers(bool enabled) { _useReusableLeftovers = enabled; }
 
 private:
 
+    bool _useReusableLeftovers = true;
     // A felhasználótól érkező vágási igények (darabok listája).
     // Ezek a bemeneti adatok, az optimalizáció alatt nem módosulnak.
     QVector<Cutting::Plan::Request> _requests;
