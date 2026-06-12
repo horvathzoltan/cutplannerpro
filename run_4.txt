@@ -1,22 +1,19 @@
-1. leftover tétel nem rögzül - OK
+1. vágási utasítások
+    - Anyagfelhasználás: hulló látszik rod -> barcode
+    - stock anyag nem látszik  - "A géphez nem tartozik készlet a tárolókban"
+    - azonos méreteknél az első még szimpla függőleges vonal, a másodiktól dupla
+    - nincs az azonos méretekre összesítő
+    - utasításlistában hulló esetén a barcode legyen kint ne a rodid
 
-2. request rögzítés a flow nem tökéletes - KÉSZ
-    - sok kurzormozgás jobbról balra -> szerkesztés hotkey -KÉSZ
-    - J/B UX, EX nem megfelelő - KÉSŰZ
-        - dedikált felületet kell tervezni a funkcóra - KÉSZ
-    - Megrendelő: gyorsítótárazni kell - Megrendelő perzisztens autocomplete -> run_5.txt
-        - az első tételnél meggyorsítja az adatbevitelt
+2. optimalizáció:
+    - hulló készlet használata legyen kikapcsolható
 
-4. selejt felvételi űrlap: - KÉSZ
-    - cutoff label jobb oldali keret nem kell
-
-3. vágási utasításban az egy azonos rúdon egy rúdcserébe eső egymást követő azonos méreteket - KÉSZ
-    - jelölni, számolni, összesítőt adni, pl 6 db
-
-5. csoportosítani kell: - KÉSZ
-    - megrendelés szerint
-    - dátum szerint
-    - szimbólumokat kell használni
+3. anyagkereső:
+    - megad egy anyagot, egy méretet , illetve méret tartományt - a minimummal, ebből:
+    maximum = min+m , ahol m a settingsből jön, és default 30 cm.
+    a keresés a hullón megy le, ha nincs, ajánl egyet a stockról.
+    nem csak az kell hogy mi az az anyag, mondjuk barcode, hanem az is hogy hol található
+    az is érdekes lehet, mennyi a készlet belőle
 
 ******************
 
