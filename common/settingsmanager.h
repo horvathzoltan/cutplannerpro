@@ -30,6 +30,8 @@ inline constexpr auto ManualLeftoverCounter = "manual_leftover_counter";
 inline constexpr auto LastActiveTab = "last_active_tab";
 
 inline constexpr auto UseReusableLeftovers = "use_reusable_leftovers";
+
+inline constexpr auto MaterialFinderRange = "material_finder_range_mm";
 }
 
 enum class TestMode {
@@ -118,6 +120,8 @@ public:
         return true;
     }
 
+    int materialFinderRange() const;
+    void setMaterialFinderRange(int mm);
 private:
     SettingsManager();
 

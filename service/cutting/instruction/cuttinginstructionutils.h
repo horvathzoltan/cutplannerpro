@@ -426,11 +426,11 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         if (!isRepeated) {
             sepAfterSize = " | ";
         } else if (firstOfBlock) {
-            sepAfterSize = " ╦ ";
+            sepAfterSize = "  ╽ ";
         } else if (repeatCount == count) {
-            sepAfterSize = " ╩ ";
+            sepAfterSize = " ╿ ";
         } else {
-            sepAfterSize = " ║ ";
+            sepAfterSize = " ┃ ";
         }
 
         QString multiplier = "";

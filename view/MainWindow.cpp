@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-#include "../service/cutting/instruction/cuttinginstructionutils.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
@@ -32,9 +31,8 @@
 
 #include "../service/relocation/relocationplanner.h"
 
-#include "../model/registries/cuttingmachineregistry.h"
-
 #include "../common/eventlogger.h"
+#include "view/MainWindowUIBuilder.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,7 +40,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    initEventLogWidget();    
+    initEventLogWidget();
+
+    ActionConnectorModel m1{
+        .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this)
+    };
+
+    mainToolbarBuilder(m1);
+    ActionConnector_connect(m1);
 
     ui->relocateQuickList->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -191,6 +196,7 @@ MainWindow::MainWindow(QWidget *parent)
     zEventINFO("✅ MainWindow inited");
 }
 
+
 void MainWindow::translate(){
     ui->radioByCount->setToolTip("📊 Ahol több a darab – gyors feldolgozás");
     ui->radioByTotalLength->setToolTip("📏 Ahol több az anyag – jobb kihasználás");
@@ -257,7 +263,17 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_ExportCutInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction_clicked);
+}
 
+void MainWindow::mainToolbarBuilder(ActionConnectorModel& m1)
+{
+    ui->mainToolBar->addAction(m1.actMaterialFinder);
+}
+
+void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
+{
+    connect(m.actMaterialFinder, &QAction::triggered,
+            this, &MainWindow::handle_act_MaterialFinder_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -369,6 +385,8 @@ void MainWindow::refreshSummaryRows()
         relocationPlanTableManager->updateSummaryRow(instr);
     }
 }
+
+
 
 
 void MainWindow::handle_btn_OpenRequest_clicked()
@@ -1110,5 +1128,10 @@ void MainWindow::handle_btn_CloneRequest_clicked()
 void MainWindow::handle_btn_ExportLeftoverForm_clicked()
 {
     presenter->ExportLeftoverIntakeForm();
+}
+
+void MainWindow::handle_act_MaterialFinder_clicked()
+{
+    zEvent(L("hutty"));
 }
 

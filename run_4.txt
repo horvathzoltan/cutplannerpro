@@ -1,13 +1,3 @@
-1. vágási utasítások
-    - Anyagfelhasználás: hulló látszik rod -> barcode - KÉSZ
-    - stock anyag nem látszik  - "A géphez nem tartozik készlet a tárolókban" - KÉSZ
-    - azonos méreteknél az első még szimpla függőleges vonal, a másodiktól dupla - KÉSZ
-    - nincs az azonos méretekre összesítő - KÉSZ
-    - utasításlistában hulló esetén a barcode legyen kint ne a rodid - KÉSZ
-
-2. optimalizáció:
-    - hulló készlet használata legyen kikapcsolható - KÉSZ
-
 3. anyagkereső:
     - megad egy anyagot, egy méretet , illetve méret tartományt - a minimummal, ebből:
     maximum = min+m , ahol m a settingsből jön, és default 30 cm.
@@ -15,6 +5,181 @@
     nem csak az kell hogy mi az az anyag, mondjuk barcode, hanem az is hogy hol található
     az is érdekes lehet, mennyi a készlet belőle
 
+
+
+Zoltán, **minden chunk megérkezett, minden fájl ép, a MainWindow + Presenter + UIBuilder teljesen konzisztens**.
+A MaterialFinder action működik, a struktúra tiszta, a toolbar‑builder + connector rendszered hibátlan.
+
+Most jöhet a **tervezés**, de előtte teljesítjük a kérésed:
+
+> **„kellene egy pontonkénti terv, és kellene a minimális, de teljes file‑lista, amit egy files.txt‑be másolhatok”**
+
+Megkapod **mindkettőt**, és a végén egy **másolható files.txt blokkot**.
+
+---
+
+# ⭐ 1) Pontonkénti, teljes implementációs terv (Material Finder)
+
+Ez a *minimális, de teljes* terv, amely végigvisz a Material Finder funkció megvalósításán.
+
+---
+
+## **1. Toolbar action (KÉSZ)**
+- `createMaterialFinderAction()` → létrehozza az actiont
+- `mainToolbarBuilder()` → toolbarra teszi
+- `ActionConnector_connect()` → beköti
+- `handle_act_MaterialFinder_clicked()` → lefut, logol
+
+**Állapot:** ✔ kész
+
+---
+
+## **2. MaterialFinderDialog létrehozása**
+Új dialógus:
+
+- `MaterialFinderDialog.ui`
+- `MaterialFinderDialog.h`
+- `MaterialFinderDialog.cpp`
+
+UI elemek:
+
+- Material combobox (anyaglista a MaterialRegistry‑ből)
+- Min length spinbox
+- Range spinbox (default: SettingsManager::materialFinderRange)
+- Search gomb
+- Eredménylista (QTableWidget)
+
+**Feladat:** csak UI + inputok összegyűjtése.
+
+---
+
+## **3. MaterialFinderService**
+Új service osztály:
+
+- `MaterialFinderService.h`
+- `MaterialFinderService.cpp`
+
+Feladata:
+
+- leftover készlet átnézése
+- stock készlet átnézése
+- találatok listázása
+- találatok rendezése (pl. legközelebbi hossz szerint)
+
+---
+
+## **4. MaterialFinderResult modell**
+Opcionális, de ajánlott:
+
+- `MaterialFinderResult.h`
+- `MaterialFinderResult.cpp`
+
+Tartalmazza:
+
+- materialId
+- barcode
+- length
+- location (stock / leftover)
+- storageName
+- shape
+- groupName
+
+---
+
+## **5. Presenter integráció**
+A MainWindow nem keres közvetlenül → Presenter hívja a service‑t.
+
+Új metódusok:
+
+- `CuttingPresenter::findMaterial(...)`
+- `CuttingPresenter::getMaterialList()`
+
+---
+
+## **6. MaterialFinderDialog → Presenter hívás**
+A Search gomb:
+
+- összegyűjti a paramétereket
+- meghívja a Presenter `findMaterial()` függvényét
+- megjeleníti az eredményt a dialogban
+
+---
+
+## **7. Eredmény megjelenítése**
+A dialogban:
+
+- barcode
+- length
+- location
+- shape
+- material name
+
+---
+
+## **8. MainWindow → dialog megnyitása**
+A toolbar action:
+
+```cpp
+void MainWindow::handle_act_MaterialFinder_clicked()
+{
+    MaterialFinderDialog dlg(this, presenter);
+    dlg.exec();
+}
+```
+
+---
+
+# ⭐ 2) Minimális, de teljes file‑lista (másolható)
+
+Ez a lista **pontosan az a minimális file‑készlet**, amivel a Material Finder funkció implementálható.
+Másold be egy `files.txt`‑be:
+
+```
+# UI builder
+view/MainWindowUIBuilder.h
+
+# Action connector
+view/ActionConnectorModel.h
+view/ActionConnector.cpp
+
+# Material Finder dialog
+dialog/materialfinder/MaterialFinderDialog.ui
+dialog/materialfinder/MaterialFinderDialog.h
+dialog/materialfinder/MaterialFinderDialog.cpp
+
+# Material Finder service
+service/materialfinder/MaterialFinderService.h
+service/materialfinder/MaterialFinderService.cpp
+
+# Material Finder result model
+model/materialfinder/MaterialFinderResult.h
+model/materialfinder/MaterialFinderResult.cpp
+
+# Presenter integráció
+presenter/CuttingPresenter.h
+presenter/CuttingPresenter.cpp
+
+# MainWindow módosítások
+view/MainWindow.h
+view/MainWindow.cpp
+```
+
+Ez a lista **komplett**, de nem túlméretezett.
+Pont annyi file, amennyi kell a tiszta architektúrához.
+
+---
+
+# ⭐ Következő lépés
+
+Most két irány közül választhatsz:
+
+- **MaterialFinderDialog UI megtervezése**
+- **MaterialFinderService skeleton generálása**
+
+Melyikkel menjünk tovább?
+
+
+******************
 ******************
 
 x: XLSX adatbemenet

@@ -177,6 +177,7 @@ HEADERS += \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
+    view/MainWindowUIBuilder.h \
     view/cellhelpers/auditstatustext.h \
     materials/view/material_cell_generator.h \
     view/columnindexes/inputtable_columns.h \

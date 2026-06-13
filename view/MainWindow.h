@@ -98,6 +98,7 @@ private slots:
     void onRowFinalized(int rowIx);
     void onCompensationChanged(const QUuid& machineId, double newVal);
 
+    void handle_act_MaterialFinder_clicked();
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
@@ -130,5 +131,13 @@ private:
     void postProcessMachineCuts(MachineCuts &mc);
     //void renderCuttingInstructions();
     //static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
+
+    struct ActionConnectorModel{
+        QAction* actMaterialFinder = nullptr;
+    };
+
+    void ActionConnector_connect(ActionConnectorModel& a);
+
+    void mainToolbarBuilder(ActionConnectorModel& m1);
 };
 #endif // MAINWINDOW_H

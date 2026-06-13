@@ -226,3 +226,11 @@ void SettingsManager::setUseReusableLeftovers(bool enabled) {
 bool SettingsManager::useReusableLeftovers() const {
     return _settings.value(SettingsKeys::UseReusableLeftovers, "true").toString() == "true";
 }
+
+int SettingsManager::materialFinderRange() const {
+    return _settings.value(SettingsKeys::MaterialFinderRange, 300).toInt();
+}
+
+void SettingsManager::setMaterialFinderRange(int mm) {
+    persist(SettingsKeys::MaterialFinderRange, QString::number(mm));
+}
