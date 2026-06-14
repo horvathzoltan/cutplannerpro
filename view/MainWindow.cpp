@@ -34,6 +34,8 @@
 #include "../common/eventlogger.h"
 #include "view/MainWindowUIBuilder.h"
 
+#include <view/dialog/materialfinder/materialfinderdialog.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -61,6 +63,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableRelocationOrder->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     presenter = new CuttingPresenter(this, this);
+    stockPresenter = new StockPresenter(this, this);
+
+    connect(stockPresenter, &StockPresenter::highlightLeftover,
+            this, &MainWindow::onHighlightLeftover);
+
+    connect(stockPresenter, &StockPresenter::highlightStock,
+            this, &MainWindow::onHighlightStock);
+
+    connect(stockPresenter, &StockPresenter::showNotFoundMessage,
+            this, &MainWindow::onShowNotFoundMessage);
+
+
 
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
@@ -1132,6 +1146,34 @@ void MainWindow::handle_btn_ExportLeftoverForm_clicked()
 
 void MainWindow::handle_act_MaterialFinder_clicked()
 {
-    zEvent(L("hutty"));
+    MaterialFinderDialog dlg(this);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    MaterialFinderInput input = dlg.getInput();
+
+    // UI → Presenter
+    stockPresenter->findMaterial(input.materialId, input.minLength);
 }
+
+
+void MainWindow::onHighlightLeftover(const QUuid& id)
+{
+    ui->midBox->setCurrentIndex(TAB_LEFTOVER);
+    leftoverTableManager->highlight(id);
+}
+
+void MainWindow::onHighlightStock(const QUuid& id)
+{
+    ui->midBox->setCurrentIndex(TAB_STOCK);
+    stockTableManager->highlight(id);
+}
+
+
+void MainWindow::onShowNotFoundMessage(const QString& msg)
+{
+    QMessageBox::information(this, "Keresés", msg);
+}
+
 

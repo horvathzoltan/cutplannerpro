@@ -215,5 +215,42 @@ void StockTableManager::removeRowById(const QUuid& stockId) {
     }
 }
 
+void StockTableManager::highlight(const QUuid& id)
+{
+    clearHighlight();
+
+    auto rowOpt = _rows.rowOf(id);
+    if (!rowOpt)
+        return;
+
+    int row = *rowOpt;
+
+    for (int col = 0; col < _table->columnCount(); ++col) {
+        if (auto* item = _table->item(row, col)) {
+            item->setBackground(QColor(180, 255, 180)); // halványzöld
+        }
+    }
+
+    _table->scrollToItem(_table->item(row, 0), QAbstractItemView::PositionAtCenter);
+    _table->setCurrentCell(row, 0);
+
+    _highlightedRow = row;
+}
+
+void StockTableManager::clearHighlight()
+{
+    if (_highlightedRow < 0)
+        return;
+
+    for (int col = 0; col < _table->columnCount(); ++col) {
+        if (auto* item = _table->item(_highlightedRow, col)) {
+            item->setBackground(Qt::NoBrush);
+        }
+    }
+
+    _highlightedRow = -1;
+}
+
+
 
 
