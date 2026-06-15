@@ -2,12 +2,18 @@
 <ui version="4.0">
  <class>MaterialFinderDialog</class>
  <widget class="QDialog" name="MaterialFinderDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>567</width>
+    <height>140</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Anyag keresése</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-
-   <!-- ANYAG VÁLASZTÓ -->
    <item>
     <layout class="QHBoxLayout" name="layoutMaterial">
      <item>
@@ -22,8 +28,6 @@
      </item>
     </layout>
    </item>
-
-   <!-- MINIMUM HOSSZ -->
    <item>
     <layout class="QHBoxLayout" name="layoutMinLength">
      <item>
@@ -48,14 +52,12 @@
      </item>
     </layout>
    </item>
-
-   <!-- GOMBOK -->
    <item>
     <layout class="QHBoxLayout" name="layoutButtons">
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -81,7 +83,6 @@
      </item>
     </layout>
    </item>
-
   </layout>
  </widget>
  <resources/>

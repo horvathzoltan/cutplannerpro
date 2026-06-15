@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
@@ -636,6 +636,12 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableStock">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+            </property>
             <column>
              <property name="text">
               <string>Name</string>
@@ -728,6 +734,12 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableLeftovers">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+            </property>
             <column>
              <property name="text">
               <string>Name</string>
