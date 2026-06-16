@@ -11,6 +11,7 @@
 #include "managers/cuttinginstructiontable_manager.h"
 #include "managers/relocationplantable_manager.h"
 #include "managers/storageaudittable_manager.h"
+#include "presenter/stockpresenter.h"
 #include "tableutils/highlightdelegate.h"
 
 QT_BEGIN_NAMESPACE
@@ -66,6 +67,7 @@ public:
 
     void refresh_InputTableFromRegistry();
 
+    bool isChkUseLeftoversChecked();
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -97,9 +99,15 @@ private slots:
     void onRowFinalized(int rowIx);
     void onCompensationChanged(const QUuid& machineId, double newVal);
 
+    void handle_act_MaterialFinder_clicked();
+
+    void onHighlightLeftover(const QUuid& id);
+    void onHighlightStock(const QUuid& id);
+    void onShowNotFoundMessage(const QString& msg);
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
+    StockPresenter* stockPresenter = nullptr;
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
 
@@ -119,6 +127,16 @@ private:
     std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
 
 
+private:
+    static constexpr int TAB_CUTREQUEST        = 0;
+    static constexpr int TAB_CUTTINGPLAN       = 1;
+    static constexpr int TAB_STORAGEAUDIT      = 2;
+    static constexpr int TAB_RELOCATION        = 3;
+    static constexpr int TAB_CUTINSTRUCTION    = 4;
+    static constexpr int TAB_STOCK             = 5;
+    static constexpr int TAB_LEFTOVER          = 6;
+
+
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *e) override;
     void ButtonConnector_Connect();
@@ -129,5 +147,12 @@ private:
     void postProcessMachineCuts(MachineCuts &mc);
     //void renderCuttingInstructions();
     //static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
+
+    struct ActionConnectorModel{
+        QAction* actMaterialFinder = nullptr;
+    };
+
+    void ActionConnector_connect(ActionConnectorModel& a);
+    void mainToolbarBuilder(ActionConnectorModel& m1);
 };
 #endif // MAINWINDOW_H

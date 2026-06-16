@@ -21,6 +21,7 @@ SOURCES += \
     model/cutting/optimizer/rodloopengine.cpp \
     model/cutting/optimizer/stockfitengine.cpp \
     model/storageaudit/auditcontext.cpp \
+    presenter/stockpresenter.cpp \
     service/buildnumber.cpp \
     service/cutting/summary/cutplan_input_summary.cpp \
     service/cutting/summary/cutplan_input_summary_builder.cpp \
@@ -42,6 +43,8 @@ SOURCES += \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
     view/dialog/input/clonerequestdialog.cpp \
+    view/dialog/materialfinder/materialdelegate.cpp \
+    view/dialog/materialfinder/materialfinderdialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -140,6 +143,7 @@ HEADERS += \
     materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
     model/storageaudit/audit_enums.h \
+    presenter/stockpresenter.h \
     service/buildnumber.h \
     service/cutting/instruction/cuttinginstructionutils.h \
     service/cutting/optimizer/optimizationauditbuilder.h \
@@ -177,12 +181,15 @@ HEADERS += \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
     tests/testmanager.h \
+    view/MainWindowUIBuilder.h \
     view/cellhelpers/auditstatustext.h \
     materials/view/material_cell_generator.h \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
     view/dialog/input/clonerequestdialog.h \
+    view/dialog/materialfinder/materialdelegate.h \
+    view/dialog/materialfinder/materialfinderdialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
@@ -309,6 +316,7 @@ FORMS += \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \
     view/dialog/input/clonerequestdialog.ui \
+    view/dialog/materialfinder/MaterialFinderDialog.ui \
     view/dialog/waste/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
     view/dialog/relocation/relocationquantitydialog.ui \

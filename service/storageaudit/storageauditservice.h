@@ -11,15 +11,17 @@ class StorageAuditService : public QObject {
     Q_OBJECT
 
 public:
-    // enum class AuditMode {
-    //     Passive,   // csak nézelődünk
-    //     Expected,  // van picking list
-    // };
+
+    struct MachineStorageAudit {
+        bool hasStorage = false;          // van-e storage hozzárendelve
+        bool hasStockInStorage = false;   // van-e bármilyen készlet a storage-ben
+        QVector<StorageAuditRow> rows;    // a tényleges készlet
+    };
 
     explicit StorageAuditService(QObject* parent = nullptr);
 
     static StorageAuditRow createAuditRow(const StockEntry& stock, const QUuid& rootStorageId);
     static QVector<StorageAuditRow> generateAuditRows_All();
     //static AuditMode _mode;
-    static QVector<StorageAuditRow> auditMachineStorage(const CuttingMachine& machine);
+    static MachineStorageAudit auditMachineStorage(const CuttingMachine& machine);
 };

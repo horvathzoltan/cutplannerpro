@@ -247,3 +247,67 @@ void LeftoverTableManager::removeRowById(const QUuid& id) {
         return;
     }
 }
+
+void LeftoverTableManager::highlight(const QUuid& id)
+{
+    auto rowOpt = _rows.rowOf(id);
+    if (!rowOpt)
+        return;
+
+    int row = *rowOpt;
+
+    // // 1️⃣ Qt gyári kijelölés
+    // table->selectRow(row);
+
+    // // 2️⃣ Fókusz
+    // table->setCurrentCell(row, 0);
+    // table->selectRow(row);
+    // // 3️⃣ Görgetés
+    // table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
+
+    table->selectionModel()->select(
+        table->model()->index(row, 0),
+        QItemSelectionModel::Select | QItemSelectionModel::Rows
+        );
+
+    table->setCurrentCell(row, 0);
+    table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
+
+    _highlightedRow = row;
+}
+
+// void LeftoverTableManager::highlight(const QUuid& id)
+// {
+//     clearHighlight();
+
+//     auto rowOpt = _rows.rowOf(id);
+//     if (!rowOpt)
+//         return;
+
+//     int row = *rowOpt;
+
+//     for (int col = 0; col < table->columnCount(); ++col) {
+//         if (auto* item = table->item(row, col)) {
+//             item->setBackground(QColor(180, 255, 180)); // halványzöld
+//         }
+//     }
+
+//     table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
+//     table->setCurrentCell(row, 0);
+
+//     _highlightedRow = row;
+// }
+
+// void LeftoverTableManager::clearHighlight()
+// {
+//     if (_highlightedRow < 0)
+//         return;
+
+//     for (int col = 0; col < table->columnCount(); ++col) {
+//         if (auto* item = table->item(_highlightedRow, col)) {
+//             item->setBackground(Qt::NoBrush);
+//         }
+//     }
+
+//     _highlightedRow = -1;
+// }

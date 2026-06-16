@@ -33,6 +33,7 @@ private:
     //RowId _rowId;
     RowTracker _rows;
 //    static constexpr int ReusableStockEntryIdIdRole = Qt::UserRole + 1;
+    int _highlightedRow = -1;
 
 
 public:
@@ -53,4 +54,6 @@ public:
     void refresh_TableFromRegistry();
     void updateRow(const LeftoverStockEntry &entry);
     void removeRowById(const QUuid &id);
+    void highlight(const QUuid &id);
+    void clearHighlight();
 };

@@ -368,16 +368,19 @@ RodInitResult OptimizerModel::initRodForMaterial(
     merged += _localLeftovers;
 
     // 2️⃣ reusable keresés
-    std::optional<ReusableCandidate> candidate =
-        ReusableFitEngine::findBestReusableFit(
-            merged,
-            globalSnapshot.size(),
-            groupVec,
-            targetMaterialId,
-            kerf_mm,
-            _usedLeftoverEntryIds,
-            *this);
+    std::optional<ReusableCandidate> candidate;
 
+    if (_useReusableLeftovers) {
+        candidate =
+            ReusableFitEngine::findBestReusableFit(
+                merged,
+                globalSnapshot.size(),
+                groupVec,
+                targetMaterialId,
+                kerf_mm,
+                _usedLeftoverEntryIds,
+                *this);
+    }
     SelectedRod rod;
     int remainingLength = 0;
     int dpLimit = 0;

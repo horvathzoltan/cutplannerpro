@@ -217,3 +217,20 @@ int SettingsManager::lastActiveTab() const {
 void SettingsManager::setLastActiveTab(int ix) {
     persist(SettingsKeys::LastActiveTab, QString::number(ix));
 }
+
+
+void SettingsManager::setUseReusableLeftovers(bool enabled) {
+    persist(SettingsKeys::UseReusableLeftovers, enabled ? QStringLiteral("true") : "false");
+}
+
+bool SettingsManager::useReusableLeftovers() const {
+    return _settings.value(SettingsKeys::UseReusableLeftovers, "true").toString() == "true";
+}
+
+int SettingsManager::materialFinderRange() const {
+    return _settings.value(SettingsKeys::MaterialFinderRange, 300).toInt();
+}
+
+void SettingsManager::setMaterialFinderRange(int mm) {
+    persist(SettingsKeys::MaterialFinderRange, QString::number(mm));
+}

@@ -215,5 +215,44 @@ void StockTableManager::removeRowById(const QUuid& stockId) {
     }
 }
 
+void StockTableManager::highlight(const QUuid& id)
+{
+    // 1️⃣ előző kijelölés törlése (ha kell)
+    _table->clearSelection();
+
+    auto rowOpt = _rows.rowOf(id);
+    if (!rowOpt)
+        return;
+
+    int row = *rowOpt;
+
+    // 2️⃣ Qt gyári kijelölés
+    _table->selectRow(row);
+
+    // 3️⃣ Qt gyári fókusz
+    _table->setCurrentCell(row, 0);
+
+    // 4️⃣ Görgetés
+    _table->scrollToItem(_table->item(row, 0), QAbstractItemView::PositionAtCenter);
+
+    _highlightedRow = row;
+}
+
+
+// void StockTableManager::clearHighlight()
+// {
+//     if (_highlightedRow < 0)
+//         return;
+
+//     for (int col = 0; col < _table->columnCount(); ++col) {
+//         if (auto* item = _table->item(_highlightedRow, col)) {
+//             item->setBackground(Qt::NoBrush);
+//         }
+//     }
+
+//     _highlightedRow = -1;
+// }
+
+
 
 

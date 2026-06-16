@@ -17,6 +17,7 @@ private:
     QTableWidget* _table;
     QWidget* _parent;
     RowTracker _rows;
+    int _highlightedRow = -1;
 
 public:
     StockTableManager(QTableWidget* table, QWidget* parent = nullptr);
@@ -49,6 +50,8 @@ public:
     static constexpr int ColAction = 7;  // oszlop a gomboknak - legutolsó
 
 
+    void highlight(const QUuid &id);
+    void clearHighlight();
 };
 
 

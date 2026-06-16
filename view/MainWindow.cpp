@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-#include "../service/cutting/instruction/cuttinginstructionutils.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
@@ -32,9 +31,10 @@
 
 #include "../service/relocation/relocationplanner.h"
 
-#include "../model/registries/cuttingmachineregistry.h"
-
 #include "../common/eventlogger.h"
+#include "view/MainWindowUIBuilder.h"
+
+#include <view/dialog/materialfinder/materialfinderdialog.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,7 +42,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    initEventLogWidget();    
+    initEventLogWidget();
+
+    ActionConnectorModel m1{
+        .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this)
+    };
+
+    mainToolbarBuilder(m1);
+    ActionConnector_connect(m1);
 
     ui->relocateQuickList->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -56,6 +63,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableRelocationOrder->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     presenter = new CuttingPresenter(this, this);
+    stockPresenter = new StockPresenter(this, this);
+
+    connect(stockPresenter, &StockPresenter::highlightLeftover,
+            this, &MainWindow::onHighlightLeftover);
+
+    connect(stockPresenter, &StockPresenter::highlightStock,
+            this, &MainWindow::onHighlightStock);
+
+    connect(stockPresenter, &StockPresenter::showNotFoundMessage,
+            this, &MainWindow::onShowNotFoundMessage);
+
+
 
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
@@ -178,9 +197,19 @@ MainWindow::MainWindow(QWidget *parent)
         ui->midBox->setCurrentIndex(0); // vagy a CutRequest tab indexe
     });
 
+    ui->chkUseLeftovers->setChecked(
+        SettingsManager::instance().useReusableLeftovers()
+        );
+
+    connect(ui->chkUseLeftovers, &QCheckBox::toggled,
+            [](bool checked){
+                SettingsManager::instance().setUseReusableLeftovers(checked);
+            });
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
+
 
 void MainWindow::translate(){
     ui->radioByCount->setToolTip("📊 Ahol több a darab – gyors feldolgozás");
@@ -248,7 +277,17 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_ExportCutInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction_clicked);
+}
 
+void MainWindow::mainToolbarBuilder(ActionConnectorModel& m1)
+{
+    ui->mainToolBar->addAction(m1.actMaterialFinder);
+}
+
+void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
+{
+    connect(m.actMaterialFinder, &QAction::triggered,
+            this, &MainWindow::handle_act_MaterialFinder_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -360,6 +399,8 @@ void MainWindow::refreshSummaryRows()
         relocationPlanTableManager->updateSummaryRow(instr);
     }
 }
+
+
 
 
 void MainWindow::handle_btn_OpenRequest_clicked()
@@ -965,6 +1006,12 @@ void MainWindow::refresh_InputTableFromRegistry()
     inputTableManager->refresh_TableFromRegistry();
 }
 
+bool MainWindow::isChkUseLeftoversChecked()
+{
+    bool v = ui->chkUseLeftovers->isChecked();
+    return v;
+}
+
 
 // MainWindow.cpp
 void MainWindow::renderCuttingInstructions(const QVector<MachineCuts>& machineCutsList) {
@@ -1096,4 +1143,37 @@ void MainWindow::handle_btn_ExportLeftoverForm_clicked()
 {
     presenter->ExportLeftoverIntakeForm();
 }
+
+void MainWindow::handle_act_MaterialFinder_clicked()
+{
+    MaterialFinderDialog dlg(this);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    MaterialFinderInput input = dlg.getInput();
+
+    // UI → Presenter
+    stockPresenter->findMaterial(input.materialId, input.minLength);
+}
+
+
+void MainWindow::onHighlightLeftover(const QUuid& id)
+{
+    ui->midBox->setCurrentIndex(TAB_LEFTOVER);
+    leftoverTableManager->highlight(id);
+}
+
+void MainWindow::onHighlightStock(const QUuid& id)
+{
+    ui->midBox->setCurrentIndex(TAB_STOCK);
+    stockTableManager->highlight(id);
+}
+
+
+void MainWindow::onShowNotFoundMessage(const QString& msg)
+{
+    QMessageBox::information(this, "Keresés", msg);
+}
+
 
