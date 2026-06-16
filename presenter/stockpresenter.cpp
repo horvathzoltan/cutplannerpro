@@ -10,11 +10,11 @@ StockPresenter::StockPresenter(MainWindow* view, QObject* parent)
 {
 }
 
-void StockPresenter::findMaterial(const QUuid& materialId, int minLength)
+void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int maxLength)
 {
     // 1️⃣ Tolerance betöltése
-    int tolerance = SettingsManager::instance().materialFinderRange();
-    int maxLength = minLength + tolerance;
+    //int tolerance = SettingsManager::instance().materialFinderRange();
+    //int maxLength = minLength + tolerance;
 
     // 2️⃣ Leftover keresés
     const auto leftovers = LeftoverStockRegistry::instance().readAll();
@@ -57,17 +57,18 @@ void StockPresenter::findMaterial(const QUuid& materialId, int minLength)
 
 
 
-void StockPresenter::materialChosen(const StockEntry& entry)
-{
-    // 1) loggolás
-    zEventINFO(QString("📦 Material selected: %1 | %2 | qty=%3")
-                   .arg(entry.materialName())
-                   .arg(entry.storageName())
-                   .arg(entry.quantity));
+// void StockPresenter::materialChosen(const StockEntry& entry)
+// {
+//     // 1) loggolás
+//     zEventINFO(QString("📦 Material selected: %1 | %2 | qty=%3")
+//                    .arg(entry.materialName())
+//                    .arg(entry.storageName())
+//                    .arg(entry.quantity));
 
-    // 2) minLength később dialogból jön
-    int minLength = 2000;
+//     // 2) minLength később dialogból jön
+//     int minLength = 2000;
+//     int maxLength = 3000;
 
-    // 3) keresés
-    findMaterial(entry.materialId, minLength);
-}
+//     // 3) keresés
+//     findMaterial(entry.materialId, minLength, maxLength);
+// }

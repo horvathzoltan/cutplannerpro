@@ -597,7 +597,7 @@ void MainWindow::updateRow_LeftoversTable(const LeftoverStockEntry& v)
 
 void MainWindow::removeRow_LeftoversTable(const QUuid& id)
 {
-    stockTableManager->removeRowById(id);
+    leftoverTableManager->removeRowById(id);
 }
 
 
@@ -1154,7 +1154,7 @@ void MainWindow::handle_act_MaterialFinder_clicked()
     MaterialFinderInput input = dlg.getInput();
 
     // UI → Presenter
-    stockPresenter->findMaterial(input.materialId, input.minLength);
+    stockPresenter->findMaterial(input.materialId, input.minLen, input.maxLen);
 }
 
 

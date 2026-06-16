@@ -4,6 +4,7 @@
 #include "../../../model/cutting/plan/request.h"
 #include "ui_addinputdialog.h"
 #include "materials/registry/material_registry.h"
+#include "view/dialog/materialsearch/materialsearchdialog.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -131,6 +132,9 @@ QLineEdit[hasError="true"] {
 
     // induló állapot
     //onQuantityChanged(ui->spinQuantity->value());
+
+    // connect(ui->btn_MaterialSearch, &QPushButton::clicked,
+    //         this, &AddInputDialog::on_btn_MaterialSearch_clicked);
 }
 
 
@@ -403,4 +407,27 @@ bool AddInputDialog::eventFilter(QObject *obj, QEvent *event)
         ui->editLength->selectAll();
     }
     return QDialog::eventFilter(obj, event);
+}
+
+
+void AddInputDialog::on_btn_MaterialSearch_clicked()
+{
+    MaterialSearchDialog dlg(this);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    MaterialSelection sel = dlg.selection();
+    if (sel.id.isNull())
+        return;
+
+    // A comboMaterial frissítése
+    int idx = ui->comboMaterial->findData(sel.id);
+    if (idx >= 0) {
+        ui->comboMaterial->setCurrentIndex(idx);
+    } else {
+        // Ha valamiért nincs benne, hozzáadjuk
+        ui->comboMaterial->addItem(sel.master.toDisplay(), sel.id);
+        ui->comboMaterial->setCurrentIndex(ui->comboMaterial->count() - 1);
+    }
 }

@@ -24,7 +24,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboMaterial"/>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+       <item>
+        <widget class="QComboBox" name="comboMaterial"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_MaterialSearch">
+         <property name="text">
+          <string>Keresés...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -33,22 +44,43 @@
      <item>
       <widget class="QLabel" name="lblMinLength">
        <property name="text">
-        <string>Minimum hossz (mm):</string>
+        <string>Hossz [mm]:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinMinLength">
-       <property name="minimum">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <number>100000</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,1">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Min:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinMinLength">
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Max:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

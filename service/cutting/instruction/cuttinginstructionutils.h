@@ -505,15 +505,15 @@ inline QString priorityIconFor(const QDate& dueDate)
     if (daysLeft <= 1)
         return "🔥";   // Tűz – SOS
     if (daysLeft <= 3)
-        return "💧";   // Víz – sürgős
+        return "💦";   // Víz – sürgős 💧 🌊 💦
     if (daysLeft <= 6)
-        return "☁️";  // Levegő – normál
+        return "💨";  // Levegő – normál 🌥️  💨
     return "⏳";       // Föld – ráér
 }
 
 static const QStringList GROUP_ICONS = {
     "🍎", // A - Alma
-    "🐸", // B - Béka
+    "🦨", // B - Borz
     "🐈‍", // C - Macska
     "🦇", // D - Denevér
     "🐭", // E - Egér
@@ -522,11 +522,11 @@ static const QStringList GROUP_ICONS = {
     "🌶️", // H - Chili
     "🐛", // I - Kukac
     "🐆", // J - Jaguár
-    "🦘", // K - Kenguru
+    "❤️", // K - szív
     "🦋", // L - Lepke
     "🐿️", // M - Mókus
     "🐰", // N - Nyúl
-    "🍊", // O - Narancs
+    "🦁", // O - Oroszlán
     "🐼", // P - Panda
     "🦊", // R - Róka
     "🦔", // S - Süni

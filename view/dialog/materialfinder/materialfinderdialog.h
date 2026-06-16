@@ -15,7 +15,8 @@ class MaterialFinderDialog;
 
 struct MaterialFinderInput {
     QUuid materialId;
-    int minLength;
+    int minLen;
+    int maxLen;
 };
 
 class MaterialFinderDialog : public QDialog
@@ -30,6 +31,8 @@ public:
 
 private:
     Ui::MaterialFinderDialog* ui;
+
+
 };
 
 

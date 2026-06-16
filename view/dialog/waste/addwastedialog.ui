@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>612</width>
     <height>300</height>
    </rect>
   </property>
@@ -14,15 +14,36 @@
    <string>Dialog</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <item row="7" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="labelMaterial">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Anyag</string>
+      <string>Anyag:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="comboMaterial"/>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+     <item>
+      <widget class="QComboBox" name="comboMaterial"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_MaterialSearch">
+       <property name="text">
+        <string>Keresés...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="labelBarcode">
@@ -67,16 +88,6 @@
    </item>
    <item row="4" column="1">
     <widget class="QComboBox" name="comboStorage"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

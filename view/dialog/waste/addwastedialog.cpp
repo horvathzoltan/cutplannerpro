@@ -2,6 +2,7 @@
 #include "service/cutting/result/leftoversourceutils.h"
 #include "ui_addwastedialog.h"
 #include "materials/registry/material_registry.h"
+#include "view/dialog/materialsearch/materialsearchdialog.h"
 #include <QMessageBox>
 #include <common/identifierutils.h>
 #include <common/settingsmanager.h>
@@ -20,6 +21,23 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 {
     ui->setupUi(this);
     populateMaterialCombo();
+
+    connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
+        MaterialSearchDialog dlg(this);
+        if (dlg.exec() == QDialog::Accepted) {
+            auto sel = dlg.selection();
+
+            // A kiválasztott anyag beállítása a comboBox-ban
+            for (int i = 0; i < ui->comboMaterial->count(); ++i) {
+                QUuid id = ui->comboMaterial->itemData(i).toUuid();
+                if (id == sel.id) {
+                    ui->comboMaterial->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+    });
+
     populateStorageCombo();
 
     // Anyag ajánlása

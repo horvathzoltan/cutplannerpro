@@ -6,79 +6,76 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>350</height>
+    <width>579</width>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Anyag</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="comboMaterial"/>
-   </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_owner">
      <property name="text">
       <string>Megrendelő neve:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <widget class="QLineEdit" name="editOwner"/>
    </item>
    <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>dueDate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDateEdit" name="editDueDate"/>
+   </item>
+   <item row="5" column="0">
     <widget class="QLabel" name="label_ref">
      <property name="text">
       <string>Külső tételszám:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QLineEdit" name="editReference"/>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Vágási hossz [mm]</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Darabszám</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QSpinBox" name="spinQuantity">
      <property name="minimum">
       <number>1</number>
      </property>
     </widget>
    </item>
-   <item row="12" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Altipus</string>
@@ -115,7 +112,7 @@
      </layout>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackHandlerSide">
      <widget class="QWidget" name="pageRadio">
       <layout class="QHBoxLayout">
@@ -162,20 +159,33 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QDateEdit" name="editDueDate"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>dueDate</string>
+   <item row="13" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+     <item>
+      <widget class="QComboBox" name="comboMaterial"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_MaterialSearch">
+       <property name="text">
+        <string>Keresés...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>comboMaterial</tabstop>
   <tabstop>editOwner</tabstop>
   <tabstop>editReference</tabstop>
   <tabstop>editLength</tabstop>

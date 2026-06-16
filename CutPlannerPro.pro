@@ -42,9 +42,11 @@ SOURCES += \
     common/startup/startupmanager.cpp \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
+    view/common/layouts/qflowlayout.cpp \
     view/dialog/input/clonerequestdialog.cpp \
     view/dialog/materialfinder/materialdelegate.cpp \
     view/dialog/materialfinder/materialfinderdialog.cpp \
+    view/dialog/materialsearch/materialsearchdialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -187,9 +189,11 @@ HEADERS += \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
+    view/common/layouts/qflowlayout.h \
     view/dialog/input/clonerequestdialog.h \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \
+    view/dialog/materialsearch/materialsearchdialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \

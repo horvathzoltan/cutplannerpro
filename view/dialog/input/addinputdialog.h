@@ -51,4 +51,8 @@ private:
 
     bool _shiftEnterAccepted = false;
     QString _sliderInputBuffer;
+
+private slots:
+    void on_btn_MaterialSearch_clicked();
+
 };
