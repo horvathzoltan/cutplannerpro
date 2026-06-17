@@ -47,6 +47,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QPdfWriter>
 #include <ui_clonerequestdialog.h>
 
 #include <model/registries/cuttingmachineregistry.h>
@@ -1041,6 +1042,46 @@ void CuttingPresenter::ExportCutInstructions()
             out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
             out << "\n\n";
         }
+
+        // --- 3) LabelTable PDF ---
+        // {
+        //     QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
+
+        //     QPdfWriter writer(path);
+        //     writer.setPageSize(QPageSize(QPageSize::A4));
+        //     writer.setResolution(300); // szép, éles címkék
+
+        //     QPainter painter(&writer);
+        //     if (!painter.isActive()) {
+        //         zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+        //         return;
+        //     }
+
+        //     QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+
+        //     const int cols = 2;
+        //     const qreal cellHeight = 60.0; // px, finomhangolható
+
+        //     painter.setFont(QFont("Arial", 10));
+
+        //     for (const auto& mc : _machineCutsList)
+        //     {
+        //         auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+
+        //         CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
+        //             labels,
+        //             painter,
+        //             pageRect,
+        //             cols,
+        //             cellHeight
+        //             );
+
+        //         writer.newPage(); // gépenként új oldal
+        //     }
+
+        //     painter.end();
+        //     zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
+        // }
 
         zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
     }

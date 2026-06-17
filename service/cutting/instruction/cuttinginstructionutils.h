@@ -1,5 +1,6 @@
 #pragma once
 #include <QDateTime>
+#include <QPainter>
 #include <QSet>
 
 #include "../../../model/cutting/instruction/cutinstruction.h"
@@ -1229,6 +1230,85 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     }
 
     return lines.join("\n");
+}
+
+
+inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
+                                      QPainter& painter,
+                                      const QRectF& pageRect,
+                                      int cols,
+                                      qreal cellHeight)
+{
+    if (cols <= 0 || labels.isEmpty())
+        return;
+
+    const qreal cellWidth = pageRect.width() / cols;
+    const QFontMetrics fm(painter.font());
+
+    auto maxCharsForCell = [&](qreal w) -> int {
+        // nagyon egyszerű becslés: átlagos karakter-szélesség
+        qreal avg = fm.horizontalAdvance(QStringLiteral("M"));
+        if (avg <= 0) avg = 8.0;
+        int inner = int(w) - 2; // 1-1 px padding
+        return qMax(4, int(inner / avg));
+    };
+
+    const int cellWidthChars = maxCharsForCell(cellWidth);
+
+    int col = 0;
+    int row = 0;
+
+    auto newPage = [&]() {
+        // hívja a hívó: QPdfWriter esetén: writer.newPage();
+        // itt csak a sor/col reset:
+        col = 0;
+        row = 0;
+    };
+
+    for (const auto& srcLm : labels) {
+        LabelModel lm = srcLm;                 // lokális másolat, hogy trimmelhessünk
+        trimLabelToWidth(lm, cellWidthChars);  // meglévő helper
+
+        QVector<QString> lines = buildLabelCellLines(lm.parts, cellWidthChars);
+
+        // ha nem fér el az aktuális oldalon, új oldal
+        qreal topY = pageRect.top() + row * cellHeight;
+        if (topY + cellHeight > pageRect.bottom()) {
+            // itt a hívó felelőssége: writer.newPage();
+            painter.translate(0, 0); // semmi, csak jelzés
+            newPage();
+            topY = pageRect.top();
+        }
+
+        qreal leftX = pageRect.left() + col * cellWidth;
+        QRectF cellRect(leftX, topY, cellWidth, cellHeight);
+
+        // keret
+        painter.drawRect(cellRect);
+
+        // belső tartalom
+        const qreal innerLeft   = cellRect.left() + 2;
+        const qreal innerTop    = cellRect.top() + 2;
+        const qreal innerWidth  = cellRect.width() - 4;
+        const qreal lineHeight  = fm.height() + 2;
+
+        for (int i = 0; i < lines.size(); ++i) {
+            QRectF textRect(innerLeft,
+                            innerTop + i * lineHeight,
+                            innerWidth,
+                            lineHeight);
+            painter.drawText(textRect,
+                             Qt::AlignLeft | Qt::AlignVCenter,
+                             lines[i]);
+        }
+
+        // következő cella
+        ++col;
+        if (col >= cols) {
+            col = 0;
+            ++row;
+        }
+    }
 }
 
 } // end namespace CuttingInstructionUtils
