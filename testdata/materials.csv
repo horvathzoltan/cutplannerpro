@@ -25,7 +25,7 @@ SinesLáb;NP-SL-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;500;100
 NaphálóTok;NP-T-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170157";""
 NaphálóTokFedél;NP-TF-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170157";""
 # záró
-CipzárosZáró;NP-CZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170051";""
+CipzárosZáró;NP-CZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;7be0;300;1000;1800;"80170051";""
 SinesZáró;NP-SZ-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
 # láb/lefutó
 CipzárosLáb;NP-CL-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"80170051";""
@@ -43,7 +43,8 @@ CipzárosLáb;NP-CL;7000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"
 Lábtakaró;NP-CLT;7000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"80170023";""
 SinesLáb;NP-SL;6000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"80170428";""
 # napháló kiegészítők
-CipzárosLábbetét;NP-CLB;6000;;;;CM2;Plastic;RAL9016;Length;Paintable;15;70;500;1000;1500;"80170020";""
+CipzárosLábbetét;NP-CLB;6000;;;;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;"80170020";""
+CipzárosLábbetétR;NP-CLBR;5000;;;;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;"";""
 Bowden;NP-B-50m;50000;;;;CM2;Steel;;Length;None;0;0;0;0;0;"";""
 #napháló meghajtás
 NaphálóMotor-10Nm;NP-MOT-10;0;;Machine;CM3;Electric;;;Piece;None;0;0;0;0;0;"";""
