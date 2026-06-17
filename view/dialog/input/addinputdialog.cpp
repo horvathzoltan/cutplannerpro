@@ -477,3 +477,9 @@ void AddInputDialog::on_btn_MaterialSearch_clicked()
         ui->comboMaterial->setCurrentIndex(ui->comboMaterial->count() - 1);
     }
 }
+
+void AddInputDialog::reject() {
+    // Cancel → reset repeat
+    s_lastRepeat = false;
+    QDialog::reject();
+}

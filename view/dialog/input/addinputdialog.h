@@ -26,6 +26,7 @@ public:
     QString externalReference() const;
 
     void accept() override;
+    void reject() override;
     Cutting::Plan::Request getModel() const;
     void setModel(const Cutting::Plan::Request& request);
     bool wasShiftEnter() const { return _shiftEnterAccepted; }
