@@ -441,21 +441,19 @@ void MainWindow::handle_btn_ClearRequest_clicked()
 
 /*cuttingplanrequests*/
 void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
-    AddInputDialog dialog(this);
 
-    if (dialog.exec() != QDialog::Accepted)
-        return;
+    while(true){
+        AddInputDialog dialog(this, DialogMode::Create);
 
-    Cutting::Plan::Request request = dialog.getModel();
-    presenter->add_CuttingPlanRequest(request);
+        if (dialog.exec() != QDialog::Accepted)
+            return;
 
-    // ⭐ Shift+Enter → új tétel újranyitása
-    if (dialog.wasShiftEnter()) {
-        QTimer::singleShot(0, this, [this]() {
-            handle_btn_AddCuttingPlanRequest_clicked();
-        });
+        Cutting::Plan::Request request = dialog.getModel();
+        presenter->add_CuttingPlanRequest(request);
+
+        if(!dialog.shouldRepeat())
+            break;
     }
-
 }
 
 /*stock*/

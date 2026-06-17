@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>509</width>
     <height>197</height>
    </rect>
   </property>
@@ -20,9 +20,6 @@
       <string>Anyag</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="comboMaterial"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_4">
@@ -38,10 +35,37 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Storage</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+     <item>
+      <widget class="QComboBox" name="comboMaterial"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_MaterialSearch">
+       <property name="text">
+        <string>Keresés...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineEditQuantity"/>
+   </item>
    <item row="2" column="1">
     <widget class="QLineEdit" name="editComment"/>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="1">
+    <widget class="QComboBox" name="comboStorage"/>
+   </item>
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
@@ -50,19 +74,6 @@
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="lineEditQuantity"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Storage</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="comboStorage"/>
    </item>
   </layout>
  </widget>

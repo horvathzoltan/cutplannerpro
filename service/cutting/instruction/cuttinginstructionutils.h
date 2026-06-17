@@ -147,7 +147,7 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
         totalBringIn += bringIn;
 
         const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-        QString matName = mat ? mat->name : QString("Material:%1").arg(matId.toString());
+        QString matName = mat ? mat->toReportLabel() : QString("Material:%1").arg(matId.toString());
 
         double rodLength_m = mat && mat->stockLength_mm > 0
                                  ? mat->stockLength_mm / 1000.0
@@ -423,14 +423,24 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         bool isRepeated = (count > 1);
 
         QString sepAfterSize;
+        // if (!isRepeated) {
+        //     sepAfterSize = " | ";
+        // } else if (firstOfBlock) {
+        //     sepAfterSize = "  ╽ "; //╽
+        // } else if (repeatCount == count) {
+        //     sepAfterSize = " ╿ "; //╿
+        // } else {
+        //     sepAfterSize = " ┃ ";
+        // }
+
         if (!isRepeated) {
             sepAfterSize = " | ";
         } else if (firstOfBlock) {
-            sepAfterSize = "  ╽ ";
+            sepAfterSize = " ╖ "; //╽
         } else if (repeatCount == count) {
-            sepAfterSize = " ╿ ";
+            sepAfterSize = " ╜ "; //╿
         } else {
-            sepAfterSize = " ┃ ";
+            sepAfterSize = " ║ ";//┃
         }
 
         QString multiplier = "";

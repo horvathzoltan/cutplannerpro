@@ -190,6 +190,7 @@ HEADERS += \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
     view/common/layouts/qflowlayout.h \
+    view/dialog/dialogmode.h \
     view/dialog/input/clonerequestdialog.h \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \

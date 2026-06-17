@@ -32,7 +32,7 @@ inline static void Connect(
 
             Cutting::Plan::Request original = *opt;
 
-            AddInputDialog dialog(w);
+            AddInputDialog dialog(w, DialogMode::Update);
             dialog.setModel(original);
 
             if (dialog.exec() != QDialog::Accepted)

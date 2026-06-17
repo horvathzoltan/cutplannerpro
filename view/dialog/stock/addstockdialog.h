@@ -36,4 +36,10 @@ private:
     int currentQuantity;
     //int parsedQuantityDelta(int& resultValue) const;
     QUuid selectedStorageId() const;
+
+    static QUuid s_lastMaterialId;
+    static QUuid s_lastStorageId;
+    static int   s_lastQuantity;
+    static QString s_lastComment;
+
 };

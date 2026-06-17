@@ -13,12 +13,15 @@ QString AddInputDialog::s_lastOwnerName;
 QString AddInputDialog::s_lastExternalRef;
 QUuid   AddInputDialog::s_lastMaterialId;   // ⬅️ ÚJ
 Subtype AddInputDialog::s_lastSubtype = Subtype::None;
+QDate AddInputDialog::s_lastDueDate = QDate();   // default: invalid
+bool AddInputDialog::s_lastRepeat = false;
 
-AddInputDialog::AddInputDialog(QWidget *parent)
+AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
     , current_requestId(QUuid::createUuid())
 {
+    _mode = mode;
     _shiftEnterAccepted = false;
 
     ui->setupUi(this);
@@ -67,7 +70,7 @@ QLineEdit[hasError="true"] {
 }
 )");
 
-    ui->editDueDate->setDate(QDate::currentDate());
+    //ui->editDueDate->setDate(QDate::currentDate());
 
     populateMaterialCombo();
 
@@ -97,6 +100,23 @@ QLineEdit[hasError="true"] {
         if (ok)
             ui->editReference->setText(QString::number(num + 1));
     }
+
+    if (_mode == DialogMode::Create) {
+        if (s_lastDueDate.isValid())
+            ui->editDueDate->setDate(s_lastDueDate);
+        else
+            ui->editDueDate->setDate(QDate::currentDate());
+    }
+
+    if (mode == DialogMode::Update) {
+        ui->chk_Repeat->setChecked(false);
+        ui->chk_Repeat->setEnabled(false);
+        ui->chk_Repeat->setVisible(false);
+    } else {
+        ui->chk_Repeat->setChecked(s_lastRepeat);
+        ui->chk_Repeat->setVisible(true);
+    }
+
 
     if (!ui->editOwner->text().isEmpty() &&
         !ui->editReference->text().isEmpty())
@@ -129,6 +149,27 @@ QLineEdit[hasError="true"] {
     // slider változás → label frissítés
     connect(ui->sliderHandler, &QSlider::valueChanged,
             this, &AddInputDialog::updateSliderLabels);
+
+    // Fókusz fix
+    QTimer::singleShot(0, this, [this]() {
+        if (ui->editOwner->text().isEmpty()) {
+            ui->editOwner->setFocus();
+            return;
+        }
+
+        if (ui->editReference->text().isEmpty()) {
+            ui->editReference->setFocus();
+            return;
+        }
+
+        if (!ui->editLength->text().isEmpty()) {
+            ui->editLength->setFocus();
+            ui->editLength->selectAll();
+            return;
+        }
+
+        ui->editLength->setFocus();
+    });
 
     // induló állapot
     //onQuantityChanged(ui->spinQuantity->value());
@@ -294,6 +335,8 @@ void AddInputDialog::accept() {
 
     // ⭐ ÚJ: altípus mentése
     s_lastSubtype = parseSubtypeFromRadioButtons();
+    s_lastDueDate = ui->editDueDate->date();
+    s_lastRepeat = ui->chk_Repeat->isChecked();
 
     QDialog::accept(); // csak ha minden oké
 }
@@ -336,7 +379,10 @@ void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
 
 }
 
-
+bool AddInputDialog::shouldRepeat()
+{
+    return ui->chk_Repeat->isChecked();
+}
 
 void AddInputDialog::onQuantityChanged(int totalPieces)
 {
@@ -365,15 +411,15 @@ void AddInputDialog::updateSliderLabels()
 void AddInputDialog::keyPressEvent(QKeyEvent *e)
 {
     // Shift+Enter → OK + új tétel
-    if ((e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) &&
-        (e->modifiers() & Qt::ShiftModifier))
-    {
-        if (validateInputs()) {
-            _shiftEnterAccepted = true;
-            accept();
-        }
-        return;
-    }
+    // if ((e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) &&
+    //     (e->modifiers() & Qt::ShiftModifier))
+    // {
+    //     if (validateInputs()) {
+    //         _shiftEnterAccepted = true;
+    //         accept();
+    //     }
+    //     return;
+    // }
 
     // Enter → OK, de csak ha nem QLineEdit-ben vagyunk
     if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter)
@@ -400,7 +446,7 @@ void AddInputDialog::keyPressEvent(QKeyEvent *e)
     QDialog::keyPressEvent(e);
 }
 
-// ⭐ Length mező automatikus kijelölése
+//⭐ Length mező automatikus kijelölése
 bool AddInputDialog::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == ui->editLength && event->type() == QEvent::FocusIn) {

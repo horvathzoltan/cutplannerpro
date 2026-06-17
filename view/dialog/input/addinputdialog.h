@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../../../model/cutting/plan/request.h"
+#include "view/dialog/dialogmode.h"
 #include <QDialog>
 #include <QUuid>
+
 
 namespace Ui {
 class AddInputDialog;
@@ -13,7 +15,7 @@ class AddInputDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddInputDialog(QWidget *parent = nullptr);
+    explicit AddInputDialog(QWidget *parent = nullptr, DialogMode mode = DialogMode::Create);
     ~AddInputDialog();
 
     QUuid selectedMaterialId() const;
@@ -27,6 +29,8 @@ public:
     Cutting::Plan::Request getModel() const;
     void setModel(const Cutting::Plan::Request& request);
     bool wasShiftEnter() const { return _shiftEnterAccepted; }
+
+    bool shouldRepeat();
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
@@ -48,9 +52,13 @@ private:
     static QString s_lastExternalRef;
     static QUuid   s_lastMaterialId;
     static Subtype s_lastSubtype;
+    static QDate s_lastDueDate;
+    static bool s_lastRepeat;
 
     bool _shiftEnterAccepted = false;
     QString _sliderInputBuffer;
+
+    DialogMode _mode = DialogMode::Create;
 
 private slots:
     void on_btn_MaterialSearch_clicked();

@@ -6,8 +6,12 @@
 #include "ui_addstockdialog.h"
 #include "materials/registry/material_registry.h"
 #include "../../../common/quantityparser.h"
+#include "view/dialog/materialsearch/materialsearchdialog.h"
 
-
+QUuid AddStockDialog::s_lastMaterialId;
+QUuid AddStockDialog::s_lastStorageId;
+int   AddStockDialog::s_lastQuantity;
+QString AddStockDialog::s_lastComment;
 
 AddStockDialog::AddStockDialog(QWidget *parent)
     : QDialog(parent)
@@ -17,6 +21,40 @@ AddStockDialog::AddStockDialog(QWidget *parent)
     ui->setupUi(this);
     populateMaterialCombo();
     populateStorageCombo();
+
+    connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
+        MaterialSearchDialog dlg(this);
+        if (dlg.exec() == QDialog::Accepted) {
+            auto sel = dlg.selection();
+
+            // A kiválasztott anyag beállítása a comboBox-ban
+            for (int i = 0; i < ui->comboMaterial->count(); ++i) {
+                QUuid id = ui->comboMaterial->itemData(i).toUuid();
+                if (id == sel.id) {
+                    ui->comboMaterial->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+    });
+
+
+    if (!s_lastMaterialId.isNull()) {
+        int idx = ui->comboMaterial->findData(s_lastMaterialId);
+        if (idx >= 0) ui->comboMaterial->setCurrentIndex(idx);
+    }
+
+    if (!s_lastStorageId.isNull()) {
+        int sidx = ui->comboStorage->findData(s_lastStorageId);
+        if (sidx >= 0) ui->comboStorage->setCurrentIndex(sidx);
+    }
+
+    if (s_lastQuantity > 0)
+        ui->lineEditQuantity->setText(QString::number(s_lastQuantity));
+
+    if (!s_lastComment.isEmpty())
+        ui->editComment->setText(s_lastComment);
+
 }
 
 AddStockDialog::~AddStockDialog()
@@ -120,6 +158,15 @@ bool AddStockDialog::validateInputs() {
 void AddStockDialog::accept() {
     if (!validateInputs())
         return;
+
+    s_lastMaterialId = selectedMaterialId();
+    s_lastStorageId  = selectedStorageId();
+
+    int q = quantity();
+    if (q > 0) s_lastQuantity = q;
+
+    QString c = comment();
+    if (!c.isEmpty()) s_lastComment = c;
 
     QDialog::accept();
 }

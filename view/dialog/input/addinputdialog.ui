@@ -183,6 +183,13 @@
      </item>
     </layout>
    </item>
+   <item row="13" column="1">
+    <widget class="QCheckBox" name="chk_Repeat">
+     <property name="text">
+      <string>Új tétel felvitele</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>

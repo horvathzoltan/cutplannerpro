@@ -63,4 +63,25 @@ struct MaterialMaster : public IdentifiableEntity {
         };
     }
 
+    QString toReportLabel() const {
+        QStringList parts;
+
+        parts << name;
+
+        if (!barcode.isEmpty())
+            parts << QString("[%1]").arg(barcode);
+
+        auto colorName = color.name();
+        if (!colorName.isEmpty())
+            parts << QString("(%1)").arg(colorName);   // pl. RAL9010
+
+        if (stockLength_mm > 0)
+            parts << QString("%1mm").arg(stockLength_mm);
+
+        if (!externalCode.isEmpty())
+            parts << QString("[%1]").arg(externalCode);
+
+        return parts.join(" ");
+    }
+
 };
