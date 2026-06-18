@@ -1,3 +1,20 @@
+btn_ExportLeftoverForm
+formatLeftoverIntakeForm_OnePage
+makeManualLeftoverId
+
+
+// 🔥 Barcode egyediség ellenőrzése
+if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
+    QMessageBox::warning(this,
+                         "Duplikált vonalkód",
+                         "Ez a vonalkód már létezik a hullók között!");
+    return false;
+}
+
+1. Mindíg ütközésmentes leftover id-t adjon, kell a registrybe szolgáltatás aminek
+van int paramétere, mint kezdőérték, és arra nézve keres következő szabad vonalkódot
+a while(true) kicsit húzós, kellene egy módszer ami nem végtelen ciklusra épül
+
 3. anyagkereső:
     - megad egy anyagot, egy méretet , illetve méret tartományt - a minimummal, ebből:
     maximum = min+m , ahol m a settingsből jön, és default 30 cm.

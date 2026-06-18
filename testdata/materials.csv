@@ -14,7 +14,7 @@ NaphálóTok;NP-T-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1
 NaphálóTokFedél;NP-TF-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170156";""
 # záró
 CipzárosZáró;NP-CZ-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170038";""
-SinesZáró;NP-SZ-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170160";""
+SinesZáró;NP-SZ-9010-6;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170160";""
 SinesZáró;NP-SZ-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170107";""
 # láb/lefutó
 CipzárosLáb;NP-CL-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;500;1000;1500;"80170202";""
@@ -26,7 +26,8 @@ NaphálóTok;NP-T-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1
 NaphálóTokFedél;NP-TF-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170157";""
 # záró
 CipzárosZáró;NP-CZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;7be0;300;1000;1800;"80170051";""
-SinesZáró;NP-SZ-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
+SinesZáró;NP-SZ-7016-6;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
+SinesZáró;NP-SZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
 # láb/lefutó
 CipzárosLáb;NP-CL-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"80170051";""
 Lábtakaró;NP-CLT-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"";""
