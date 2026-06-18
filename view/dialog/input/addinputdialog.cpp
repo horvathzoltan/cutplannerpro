@@ -1,26 +1,33 @@
 #include "addinputdialog.h"
 
-//#include "qpushbutton.h"
 #include "../../../model/cutting/plan/request.h"
 #include "ui_addinputdialog.h"
 #include "materials/registry/material_registry.h"
 #include "view/dialog/materialsearch/materialsearchdialog.h"
 
+#include <QCompleter>
+#include <QFile>
 #include <QKeyEvent>
 #include <QMessageBox>
 
-QString AddInputDialog::s_lastOwnerName;
 QString AddInputDialog::s_lastExternalRef;
-QUuid   AddInputDialog::s_lastMaterialId;   // ⬅️ ÚJ
-Subtype AddInputDialog::s_lastSubtype = Subtype::None;
-QDate AddInputDialog::s_lastDueDate = QDate();   // default: invalid
 bool AddInputDialog::s_lastRepeat = false;
+QMap<QString, AddInputDialog::RequestContext> AddInputDialog::_contexts;
+QSet<QString> AddInputDialog::s_ownerCache;
 
 AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
     , current_requestId(QUuid::createUuid())
 {
+    if (_contexts.isEmpty()) {
+        loadContextMap();
+    }
+
+    if (s_ownerCache.isEmpty()) {
+        loadOwnerCache();
+    }
+
     _mode = mode;
     _shiftEnterAccepted = false;
 
@@ -28,85 +35,121 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
 
     ui->editLength->installEventFilter(this);
 
+    auto completer = new QCompleter(s_ownerCache.values(), this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    ui->editOwner->setCompleter(completer);
+
     // ⭐ Slider UI tuning
-    ui->sliderHandler->setStyleSheet(R"(
-QSlider::groove:horizontal {
-    height: 10px;
-    background: #d0d0d0;
-    border-radius: 5px;
-}
+//     ui->sliderHandler->setStyleSheet(R"(
+// QSlider::groove:horizontal {
+//     height: 10px;
+//     background: #d0d0d0;
+//     border-radius: 5px;
+// }
 
-QSlider::handle:horizontal {
-    background: #4a90e2;
-    width: 22px;
-    height: 22px;
-    margin: -6px 0;
-    border-radius: 11px;
-}
+// QSlider::handle:horizontal {
+//     background: #4a90e2;
+//     width: 22px;
+//     height: 22px;
+//     margin: -6px 0;
+//     border-radius: 11px;
+// }
 
-QSlider::sub-page:horizontal {
-    background: #4a90e2;
-    border-radius: 5px;
-}
+// QSlider::sub-page:horizontal {
+//     background: #4a90e2;
+//     border-radius: 5px;
+// }
 
-QSlider::add-page:horizontal {
-    background: #b0b0b0;
-    border-radius: 5px;
-}
-)");
+// QSlider::add-page:horizontal {
+//     background: #b0b0b0;
+//     border-radius: 5px;
+// }
+// )");
 
-    // ⭐ Focus highlight (globális dialog szintű)
-    this->setStyleSheet(R"(
-QLineEdit:focus,
-QComboBox:focus,
-QSpinBox:focus,
-QSlider:focus,
-QRadioButton:focus {
-    outline: 2px solid #4a90e2;
-    outline-offset: 2px;
-}
-QLineEdit[hasError="true"] {
-    border: 2px solid red;
-}
-)");
+//     // ⭐ Focus highlight (globális dialog szintű)
+//     this->setStyleSheet(R"(
+// QLineEdit:focus,
+// QComboBox:focus,
+// QSpinBox:focus,
+// QSlider:focus,
+// QRadioButton:focus {
+//     outline: 2px solid #4a90e2;
+//     outline-offset: 2px;
+// }
+// QLineEdit[hasError="true"] {
+//     border: 2px solid red;
+// }
+// )");
 
     //ui->editDueDate->setDate(QDate::currentDate());
 
     populateMaterialCombo();
 
-    // ⭐ Altípus visszatöltése
-    switch (s_lastSubtype) {
-    case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-    case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-    case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-    default:                ui->radioButton_nincs->setChecked(true); break;
-    }
-
-    // Anyag ajánlása (ha volt korábbi)
-    if (!s_lastMaterialId.isNull()) {
-        int idx = ui->comboMaterial->findData(s_lastMaterialId);
-        if (idx >= 0)
-            ui->comboMaterial->setCurrentIndex(idx);
-    }
-
-    // Megrendelő név ajánlása
-    if (!s_lastOwnerName.isEmpty())
-        ui->editOwner->setText(s_lastOwnerName);
-
     // Külső tételszám ajánlása (+1)
+    // if (!s_lastExternalRef.isEmpty()) {
+    //     bool ok = false;
+    //     int num = s_lastExternalRef.toInt(&ok);
+    //     if (ok)
+    //         ui->editReference->setText(QString::number(num + 1));
+    // }
+
+    // Ha van context az előző tételszámhoz, ajánljuk a megrendelőt / dátumot / altípust / oldalt
+    // auto it = _contexts.find(s_lastExternalRef);
+    // if (it != _contexts.end()) {
+    //     const RequestContext& ctx = it.value();
+
+    //     ui->editOwner->setText(ctx.ownerName);
+    //     ui->editDueDate->setDate(ctx.dueDate);
+
+    //     switch (ctx.subtype) {
+    //     case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
+    //     case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
+    //     case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
+    //     default:                ui->radioButton_nincs->setChecked(true); break;
+    //     }
+
+    //     if (ctx.side == HandlerSide::Left)
+    //         ui->radioLeft->setChecked(true);
+    //     else if (ctx.side == HandlerSide::Right)
+    //         ui->radioRight->setChecked(true);
+
+    //     if (!ctx.defaultMaterialId.isNull()) {
+    //         int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
+    //         if (idx >= 0)
+    //             ui->comboMaterial->setCurrentIndex(idx);
+    //     }
+    // } else {
+    //     // ha nincs context, dueDate default: ma
+    //     ui->editDueDate->setDate(QDate::currentDate());
+    // }
+
+    // ajánlott tételszám = last + 1
+    QString nextRef;
     if (!s_lastExternalRef.isEmpty()) {
         bool ok = false;
         int num = s_lastExternalRef.toInt(&ok);
         if (ok)
-            ui->editReference->setText(QString::number(num + 1));
+            nextRef = QString::number(num + 1);
+    }
+    ui->editReference->setText(nextRef);
+
+    // ha volt előző tételszám → töltsük vissza a contextet
+    auto it = _contexts.find(s_lastExternalRef);
+    if (it != _contexts.end()) {
+        applyContextToWidgets(it.value());
     }
 
-    if (_mode == DialogMode::Create) {
-        if (s_lastDueDate.isValid())
-            ui->editDueDate->setDate(s_lastDueDate);
-        else
-            ui->editDueDate->setDate(QDate::currentDate());
-    }
+    // új tételszám → reset kritikus mezők
+    ui->editLength->clear();
+    ui->spinQuantity->setValue(1);
+
+    // dueDate → holnap
+    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+
+    // új tételszám → editable
+    setContextEditable(true);
+
+
 
     if (mode == DialogMode::Update) {
         ui->chk_Repeat->setChecked(false);
@@ -118,29 +161,55 @@ QLineEdit[hasError="true"] {
     }
 
 
-    if (!ui->editOwner->text().isEmpty() &&
-        !ui->editReference->text().isEmpty())
-    {
-        ui->editLength->setFocus();
-        ui->editLength->selectAll();
-    }
+    // if (!ui->editOwner->text().isEmpty() &&
+    //     !ui->editReference->text().isEmpty())
+    // {
+    //     ui->editLength->setFocus();
+    //     ui->editLength->selectAll();
+    // }
 
     // ⭐ Realtime hibajelzés a hossz mezőben
-    connect(ui->editLength, &QLineEdit::textChanged, this, [this](const QString &text) {
-        QRegularExpression re("^[1-9][0-9]{0,4}$");
-        bool ok = re.match(text).hasMatch();
+    // connect(ui->editReference, &QLineEdit::textChanged,
+    //         this, [this](const QString& ref) {
 
-        if (!ok) {
-            ui->editLength->setProperty("hasError", true);
-            ui->editLength->setToolTip("A hossz csak 1–99999 közötti egész szám lehet.");
-        } else {
-            ui->editLength->setProperty("hasError", false);
-            ui->editLength->setToolTip("");
-        }
-        ui->editLength->style()->unpolish(ui->editLength);
-        ui->editLength->style()->polish(ui->editLength);
+    //             auto it = _contexts.find(ref.trimmed());
+    //             if (it == _contexts.end()) {
+    //                 setContextEditable(true);
+    //                 return;
+    //             }
 
-    });
+    //             applyContextToWidgets(it.value());
+    //             setContextEditable(false);
+    //         });
+
+    connect(ui->editReference, &QLineEdit::textChanged,
+            this, [this](const QString& ref) {
+
+                QString trimmed = ref.trimmed();
+
+                // 1) LÉTEZŐ TÉTELSZÁM → context + readonly
+                auto it = _contexts.find(trimmed);
+                if (it != _contexts.end()) {
+                    applyContextToWidgets(it.value());
+                    setContextEditable(false);
+                    return;
+                }
+
+                // 2) ÚJ TÉTELSZÁM → last context + reset + editable
+                auto last = _contexts.find(s_lastExternalRef);
+                if (last != _contexts.end()) {
+                    applyContextToWidgets(last.value());
+                }
+
+                // reset kritikus mezők
+                ui->editLength->clear();
+                ui->spinQuantity->setValue(1);
+
+                // dueDate → holnap
+                ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+
+                setContextEditable(true);
+            });
 
     // qty változás → handler‑UI váltás
     connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged),
@@ -176,11 +245,69 @@ QLineEdit[hasError="true"] {
 
     // connect(ui->btn_MaterialSearch, &QPushButton::clicked,
     //         this, &AddInputDialog::on_btn_MaterialSearch_clicked);
+
+    // connect(ui->editReference, &QLineEdit::textChanged,
+    //         this, [this](const QString& ref) {
+
+    //             auto it = _contexts.find(ref.trimmed());
+    //             if (it == _contexts.end()) {
+    //                 // új tételszám → mezők szabadon szerkeszthetők
+    //                 ui->editOwner->setReadOnly(false);
+    //                 ui->editDueDate->setReadOnly(false);
+
+    //                 ui->radioButton_alap->setEnabled(true);
+    //                 ui->radioButton_rugos->setEnabled(true);
+    //                 ui->radioButton_tetoteri->setEnabled(true);
+    //                 ui->radioButton_nincs->setEnabled(true);
+
+    //                 ui->radioLeft->setEnabled(true);
+    //                 ui->radioRight->setEnabled(true);
+    //                 return;
+    //             }
+
+    //             const RequestContext& ctx = it.value();
+
+    //             ui->editOwner->setText(ctx.ownerName);
+    //             ui->editDueDate->setDate(ctx.dueDate);
+
+    //             switch (ctx.subtype) {
+    //             case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
+    //             case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
+    //             case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
+    //             default:                ui->radioButton_nincs->setChecked(true); break;
+    //             }
+
+    //             if (ctx.side == HandlerSide::Left)
+    //                 ui->radioLeft->setChecked(true);
+    //             else if (ctx.side == HandlerSide::Right)
+    //                 ui->radioRight->setChecked(true);
+
+    //             if (!ctx.defaultMaterialId.isNull()) {
+    //                 int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
+    //                 if (idx >= 0)
+    //                     ui->comboMaterial->setCurrentIndex(idx);
+    //             }
+
+    //             // kontextusos tételszám → megrendelői mezők readonly
+    //             ui->editOwner->setReadOnly(true);
+    //             ui->editDueDate->setReadOnly(true);
+
+    //             ui->radioButton_alap->setEnabled(false);
+    //             ui->radioButton_rugos->setEnabled(false);
+    //             ui->radioButton_tetoteri->setEnabled(false);
+    //             ui->radioButton_nincs->setEnabled(false);
+
+    //             ui->radioLeft->setEnabled(false);
+    //             ui->radioRight->setEnabled(false);
+    //         });
+
 }
 
 
 AddInputDialog::~AddInputDialog()
 {
+    saveOwnerCache();
+    saveContextMap();
     delete ui;
 }
 
@@ -328,56 +455,71 @@ void AddInputDialog::accept() {
     if (!validateInputs())
         return;
 
-    // Mentjük a legutóbbi értékeket
-    s_lastOwnerName   = ui->editOwner->text().trimmed();
-    s_lastExternalRef = ui->editReference->text().trimmed();
-    s_lastMaterialId  = ui->comboMaterial->currentData().toUuid();   // ⬅️ ÚJ
-
-    // ⭐ ÚJ: altípus mentése
-    s_lastSubtype = parseSubtypeFromRadioButtons();
-    s_lastDueDate = ui->editDueDate->date();
+    const QString ref = ui->editReference->text().trimmed();
+    s_lastExternalRef = ref;
     s_lastRepeat = ui->chk_Repeat->isChecked();
 
-    QDialog::accept(); // csak ha minden oké
+    RequestContext ctx;
+    ctx.ownerName = ui->editOwner->text().trimmed();
+    ctx.dueDate   = ui->editDueDate->date();
+    ctx.subtype   = parseSubtypeFromRadioButtons();
+    ctx.side      = ui->radioLeft->isChecked() ? HandlerSide::Left
+                                          : HandlerSide::Right;
+    ctx.defaultMaterialId = ui->comboMaterial->currentData().toUuid();
+
+    _contexts[ref] = ctx;
+
+    s_ownerCache.insert(ui->editOwner->text().trimmed());
+
+    QDialog::accept();
 }
 
-void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
-    current_requestId = request.requestId;
 
-    int index = ui->comboMaterial->findData(request.materialId);
-    if (index >= 0)
-        ui->comboMaterial->setCurrentIndex(index);
+// void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
+//     current_requestId = request.requestId;
 
-    ui->editLength->setText(QString::number(request.requiredLength));
-    ui->spinQuantity->setValue(request.quantity);
-    ui->editOwner->setText(request.ownerName);
-    ui->editReference->setText(request.externalReference);
+//     int index = ui->comboMaterial->findData(request.materialId);
+//     if (index >= 0)
+//         ui->comboMaterial->setCurrentIndex(index);
 
-    // handler UI
-    onQuantityChanged(request.quantity); // beállítja a módot + slider range-et
+//     ui->editLength->setText(QString::number(request.requiredLength));
+//     ui->spinQuantity->setValue(request.quantity);
+//     ui->editOwner->setText(request.ownerName);
+//     ui->editReference->setText(request.externalReference);
 
-    // ⭐ J/B visszatöltés
-    onQuantityChanged(request.quantity);
+//     // handler UI
+//     onQuantityChanged(request.quantity); // beállítja a módot + slider range-et
 
-    if (request.quantity == 1) {
-        ui->radioLeft->setChecked(request.leftCount == 1);
-        ui->radioRight->setChecked(request.rightCount == 1);
-    } else {
-        ui->sliderHandler->setValue(request.leftCount);
-        updateSliderLabels();
-    }
+//     // ⭐ J/B visszatöltés
+//     onQuantityChanged(request.quantity);
 
-    // Altípus
-    switch (request.subtype) {
-    case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-    case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-    case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-    default:                ui->radioButton_nincs->setChecked(true); break;
-    }
+//     if (request.quantity == 1) {
+//         ui->radioLeft->setChecked(request.leftCount == 1);
+//         ui->radioRight->setChecked(request.rightCount == 1);
+//     } else {
+//         ui->sliderHandler->setValue(request.leftCount);
+//         updateSliderLabels();
+//     }
 
-    ui->editDueDate->setDate(request.dueDate);
+//     // Altípus
+//     switch (request.subtype) {
+//     case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
+//     case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
+//     case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
+//     default:                ui->radioButton_nincs->setChecked(true); break;
+//     }
 
+//     ui->editDueDate->setDate(request.dueDate);
+
+// }
+
+void AddInputDialog::setModel(const Cutting::Plan::Request& req)
+{
+    current_requestId = req.requestId;
+    applyRequestToWidgets(req);
+    setContextEditable(false); // Update módban nem szerkeszthető
 }
+
 
 bool AddInputDialog::shouldRepeat()
 {
@@ -483,3 +625,171 @@ void AddInputDialog::reject() {
     s_lastRepeat = false;
     QDialog::reject();
 }
+
+void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
+{
+    ui->editOwner->setText(ctx.ownerName);
+    ui->editDueDate->setDate(ctx.dueDate);
+
+    applySubtype(ctx.subtype);
+    applySide(ctx.side);
+
+    if (!ctx.defaultMaterialId.isNull()) {
+        int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
+        if (idx >= 0)
+            ui->comboMaterial->setCurrentIndex(idx);
+    }
+}
+
+void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
+{
+    ui->editOwner->setText(req.ownerName);
+    ui->editReference->setText(req.externalReference);
+    ui->editDueDate->setDate(req.dueDate);
+
+    // subtype
+    applySubtype(req.subtype);
+    applySide(req.leftCount > 0 ? HandlerSide::Left : HandlerSide::Right);
+
+    // material
+    int idx = ui->comboMaterial->findData(req.materialId);
+    if (idx >= 0)
+        ui->comboMaterial->setCurrentIndex(idx);
+
+    // length + quantity
+    ui->editLength->setText(QString::number(req.requiredLength));
+    ui->spinQuantity->setValue(req.quantity);
+
+    onQuantityChanged(req.quantity);
+    if (req.quantity == 1)
+        ui->radioLeft->setChecked(req.leftCount == 1);
+    else
+        ui->sliderHandler->setValue(req.leftCount);
+}
+
+void AddInputDialog::applySubtype(Subtype t)
+{
+    switch (t) {
+    case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
+    case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
+    case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
+    default:                ui->radioButton_nincs->setChecked(true); break;
+    }
+}
+
+void AddInputDialog::applySide(HandlerSide side)
+{
+    if (side == HandlerSide::Left)
+        ui->radioLeft->setChecked(true);
+    else if (side == HandlerSide::Right)
+        ui->radioRight->setChecked(true);
+}
+
+
+void AddInputDialog::setContextEditable(bool editable)
+{
+    //ui->editOwner->setReadOnly(!editable);
+    //ui->editDueDate->setReadOnly(!editable);
+    // ⭐ Dátum popup tiltása readonly módban
+    //ui->editDueDate->setCalendarPopup(editable);
+
+    ui->editOwner->setEnabled(editable);
+    ui->editDueDate->setEnabled(editable);
+
+    ui->radioButton_alap->setEnabled(editable);
+    ui->radioButton_rugos->setEnabled(editable);
+    ui->radioButton_tetoteri->setEnabled(editable);
+    ui->radioButton_nincs->setEnabled(editable);
+
+    ui->radioLeft->setEnabled(editable);
+    ui->radioRight->setEnabled(editable);
+}
+
+void AddInputDialog::loadOwnerCache()
+{
+    QFile f(OWNER_CACHE_FN);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    while (!f.atEnd()) {
+        QString line = QString::fromUtf8(f.readLine()).trimmed();
+        if (!line.isEmpty())
+            s_ownerCache.insert(line);
+    }
+}
+
+void AddInputDialog::saveOwnerCache()
+{
+    QFile f(OWNER_CACHE_FN);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    for (const QString& name : s_ownerCache)
+        f.write((name + "\n").toUtf8());
+}
+
+void AddInputDialog::on_btn_Reset_clicked()
+{
+    // Kritikus mezők reset
+    ui->editOwner->clear();
+    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    ui->radioButton_nincs->setChecked(true);
+    ui->radioLeft->setChecked(true);
+    ui->comboMaterial->setCurrentIndex(0);
+    ui->editLength->clear();
+    ui->spinQuantity->setValue(1);
+
+    // Új adat bevitel engedélyezése
+    setContextEditable(true);
+}
+
+void AddInputDialog::loadContextMap()
+{
+    QFile f(CONTEXT_CACHE_FN);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    while (!f.atEnd()) {
+        QString line = QString::fromUtf8(f.readLine()).trimmed();
+        if (line.isEmpty()) continue;
+
+        auto parts = line.split(';');
+        if (parts.size() < 6) continue;
+
+        RequestContext ctx;
+        ctx.ownerName = parts[1];
+        ctx.dueDate = QDate::fromString(parts[2], "yyyy-MM-dd");
+        ctx.subtype = SubtypeUtils::parse(parts[3]);
+        ctx.side = HandlerSideUtils::parse(parts[4]);
+        ctx.defaultMaterialId = QUuid(parts[5]);
+
+        _contexts[parts[0]] = ctx;
+    }
+}
+
+
+void AddInputDialog::saveContextMap()
+{
+    QFile f(CONTEXT_CACHE_FN);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    for (auto it = _contexts.begin(); it != _contexts.end(); ++it) {
+        const auto& ctx = it.value();
+
+        QString line = QString("%1;%2;%3;%4;%5;%6\n")
+                           .arg(it.key())
+                           .arg(ctx.ownerName)
+                           .arg(ctx.dueDate.toString("yyyy-MM-dd"))
+                           .arg(SubtypeUtils::toString_CSV(ctx.subtype))
+                           .arg(HandlerSideUtils::toDisplayText(ctx.side))
+                           .arg(ctx.defaultMaterialId.toString());
+
+        f.write(line.toUtf8());
+    }
+}
+
+
+
+
+

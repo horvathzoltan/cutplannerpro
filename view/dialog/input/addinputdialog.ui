@@ -39,43 +39,44 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QDateEdit" name="editDueDate"/>
+    <widget class="QDateEdit" name="editDueDate">
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_ref">
      <property name="text">
       <string>Külső tételszám:</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="editReference"/>
-   </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Vágási hossz [mm]</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Darabszám</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="QSpinBox" name="spinQuantity">
      <property name="minimum">
       <number>1</number>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Altipus</string>
@@ -112,7 +113,7 @@
      </layout>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackHandlerSide">
      <widget class="QWidget" name="pageRadio">
       <layout class="QHBoxLayout">
@@ -159,7 +160,7 @@
      </widget>
     </widget>
    </item>
-   <item row="13" column="0">
+   <item row="14" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
@@ -183,18 +184,31 @@
      </item>
     </layout>
    </item>
-   <item row="13" column="1">
+   <item row="14" column="1">
     <widget class="QCheckBox" name="chk_Repeat">
      <property name="text">
       <string>Új tétel felvitele</string>
      </property>
     </widget>
    </item>
+   <item row="6" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+     <item>
+      <widget class="QLineEdit" name="editReference"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_Reset">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>editOwner</tabstop>
-  <tabstop>editReference</tabstop>
   <tabstop>editLength</tabstop>
   <tabstop>spinQuantity</tabstop>
   <tabstop>stackHandlerSide</tabstop>

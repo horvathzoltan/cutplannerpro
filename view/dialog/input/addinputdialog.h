@@ -49,19 +49,39 @@ private:
 
     QUuid current_requestId;
 
-    static QString s_lastOwnerName;
+
     static QString s_lastExternalRef;
-    static QUuid   s_lastMaterialId;
-    static Subtype s_lastSubtype;
-    static QDate s_lastDueDate;
     static bool s_lastRepeat;
+    static QSet<QString> s_ownerCache;
+    inline static const QString OWNER_CACHE_FN = "owner_cache.csv";
+    inline static const QString CONTEXT_CACHE_FN = "context_cache.csv";
 
     bool _shiftEnterAccepted = false;
     QString _sliderInputBuffer;
 
     DialogMode _mode = DialogMode::Create;
 
+    struct RequestContext {
+        QString ownerName;     // Megrendelő neve
+        QDate   dueDate;       // Határidő
+        Subtype subtype;       // Alap / Rugós / Tetőtéri
+        HandlerSide side;      // Bal / Jobb (egy napháló motor oldala nem változik)
+        QUuid   defaultMaterialId; // Opcionális: legutóbb használt anyag ehhez a tételszámhoz
+    };
+
+    static QMap<QString, RequestContext> _contexts;
+
+    void applyContextToWidgets(const RequestContext& ctx);
+    void setContextEditable(bool editable);
+    void applyRequestToWidgets(const Cutting::Plan::Request& req);
+    void applySubtype(Subtype t);
+    void applySide(HandlerSide side);
+    void loadOwnerCache();
+    void saveOwnerCache();
+    void loadContextMap();
+    void saveContextMap();
 private slots:
     void on_btn_MaterialSearch_clicked();
+    void on_btn_Reset_clicked();
 
 };

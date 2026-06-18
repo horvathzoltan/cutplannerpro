@@ -1,6 +1,7 @@
 #pragma once
 #include <QDateTime>
 #include <QPainter>
+#include <QPdfWriter>
 #include <QSet>
 
 #include "../../../model/cutting/instruction/cutinstruction.h"
@@ -1117,8 +1118,11 @@ inline QString formatLabelColumnFlow(const QVector<LabelModel>& models,
         }
 
         // lapok között csak üres sor, szeparátor NEM kell
-        if (p + 1 < pages.size())
-            out << "\f"; // form feed - új oldal
+        // if (p + 1 < pages.size())
+        //     out << "\f"; // form feed - új oldal
+        // lapok között form feed, de csak a második laptól
+        if (p > 0)
+            out << "\f";
 
     }
 
@@ -1232,84 +1236,204 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     return lines.join("\n");
 }
 
+QImage renderEmoji(const QString& emoji, int size)
+{
+    QImage img(size, size, QImage::Format_ARGB32);
+    img.fill(Qt::transparent);
+
+    QPainter p(&img);
+    QFont f("Segoe UI Emoji", size * 0.8);   // vagy bármelyik színes emoji font
+    p.setFont(f);
+    p.drawText(img.rect(), Qt::AlignCenter, emoji);
+    p.end();
+
+    return img;
+}
 
 inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                                       QPainter& painter,
+                                      QPdfWriter& writer,
                                       const QRectF& pageRect,
-                                      int cols,
+                                      int columns,
                                       qreal cellHeight)
 {
-    if (cols <= 0 || labels.isEmpty())
+    if (labels.isEmpty() || columns <= 0)
         return;
 
-    const qreal cellWidth = pageRect.width() / cols;
-    const QFontMetrics fm(painter.font());
+    QFontMetrics fm(painter.font());
+    const qreal lineHeight = fm.height() + 2.0;
 
+    // oszlopszélesség – biztonsági margóval
+    const qreal colWidth = pageRect.width() / columns;
+
+    // emoji panel fix szélessége
+    const qreal emojiPanelWidth = cellHeight/2;
+
+    // belső padding
+    const qreal pad = 4.0;
+
+    // hány karakter fér a tartalmi panelbe?
     auto maxCharsForCell = [&](qreal w) -> int {
-        // nagyon egyszerű becslés: átlagos karakter-szélesség
-        qreal avg = fm.horizontalAdvance(QStringLiteral("M"));
+        qreal avg = fm.horizontalAdvance("M");
         if (avg <= 0) avg = 8.0;
-        int inner = int(w) - 2; // 1-1 px padding
+        qreal inner = w - pad * 2;
         return qMax(4, int(inner / avg));
     };
 
-    const int cellWidthChars = maxCharsForCell(cellWidth);
+    const int cellWidthChars = maxCharsForCell(colWidth - emojiPanelWidth);
 
-    int col = 0;
-    int row = 0;
-
-    auto newPage = [&]() {
-        // hívja a hívó: QPdfWriter esetén: writer.newPage();
-        // itt csak a sor/col reset:
-        col = 0;
-        row = 0;
+    struct Cell {
+        QString emoji1;            // prio
+        QString emoji2; //group icon
+        QVector<QString> lines;   // tartalom
     };
 
-    for (const auto& srcLm : labels) {
-        LabelModel lm = srcLm;                 // lokális másolat, hogy trimmelhessünk
-        trimLabelToWidth(lm, cellWidthChars);  // meglévő helper
+    QVector<Cell> cells;
+    cells.reserve(labels.size());
 
+    // 1) LabelModel → sorokra tördelve
+    for (const auto& lm : labels) {
         QVector<QString> lines = buildLabelCellLines(lm.parts, cellWidthChars);
+        //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
+        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines });
+    }
 
-        // ha nem fér el az aktuális oldalon, új oldal
-        qreal topY = pageRect.top() + row * cellHeight;
-        if (topY + cellHeight > pageRect.bottom()) {
-            // itt a hívó felelőssége: writer.newPage();
-            painter.translate(0, 0); // semmi, csak jelzés
-            newPage();
-            topY = pageRect.top();
+    // 2) oszlopfolytonos tördelés
+    int colIndex = 0;
+    int columnNumberLabel = 1;
+
+    qreal x = pageRect.left();
+    qreal y = pageRect.top();
+
+    // vastagabb keret
+    QPen oldPen = painter.pen();
+    painter.setPen(QPen(Qt::black, 1.2));
+
+    auto drawColumnHeader = [&](int num) {
+        qreal headerHeight = cellHeight * 0.5;
+        QRectF rect(x, y, colWidth, headerHeight);
+        painter.drawRect(rect);
+        painter.drawText(rect, Qt::AlignCenter, QString::number(num));
+        y += headerHeight;
+    };
+
+    drawColumnHeader(columnNumberLabel);
+
+    for (int i = 0; i < cells.size(); ++i) {
+
+        const auto& cell = cells[i];
+
+        // új oszlop / új lap
+        if (y + cellHeight > pageRect.bottom()) {
+            colIndex++;
+            columnNumberLabel++;
+
+            if (colIndex >= columns) {
+                writer.newPage();
+                colIndex = 0;
+                //columnNumberLabel = 1;
+            }
+
+            x = pageRect.left() + colIndex * colWidth;
+            y = pageRect.top();
+
+            drawColumnHeader(columnNumberLabel);
         }
 
-        qreal leftX = pageRect.left() + col * cellWidth;
-        QRectF cellRect(leftX, topY, cellWidth, cellHeight);
+        // cella kerete
+        QRectF rect(x, y, colWidth, cellHeight);
+        painter.drawRect(rect);
 
-        // keret
-        painter.drawRect(cellRect);
+        // EMOJI PANEL
+        // --- EMOJI PANEL: két függőleges félpanel ---
+        qreal halfHeight = cellHeight / 2.0;
 
-        // belső tartalom
-        const qreal innerLeft   = cellRect.left() + 2;
-        const qreal innerTop    = cellRect.top() + 2;
-        const qreal innerWidth  = cellRect.width() - 4;
-        const qreal lineHeight  = fm.height() + 2;
+        QRectF emojiRectTop(rect.left(), rect.top(), emojiPanelWidth, halfHeight);
+        QRectF emojiRectBottom(rect.left(), rect.top() + halfHeight, emojiPanelWidth, halfHeight);
 
-        for (int i = 0; i < lines.size(); ++i) {
-            QRectF textRect(innerLeft,
-                            innerTop + i * lineHeight,
-                            innerWidth,
+        // keretek
+        //painter.drawRect(emojiRectTop);
+        //painter.drawRect(emojiRectBottom);
+
+        // két karakter szétválasztása
+        QString topChar = cell.emoji1;
+        QString bottomChar = cell.emoji2;
+
+        // rajzolás
+        // painter.drawText(emojiRectTop, Qt::AlignCenter, topChar);
+        // painter.drawText(emojiRectBottom, Qt::AlignCenter, bottomChar);
+
+        // QImage topImg = renderEmoji(topChar, emojiPanelWidth);
+        // QImage bottomImg = renderEmoji(bottomChar, emojiPanelWidth);
+
+        // painter.drawImage(emojiRectTop, topImg);
+        // painter.drawImage(emojiRectBottom, bottomImg);
+
+        // kisebb emoji + gap
+        int emojiSize = emojiPanelWidth * 0.8;      // 60% méret
+        int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
+
+        // render
+        QImage topImg = renderEmoji(topChar, emojiSize);
+        QImage bottomImg = renderEmoji(bottomChar, emojiSize);
+
+        // cél téglalapok (gap-pel)
+        QRectF topTarget(
+            emojiRectTop.left() + emojiMargin,
+            emojiRectTop.top() + emojiMargin,
+            emojiSize,
+            emojiSize
+            );
+
+        QRectF bottomTarget(
+            emojiRectBottom.left() + emojiMargin,
+            emojiRectBottom.top() + emojiMargin,
+            emojiSize,
+            emojiSize
+            );
+
+        // rajzolás
+        if (!topChar.isEmpty())
+            painter.drawImage(topTarget, topImg);
+
+        if (!bottomChar.isEmpty())
+            painter.drawImage(bottomTarget, bottomImg);
+
+
+        // TARTALMI PANEL
+        bool hasEmoji = !(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
+
+        QRectF contentRect(
+            hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
+            rect.top(),
+            hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
+            rect.height()
+            );
+
+        //painter.drawRect(contentRect);
+
+        // vertikális középre igazítás
+        qreal totalTextHeight = cell.lines.size() * lineHeight;
+        qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+
+        for (int li = 0; li < cell.lines.size(); ++li) {
+            QRectF textRect(contentRect.left() + pad,
+                            startY + li * lineHeight,
+                            contentRect.width() - pad * 2,
                             lineHeight);
             painter.drawText(textRect,
                              Qt::AlignLeft | Qt::AlignVCenter,
-                             lines[i]);
+                             cell.lines[li]);
         }
 
-        // következő cella
-        ++col;
-        if (col >= cols) {
-            col = 0;
-            ++row;
-        }
+        y += cellHeight;
     }
+
+    painter.setPen(oldPen);
 }
+
+
+
 
 } // end namespace CuttingInstructionUtils
 

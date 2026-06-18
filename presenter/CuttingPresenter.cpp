@@ -1033,59 +1033,78 @@ void CuttingPresenter::ExportCutInstructions()
         out << QString("CutPlan: %1\n").arg(baseName);
         out << QString("📅 Dátum: %1\n\n").arg(dateStr);
 
+        bool firstPage = true;
+
         for (const auto& mc : _machineCutsList) {
+            if (!firstPage)
+                out << "\n\n";
+
+            firstPage = false;
+
+
             out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
 
             auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
             //out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, printedPageHeight);
             //out << CuttingInstructionUtils::formatLabelStackPaged(labels, printedLineWidth, 2, printedPageHeight);
             out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
-            out << "\n\n";
+            //out << "\n\n";
         }
-
-        // --- 3) LabelTable PDF ---
-        // {
-        //     QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
-
-        //     QPdfWriter writer(path);
-        //     writer.setPageSize(QPageSize(QPageSize::A4));
-        //     writer.setResolution(300); // szép, éles címkék
-
-        //     QPainter painter(&writer);
-        //     if (!painter.isActive()) {
-        //         zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
-        //         return;
-        //     }
-
-        //     QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
-
-        //     const int cols = 2;
-        //     const qreal cellHeight = 60.0; // px, finomhangolható
-
-        //     painter.setFont(QFont("Arial", 10));
-
-        //     for (const auto& mc : _machineCutsList)
-        //     {
-        //         auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-
-        //         CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
-        //             labels,
-        //             painter,
-        //             pageRect,
-        //             cols,
-        //             cellHeight
-        //             );
-
-        //         writer.newPage(); // gépenként új oldal
-        //     }
-
-        //     painter.end();
-        //     zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
-        // }
 
         zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
     }
+
+    // --- 3) LabelTable PDF ---
+
+    {
+        QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
+
+        QPdfWriter writer(path);
+        writer.setPageSize(QPageSize(QPageSize::A4));
+        writer.setResolution(300);
+
+        QPainter painter(&writer);
+        if (!painter.isActive()) {
+            zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+            return;
+        }
+
+        QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+
+        const int cols = 2;
+        const qreal cellHeight = 240.0; // nagy, jól olvasható címke
+
+        // MONOSPACED FONT – kötelező a TXT‑s spacinghez
+        QFont font("Courier New", 11);
+        painter.setFont(font);
+
+        bool firstPage = true;
+
+        for (const auto& mc : _machineCutsList)
+        {
+            if (!firstPage)
+                writer.newPage();   // új lap csak a második géptől
+
+            firstPage = false;
+
+            auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+
+            CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
+                labels,
+                painter,
+                writer,
+                pageRect,
+                cols,
+                cellHeight
+                );
+        }
+
+        painter.end();
+        zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
+    }
+
 }
+
 
 void CuttingPresenter::ExportLeftoverIntakeForm()
 {

@@ -1,3 +1,18 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
 "1234";"TesztElek";0;0;2000;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-16
 "1236";"TesztElek";0;0;1000;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-16
+"1233";"Teszt Elek";0;0;2000;;1;1;0;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"1234";"Teszt  Ábrahám";0;0;3000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"1236";"Teszt Endre";0;0;2000;;2;2;0;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"1237";"Teszt Endre";0;0;3000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"1238";"Teszt  Kálmán";0;0;1122;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"2001";"Teszt Elek";0;0;1000;;1;1;0;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"2002";"Teszt Mihály";0;0;2000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"2003";"Teszt Elek";0;0;1000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"12";"Teszt  Elek";0;0;2000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"13";"Teszt  Aladár";0;0;300;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"14";"Teszt  Béla";0;0;300;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"123";"Teszt Elek";0;0;2000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"124";"Teszt  Kálmán";0;0;2000;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"125";"Teszt  Elemér";0;0;1234;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
+"123";"Teszt Mandarin";0;0;500;;1;0;1;none;"";NP-ROLL60-5000;Width;false;2026-06-19
