@@ -1175,9 +1175,19 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     // 4) RSM kódok generálása – PEEK alapú, COMMIT NÉLKÜL
     int next = SettingsManager::instance().peekManualLeftoverCounter();
 
-    for (int i = 0; i < rowsPerPage; ++i) {
-        QString code = IdentifierUtils::makeManualLeftoverId(next++);
+    for (int i = 0; i < rowsPerPage; ++i){
+        QString code;
+        while(true){
+            code = IdentifierUtils::makeManualLeftoverId(next++);
 
+            // és azt kell itt megnézni, hogy a code az létezik-e már, mert ha igen, át kell ugrani
+            // ahol felajánlja a dialogban a köv. kódot, az pont jó
+            // 🔥 Barcode egyediség ellenőrzése
+            bool exists = LeftoverStockRegistry::instance().existsBarcode(code, {});
+
+            if (!exists)
+                break;
+        }
         // 1) Üres felső sor
         QString rowTop =
             "|" + makeCell("", col1) +
