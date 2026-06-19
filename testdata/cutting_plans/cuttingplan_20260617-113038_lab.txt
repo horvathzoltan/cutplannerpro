@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1845";"Szajkó";0;0;2217;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-22
+"1800";"Szajkó";0;0;1342;;1;0;1;none;"";NP-CL;Width;false;2026-06-22
+"1801";"Szajkó";0;0;1332;;1;0;1;none;"";NP-CL;Width;false;2026-06-17

@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1951";"Czine Árpád";0;0;1437;;1;0;1;none;"";STE-6000;Width;false
+"1952";"Czine Árpád";0;0;1267;;1;0;1;none;"";STE-6000;Width;false
+"1955";"BányászAblak";0;0;2457;;2;1;1;none;"";STE-6000;Width;false
+"1958";"TóthMónika";0;0;2577;;3;0;3;none;"";STE-6000;Width;false
+"1959";"TóthMónika";0;0;2577;;1;1;0;none;"";STE-6000;Width;false

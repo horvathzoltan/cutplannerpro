@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1938";"DrazséBár";0;0;488;;1;Unknown;"";SZ-6000;Width;false
+"1941";"Rellux";0;0;1150;;1;Unknown;"";SZ-6000;Width;false
+"1930";"BenkeT";0;0;1010;;2;Unknown;"";SZ-6000;Width;false
+"1933";"AblakBeépítő";0;0;1240;;1;Unknown;"";SZ-6000;Width;false
+"1934";"AblakBeépítő";0;0;1850;;1;Unknown;"";SZ-6000;Width;false
+"1935";"AblakBeépítő";0;0;1850;;1;Unknown;"";SZ-6000;Width;false

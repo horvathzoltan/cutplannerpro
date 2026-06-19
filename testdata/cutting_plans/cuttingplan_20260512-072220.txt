@@ -1,0 +1,8 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1880";"LosoncziR";0;0;562;;9;Unknown;"";MT;Width;false
+"1881";"LosoncziR";0;0;562;;9;Unknown;"";MT;Width;false
+"1882";"LosoncziR";0;0;567;;4;Unknown;"";MT;Width;false
+"1883";"LosoncziR";0;0;567;;4;Unknown;"";MT;Width;false
+"1884";"LosoncziR";0;0;647;;10;Unknown;"";MT;Width;false
+"1885";"LosoncziR";0;0;647;;4;Unknown;"";MT;Width;false
+"1886";"LosoncziR";0;0;949;;1;Unknown;"";MT;Width;false

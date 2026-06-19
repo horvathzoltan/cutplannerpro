@@ -1,0 +1,8 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1454";"Perei";0;0;805;;1;0;1;none;"";EZ-6000;Width;false
+"1455";"Perei";0;0;815;;1;1;0;none;"";EZ-6000;Width;false
+"1484";"ZentaiAblak";0;0;1005;;1;0;1;none;"";EZ-6000;Width;false
+"1485";"ZentaiAblak";0;0;1005;;1;0;1;none;"";EZ-6000;Width;false
+"1486";"ZentaiAblak";0;0;1005;;1;1;0;none;"";EZ-6000;Width;false
+"1487";"ZentaiAblak";0;0;1005;;1;1;0;none;"";EZ-6000;Width;false
+"1488";"ZentaiAblak";0;0;1155;;1;0;1;none;"";EZ-6000;Width;false

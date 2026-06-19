@@ -1,0 +1,14 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1976";"Csák L.";0;0;740;;1;0;1;none;"";SR-FSN;Width;false
+"1979";"Rada";0;0;924;;1;0;1;none;"";ST-6000;Width;false
+"1980";"Rada";0;0;964;;1;1;0;none;"";ST-6000;Width;false
+"1986";"Kovácsné T. Gyöngy";0;0;1014;;1;0;1;none;"";SR-FSN;Width;false
+"5";"AblakBeÉpítő";0;0;1674;;1;0;1;none;"";ST-6000;Width;false
+"6";"AblakBeÉpítő";0;0;1874;;1;0;1;none;"";ST-6000;Width;false
+"7";"AblakBeÉpítő";0;0;2004;;1;0;1;none;"";ST-6000;Width;false
+"8";"AblakBeÉpítő";0;0;1554;;1;0;1;none;"";ST-6000;Width;false
+"15";"Nistor Egon";0;0;644;;1;0;1;none;"";SR-FSN;Width;false
+"16";"Nistor Egon";0;0;644;;1;1;0;none;"";SR-FSN;Width;false
+"17";"Nistor Egon";0;0;814;;1;0;1;none;"";SR-FSN;Width;false
+"18";"Nistor Egon";0;0;674;;1;0;1;none;"";SR-FSN;Width;false
+"19";"Nistor Egon";0;0;594;;1;1;0;none;"";SR-FSN;Width;false

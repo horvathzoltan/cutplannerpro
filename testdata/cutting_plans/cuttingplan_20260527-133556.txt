@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1395";"Rellux";0;0;1500;;2;0;0;alap;"";AP-6000;Width;false
+"1396";"Rellux";0;0;1580;;13;0;0;alap;"";AP-6000;Width;false
+"1397";"Rellux";0;0;2060;;2;0;0;alap;"";AP-6000;Width;false
+"1398";"Rellux";0;0;1300;;1;0;0;alap;"";AP-6000;Width;false
+"1399";"Rellux";0;0;1580;;2;0;0;alap;"";AP-6000;Width;false

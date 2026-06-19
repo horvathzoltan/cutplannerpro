@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1745";"Ro-Konzol";0;0;2357;;1;0;1;none;"";NP-CL-9010;Width;false;2026-06-22
+"1746";"Ro-Konzol";0;0;2357;;1;1;0;none;"";NP-CL-9010;Width;false;2026-06-22
+"1747";"Ro-Konzol";0;0;2357;;1;0;1;none;"";NP-CL-9010;Width;false;2026-06-22

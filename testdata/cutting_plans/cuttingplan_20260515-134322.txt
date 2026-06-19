@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1198";"AxialLogistic";0;0;1725;;2;Unknown;"";STE-6000;Width;false
+"1200";"AxialLogistic";0;0;1675;;1;Unknown;"";STE-6000;Width;false
+"1239";"Generálkiv";0;0;1252;;3;Unknown;"";STE-6000;Width;false

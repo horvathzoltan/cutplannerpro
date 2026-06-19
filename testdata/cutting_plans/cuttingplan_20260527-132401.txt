@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1395";"Rellux";0;0;1510;;2;0;0;alap;"";TE-R-23;Width;false
+"1396";"Rellux";0;0;1590;;13;0;0;alap;"";TE-R-23;Width;false
+"1397";"Rellux";0;0;2070;;2;0;0;alap;"";TE-R-23;Width;false
+"1398";"Rellux";0;0;1310;;1;0;0;alap;"";TE-R-23;Width;false
+"1399";"Rellux";0;0;1590;;2;0;0;alap;"";TE-R-23;Width;false

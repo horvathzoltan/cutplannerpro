@@ -1,0 +1,3 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1574";"TátraMix";0;0;1894;;17;10;7;none;"";SR-T;Width;false;2026-06-16
+"1591";"TátraMix";0;0;1994;;1;1;0;none;"";SR-T;Width;false;2026-06-16

@@ -1,0 +1,22 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1264";"Hovafa";0;0;615;;1;Unknown;"";TE-R-23;Width;false
+"1265";"Hovafa";0;0;495;;1;Unknown;"";TE-R-23;Width;false
+"1308";"RedőnyShop";0;0;545;;1;Unknown;"";TE-R-23;Width;false
+"1322";"György Zs.";0;0;1100;;1;Unknown;"";TE-R-23;Width;false
+"1323";"György Zs.";0;0;1100;;1;Unknown;"";TE-R-23;Width;false
+"1324";"György Zs.";0;0;1030;;1;Unknown;"";TE-R-23;Width;false
+"1325";"György Zs.";0;0;1030;;1;Unknown;"";TE-R-23;Width;false
+"1326";"György Zs.";0;0;1030;;1;Unknown;"";TE-R-23;Width;false
+"1327";"György Zs.";0;0;1030;;1;Unknown;"";TE-R-23;Width;false
+"1328";"György Zs.";0;0;1010;;1;Unknown;"";TE-R-23;Width;false
+"1329";"György Zs.";0;0;1010;;1;Unknown;"";TE-R-23;Width;false
+"1330";"György Zs.";0;0;1010;;1;Unknown;"";TE-R-23;Width;false
+"1331";"György Zs.";0;0;1010;;1;Unknown;"";TE-R-23;Width;false
+"1284";"Tóth M.";0;0;570;;1;Unknown;"";TE-R-23;Width;false
+"1287";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1288";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1289";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1290";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1291";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1292";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false
+"1293";"SándorÁrnyék";0;0;582;;1;Unknown;"";TE-R-23;Width;false

@@ -1,0 +1,15 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1930";"Benke T";0;0;1007;;2;Unknown;"";STE-6000;Width;false
+"1933";"AblakBeépítő";0;0;1237;;1;Unknown;"";STE-6000;Width;false
+"1934";"AblakBeépítő";0;0;1847;;1;Unknown;"";STE-6000;Width;false
+"1935";"AblakBeépítő";0;0;1747;;1;Unknown;"";STE-6000;Width;false
+"1938";"DrazséBár";0;0;500;;1;Unknown;"";STE-6000;Width;false
+"1941";"Rellux";0;0;1147;;1;Unknown;"";STE-6000;Width;false
+"1296";"L.Zs.";0;0;1700;;1;Unknown;"";STE-6000;Width;false
+"1297";"L.Zs.";0;0;1700;;1;Unknown;"";STE-6000;Width;false
+"1276";"Sebi";0;0;1025;;1;Unknown;"";STE-6000;Width;false
+"1277";"Sebi";0;0;460;;1;Unknown;"";STE-6000;Width;false
+"1278";"Sebi";0;0;1025;;1;Unknown;"";STE-6000;Width;false
+"1279";"Sebi";0;0;1345;;1;Unknown;"";STE-6000;Width;false
+"1280";"Sebi";0;0;1345;;1;Unknown;"";STE-6000;Width;false
+"1281";"Sebi";0;0;1345;;1;Unknown;"";STE-6000;Width;false

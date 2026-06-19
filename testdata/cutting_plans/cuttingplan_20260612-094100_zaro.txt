@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1622";"RoKonzol";0;0;620;;1;1;0;none;"";ROL-GYZ;Width;false;2026-06-22
+"1637";"RetroÁrnyékolás";0;0;1605;;1;0;1;none;"";ROL-GYZ;Width;false;2026-06-22
+"1574";"TátraMix";0;0;1870;;17;10;7;none;"";ROL-GYZ;Width;false;2026-06-16
+"1591";"TátraMix";0;0;1970;;1;1;0;none;"";ROL-GYZ;Width;false;2026-06-16

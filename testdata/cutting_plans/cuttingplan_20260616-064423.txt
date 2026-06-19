@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1735";"ArthyL.";0;0;3995;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-16
+"1728";"Molkomfort";0;0;3295;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-17
+"1750";"ZákányDénes";0;0;2055;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-18
+"1751";"ZákányDénes";0;0;2360;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-18
+"1752";"ZákányDénes";0;0;2275;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-18
+"1755";"Félegyházi";0;0;1985;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-22

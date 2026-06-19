@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;handlerSide;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1296";"L.Zs.";0;0;1690;;1;Unknown;"";EZ-6000;Width;false
+"1297";"L.Zs.";0;0;1690;;1;Unknown;"";EZ-6000;Width;false
+"1276";"Sebi";0;0;1015;;1;Unknown;"";EZ-6000;Width;false
+"1277";"Sebi";0;0;450;;1;Unknown;"";EZ-6000;Width;false
+"1278";"Sebi";0;0;1015;;1;Unknown;"";EZ-6000;Width;false
+"1279";"Sebi";0;0;1335;;1;Unknown;"";EZ-6000;Width;false
+"1280";"Sebi";0;0;1335;;1;Unknown;"";EZ-6000;Width;false
+"1281";"Sebi";0;0;1335;;1;Unknown;"";EZ-6000;Width;false

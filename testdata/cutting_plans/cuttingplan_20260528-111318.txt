@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1962";"IdealAblak";0;0;355;;1;1;0;none;"";MT;Width;false
+"1963";"IdealAblak";0;0;98;;1;1;0;none;"";MT;Width;false
+"1964";"IdealAblak";0;0;98;;1;0;1;none;"";MT;Width;false
+"1973";"An-Ger";0;0;61;;1;0;1;none;"";MT;Width;false

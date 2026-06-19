@@ -1,0 +1,21 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1454";"Perei";0;0;815;;1;0;1;none;"";TE-H-32;Width;false
+"1455";"Perei";0;0;825;;1;1;0;none;"";TE-H-32;Width;false
+"1484";"ZentaiAblak";0;0;1015;;1;0;1;none;"";TE-H-32;Width;false
+"1485";"ZentaiAblak";0;0;1015;;1;0;1;none;"";TE-H-32;Width;false
+"1486";"ZentaiAblak";0;0;1015;;1;1;0;none;"";TE-H-32;Width;false
+"1487";"ZentaiAblak";0;0;1015;;1;1;0;none;"";TE-H-32;Width;false
+"1488";"ZentaiAblak";0;0;1165;;1;0;1;none;"";TE-H-32;Width;false
+"1976";"Csák L.";0;0;723;;1;0;1;none;"";TE-H-32;Width;false
+"1979";"Rada";0;0;907;;1;0;1;none;"";TE-H-32;Width;false
+"1980";"Rada";0;0;947;;1;1;0;none;"";TE-H-32;Width;false
+"1986";"Kovácsné T. Gyöngy";0;0;997;;1;0;1;none;"";TE-H-32;Width;false
+"5";"AblakBeÉpítő";0;0;1657;;1;0;1;none;"";TE-H-32;Width;false
+"6";"AblakBeÉpítő";0;0;1857;;1;0;1;none;"";TE-H-32;Width;false
+"7";"AblakBeÉpítő";0;0;1987;;1;0;1;none;"";TE-H-32;Width;false
+"8";"AblakBeÉpítő";0;0;1537;;1;0;1;none;"";TE-H-32;Width;false
+"15";"Nistor Egon";0;0;627;;1;0;1;none;"";TE-H-32;Width;false
+"16";"Nistor Egon";0;0;627;;1;1;0;none;"";TE-H-32;Width;false
+"17";"Nistor Egon";0;0;797;;1;0;1;none;"";TE-H-32;Width;false
+"18";"Nistor Egon";0;0;657;;1;0;1;none;"";TE-H-32;Width;false
+"19";"Nistor Egon";0;0;577;;1;1;0;none;"";TE-H-32;Width;false

@@ -1,0 +1,44 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1402";"BányaiLajos";0;0;1343;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1429";"Norlux";0;0;965;;1;0;1;alap;"";AP-6000;Width;false
+"1430";"Norlux";0;0;965;;1;1;0;alap;"";AP-6000;Width;false
+"1431";"Norlux";0;0;565;;1;1;0;alap;"";AP-6000;Width;false
+"1432";"Norlux";0;0;485;;1;0;1;alap;"";AP-6000;Width;false
+"1433";"Norlux";0;0;565;;1;0;1;alap;"";AP-6000;Width;false
+"1434";"Norlux";0;0;965;;1;1;0;alap;"";AP-6000;Width;false
+"1435";"Norlux";0;0;505;;1;1;0;alap;"";AP-6000;Width;false
+"1436";"Norlux";0;0;435;;1;1;0;alap;"";AP-6000;Width;false
+"1437";"Norlux";0;0;505;;1;0;1;alap;"";AP-6000;Width;false
+"1438";"Norlux";0;0;440;;1;0;1;alap;"";AP-6000;Width;false
+"1439";"Norlux";0;0;500;;1;0;1;alap;"";AP-6000;Width;false
+"1440";"Norlux";0;0;490;;1;0;1;alap;"";AP-6000;Width;false
+"1441";"Norlux";0;0;490;;1;0;1;alap;"";AP-6000;Width;false
+"1442";"Norlux";0;0;490;;1;0;1;alap;"";AP-6000;Width;false
+"1443";"Norlux";0;0;740;;1;0;1;alap;"";AP-6000;Width;false
+"1444";"Norlux";0;0;580;;1;0;1;alap;"";AP-6000;Width;false
+"1445";"Norlux";0;0;965;;1;0;1;alap;"";AP-6000;Width;false
+"1446";"Norlux";0;0;720;;1;1;0;alap;"";AP-6000;Width;false
+"1447";"Norlux";0;0;580;;1;1;0;alap;"";AP-6000;Width;false
+"1458";"Timi";0;0;755;;1;1;0;alap;"";AP-6000;Width;false
+"1459";"Timi";0;0;755;;1;1;0;alap;"";AP-6000;Width;false
+"1462";"Frama/Bokor";0;0;598;;1;0;0;rugos;"";AP-6000;Width;false
+"1463";"Frama/Bokor";0;0;598;;1;0;0;rugos;"";AP-6000;Width;false
+"1466";"Bányai";0;0;703;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1467";"Bányai";0;0;973;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1468";"Bányai";0;0;973;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1471";"Hör-Mi";0;0;578;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1472";"Hör-Mi";0;0;578;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1473";"Hör-Mi";0;0;759;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1474";"Hör-Mi";0;0;759;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1475";"Hör-Mi";0;0;759;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1478";"Hör-Mi";0;0;663;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1481";"Pro-Plast";0;0;633;;1;0;0;rugos;"";AP-6000;Width;false
+"1498";"DriszkuZs";0;0;713;;1;0;0;rugos;"";AP-6000;Width;false
+"1499";"DriszkuZs";0;0;713;;1;0;0;rugos;"";AP-6000;Width;false
+"1502";"Tiba Zoltán";0;0;403;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1503";"Tiba Zoltán";0;0;403;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1504";"Tiba Zoltán";0;0;403;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1505";"Tiba Zoltán";0;0;403;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1506";"Tiba Zoltán";0;0;643;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1507";"Tiba Zoltán";0;0;643;;1;0;0;tetoteri;"";AP-6000;Width;false
+"1508";"Tiba Zoltán";0;0;643;;1;0;0;tetoteri;"";AP-6000;Width;false

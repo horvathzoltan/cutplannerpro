@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1496";"teszt1";0;0;3413;;1;0;0;none;"";NP-T-7016;Width;false
+"1497";"teszt1";0;0;3268;;2;0;0;none;"";NP-T-7016;Width;false
+"1498";"teszt1";0;0;3368;;1;0;0;none;"";NP-T-7016;Width;false

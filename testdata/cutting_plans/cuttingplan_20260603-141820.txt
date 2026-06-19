@@ -1,0 +1,10 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded
+"1983";"SzabóMihály";0;0;655;;1;0;1;none;"";MT;Width;false
+"1983";"SzabóMihály";0;0;650;;1;0;1;none;"";TE-H-18;Width;false
+"1983";"SzabóMihály";0;0;638;;1;0;0;none;"";MT-P;Width;false
+"1983";"SzabóMihály";0;0;1820;;1;0;0;none;"";MT-L;Width;false
+"1";"SzabóG.";0;0;830;;1;1;0;none;"";MT;Width;false
+"1";"SzabóG.";0;0;825;;1;0;0;none;"";TE-H-18;Width;false
+"1";"SzabóG.";0;0;813;;1;0;0;none;"";MT-Z;Width;false
+"1";"SzabóG.";0;0;1240;;1;0;0;none;"";MT-L;Width;false
+"11";"DávidAblak";0;0;1160;;1;0;1;none;"";MT;Width;false
