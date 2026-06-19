@@ -1,3 +1,29 @@
+QImage renderEmoji(const QString& emoji, int size)
+{
+    QImage img(size, size, QImage::Format_ARGB32);
+    img.fill(Qt::transparent);
+
+    QPainter p(&img);
+
+    // cross-platform emoji font választás
+    QFont f;
+    if (QFontDatabase::hasFamily("Segoe UI Emoji")) {
+        f = QFont("Segoe UI Emoji", size * 0.8);
+    } else if (QFontDatabase::hasFamily("Noto Color Emoji")) {
+        f = QFont("Noto Color Emoji", size * 0.8);
+    } else {
+        qWarning() << "⚠️ Nincs színes emoji font telepítve!";
+        f = QFont("Sans", size * 0.8); // fallback
+    }
+
+    p.setFont(f);
+    p.drawText(img.rect(), Qt::AlignCenter, emoji);
+    p.end();
+
+    return img;
+}
+
+
 btn_ExportLeftoverForm
 formatLeftoverIntakeForm_OnePage
 makeManualLeftoverId
@@ -15,6 +41,9 @@ if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
 van int paramétere, mint kezdőérték, és arra nézve keres következő szabad vonalkódot
 a while(true) kicsit húzós, kellene egy módszer ami nem végtelen ciklusra épül
 
+
+2. formatLabelColumnFlow - itt a txt labelbe a emojit a modelbe kell beleteni, nem a box 0. sorába, mert az kitolja a tartalmat
+
 3. anyagkereső:
     - megad egy anyagot, egy méretet , illetve méret tartományt - a minimummal, ebből:
     maximum = min+m , ahol m a settingsből jön, és default 30 cm.
@@ -22,6 +51,9 @@ a while(true) kicsit húzós, kellene egy módszer ami nem végtelen ciklusra é
     nem csak az kell hogy mi az az anyag, mondjuk barcode, hanem az is hogy hol található
     az is érdekes lehet, mennyi a készlet belőle
 
+3.a: anyagkereső: a max furán működik, és ha beleírunk, a min akkor is átíródik, ha van benne tartalom
+
+4. selejtítésnél kereső barcode alapján
 
 
 Zoltán, **minden chunk megérkezett, minden fájl ép, a MainWindow + Presenter + UIBuilder teljesen konzisztens**.

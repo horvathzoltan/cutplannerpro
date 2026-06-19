@@ -526,7 +526,7 @@ inline QString priorityIconFor(const QDate& dueDate)
 static const QStringList GROUP_ICONS = {
     "🍎", // A - Alma
     "🐸", // B - Béka
-    "🐈‍⬛", // C - Macska / 🐈‍
+    "🐈‍", // C - Macska / 🐈‍
     "🦇", // D - Denevér / 🐝
     "🐭", // E - Egér
     "🍦", // F - Fagyi
@@ -660,7 +660,8 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         lm.groupIcon = group;
 
         //lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
-        lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
+        //lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
+        lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
         lm.parts.append({ owner,     true,  true,  0, Qt::AlignCenter });
 
         QString a = "";
@@ -1033,11 +1034,50 @@ inline QString formatLabelColumnFlow(const QVector<LabelModel>& models,
     // cellWidth képlete az összeolvadó keretekhez + gaphez
     int cellWidth = (pageWidth - 3*columns + 1) / columns;
 
+    QVector<LabelModel> m2;
+    for(auto&model:models){
+        if(model.parts.isEmpty())
+            continue;
+        LabelModel m = model;
+
+        QString txt1 ="";
+        if(!m.priorityIcon.isEmpty())
+            txt1+=m.priorityIcon;
+        if(!m.groupIcon.isEmpty())
+            txt1+=m.groupIcon;
+
+        if(!txt1.isEmpty()){
+            for(auto&p : m.parts){
+                if(p.align== Qt::AlignLeft){
+                    p.text = txt1 + " " + p.text;
+                    break;
+                }
+            }
+            //model.parts[0] = txt1 + " " + model.parts[0];
+        }
+        m2.append(m);
+    }
+
     QVector<QStringList> boxes;
 
     // 1) minden címke külön tartalom (keret nélkül)
-    for (auto& m : models)
+    for (auto& m : m2){
+//        QVector<QString> box;
+
+//        QString txt1 ="";
+//        if(!m.priorityIcon.isEmpty())
+//            txt1+=m.priorityIcon;
+//        if(!m.groupIcon.isEmpty())
+//            txt1+=m.groupIcon;
+
         boxes << buildLabelCellLines(m.parts, cellWidth);
+
+//        if(!txt1.isEmpty() && !box.isEmpty()){
+//            box[0] = txt1 + " " + box[0];
+//        }
+
+//        boxes << box;
+    }
 
     // 2) oszlopfolytonos tördelés (függőleges)
     QVector<QVector<QStringList>> cols;
@@ -1252,7 +1292,9 @@ QImage renderEmoji(const QString& emoji, int size)
     img.fill(Qt::transparent);
 
     QPainter p(&img);
-    QFont f("Segoe UI Emoji", size * 0.8);   // vagy bármelyik színes emoji font
+    //QFont f("Segoe UI Emoji", size * 0.8);   // vagy bármelyik színes emoji font
+
+    QFont f("Noto Color Emoji", size * 0.8);
     p.setFont(f);
     p.drawText(img.rect(), Qt::AlignCenter, emoji);
     p.end();
@@ -1303,7 +1345,12 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
     // 1) LabelModel → sorokra tördelve
     for (const auto& lm : labels) {
-        QVector<QString> lines = buildLabelCellLines(lm.parts, cellWidthChars);
+//        zInfo("labels_tostring:"+lm.toString());
+//        for(const auto& p:lm.parts){
+//            zInfo("_label_part:"+p.text);
+//        }
+        QVector<QString> lines =
+                buildLabelCellLines(lm.parts, cellWidthChars);
         //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
         cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines });
     }
@@ -1431,9 +1478,13 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                             startY + li * lineHeight,
                             contentRect.width() - pad * 2,
                             lineHeight);
+
+            QString txt1 = cell.lines[li];
             painter.drawText(textRect,
                              Qt::AlignLeft | Qt::AlignVCenter,
-                             cell.lines[li]);
+                             txt1);
+
+            //zInfo("labeltext:"+txt1);
         }
 
         y += cellHeight;

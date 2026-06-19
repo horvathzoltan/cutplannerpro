@@ -1075,7 +1075,8 @@ void CuttingPresenter::ExportCutInstructions()
         const qreal cellHeight = 240.0; // nagy, jól olvasható címke
 
         // MONOSPACED FONT – kötelező a TXT‑s spacinghez
-        QFont font("Courier New", 11);
+        QFont font("Noto Sans Mono", 11);//Noto Sans Mono
+        //QFont font("Courier New", 11);
         painter.setFont(font);
 
         bool firstPage = true;
