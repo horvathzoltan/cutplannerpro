@@ -289,7 +289,7 @@ void LeftoverTableManager::openScrapDialog()
         }
 
         // 1) Registry keresés
-        auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(code);
+        auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(code.trimmed());
         if (!entryOpt) {
             QMessageBox::warning(nullptr, "Not found",
                                  "No leftover found with this barcode.");

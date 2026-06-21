@@ -30,7 +30,7 @@ void LeftoverStockRegistry::persist() const {
 
 std::optional<LeftoverStockEntry> LeftoverStockRegistry::findByBarcode(const QString& barcode) const {
     for (const auto& entry : _data) {
-        if (entry.barcode == barcode)
+        if (entry.barcode.toLower() == barcode.toLower())
             return entry;
     }
     return std::nullopt;
