@@ -1,121 +1,129 @@
-#include <QLineEdit>
-#include <QTableWidget>
-#include "materialdelegate.h"
-#include "view/dialog/materialsearch/materialsearchdialog.h"
 #include "materialfinderdialog.h"
-
-#include <model/registries/stockregistry.h>
+#include "ui_MaterialFinderDialog.h"
 
 #include <QStandardItemModel>
-#include <ui_MaterialFinderDialog.h>
-
 #include <materials/registry/material_registry.h>
-
-#include <common/settingsmanager.h>
+#include "settings/settingsmanager.h"
+#include "materialdelegate.h"
+#include "view/dialog/materialsearch/materialsearchdialog.h"
 
 MaterialFinderDialog::~MaterialFinderDialog()
 {
-    delete ui;
+    delete _ui;
 }
 
 MaterialFinderDialog::MaterialFinderDialog(QWidget* parent)
     : QDialog(parent),
-    ui(new Ui::MaterialFinderDialog)
+    _ui(new Ui::MaterialFinderDialog)
 {
-    ui->setupUi(this);
+    _ui->setupUi(this);
 
-    // 1️⃣ Delegate + model beállítása
+    // 🔗 Lánc gomb vizuális stílus
+    _ui->btn_Link->setStyleSheet(R"(
+    QToolButton {
+        font-size: 20px;
+        color: #888;
+        background: transparent;
+        border: none;
+        padding: 2px;
+    }
+    QToolButton:checked {
+        color: #0078d4;
+        font-weight: bold;
+        background: transparent;
+        border: none;
+    }
+)");
+
+
+
+    // Anyaglista
     auto* model = new QStandardItemModel(this);
-    ui->comboMaterial->setModel(model);                 // <-- EZ A HELYES
-    ui->comboMaterial->setItemDelegate(new MaterialDelegate(this));
+    _ui->comboMaterial->setModel(model);
+    _ui->comboMaterial->setItemDelegate(new MaterialDelegate(this));
 
-    // 2️⃣ Anyaglista feltöltése
-    auto materials = MaterialRegistry::instance().readAll();
-    for (const auto& m : materials) {
+    for (const auto& m : MaterialRegistry::instance().readAll()) {
         QStandardItem* item = new QStandardItem();
         item->setData(QVariant::fromValue(m), Qt::UserRole);
-        item->setData(m.name, Qt::DisplayRole); // fallback
+        item->setData(m.name, Qt::DisplayRole);
         model->appendRow(item);
     }
 
-    // 3️⃣ Spinbox
-    ui->spinMinLength->setMinimum(0);
-    ui->spinMinLength->setMaximum(100000);
+    connect(_ui->btn_Link, &QToolButton::toggled, this, [this](bool on){
+        if (on)
+            _ui->btn_Link->setText("🔗");      // aktív
+        else
+            _ui->btn_Link->setText("⛓️‍💥");   // inaktív
+    });
 
-    // 4️⃣ OK / Cancel
-    connect(ui->btnOk, &QPushButton::clicked, this, &QDialog::accept);
-    connect(ui->btnCancel, &QPushButton::clicked, this, &QDialog::reject);
+    // OK / Cancel
+    connect(_ui->btnOk, &QPushButton::clicked, this, &QDialog::accept);
+    connect(_ui->btnCancel, &QPushButton::clicked, this, &QDialog::reject);
 
-    connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
+    // Anyag kereső gomb
+    connect(_ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
         MaterialSearchDialog dlg(this);
         if (dlg.exec() == QDialog::Accepted) {
             auto sel = dlg.selection();
-
-            // A kiválasztott anyag beállítása a comboBox-ban
-            for (int i = 0; i < ui->comboMaterial->count(); ++i) {
-                MaterialMaster m = ui->comboMaterial->itemData(i, Qt::UserRole).value<MaterialMaster>();
+            for (int i = 0; i < _ui->comboMaterial->count(); ++i) {
+                MaterialMaster m = _ui->comboMaterial->itemData(i, Qt::UserRole).value<MaterialMaster>();
                 if (m.id == sel.id) {
-                    ui->comboMaterial->setCurrentIndex(i);
+                    _ui->comboMaterial->setCurrentIndex(i);
                     break;
                 }
             }
         }
     });
 
-    // Default range a Settingsből
-    int defaultRange = SettingsManager::instance().materialFinderRange();
-
-    // Debounce timerek
-    auto* minDebounce = new QTimer(this);
-    minDebounce->setInterval(300);
-    minDebounce->setSingleShot(true);
-
-    auto* maxDebounce = new QTimer(this);
-    maxDebounce->setInterval(300);
-    maxDebounce->setSingleShot(true);
+    // Default range
+    int range = SettingsManager::instance().materialFinderRange();
 
     // MIN → MAX
-    connect(ui->spinMinLength, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, [=](int) {
-                minDebounce->start();
-            });
+    connect(_ui->spin_MinLength, &QSpinBox::editingFinished, this, [this, range]() {
 
-    connect(minDebounce, &QTimer::timeout, this, [=]() {
-        int minVal = ui->spinMinLength->value();
-        int maxVal = ui->spinBox->value();
+        int minVal = _ui->spin_MinLength->value();
+        int maxVal = _ui->spin_MaxLength->value();
 
-        // Ha még nincs max → állítsuk be defaultRange alapján
-        if (maxVal == 0) {
-            ui->spinBox->setValue(minVal + defaultRange);
-            return;
+        // 1) MAX nem mehet min alá
+        _ui->spin_MaxLength->setMinimum(minVal);
+
+        // 2) Ha a MAX jelenlegi értéke kisebb → korrigáljuk
+        if (maxVal < minVal) {
+            _ui->spin_MaxLength->setValue(minVal);
+            maxVal = minVal;
         }
 
-        // Ha invalid → korrigáljuk
-        if (minVal > maxVal)
-            ui->spinBox->setValue(minVal);
+        // 3) Ha a lánc aktív → automatikus MAX számítás
+        if (_ui->btn_Link->isChecked()) {
+            int newMax = minVal + range;
+            _ui->spin_MaxLength->setValue(newMax);
+            _lastAutoMax = newMax;
+        }
     });
 
+
     // MAX → MIN
-    connect(ui->spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, [=](int) {
-                maxDebounce->start();
-            });
+    connect(_ui->spin_MaxLength, &QSpinBox::editingFinished, this, [this, range]() {
 
-    connect(maxDebounce, &QTimer::timeout, this, [=]() {
-        int minVal = ui->spinMinLength->value();
-        int maxVal = ui->spinBox->value();
+        int minVal = _ui->spin_MinLength->value();
+        int maxVal = _ui->spin_MaxLength->value();
 
-        // Ha még nincs min → állítsuk be defaultRange alapján
-        if (minVal == 0) {
-            int newMin = maxVal - defaultRange;
-            if (newMin < 0) newMin = 0;
-            ui->spinMinLength->setValue(newMin);
-            return;
+        // 1) MIN nem mehet max fölé
+        _ui->spin_MinLength->setMaximum(maxVal);
+
+        // 2) Ha a MIN jelenlegi értéke nagyobb → korrigáljuk
+        if (minVal > maxVal) {
+            _ui->spin_MinLength->setValue(maxVal);
+            minVal = maxVal;
         }
 
-        // Ha invalid → korrigáljuk
-        if (maxVal < minVal)
-            ui->spinMinLength->setValue(maxVal);
+        // 3) Ha a lánc aktív → automatikus MIN számítás
+        if (_ui->btn_Link->isChecked()) {
+            int newMin = maxVal - range;
+            if (newMin < 0) newMin = 0;
+            _ui->spin_MinLength->setValue(newMin);
+            _lastAutoMin = newMin;
+        }
     });
 
 }
@@ -125,12 +133,11 @@ MaterialFinderInput MaterialFinderDialog::getInput() const
     MaterialFinderInput r;
 
     MaterialMaster mat =
-        ui->comboMaterial->currentData(Qt::UserRole).value<MaterialMaster>();
+        _ui->comboMaterial->currentData(Qt::UserRole).value<MaterialMaster>();
 
     r.materialId = mat.id;
-    r.minLen = ui->spinMinLength->value();
-    r.maxLen = ui->spinBox->value();
+    r.minLen = _ui->spin_MinLength->value();
+    r.maxLen = _ui->spin_MaxLength->value();
 
     return r;
 }
-

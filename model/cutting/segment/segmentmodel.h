@@ -5,7 +5,7 @@
 #include <QUuid>
 
 #include "../../../common/identifierutils.h"
-#include "../../../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 
 /**
  * @brief Darabolási szakasz típusa — a rúd struktúrájához

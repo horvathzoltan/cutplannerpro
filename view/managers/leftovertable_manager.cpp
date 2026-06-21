@@ -9,6 +9,7 @@
 #include "../../model/registries/leftoverstockregistry.h"
 #include "../../model/registries/storageregistry.h"
 #include "materials/registry/material_registry.h"
+#include <view/dialog/waste/scrapbybarcodedialog.h>
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent)
@@ -256,58 +257,60 @@ void LeftoverTableManager::highlight(const QUuid& id)
 
     int row = *rowOpt;
 
-    // // 1️⃣ Qt gyári kijelölés
-    // table->selectRow(row);
+    table->setFocus();
+    table->clearSelection();
 
-    // // 2️⃣ Fókusz
-    // table->setCurrentCell(row, 0);
-    // table->selectRow(row);
-    // // 3️⃣ Görgetés
-    // table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
+    if (table->selectionMode() == QAbstractItemView::SingleSelection) {
+        table->selectRow(row); // ez egy sort jelöl ki, a korábbi kijelöléseket törli
+    } else {
+        table->selectionModel()->select(
+            table->model()->index(row, 0),
+            QItemSelectionModel::Select | QItemSelectionModel::Rows
+            );
+    }
 
-    table->selectionModel()->select(
-        table->model()->index(row, 0),
-        QItemSelectionModel::Select | QItemSelectionModel::Rows
-        );
-
-    table->setCurrentCell(row, 0);
     table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
 
     _highlightedRow = row;
 }
 
-// void LeftoverTableManager::highlight(const QUuid& id)
-// {
-//     clearHighlight();
+void LeftoverTableManager::openScrapDialog()
+{
+    ScrapByBarcodeDialog dlg;
 
-//     auto rowOpt = _rows.rowOf(id);
-//     if (!rowOpt)
-//         return;
+    while (dlg.exec() == QDialog::Accepted)
+    {
+        QString code = dlg.barcode();
+        if (code.isEmpty()) {
+            if (!dlg.repeat())
+                break;
+            dlg.clearBarcodeField();
+            continue;
+        }
 
-//     int row = *rowOpt;
+        // 1) Registry keresés
+        auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(code);
+        if (!entryOpt) {
+            QMessageBox::warning(nullptr, "Not found",
+                                 "No leftover found with this barcode.");
+            if (!dlg.repeat())
+                break;
+            dlg.clearBarcodeField();
+            continue;
+        }
 
-//     for (int col = 0; col < table->columnCount(); ++col) {
-//         if (auto* item = table->item(row, col)) {
-//             item->setBackground(QColor(180, 255, 180)); // halványzöld
-//         }
-//     }
+        QUuid id = entryOpt->entryId;
 
-//     table->scrollToItem(table->item(row, 0), QAbstractItemView::PositionAtCenter);
-//     table->setCurrentCell(row, 0);
+        // 2) highlight (opcionális)
+        highlight(id);
 
-//     _highlightedRow = row;
-// }
+        // 3) törlés → Presenter-en keresztül
+        emit deleteRequested(id);
 
-// void LeftoverTableManager::clearHighlight()
-// {
-//     if (_highlightedRow < 0)
-//         return;
+        // 4) repeat mód
+        if (!dlg.repeat())
+            break;
 
-//     for (int col = 0; col < table->columnCount(); ++col) {
-//         if (auto* item = table->item(_highlightedRow, col)) {
-//             item->setBackground(Qt::NoBrush);
-//         }
-//     }
-
-//     _highlightedRow = -1;
-// }
+        dlg.clearBarcodeField();
+    }
+}

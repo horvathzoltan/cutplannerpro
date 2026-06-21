@@ -56,4 +56,5 @@ public:
     void removeRowById(const QUuid &id);
     void highlight(const QUuid &id);
     void clearHighlight();
+    void openScrapDialog();
 };

@@ -7,7 +7,7 @@
 #include "../../common/filehelper.h"
 #include "../../common/filenamehelper.h"
 #include "../../common/csvimporter.h"
-#include "../../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 #include "../registries/storageregistry.h"
 #include "../../common/logger.h"
 

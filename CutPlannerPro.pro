@@ -38,8 +38,10 @@ SOURCES += \
     common/filenamehelper.cpp \
     common/logger.cpp \
     common/quantityparser.cpp \
-    common/settingsmanager.cpp \
+    settings/settingsdialog.cpp \
+    settings/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
+    settings/settingsmeta.cpp \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
@@ -47,6 +49,7 @@ SOURCES += \
     view/dialog/materialfinder/materialdelegate.cpp \
     view/dialog/materialfinder/materialfinderdialog.cpp \
     view/dialog/materialsearch/materialsearchdialog.cpp \
+    view/dialog/waste/scrapbybarcodedialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -112,10 +115,15 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp
 
 HEADERS += \
+    common/barcodepainter.h \
     common/color/colorconstants.h \
+    common/emojihelper.h \
+    common/fontaudithelper.h \
+    common/fontversionhelper.h \
     common/identifierutils.h \
     common/signalhelper.h \
     common/sysinfohelper.h \
+    common/testlabelmaker.h \
     common/texthelper.h \
     materials/model/scoringparams.h \
     materials/model/trimmingparams.h \
@@ -148,6 +156,7 @@ HEADERS += \
     presenter/stockpresenter.h \
     service/buildnumber.h \
     service/cutting/instruction/cuttinginstructionutils.h \
+    service/cutting/instruction/labelmodel.h \
     service/cutting/optimizer/optimizationauditbuilder.h \
     service/cutting/optimizer/optimizationlogger.h \
     service/cutting/optimizer/optimizationrunner.h \
@@ -182,6 +191,8 @@ HEADERS += \
     common/styleprofiles/cuttingcolors.h \
     common/styleprofiles/cuttingstatusutils.h \
     common/styleprofiles/relocationcolors.h \
+    settings/settingsdialog.h \
+    settings/settingsmeta.h \
     tests/testmanager.h \
     view/MainWindowUIBuilder.h \
     view/cellhelpers/auditstatustext.h \
@@ -195,6 +206,7 @@ HEADERS += \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \
     view/dialog/materialsearch/materialsearchdialog.h \
+    view/dialog/waste/scrapbybarcodedialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
@@ -241,7 +253,7 @@ HEADERS += \
     service/cutting/result/resultutils.h \
     service/cutting/segment/segmentutils.h \
     service/movementlogger.h \
-    common/settingsmanager.h \
+    settings/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
     view/tableutils/colorlogicutils.h \
@@ -318,6 +330,7 @@ HEADERS += \
     view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
+    settings/settingsdialog.ui \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \
     view/dialog/input/clonerequestdialog.ui \
@@ -328,7 +341,8 @@ FORMS += \
     view/dialog/stock/addstockdialog.ui \
     view/dialog/stock/editcommentdialog.ui \
     view/dialog/stock/editquantitydialog.ui \
-    view/dialog/stock/editstoragedialog.ui
+    view/dialog/stock/editstoragedialog.ui \
+    view/dialog/waste/scrapbybarcodedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -357,3 +371,6 @@ DISTFILES += \
     run.txt \
     testdata/stock.csv \
     testdata/storages.csv
+
+RESOURCES += \
+    resources/statusicons.qrc

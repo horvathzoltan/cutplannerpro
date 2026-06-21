@@ -1,13 +1,7 @@
 #pragma once
 
-#include "materials/model/material_master.h"
-#include "materials/view/material_cell_generator.h"
 #include <QDialog>
-#include <QVector>
 #include <QUuid>
-#include <QStyledItemDelegate>
-#include <QPainter>
-
 
 namespace Ui {
 class MaterialFinderDialog;
@@ -30,9 +24,8 @@ public:
     MaterialFinderInput getInput() const;
 
 private:
-    Ui::MaterialFinderDialog* ui;
+    Ui::MaterialFinderDialog* _ui;
 
-
+    int _lastAutoMin = -1;
+    int _lastAutoMax = -1;
 };
-
-

@@ -1,7 +1,7 @@
 #include "leftoverlifecycle.h"
 #include "common/logger.h"
 #include "common/identifierutils.h"
-#include "common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 #include "model/cutting/optimizer/lineagehelper.h"
 
 #include <materials/registry/material_registry.h>

@@ -100,6 +100,7 @@ private slots:
     void onCompensationChanged(const QUuid& machineId, double newVal);
 
     void handle_act_MaterialFinder_clicked();
+    void handle_act_Settings_clicked();
 
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
@@ -150,6 +151,7 @@ private:
 
     struct ActionConnectorModel{
         QAction* actMaterialFinder = nullptr;
+        QAction* actSettings = nullptr;
     };
 
     void ActionConnector_connect(ActionConnectorModel& a);

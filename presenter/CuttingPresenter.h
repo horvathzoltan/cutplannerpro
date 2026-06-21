@@ -93,6 +93,7 @@ public:
     static constexpr int printedPageHeight = 60;
 
     void ExportLeftoverIntakeForm();
+    void ExportLeftoverIntakeForm_Pdf();
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

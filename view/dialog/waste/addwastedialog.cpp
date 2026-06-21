@@ -5,7 +5,7 @@
 #include "view/dialog/materialsearch/materialsearchdialog.h"
 #include <QMessageBox>
 #include <common/identifierutils.h>
-#include <common/settingsmanager.h>
+#include "settings/settingsmanager.h"
 #include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
 

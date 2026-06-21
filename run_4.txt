@@ -1,27 +1,10 @@
-QImage renderEmoji(const QString& emoji, int size)
-{
-    QImage img(size, size, QImage::Format_ARGB32);
-    img.fill(Qt::transparent);
+leftover table nem jó hogy online szerkeszthető - nem kel iylen
 
-    QPainter p(&img);
+SinesLáb 9010 RSM-162 1320
 
-    // cross-platform emoji font választás
-    QFont f;
-    if (QFontDatabase::hasFamily("Segoe UI Emoji")) {
-        f = QFont("Segoe UI Emoji", size * 0.8);
-    } else if (QFontDatabase::hasFamily("Noto Color Emoji")) {
-        f = QFont("Noto Color Emoji", size * 0.8);
-    } else {
-        qWarning() << "⚠️ Nincs színes emoji font telepítve!";
-        f = QFont("Sans", size * 0.8); // fallback
-    }
 
-    p.setFont(f);
-    p.drawText(img.rect(), Qt::AlignCenter, emoji);
-    p.end();
+renderEmoji - svg?
 
-    return img;
-}
 
 
 btn_ExportLeftoverForm

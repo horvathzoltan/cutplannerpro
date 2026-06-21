@@ -6,7 +6,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "../../common/filenamehelper.h"
-#include "../../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 #include "materials/registry/material_registry.h"
 #include "../../common/filehelper.h"
 #include "../../common/csvimporter.h"

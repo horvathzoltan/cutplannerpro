@@ -42,28 +42,28 @@
    <item>
     <layout class="QHBoxLayout" name="layoutMinLength">
      <item>
-      <widget class="QLabel" name="lblMinLength">
+      <widget class="QLabel" name="label_Length">
        <property name="text">
         <string>Hossz [mm]:</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,0,1">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label_Min">
          <property name="text">
           <string>Min:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinMinLength">
+        <widget class="QSpinBox" name="spin_MinLength">
          <property name="minimum">
           <number>0</number>
          </property>
          <property name="maximum">
-          <number>100000</number>
+          <number>10000</number>
          </property>
          <property name="value">
           <number>0</number>
@@ -71,14 +71,34 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QToolButton" name="btn_Link">
+         <property name="text">
+          <string>🔗</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_Max">
          <property name="text">
           <string>Max:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox"/>
+        <widget class="QSpinBox" name="spin_MaxLength">
+         <property name="maximum">
+          <number>10000</number>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

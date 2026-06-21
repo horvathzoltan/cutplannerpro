@@ -178,3 +178,9 @@ QString FileNameHelper::getRalPlastic2CsvFile() const {
     return combinePath(getRalColorsFolder(), "p2.csv");
 }
 
+QString FileNameHelper::emojiCacheDir()
+{
+    QString dir = QDir::homePath() + "/CutData/CutPlannerPro/emoji_cache";
+    QDir().mkpath(dir);
+    return dir;
+}

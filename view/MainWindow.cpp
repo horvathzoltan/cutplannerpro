@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "settings/settingsdialog.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
@@ -17,7 +18,7 @@
 #include "../model/cutting/plan/request.h"
 
 #include "../common/filenamehelper.h"
-#include "../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 #include "tableutils/leftovertable_connector.h"
 #include "tableutils/inputtable_connector.h"
 #include "tableutils/stocktable_connector.h"
@@ -45,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     initEventLogWidget();
 
     ActionConnectorModel m1{
-        .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this)
+        .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
+        .actSettings = MainWindowUIBuilder::createSettingsAction(this)
     };
 
     mainToolbarBuilder(m1);
@@ -279,15 +281,18 @@ void MainWindow::ButtonConnector_Connect()
             this, &MainWindow::handle_btn_ExportCutInstruction_clicked);
 }
 
-void MainWindow::mainToolbarBuilder(ActionConnectorModel& m1)
+void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
 {
-    ui->mainToolBar->addAction(m1.actMaterialFinder);
+    ui->mainToolBar->addAction(m.actMaterialFinder);
+    ui->mainToolBar->addAction(m.actSettings);
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
-{
+{        
     connect(m.actMaterialFinder, &QAction::triggered,
             this, &MainWindow::handle_act_MaterialFinder_clicked);
+    connect(m.actSettings, &QAction::triggered,
+            this, &MainWindow::handle_act_Settings_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -486,21 +491,23 @@ void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
 
 void MainWindow::handle_btn_LeftoverDisposal_clicked()
 {
-    const auto confirm = QMessageBox::question(this, "Selejtezés",
-                                               "Biztosan eltávolítod a túl rövid reusable darabokat? Ezek archiválásra kerülnek és kikerülnek a készletből.",
-                                               QMessageBox::Yes | QMessageBox::No);
+    leftoverTableManager->openScrapDialog();
+    // const auto confirm = QMessageBox::question(this, "Selejtezés",
+    //                                            "Biztosan eltávolítod a túl rövid reusable darabokat? Ezek archiválásra kerülnek és kikerülnek a készletből.",
+    //                                            QMessageBox::Yes | QMessageBox::No);
 
-    if (confirm == QMessageBox::Yes) {
-        presenter->scrapShortLeftovers(); // 🔧 Selejtezési logika átkerül Presenterbe
+    // if (confirm == QMessageBox::Yes) {
+    //     presenter->scrapShortLeftovers(); // 🔧 Selejtezési logika átkerül Presenterbe
 
-        refresh_StockTable(); // ha a reusable a készletben is megjelenik
-        //ReusableStockRegistry::instance().all());
-        refresh_LeftoversTable();
-        // updateArchivedWasteTable(); → ha van külön nézet hozzá
+    //     refresh_StockTable(); // ha a reusable a készletben is megjelenik
+    //     //ReusableStockRegistry::instance().all());
+    //     refresh_LeftoversTable();
+    //     // updateArchivedWasteTable(); → ha van külön nézet hozzá
 
-        QMessageBox::information(this, "Selejtezés kész",
-                                 "A túl rövid reusable darabok selejtezése megtörtént.");
-    }
+    //     QMessageBox::information(this, "Selejtezés kész",
+    //                              "A túl rövid reusable darabok selejtezése megtörtént.");
+    // }
+
 }
 
 void MainWindow::handle_btn_Optimize_clicked() {
@@ -1139,7 +1146,8 @@ void MainWindow::handle_btn_CloneRequest_clicked()
 
 void MainWindow::handle_btn_ExportLeftoverForm_clicked()
 {
-    presenter->ExportLeftoverIntakeForm();
+    //presenter->ExportLeftoverIntakeForm();
+    presenter->ExportLeftoverIntakeForm_Pdf();
 }
 
 void MainWindow::handle_act_MaterialFinder_clicked()
@@ -1155,10 +1163,14 @@ void MainWindow::handle_act_MaterialFinder_clicked()
     stockPresenter->findMaterial(input.materialId, input.minLen, input.maxLen);
 }
 
+void MainWindow::handle_act_Settings_clicked(){
+    SettingsDialog dlg(this);
+    dlg.exec();
+}
 
 void MainWindow::onHighlightLeftover(const QUuid& id)
 {
-    ui->midBox->setCurrentIndex(TAB_LEFTOVER);
+    ui->midBox->setCurrentIndex(TAB_LEFTOVER); // átváltjuk a tabot leftover nézet fülre
     leftoverTableManager->highlight(id);
 }
 

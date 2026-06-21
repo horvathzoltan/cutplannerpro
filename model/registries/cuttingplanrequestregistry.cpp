@@ -1,7 +1,7 @@
 #include "cuttingplanrequestregistry.h"
 
 #include "../../common/filenamehelper.h"
-#include "../../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 #include "../repositories/cuttingrequestrepository.h"
 #include <QDebug>
 

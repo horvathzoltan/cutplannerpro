@@ -3,10 +3,7 @@
 #include "../MainWindow.h"
 #include "../dialog/waste/addwastedialog.h"
 #include "../dialog/stock/editstoragedialog.h"
-#include "../../model/registries/stockregistry.h"
-#include "../../model/registries/cuttingplanrequestregistry.h"
 #include "../../model/registries/leftoverstockregistry.h"
-#include "../dialog/input/addinputdialog.h"
 #include "../../presenter/CuttingPresenter.h"
 
 namespace LeftoverTableConnector {

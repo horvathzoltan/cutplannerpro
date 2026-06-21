@@ -1,3 +1,8 @@
+
+
+ez az aktuális verzió, korábbiakat ignorálni!
+
+
 Zoltán, itt a tiszta, implementálható, audit‑barát, pontonkénti terv a
 Megrendelő autocomplete + perzisztens gyorsítótár funkcióhoz.
 Ez a terv nem tartalmaz kódot, csak a végrehajtási lépéseket, hogy

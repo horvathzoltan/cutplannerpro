@@ -1,6 +1,6 @@
 #include "settingsmanager.h"
 
-#include "filenamehelper.h"
+#include <common/filenamehelper.h>
 
 SettingsManager& SettingsManager::instance() {
     static SettingsManager _instance;
@@ -233,4 +233,16 @@ int SettingsManager::materialFinderRange() const {
 
 void SettingsManager::setMaterialFinderRange(int mm) {
     persist(SettingsKeys::MaterialFinderRange, QString::number(mm));
+}
+
+
+QVariant SettingsManager::value(const QString& key, const QVariant& def) const
+{
+    return _settings.value(key, def);
+}
+
+void SettingsManager::setValue(const QString& key, const QVariant& value)
+{
+    _settings.setValue(key, value);
+    _settings.sync();
 }

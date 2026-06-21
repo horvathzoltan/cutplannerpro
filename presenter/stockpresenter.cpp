@@ -1,8 +1,9 @@
 #include "stockpresenter.h"
 #include "../model/registries/leftoverstockregistry.h"
 #include "../model/registries/stockregistry.h"
-#include "../common/settingsmanager.h"
 #include "common/eventlogger.h"
+
+#include <materials/registry/material_registry.h>
 
 StockPresenter::StockPresenter(MainWindow* view, QObject* parent)
     : QObject(parent),
@@ -11,10 +12,14 @@ StockPresenter::StockPresenter(MainWindow* view, QObject* parent)
 }
 
 void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int maxLength)
-{
-    // 1️⃣ Tolerance betöltése
-    //int tolerance = SettingsManager::instance().materialFinderRange();
-    //int maxLength = minLength + tolerance;
+{   
+    MaterialMaster mat = *MaterialRegistry::instance().findById(materialId);
+
+    zEventINFO(QString("🔎 MaterialFinder: %1 | min=%2 | max=%3")
+                   .arg(mat.toReportLabel())
+                   .arg(minLength)
+                   .arg(maxLength));
+
 
     // 2️⃣ Leftover keresés
     const auto leftovers = LeftoverStockRegistry::instance().readAll();
@@ -24,8 +29,9 @@ void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int ma
             e.availableLength_mm >= minLength &&
             e.availableLength_mm <= maxLength)
         {
-            zEventINFO(QString("♻️ Leftover found: %1 | %2 mm | storage=%3")
-                           .arg(e.materialName())
+            zEventINFO(QString("♻️ Leftover found: %1 [%2] | %3 mm | storage=%4")
+                           .arg(mat.toReportLabel())
+                           .arg(e.barcode)
                            .arg(e.availableLength_mm)
                            .arg(e.storageName()));
 
@@ -41,9 +47,10 @@ void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int ma
         if (e.materialId == materialId && e.quantity > 0)
         {
             zEventINFO(QString("📦 Stock found: %1 | qty=%2 | storage=%3")
-                           .arg(e.materialName())
+                           .arg(mat.toReportLabel())
                            .arg(e.quantity)
                            .arg(e.storageName()));
+
 
             emit highlightStock(e.entryId);
             return;
@@ -51,7 +58,11 @@ void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int ma
     }
 
     // 4️⃣ Nincs leftover és nincs stock
-    zEventINFO("❌ No leftover or stock found for this material.");
+    zEventINFO(QString("❌ No leftover or stock found: %1 | min=%2 | max=%3")
+                   .arg(mat.toReportLabel())
+                   .arg(minLength)
+                   .arg(maxLength));
+
     emit showNotFoundMessage("Nincs megfelelő leftover vagy stock.");
 }
 

@@ -217,9 +217,6 @@ void StockTableManager::removeRowById(const QUuid& stockId) {
 
 void StockTableManager::highlight(const QUuid& id)
 {
-    // 1️⃣ előző kijelölés törlése (ha kell)
-    _table->clearSelection();
-
     auto rowOpt = _rows.rowOf(id);
     if (!rowOpt)
         return;
@@ -228,10 +225,17 @@ void StockTableManager::highlight(const QUuid& id)
 
     // 2️⃣ Qt gyári kijelölés
     _table->selectRow(row);
+    _table->clearSelection();
 
     // 3️⃣ Qt gyári fókusz
-    _table->setCurrentCell(row, 0);
-
+    if (_table->selectionMode() == QAbstractItemView::SingleSelection) {
+        _table->selectRow(row);
+    } else {
+        _table->selectionModel()->select(
+            _table->model()->index(row, 0),
+            QItemSelectionModel::Select | QItemSelectionModel::Rows
+            );
+    }
     // 4️⃣ Görgetés
     _table->scrollToItem(_table->item(row, 0), QAbstractItemView::PositionAtCenter);
 

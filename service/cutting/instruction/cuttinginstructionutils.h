@@ -5,7 +5,10 @@
 #include <QSet>
 
 #include "../../../model/cutting/instruction/cutinstruction.h"
+#include "common/barcodepainter.h"
+#include "common/emojihelper.h"
 #include "common/texthelper.h"
+#include "labelmodel.h"
 #include <materials/model/material_master.h>
 #include <materials/registry/material_registry.h>
 #include <model/registries/cuttingmachineregistry.h>
@@ -15,7 +18,7 @@
 #include <model/storageaudit/storageauditrow.h>
 #include <service/storageaudit/storageauditservice.h>
 #include <common/identifierutils.h>
-#include <common/settingsmanager.h>
+#include "settings/settingsmanager.h"
 
 
 namespace CuttingInstructionUtils {
@@ -472,81 +475,52 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
 
 
-struct LabelPart {
-    QString text;
+// struct LabelPart {
+//     QString text;
 
-    bool trimmable = false;   // rövidíthető
-    bool jumpable = false;    // kiugorhat új sorba
-    int targetRow = 0;        // melyik sorba szeretnénk alapból
-    Qt::Alignment align = Qt::AlignLeft;  // bal/közép/jobb
-};
+//     bool trimmable = false;   // rövidíthető
+//     bool jumpable = false;    // kiugorhat új sorba
+//     int targetRow = 0;        // melyik sorba szeretnénk alapból
+//     Qt::Alignment align = Qt::AlignLeft;  // bal/közép/jobb
+// };
 
 
-struct LabelModel {
-    QVector<LabelPart> parts;
-    QString priorityIcon;   // 🔥💧☁️🪨
-    QString groupIcon;      // 🦌🐸🐱… ABC állatok
+// struct LabelModel {
+//     QVector<LabelPart> parts;
+//     QString priorityIcon;   // 🔥💧☁️🪨
+//     QString groupIcon;      // 🦌🐸🐱… ABC állatok
 
-    QString toString() const {
-        QString out;
-        for (const auto& p : parts)
-            out += p.text;
-        return out;
-    }
+//     QString toString() const {
+//         QString out;
+//         for (const auto& p : parts)
+//             out += p.text;
+//         return out;
+//     }
 
-    int length() const {
-        int len = 0;
-        for (const auto& p : parts)
-            len += p.text.length();
-        return len;
-    }
-};
+//     int length() const {
+//         int len = 0;
+//         for (const auto& p : parts)
+//             len += p.text.length();
+//         return len;
+//     }
+// };
 
 // PRIORITY‑ICON BUCKETING, PRIORITY ICON SCALE
 // Lean / Kanban / Toyota Production System egyik alapelve:
 // A prioritás vizuális, ikonikus, azonnal felismerhető legyen.
 
+
+
 inline QString priorityIconFor(const QDate& dueDate)
 {
     if (!dueDate.isValid())
-        return "🌞";   // nincs határidő → nincs prio
+        return EmojiHelper::priorityIconFor(-1);   // nincs határidő → nincs prio
 
     QDate today = QDate::currentDate();
     int daysLeft = today.daysTo(dueDate);
 
-    if (daysLeft <= 1)
-        return "🔥";   // Tűz – SOS
-    if (daysLeft <= 3)
-        return "💦";   // Víz – sürgős 💧 🌊 💦
-    if (daysLeft <= 6)
-        return "💨";  // Levegő – normál 🌥️  💨
-    return "⏳";       // Föld – ráér
+    return EmojiHelper::priorityIconFor(daysLeft);
 }
-
-static const QStringList GROUP_ICONS = {
-    "🍎", // A - Alma
-    "🐸", // B - Béka
-    "🐈‍", // C - Macska / 🐈‍
-    "🦇", // D - Denevér / 🐝
-    "🐭", // E - Egér
-    "🍦", // F - Fagyi
-    "🦎", // G - Gekkó
-    "🌶️", // H - Chili
-    "🐛", // I - Kukac
-    "🐆", // J - Jaguár
-    "❤", // K - szív
-    "🦋", // L - Lepke
-    "🐿️", // M - Mókus
-    "🐰", // N - Nyúl
-    "🦁", // O - Oroszlán
-    "🐼", // P - Panda
-    "🦊", // R - Róka
-    "🦔", // S - Süni
-    "🐢", // T - Teknős
-    "🍇", // V - Szőlő
-    "🦓"  // Z - Zebra
-};
-
 
 // ikonos batch‑azonosítás (Toyota, Bosch, Siemens)
 
@@ -590,7 +564,7 @@ inline QMap<QString, QString> computeGroupIconsForRequests(const QVector<Cutting
         }
 
         // ikon kiválasztása
-        QString icon = GROUP_ICONS[groupIndex % GROUP_ICONS.size()];
+        QString icon = EmojiHelper::getGroupIcon(groupIndex);
 
         out[ext] = icon;
 
@@ -1286,22 +1260,6 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     return lines.join("\n");
 }
 
-QImage renderEmoji(const QString& emoji, int size)
-{
-    QImage img(size, size, QImage::Format_ARGB32);
-    img.fill(Qt::transparent);
-
-    QPainter p(&img);
-    //QFont f("Segoe UI Emoji", size * 0.8);   // vagy bármelyik színes emoji font
-
-    QFont f("Noto Color Emoji", size * 0.8);
-    p.setFont(f);
-    p.drawText(img.rect(), Qt::AlignCenter, emoji);
-    p.end();
-
-    return img;
-}
-
 inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                                       QPainter& painter,
                                       QPdfWriter& writer,
@@ -1312,6 +1270,10 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     if (labels.isEmpty() || columns <= 0)
         return;
 
+    const qreal glueMargin = 60.0; // ~0.5 cm
+    const qreal barcodeHeight0 = 80.0;   // kétszer magasabb
+    const qreal gap = 8.0;   // kb. 2–3 mm
+
     QFontMetrics fm(painter.font());
     const qreal lineHeight = fm.height() + 2.0;
 
@@ -1320,6 +1282,8 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
     // emoji panel fix szélessége
     const qreal emojiPanelWidth = cellHeight/2;
+
+    //qreal leftOffset = glueMargin + emojiPanelWidth;
 
     // belső padding
     const qreal pad = 4.0;
@@ -1338,6 +1302,7 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         QString emoji1;            // prio
         QString emoji2; //group icon
         QVector<QString> lines;   // tartalom
+        QString barcode;
     };
 
     QVector<Cell> cells;
@@ -1352,7 +1317,7 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         QVector<QString> lines =
                 buildLabelCellLines(lm.parts, cellWidthChars);
         //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
-        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines });
+        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
     }
 
     // 2) oszlopfolytonos tördelés
@@ -1405,8 +1370,10 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         // --- EMOJI PANEL: két függőleges félpanel ---
         qreal halfHeight = cellHeight / 2.0;
 
-        QRectF emojiRectTop(rect.left(), rect.top(), emojiPanelWidth, halfHeight);
-        QRectF emojiRectBottom(rect.left(), rect.top() + halfHeight, emojiPanelWidth, halfHeight);
+        // QRectF emojiRectTop(rect.left(), rect.top(), emojiPanelWidth, halfHeight);
+        // QRectF emojiRectBottom(rect.left(), rect.top() + halfHeight, emojiPanelWidth, halfHeight);
+        QRectF emojiRectTop(rect.left() + glueMargin, rect.top(), emojiPanelWidth, halfHeight);
+        QRectF emojiRectBottom(rect.left() + glueMargin, rect.top() + halfHeight, emojiPanelWidth, halfHeight);
 
         // keretek
         //painter.drawRect(emojiRectTop);
@@ -1431,8 +1398,14 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
 
         // render
-        QImage topImg = renderEmoji(topChar, emojiSize);
-        QImage bottomImg = renderEmoji(bottomChar, emojiSize);
+        //QImage topImg = EmojiHelper::renderEmojiStandalone(topChar, emojiSize);
+        //QImage bottomImg = EmojiHelper::renderEmojiStandalone(bottomChar, emojiSize);
+
+        QPixmap topPixmap   = EmojiHelper::loadPriorityIcon(topChar, emojiSize);
+        QPixmap bottomPixmap = EmojiHelper::loadEmoji(bottomChar, emojiSize);
+
+        QImage topImg   = topPixmap.toImage();
+        QImage bottomImg = bottomPixmap.toImage();
 
         // cél téglalapok (gap-pel)
         QRectF topTarget(
@@ -1460,18 +1433,27 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         // TARTALMI PANEL
         bool hasEmoji = !(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
 
+        // QRectF contentRect(
+        //     hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
+        //     rect.top(),
+        //     hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
+        //     rect.height()
+        //     );
         QRectF contentRect(
-            hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
+            hasEmoji ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
             rect.top(),
-            hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
+            hasEmoji ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
             rect.height()
             );
+
 
         //painter.drawRect(contentRect);
 
         // vertikális középre igazítás
         qreal totalTextHeight = cell.lines.size() * lineHeight;
         qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+
+        qreal lastTextBottom= 0.0;
 
         for (int li = 0; li < cell.lines.size(); ++li) {
             QRectF textRect(contentRect.left() + pad,
@@ -1484,8 +1466,33 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                              Qt::AlignLeft | Qt::AlignVCenter,
                              txt1);
 
+            // itt frissítjük a legalsó szövegkoordinátát
+            if (textRect.bottom() > lastTextBottom)
+                lastTextBottom = textRect.bottom();
+
             //zInfo("labeltext:"+txt1);
         }
+
+
+        if (!cell.barcode.isEmpty()) {
+            //qreal lastTextBottom = startY + cell.lines.size() * lineHeight;
+            qreal barcodeTop = lastTextBottom + gap;   // gap = pl. 6–10 px
+
+            //qreal barcodeBottom = rect.bottom();
+            //qreal barcodeHeight = barcodeBottom - barcodeTop;
+            qreal cellBottom = contentRect.bottom();
+            qreal availableHeight = cellBottom - barcodeTop;
+            qreal barcodeHeight = qMin(availableHeight, barcodeHeight0);
+            qreal barcodeY = cellBottom - barcodeHeight;
+            QRectF bcRect(
+                contentRect.left(),
+                barcodeY,
+                contentRect.width(),
+                barcodeHeight
+                );
+            BarcodePainter::drawCode128(painter, cell.barcode, bcRect);
+        }
+
 
         y += cellHeight;
     }
@@ -1493,7 +1500,185 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     painter.setPen(oldPen);
 }
 
+inline void formatLeftoverIntakeForm_Pdf(
+    QPainter& painter,
+    QPdfWriter& writer,
+    const QRectF& pageRect,
+    int rowsPerPage
+    ){
+    QFontMetrics fm(painter.font());
+    qreal lineH = fm.height() ;//* 1.45;
+    const qreal topMargin = 40.0;
+    const qreal leftMargin = 40.0;
+    const qreal barcodeHeight0 = 80.0;
+    const qreal gap = 8.0;
 
+    qreal sidePad = lineH;//4.0;
+
+    qreal y = topMargin;
+
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    painter.setPen(QPen(Qt::black, 0.75));
+
+
+    // 1) Fejléc
+    painter.drawText(QRectF(leftMargin, y, pageRect.width(), lineH),
+                     Qt::AlignLeft,
+                     "🧾 Leftover felvételi űrlap (manual RSM címkék)");
+    y += lineH;
+
+    painter.drawText(QRectF(leftMargin, y, pageRect.width(), lineH),
+                     Qt::AlignLeft,
+                     QString("📅 Dátum: %1")
+                         .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm")));
+    y += lineH; // 1 sor + kis gap
+    y += gap;
+
+    // 2) Oszlopszélességek
+    qreal totalW = pageRect.width() - leftMargin * 2;
+    qreal col1 = totalW * 0.30;
+    qreal col2 = totalW * 0.15;
+    qreal col3 = totalW * 0.25;
+    qreal col4 = totalW - (col1 + col2 + col3);
+
+    qreal xCol1 = leftMargin;
+    qreal xCol2 = leftMargin + col1;
+    qreal xCol3 = leftMargin + col1 + col2;
+    qreal xCol4 = leftMargin + col1 + col2 + col3;
+
+    auto drawRow = [&](qreal yRow,
+                       const QString& t1,
+                       const QString& t2,
+                       const QString& t3,
+                       const QString& t4,
+                       bool center = false)
+    {
+        auto align = center?Qt::AlignCenter:Qt::AlignLeft;
+        qreal textPad = lineH;// * 0.4;
+
+        painter.drawText(QRectF(xCol1 + textPad, yRow, col1 - textPad, lineH), align, t1);
+        painter.drawText(QRectF(xCol2 + textPad, yRow, col2 - textPad, lineH), align, t2);
+        painter.drawText(QRectF(xCol3 + textPad, yRow, col3 - textPad, lineH), align, t3);
+        painter.drawText(QRectF(xCol4 + textPad, yRow, col4 - textPad, lineH), align, t4);
+    };
+
+    auto drawTableFrame = [&](qreal top, qreal bottom, bool topheader = false)
+    {
+        // vízszintes vonalak
+        if(topheader)
+            painter.drawLine(leftMargin, top,    leftMargin + totalW, top);
+        painter.drawLine(leftMargin, bottom, leftMargin + totalW, bottom);
+
+        // függőleges vonalak
+        painter.drawLine(xCol1, top, xCol1, bottom);
+        painter.drawLine(xCol2, top, xCol2, bottom);
+        painter.drawLine(xCol3, top, xCol3, bottom);
+        painter.drawLine(xCol4, top, xCol4, bottom);
+        //painter.drawLine(leftMargin + totalW, top, leftMargin + totalW, bottom);
+    };
+
+    qreal headerTop = y;
+    y += lineH/2;
+    // 3) Táblázat fejléce
+    drawRow(y, "Material", "Length", "LeftoverStock", "Cut-off label");
+    y += lineH;
+    drawRow(y, "barcode", "[mm]", "barcode", "");
+    y += lineH;
+    y += lineH/2;
+    qreal headerBottom = y;
+
+    drawTableFrame(headerTop, headerBottom, true);
+
+//    painter.drawLine(leftMargin, y, leftMargin + totalW, y);
+
+
+    // 4) RSM kód generálás
+    int next = SettingsManager::instance().peekManualLeftoverCounter();
+
+    for (int i = 0; i < rowsPerPage; ++i) {
+
+        // --- egyedi RSM kód keresése ---
+        QString code;
+        while (true) {
+            code = IdentifierUtils::makeManualLeftoverId(next++);
+            if (!LeftoverStockRegistry::instance().existsBarcode(code, {}))
+                break;
+        }
+
+        // Blokk (1 leftover) magassága: 3 sor + szeparátor-gap
+        //qreal blockHeight = lineH * 3;
+        qreal blockHeight = lineH + lineH + barcodeHeight0;
+        // lineH = szöveg, gap = szöveg–barcode, 8 = padding
+
+        qreal cellTop = y;
+        qreal cellBottom = cellTop + blockHeight;
+
+        // 1) felső üres sor
+        //drawRow(cellTop + 0 * lineH, "", "", "", "");
+
+        // 2) középső sor – szöveg a 3. és 4. oszlopban
+        drawRow(cellTop + lineH/2+gap, "", "", code, code, true);
+        //drawRow(cellTop + 1 * lineH, "", "", "", "");
+
+        // barcode panel a 3. oszlopban
+        //qreal textY = cellTop + 1 * lineH;
+        //QRectF textRect(xCol3, textY, col3, lineH);
+        //painter.drawText(textRect, Qt::AlignCenter, code);
+
+        // extra padding a barcode körül
+        qreal topPad = 0.0;
+        qreal bottomPad = 0.0;
+
+
+        qreal barcodeTop = cellTop + lineH + lineH + gap + topPad;
+        qreal barcodeBottom = cellBottom - bottomPad;
+
+        qreal available = barcodeBottom - barcodeTop;
+        if (available < 0) available = 0;
+
+        qreal barcodeH = qMin(available, barcodeHeight0);
+        qreal barcodeY = barcodeBottom - barcodeH;
+
+
+        BarcodePainter::drawCode128(
+            painter,
+            code,
+            QRectF(xCol3 + sidePad, barcodeY, col3-2*sidePad, barcodeH)
+            );
+
+        // barcode panel a 4. oszlopban is
+        //QRectF textRect4(xCol4, textY, col4, lineH);
+        //painter.drawText(textRect4, Qt::AlignCenter, code);
+
+        BarcodePainter::drawCode128(
+            painter,
+            code,
+            QRectF(xCol4 + sidePad, barcodeY, col4-2*sidePad, barcodeH)
+            );
+
+        // 3) alsó üres sor
+        //drawRow(cellTop + 2 * lineH, "", "", "", "");
+
+        // vízszintes szeparátor a blokk alján
+        // painter.drawLine(leftMargin, cellBottom, leftMargin + totalW, cellBottom);
+
+        // // függőleges szeparátorok
+        // painter.drawLine(xCol1, cellTop, xCol1, cellBottom);
+        // painter.drawLine(xCol2, cellTop, xCol2, cellBottom);
+        // painter.drawLine(xCol3, cellTop, xCol3, cellBottom);
+        // painter.drawLine(xCol4, cellTop, xCol4, cellBottom);
+
+        drawTableFrame(cellTop, cellBottom);
+
+        // következő blokk
+        y += blockHeight;
+
+        // oldaltördelés
+        if (y + blockHeight > pageRect.bottom()) {
+            break;
+        }
+    }
+}
 
 
 } // end namespace CuttingInstructionUtils

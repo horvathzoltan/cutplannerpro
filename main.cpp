@@ -1,15 +1,15 @@
+#include "common/testlabelmaker.h"
 #include "view/MainWindow.h"
 
 #include <QApplication>
 #include <QMessageBox>
 
-#include "materials/registry/material_registry.h"
-#include "materials/repository/material_repository.h"
 #include <common/startup/startupmanager.h>
-#include <common/settingsmanager.h>
+#include "settings/settingsmanager.h"
 #include "common/logger.h"
 
 #include <common/eventlogger.h>
+#include <common/fontaudithelper.h>
 #include <common/signalhelper.h>
 #include <common/sysinfohelper.h>
 
@@ -63,6 +63,9 @@ int main(int argc, char *argv[])
 
     // elvileg ha gond van, akkor itt nem nyitjuk megh a főablakot
     QApplication app(argc, argv);
+
+    //EmojiHelper::RenderAllEmojisToCache();
+    //TestLabelMaker::runCompactPdfTest();
 
     StartupManager manager;
     StartupStatus status = manager.runStartupSequence();

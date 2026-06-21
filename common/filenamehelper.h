@@ -65,4 +65,6 @@ public:
     QString getRalPlastic1CsvFile() const;
     QString getRalPlastic2CsvFile() const;
     //QString getRalEffectCsvFile() const;
+
+    static QString emojiCacheDir();
 };

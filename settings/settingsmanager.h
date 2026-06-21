@@ -122,6 +122,11 @@ public:
 
     int materialFinderRange() const;
     void setMaterialFinderRange(int mm);
+
+public:
+    QVariant value(const QString& key, const QVariant& def = {}) const;
+    void setValue(const QString& key, const QVariant& value);
+
 private:
     SettingsManager();
 

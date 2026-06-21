@@ -1,7 +1,7 @@
 #include "stockfitengine.h"
 #include "../../../common/logger.h"
 #include "../../../common/identifierutils.h"
-#include "../../../common/settingsmanager.h"
+#include "settings/settingsmanager.h"
 
 namespace Cutting {
 namespace Optimizer {
