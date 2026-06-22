@@ -1,41 +1,41 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
-"1804";"Frama";0;0;2700;;1;1;0;none;"";NP-T;Width;false;2026-06-25
-"1814";"Frama";0;0;3250;;1;0;1;none;"";NP-T;Width;false;2026-06-23
-"1817";"Frama";0;0;2345;;1;1;0;none;"";NP-T;Width;false;2026-06-23
-"1826";"Braun Győr";0;0;2770;;1;0;1;none;"";NP-T;Width;false;2026-06-29
-"1829";"Braun Győr";0;0;3065;;1;0;1;none;"";NP-T;Width;false;2026-06-23
-"1832";"Napex Pécs";0;0;1215;;1;0;1;none;"";NP-T;Width;false;2026-06-26
-"1833";"Napex Pécs";0;0;1215;;1;0;1;none;"";NP-T;Width;false;2026-06-26
-"1834";"Napex Pécs";0;0;1215;;1;1;0;none;"";NP-T;Width;false;2026-06-26
-"1835";"Napex Pécs";0;0;1215;;1;1;0;none;"";NP-T;Width;false;2026-06-26
-"1848";"Napex Pécs";0;0;1355;;1;1;0;none;"";NP-T;Width;false;2026-06-29
-"1804";"Frama";0;0;2725;;1;1;0;none;"";NP-TF;Width;false;2026-06-25
-"1814";"Frama";0;0;3275;;1;0;1;none;"";NP-TF;Width;false;2026-06-23
-"1817";"Frama";0;0;2345;;1;1;0;none;"";NP-TF;Width;false;2026-06-23
-"1826";"Braun Győr";0;0;2795;;1;0;1;none;"";NP-TF;Width;false;2026-06-29
-"1829";"Braun Győr";0;0;3065;;1;0;1;none;"";NP-TF;Width;false;2026-06-23
-"1832";"Napex Pécs";0;0;1240;;1;0;1;none;"";NP-TF;Width;false;2026-06-26
-"1833";"Napex Pécs";0;0;1240;;1;0;1;none;"";NP-TF;Width;false;2026-06-26
-"1834";"Napex Pécs";0;0;1240;;1;1;0;none;"";NP-TF;Width;false;2026-06-26
-"1835";"Napex Pécs";0;0;1240;;1;1;0;none;"";NP-TF;Width;false;2026-06-26
-"1848";"Napex Pécs";0;0;1355;;1;1;0;none;"";NP-TF;Width;false;2026-06-29
-"1804";"Frama";0;0;2607;;1;1;0;none;"";NP-CZ;Width;false;2026-06-25
-"1814";"Frama";0;0;3157;;1;0;1;none;"";NP-CZ;Width;false;2026-06-23
-"1817";"Frama";0;0;2310;;1;1;0;none;"";NP-SZ;Width;false;2026-06-23
-"1826";"Braun Győr";0;0;2677;;1;0;1;none;"";NP-CZ;Width;false;2026-06-29
-"1829";"Braun Győr";0;0;3030;;1;0;1;none;"";NP-SZ;Width;false;2026-06-23
-"1832";"Napex Pécs";0;0;1122;;1;0;1;none;"";NP-CZ;Width;false;2026-06-26
-"1833";"Napex Pécs";0;0;1122;;1;0;1;none;"";NP-CZ;Width;false;2026-06-26
-"1834";"Napex Pécs";0;0;1122;;1;1;0;none;"";NP-CZ;Width;false;2026-06-26
-"1835";"Napex Pécs";0;0;1122;;1;1;0;none;"";NP-CZ;Width;false;2026-06-26
-"1848";"Napex Pécs";0;0;1320;;1;1;0;none;"";NP-SZ;Width;false;2026-06-29
-"1804";"Frama";0;0;2277;;1;1;0;none;"";NP-CL;Width;false;2026-06-25
-"1814";"Frama";0;0;2447;;1;0;1;none;"";NP-CL;Width;false;2026-06-23
-"1826";"Braun Győr";0;0;1702;;1;0;1;none;"";NP-CL;Width;false;2026-06-29
-"1832";"Napex Pécs";0;0;1472;;1;0;1;none;"";NP-CL;Width;false;2026-06-26
-"1833";"Napex Pécs";0;0;1472;;1;0;1;none;"";NP-CL;Width;false;2026-06-26
-"1834";"Napex Pécs";0;0;1472;;1;1;0;none;"";NP-CL;Width;false;2026-06-26
-"1835";"Napex Pécs";0;0;1472;;1;1;0;none;"";NP-CZ;Width;false;2026-06-26
+"1804";"Frama/133";0;0;2700;;1;1;0;none;"8014";NP-T;Width;false;2026-06-25
+"1814";"Frama";0;0;3250;;1;0;1;none;"8014";NP-T;Width;false;2026-06-23
+"1817";"Jola Szolnok";0;0;2345;;1;1;0;none;"1015";NP-T;Width;false;2026-06-23
+"1826";"Braun Győr";0;0;2770;;1;0;1;none;"1019";NP-T;Width;false;2026-06-29
+"1829";"SzűcsK";0;0;3065;;1;0;1;none;"8003";NP-T;Width;false;2026-06-23
+"1832";"Napex Pécs";0;0;1215;;1;0;1;none;"1011";NP-T;Width;false;2026-06-26
+"1833";"Napex Pécs";0;0;1215;;1;0;1;none;"1011";NP-T;Width;false;2026-06-26
+"1834";"Napex Pécs";0;0;1215;;1;1;0;none;"1011";NP-T;Width;false;2026-06-26
+"1835";"Napex Pécs";0;0;1215;;1;1;0;none;"1011";NP-T;Width;false;2026-06-26
+"1848";"Arady V.Győr";0;0;1355;;1;1;0;none;"7035";NP-T;Width;false;2026-06-29
+"1804";"Frama/133";0;0;2725;;1;1;0;none;"8014";NP-TF;Width;false;2026-06-25
+"1814";"Frama";0;0;3275;;1;0;1;none;"8014";NP-TF;Width;false;2026-06-23
+"1817";"Jola Szolnok";0;0;2345;;1;1;0;none;"1015";NP-TF;Width;false;2026-06-23
+"1826";"Braun Győr";0;0;2795;;1;0;1;none;"1019";NP-TF;Width;false;2026-06-29
+"1829";"SzűcsK";0;0;3065;;1;0;1;none;"8003";NP-TF;Width;false;2026-06-23
+"1832";"Napex Pécs";0;0;1240;;1;0;1;none;"1011";NP-TF;Width;false;2026-06-26
+"1833";"Napex Pécs";0;0;1240;;1;0;1;none;"1011";NP-TF;Width;false;2026-06-26
+"1834";"Napex Pécs";0;0;1240;;1;1;0;none;"1011";NP-TF;Width;false;2026-06-26
+"1835";"Napex Pécs";0;0;1240;;1;1;0;none;"1011";NP-TF;Width;false;2026-06-26
+"1848";"Arady V.Győr";0;0;1355;;1;1;0;none;"7035";NP-TF;Width;false;2026-06-29
+"1804";"Frama/133";0;0;2607;;1;1;0;none;"8014";NP-CZ;Width;false;2026-06-25
+"1814";"Frama";0;0;3157;;1;0;1;none;"8014";NP-CZ;Width;false;2026-06-23
+"1817";"Jola Szolnok";0;0;2310;;1;1;0;none;"1015";NP-SZ;Width;false;2026-06-23
+"1826";"Braun Győr";0;0;2677;;1;0;1;none;"1019";NP-CZ;Width;false;2026-06-29
+"1829";"SzűcsK";0;0;3030;;1;0;1;none;"8003";NP-SZ;Width;false;2026-06-23
+"1832";"Napex Pécs";0;0;1122;;1;0;1;none;"1011";NP-CZ;Width;false;2026-06-26
+"1833";"Napex Pécs";0;0;1122;;1;0;1;none;"1011";NP-CZ;Width;false;2026-06-26
+"1834";"Napex Pécs";0;0;1122;;1;1;0;none;"1011";NP-CZ;Width;false;2026-06-26
+"1835";"Napex Pécs";0;0;1122;;1;1;0;none;"1011";NP-CZ;Width;false;2026-06-26
+"1848";"Arady V.Győr";0;0;1320;;1;1;0;none;"7035";NP-SZ;Width;false;2026-06-29
+"1804";"Frama/133";0;0;2277;;1;1;0;none;"8014";NP-CL;Width;false;2026-06-25
+"1814";"Frama";0;0;2447;;1;0;1;none;"8014";NP-CL;Width;false;2026-06-23
+"1826";"Braun Győr";0;0;1702;;1;0;1;none;"1019";NP-CL;Width;false;2026-06-29
+"1832";"Napex Pécs";0;0;1472;;1;0;1;none;"1011";NP-CL;Width;false;2026-06-26
+"1833";"Napex Pécs";0;0;1472;;1;0;1;none;"1011";NP-CL;Width;false;2026-06-26
+"1834";"Napex Pécs";0;0;1472;;1;1;0;none;"1011";NP-CL;Width;false;2026-06-26
+"1835";"Napex Pécs";0;0;1472;;1;1;0;none;"1011";NP-CL;Width;false;2026-06-26
 "1814";"Frama";0;0;2447;;1;0;1;none;"";NP-CLBR;Width;false;2026-06-23
 "1826";"Braun Győr";0;0;1702;;1;0;1;none;"";NP-CLBR;Width;false;2026-06-29
 "1832";"Napex Pécs";0;0;1472;;1;0;1;none;"";NP-CLBR;Width;false;2026-06-26

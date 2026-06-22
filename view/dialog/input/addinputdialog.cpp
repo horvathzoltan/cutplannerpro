@@ -384,6 +384,7 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.dueDate = ui->editDueDate->date();
 
+        req.color = ui->edit_Color->text().trimmed();
 
     return req;
 }
@@ -466,6 +467,8 @@ void AddInputDialog::accept() {
     ctx.side      = ui->radioLeft->isChecked() ? HandlerSide::Left
                                           : HandlerSide::Right;
     ctx.defaultMaterialId = ui->comboMaterial->currentData().toUuid();
+
+    ctx.color = ui->edit_Color->text().trimmed();
 
     _contexts[ref] = ctx;
 
@@ -639,6 +642,8 @@ void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
         if (idx >= 0)
             ui->comboMaterial->setCurrentIndex(idx);
     }
+
+        ui->edit_Color->setText(ctx.color);   // ÚJ
 }
 
 void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
@@ -646,6 +651,7 @@ void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
     ui->editOwner->setText(req.ownerName);
     ui->editReference->setText(req.externalReference);
     ui->editDueDate->setDate(req.dueDate);
+    ui->edit_Color->setText(req.color);
 
     // subtype
     applySubtype(req.subtype);
@@ -703,6 +709,9 @@ void AddInputDialog::setContextEditable(bool editable)
 
     ui->radioLeft->setEnabled(editable);
     ui->radioRight->setEnabled(editable);
+
+    ui->edit_Color->setEnabled(editable);
+
 }
 
 void AddInputDialog::loadOwnerCache()
@@ -738,6 +747,7 @@ void AddInputDialog::on_btn_Reset_clicked()
     ui->comboMaterial->setCurrentIndex(0);
     ui->editLength->clear();
     ui->spinQuantity->setValue(1);
+    ui->edit_Color->clear();
 
     // Új adat bevitel engedélyezése
     setContextEditable(true);
@@ -754,7 +764,11 @@ void AddInputDialog::loadContextMap()
         if (line.isEmpty()) continue;
 
         auto parts = line.split(';');
-        if (parts.size() < 6) continue;
+
+        // régi formátum: 6 mező
+        // új formátum: 7 mező
+        if (parts.size() < 6)
+            continue;
 
         RequestContext ctx;
         ctx.ownerName = parts[1];
@@ -763,9 +777,16 @@ void AddInputDialog::loadContextMap()
         ctx.side = HandlerSideUtils::parse(parts[4]);
         ctx.defaultMaterialId = QUuid(parts[5]);
 
+        // ÚJ: szín mező, ha van
+        if (parts.size() >= 7)
+            ctx.color = parts[6];
+        else
+            ctx.color = "";   // régi sor → üres szín
+
         _contexts[parts[0]] = ctx;
     }
 }
+
 
 
 void AddInputDialog::saveContextMap()
@@ -777,13 +798,14 @@ void AddInputDialog::saveContextMap()
     for (auto it = _contexts.begin(); it != _contexts.end(); ++it) {
         const auto& ctx = it.value();
 
-        QString line = QString("%1;%2;%3;%4;%5;%6\n")
+        QString line = QString("%1;%2;%3;%4;%5;%6;%7\n")
                            .arg(it.key())
                            .arg(ctx.ownerName)
                            .arg(ctx.dueDate.toString("yyyy-MM-dd"))
                            .arg(SubtypeUtils::toString_CSV(ctx.subtype))
                            .arg(HandlerSideUtils::toDisplayText(ctx.side))
-                           .arg(ctx.defaultMaterialId.toString());
+                           .arg(ctx.defaultMaterialId.toString())
+                           .arg(ctx.color);
 
         f.write(line.toUtf8());
     }

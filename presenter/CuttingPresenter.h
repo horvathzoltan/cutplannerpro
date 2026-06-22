@@ -18,6 +18,38 @@ Meghívja a modell metódusait (pl. optimize())
 */
 class MainWindow; // Előre deklaráljuk, hogy ne kelljen most includolni
 
+struct PaintMaterialSummary {
+    QUuid materialId;
+    int totalPieces = 0;
+    int totalLength_mm = 0;
+    QVector<QUuid> requestIds;
+};
+
+struct PaintColorGroup {
+    QString color;
+    QHash<QUuid, PaintMaterialSummary> materials; // key: materialId
+
+    int pofak = 0;     // ÚJ
+    int csavarok = 0;  // ÚJ
+};
+
+struct PaintPlan {
+    QHash<QString, PaintColorGroup> byColor; // key: color string
+};
+
+struct CountPerType {
+    int cipzaros = 0;
+    int sines = 0;
+    int bowdenes = 0;
+
+    int total = 0;   // összes napháló
+    int good = 0;    // hibátlan
+    int bad = 0;     // hibás
+
+    QStringList badRefs;   // hibás tételszámok
+};
+
+
 class CuttingPresenter : public QObject {
     Q_OBJECT
 
@@ -49,7 +81,7 @@ public:
     // Úrafelhasználható - hulló anyagok készlete
     void setReusableInventory(const QVector<LeftoverStockEntry> &list);
     void add_LeftoverStockEntry(const LeftoverStockEntry& entry);
-    void remove_LeftoverStockEntry(const QUuid &entryId);
+    bool remove_LeftoverStockEntry(const QUuid &entryId);
     void update_LeftoverStockEntry(const LeftoverStockEntry &updated);
 
     // Paraméterek
@@ -94,6 +126,8 @@ public:
 
     void ExportLeftoverIntakeForm();
     void ExportLeftoverIntakeForm_Pdf();
+    void Paint();
+    void Audit();
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;
@@ -108,5 +142,7 @@ private:
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
     void updateRow(const QUuid &rowId, std::function<void (StorageAuditRow &)> updater);
+    PaintPlan buildPaintPlan();
+    void AuditRequestsByExternalRef();
 };
 

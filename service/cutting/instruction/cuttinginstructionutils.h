@@ -600,13 +600,35 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         if (!rodSeen.contains(ci.rodId)) {
             rodSeen.insert(ci.rodId);
 
+            QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
+                                         ? ci.barcode
+                                         : ci.rodId;
+
             LabelModel rod;
             rod.parts.append({
-                ci.rodId,
+                rodIdOrBarcode,
                 false, false,
                 0,
                 Qt::AlignCenter
             });
+
+            const MaterialMaster* mat =
+                MaterialRegistry::instance().findById(ci.materialId);
+
+            if(mat){
+                rod.parts.append({
+                    ":"+mat->toDisplay(), //toReportLabel(),
+                    false,      // trimmable
+                    false,      // jumpable
+                    1,          // targetRow → alsó sor
+                    Qt::AlignCenter,
+                    true        // 🔥 small = true
+                });
+            }
+
+            //rod.groupIcon = "🌞";
+            //rod.priorityIcon = "🌞";
+
 
             out.append(rod);
         }
@@ -632,6 +654,7 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         LabelModel lm;
         lm.priorityIcon = prio;
         lm.groupIcon = group;
+        lm.barcode = ci.externalReference;
 
         //lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
         //lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
@@ -1260,7 +1283,173 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     return lines.join("\n");
 }
 
-inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
+struct RenderLine {
+    QVector<LabelPart> left;
+    QVector<LabelPart> center;
+    QVector<LabelPart> right;
+};
+
+inline QVector<RenderLine> buildRenderLines(
+    const QVector<LabelPart>& parts,
+    QFontMetrics& fm,
+    qreal contentWidth)
+{
+    QVector<RenderLine> out;
+
+    // --- 1) Zónák szétválogatása ---
+    QVector<LabelPart> leftParts;
+    QVector<LabelPart> centerParts;
+    QVector<LabelPart> rightParts;
+
+    for (const auto& p : parts) {
+        if (p.align == Qt::AlignLeft)
+            leftParts.append(p);
+        else if (p.align == Qt::AlignCenter)
+            centerParts.append(p);
+        else if (p.align == Qt::AlignRight)
+            rightParts.append(p);
+    }
+
+    auto widthOf = [&](const LabelPart& p){
+        return fm.horizontalAdvance(p.text);
+    };
+
+    auto sumWidth = [&](const QVector<LabelPart>& v){
+        qreal w = 0;
+        for (auto& p : v) w += widthOf(p);
+        return w;
+    };
+
+    qreal leftW   = sumWidth(leftParts);
+    qreal centerW = sumWidth(centerParts);
+    qreal rightW  = sumWidth(rightParts);
+
+    // --- 2) Ha minden befér egy sorba ---
+    if (leftW + centerW + rightW <= contentWidth) {
+        RenderLine line;
+        line.left   = leftParts;
+        line.center = centerParts;
+        line.right  = rightParts;
+        out.append(line);
+        return out;
+    }
+
+    // --- 3) Ha center nem fér → center külön sorokba kerül ---
+    if (leftW + rightW <= contentWidth) {
+
+        // Sor 1: bal + jobb
+        RenderLine line1;
+        line1.left  = leftParts;
+        line1.right = rightParts;
+        out.append(line1);
+
+        // Sor 2..N: minden center külön sor
+        for (const auto& cp : centerParts) {
+            RenderLine cl;
+            cl.center.append(cp);
+            out.append(cl);
+        }
+
+        return out;
+    }
+
+    // --- 4) Bal + jobb sem fér → bal trimmelése ---
+    qreal maxLeft = contentWidth - rightW;
+    if (maxLeft < 20) maxLeft = 20;
+
+    QVector<LabelPart> trimmedLeft;
+    qreal used = 0;
+
+    for (auto& p : leftParts) {
+        qreal w = widthOf(p);
+        if (used + w <= maxLeft) {
+            trimmedLeft.append(p);
+            used += w;
+        } else {
+            LabelPart ell = p;
+            ell.text = "…";
+            trimmedLeft.append(ell);
+            break;
+        }
+    }
+
+    RenderLine line;
+    line.left  = trimmedLeft;
+    line.right = rightParts;
+    out.append(line);
+
+    return out;
+}
+
+// inline int measureGlyphHeight(const QFont& font)
+// {
+//     QImage img(200, 200, QImage::Format_ARGB32);
+//     img.fill(Qt::transparent);
+
+//     QPainter p(&img);
+//     p.setFont(font);
+//     p.setPen(Qt::black);
+
+//     // Kirajzolunk egy nagy, magas karaktert
+//     QString ch = "W";
+
+//     // Kirajzoljuk 0,0-tól
+//     p.drawText(0, 150, ch);
+//     p.end();
+
+//     // Pixelben lemérjük a nem-átlátszó pixelek tartományát
+//     int top = 200, bottom = 0;
+
+//     for (int y = 0; y < img.height(); ++y) {
+//         for (int x = 0; x < img.width(); ++x) {
+//             if (qAlpha(img.pixel(x, y)) > 0) {
+//                 top = qMin(top, y);
+//                 bottom = qMax(bottom, y);
+//             }
+//         }
+//     }
+
+//     return bottom - top + 1;
+// }
+
+// #include <QPdfWriter>
+// #include <QPdfDocument>
+// #include <QBuffer>
+// #include <QPainter>
+
+// qreal measurePdfGlyphHeight(const QFont& font)
+// {
+//     // 1) PDF memóriába
+//     QBuffer buffer;
+//     buffer.open(QIODevice::WriteOnly);
+
+//     QPdfWriter pdf(&buffer);
+//     pdf.setPageSize(QPageSize(QPageSize::A4));
+//     pdf.setResolution(72); // PDF natív DPI
+
+//     QPainter painter(&pdf);
+//     painter.setFont(font);
+
+//     // 2) Kirajzolunk egy karaktert
+//     QString ch = "W";
+//     painter.drawText(100, 200, ch);
+//     painter.end();
+
+//     // 3) PDF visszaolvasása
+//     QPdfDocument doc;
+//     doc.load(buffer.data());
+
+//     // 4) Bounding box kiolvasása
+//     // A teljes oldalra keresünk szöveget
+//     QRectF bbox = doc.getPage(0)->textSelectionBoundingBox(
+//         QPointF(0, 0),
+//         QPointF(1000, 1000)
+//         );
+
+//     return bbox.height();
+// }
+
+inline void formatLabelColumnFlow_Pdf_szar(const QVector<LabelModel>& labels,
                                       QPainter& painter,
                                       QPdfWriter& writer,
                                       const QRectF& pageRect,
@@ -1270,7 +1459,7 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     if (labels.isEmpty() || columns <= 0)
         return;
 
-    const qreal glueMargin = 60.0; // ~0.5 cm
+    const qreal glueMargin = 90.0; // ~0.76 cm
     const qreal barcodeHeight0 = 80.0;   // kétszer magasabb
     const qreal gap = 8.0;   // kb. 2–3 mm
 
@@ -1278,7 +1467,7 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     const qreal lineHeight = fm.height() + 2.0;
 
     // oszlopszélesség – biztonsági margóval
-    const qreal colWidth = pageRect.width() / columns;
+    const qreal colWidth = (pageRect.width() / columns)-100;
 
     // emoji panel fix szélessége
     const qreal emojiPanelWidth = cellHeight/2;
@@ -1289,36 +1478,36 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     const qreal pad = 4.0;
 
     // hány karakter fér a tartalmi panelbe?
-    auto maxCharsForCell = [&](qreal w) -> int {
-        qreal avg = fm.horizontalAdvance("M");
-        if (avg <= 0) avg = 8.0;
-        qreal inner = w - pad * 2;
-        return qMax(4, int(inner / avg));
-    };
+    // auto maxCharsForCell = [&](qreal w) -> int {
+    //     qreal avg = fm.horizontalAdvance("M");
+    //     if (avg <= 0) avg = 8.0;
+    //     qreal inner = w - pad * 2;
+    //     return qMax(4, int(inner / avg));
+    // };
 
-    const int cellWidthChars = maxCharsForCell(colWidth - emojiPanelWidth);
+    //const int cellWidthChars = maxCharsForCell(colWidth - emojiPanelWidth);
 
-    struct Cell {
-        QString emoji1;            // prio
-        QString emoji2; //group icon
-        QVector<QString> lines;   // tartalom
-        QString barcode;
-    };
+    // struct Cell {
+    //     QString emoji1;            // prio
+    //     QString emoji2; //group icon
+    //     QVector<QString> lines;   // tartalom
+    //     QString barcode;
+    // };
 
-    QVector<Cell> cells;
-    cells.reserve(labels.size());
+    // QVector<Cell> cells;
+    //cells.reserve(labels.size());
 
     // 1) LabelModel → sorokra tördelve
-    for (const auto& lm : labels) {
-//        zInfo("labels_tostring:"+lm.toString());
-//        for(const auto& p:lm.parts){
-//            zInfo("_label_part:"+p.text);
-//        }
-        QVector<QString> lines =
-                buildLabelCellLines(lm.parts, cellWidthChars);
-        //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
-        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
-    }
+//     for (const auto& lm : labels) {
+// //        zInfo("labels_tostring:"+lm.toString());
+// //        for(const auto& p:lm.parts){
+// //            zInfo("_label_part:"+p.text);
+// //        }
+//         QVector<QString> lines =
+//                 buildLabelCellLines(lm.parts, cellWidthChars);
+//         //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
+//         cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
+//     }
 
     // 2) oszlopfolytonos tördelés
     int colIndex = 0;
@@ -1341,9 +1530,41 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
     drawColumnHeader(columnNumberLabel);
 
-    for (int i = 0; i < cells.size(); ++i) {
+    // --- FONTOK ELŐKÉSZÍTÉSE ---
+    QFont normalFont = painter.font();
 
-        const auto& cell = cells[i];
+    // keskeny, sűrű small font
+    // QFont smallFont("Roboto Condensed");
+    // if (!QFontInfo(smallFont).exactMatch()) {
+    //     smallFont = QFont("Arial Narrow");   // fallback
+    // }
+    // smallFont.setPointSizeF(normalFont.pointSizeF() * 0.85);
+
+    // smallFont = normalFont, csak kisebb méretben
+    QFont smallFont = normalFont;
+    smallFont.setPointSizeF(normalFont.pointSizeF() * 0.60);
+
+
+    // qDebug() << "normalFont height =" << QFontMetrics(normalFont).height();
+    // qDebug() << "smallFont height  =" << QFontMetrics(smallFont).height();
+
+    // qDebug() << "normalFont pointSizeF =" << normalFont.pointSizeF();
+    // qDebug() << "smallFont pointSizeF  =" << smallFont.pointSizeF();
+
+    // qDebug() << "normalFont family =" << QFontInfo(normalFont).family();
+    // qDebug() << "smallFont family  =" << QFontInfo(smallFont).family();
+
+//    int realSmallHeight = measureGlyphHeight(smallFont);
+//    int realNormalHeight = measureGlyphHeight(normalFont);
+
+   // qDebug() << "REAL small height =" << realSmallHeight;
+    //qDebug() << "REAL normal height =" << realNormalHeight;
+
+
+
+    for (int i = 0; i < labels.size(); ++i) {
+
+        const auto& label = labels[i];
 
         // új oszlop / új lap
         if (y + cellHeight > pageRect.bottom()) {
@@ -1366,72 +1587,71 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         QRectF rect(x, y, colWidth, cellHeight);
         painter.drawRect(rect);
 
+        // 🔒 KLIP A CELLÁRA
+        painter.save();
+        //painter.setClipRect(rect);
+
+        qreal dottedX = rect.left() + glueMargin;
+
+        // ragasztócsík széle
+        QPen dottedPen(Qt::black, 1, Qt::DotLine);
+        painter.setPen(dottedPen);
+        painter.drawLine(
+            QPointF(dottedX, rect.top()),
+            QPointF(dottedX, rect.bottom())
+            );
+        painter.setPen(oldPen);
+
         // EMOJI PANEL
         // --- EMOJI PANEL: két függőleges félpanel ---
-        qreal halfHeight = cellHeight / 2.0;
+        if(label.hasEmoji()){
+            qreal halfHeight = cellHeight / 2.0;
+            QRectF emojiRectTop(rect.left() + glueMargin, rect.top(), emojiPanelWidth, halfHeight);
+            QRectF emojiRectBottom(rect.left() + glueMargin, rect.top() + halfHeight, emojiPanelWidth, halfHeight);
 
-        // QRectF emojiRectTop(rect.left(), rect.top(), emojiPanelWidth, halfHeight);
-        // QRectF emojiRectBottom(rect.left(), rect.top() + halfHeight, emojiPanelWidth, halfHeight);
-        QRectF emojiRectTop(rect.left() + glueMargin, rect.top(), emojiPanelWidth, halfHeight);
-        QRectF emojiRectBottom(rect.left() + glueMargin, rect.top() + halfHeight, emojiPanelWidth, halfHeight);
+            // két karakter szétválasztása
+            QString topChar = label.priorityIcon;
+            QString bottomChar = label.groupIcon;
 
-        // keretek
-        //painter.drawRect(emojiRectTop);
-        //painter.drawRect(emojiRectBottom);
+            // kisebb emoji + gap
+            int emojiSize = emojiPanelWidth * 0.8;      // 60% méret
+            int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
 
-        // két karakter szétválasztása
-        QString topChar = cell.emoji1;
-        QString bottomChar = cell.emoji2;
+            // render
+            //QImage topImg = EmojiHelper::renderEmojiStandalone(topChar, emojiSize);
+            //QImage bottomImg = EmojiHelper::renderEmojiStandalone(bottomChar, emojiSize);
 
-        // rajzolás
-        // painter.drawText(emojiRectTop, Qt::AlignCenter, topChar);
-        // painter.drawText(emojiRectBottom, Qt::AlignCenter, bottomChar);
+            QPixmap topPixmap   = EmojiHelper::loadPriorityIcon(topChar, emojiSize);
+            QPixmap bottomPixmap = EmojiHelper::loadEmoji(bottomChar, emojiSize);
 
-        // QImage topImg = renderEmoji(topChar, emojiPanelWidth);
-        // QImage bottomImg = renderEmoji(bottomChar, emojiPanelWidth);
+            QImage topImg   = topPixmap.toImage();
+            QImage bottomImg = bottomPixmap.toImage();
 
-        // painter.drawImage(emojiRectTop, topImg);
-        // painter.drawImage(emojiRectBottom, bottomImg);
+            // cél téglalapok (gap-pel)
+            QRectF topTarget(
+                emojiRectTop.left() + emojiMargin,
+                emojiRectTop.top() + emojiMargin,
+                emojiSize,
+                emojiSize
+                );
 
-        // kisebb emoji + gap
-        int emojiSize = emojiPanelWidth * 0.8;      // 60% méret
-        int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
+            QRectF bottomTarget(
+                emojiRectBottom.left() + emojiMargin,
+                emojiRectBottom.top() + emojiMargin,
+                emojiSize,
+                emojiSize
+                );
 
-        // render
-        //QImage topImg = EmojiHelper::renderEmojiStandalone(topChar, emojiSize);
-        //QImage bottomImg = EmojiHelper::renderEmojiStandalone(bottomChar, emojiSize);
+            // rajzolás
+            if (!topChar.isEmpty())
+                painter.drawImage(topTarget, topImg);
 
-        QPixmap topPixmap   = EmojiHelper::loadPriorityIcon(topChar, emojiSize);
-        QPixmap bottomPixmap = EmojiHelper::loadEmoji(bottomChar, emojiSize);
+            if (!bottomChar.isEmpty())
+                painter.drawImage(bottomTarget, bottomImg);
 
-        QImage topImg   = topPixmap.toImage();
-        QImage bottomImg = bottomPixmap.toImage();
-
-        // cél téglalapok (gap-pel)
-        QRectF topTarget(
-            emojiRectTop.left() + emojiMargin,
-            emojiRectTop.top() + emojiMargin,
-            emojiSize,
-            emojiSize
-            );
-
-        QRectF bottomTarget(
-            emojiRectBottom.left() + emojiMargin,
-            emojiRectBottom.top() + emojiMargin,
-            emojiSize,
-            emojiSize
-            );
-
-        // rajzolás
-        if (!topChar.isEmpty())
-            painter.drawImage(topTarget, topImg);
-
-        if (!bottomChar.isEmpty())
-            painter.drawImage(bottomTarget, bottomImg);
-
-
+        }
         // TARTALMI PANEL
-        bool hasEmoji = !(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
+        //bool hasEmoji = label//!(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
 
         // QRectF contentRect(
         //     hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
@@ -1439,42 +1659,246 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         //     hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
         //     rect.height()
         //     );
-        QRectF contentRect(
-            hasEmoji ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
-            rect.top(),
-            hasEmoji ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
-            rect.height()
-            );
+        // QRectF contentRect(
+        //     label.hasEmoji() ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
+        //     rect.top(),
+        //     label.hasEmoji() ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
+        //     rect.height()
+        //     );
 
 
         //painter.drawRect(contentRect);
 
         // vertikális középre igazítás
-        qreal totalTextHeight = cell.lines.size() * lineHeight;
+        //qreal totalTextHeight = label.parts.size() * lineHeight;
+        //qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+
+        //qreal lastTextBottom= 0.0;
+
+        // for (int li = 0; li < label.parts.size(); ++li) {
+        //     QRectF textRect(contentRect.left() + pad,
+        //                     startY + li * lineHeight,
+        //                     contentRect.width() - pad * 2,
+        //                     lineHeight);
+
+        //     QString txt1 = label.parts[li].text;
+        //     painter.drawText(textRect,
+        //                      Qt::AlignLeft | Qt::AlignVCenter,
+        //                      txt1);
+
+        //     // itt frissítjük a legalsó szövegkoordinátát
+        //     if (textRect.bottom() > lastTextBottom)
+        //         lastTextBottom = textRect.bottom();
+
+        //     //zInfo("labeltext:"+txt1);
+        // }
+
+
+
+
+        // --- SORONKÉNTI RENDER ---
+        // for (int li = 0; li < label.parts.size(); ++li) {
+
+        //     const auto& part = label.parts[li];
+
+        //     // small flag → smallFont, különben normalFont
+        //     painter.setFont(part.small ? smallFont : normalFont);
+
+        //     Qt::Alignment align = part.align | Qt::AlignVCenter;
+
+        //     QRectF textRect(
+        //         contentRect.left() + pad,
+        //         startY + li * lineHeight,
+        //         contentRect.width() - pad * 2,
+        //         lineHeight
+        //         );
+
+        //     painter.drawText(textRect, align, part.text);
+
+        //     if (textRect.bottom() > lastTextBottom)
+        //         lastTextBottom = textRect.bottom();
+        // }
+
+
+        //bool isRod = !label.hasEmoji();   // vagy explicit flag, ha van
+
+        // QRectF contentRect(
+        //     isRod ? rect.left() : rect.left() + glueMargin + emojiPanelWidth,
+        //     rect.top(),
+        //     isRod ? rect.width() : rect.width() - glueMargin - emojiPanelWidth,
+        //     rect.height()
+        //     );
+        QRectF contentRect(
+            rect.left() + glueMargin + (label.hasEmoji() ? emojiPanelWidth : 0),
+            rect.top(),
+            rect.width() - glueMargin - (label.hasEmoji() ? emojiPanelWidth : 0),
+            rect.height()
+            );
+
+
+        // --- SOROK KISZÁMÍTÁSA ---
+        QVector<RenderLine> renderLines =
+            buildRenderLines(label.parts, fm, contentRect.width() - pad * 2);
+
+        // helyes sor-magasság számítás
+        qreal totalTextHeight = renderLines.size() * lineHeight;
         qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
 
-        qreal lastTextBottom= 0.0;
+        // --- SOROK RAJZOLÁSA ---
+        qreal yCursor = startY;
+        qreal lastTextBottom = startY;
 
-        for (int li = 0; li < cell.lines.size(); ++li) {
-            QRectF textRect(contentRect.left() + pad,
-                            startY + li * lineHeight,
-                            contentRect.width() - pad * 2,
-                            lineHeight);
+        qreal lineHeightPx = 0;
 
-            QString txt1 = cell.lines[li];
-            painter.drawText(textRect,
-                             Qt::AlignLeft | Qt::AlignVCenter,
-                             txt1);
+        for (const auto& line : renderLines) {
 
-            // itt frissítjük a legalsó szövegkoordinátát
-            if (textRect.bottom() > lastTextBottom)
-                lastTextBottom = textRect.bottom();
+            // 1) Sor tényleges magassága (max font height a sorban)
+            qreal lineHeightPx = 0;
 
-            //zInfo("labeltext:"+txt1);
+            auto updateHeight = [&](const LabelPart& p){
+                QFontMetrics fm2(p.small ? smallFont : normalFont);
+                lineHeightPx = qMax(lineHeightPx, qreal(fm2.height()));
+            };
+
+            for (const auto& p : line.left)   updateHeight(p);
+            for (const auto& p : line.center) updateHeight(p);
+            for (const auto& p : line.right)  updateHeight(p);
+
+            // 2) A sor téglalapja (csak Y és szélesség számít)
+            QRectF lineRect(
+                contentRect.left() + pad,
+                yCursor,
+                contentRect.width() - pad*2,
+                lineHeightPx
+                );
+
+            // 3) Használható vízszintes sáv
+            qreal minX = rect.left()
+                         + glueMargin
+                         + (label.hasEmoji() ? emojiPanelWidth : 0)
+                         + pad;
+
+            qreal maxX = rect.right() - pad;
+            qreal usableWidth = maxX - minX;
+
+            qreal xL = minX;
+
+            for (const auto& p : line.left) {
+
+                QFont f = p.small ? smallFont : normalFont;
+                painter.setFont(f);
+                QFontMetrics fm2(f);
+
+                QString txt = p.text;
+                qreal w = fm2.horizontalAdvance(txt);
+
+                if (w > usableWidth) {
+                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
+                    w = fm2.horizontalAdvance(txt);
+                }
+
+                qreal h = fm2.height() * 1.3;
+
+                QRectF r(minX, yCursor, usableWidth, h);
+
+                painter.drawText(r, Qt::AlignLeft | Qt::AlignBaseline, txt);
+
+                xL += w;
+            }
+
+
+            qreal xR = maxX;
+
+            for (int i = line.right.size() - 1; i >= 0; --i) {
+
+                const auto& p = line.right[i];
+
+                QFont f = p.small ? smallFont : normalFont;
+                painter.setFont(f);
+                QFontMetrics fm2(f);
+
+                QString txt = p.text;
+                qreal w = fm2.horizontalAdvance(txt);
+
+                if (w > usableWidth) {
+                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
+                    w = fm2.horizontalAdvance(txt);
+                }
+
+                qreal h = fm2.height() * 1.3;
+
+                QRectF r(minX, yCursor, usableWidth, h);
+
+                painter.drawText(r, Qt::AlignRight | Qt::AlignBaseline, txt);
+
+                xR -= w;
+            }
+
+
+            // -------------------------
+            // KÖZÉP ZÓNA – 1. FÁZIS: valós szélességek
+            // -------------------------
+            struct CenterRun {
+                QString text;
+                QFont   font;
+                qreal   width;
+            };
+
+            QVector<CenterRun> centerRuns;
+            centerRuns.reserve(line.center.size());
+
+            qreal centerW = 0;
+
+            for (const auto& p : line.center) {
+                QFont f = p.small ? smallFont : normalFont;
+                QFontMetrics fm2(f);
+
+                QString txt = p.text;
+                qreal w = fm2.horizontalAdvance(txt);
+
+                if (w > usableWidth) {
+                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
+                    w = fm2.horizontalAdvance(txt);
+                }
+
+                centerRuns.push_back({ txt, f, w });
+                centerW += w;
+            }
+
+            if (centerW > usableWidth)
+                centerW = usableWidth;
+
+            // középre igazított induló X
+            qreal xC = minX + (usableWidth - centerW) / 2.0;
+
+            // -------------------------
+            // KÖZÉP ZÓNA – 2. FÁZIS: rajzolás
+            // -------------------------
+            for (const auto& run : centerRuns) {
+
+                painter.setFont(run.font);
+                QFontMetrics fm2(run.font);
+
+                // PDF backend miatt extra magasság
+                qreal h = fm2.height() * 1.3;
+
+                // A rect mindig a TELJES usableWidth szélességű
+                QRectF r(minX, yCursor, usableWidth, h);
+
+                painter.drawText(r, Qt::AlignHCenter | Qt::AlignBaseline, run.text);
+
+                xC += run.width;
+            }
+
+
+            // 4) Sorléptetés
+            yCursor += lineHeightPx + 1;
+            lastTextBottom = yCursor;
         }
 
 
-        if (!cell.barcode.isEmpty()) {
+
+        if (!label.barcode.isEmpty()) {
             //qreal lastTextBottom = startY + cell.lines.size() * lineHeight;
             qreal barcodeTop = lastTextBottom + gap;   // gap = pl. 6–10 px
 
@@ -1490,9 +1914,10 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                 contentRect.width(),
                 barcodeHeight
                 );
-            BarcodePainter::drawCode128(painter, cell.barcode, bcRect);
+            BarcodePainter::drawCode128(painter, label.barcode, bcRect);
         }
 
+        painter.restore();
 
         y += cellHeight;
     }
@@ -1680,6 +2105,261 @@ inline void formatLeftoverIntakeForm_Pdf(
     }
 }
 
+
+
+/**/
+
+
+inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
+                                      QPainter& painter,
+                                      QPdfWriter& writer,
+                                      const QRectF& pageRect,
+                                      int columns,
+                                      qreal cellHeight)
+{
+    if (labels.isEmpty() || columns <= 0)
+        return;
+
+    const qreal glueMargin = 90.0; // ~0.5 cm
+    const qreal barcodeHeight0 = 80.0;   // kétszer magasabb
+    const qreal gap = 8.0;   // kb. 2–3 mm
+
+    QFontMetrics fm(painter.font());
+    const qreal lineHeight = fm.height() + 2.0;
+
+    // oszlopszélesség – biztonsági margóval
+    const qreal colWidth = (pageRect.width() / columns)-60;
+
+    // emoji panel fix szélessége
+    const qreal emojiPanelWidth = cellHeight/2;
+
+    //qreal leftOffset = glueMargin + emojiPanelWidth;
+
+    // belső padding
+    const qreal pad = 4.0;
+
+    // hány karakter fér a tartalmi panelbe?
+    auto maxCharsForCell = [&](qreal w) -> int {
+        qreal avg = fm.horizontalAdvance("W");
+        if (avg <= 0) avg = 8.0;
+        qreal inner = w - pad * 2;
+        int a = qMax(4, int(inner / avg));
+        return a;
+    };
+
+    const int cellWidthChars = maxCharsForCell(colWidth - emojiPanelWidth);
+
+    struct Cell {
+        QString emoji1;            // prio
+        QString emoji2; //group icon
+        QVector<QString> lines;   // tartalom
+        QString barcode;
+    };
+
+    QVector<Cell> cells;
+    cells.reserve(labels.size());
+
+    // 1) LabelModel → sorokra tördelve
+    for (const auto& lm : labels) {
+        //        zInfo("labels_tostring:"+lm.toString());
+        //        for(const auto& p:lm.parts){
+        //            zInfo("_label_part:"+p.text);
+        //        }
+        QVector<QString> lines =
+            buildLabelCellLines(lm.parts, cellWidthChars);
+        //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
+        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
+    }
+
+    // 2) oszlopfolytonos tördelés
+    int colIndex = 0;
+    int columnNumberLabel = 1;
+
+    qreal x = pageRect.left();
+    qreal y = pageRect.top();
+
+    // vastagabb keret
+    QPen oldPen = painter.pen();
+    painter.setPen(QPen(Qt::black, 1.2));
+
+    auto drawColumnHeader = [&](int num) {
+        qreal headerHeight = cellHeight * 0.5;
+        QRectF rect(x, y, colWidth, headerHeight);
+        painter.drawRect(rect);
+        painter.drawText(rect, Qt::AlignCenter, QString::number(num));
+        y += headerHeight;
+    };
+
+    drawColumnHeader(columnNumberLabel);
+
+    for (int i = 0; i < cells.size(); ++i) {
+
+        const auto& cell = cells[i];
+
+        // új oszlop / új lap
+        if (y + cellHeight > pageRect.bottom()) {
+            colIndex++;
+            columnNumberLabel++;
+
+            if (colIndex >= columns) {
+                writer.newPage();
+                colIndex = 0;
+                //columnNumberLabel = 1;
+            }
+
+            x = pageRect.left() + colIndex * colWidth;
+            y = pageRect.top();
+
+            drawColumnHeader(columnNumberLabel);
+        }
+
+        // cella kerete
+        QRectF rect(x, y, colWidth, cellHeight);
+        painter.drawRect(rect);
+
+        qreal dottedX = rect.left() + glueMargin;
+
+        // ragasztócsík széle
+        QPen dottedPen(Qt::black, 1, Qt::DotLine);
+        painter.setPen(dottedPen);
+        painter.drawLine(
+            QPointF(dottedX, rect.top()),
+            QPointF(dottedX, rect.bottom())
+            );
+        painter.setPen(oldPen);
+        // EMOJI PANEL
+        // --- EMOJI PANEL: két függőleges félpanel ---
+        qreal halfHeight = cellHeight / 2.0;
+
+        // QRectF emojiRectTop(rect.left(), rect.top(), emojiPanelWidth, halfHeight);
+        // QRectF emojiRectBottom(rect.left(), rect.top() + halfHeight, emojiPanelWidth, halfHeight);
+        QRectF emojiRectTop(rect.left() + glueMargin, rect.top(), emojiPanelWidth, halfHeight);
+        QRectF emojiRectBottom(rect.left() + glueMargin, rect.top() + halfHeight, emojiPanelWidth, halfHeight);
+
+        // keretek
+        //painter.drawRect(emojiRectTop);
+        //painter.drawRect(emojiRectBottom);
+
+        // két karakter szétválasztása
+        QString topChar = cell.emoji1;
+        QString bottomChar = cell.emoji2;
+
+        // rajzolás
+        // painter.drawText(emojiRectTop, Qt::AlignCenter, topChar);
+        // painter.drawText(emojiRectBottom, Qt::AlignCenter, bottomChar);
+
+        // QImage topImg = renderEmoji(topChar, emojiPanelWidth);
+        // QImage bottomImg = renderEmoji(bottomChar, emojiPanelWidth);
+
+        // painter.drawImage(emojiRectTop, topImg);
+        // painter.drawImage(emojiRectBottom, bottomImg);
+
+        // kisebb emoji + gap
+        int emojiSize = emojiPanelWidth * 0.8;      // 60% méret
+        int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
+
+        // render
+        //QImage topImg = EmojiHelper::renderEmojiStandalone(topChar, emojiSize);
+        //QImage bottomImg = EmojiHelper::renderEmojiStandalone(bottomChar, emojiSize);
+
+        QPixmap topPixmap   = EmojiHelper::loadPriorityIcon(topChar, emojiSize);
+        QPixmap bottomPixmap = EmojiHelper::loadEmoji(bottomChar, emojiSize);
+
+        QImage topImg   = topPixmap.toImage();
+        QImage bottomImg = bottomPixmap.toImage();
+
+        // cél téglalapok (gap-pel)
+        QRectF topTarget(
+            emojiRectTop.left() + emojiMargin,
+            emojiRectTop.top() + emojiMargin,
+            emojiSize,
+            emojiSize
+            );
+
+        QRectF bottomTarget(
+            emojiRectBottom.left() + emojiMargin,
+            emojiRectBottom.top() + emojiMargin,
+            emojiSize,
+            emojiSize
+            );
+
+        // rajzolás
+        if (!topChar.isEmpty())
+            painter.drawImage(topTarget, topImg);
+
+        if (!bottomChar.isEmpty())
+            painter.drawImage(bottomTarget, bottomImg);
+
+
+        // TARTALMI PANEL
+        bool hasEmoji = !(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
+
+        // QRectF contentRect(
+        //     hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
+        //     rect.top(),
+        //     hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
+        //     rect.height()
+        //     );
+        QRectF contentRect(
+            hasEmoji ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
+            rect.top(),
+            hasEmoji ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
+            rect.height()
+            );
+
+
+        //painter.drawRect(contentRect);
+
+        // vertikális középre igazítás
+        qreal totalTextHeight = cell.lines.size() * lineHeight;
+        qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+
+        qreal lastTextBottom= 0.0;
+
+        for (int li = 0; li < cell.lines.size(); ++li) {
+            QRectF textRect(contentRect.left() + pad,
+                            startY + li * lineHeight,
+                            contentRect.width() - pad * 2,
+                            lineHeight);
+
+            QString txt1 = cell.lines[li];
+            painter.drawText(textRect,
+                             Qt::AlignLeft | Qt::AlignVCenter,
+                             txt1);
+
+            // itt frissítjük a legalsó szövegkoordinátát
+            if (textRect.bottom() > lastTextBottom)
+                lastTextBottom = textRect.bottom();
+
+            //zInfo("labeltext:"+txt1);
+        }
+
+
+        if (!cell.barcode.isEmpty()) {
+            //qreal lastTextBottom = startY + cell.lines.size() * lineHeight;
+            qreal barcodeTop = lastTextBottom + gap;   // gap = pl. 6–10 px
+
+            //qreal barcodeBottom = rect.bottom();
+            //qreal barcodeHeight = barcodeBottom - barcodeTop;
+            qreal cellBottom = contentRect.bottom();
+            qreal availableHeight = cellBottom - barcodeTop;
+            qreal barcodeHeight = qMin(availableHeight, barcodeHeight0);
+            qreal barcodeY = cellBottom - barcodeHeight;
+            QRectF bcRect(
+                contentRect.left(),
+                barcodeY,
+                contentRect.width(),
+                barcodeHeight
+                );
+            BarcodePainter::drawCode128(painter, cell.barcode, bcRect);
+        }
+
+
+        y += cellHeight;
+    }
+
+    painter.setPen(oldPen);
+}
 
 } // end namespace CuttingInstructionUtils
 

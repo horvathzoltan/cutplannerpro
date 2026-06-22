@@ -67,6 +67,7 @@ private:
         Subtype subtype;       // Alap / Rugós / Tetőtéri
         HandlerSide side;      // Bal / Jobb (egy napháló motor oldala nem változik)
         QUuid   defaultMaterialId; // Opcionális: legutóbb használt anyag ehhez a tételszámhoz
+        QString color;
     };
 
     static QMap<QString, RequestContext> _contexts;

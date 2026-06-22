@@ -1,3 +1,14 @@
+INFO:=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===
+INFO:   ✅ Frama: CIPZÁROS=1 | jó=1, hibás=0
+INFO:   ✅ SzűcsK: BOWDENES=1 | jó=1, hibás=0
+INFO:   ✅ Arady V.Győr: BOWDENES=1 | jó=1, hibás=0
+INFO:   ✅ Braun Győr: CIPZÁROS=1 | jó=1, hibás=0
+INFO:   ✅ Napex Pécs: CIPZÁROS=4 | jó=4, hibás=0
+INFO:   ❌ Frama/133: CIPZÁROS=1 | jó=0, hibás=1
+INFO:   ✅ Jola Szolnok: BOWDENES=1 | jó=1, hibás=0
+
+ahol hiba van, ott a hibás tételszámok kellenének
+
 cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
 ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből
 a dátumra nem emlékezik, nem menti el a tételszámhoz
@@ -30,6 +41,12 @@ a színeket a cutrequestbe bele kell tenni
 napháló-színterezést kell számolni  illetve egy
 vágási tervre nézve a színterezést  - nxyilván színenként ki kell számolni
 
+festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól, 
+vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
+festeni csak festhető anyagokat festünk. festhetetlent nem.
+
+kell egy audit - terméktípusra
+mindennek beadjuk a terméktípusát, és levezetünk egy auditot, mindene megvan-e
 
 SinesLáb 9010 RSM-162 1320
 

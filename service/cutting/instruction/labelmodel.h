@@ -9,6 +9,7 @@ struct LabelPart {
     int targetRow = 0;        // melyik sorba szeretnénk alapból
     Qt::Alignment align = Qt::AlignLeft;  // bal/közép/jobb
 
+    bool small = false;
 };
 
 
@@ -30,5 +31,9 @@ struct LabelModel {
         for (const auto& p : parts)
             len += p.text.length();
         return len;
+    }
+
+    bool hasEmoji() const {
+        return !(priorityIcon.isEmpty() && groupIcon.isEmpty());
     }
 };

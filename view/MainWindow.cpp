@@ -279,6 +279,12 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_ExportCutInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction_clicked);
+
+    connect(ui->btn_Painter, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_Painter_clicked);
+
+    connect(ui->btn_Audit, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_Audit_clicked);
 }
 
 void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
@@ -1129,6 +1135,14 @@ void MainWindow::handle_btn_ExportCutInstruction_clicked() {
     presenter->ExportCutInstructions();
 }
 
+void MainWindow::handle_btn_Painter_clicked(){
+        presenter->Paint();
+}
+
+void MainWindow::handle_btn_Audit_clicked(){
+    presenter->Audit();
+}
+
 void MainWindow::switchToCuttingPlanTab()
 {
     ui->midBox->setCurrentWidget(ui->midBoxPage1);
@@ -1185,5 +1199,6 @@ void MainWindow::onShowNotFoundMessage(const QString& msg)
 {
     QMessageBox::information(this, "Keresés", msg);
 }
+
 
 

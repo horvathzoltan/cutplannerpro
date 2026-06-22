@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
@@ -184,6 +184,20 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_Audit">
+              <property name="text">
+               <string>Audit</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_Painter">
+              <property name="text">
+               <string>Painter</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btn_Optimize">

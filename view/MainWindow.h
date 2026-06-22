@@ -96,6 +96,9 @@ private slots:
 
     void handle_btn_ExportCutInstruction_clicked();
 
+    void handle_btn_Painter_clicked();
+    void handle_btn_Audit_clicked();
+
     void onRowFinalized(int rowIx);
     void onCompensationChanged(const QUuid& machineId, double newVal);
 

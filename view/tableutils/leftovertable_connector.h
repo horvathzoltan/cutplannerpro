@@ -17,7 +17,12 @@ inline static void Connect(
                &LeftoverTableManager::deleteRequested,
                w,
                [presenter](const QUuid& id) {
-                   presenter->remove_LeftoverStockEntry(id);
+                   bool status = presenter->remove_LeftoverStockEntry(id);
+                   QString statusTxt = status?"Sikeres":"Sikertelen";
+
+                   zInfo(QString("Selejtezés | %1 | entryId = %2")
+                             .arg(statusTxt)
+                             .arg(id.toString(QUuid::WithoutBraces)));
                });
 
     // 📝 Hulló anyagok szerkesztése

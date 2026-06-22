@@ -156,19 +156,18 @@ void CuttingPresenter::add_LeftoverStockEntry(const LeftoverStockEntry& req) {
     _auditStateManager.setOutdated(AuditStateManager::AuditOutdatedReason::LeftoverChanged);
 }
 
-void CuttingPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
+bool CuttingPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
     bool ok = LeftoverStockRegistry::instance().removeEntry(entryId);
 
-    if (ok){
-        if(view){
-            view->removeRow_LeftoversTable(entryId);
-        }
-    }
-    else
-    {
+    if(!ok){
         qWarning() << "❌ Sikertelen törlés: nincs ilyen entryId:" << entryId;
-        return;
+        return false;
     }
+
+    if(view){
+        view->removeRow_LeftoversTable(entryId);
+    }
+    return true;
 }
 
 void CuttingPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& updated) {
@@ -1088,7 +1087,8 @@ void CuttingPresenter::ExportCutInstructions()
 
             firstPage = false;
 
-            auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+            QVector<LabelModel> labels =
+                CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
 
             CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
                 labels,
@@ -1276,6 +1276,483 @@ void CuttingPresenter::ExportLeftoverIntakeForm_Pdf()
     painter.end();
     zEvent(QString("📄 Leftover Intake Form PDF exportálva: %1").arg(path));
 }
+
+
+PaintPlan CuttingPresenter::buildPaintPlan()
+{
+    PaintPlan plan;
+    const auto all = CuttingPlanRequestRegistry::instance().readAll();
+
+    for (const auto& req : all) {
+
+        QString color = req.color.trimmed();
+        if (color.isEmpty())
+            color = QStringLiteral("Nincs szín megadva");
+
+        auto& colorGroup = plan.byColor[color];
+        colorGroup.color = color;
+
+        // --- ANYAG BARCODE LEKÉRÉSE ---
+
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(req.materialId);
+
+
+        QString barcode = mat?mat->barcode:"";//getMaterialBarcode(req.materialId);
+
+        // --- SZORZÓ: NP-SL vagy NP-CL esetén 2 ---
+        int szorzo = 1;
+        if ((barcode=="NP-SL" || barcode.startsWith("NP-SL-")) ||
+            (barcode == "NP-CL" || barcode.startsWith("NP-CL-")))
+            szorzo = 2;
+
+        // --- ANYAGONKÉNTI ÖSSZESÍTÉS ---
+        auto& summary = colorGroup.materials[req.materialId];
+        summary.materialId = req.materialId;
+
+        summary.totalPieces += req.quantity * szorzo;
+        summary.totalLength_mm += req.quantity * req.requiredLength * szorzo;
+        summary.requestIds.append(req.requestId);
+
+        // --- POFA / CSAVAR LOGIKA ---
+        if (barcode == "NP-T" || barcode.startsWith("NP-T-")) {
+            // tok → 2 pofa
+            colorGroup.pofak += 2;
+        }
+
+        if (barcode == "NP-TF" || barcode.startsWith("NP-TF-")) {
+            // tokfedél → 2 csavar
+            colorGroup.csavarok += 2;
+        }
+    }
+
+    return plan;
+}
+
+
+// void CuttingPresenter::Paint()
+// {
+//     zInfo("=== FESTÉSI TERV (TXT) ===");
+
+//     PaintPlan plan = buildPaintPlan();
+
+//     // Színek ábécé sorrendben (szebb)
+//     QStringList colors = plan.byColor.keys();
+//     colors.sort(Qt::CaseInsensitive);
+
+//     for (const QString& color : colors)
+//     {
+//         const auto& colorGroup = plan.byColor[color];
+
+//         zInfo(QString(">> SZÍN: %1").arg(color));
+//         zInfo("----------------------------------------");
+
+//         // Anyagok ábécé sorrendben
+//         QList<QUuid> materials = colorGroup.materials.keys();
+//         std::sort(materials.begin(), materials.end(),
+//                   [](const QUuid& a, const QUuid& b){
+//                       return a.toString() < b.toString();
+//                   });
+
+//         for (const QUuid& matId : materials)
+//         {
+//             const auto& s = colorGroup.materials[matId];
+
+//             const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+
+
+//             QString matName = mat?mat->toDisplay():"???";
+
+//             zInfo(QString("   Anyag: %1").arg(matName));
+//             zInfo(QString("      Darabszám: %1").arg(s.totalPieces));
+//             zInfo(QString("      Teljes hossz: %1 mm (%2 m)")
+//                       .arg(s.totalLength_mm)
+//                       .arg(s.totalLength_mm / 1000.0, 0, 'f', 2));
+
+//             // Request ID lista
+//             QStringList tetelszamok;
+//             for (const auto& id : s.requestIds){
+//                 //ids << id.toString(QUuid::WithoutBraces);
+//                 auto *a = CuttingPlanRequestRegistry::instance().findById(id);
+//                 QString b = a?a->externalReference:"";
+
+//                 tetelszamok << b;
+//             }
+
+//             //zInfo(QString("      Request ID-k: %1").arg(ids.join(", ")));
+//             zInfo(QString("      Tételszámok: %1").arg(tetelszamok.join(", ")));
+//             zInfo("");
+//         }
+
+//         zInfo("========================================");
+//     }
+
+//     zInfo("=== FESTÉSI TERV VÉGE ===");
+// }
+
+
+void CuttingPresenter::Paint()
+{
+    zInfo("=== FESTÉSI TERV (TXT) ===");
+
+    PaintPlan plan = buildPaintPlan();
+
+    // Színek ábécé sorrendben
+    QStringList colors = plan.byColor.keys();
+    colors.sort(Qt::CaseInsensitive);
+
+    for (const QString& color : colors)
+    {
+        const auto& colorGroup = plan.byColor[color];
+
+        zInfo(QString(">> SZÍN: %1").arg(color));
+        zInfo("----------------------------------------");
+
+        // Anyagok ábécé sorrendben
+        QList<QUuid> materials = colorGroup.materials.keys();
+        std::sort(materials.begin(), materials.end(),
+                  [](const QUuid& a, const QUuid& b){
+                      return a.toString() < b.toString();
+                  });
+
+        for (const QUuid& matId : materials)
+        {
+            const auto& s = colorGroup.materials[matId];
+
+            const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+            QString matName = mat?mat->toDisplay():"???";
+
+            zInfo(QString("   Anyag: %1").arg(matName));
+            zInfo(QString("      Darabszám: %1").arg(s.totalPieces));
+            zInfo(QString("      Teljes hossz: %1 mm (%2 m)")
+                      .arg(s.totalLength_mm)
+                      .arg(s.totalLength_mm / 1000.0, 0, 'f', 2));
+
+            //Request ID lista
+            QStringList tetelszamok;
+            for (const auto& id : s.requestIds){
+                //ids << id.toString(QUuid::WithoutBraces);
+                auto *a = CuttingPlanRequestRegistry::instance().findById(id);
+                QString b = a?a->externalReference:"";
+
+                tetelszamok << b;
+            }
+
+            //zInfo(QString("      Request ID-k: %1").arg(ids.join(", ")));
+            zInfo(QString("      Tételszámok: %1").arg(tetelszamok.join(", ")));
+            zInfo("");
+        }
+
+        // --- POFÁK + CSAVAROK összegzése ---
+        zInfo(QString("   Összes pofa: %1").arg(colorGroup.pofak));
+        zInfo(QString("   Összes csavar: %1").arg(colorGroup.csavarok));
+
+        zInfo("========================================");
+    }
+
+    zInfo("=== FESTÉSI TERV VÉGE ===");
+}
+
+void CuttingPresenter::AuditRequestsByExternalRef()
+{
+    zInfo("=== AUDIT: TÉTELSZÁM KONSZISZTENCIA VIZSGÁLAT ===");
+
+
+    const auto all = CuttingPlanRequestRegistry::instance().readAll();
+
+    QHash<QString, CountPerType> summary;
+
+    // tételszám → request lista
+    QHash<QString, QVector<Cutting::Plan::Request>> groups;
+
+    for (const auto& req : all) {
+        QString ref = req.externalReference.trimmed();
+        if (ref.isEmpty())
+            ref = "<NINCS_TETELSZAM>";
+        groups[ref].append(req);
+    }
+
+    // bejárás tételszámonként
+    for (auto it = groups.begin(); it != groups.end(); ++it)
+    {
+        bool hasError = false;
+
+        const QString& ref = it.key();
+        const auto& list = it.value();
+
+        zInfo(QString(">> Tételszám: %1").arg(ref));
+        // Megrendelő neve
+        QString customer = "<ismeretlen>";
+        if (!list.isEmpty()) {
+            customer = list.first().ownerName.trimmed();
+            if (customer.isEmpty())
+                customer = "<ismeretlen>";
+        }
+
+        zInfo(QString("   Megrendelő: %1").arg(customer));
+
+        // --- OWNER NAME KONZISZTENCIA ELLENŐRZÉS ---
+        QString expectedOwner = customer; // amit az előbb kiírtunk
+
+        for (const auto& req : list) {
+            QString o = req.ownerName.trimmed();
+            if (o.isEmpty()) o = "<ismeretlen>";
+
+            if (o != expectedOwner) {
+                zInfo(QString("   ❌ HIBA: Eltérő megrendelő név található! (%1 vs %2)")
+                          .arg(o)
+                          .arg(expectedOwner));
+            }
+        }
+
+        zInfo("----------------------------------------");
+
+        // anyag → darabszám
+        QHash<QString, int> materialCount;
+        QHash<QString, int> materialLength;
+
+        int tokCount = 0;
+        int tokFedCount = 0;
+        int labCount = 0;
+        int labbetetCount = 0;
+        int czCount = 0;
+        int szCount = 0;
+
+        for (const auto& req : list)
+        {
+            const MaterialMaster* mat = MaterialRegistry::instance().findById(req.materialId);
+            QString barcode = mat ? mat->barcode : "???";
+
+            int qty = req.quantity;
+            int len = req.requiredLength;
+
+            // CIPZÁROS LÁB
+            if (barcode == "NP-CL" || barcode.startsWith("NP-CL-"))
+                labCount += qty * 2;
+
+            // CIPZÁROS LÁBBETÉT
+            if (barcode == "NP-CLB")
+                labbetetCount += qty * 2;
+
+            if (barcode == "NP-CLBR")
+                labbetetCount += qty * 2;
+
+            // SINES LÁB
+            if (barcode == "NP-SL" || barcode.startsWith("NP-SL-"))
+                labCount += qty * 2;
+
+            // TOK
+            if (barcode == "NP-T" || barcode.startsWith("NP-T-"))
+                tokCount += qty;
+
+            // TOKFEDÉL
+            if (barcode == "NP-TF" || barcode.startsWith("NP-TF-"))
+                tokFedCount += qty;
+
+            // CIPZÁROS ZÁRÓ
+            if (barcode == "NP-CZ" || barcode.startsWith("NP-CZ-"))
+                czCount += qty;
+
+            // SINES ZÁRÓ
+            if (barcode == "NP-SZ" || barcode.startsWith("NP-SZ-"))
+                szCount += qty;
+
+            materialCount[barcode] += qty;
+            materialLength[barcode] += qty * len;
+        }
+
+        // anyaglista kiírása
+        for (auto it2 = materialCount.begin(); it2 != materialCount.end(); ++it2)
+        {
+            QString barcode = it2.key();
+            int qty = it2.value();
+            int totalLen = materialLength[barcode];
+
+            zInfo(QString("   Anyag: %1 | db: %2 | hossz: %3 mm")
+                      .arg(barcode)
+                      .arg(qty)
+                      .arg(totalLen));
+        }
+
+        // összegzés
+        zInfo(QString("   Tok darabszám: %1").arg(tokCount));
+        zInfo(QString("   Tokfedél darabszám: %1").arg(tokFedCount));
+        zInfo(QString("   Láb darabszám: %1").arg(labCount));
+        zInfo(QString("   Lábbetét darabszám: %1").arg(labbetetCount));
+        zInfo(QString("   Cipzáros záró: %1").arg(czCount));
+        zInfo(QString("   Sines záró: %1").arg(szCount));
+
+        // --- TÍPUS MEGHATÁROZÁSA ---
+        bool isCipzaros = (czCount > 0);
+        bool isSines = (szCount > 0 && labCount > 0);
+        bool isBowdenes = (szCount > 0 && labCount == 0);
+
+        if (isCipzaros) zInfo("   Típus: CIPZÁROS");
+        if (isSines)    zInfo("   Típus: SINES");
+        if (isBowdenes) zInfo("   Típus: BOWDENES");
+        if (!isCipzaros && !isSines && !isBowdenes){
+            zInfo("   ⚠ Típus: ISMERETLEN / HIÁNYOS ADAT");
+            hasError = true;
+        }
+
+        // --- TOK ↔ TOKFEDÉL ---
+        if (tokCount != tokFedCount){
+            zInfo(QString("   ⚠ ELTÉRÉS: Tok (%1) és tokfedél (%2) darabszáma nem egyezik!")
+                      .arg(tokCount).arg(tokFedCount));
+            hasError = true;
+        }
+
+        // --- CIPZÁROS BOM ---
+        if (isCipzaros)
+        {
+            int expectedLab = tokCount * 2;
+            int expectedLabBetet = tokCount * 2;
+            int expectedCZ = tokCount;
+
+            if (labCount != expectedLab){
+                zInfo(QString("   ⚠ CIPZÁROS: Láb (%1) != elvárt (%2)")
+                          .arg(labCount).arg(expectedLab));
+                hasError = true;
+            }
+
+
+            if (labbetetCount != expectedLabBetet){
+                zInfo(QString("   ⚠ CIPZÁROS: Lábbetét (%1) != elvárt (%2)")
+                          .arg(labbetetCount).arg(expectedLabBetet));
+                hasError = true;
+            }
+
+            if (czCount != expectedCZ){
+                zInfo(QString("   ⚠ CIPZÁROS: Záró (%1) != elvárt (%2)")
+                          .arg(czCount).arg(expectedCZ));
+                hasError = true;
+            }
+        }
+
+        // --- SINES BOM ---
+        if (isSines)
+        {
+            int expectedLab = tokCount * 2;
+            int expectedLabBetet = tokCount * 2;
+            int expectedSZ = tokCount;
+
+            if (labCount != expectedLab){
+                zInfo(QString("   ⚠ SINES: Láb (%1) != elvárt (%2)")
+                          .arg(labCount).arg(expectedLab));
+                hasError = true;
+            }
+
+            if (labbetetCount != expectedLabBetet){
+                zInfo(QString("   ⚠ SINES: Lábbetét (%1) != elvárt (%2)")
+                          .arg(labbetetCount).arg(expectedLabBetet));
+                hasError = true;
+            }
+
+            if (szCount != expectedSZ){
+                zInfo(QString("   ⚠ SINES: Záró (%1) != elvárt (%2)")
+                          .arg(szCount).arg(expectedSZ));
+                hasError = true;
+            }
+        }
+
+        // --- BOWDENES BOM ---
+        if (isBowdenes)
+        {
+            if (labCount > 0){
+                zInfo("   ⚠ BOWDENES: Láb nem lehet, de van!");
+                hasError = true;
+            }
+
+            if (labbetetCount > 0){
+                zInfo("   ⚠ BOWDENES: Lábbetét nem lehet, de van!");
+                hasError = true;
+            }
+
+            if (szCount != tokCount){
+                zInfo(QString("   ⚠ BOWDENES: Sines záró (%1) != tok (%2)")
+                          .arg(szCount).arg(tokCount));
+                hasError = true;
+            }
+        }
+
+        zInfo("========================================");
+
+        auto& s = summary[customer];
+
+        s.total++;
+
+        if (isCipzaros) s.cipzaros++;
+        if (isSines)    s.sines++;
+        if (isBowdenes) s.bowdenes++;
+
+        if (hasError) {
+            s.bad++;
+            s.badRefs << ref;   // <-- hibás tételszám hozzáadása
+        } else {
+            s.good++;
+        }
+
+
+
+    }
+
+    zInfo("=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===");
+
+    for (auto it = summary.begin(); it != summary.end(); ++it) {
+        const QString& customer = it.key();
+        const CountPerType& s = it.value();
+
+        QStringList parts;
+
+        if (s.cipzaros > 0)
+            parts << QString("CIPZÁROS=%1").arg(s.cipzaros);
+
+        if (s.sines > 0)
+            parts << QString("SINES=%1").arg(s.sines);
+
+        if (s.bowdenes > 0)
+            parts << QString("BOWDENES=%1").arg(s.bowdenes);
+
+        QString typeSummary = parts.isEmpty()
+                                  ? "nincs napháló"
+                                  : parts.join(", ");
+
+        QString qualitySummary =
+            QString("jó=%1, hibás=%2").arg(s.good).arg(s.bad);
+
+        QString icon;
+        if (s.total > 0 && s.bad == 0)
+            icon = "✅";        // minden jó
+        else if (s.bad > 0)
+            icon = "❌";        // van hiba
+        else
+            icon = "•";         // nincs napháló
+
+        QString badList;
+        if (!s.badRefs.isEmpty())
+            badList = QString(" (%1)").arg(s.badRefs.join(", "));  // pl. (1234, 1235, 1236)
+
+        zInfo(QString("   %1 %2: %3 | %4%5")
+                  .arg(icon)
+                  .arg(customer)
+                  .arg(typeSummary)
+                  .arg(qualitySummary)
+                  .arg(badList));
+
+
+    }
+
+    zInfo("=== ÖSSZESÍTÉS VÉGE ===");
+
+    zInfo("=== AUDIT VÉGE ===");
+}
+
+
+void CuttingPresenter::Audit()
+{
+    AuditRequestsByExternalRef();
+}
+
+
 
 /*relocation*/
 

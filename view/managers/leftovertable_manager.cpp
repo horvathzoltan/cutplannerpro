@@ -281,12 +281,15 @@ void LeftoverTableManager::openScrapDialog()
     while (dlg.exec() == QDialog::Accepted)
     {
         QString code = dlg.barcode();
+        zInfo(QString("Selejtezési kérelem indítva | barcode = %1").arg(code));
+
         if (code.isEmpty()) {
             if (!dlg.repeat())
                 break;
             dlg.clearBarcodeField();
             continue;
         }
+
 
         // 1) Registry keresés
         auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(code.trimmed());
