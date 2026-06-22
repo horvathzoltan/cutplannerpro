@@ -1,4 +1,35 @@
+cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
+ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből
+a dátumra nem emlékezik, nem menti el a tételszámhoz
+
+vasudvar
+    - külső
+    - belső
+         -jobb
+            -első_1
+                polcok: 1-2-3
+            -első_2
+            -hátsó_1
+            -hátsó_2
+         -bal
+            -első_1
+            -első_2
+            -hátsó_1
+            -hátsó_2
+
+             
+
 leftover table nem jó hogy online szerkeszthető - nem kel iylen
+
+selejtezés - nincs üzenet, hogy sikerült és/vagy nem sikerült
+
+stock: a fogytán lévő készletek listája - pdf
+
+a színeket a cutrequestbe bele kell tenni
+
+napháló-színterezést kell számolni  illetve egy
+vágási tervre nézve a színterezést  - nxyilván színenként ki kell számolni
+
 
 SinesLáb 9010 RSM-162 1320
 

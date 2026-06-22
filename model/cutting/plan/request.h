@@ -189,7 +189,8 @@ struct Request {
 
     Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
 
-    NamedColor requiredColor; // 🎨 Anyag színe (RAL vagy HEX kód)
+    // 🎨 Anyag színe - ebben a színben kéri a megrendelő a terméket (RAL vagy HEX kód)
+    NamedColor requiredColor;
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 
