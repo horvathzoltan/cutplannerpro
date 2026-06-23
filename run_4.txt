@@ -1,13 +1,12 @@
-INFO:=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===
-INFO:   ✅ Frama: CIPZÁROS=1 | jó=1, hibás=0
-INFO:   ✅ SzűcsK: BOWDENES=1 | jó=1, hibás=0
-INFO:   ✅ Arady V.Győr: BOWDENES=1 | jó=1, hibás=0
-INFO:   ✅ Braun Győr: CIPZÁROS=1 | jó=1, hibás=0
-INFO:   ✅ Napex Pécs: CIPZÁROS=4 | jó=4, hibás=0
-INFO:   ❌ Frama/133: CIPZÁROS=1 | jó=0, hibás=1
-INFO:   ✅ Jola Szolnok: BOWDENES=1 | jó=1, hibás=0
+festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel vagy a sinessel,
+de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines - 
 
-ahol hiba van, ott a hibás tételszámok kellenének
+de arra figyelni, kell, és ez még nincsen kidolgozva, hogy a copzároshoz cipzáros pofa kell, a sineshez sines, a bowdeneshez bowdenes és
+emiatt a pofát a számítás alatt is külön kell fajtánként aggregálni.
+
+leftoverek felvétele - egymásutáni  - batch - felvétel támogatása
+
+festési tervhez és audithoz is a megrendelő mellett érekes még a határidő is!
 
 cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
 ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből

@@ -42,3 +42,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1833";"Napex Pécs";0;0;1472;;1;0;1;none;"";NP-CLBR;Width;false;2026-06-26
 "1834";"Napex Pécs";0;0;1472;;1;1;0;none;"";NP-CLBR;Width;false;2026-06-26
 "1835";"Napex Pécs";0;0;1472;;1;1;0;none;"";NP-CLBR;Width;false;2026-06-26
+"1804";"Frama/133";0;0;2277;;1;1;0;none;"";NP-CLBR;Width;false;2026-06-25
