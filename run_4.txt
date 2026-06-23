@@ -1,16 +1,18 @@
+
 festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel vagy a sinessel,
 de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines - 
 
 de arra figyelni, kell, és ez még nincsen kidolgozva, hogy a copzároshoz cipzáros pofa kell, a sineshez sines, a bowdeneshez bowdenes és
 emiatt a pofát a számítás alatt is külön kell fajtánként aggregálni.
 
-leftoverek felvétele - egymásutáni  - batch - felvétel támogatása
-
-festési tervhez és audithoz is a megrendelő mellett érekes még a határidő is!
-
 cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
 ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből
 a dátumra nem emlékezik, nem menti el a tételszámhoz
+
+festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól,
+vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
+festeni csak festhető anyagokat festünk. festhetetlent nem.
+
 
 vasudvar
     - külső
@@ -29,29 +31,16 @@ vasudvar
 
              
 
-leftover table nem jó hogy online szerkeszthető - nem kel iylen
-
-selejtezés - nincs üzenet, hogy sikerült és/vagy nem sikerült
 
 stock: a fogytán lévő készletek listája - pdf
 
 a színeket a cutrequestbe bele kell tenni
 
-napháló-színterezést kell számolni  illetve egy
-vágási tervre nézve a színterezést  - nxyilván színenként ki kell számolni
 
-festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól, 
-vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
-festeni csak festhető anyagokat festünk. festhetetlent nem.
 
 kell egy audit - terméktípusra
 mindennek beadjuk a terméktípusát, és levezetünk egy auditot, mindene megvan-e
-
-SinesLáb 9010 RSM-162 1320
-
-
-renderEmoji - svg?
-
+lehetne auditálni méretet, pl ha egy láb nem azonos hossz a lábbetéttel, láb takaróval...
 
 
 btn_ExportLeftoverForm

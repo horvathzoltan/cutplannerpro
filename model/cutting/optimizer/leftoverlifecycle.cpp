@@ -36,7 +36,7 @@ LeftoverStockEntry createPhysicalLeftover(
     LeftoverStockEntry entry;
     entry.materialId = rod.materialId;
     entry.availableLength_mm = corrected;
-    entry.used = false;
+    //entry.used = false;
     entry.barcode = IdentifierUtils::makeLeftoverId(SettingsManager::instance().nextMaterialCounter());
     entry._parent = rod._parent;
     entry.source = Cutting::Result::LeftoverSource::Optimization;

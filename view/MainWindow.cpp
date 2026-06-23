@@ -152,9 +152,6 @@ MainWindow::MainWindow(QWidget *parent)
         ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
     });
 
-    ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColBarcode, true);
-    ui->tableLeftovers->setColumnHidden(LeftoverTableManager::ColShape, true);
-
     connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged,
             this, [this](AuditStateManager::AuditOutdatedReason reason) {
                 switch (reason) {
@@ -480,19 +477,28 @@ void MainWindow::handle_btn_AddStockEntry_clicked()
 
 /*leftover stock*/
 void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
-    AddWasteDialog dialog(this);
 
-    LeftoverStockEntry request0;
-    request0.source = Cutting::Result::LeftoverSource::Manual;
-    request0.availableLength_mm = 0; // alapérték, hogy ne legyen üres mező
+    while (true) {
+        AddWasteDialog dialog(this);
 
-    dialog.setModel(request0); // előfeltöltés a forrással
+        LeftoverStockEntry request0;
+        request0.source = Cutting::Result::LeftoverSource::Manual;
+        request0.availableLength_mm = 0; // alapérték, hogy ne legyen üres mező
 
-    if (dialog.exec() != QDialog::Accepted)
-        return;
+        dialog.setModel(request0); // előfeltöltés a forrással
 
-    LeftoverStockEntry request = dialog.getModel();
-    presenter->add_LeftoverStockEntry(request);
+        if (dialog.exec() != QDialog::Accepted)
+            return;
+
+        LeftoverStockEntry request = dialog.getModel();
+        request.createdAt = QDateTime::currentDateTime();
+        request.lastSeenAt = request.createdAt;
+
+        presenter->add_LeftoverStockEntry(request);
+
+        if(!dialog.shouldRepeat())
+            break;
+    }
 }
 
 void MainWindow::handle_btn_LeftoverDisposal_clicked()

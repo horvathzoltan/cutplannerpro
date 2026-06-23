@@ -5,6 +5,7 @@
 #include "../dialog/stock/editstoragedialog.h"
 #include "../../model/registries/leftoverstockregistry.h"
 #include "../../presenter/CuttingPresenter.h"
+#include "common/eventlogger.h"
 
 namespace LeftoverTableConnector {
 inline static void Connect(
@@ -20,7 +21,7 @@ inline static void Connect(
                    bool status = presenter->remove_LeftoverStockEntry(id);
                    QString statusTxt = status?"Sikeres":"Sikertelen";
 
-                   zInfo(QString("Selejtezés | %1 | entryId = %2")
+                   zEvent(QString("Selejtezés | %1 | entryId = %2")
                              .arg(statusTxt)
                              .arg(id.toString(QUuid::WithoutBraces)));
                });

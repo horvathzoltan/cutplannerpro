@@ -1432,9 +1432,9 @@ void CuttingPresenter::Paint()
             for (const auto& id : s.requestIds){
                 //ids << id.toString(QUuid::WithoutBraces);
                 auto *a = CuttingPlanRequestRegistry::instance().findById(id);
-                QString b = a?a->externalReference:"";
-
-                tetelszamok << b;
+                QString b = a?a->externalReference:"?";
+                QString c = a?a->dueDate.toString("yyyy-MM-dd"):"?";
+                tetelszamok << QString("%1 (%2)").arg(b, c);
             }
 
             //zInfo(QString("      Request ID-k: %1").arg(ids.join(", ")));
@@ -1488,7 +1488,17 @@ void CuttingPresenter::AuditRequestsByExternalRef()
                 customer = "<ismeretlen>";
         }
 
+
+
         zInfo(QString("   Megrendelő: %1").arg(customer));
+        // Határidő
+        QDate due = QDate(); // invalid default
+        if (!list.isEmpty()) {
+            due = list.first().dueDate;
+        }
+
+        QString dueStr = due.isValid() ? due.toString("yyyy-MM-dd") : "<nincs>";
+        zInfo(QString("   Határidő: %1").arg(dueStr));
 
         // --- OWNER NAME KONZISZTENCIA ELLENŐRZÉS ---
         QString expectedOwner = customer; // amit az előbb kiírtunk
@@ -1501,6 +1511,17 @@ void CuttingPresenter::AuditRequestsByExternalRef()
                 zInfo(QString("   ❌ HIBA: Eltérő megrendelő név található! (%1 vs %2)")
                           .arg(o)
                           .arg(expectedOwner));
+            }
+        }
+
+        // --- HATÁRIDŐ KONZISZTENCIA ELLENŐRZÉS ---
+        QDate expectedDue = due;
+
+        for (const auto& req : list) {
+            if (req.dueDate != expectedDue) {
+                zInfo(QString("   ❌ HIBA: Eltérő határidő található! (%1 vs %2)")
+                          .arg(req.dueDate.toString("yyyy-MM-dd"))
+                          .arg(expectedDue.toString("yyyy-MM-dd")));
             }
         }
 

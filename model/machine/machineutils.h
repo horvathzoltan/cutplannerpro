@@ -8,6 +8,8 @@
 #include "../cutting/cuttingmachine.h"
 #include "../registries/cuttingmachineregistry.h"
 #include "materials/registry/material_registry.h"
+#include "model/leftoverstockentry.h"
+#include "model/storage/storageutils.h"
 //#include "common/eventlogger.h"
 
 namespace MachineUtils {
@@ -67,4 +69,41 @@ inline std::optional<CuttingMachine> pickMachineForMaterial(const QUuid& materia
     return *chosen;
 }
 
+inline const CuttingMachine* findMachineForStorage(const QUuid& storageId) {
+    const auto& machines = CuttingMachineRegistry::instance().readAll();
+
+    for (const auto& m : machines) {
+        if (StorageUtils::isDescendantOf(storageId, m.rootStorageId))
+            return &m;
+    }
+
+    return nullptr;
+}
+
+inline bool canMachineCutMaterial(const CuttingMachine* machine,
+                                  const MaterialMaster* mat)
+{
+    if (!machine || !mat)
+        return false;
+
+    MaterialType type = mat->type;
+
+    return machine->compatibleMaterials.contains(type);
+}
+
+inline bool isLeftoverInCorrectMachine(const LeftoverStockEntry& entry) {
+    const MaterialMaster* mat =
+        MaterialRegistry::instance().findById(entry.materialId);
+
+    if (!mat)
+        return false;
+
+    const CuttingMachine* machine =
+        findMachineForStorage(entry.storageId);
+
+    if (!machine)
+        return false;
+
+    return canMachineCutMaterial(machine, mat);
+}
 } // namespace MachineUtils

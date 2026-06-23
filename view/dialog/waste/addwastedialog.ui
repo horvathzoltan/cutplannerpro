@@ -89,6 +89,13 @@
    <item row="4" column="1">
     <widget class="QComboBox" name="comboStorage"/>
    </item>
+   <item row="7" column="1">
+    <widget class="QCheckBox" name="chk_Repeat">
+     <property name="text">
+      <string>Következő tétel felvitele?</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

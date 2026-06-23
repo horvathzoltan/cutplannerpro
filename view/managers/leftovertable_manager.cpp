@@ -1,6 +1,7 @@
 #include "leftovertable_manager.h"
 #include "../tableutils/tableutils.h"
-#include "materials/utils/material_utils.h"
+#include "common/eventlogger.h"
+//#include "materials/utils/material_utils.h"
 //#include "model/material/materialgroup_utils.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -9,6 +10,9 @@
 #include "../../model/registries/leftoverstockregistry.h"
 #include "../../model/registries/storageregistry.h"
 #include "materials/registry/material_registry.h"
+#include "model/leftover/leftoverstatusutils.h"
+#include "model/leftover/leftoverutils.h"
+#include "model/storage/storageutils.h"
 #include <view/dialog/waste/scrapbybarcodedialog.h>
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
@@ -27,31 +31,30 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     table->insertRow(rowIx);
 
     // 📛 Név + id
-    TableUtils::setMaterialNameCell(table, rowIx, ColName,
-                                    mat->name,
+    TableUtils::setMaterialNameCell(table, rowIx, ColMaterial,
+                                    mat->toDisplay(),
                                     mat->color.color(),
                                     mat->color.name());
     //_rowId.set(rowIx,entry.entryId);
     _rows.registerRow(rowIx, entry.entryId); // opcionálisan extra: entry.storageId
 
-    // 🧾 Vonalkód
-    auto* itemBarcode = new QTableWidgetItem(mat ? mat->barcode : "-");
-    itemBarcode->setTextAlignment(Qt::AlignCenter);
-    table->setItem(rowIx, ColBarcode, itemBarcode);
+    // 🧾 Vonalkód - vigyázz, ez material!
+    // auto* itemBarcode = new QTableWidgetItem(mat ? mat->barcode : "-");
+    // itemBarcode->setTextAlignment(Qt::AlignCenter);
+    // table->setItem(rowIx, ColBarcode, itemBarcode);
 
-    auto* itemID = new QTableWidgetItem(entry.barcode);
-    itemID->setTextAlignment(Qt::AlignCenter);
-    table->setItem(rowIx, ColReusableId, itemID);
+    auto* barcode = new QTableWidgetItem(entry.barcode);
+    barcode->setTextAlignment(Qt::AlignCenter);
+    table->setItem(rowIx, ColBarcode, barcode);
 
     // 📏 Hossz
     auto* itemLength = new QTableWidgetItem(QString::number(entry.availableLength_mm));
     itemLength->setTextAlignment(Qt::AlignCenter);
     table->setItem(rowIx, ColLength, itemLength);
 
-    // 📐 Forma
-    auto* itemShape = new QTableWidgetItem(mat ? MaterialUtils::formatShapeText(*mat) : "-");
-    itemShape->setTextAlignment(Qt::AlignCenter);
-    table->setItem(rowIx, ColShape, itemShape);
+    auto* itemStatus = new QTableWidgetItem(LeftoverStatusUtils::toString(entry.status));
+    itemStatus->setTextAlignment(Qt::AlignCenter);
+    table->setItem(rowIx, ColStatus, itemStatus);
 
     // 🛠️ Forrás
     auto* itemSource = new QTableWidgetItem(entry.sourceAsString());
@@ -63,13 +66,28 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     TableUtils::setReusableCell(itemReusable, entry.availableLength_mm);
     table->setItem(rowIx, ColReusable, itemReusable);
 
+    auto* itemCreated = new QTableWidgetItem(entry.createdAt.toString("yyyy-MM-dd HH:mm"));
+    itemCreated->setTextAlignment(Qt::AlignCenter);
+    table->setItem(rowIx, ColCreatedAt, itemCreated);
+
+    auto* itemSeen = new QTableWidgetItem(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
+    itemSeen->setTextAlignment(Qt::AlignCenter);
+    table->setItem(rowIx, ColLastSeenAt, itemSeen);
+
     // 🏷️ Storage name
     auto* storageOpt = StorageRegistry::instance().findById(entry.storageId);
     QString storageName = storageOpt ? storageOpt->name : "—";
 
+
     auto* storagePanel = TableUtils::createStorageCell(storageName, entry.entryId, this, [this, entry]() {
         emit editStorageRequested(entry.entryId);  // 🔔 új signal
     });
+    // Tooltip beállítása
+    QString storagePathTree = storageOpt
+                                  ? StorageUtils::buildPathTree(entry.storageId)
+                                  : "—";
+    storagePanel->setToolTip(storagePathTree);
+
     table->setCellWidget(rowIx, ColStorageName, storagePanel);
 
     // 🗑️ Törlés gomb
@@ -111,7 +129,18 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     // 🎨 Stílus
     LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 }
+/*
+ColMaterial         = 0
+ColBarcode      = 1
+ColReusableId   = 2
+ColLength       = 3
+ColShape        = 4
+ColSource       = 5
+ColReusable     = 6
+ColStorageName  = 7
+ColActions      = 8
 
+*/
 void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
     if (!table)
         return;
@@ -136,25 +165,21 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
             const MaterialMaster* mat = entry.master();
             if(!mat) return;
 
-            QString materialName = mat ? mat->name : "(ismeretlen)";
-            QString barcode = mat ? mat->barcode : "-";
-            QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "-";
+            //QString materialName = mat ? mat->name : "(ismeretlen)";
+            //QString barcode = mat ? mat->barcode : "-";
+            //QString shape = mat ? MaterialUtils::formatShapeText(*mat) : "-";
 
             // 📛 Név
-            TableUtils::setMaterialNameCell(table, rowIx, ColName,
-                                            mat->name,
+            TableUtils::setMaterialNameCell(table, rowIx, ColMaterial,
+                                            mat->toDisplay(),
                                             mat->color.color(),
                                             mat->color.name());
 
             LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
 
-            // 🧾 Material vonalkód
-            auto* itemBarcode = table->item(rowIx, ColBarcode);
-            if (itemBarcode) itemBarcode->setText(barcode);
-
             // 🧾 Maradék vonalkód
-            auto* itemID = table->item(rowIx, ColReusableId);
-            if (itemID) itemID->setText(entry.barcode);
+            auto* barcode0 = table->item(rowIx, ColBarcode);
+            if (barcode0) barcode0->setText(entry.barcode);
 
             // 📏 Hossz
             auto* itemLength = table->item(rowIx, ColLength);
@@ -162,9 +187,20 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
                 itemLength->setText(QString::number(entry.availableLength_mm));
             }
 
-            // 📐 Alak
-            auto* itemShape = table->item(rowIx, ColShape);
-            if (itemShape) itemShape->setText(shape);
+            // 🧾 STÁTUSZ
+            auto* itemStatus = table->item(rowIx, ColStatus);
+            if (itemStatus)
+                itemStatus->setText(LeftoverStatusUtils::toString(entry.status));
+
+            // 🕒 CREATED AT
+            auto* itemCreated = table->item(rowIx, ColCreatedAt);
+            if (itemCreated)
+                itemCreated->setText(entry.createdAt.toString("yyyy-MM-dd HH:mm"));
+
+            // 🕒 LAST SEEN AT
+            auto* itemSeen = table->item(rowIx, ColLastSeenAt);
+            if (itemSeen)
+                itemSeen->setText(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
 
             // 🛠️ Forrás
             auto* itemSource = table->item(rowIx, ColSource);
@@ -182,6 +218,11 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
                 const auto* storage = StorageRegistry::instance().findById(entry.storageId);
                 QString storageName = storage ? storage->name : "—";
                 TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
+                // Tooltip beállítása
+                QString storagePathTree = storage
+                                              ? StorageUtils::buildPathTree(entry.storageId)
+                                              : "—";
+                storagePanel->setToolTip(storagePathTree);
             }
 
           //  QUuid currentId2 = _rowId.get(rowIx);
@@ -224,10 +265,15 @@ void LeftoverTableManager::refresh_TableFromRegistry() {
     TableUtils::clearSafely(table);
     _rows.clear();
 
-    const auto& stockEntries = LeftoverStockRegistry::instance().readAll();
+    auto entries = LeftoverStockRegistry::instance().readAll();
     const MaterialRegistry& materialReg = MaterialRegistry::instance();
 
-    for (const auto& entry : stockEntries) {
+    std::sort(entries.begin(), entries.end(),
+              [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
+                  return LeftoverUtils::leftoverLess(a.barcode, b.barcode);
+              });
+
+    for (const auto& entry : entries) {
         const MaterialMaster* master = materialReg.findById(entry.materialId);
         if (!master)
             continue;
@@ -281,7 +327,7 @@ void LeftoverTableManager::openScrapDialog()
     while (dlg.exec() == QDialog::Accepted)
     {
         QString code = dlg.barcode();
-        zInfo(QString("Selejtezési kérelem indítva | barcode = %1").arg(code));
+        zEvent(QString("Selejtezési kérelem indítva | barcode = %1").arg(code));
 
         if (code.isEmpty()) {
             if (!dlg.repeat())

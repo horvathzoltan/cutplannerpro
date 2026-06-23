@@ -11,10 +11,10 @@ const MaterialMaster* LeftoverStockEntry::master() const {
     return MaterialRegistry::instance().findById(materialId);
 }
 
-QString LeftoverStockEntry::materialName() const {
-    const auto* m = master();
-    return m ? m->name : "(?)";
-}
+// QString LeftoverStockEntry::materialName() const {
+//     const auto* m = master();
+//     return m ? m->name : "(?)";
+// }
 
 QString LeftoverStockEntry::materialBarcode() const {
     const auto* m = master();

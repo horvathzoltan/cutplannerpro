@@ -20,6 +20,10 @@ private:
         std::optional<int> optimizationId;
         QString barcode;
         QString storageBarcode; // 🆕 új mező
+
+        QString createdAtStr;
+        QString lastSeenAtStr;
+        QString statusStr;
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

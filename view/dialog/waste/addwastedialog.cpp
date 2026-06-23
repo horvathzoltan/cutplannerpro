@@ -14,6 +14,8 @@ int   AddWasteDialog::s_lastLength = 0;
 QUuid AddWasteDialog::s_lastStorageId;
 QString AddWasteDialog::s_lastBarcode;
 
+bool AddWasteDialog::s_lastRepeat = false;
+
 AddWasteDialog::AddWasteDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddWasteDialog)
@@ -210,6 +212,14 @@ bool AddWasteDialog::validateInputs() {
         return false;
     }
 
+    if (!validateBarcodeFormat(bc)) {
+        QMessageBox::warning(this,
+                             "Hibás vonalkód",
+                             "A vonalkód csak ASCII 32–126 karaktereket tartalmazhat, "
+                             "Ékezetes betűk nem engedélyezettek.");
+        return false;
+    }
+
     // 🔥 Barcode egyediség ellenőrzése
     if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
         QMessageBox::warning(this,
@@ -259,4 +269,24 @@ void AddWasteDialog::populateStorageCombo() {
 
 QUuid AddWasteDialog::selectedStorageId() const {
     return ui->comboStorage->currentData().toUuid();
+}
+
+bool AddWasteDialog::shouldRepeat()
+{
+    return ui->chk_Repeat->isChecked();
+}
+
+bool AddWasteDialog::validateBarcodeFormat(const QString& bc) const
+{
+    if (bc.isEmpty())
+        return false;
+
+    // Code128: ASCII 32–126
+    for (QChar c : bc) {
+        ushort u = c.unicode();
+        if (u < 32 || u > 126)
+            return false;
+    }
+
+    return true;
 }

@@ -4,7 +4,7 @@
 
 #include <view/tableutils/RowTracker.h>
 //#include "model/cutresult.h"
-#include "../tableutils/rowid.h"
+//#include "../tableutils/rowid.h"
 #include "../../model/leftoverstockentry.h"
 
 /// ♻️ Hullók (maradékok) táblájának kezelése  (vágás utáni maradékanyagok)
@@ -40,16 +40,18 @@ public:
     static constexpr auto EntryId_Key = "entryId";
 
     // 🏷️ Oszlopindexek (UI: tableLeftovers)
-    static constexpr int ColName      = 0;
-    static constexpr int ColBarcode   = 1;
-    static constexpr int ColReusableId   = 2;
-    static constexpr int ColLength    = 3;
-    static constexpr int ColShape     = 4;
-    static constexpr int ColSource    = 5;
-    static constexpr int ColReusable  = 6;
-    static constexpr int ColStorageName  = 7;
+    static constexpr int ColBarcode   = 0;
+    static constexpr int ColMaterial      = 1;
+    static constexpr int ColLength    = 2;
 
-    static constexpr int ColActions = 8;
+    static constexpr int ColStorageName  = 3;
+    static constexpr int ColStatus     = 4;
+    static constexpr int ColReusable  = 5;static constexpr int ColSource    = 6;
+
+    static constexpr int ColCreatedAt   = 7;
+    static constexpr int ColLastSeenAt   = 8;
+
+    static constexpr int ColActions = 9;
 
     void refresh_TableFromRegistry();
     void updateRow(const LeftoverStockEntry &entry);

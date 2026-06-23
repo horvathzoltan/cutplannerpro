@@ -11,9 +11,10 @@
 #include <QMessageBox>
 
 QString AddInputDialog::s_lastExternalRef;
-bool AddInputDialog::s_lastRepeat = false;
 QMap<QString, AddInputDialog::RequestContext> AddInputDialog::_contexts;
 QSet<QString> AddInputDialog::s_ownerCache;
+
+bool AddInputDialog::s_lastRepeat = false;
 
 AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     : QDialog(parent)

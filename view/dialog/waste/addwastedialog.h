@@ -25,6 +25,7 @@ public:
     void accept() override;
     LeftoverStockEntry getModel() const;
     void setModel(const LeftoverStockEntry& entry);
+    bool shouldRepeat();
 
 private:
     Ui::AddWasteDialog *ui;
@@ -43,5 +44,8 @@ private:
     static QUuid s_lastStorageId;
     static QString s_lastBarcode;   // 🆕
 
+    static bool s_lastRepeat;
+
     int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
+    bool validateBarcodeFormat(const QString &bc) const;
 };

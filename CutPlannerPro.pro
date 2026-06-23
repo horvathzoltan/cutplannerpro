@@ -84,7 +84,6 @@ SOURCES += \
     model/repositories/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
     model/stockentry.cpp \
-    model/storageentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
     service/cutting/optimizer/exporter.cpp \
@@ -146,12 +145,16 @@ HEADERS += \
     model/cutting/plan/parentinfo.h \
     model/cutting/plan/segments.h \
     model/inventorysnapshot.h \
+    model/leftover/leftoverstatus.h \
+    model/leftover/leftoverstatusutils.h \
+    model/leftover/leftoverutils.h \
     model/machine/machineutils.h \
     materials/model/cutting_mode.h \
     materials/utils/material_utils.h \
     materials/utils/material_group_utils.h \
     materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
+    model/storage/storageutils.h \
     model/storageaudit/audit_enums.h \
     presenter/stockpresenter.h \
     service/buildnumber.h \

@@ -113,6 +113,41 @@ inline QWidget* createStorageCell(const QString& storageName, const QUuid& entry
 
     return panel;
 }
+// inline QWidget* createStorageCell(const QString& storageName,
+//                                   const QUuid& entryId,
+//                                   QObject* receiver,
+//                                   std::function<void()> onEdit)
+// {
+//     auto* panel = new QFrame();                     // 🔥 QWidget helyett QFrame
+//     panel->setFrameStyle(QFrame::NoFrame);
+//     panel->setAttribute(Qt::WA_NoSystemBackground); // 🔥 valódi átlátszóság
+//     panel->setAutoFillBackground(false);
+
+//     auto* layout = new QHBoxLayout(panel);
+//     layout->setContentsMargins(0, 0, 0, 0);
+//     layout->setSpacing(4);
+
+//     auto* label = new QLabel(storageName);
+//     label->setAlignment(Qt::AlignCenter);
+//     label->setObjectName("lblStorageName");
+
+//     // 🔥 A label is legyen átlátszó
+//     label->setAttribute(Qt::WA_NoSystemBackground);
+//     label->setAutoFillBackground(false);
+
+//     auto* btnEdit = createIconButton("✏️", "Tároló módosítása", entryId);
+//     btnEdit->setObjectName("btnEditStorage");
+
+//     layout->addWidget(label);
+//     layout->addWidget(btnEdit);
+
+//     QObject::connect(btnEdit, &QPushButton::clicked, receiver, [entryId, onEdit]() {
+//         onEdit();
+//     });
+
+//     return panel;
+// }
+
 
 inline void updateStorageCell(QWidget* storagePanel, const QString& newStorageName, const QUuid& entryId) {
     if (!storagePanel)
@@ -130,6 +165,37 @@ inline void updateStorageCell(QWidget* storagePanel, const QString& newStorageNa
     else
         qWarning() << "⚠️ QPushButton 'btnEditStorage' nem található a storagePanel-ben.";
 }
+
+// inline void updateStorageCell(QWidget* storagePanel,
+//                               const QString& newStorageName,
+//                               const QUuid& entryId)
+// {
+//     if (!storagePanel)
+//         return;
+
+//     // Label frissítése
+//     if (auto* lblStorage = storagePanel->findChild<QLabel*>("lblStorageName")) {
+//         lblStorage->setText(newStorageName);
+
+//         // 🔥 Fontos: maradjon átlátszó!
+//         lblStorage->setAttribute(Qt::WA_TranslucentBackground);
+//         lblStorage->setAutoFillBackground(false);
+//     } else {
+//         qWarning() << "⚠️ QLabel 'lblStorageName' nem található a storagePanel-ben.";
+//     }
+
+//     // Edit gomb entryId frissítése
+//     if (auto* btnEdit = storagePanel->findChild<QPushButton*>("btnEditStorage")) {
+//         btnEdit->setProperty("entryId", entryId);
+//     } else {
+//         qWarning() << "⚠️ QPushButton 'btnEditStorage' nem található a storagePanel-ben.";
+//     }
+
+//     // 🔥 A panel háttérszínét SOHA nem állítjuk!
+//     // A háttérszín mindig a QTableWidgetItem-en van.
+//     storagePanel->setAttribute(Qt::WA_TranslucentBackground);
+//     storagePanel->setAutoFillBackground(false);
+// }
 
 /*CommentCell*/
 inline QWidget* createCommentCell(const QString& commentText, const QUuid& entryId, QObject* receiver, std::function<void()> onEdit) {

@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
@@ -223,6 +223,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableInput">
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+            </property>
             <attribute name="horizontalHeaderDefaultSectionSize">
              <number>100</number>
             </attribute>
@@ -421,6 +424,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableStorageAudit">
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+            </property>
             <column>
              <property name="text">
               <string>Anyag</string>
@@ -486,6 +492,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableRelocationOrder">
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+            </property>
             <column>
              <property name="text">
               <string>Anyag</string>
@@ -563,6 +572,9 @@
            <widget class="QTableWidget" name="tableCuttingInstruction">
             <property name="focusPolicy">
              <enum>Qt::FocusPolicy::NoFocus</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
             </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
@@ -650,6 +662,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableStock">
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
             </property>
@@ -748,6 +763,9 @@
           </item>
           <item>
            <widget class="QTableWidget" name="tableLeftovers">
+            <property name="editTriggers">
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
             </property>
@@ -756,17 +774,12 @@
             </property>
             <column>
              <property name="text">
-              <string>Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Barcode</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Reusable ID	</string>
+              <string>Material</string>
              </property>
             </column>
             <column>
@@ -776,12 +789,12 @@
             </column>
             <column>
              <property name="text">
-              <string>Shape</string>
+              <string>Storage</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Source</string>
+              <string>Status</string>
              </property>
             </column>
             <column>
@@ -791,7 +804,17 @@
             </column>
             <column>
              <property name="text">
-              <string>Storage</string>
+              <string>Source</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>CreatedAt</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>LastSeenAt</string>
              </property>
             </column>
             <column>

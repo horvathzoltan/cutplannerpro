@@ -43,12 +43,11 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         zInfo("reuseables:");
         for (const auto& e : mergedView) {
             const MaterialMaster* mat2 = MaterialRegistry::instance().findById(e.materialId);
-            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 used=%5 source=%6")
+            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 source=%5")
                       .arg(mat2?mat2->toDisplay():e.materialId.toString())
                       .arg(e.barcode)
                       .arg(e.availableLength_mm)
                       .arg(e.materialBarcode())
-                      .arg(e.used)
                       .arg(e.sourceAsString()));
         }
     } else{
@@ -97,10 +96,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
 
         zInfo(QString("🔎 Vizsgálat: leftover[%1] — hossz=%2 mm").arg(i).arg(stock.availableLength_mm));
 
-        if (stock.used) {
-            zInfo("   ✖ Elutasítva — már felhasznált leftover");
-            continue;
-        }
+        // if (stock.used) {
+        //     zInfo("   ✖ Elutasítva — már felhasznált leftover");
+        //     continue;
+        // }
         if (!groupedMaterialIds.contains(stock.materialId)) {
             zInfo("   ✖ Elutasítva — rossz anyagcsoport");
             continue;
