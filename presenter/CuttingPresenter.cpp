@@ -584,17 +584,16 @@ void CuttingPresenter::syncModelWithRegistries() {
             if (stockMaterials.contains(altId)) {
                 const MaterialMaster* alt = MaterialRegistry::instance().findById(altId);
                 warnings << QString("Az anyag (%1) nincs raktáron, de a csoportban van helyettesítő: %2")
-                                .arg(mat->name)
-                                .arg(alt ? alt->name : altId.toString());
+                                .arg(mat->toDisplay())
+                                .arg(alt ? alt->toDisplay() : altId.toString());
                 hasGroupAlternative = true;
                 break;
             }
         }
 
         if (!hasGroupAlternative) {
-            errors << QString("Hiányzó anyag a készletből: %1 (%2)")
-                          .arg(mat->name)
-                          .arg(matId.toString());
+            errors << QString("Hiányzó anyag a készletből: %1")
+                          .arg(mat->toDisplay());
         }
     }
 
@@ -606,7 +605,7 @@ void CuttingPresenter::syncModelWithRegistries() {
 
         if (have < need) {
             const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-            QString name = mat ? mat->name : matId.toString();
+            QString name = mat ? mat->toDisplay() : matId.toString();
 
             warnings << QString("Kevés készlet az anyagból: %1 (kell: %2 mm, van: %3 mm)")
                             .arg(name)

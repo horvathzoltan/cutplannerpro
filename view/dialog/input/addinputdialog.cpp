@@ -41,188 +41,48 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->editOwner->setCompleter(completer);
 
-    // ⭐ Slider UI tuning
-//     ui->sliderHandler->setStyleSheet(R"(
-// QSlider::groove:horizontal {
-//     height: 10px;
-//     background: #d0d0d0;
-//     border-radius: 5px;
-// }
-
-// QSlider::handle:horizontal {
-//     background: #4a90e2;
-//     width: 22px;
-//     height: 22px;
-//     margin: -6px 0;
-//     border-radius: 11px;
-// }
-
-// QSlider::sub-page:horizontal {
-//     background: #4a90e2;
-//     border-radius: 5px;
-// }
-
-// QSlider::add-page:horizontal {
-//     background: #b0b0b0;
-//     border-radius: 5px;
-// }
-// )");
-
-//     // ⭐ Focus highlight (globális dialog szintű)
-//     this->setStyleSheet(R"(
-// QLineEdit:focus,
-// QComboBox:focus,
-// QSpinBox:focus,
-// QSlider:focus,
-// QRadioButton:focus {
-//     outline: 2px solid #4a90e2;
-//     outline-offset: 2px;
-// }
-// QLineEdit[hasError="true"] {
-//     border: 2px solid red;
-// }
-// )");
-
-
-
     populateMaterialCombo();
 
-    // Külső tételszám ajánlása (+1)
-    // if (!s_lastExternalRef.isEmpty()) {
-    //     bool ok = false;
-    //     int num = s_lastExternalRef.toInt(&ok);
-    //     if (ok)
-    //         ui->editReference->setText(QString::number(num + 1));
-    // }
+    // ⭐ Tiszta tételszám ajánlás
+    _nextSuggestedRef = computeNextReference();
 
-    // Ha van context az előző tételszámhoz, ajánljuk a megrendelőt / dátumot / altípust / oldalt
-    // auto it = _contexts.find(s_lastExternalRef);
-    // if (it != _contexts.end()) {
-    //     const RequestContext& ctx = it.value();
-
-    //     ui->editOwner->setText(ctx.ownerName);
-    //     ui->editDueDate->setDate(ctx.dueDate);
-
-    //     switch (ctx.subtype) {
-    //     case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-    //     case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-    //     case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-    //     default:                ui->radioButton_nincs->setChecked(true); break;
-    //     }
-
-    //     if (ctx.side == HandlerSide::Left)
-    //         ui->radioLeft->setChecked(true);
-    //     else if (ctx.side == HandlerSide::Right)
-    //         ui->radioRight->setChecked(true);
-
-    //     if (!ctx.defaultMaterialId.isNull()) {
-    //         int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
-    //         if (idx >= 0)
-    //             ui->comboMaterial->setCurrentIndex(idx);
-    //     }
-    // } else {
-    //     // ha nincs context, dueDate default: ma
-    //     ui->editDueDate->setDate(QDate::currentDate());
-    // }
-
-    // ajánlott tételszám = last + 1
-    QString nextRef;
-    if (!s_lastExternalRef.isEmpty()) {
-        bool ok = false;
-        int num = s_lastExternalRef.toInt(&ok);
-        if (ok)
-            nextRef = QString::number(num + 1);
-    }
-    ui->editReference->setText(nextRef);
-
-    // ha volt előző tételszám → töltsük vissza a contextet
-//    auto it = _contexts.find(s_lastExternalRef);
-//    if (it != _contexts.end()) {
-//        applyContextToWidgets(it.value());
-//    }
-
-    auto it = _contexts.find(nextRef);
-    if (it != _contexts.end()) {
-        applyContextToWidgets(it.value());
-    } else{
-        auto it = _contexts.find(s_lastExternalRef);
-        if (it != _contexts.end()) {
-            applyContextToWidgets(it.value());
-        }
-    }
-
-    // új tételszám → reset kritikus mezők
-    ui->editLength->clear();
-    ui->spinQuantity->setValue(1);
-
-    // dueDate → holnap
-    //ui->editDueDate->setDate(QDate::currentDate().addDays(1));
-    ui->editDueDate-> clear();//setDate(QDate::currentDate());
-
-    ui->editOwner->clear();
-
-    // új tételszám → editable
-    setContextEditable(true);
-
-    if (mode == DialogMode::Update) {
-        ui->chk_Repeat->setChecked(false);
-        ui->chk_Repeat->setEnabled(false);
-        ui->chk_Repeat->setVisible(false);
-    } else {
-        ui->chk_Repeat->setChecked(s_lastRepeat);
-        ui->chk_Repeat->setVisible(true);
-    }
-
-
-    // if (!ui->editOwner->text().isEmpty() &&
-    //     !ui->editReference->text().isEmpty())
-    // {
-    //     ui->editLength->setFocus();
-    //     ui->editLength->selectAll();
-    // }
-
-    // ⭐ Realtime hibajelzés a hossz mezőben
+    // ⭐ Event binding
     // connect(ui->editReference, &QLineEdit::textChanged,
     //         this, [this](const QString& ref) {
 
-    //             auto it = _contexts.find(ref.trimmed());
-    //             if (it == _contexts.end()) {
-    //                 setContextEditable(true);
-    //                 return;
-    //             }
-
-    //             applyContextToWidgets(it.value());
-    //             setContextEditable(false);
+    //             _contextMode = detectContextMode(ref);
+    //             applyContextMode(_contextMode, ref);
+    //             updateContextModeLabel();
     //         });
 
-    connect(ui->editReference, &QLineEdit::textChanged,
-            this, [this](const QString& ref) {
-
-                QString trimmed = ref.trimmed();
-
-                // 1) LÉTEZŐ TÉTELSZÁM → context + readonly
-                auto it = _contexts.find(trimmed);
-                if (it != _contexts.end()) {
-                    applyContextToWidgets(it.value());
-                    setContextEditable(false);
-                    return;
-                }
-
-                // 2) ÚJ TÉTELSZÁM → last context + reset + editable
-                auto last = _contexts.find(s_lastExternalRef);
-                if (last != _contexts.end()) {
-                    applyContextToWidgets(last.value());
-                }
-
-                // reset kritikus mezők
-                ui->editLength->clear();
-                ui->spinQuantity->setValue(1);
-
-                // dueDate → holnap
-                ui->editDueDate->setDate(QDate::currentDate().addDays(1));
-
-                setContextEditable(true);
+    connect(ui->editReference, &QLineEdit::textEdited,
+            this, [this]() {
+                _contextMode = ContextMode::Editing;
+                updateContextModeLabel();
             });
+
+    connect(ui->editReference, &QLineEdit::editingFinished,
+            this, [this]() {
+                QString ref = ui->editReference->text().trimmed();
+
+                // ⭐ 1) üres → nincs workflow
+                if (ref.isEmpty())
+                    return;
+
+                // ⭐ 2) nem változott → nincs workflow
+                if (ref == _originalReference)
+                    return;
+
+                // ⭐ 3) változott → workflow indul
+                _contextMode = detectContextMode(ref);
+                applyContextMode(_contextMode, ref);
+                updateContextModeLabel();
+
+                // ⭐ 4) új eredeti érték mentése
+                _originalReference = ref;
+            });
+
+
 
     // qty változás → handler‑UI váltás
     connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged),
@@ -232,95 +92,15 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     connect(ui->sliderHandler, &QSlider::valueChanged,
             this, &AddInputDialog::updateSliderLabels);
 
-    // Fókusz fix
+
+    // ⭐ Induló inicializálás
     QTimer::singleShot(0, this, [this]() {
-        if(ui->editReference->text().isEmpty()){
-            ui->editReference->setFocus();
-            return;
-        }
-
-        if (ui->editOwner->text().isEmpty()) {
-            ui->editOwner->setFocus();
-            return;
-        }
-
-        if (ui->editReference->text().isEmpty()) {
-            ui->editReference->setFocus();
-            return;
-        }
-
-        if (!ui->editLength->text().isEmpty()) {
-            ui->editLength->setFocus();
-            ui->editLength->selectAll();
-            return;
-        }
-
-        ui->editLength->setFocus();
+        initializeDialog();
+        ui->chk_Repeat->setChecked(s_lastRepeat);   // ⭐ repeat visszatöltése
+        _originalReference = ui->editReference->text().trimmed();   // ⭐ eredeti érték mentése
     });
 
-    // induló állapot
-    //onQuantityChanged(ui->spinQuantity->value());
-
-    // connect(ui->btn_MaterialSearch, &QPushButton::clicked,
-    //         this, &AddInputDialog::on_btn_MaterialSearch_clicked);
-
-    // connect(ui->editReference, &QLineEdit::textChanged,
-    //         this, [this](const QString& ref) {
-
-    //             auto it = _contexts.find(ref.trimmed());
-    //             if (it == _contexts.end()) {
-    //                 // új tételszám → mezők szabadon szerkeszthetők
-    //                 ui->editOwner->setReadOnly(false);
-    //                 ui->editDueDate->setReadOnly(false);
-
-    //                 ui->radioButton_alap->setEnabled(true);
-    //                 ui->radioButton_rugos->setEnabled(true);
-    //                 ui->radioButton_tetoteri->setEnabled(true);
-    //                 ui->radioButton_nincs->setEnabled(true);
-
-    //                 ui->radioLeft->setEnabled(true);
-    //                 ui->radioRight->setEnabled(true);
-    //                 return;
-    //             }
-
-    //             const RequestContext& ctx = it.value();
-
-    //             ui->editOwner->setText(ctx.ownerName);
-    //             ui->editDueDate->setDate(ctx.dueDate);
-
-    //             switch (ctx.subtype) {
-    //             case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-    //             case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-    //             case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-    //             default:                ui->radioButton_nincs->setChecked(true); break;
-    //             }
-
-    //             if (ctx.side == HandlerSide::Left)
-    //                 ui->radioLeft->setChecked(true);
-    //             else if (ctx.side == HandlerSide::Right)
-    //                 ui->radioRight->setChecked(true);
-
-    //             if (!ctx.defaultMaterialId.isNull()) {
-    //                 int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
-    //                 if (idx >= 0)
-    //                     ui->comboMaterial->setCurrentIndex(idx);
-    //             }
-
-    //             // kontextusos tételszám → megrendelői mezők readonly
-    //             ui->editOwner->setReadOnly(true);
-    //             ui->editDueDate->setReadOnly(true);
-
-    //             ui->radioButton_alap->setEnabled(false);
-    //             ui->radioButton_rugos->setEnabled(false);
-    //             ui->radioButton_tetoteri->setEnabled(false);
-    //             ui->radioButton_nincs->setEnabled(false);
-
-    //             ui->radioLeft->setEnabled(false);
-    //             ui->radioRight->setEnabled(false);
-    //         });
-
 }
-
 
 AddInputDialog::~AddInputDialog()
 {
@@ -329,6 +109,162 @@ AddInputDialog::~AddInputDialog()
     delete ui;
 }
 
+void AddInputDialog::initializeDialog()
+{
+    // ⭐ Ha van nextRef → Sequential indul
+    if (!_nextSuggestedRef.isEmpty()) {
+        ui->editReference->setText(_nextSuggestedRef);
+        _contextMode = ContextMode::Sequential;
+        applySequentialContext(_nextSuggestedRef);
+    }
+    else {
+        // ⭐ Ha nincs → NewOrder indul
+        ui->editReference->clear();
+        _contextMode = ContextMode::NewOrder;
+        applyNewOrderContext();
+    }
+
+    updateContextModeLabel();
+    applyInitialFocus();
+}
+
+
+AddInputDialog::ContextMode AddInputDialog::detectContextMode(const QString& ref)
+{
+    QString trimmed = ref.trimmed();
+
+    if (_contexts.contains(trimmed))
+        return ContextMode::Existing;
+
+    bool okLast = false, okCurr = false;
+    int last = s_lastExternalRef.toInt(&okLast);
+    int curr = trimmed.toInt(&okCurr);
+
+    if (okLast && okCurr && curr == last + 1)
+        return ContextMode::Sequential;
+
+    return ContextMode::NewOrder;
+}
+
+void AddInputDialog::applyContextMode(ContextMode mode, const QString& ref)
+{
+    switch (mode) {
+    case ContextMode::Existing:
+        applyExistingContext(ref);
+        break;
+
+    case ContextMode::Sequential:
+        applySequentialContext(ref);
+        break;
+
+    case ContextMode::NewOrder:
+        applyNewOrderContext();
+        break;
+    }
+}
+
+void AddInputDialog::applyExistingContext(const QString& ref)
+{
+    auto it = _contexts.find(ref.trimmed());
+    if (it != _contexts.end()) {
+        applyContextToWidgets(it.value());
+        setContextEditable(false);
+    }
+}
+
+void AddInputDialog::applySequentialContext(const QString& ref)
+{
+    auto it = _contexts.find(s_lastExternalRef);
+    if (it != _contexts.end()) {
+        applyContextToWidgets(it.value());
+    }
+
+    // ❌ nextRef automatikus beírása TILOS
+    // (ha a user akarja, majd beírja)
+
+    // ⭐ Automatikus következő tételszám
+    // Sequential mód → csak akkor írjuk be a nextRef-et,
+    // ha a user nem írt be explicit értéket
+    // if (ref.trimmed().isEmpty()) {
+    //     QString nextRef = computeNextReference();
+    //     if (!nextRef.isEmpty()) {
+    //         ui->editReference->setText(nextRef);
+    //     }
+    // }
+
+
+    resetForSequential();
+    setContextEditable(true);
+}
+
+
+void AddInputDialog::applyNewOrderContext()
+{
+    // ⭐ Új megrendelő → referencia mező törlése
+    //ui->editReference->clear(); // ❌ TILOS
+
+    resetForNewOrder();
+    setContextEditable(true);
+}
+
+
+void AddInputDialog::resetForNewOrder()
+{
+    ui->editOwner->clear();
+
+    // ⭐ Dátum → holnap
+    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+
+    ui->edit_Color->clear();
+
+    ui->editLength->clear();
+    ui->spinQuantity->setValue(1);
+}
+
+void AddInputDialog::resetForSequential()
+{
+    // ⭐ Dátum → holnap
+    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+
+    ui->editLength->clear();
+    ui->spinQuantity->setValue(1);
+}
+
+void AddInputDialog::applyInitialFocus()
+{
+    if (ui->editReference->text().isEmpty()) {
+        ui->editReference->setFocus();
+        return;
+    }
+
+    if (ui->editOwner->text().isEmpty()) {
+        ui->editOwner->setFocus();
+        return;
+    }
+
+    if (ui->editLength->text().isEmpty()) {
+        ui->editLength->setFocus();
+        return;
+    }
+
+    ui->editLength->setFocus();
+    ui->editLength->selectAll();
+}
+
+QString AddInputDialog::computeNextReference()
+{
+    if (s_lastExternalRef.isEmpty())
+        return QString();
+
+    bool ok = false;
+    int num = s_lastExternalRef.toInt(&ok);
+    if (!ok)
+        return QString();
+
+    return QString::number(num + 1);
+}
+
+/**/
 
 void AddInputDialog::populateMaterialCombo() {
     const auto& registry = MaterialRegistry::instance().readAll();
@@ -496,50 +432,25 @@ void AddInputDialog::accept() {
 }
 
 
-// void AddInputDialog::setModel(const Cutting::Plan::Request& request) {
-//     current_requestId = request.requestId;
-
-//     int index = ui->comboMaterial->findData(request.materialId);
-//     if (index >= 0)
-//         ui->comboMaterial->setCurrentIndex(index);
-
-//     ui->editLength->setText(QString::number(request.requiredLength));
-//     ui->spinQuantity->setValue(request.quantity);
-//     ui->editOwner->setText(request.ownerName);
-//     ui->editReference->setText(request.externalReference);
-
-//     // handler UI
-//     onQuantityChanged(request.quantity); // beállítja a módot + slider range-et
-
-//     // ⭐ J/B visszatöltés
-//     onQuantityChanged(request.quantity);
-
-//     if (request.quantity == 1) {
-//         ui->radioLeft->setChecked(request.leftCount == 1);
-//         ui->radioRight->setChecked(request.rightCount == 1);
-//     } else {
-//         ui->sliderHandler->setValue(request.leftCount);
-//         updateSliderLabels();
-//     }
-
-//     // Altípus
-//     switch (request.subtype) {
-//     case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-//     case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-//     case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-//     default:                ui->radioButton_nincs->setChecked(true); break;
-//     }
-
-//     ui->editDueDate->setDate(request.dueDate);
-
-// }
-
 void AddInputDialog::setModel(const Cutting::Plan::Request& req)
 {
+    // ⭐ 1) Azonosító beállítása
     current_requestId = req.requestId;
+
+    // ⭐ 2) UI mezők feltöltése modulárisan
     applyRequestToWidgets(req);
-    setContextEditable(false); // Update módban nem szerkeszthető
+
+    // ⭐ 3) Update mód → Existing context
+    _contextMode = ContextMode::Existing;
+    updateContextModeLabel();
+
+    // ⭐ 4) Update módban nem szerkeszthető
+    setContextEditable(false);
+
+    // ⭐ 5) Fókusz beállítása
+    applyInitialFocus();
 }
+
 
 
 bool AddInputDialog::shouldRepeat()
@@ -649,53 +560,26 @@ void AddInputDialog::reject() {
 
 void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
 {
-    zEvent("applyContextToWidgets dueDate:"
-           +ctx.dueDate.toString("yyyy-MM-dd"));
-
-    ui->editOwner->setText(ctx.ownerName);
-    ui->editDueDate->setDate(ctx.dueDate);
-
-    applySubtype(ctx.subtype);
-    applySide(ctx.side);
-
-    if (!ctx.defaultMaterialId.isNull()) {
-        int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
-        if (idx >= 0)
-            ui->comboMaterial->setCurrentIndex(idx);
-    }
-
-        ui->edit_Color->setText(ctx.color);   // ÚJ
+    applyOwnerAndDate(ctx);
+    applySubtypeFromContext(ctx);
+    applySideFromContext(ctx);
+    applyMaterialFromContext(ctx);
+    applyColorFromContext(ctx);
 }
+
 
 void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
 {
-    zEvent("applyRequestToWidgets dueDate:"
-           +req.dueDate.toString("yyyy-MM-dd"));
-
-    ui->editOwner->setText(req.ownerName);
-    ui->editReference->setText(req.externalReference);
-    ui->editDueDate->setDate(req.dueDate);
-    ui->edit_Color->setText(req.color);
-
-    // subtype
-    applySubtype(req.subtype);
-    applySide(req.leftCount > 0 ? HandlerSide::Left : HandlerSide::Right);
-
-    // material
-    int idx = ui->comboMaterial->findData(req.materialId);
-    if (idx >= 0)
-        ui->comboMaterial->setCurrentIndex(idx);
-
-    // length + quantity
-    ui->editLength->setText(QString::number(req.requiredLength));
-    ui->spinQuantity->setValue(req.quantity);
-
-    onQuantityChanged(req.quantity);
-    if (req.quantity == 1)
-        ui->radioLeft->setChecked(req.leftCount == 1);
-    else
-        ui->sliderHandler->setValue(req.leftCount);
+    applyOwnerFromRequest(req);
+    applyReferenceFromRequest(req);
+    applyDateFromRequest(req);
+    applyColorFromRequest(req);
+    applySubtypeFromRequest(req);
+    applySideFromRequest(req);
+    applyMaterialFromRequest(req);
+    applyLengthAndQuantityFromRequest(req);
 }
+
 
 void AddInputDialog::applySubtype(Subtype t)
 {
@@ -718,25 +602,16 @@ void AddInputDialog::applySide(HandlerSide side)
 
 void AddInputDialog::setContextEditable(bool editable)
 {
-    //ui->editOwner->setReadOnly(!editable);
-    //ui->editDueDate->setReadOnly(!editable);
-    // ⭐ Dátum popup tiltása readonly módban
-    //ui->editDueDate->setCalendarPopup(editable);
-
-    ui->editOwner->setEnabled(editable);
-    ui->editDueDate->setEnabled(editable);
-
-    ui->radioButton_alap->setEnabled(editable);
-    ui->radioButton_rugos->setEnabled(editable);
-    ui->radioButton_tetoteri->setEnabled(editable);
-    ui->radioButton_nincs->setEnabled(editable);
-
-    ui->radioLeft->setEnabled(editable);
-    ui->radioRight->setEnabled(editable);
-
-    ui->edit_Color->setEnabled(editable);
-
+    setReferenceEditable(editable);
+    setOwnerEditable(editable);
+    setDateEditable(editable);
+    setSubtypeEditable(editable);
+    setSideEditable(editable);
+    setColorEditable(editable);
+    setQuantityEditable(editable);
 }
+
+
 
 void AddInputDialog::loadOwnerCache()
 {
@@ -763,19 +638,24 @@ void AddInputDialog::saveOwnerCache()
 
 void AddInputDialog::on_btn_Reset_clicked()
 {
-    // Kritikus mezők reset
-    ui->editOwner->clear();
-    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
-    ui->radioButton_nincs->setChecked(true);
-    ui->radioLeft->setChecked(true);
-    ui->comboMaterial->setCurrentIndex(0);
-    ui->editLength->clear();
-    ui->spinQuantity->setValue(1);
-    ui->edit_Color->clear();
+    // ⭐ Reset mindig új megrendelő workflow-t indít
+    _contextMode = ContextMode::NewOrder;
+    updateContextModeLabel();
 
-    // Új adat bevitel engedélyezése
+    // ⭐ Referencia mező törlése
+    ui->editReference->clear();
+    _originalReference.clear();
+
+    // ⭐ Reset modul használata
+    resetForNewOrder();
+
+    // ⭐ Szerkeszthető mezők engedélyezése
     setContextEditable(true);
+
+    // ⭐ Fókusz beállítása
+    applyInitialFocus();
 }
+
 
 void AddInputDialog::loadContextMap()
 {
@@ -843,7 +723,135 @@ void AddInputDialog::saveContextMap()
     }
 }
 
+void AddInputDialog::updateContextModeLabel()
+{
+    QString text;
+
+    switch (_contextMode) {
+    case ContextMode::Editing:
+        text = "Mód: SZERKESZTÉS";
+        break;
+
+    case ContextMode::Existing:
+        text = "Mód: LÉTEZŐ TÉTELSZÁM";
+        break;
+    case ContextMode::Sequential:
+        text = "Mód: SOROZAT";
+        break;
+    case ContextMode::NewOrder:
+        text = "Mód: ÚJ MEGRENDELŐ";
+        break;
+    }
+
+    ui->label_ContextMode->setText(text);
+}
+
+
+void AddInputDialog::applyOwnerAndDate(const RequestContext& ctx)
+{
+    ui->editOwner->setText(ctx.ownerName);
+    ui->editDueDate->setDate(ctx.dueDate);
+}
 
 
 
+void AddInputDialog::applySubtypeFromContext(const RequestContext& ctx)
+{
+    applySubtype(ctx.subtype);
+}
+void AddInputDialog::applySideFromContext(const RequestContext& ctx)
+{
+    applySide(ctx.side);
+}
 
+void AddInputDialog::applyMaterialFromContext(const RequestContext& ctx)
+{
+    if (!ctx.defaultMaterialId.isNull()) {
+        int idx = ui->comboMaterial->findData(ctx.defaultMaterialId);
+        if (idx >= 0)
+            ui->comboMaterial->setCurrentIndex(idx);
+    }
+}
+
+void AddInputDialog::applyColorFromContext(const RequestContext& ctx)
+{
+    ui->edit_Color->setText(ctx.color);
+}
+
+void AddInputDialog::setOwnerEditable(bool editable)
+{
+    ui->editOwner->setEnabled(editable);
+}
+void AddInputDialog::setDateEditable(bool editable)
+{
+    ui->editDueDate->setEnabled(editable);
+}
+void AddInputDialog::setSubtypeEditable(bool editable)
+{
+    ui->radioButton_alap->setEnabled(editable);
+    ui->radioButton_rugos->setEnabled(editable);
+    ui->radioButton_tetoteri->setEnabled(editable);
+    ui->radioButton_nincs->setEnabled(editable);
+}
+void AddInputDialog::setSideEditable(bool editable)
+{
+    ui->radioLeft->setEnabled(editable);
+    ui->radioRight->setEnabled(editable);
+}
+void AddInputDialog::setColorEditable(bool editable)
+{
+    ui->edit_Color->setEnabled(editable);
+}
+void AddInputDialog::setQuantityEditable(bool editable)
+{
+    ui->spinQuantity->setEnabled(editable);
+}
+
+void AddInputDialog::applyOwnerFromRequest(const Cutting::Plan::Request& req)
+{
+    ui->editOwner->setText(req.ownerName);
+}
+
+void AddInputDialog::applyReferenceFromRequest(const Cutting::Plan::Request& req)
+{
+    ui->editReference->setText(req.externalReference);
+}
+void AddInputDialog::applyDateFromRequest(const Cutting::Plan::Request& req)
+{
+    ui->editDueDate->setDate(req.dueDate);
+}
+void AddInputDialog::applyColorFromRequest(const Cutting::Plan::Request& req)
+{
+    ui->edit_Color->setText(req.color);
+}
+void AddInputDialog::applySubtypeFromRequest(const Cutting::Plan::Request& req)
+{
+    applySubtype(req.subtype);
+}
+void AddInputDialog::applySideFromRequest(const Cutting::Plan::Request& req)
+{
+    applySide(req.leftCount > 0 ? HandlerSide::Left : HandlerSide::Right);
+}
+void AddInputDialog::applyMaterialFromRequest(const Cutting::Plan::Request& req)
+{
+    int idx = ui->comboMaterial->findData(req.materialId);
+    if (idx >= 0)
+        ui->comboMaterial->setCurrentIndex(idx);
+}
+void AddInputDialog::applyLengthAndQuantityFromRequest(const Cutting::Plan::Request& req)
+{
+    ui->editLength->setText(QString::number(req.requiredLength));
+    ui->spinQuantity->setValue(req.quantity);
+
+    onQuantityChanged(req.quantity);
+
+    if (req.quantity == 1)
+        ui->radioLeft->setChecked(req.leftCount == 1);
+    else
+        ui->sliderHandler->setValue(req.leftCount);
+}
+
+void AddInputDialog::setReferenceEditable(bool editable)
+{
+    ui->editReference->setEnabled(editable);
+}

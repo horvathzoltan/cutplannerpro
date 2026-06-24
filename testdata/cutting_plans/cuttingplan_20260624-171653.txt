@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1838";"Bodó Roló, Pécs";0;0;2705;;1;1;0;none;"9010";NP-T-9010;Width;false;2026-06-26
+"1839";"Bodó Roló, Pécs";0;0;2706;;1;1;0;none;"9010";NP-TF-9010;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;3115;;1;0;1;none;"7016";NP-T-7016;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;1123;;1;0;1;none;"7016";NP-T-7016;Width;false;2026-06-26

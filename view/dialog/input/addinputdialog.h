@@ -18,6 +18,13 @@ public:
     explicit AddInputDialog(QWidget *parent = nullptr, DialogMode mode = DialogMode::Create);
     ~AddInputDialog();
 
+    enum class ContextMode {
+        Editing,
+        Existing,    // létező tételszám
+        Sequential,  // sorozatbevitel (haladunk előre)
+        NewOrder     // új megrendelő
+    };
+
     QUuid selectedMaterialId() const;
     int length() const;
     int quantity() const;
@@ -58,8 +65,11 @@ private:
 
     bool _shiftEnterAccepted = false;
     QString _sliderInputBuffer;
+    QString _nextSuggestedRef;
+    QString _originalReference;
 
     DialogMode _mode = DialogMode::Create;
+    ContextMode _contextMode = ContextMode::NewOrder;
 
     struct RequestContext {
         QString ownerName;     // Megrendelő neve
@@ -79,8 +89,50 @@ private:
     void applySide(HandlerSide side);
     void loadOwnerCache();
     void saveOwnerCache();
+
     void loadContextMap();
     void saveContextMap();
+
+    ContextMode detectContextMode(const QString& ref);
+    void applyContextMode(ContextMode mode, const QString& ref);
+
+    void applyExistingContext(const QString& ref);
+    void applySequentialContext(const QString& ref);
+    void applyNewOrderContext();
+
+    void resetForNewOrder();
+    void resetForSequential();
+
+    void applyInitialFocus();
+    QString computeNextReference();
+
+    void updateContextModeLabel();
+    void initializeDialog();
+
+    void applyOwnerAndDate(const RequestContext& ctx);
+    void applySubtypeFromContext(const RequestContext& ctx);
+    void applySideFromContext(const RequestContext& ctx);
+    void applyMaterialFromContext(const RequestContext& ctx);
+    void applyColorFromContext(const RequestContext& ctx);
+
+    void setOwnerEditable(bool editable);
+    void setDateEditable(bool editable);
+    void setSubtypeEditable(bool editable);
+    void setSideEditable(bool editable);
+    void setColorEditable(bool editable);
+    void setQuantityEditable(bool editable);
+
+    void applyOwnerFromRequest(const Cutting::Plan::Request& req);
+    void applyReferenceFromRequest(const Cutting::Plan::Request& req);
+    void applyDateFromRequest(const Cutting::Plan::Request& req);
+    void applyColorFromRequest(const Cutting::Plan::Request& req);
+    void applySubtypeFromRequest(const Cutting::Plan::Request& req);
+    void applySideFromRequest(const Cutting::Plan::Request& req);
+    void applyMaterialFromRequest(const Cutting::Plan::Request& req);
+    void applyLengthAndQuantityFromRequest(const Cutting::Plan::Request& req);
+
+    void setReferenceEditable(bool editable);
+
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

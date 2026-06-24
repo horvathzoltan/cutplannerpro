@@ -208,10 +208,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
     int diff = outputCount - inputCount;
 
-    lines << QString("🧾 Vágási utasítások (gépenkénti)");
+    lines << QString("📄 Vágási utasítások (gépenkénti)");
     lines << QString("CutPlan: %1").arg(planIdStr);
     lines << QString("📅 Dátum: %1").arg(dateStr);
-    lines << QString("🪚 Gép: %1").arg(mc.machineHeader.machineName);
+    lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
     lines << "────────────────────────────────";
     lines << buildMaterialStockReportForMachine_AUDIT(mc);
     lines << "────────────────────────────────";

@@ -1,33 +1,7 @@
-nem a külső tételszámon van a fókusz - újnál bevinné, azzal kezdené, de nam újnál meg nem azzal
-nem jó a editorok sorrend
-appycontexttowidgets fura: először amikora konstruktor lefut csak a dátum áll be tételszám (ugyanaz) beírására már jó
-
-optimalizáció indítása - anyaghiány - az anyag guiddal van kiírva
 
 nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként történik.
 az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
 
-
-🧾 Vágási utasítások (gépenkénti)
-CutPlan: cuttingplan_20260624-070730
-📅 Dátum: 2026.06.24 13:32
-🪚 Gép: Rivers
-
-emoji nem jó
-
-felvételkor:
-
-de honnan tudjuk, hogy új?
-
-3 eset van:
-
-1.újat visz fel, majd okra felviszio a következő újat, ami még nem létezik, tehát halad előre
-az egymás utáni tételszámoknak felveszi egy alkatrészét, pl. végigmegy a tokokon
-
-2.újat visz fel, de egy régi tételszámra tér vissza, majd újra végigmegy a tételszámokon
-az egymásutáni tételszámokra már felvette a tokokat, és most felveszi a tokfedeleket
-
-3. újat vesz fel, de beír egy tételszámot (vagy jó amit a gép következőnek feldob) de ez már egy új megrendelő megrendelése
 
 audit: a naphálók  - ez csak egy plda - méreteinek elgépelése
 nem számolunk újra levonást, de vannak törvényszerűségek, pl a napháló méreténél nagyobb alkatrész nincsen, de mivel ezek egymáshoz képest helyezkednek el, ezért a tokfedélnél kisebb egyenlő a tok, a toknál tengely, a tengelynél a záró és a zárónál a súly
