@@ -1,0 +1,79 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
+"1838";"Bodó Roló, Pécs";0;0;2705;;1;0;1;none;"";NP-T-9010;Width;false;2026-06-26
+"1839";"Bodó Roló, Pécs";0;0;2705;;1;1;0;none;"";NP-T-9010;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;3115;;1;0;1;none;"";NP-T-7016;Width;false;2026-06-26
+"1852";"Losonczi R., Pécs";0;0;3215;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-26
+"1853";"Losonczi R.,Pécs";0;0;3420;;1;0;1;none;"";NP-T-7016;Width;false;2026-06-26
+"1854";"Losonczi R.,Pécs";0;0;3135;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-26
+"1857";"ÁrnyékGuru, Győr";0;0;1055;;1;0;1;none;"";NP-T-7016;Width;false;2026-06-29
+"1858";"ÁrnyékGuru, Győr";0;0;3475;;1;0;1;none;"";NP-T-7016;Width;false;2026-06-29
+"1859";"ÁrnyékGuru, Győr";0;0;3475;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-29
+"1807";"Félegyházi, Mezőtúr";0;0;1770;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-29
+"1810";"Ro-Konzol, Győr";0;0;2615;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-29
+"1811";"Ro-Konzol, Győr";0;0;2835;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-29
+"1877";"JaraRolling";0;0;3560;;1;1;0;none;"";NP-T-7016;Width;false;2026-07-03
+"1878";"JaraRolling";0;0;2510;;1;1;0;none;"";NP-T-7016;Width;false;2026-07-03
+"1879";"JaraRolling";0;0;970;;1;0;1;none;"";NP-T-7016;Width;false;2026-07-03
+"1880";"JaraRolling";0;0;3070;;1;1;0;none;"";NP-T-7016;Width;false;2026-07-03
+"1838";"Bodó Roló, Pécs";0;0;2705;;1;0;1;none;"";NP-TF-9010;Width;false;2026-06-26
+"1839";"Bodó Roló, Pécs";0;0;2705;;1;1;0;none;"";NP-TF-9010;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;3140;;1;0;1;none;"";NP-TF-7016;Width;false;2026-06-26
+"1852";"Losonczi R., Pécs";0;0;3240;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-26
+"1853";"Losonczi R.,Pécs";0;0;3445;;1;0;1;none;"";NP-TF-7016;Width;false;2026-06-26
+"1854";"Losonczi R.,Pécs";0;0;3160;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-26
+"1857";"ÁrnyékGuru, Győr";0;0;1080;;1;0;1;none;"";NP-TF-7016;Width;false;2026-06-29
+"1858";"ÁrnyékGuru, Győr";0;0;3500;;1;0;1;none;"";NP-TF-7016;Width;false;2026-06-29
+"1859";"ÁrnyékGuru, Győr";0;0;3500;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-29
+"1807";"Félegyházi, Mezőtúr";0;0;1795;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-25
+"1810";"Ro-Konzol, Győr";0;0;2640;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-29
+"1811";"Ro-Konzol, Győr";0;0;2860;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-29
+"1877";"JaraRolling";0;0;3585;;1;1;0;none;"";NP-TF-7016;Width;false;2026-07-03
+"1878";"JaraRolling";0;0;2535;;1;1;0;none;"";NP-TF-7016;Width;false;2026-07-03
+"1879";"JaraRolling";0;0;995;;1;0;1;none;"";NP-TF-7016;Width;false;2026-07-03
+"1880";"JaraRolling";0;0;3095;;1;1;0;none;"";NP-TF-7016;Width;false;2026-07-03
+"1839";"Bodó Roló, Pécs";0;0;2635;;1;1;0;none;"";NP-SZ-9010;Width;false;2026-06-26
+"1838";"Bodó Roló, Pécs";0;0;2635;;1;0;1;none;"";NP-SZ-9010;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;3022;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-06-26
+"1852";"Losonczi R., Pécs";0;0;3122;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-26
+"1853";"Losonczi R.,Pécs";0;0;3327;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-06-26
+"1854";"Losonczi R.,Pécs";0;0;3042;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-26
+"1857";"ÁrnyékGuru, Győr";0;0;962;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-06-29
+"1858";"ÁrnyékGuru, Győr";0;0;3382;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-06-29
+"1859";"ÁrnyékGuru, Győr";0;0;3382;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-29
+"1807";"Félegyházi, Mezőtúr";0;0;1677;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-25
+"1810";"Ro-Konzol, Győr";0;0;2522;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-29
+"1811";"Ro-Konzol, Győr";0;0;2742;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-29
+"1877";"JaraRolling";0;0;3467;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-07-03
+"1878";"JaraRolling";0;0;2417;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-07-03
+"1879";"JaraRolling";0;0;877;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-07-03
+"1880";"JaraRolling";0;0;2977;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-07-03
+"1838";"Bodó Roló, Pécs";0;0;2168;;1;0;1;none;"";NP-SL-9010;Width;false;2026-06-26
+"1839";"Bodó Roló, Pécs";0;0;2168;;1;1;0;none;"";NP-SL-9010;Width;false;2026-06-26
+"1851";"Losonczi R., Pécs";0;0;2127;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-26
+"1852";"Losonczi R., Pécs";0;0;2127;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-26
+"1853";"Losonczi R.,Pécs";0;0;2067;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-26
+"1854";"Losonczi R.,Pécs";0;0;2587;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-26
+"1857";"ÁrnyékGuru, Győr";0;0;2607;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-29
+"1858";"ÁrnyékGuru, Győr";0;0;2622;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-29
+"1859";"ÁrnyékGuru, Győr";0;0;2622;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-29
+"1807";"Félegyházi, Mezőtúr";0;0;2257;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-25
+"1810";"Ro-Konzol, Győr";0;0;2507;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-29
+"1811";"Ro-Konzol, Győr";0;0;2427;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-29
+"1877";"JaraRolling";0;0;2717;;1;1;0;none;"";NP-CL-7016;Width;false;2026-07-03
+"1878";"JaraRolling";0;0;2717;;1;1;0;none;"";NP-CL-7016;Width;false;2026-07-03
+"1879";"JaraRolling";0;0;2717;;1;0;1;none;"";NP-CL-7016;Width;false;2026-07-03
+"1880";"JaraRolling";0;0;2717;;1;0;1;none;"";NP-CL-7016;Width;false;2026-07-03
+"1851";"Losonczi R., Pécs";0;0;2127;;1;0;1;none;"";NP-CLB;Width;false;2026-06-26
+"1852";"Losonczi R., Pécs";0;0;2127;;1;1;0;none;"";NP-CLB;Width;false;2026-06-26
+"1853";"Losonczi R.,Pécs";0;0;2067;;1;0;1;none;"";NP-CLB;Width;false;2026-06-26
+"1854";"Losonczi R.,Pécs";0;0;2587;;1;1;0;none;"";NP-CLB;Width;false;2026-06-26
+"1857";"ÁrnyékGuru, Győr";0;0;2607;;1;0;1;none;"";NP-CLB;Width;false;2026-06-29
+"1858";"ÁrnyékGuru, Győr";0;0;2622;;1;0;1;none;"";NP-CLB;Width;false;2026-06-29
+"1859";"ÁrnyékGuru, Győr";0;0;2622;;1;1;0;none;"";NP-CLB;Width;false;2026-06-29
+"1807";"Félegyházi, Mezőtúr";0;0;2257;;1;1;0;none;"";NP-CLB;Width;false;2026-06-25
+"1810";"Ro-Konzol, Győr";0;0;2507;;1;1;0;none;"";NP-CLB;Width;false;2026-06-29
+"1811";"Ro-Konzol, Győr";0;0;2427;;1;1;0;none;"";NP-CLB;Width;false;2026-06-29
+"1877";"JaraRolling";0;0;2717;;1;1;0;none;"";NP-CLB;Width;false;2026-07-03
+"1878";"JaraRolling";0;0;2717;;1;1;0;none;"";NP-CLB;Width;false;2026-07-03
+"1879";"JaraRolling";0;0;2717;;1;0;1;none;"";NP-CLB;Width;false;2026-07-03
+"1880";"JaraRolling";0;0;2717;;1;1;0;none;"";NP-CLB;Width;false;2026-07-03

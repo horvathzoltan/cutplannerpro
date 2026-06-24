@@ -1,11 +1,1 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate
-"1779";"Kasza L., Szeged";0;0;3015;;1;1;0;none;"";NP-T-7016;Width;false;2026-06-24
-"1779";"Kasza L., Szeged";0;0;3040;;1;1;0;none;"";NP-TF-7016;Width;false;2026-06-24
-"1779";"Kasza L., Szeged";0;0;2922;;1;1;0;none;"";NP-CZ-7016;Width;false;2026-06-24
-"1779";"Kasza L., Szeged";0;0;2427;;1;1;0;none;"";NP-CL-7016;Width;false;2026-06-24
-"1779";"Kasza L., Szeged";0;0;2427;;1;1;0;none;"";NP-CLBR;Width;false;2026-06-24
-"1842";"Grenczel";0;0;530;;1;0;1;none;"";NP-T-7016;Width;false;2026-06-24
-"1842";"Grenczel";0;0;555;;1;0;1;none;"";NP-TF-7016;Width;false;2026-06-24
-"1842";"Grenczel";0;0;437;;1;0;1;none;"";NP-CZ-7016;Width;false;2026-06-24
-"1842";"Grenczel";0;0;977;;1;0;1;none;"";NP-CL-7016;Width;false;2026-06-24
-"1842";"Grenczel";0;0;977;;1;0;1;none;"";NP-CLBR;Width;false;2026-06-24

@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <common/eventlogger.h>
 
 QString AddInputDialog::s_lastExternalRef;
 QMap<QString, AddInputDialog::RequestContext> AddInputDialog::_contexts;
@@ -82,7 +83,7 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
 // }
 // )");
 
-    //ui->editDueDate->setDate(QDate::currentDate());
+
 
     populateMaterialCombo();
 
@@ -135,9 +136,19 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     ui->editReference->setText(nextRef);
 
     // ha volt előző tételszám → töltsük vissza a contextet
-    auto it = _contexts.find(s_lastExternalRef);
+//    auto it = _contexts.find(s_lastExternalRef);
+//    if (it != _contexts.end()) {
+//        applyContextToWidgets(it.value());
+//    }
+
+    auto it = _contexts.find(nextRef);
     if (it != _contexts.end()) {
         applyContextToWidgets(it.value());
+    } else{
+        auto it = _contexts.find(s_lastExternalRef);
+        if (it != _contexts.end()) {
+            applyContextToWidgets(it.value());
+        }
     }
 
     // új tételszám → reset kritikus mezők
@@ -145,12 +156,13 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     ui->spinQuantity->setValue(1);
 
     // dueDate → holnap
-    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    //ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    ui->editDueDate-> clear();//setDate(QDate::currentDate());
+
+    ui->editOwner->clear();
 
     // új tételszám → editable
     setContextEditable(true);
-
-
 
     if (mode == DialogMode::Update) {
         ui->chk_Repeat->setChecked(false);
@@ -222,6 +234,11 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
 
     // Fókusz fix
     QTimer::singleShot(0, this, [this]() {
+        if(ui->editReference->text().isEmpty()){
+            ui->editReference->setFocus();
+            return;
+        }
+
         if (ui->editOwner->text().isEmpty()) {
             ui->editOwner->setFocus();
             return;
@@ -632,6 +649,9 @@ void AddInputDialog::reject() {
 
 void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
 {
+    zEvent("applyContextToWidgets dueDate:"
+           +ctx.dueDate.toString("yyyy-MM-dd"));
+
     ui->editOwner->setText(ctx.ownerName);
     ui->editDueDate->setDate(ctx.dueDate);
 
@@ -649,6 +669,9 @@ void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
 
 void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
 {
+    zEvent("applyRequestToWidgets dueDate:"
+           +req.dueDate.toString("yyyy-MM-dd"));
+
     ui->editOwner->setText(req.ownerName);
     ui->editReference->setText(req.externalReference);
     ui->editDueDate->setDate(req.dueDate);
@@ -776,7 +799,12 @@ void AddInputDialog::loadContextMap()
         ctx.dueDate = QDate::fromString(parts[2], "yyyy-MM-dd");
         ctx.subtype = SubtypeUtils::parse(parts[3]);
         ctx.side = HandlerSideUtils::parse(parts[4]);
-        ctx.defaultMaterialId = QUuid(parts[5]);
+        //ctx.defaultMaterialId = QUuid(parts[5]);
+
+
+        auto matBarcode = parts[5];
+        auto* mat = MaterialRegistry::instance().findByBarcode(matBarcode);
+        ctx.defaultMaterialId = mat?mat->id:QUuid();
 
         // ÚJ: szín mező, ha van
         if (parts.size() >= 7)
@@ -799,13 +827,16 @@ void AddInputDialog::saveContextMap()
     for (auto it = _contexts.begin(); it != _contexts.end(); ++it) {
         const auto& ctx = it.value();
 
+        auto *mat = MaterialRegistry::instance().findById(ctx.defaultMaterialId);
+        QString matBarcode = mat?mat->barcode:"";
+
         QString line = QString("%1;%2;%3;%4;%5;%6;%7\n")
                            .arg(it.key())
                            .arg(ctx.ownerName)
                            .arg(ctx.dueDate.toString("yyyy-MM-dd"))
                            .arg(SubtypeUtils::toString_CSV(ctx.subtype))
                            .arg(HandlerSideUtils::toDisplayText(ctx.side))
-                           .arg(ctx.defaultMaterialId.toString())
+                           .arg(matBarcode)
                            .arg(ctx.color);
 
         f.write(line.toUtf8());
