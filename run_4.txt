@@ -23,6 +23,7 @@ vasudvar
             -első_1
                 polcok: 1-2-3
             -első_2
+                polcok: 1-2-3
             -hátsó_1
             -hátsó_2
          -bal
