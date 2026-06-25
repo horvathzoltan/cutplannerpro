@@ -29,25 +29,20 @@ struct PaintColorGroup {
     QString color;
     QHash<QUuid, PaintMaterialSummary> materials; // key: materialId
 
-    int pofak = 0;     // ÚJ
-    int csavarok = 0;  // ÚJ
+    // --- TÍPUSONKÉNTI POFA ---
+    int cipzarosPofa = 0;
+    int sinesPofa = 0;
+    int bowdenesPofa = 0;
+
+    int sumPofa() const {return  cipzarosPofa + sinesPofa + bowdenesPofa;}
+    int csavar = 0;
 };
 
 struct PaintPlan {
     QHash<QString, PaintColorGroup> byColor; // key: color string
 };
 
-struct CountPerType {
-    int cipzaros = 0;
-    int sines = 0;
-    int bowdenes = 0;
 
-    int total = 0;   // összes napháló
-    int good = 0;    // hibátlan
-    int bad = 0;     // hibás
-
-    QStringList badRefs;   // hibás tételszámok
-};
 
 
 class CuttingPresenter : public QObject {
@@ -144,5 +139,6 @@ private:
     void updateRow(const QUuid &rowId, std::function<void (StorageAuditRow &)> updater);
     PaintPlan buildPaintPlan();
     void AuditRequestsByExternalRef();
+    void AuditRequestsByExternalRef_old();
 };
 

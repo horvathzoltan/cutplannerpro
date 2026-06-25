@@ -78,7 +78,7 @@ RodStepResult RodLoopEngine::step(
 
     if (cr.status == CutResultStatus::Overfill)
     {
-        zInfo("   ⚠ Overfill — single‑piece fallback vizsgálata");
+        zInfo("   ⚠️ Overfill — single‑piece fallback vizsgálata");
         std::optional<Cutting::Piece::PieceWithMaterial> single =
             OptimizerUtils::findSingleBestPiece(groupVec, dpLimit, 0.0);
         if (single.has_value()) {

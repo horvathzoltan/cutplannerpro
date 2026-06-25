@@ -129,9 +129,14 @@ static QVector<T> readAndConvert(CsvReader::FileContext& ctx,
     QVector<T> result;
 
     for (int i = 0; i < rows.size(); ++i) {
+
         if (skipHeader && i == 0) continue;
 
         const auto& row = rows[i];
+
+        if (row.isEmpty() || row[0].trimmed().startsWith("#"))
+            continue;
+
         ctx.setCurrentLineNumber(i + 1);
 
         //RowContext ctx(linenumber, filepath);

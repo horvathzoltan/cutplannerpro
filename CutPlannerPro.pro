@@ -20,6 +20,14 @@ SOURCES += \
     model/cutting/optimizer/reusablefitengine.cpp \
     model/cutting/optimizer/rodloopengine.cpp \
     model/cutting/optimizer/stockfitengine.cpp \
+    model/cutting/plan/audit/naphalo_audit_service.cpp \
+    model/cutting/plan/audit/naphalo_bom_rules.cpp \
+    model/cutting/plan/audit/naphalo_due_rules.cpp \
+    model/cutting/plan/audit/naphalo_material_aggregator.cpp \
+    model/cutting/plan/audit/naphalo_owner_rules.cpp \
+    model/cutting/plan/audit/naphalo_size_rules.cpp \
+    model/cutting/plan/audit/naphalo_summary_builder.cpp \
+    model/cutting/plan/audit/naphalo_type_detector.cpp \
     model/storageaudit/auditcontext.cpp \
     presenter/stockpresenter.cpp \
     service/buildnumber.cpp \
@@ -142,6 +150,18 @@ HEADERS += \
     model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
     model/cutting/optimizer/telemetryhelper.h \
+    model/cutting/plan/audit/naphalo_audit_service.h \
+    model/cutting/plan/audit/naphalo_audit_types.h \
+    model/cutting/plan/audit/naphalo_bom_rules.h \
+    model/cutting/plan/audit/naphalo_due_rules.h \
+    model/cutting/plan/audit/naphalo_material_aggregator.h \
+    model/cutting/plan/audit/naphalo_owner_rules.h \
+    model/cutting/plan/audit/naphalo_prefix_match.h \
+    model/cutting/plan/audit/naphalo_prefix_utils.h \
+    model/cutting/plan/audit/naphalo_profile_postfix.h \
+    model/cutting/plan/audit/naphalo_size_rules.h \
+    model/cutting/plan/audit/naphalo_summary_builder.h \
+    model/cutting/plan/audit/naphalo_type_detector.h \
     model/cutting/plan/parentinfo.h \
     model/cutting/plan/segments.h \
     model/inventorysnapshot.h \
@@ -361,6 +381,7 @@ DISTFILES += \
     run_Refaktor_terv_fokuszpontok \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \
+    testdata/cutting_plans/cuttingplan_20260622-074056_hibateszt.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \

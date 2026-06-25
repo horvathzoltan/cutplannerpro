@@ -145,7 +145,7 @@ void RelocationQuantityDialog::updateSummary() {
             _ui->labelStatus->setText("✔ Forrás rendben, finalizálható.");
         } else {
             _ui->labelStatus->setStyleSheet("color: orange;");
-            _ui->labelStatus->setText("⚠ A forrásból felvett mennyiség nem egyezik az igénnyel.");
+            _ui->labelStatus->setText("⚠️ A forrásból felvett mennyiség nem egyezik az igénnyel.");
         }
     }
     else if (_mode == QuantityDialogMode::Target) {
@@ -161,7 +161,7 @@ void RelocationQuantityDialog::updateSummary() {
         } else {
             _ui->labelSelectedValue->setStyleSheet("color: orange; font-weight: bold; font-size: 18pt;");
             _ui->labelStatus->setStyleSheet("color: orange;");
-            _ui->labelStatus->setText("⚠ A célokra kiosztott mennyiség nem egyezik a forrással.");
+            _ui->labelStatus->setText("⚠️ A célokra kiosztott mennyiség nem egyezik a forrással.");
         }
     }
 
@@ -172,11 +172,11 @@ void RelocationQuantityDialog::updateSummary() {
         }
         else if (_totalSelectedFromSources != _plannedQuantity) {
             _ui->labelStatus->setStyleSheet("color: orange;");
-            _ui->labelStatus->setText("⚠ A forrásból felvett mennyiség nem egyezik az igénnyel.");
+            _ui->labelStatus->setText("⚠️ A forrásból felvett mennyiség nem egyezik az igénnyel.");
         }
         else if (_totalDistributedToTargets != _totalSelectedFromSources) {
             _ui->labelStatus->setStyleSheet("color: orange;");
-            _ui->labelStatus->setText("⚠ A célokra kiosztott mennyiség nem egyezik a forrással.");
+            _ui->labelStatus->setText("⚠️ A célokra kiosztott mennyiség nem egyezik a forrással.");
         }
         else {
             _ui->labelStatus->setStyleSheet("color: green;");

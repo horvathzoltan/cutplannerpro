@@ -2,18 +2,12 @@
 nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként történik.
 az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
 
-
-audit: a naphálók  - ez csak egy plda - méreteinek elgépelése
-nem számolunk újra levonást, de vannak törvényszerűségek, pl a napháló méreténél nagyobb alkatrész nincsen, de mivel ezek egymáshoz képest helyezkednek el, ezért a tokfedélnél kisebb egyenlő a tok, a toknál tengely, a tengelynél a záró és a zárónál a súly
-de ezek az eltérések nem lehetnek akármekkorák - és itt jön a. a levonás: van ezek méretének egy alsó korlátja b. a józan ész azt mondja hogy ezek nem lehetnek akármekkorák
-
 stock: tárhely készletét keresni, lekérni, módosítani? vágó tárhely audit: tudni klne mi van rajta de úgy hogy át is írhassuk
 
 festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel vagy a sinessel,
 de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines - 
 
-de arra figyelni, kell, és ez még nincsen kidolgozva, hogy a copzároshoz cipzáros pofa kell, a sineshez sines, a bowdeneshez bowdenes és
-emiatt a pofát a számítás alatt is külön kell fajtánként aggregálni.
+
 
 cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
 ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből
