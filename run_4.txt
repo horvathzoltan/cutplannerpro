@@ -1,3 +1,7 @@
+a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe vágni
+
+az optimalizáció csökkenti a készletet? nem kellene. a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag azonos a
+raktárban található anyagokkal, és nincs köztük külömbség
 
 nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként történik.
 az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
