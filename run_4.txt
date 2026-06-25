@@ -7,12 +7,6 @@ stock: tárhely készletét keresni, lekérni, módosítani? vágó tárhely aud
 festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel vagy a sinessel,
 de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines - 
 
-
-
-cutrequest felvétele: új ablak -> új tételszám, de azt nem kérdezi le hogy volt-e már olyan
-ha volt, és automatice kitölti, és tilt mezőket, a maradékot kitölthetné emlékezetből
-a dátumra nem emlékezik, nem menti el a tételszámhoz
-
 festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól,
 vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
 festeni csak festhető anyagokat festünk. festhetetlent nem.
