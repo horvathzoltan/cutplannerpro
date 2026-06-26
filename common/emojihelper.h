@@ -41,7 +41,7 @@ inline QString priorityIconFor(int daysLeft)
 static const QStringList GROUP_ICONS = {
     "🍎", // A - Alma
     "🐸", // B - Béka
-    "🐈‍", // C - Cica / 🐈‍
+    "🐱", // C - Cica /🐱 🐈‍ 🐈‍
     "🦇", // D - Denevér / 🐝
     "🐭", // E - Egér
     "🍦", // F - Fagyi

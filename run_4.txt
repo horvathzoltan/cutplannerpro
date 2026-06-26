@@ -1,15 +1,25 @@
-a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe vágni
+címkére mindíg kell az altípus
+címkét, vágási tervet tokcsaládra, lábcsaládra - láb típusra kell szétbontani, ha az user kéri.
 
-az optimalizáció csökkenti a készletet? nem kellene. a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag azonos a
-raktárban található anyagokkal, és nincs köztük külömbség
+vonalkód -> enum bevezetése a materialba?
 
-nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként történik.
-az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
+leftover felvételi lap: az elmoji nem látszik
 
-stock: tárhely készletét keresni, lekérni, módosítani? vágó tárhely audit: tudni klne mi van rajta de úgy hogy át is írhassuk
+a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
+vágni
 
-festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel vagy a sinessel,
-de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines - 
+az optimalizáció csökkenti a készletet? nem kellene.
+a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag
+azonos a raktárban található anyagokkal, és nincs köztük külömbség
+
+nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként
+történik. az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
+
+stock: tárhely készletét keresni, lekérni, módosítani? vágó tárhely audit: tudni kéne
+mi van rajta de úgy hogy át is írhassuk
+
+festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel
+vagy a sinessel, de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines -
 
 festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól,
 vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
@@ -21,23 +31,40 @@ vasudvar
     - belső
          -jobb
             -első_1
-                polcok: 1-2-3
-            -első_2
-                polcok: 1-2-3
-            -hátsó_1
+            -első_2    
+            -hátsó_1            
             -hátsó_2
          -bal
             -első_1
+                polcok: 1-2-3
             -első_2
+                polcok: 1-2-3
             -hátsó_1
             -hátsó_2
 
              
+11111111-1111-4111-8111-111111111111;Vasudvar;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;VAS;"Vasudvar fő egység"
+22222222-2222-4222-8222-222222222222;Külső;Warehouse;11111111-1111-4111-8111-111111111111;VAS_KULS;"Vasudvar külső rész"
+33333333-3333-4333-8333-333333333333;Belső;Warehouse;11111111-1111-4111-8111-111111111111;VAS_BEL;"Vasudvar belső rész"
+44444444-4444-4444-8444-444444444444;Jobb;Warehouse;33333333-3333-4333-8333-333333333333;VAS_JOBB;"Belső jobb oldal"
+55555555-5555-4555-8555-555555555555;Első_1;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_E1;"Jobb első 1"
+66666666-6666-4666-8666-666666666666;Első_2;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_E2;"Jobb első 2"
+77777777-7777-4777-8777-777777777777;Hátsó_1;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_H1;"Jobb hátsó 1"
+88888888-8888-4888-8888-888888888888;Hátsó_2;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_H2;"Jobb hátsó 2"
+99999999-9999-4999-8999-999999999999;Bal;Warehouse;33333333-3333-4333-8333-333333333333;VAS_BAL;"Belső bal oldal"
+aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;Első_1;Warehouse;99999999-9999-4999-8999-999999999999;VAS_BAL_E1;"Bal első 1"
+bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb;Polc 1;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P1;"Bal első 1 – polc 1"
+cccccccc-cccc-4ccc-8ccc-cccccccccccc;Polc 2;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P2;"Bal első 1 – polc 2"
+dddddddd-dddd-4ddd-8ddd-dddddddddddd;Polc 3;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P3;"Bal első 1 – polc 3"
+eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;Első_2;Warehouse;99999999-9999-4999-8999-999999999999;VAS_BAL_E2;"Bal első 2"
+ffffffff-ffff-4fff-8fff-ffffffffffff;Polc 1;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P1;"Bal első 2 – polc 1"
+abababab-abab-4bab-8bab-abababababab;Polc 2;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P2;"Bal első 2 – polc 2"
+cdcdcdcd-cdcd-4dcd-8dcd-cdcdcdcdcdcd;Polc 3;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P3;"Bal első 2 – polc 3"
+efefefef-efef-4fef-8fef-efefefefefef;Hátsó_1;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H1;"Bal hátsó 1"
+f0f0f0f0-f0f0-4f0f-8f0f-f0f0f0f0f0f0;Hátsó_2;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H2;"Bal hátsó 2"
 
 
 stock: a fogytán lévő készletek listája - pdf
-
-a színeket a cutrequestbe bele kell tenni
 
 
 
@@ -74,184 +101,19 @@ a while(true) kicsit húzós, kellene egy módszer ami nem végtelen ciklusra é
     az is érdekes lehet, mennyi a készlet belőle
 
 3.a: anyagkereső: a max furán működik, és ha beleírunk, a min akkor is átíródik, ha van benne tartalom
+3.b. ha egy mérettartományba több anyag / hulló is esik, mindre szükség van hogy tudjunk választani
+
 
 4. selejtítésnél kereső barcode alapján
-
+4.a. a selejtítés régen gyűjtötte és kiírta csv-be a selejtített anyagokat
+    - a jelenlegi állapotból meg lehetne írni, hogy:
+            1: a funkció aggregálja a sikeresen selejtített anyagokat, és mutassa egy listázóban
+            2: írja ki újra azt a csv-t
+            3: valószínűleg adni kell meg majd selejtítési okot, és erre emlékezzen az ablak.
 
 Zoltán, **minden chunk megérkezett, minden fájl ép, a MainWindow + Presenter + UIBuilder teljesen konzisztens**.
 A MaterialFinder action működik, a struktúra tiszta, a toolbar‑builder + connector rendszered hibátlan.
 
-Most jöhet a **tervezés**, de előtte teljesítjük a kérésed:
-
-> **„kellene egy pontonkénti terv, és kellene a minimális, de teljes file‑lista, amit egy files.txt‑be másolhatok”**
-
-Megkapod **mindkettőt**, és a végén egy **másolható files.txt blokkot**.
-
----
-
-# ⭐ 1) Pontonkénti, teljes implementációs terv (Material Finder)
-
-Ez a *minimális, de teljes* terv, amely végigvisz a Material Finder funkció megvalósításán.
-
----
-
-## **1. Toolbar action (KÉSZ)**
-- `createMaterialFinderAction()` → létrehozza az actiont
-- `mainToolbarBuilder()` → toolbarra teszi
-- `ActionConnector_connect()` → beköti
-- `handle_act_MaterialFinder_clicked()` → lefut, logol
-
-**Állapot:** ✔ kész
-
----
-
-## **2. MaterialFinderDialog létrehozása**
-Új dialógus:
-
-- `MaterialFinderDialog.ui`
-- `MaterialFinderDialog.h`
-- `MaterialFinderDialog.cpp`
-
-UI elemek:
-
-- Material combobox (anyaglista a MaterialRegistry‑ből)
-- Min length spinbox
-- Range spinbox (default: SettingsManager::materialFinderRange)
-- Search gomb
-- Eredménylista (QTableWidget)
-
-**Feladat:** csak UI + inputok összegyűjtése.
-
----
-
-## **3. MaterialFinderService**
-Új service osztály:
-
-- `MaterialFinderService.h`
-- `MaterialFinderService.cpp`
-
-Feladata:
-
-- leftover készlet átnézése
-- stock készlet átnézése
-- találatok listázása
-- találatok rendezése (pl. legközelebbi hossz szerint)
-
----
-
-## **4. MaterialFinderResult modell**
-Opcionális, de ajánlott:
-
-- `MaterialFinderResult.h`
-- `MaterialFinderResult.cpp`
-
-Tartalmazza:
-
-- materialId
-- barcode
-- length
-- location (stock / leftover)
-- storageName
-- shape
-- groupName
-
----
-
-## **5. Presenter integráció**
-A MainWindow nem keres közvetlenül → Presenter hívja a service‑t.
-
-Új metódusok:
-
-- `CuttingPresenter::findMaterial(...)`
-- `CuttingPresenter::getMaterialList()`
-
----
-
-## **6. MaterialFinderDialog → Presenter hívás**
-A Search gomb:
-
-- összegyűjti a paramétereket
-- meghívja a Presenter `findMaterial()` függvényét
-- megjeleníti az eredményt a dialogban
-
----
-
-## **7. Eredmény megjelenítése**
-A dialogban:
-
-- barcode
-- length
-- location
-- shape
-- material name
-
----
-
-## **8. MainWindow → dialog megnyitása**
-A toolbar action:
-
-```cpp
-void MainWindow::handle_act_MaterialFinder_clicked()
-{
-    MaterialFinderDialog dlg(this, presenter);
-    dlg.exec();
-}
-```
-
----
-
-# ⭐ 2) Minimális, de teljes file‑lista (másolható)
-
-Ez a lista **pontosan az a minimális file‑készlet**, amivel a Material Finder funkció implementálható.
-Másold be egy `files.txt`‑be:
-
-```
-# UI builder
-view/MainWindowUIBuilder.h
-
-# Action connector
-view/ActionConnectorModel.h
-view/ActionConnector.cpp
-
-# Material Finder dialog
-dialog/materialfinder/MaterialFinderDialog.ui
-dialog/materialfinder/MaterialFinderDialog.h
-dialog/materialfinder/MaterialFinderDialog.cpp
-
-# Material Finder service
-service/materialfinder/MaterialFinderService.h
-service/materialfinder/MaterialFinderService.cpp
-
-# Material Finder result model
-model/materialfinder/MaterialFinderResult.h
-model/materialfinder/MaterialFinderResult.cpp
-
-# Presenter integráció
-presenter/CuttingPresenter.h
-presenter/CuttingPresenter.cpp
-
-# MainWindow módosítások
-view/MainWindow.h
-view/MainWindow.cpp
-```
-
-Ez a lista **komplett**, de nem túlméretezett.
-Pont annyi file, amennyi kell a tiszta architektúrához.
-
----
-
-# ⭐ Következő lépés
-
-Most két irány közül választhatsz:
-
-- **MaterialFinderDialog UI megtervezése**
-- **MaterialFinderService skeleton generálása**
-
-Melyikkel menjünk tovább?
-
-
-******************
-******************
 
 x: XLSX adatbemenet
     - .xlsx -> .csv tool -> .csv import
@@ -276,244 +138,3 @@ Tétel szám:,H. idő:,Név:,Szél:,X,Mag:,Kezelő:,Sávroló tok,Típus:,,Vász
 1485.,2026.06.10.,"HERMESZ ABLAK, EGER",105,x,160,J,,32 (Új),,Natural,21,,,,,13490,,1570,0,,,,0,,
 1472.,2026.06.15.,"KOR-MI, GYŐR","60,5",x,110,,,,Tetőtéri,Natural,1101,,,,,8470,,0,0,,,,0,,
 ------------------------------------------------------------------------
-
-Zoltán, ez most a lényeg legmélyebb magja:
-mit szabályoznak pontosan ezek a paraméterek, és milyen kézzelfogható
-különbséget okoz, ha napháló / sávroló / roletta anyagoknál eltérő
-értékeket adsz meg?
-
-A válasz:
-ezek a paraméterek közvetlenül meghatározzák a hullókeletkezést, a
-selejtarányt, a leftover‑minőséget, a reusable logikát, a DP‑keresést, a
-FitEngine scoringot, a RodLoop döntéseit, és végső soron a teljes
-optimalizálási viselkedést.
-
-És most szétszedem őket anyag‑specifikus, fizikai, és algoritmikus hatás
-szerint.
-
-------------------------------------------------------------------------
-
-⭐ 1) trim_mm — technikai vágás eleje/vége
-
-Mit jelent?
-A rúd elején/ végén levágandó fix technikai darab (pl. deformált vég,
-préselési maradék).
-
-Közvetlen hatás:
-
--   csökkenti a hasznosítható rúd hosszát
--   stock rúd esetén: frontTrim + backTrim levonódik
--   leftover rúd esetén: csak frontTrim vagy semmi (attól függ,
-    reusable‑e)
-
-Közvetett hatás:
-
--   kevesebb darab fér egy rúdba
--   több rúd kell
--   több leftover keletkezik
--   DP‑limit csökken → FitEngine kevesebb kombinációt talál
--   a leftover hossza kisebb lesz → több selejt keletkezhet
-
-Ha naphálónál 15 mm, sávrolónál 20 mm:
-→ sávrolónál több rúd kell, mert a hasznos hossz rövidebb.
-
-------------------------------------------------------------------------
-
-⭐ 2) minLeftOver_mm — minimális maradék, ami még „használható”
-
-Mit jelent?
-Ez az a hossz, ami alatt a leftover nem kerül reusable készletbe, hanem
-selejt.
-
-Közvetlen hatás:
-
--   ha a rúd végén maradék < minLeftOver → nem tároljuk → kidobjuk
--   ha >= minLeftOver → leftoverként bekerül a készletbe
-
-Közvetett hatás:
-
--   reusableFitEngine csak ezeket a leftovereket vizsgálja
--   minél nagyobb a minLeftOver, annál kevesebb leftover lesz
-    újrahasznosítható
--   minél kisebb, annál több reusable rúd keletkezik → kevesebb stock
-    fogy
-
-Ha rolettánál minLeftOver=100, naphálónál 70:
-→ rolettánál kevesebb reusable maradék keletkezik, több lesz a kidobott
-selejt.
-
-------------------------------------------------------------------------
-
-⭐ 3) scrap_mm — ez alatt selejt
-
-Mit jelent?
-A leftover hossza, ami alatt már nem érdemes tárolni, mert fizikailag
-nem használható.
-
-Közvetlen hatás:
-
--   RodLoopEngine: ha remainingLength < scrap_mm → StopRod
--   UI: piros szín (selejt)
--   LeftoverLifecycle: nem kerül be a reusable készletbe
-
-Közvetett hatás:
-
--   minél nagyobb scrap_mm, annál több lesz a kidobott selejt
--   minél kisebb, annál több „kicsi” leftover kerül be → de ezek ritkán
-    használhatók → FitEngine sokszor elutasítja őket
-
-Ha sávrolónál scrap=300, rolettánál scrap=100:
-→ sávrolónál szigorúbb a selejt → több hulladék keletkezik, de kevesebb
-értéktelen leftover kerül be.
-
-------------------------------------------------------------------------
-
-⭐ 4) goodLeftOver_Min_mm / goodLeftOver_Max_mm
-
-Mit jelentenek?
-Ez a tartomány az, amit a rendszer jó minőségű, értékes leftovernek
-tekint.
-
-Közvetlen hatás:
-
--   RodLoopEngine: ha remainingLength ebben a tartományban → StopRod (jó
-    leftover képződik)
--   FitEngine scoring: +300 pont (előnyben részesíti az ilyen
-    kombinációkat)
--   UI: sárga szín
--   ReusableFitEngine: előnyben részesíti ezeket a leftovereket
-
-Közvetett hatás:
-
--   a rendszer törekszik arra, hogy ilyen leftover keletkezzen
--   DP és brute‑force is preferálja azokat a kombinációkat, amelyek
-    ilyen leftoverhez vezetnek
--   több „jó” leftover kerül a reusable készletbe
--   kevesebb selejt keletkezik
-
-Ha naphálónál good=1000–1800, rolettánál good=600–1200:
-→ naphálónál a rendszer nagy leftovereket szeret, rolettánál
-közepeseket.
-
-------------------------------------------------------------------------
-
-⭐ 5) Összefoglaló: hogyan befolyásolja ez a hullókeletkezést?
-
-  ------------------------------------------------------------------------
-  Paraméter              Ha nagyobb                Ha kisebb
-  ---------------------- ------------------------- -----------------------
-  trim_mm                több hulló, kevesebb      kevesebb hulló
-                         hasznos hossz
-
-  minLeftOver_mm         kevesebb reusable, több   több reusable, több
-                         selejt                    „kicsi” leftover
-
-  scrap_mm               több selejt, kevesebb     kevesebb selejt, több
-                         tárolt hulló              tárolt hulló
-
-  goodLeftOver_Min/Max   rendszer nagy             rendszer kisebb
-                         leftovereket preferál     leftovereket preferál
-  ------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-⭐ 6) Napháló / Sávroló / Roletta — konkrét különbségek
-
-Napháló
-
--   hosszú profilok (6000–7000 mm)
--   jó leftover tartomány: 1000–1800 mm
--   scrap: 300 mm
--   minLeftOver: 70 mm
-
-Hatás:
-
--   a rendszer szeret nagy leftovereket hagyni
--   sok reusable maradék keletkezik
--   kevés selejt
--   DP preferálja a nagy darabokat, hogy jó leftover maradjon
-
-------------------------------------------------------------------------
-
-Sávroló
-
--   jó leftover tartomány: 600–1500 mm
--   scrap: 300 mm
--   minLeftOver: 50–100 mm
--   trim_mm: 15–20 mm
-
-Hatás:
-
--   a rendszer közepes leftovereket preferál
--   több selejt keletkezhet, mert scrap=300
--   a trim nagyobb → kevesebb hasznos hossz → több rúd kell
-
-------------------------------------------------------------------------
-
-Roletta
-
--   jó leftover tartomány: 600–1200 mm
--   scrap: 300 mm
--   minLeftOver: 70–100 mm
--   trim_mm: 15–30 mm
-
-Hatás:
-
--   a rendszer közepes leftovereket preferál
--   több selejt keletkezik (scrap=300)
--   minLeftOver nagy → kevés reusable maradék
--   több stock fogy
-
-------------------------------------------------------------------------
-
-⭐ 7) Hogyan szabályozhatod a hullókeletkezést?
-
-Ha kevesebb selejtet akarsz:
-
--   scrap_mm → lejjebb
--   minLeftOver_mm → lejjebb
--   goodLeftOver_Min_mm → lejjebb
--   goodLeftOver_Max_mm → lejjebb
-
-Ha több reusable hullót akarsz:
-
--   minLeftOver_mm → lejjebb
--   scrap_mm → lejjebb
--   goodLeftOver_Min_mm → szűkebbre
--   goodLeftOver_Max_mm → szűkebbre
-
-Ha kevesebb leftovert akarsz:
-
--   goodLeftOver_Min_mm → feljebb
--   scrap_mm → feljebb
--   trim_mm → feljebb
-
-------------------------------------------------------------------------
-
-⭐ 8) Hogyan hat ez az újrahasznosításra?
-
-Több reusable leftover →
-
--   ReusableFitEngine több jelöltet talál
--   kevesebb stock fogy
--   több rúd lesz „folytatva”
--   DP több kombinációt talál leftoverekre
-
-Kevesebb reusable leftover →
-
--   több stock fogy
--   kevesebb leftover kerül vissza
--   egyszerűbb készlet, de drágább gyártás
-
-------------------------------------------------------------------------
-
-⭐ Röviden
-
-Ezek a paraméterek szabályozzák a teljes hullókeletkezési,
-selejtkezelési, leftover‑minősítési és újrahasznosítási viselkedést.
-A különböző értékekkel teljesen eltérő optimalizálási karaktert kapsz
-napháló / sávroló / roletta esetén.
-
-Ha szeretnéd, megcsinálom a három termékcsalád összehasonlító
-táblázatát, vagy segítek optimalizálni a paramétereket a kívánt gyártási
-stratégia szerint.

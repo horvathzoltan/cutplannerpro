@@ -76,6 +76,7 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
     }
     ui->editBarcode->setText(bc);
 
+    ui->chk_Repeat->setChecked(s_lastRepeat);
 }
 
 
@@ -255,6 +256,7 @@ void AddWasteDialog::accept() {
     if (bc.startsWith("RSM"))
         SettingsManager::instance().commitManualLeftoverCounter(shadowManualCounter);
 
+    s_lastRepeat = ui->chk_Repeat->isChecked();
     QDialog::accept();
 }
 

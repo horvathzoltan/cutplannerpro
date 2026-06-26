@@ -1422,17 +1422,17 @@ void CuttingPresenter::Paint()
 
         QString postfix1 = profilePostfixFor("NP-POF");
         if (!postfix1.isEmpty()) {
-            zInfo(QString("      Összesen: %1 × %2").arg(colorGroup.sumPofa()).arg(postfix1));
+            zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1));
         } else{
-            zInfo(QString("      Összesen: %1").arg(colorGroup.sumPofa()));
+            zInfo(QString("      Összesen: %1 db").arg(colorGroup.sumPofa()));
         }
         // --- TÍPUSONKÉNTI CSAVAROK ---
         zInfo("   CSAVAROK:");
         QString postfix2 = profilePostfixFor("NP-CSAV");
         if (!postfix2.isEmpty()) {
-            zInfo(QString("      Összesen: %1 × %2").arg(colorGroup.csavar).arg(postfix2));
+            zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2));
         } else{
-            zInfo(QString("      Összesen: %1").arg(colorGroup.csavar));
+            zInfo(QString("      Összesen: %1 db").arg(colorGroup.csavar));
         }
         // zInfo(QString("      Cipzáros: %1").arg(colorGroup.cipzarosCsavar));
         // zInfo(QString("      Sines:    %1").arg(colorGroup.sinesCsavar));

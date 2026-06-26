@@ -1189,7 +1189,7 @@ inline QString formatLeftoverIntakeForm_OnePage(int pageWidth, int rowsPerPage)
     QStringList lines;
 
     // 2) Fejléc
-    lines << QString("🧾 Leftover felvételi űrlap (manual RSM címkék)");
+    lines << QString("📝 Leftover felvételi űrlap (manual RSM címkék)");
     lines << QString("📅 Dátum: %1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm"));
     lines << "";
 
@@ -1949,7 +1949,7 @@ inline void formatLeftoverIntakeForm_Pdf(
     // 1) Fejléc
     painter.drawText(QRectF(leftMargin, y, pageRect.width(), lineH),
                      Qt::AlignLeft,
-                     "🧾 Leftover felvételi űrlap (manual RSM címkék)");
+                     "📝 Leftover felvételi űrlap (manual RSM címkék)");
     y += lineH;
 
     painter.drawText(QRectF(leftMargin, y, pageRect.width(), lineH),
@@ -2123,6 +2123,7 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
     const qreal glueMargin = 90.0; // ~0.5 cm
     const qreal barcodeHeight0 = 80.0;   // kétszer magasabb
     const qreal gap = 8.0;   // kb. 2–3 mm
+    const qreal barcodeMargin = 80.0;
 
     QFontMetrics fm(painter.font());
     const qreal lineHeight = fm.height() + 2.0;
@@ -2346,9 +2347,9 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
             qreal barcodeHeight = qMin(availableHeight, barcodeHeight0);
             qreal barcodeY = cellBottom - barcodeHeight;
             QRectF bcRect(
-                contentRect.left(),
+                contentRect.left()+barcodeMargin,
                 barcodeY,
-                contentRect.width(),
+                contentRect.width()-2*barcodeMargin,
                 barcodeHeight
                 );
             BarcodePainter::drawCode128(painter, cell.barcode, bcRect);

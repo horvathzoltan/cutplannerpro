@@ -6,25 +6,26 @@ static inline QString profilePostfixFor(const QString& barcode)
 {
     // CIPZÁROS LÁB
     if (matchPrefix(barcode, "NP-CL"))
-        return "17 cm";
+        return "27 cm"; // láb + takaró = 18+9
 
     // SÍNES LÁB
     if (matchPrefix(barcode, "NP-SL"))
         return "13 cm";
 
     // CIPZÁROS LÁBBETÉT
-    if (matchPrefix(barcode, "NP-CLB") || matchPrefix(barcode, "NP-CLBR"))
-        return "17 cm (betét)";
+    // ezt nem festjük
+    //if (matchPrefix(barcode, "NP-CLB") || matchPrefix(barcode, "NP-CLBR"))
+    //    return "17 cm (betét)";
 
     // CIPZÁROS ZÁRÓ
     if (matchPrefix(barcode, "NP-CZ"))
-        return "Ø12 mm";
+        return "13 mm";
 
     // SÍNES ZÁRÓ
     if (matchPrefix(barcode, "NP-SZ"))
-        return "Ø12 mm";
+        return "11 mm";
 
-    // TOK
+    // POFA
     if (matchPrefix(barcode, "NP-POF"))
         return "10×10 cm";
 
