@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QSizeF>
+#include "materials/model/material_family.h"
 #include "model/identifiableentity.h"
 #include "common/color/namedcolor.h"
 #include "materials/model/material_type.h"
@@ -46,6 +47,8 @@ struct MaterialMaster : public IdentifiableEntity {
     QString externalCode;
 
     QString description;   // hosszabb szöveges leírás
+
+    MaterialFamily family = MaterialFamily::Unknown;
 
     MaterialScoringParams scoringParams() const {
         return {

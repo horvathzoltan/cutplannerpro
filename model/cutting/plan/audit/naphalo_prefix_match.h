@@ -1,15 +1,19 @@
-#pragma once
-#include <QString>
+// #pragma once
+// #include <QString>
 
-static inline bool matchPrefix(const QString& barcode, const QString& prefix)
-{
-    // Pontos egyezés: NP-T
-    if (barcode == prefix)
-        return true;
+// static inline bool matchPrefix(const QString& barcode, const QString& prefix)
+// {
+//     const QString bc = barcode.trimmed();
+//     const QString px = prefix.trimmed();
 
-    // Prefix + '-' egyezés: NP-T-9010
-    if (barcode.startsWith(prefix + "-"))
-        return true;
+//     // Case-insensitive pontos egyezés
+//     if (bc.compare(px, Qt::CaseInsensitive) == 0)
+//         return true;
 
-    return false;
-}
+//     // Case-insensitive prefix + '-' egyezés
+//     if (bc.startsWith(px + "-", Qt::CaseInsensitive))
+//         return true;
+
+//     return false;
+// }
+

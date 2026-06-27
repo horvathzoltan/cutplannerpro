@@ -22,6 +22,12 @@
 
 #include "../color/namedcolor.h"
 
+#include <product/repository/bom_repository.h>
+#include <product/repository/product_subtype_repository.h>
+#include <product/repository/product_type_repository.h>
+
+#include <product/registry/product_type_registry.h>
+
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
@@ -30,6 +36,18 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.isSuccess())
         return materialStatus;
+
+    StartupStatus productTypeStatus = initProductTypeRegistry();
+    if (!productTypeStatus.isSuccess())
+        return productTypeStatus;
+
+    StartupStatus productSubtypeStatus = initProductSubtypeRegistry();
+    if (!productSubtypeStatus.isSuccess())
+        return productSubtypeStatus;
+
+    StartupStatus bomStatus = initBomRegistry();
+    if (!bomStatus.isSuccess())
+        return bomStatus;
 
     StartupStatus storageStatus = initStorageRegistry();
     if (!storageStatus.isSuccess())
@@ -60,6 +78,11 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(ralColorStatus.warnings());
 
     finalStatus.addWarnings(materialStatus.warnings());
+
+    finalStatus.addWarnings(productTypeStatus.warnings());
+    finalStatus.addWarnings(productSubtypeStatus.warnings());
+    finalStatus.addWarnings(bomStatus.warnings());
+
     finalStatus.addWarnings(groupStatus.warnings());
     finalStatus.addWarnings(stockStatus.warnings());
     finalStatus.addWarnings(reusableStockStatus.warnings());
@@ -406,3 +429,53 @@ StartupStatus StartupManager::initRalColors()
     return status;
 }
 
+
+StartupStatus StartupManager::initProductTypeRegistry() {
+    bool loaded = ProductTypeRepository::loadFromCSV(ProductTypeRegistry::instance());
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a product type törzset");
+        return StartupStatus::failure("❌ Nem sikerült betölteni a product_type.csv fájlból.");
+    }
+
+    const auto& all = ProductTypeRegistry::instance().readAll();
+    if (all.isEmpty()) {
+        EventLogger::instance().zEvent("❌ nincs adat a product type törzsben");
+        return StartupStatus::failure("⚠️ A product type törzs üres. Legalább 1 típus szükséges.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "product type init"));
+    return StartupStatus::success();
+}
+
+StartupStatus StartupManager::initProductSubtypeRegistry() {
+    bool loaded = ProductSubtypeRepository::loadFromCSV(ProductSubtypeRegistry::instance());
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a product subtype törzset");
+        return StartupStatus::failure("❌ Nem sikerült betölteni a product_subtype.csv fájlból.");
+    }
+
+    const auto& all = ProductSubtypeRegistry::instance().readAll();
+    if (all.isEmpty()) {
+        EventLogger::instance().zEvent("❌ nincs adat a product subtype törzsben");
+        return StartupStatus::failure("⚠️ A product subtype törzs üres. Legalább 1 altípus szükséges.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "product subtype init"));
+    return StartupStatus::success();
+}
+
+StartupStatus StartupManager::initBomRegistry() {
+    bool loaded = BomRepository::loadFromCSV(BomRegistry::instance());
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a BOM törzset");
+        return StartupStatus::failure("❌ Nem sikerült betölteni a bom.csv fájlból.");
+    }
+
+    const auto& all = BomRegistry::instance().readAll();
+    if (all.isEmpty()) {
+        return StartupStatus::failure("⚠️ A BOM törzs üres.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "BOM init"));
+    return StartupStatus::success();
+}

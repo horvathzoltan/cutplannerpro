@@ -1,9 +1,10 @@
+leftover felvételi lap: az elmoji nem látszik
+
+
 címkére mindíg kell az altípus
 címkét, vágási tervet tokcsaládra, lábcsaládra - láb típusra kell szétbontani, ha az user kéri.
 
-vonalkód -> enum bevezetése a materialba?
-
-leftover felvételi lap: az elmoji nem látszik
+címke -> enum bevezetése a materialba?
 
 a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
 vágni
@@ -65,6 +66,10 @@ f0f0f0f0-f0f0-4f0f-8f0f-f0f0f0f0f0f0;Hátsó_2;Shelf;99999999-9999-4999-8999-999
 
 
 stock: a fogytán lévő készletek listája - pdf
+
+
+/**/
+
 
 
 
@@ -138,3 +143,233 @@ Tétel szám:,H. idő:,Név:,Szél:,X,Mag:,Kezelő:,Sávroló tok,Típus:,,Vász
 1485.,2026.06.10.,"HERMESZ ABLAK, EGER",105,x,160,J,,32 (Új),,Natural,21,,,,,13490,,1570,0,,,,0,,
 1472.,2026.06.15.,"KOR-MI, GYŐR","60,5",x,110,,,,Tetőtéri,Natural,1101,,,,,8470,,0,0,,,,0,,
 ------------------------------------------------------------------------
+
+/**/
+
+Zoltán, akkor jön a teljes, audit‑refaktorhoz szükséges LÉPÉSRŐL‑LÉPÉSRE
+TERV, pontosan a te architektúrádhoz igazítva, és a végén egy PATCHING
+TERV‑vel, ahogy kéred.
+
+A terv mély, technikai, determinisztikus, és minden lépés auditálható.
+Ez már a „tudomány mai állása szerinti” modern BOM‑alapú audit
+architektúra.
+
+------------------------------------------------------------------------
+
+⭐ AUDIT REFAKTOR – LÉPÉSRŐL LÉPÉSRE TERV
+
+1) A Request modell bővítése termékvariáns adatokkal
+
+A jelenlegi Request csak anyag‑szintű:
+
+-   materialId
+-   requiredLength
+-   quantity
+-   stb.
+
+A modern auditnak viszont termékvariáns kell:
+
+-   productTypeId
+-   productSubtypeId
+
+Ezeket a bevitelkor töltjük:
+
+-   typeCode → ProductTypeRegistry::findByCode
+-   subtypeCode → ProductSubtypeRegistry::findByCode
+
+Ez lesz a BOM kulcsa.
+
+------------------------------------------------------------------------
+
+2) A BOM beemelése az audit logikába
+
+Jelenleg a BOM csak a vágási terv generálásnál van használva.
+Az audit prefix‑heurisztikát használ (NP‑CL, NP‑SZ, NP‑CZ…).
+
+A modern audit:
+
+-   BomRegistry::findByTypeAndSubtype(typeId, subtypeId)
+-   Ez visszaadja a MaterialFamily + quantity párokat.
+
+Ez lesz az elvárt anyagcsalád‑darabszám.
+
+------------------------------------------------------------------------
+
+3) A tényleges anyagok család szerinti aggregálása
+
+A Request‑ekben lévő materialId → MaterialRegistry → MaterialMaster →
+family.
+
+Így kapsz:
+
+    actual[Tok] = 12
+    actual[Lab] = 24
+    actual[Zaro] = 12
+    actual[FelsoSin] = 6
+    ...
+
+Ez lesz a tényleges anyagfelhasználás.
+
+------------------------------------------------------------------------
+
+4) BOM vs. actual összevetése
+
+Minden BOM‑entryre:
+
+    expected = bomEntry.quantity * termékDarabszám
+    actual   = actualFamilyCounts[bomEntry.family]
+
+Ha eltérés → audit message.
+
+Ez a modern BOM‑audit lényege.
+
+------------------------------------------------------------------------
+
+5) A RoleMap integrálása az auditba
+
+A RoleMap megmondja:
+
+-   adott productTypeId + productSubtypeId + family esetén
+-   milyen barcodePrefix tartozik a családhoz
+
+Ez lehetővé teszi:
+
+-   prefix‑szintű validációt (pl. CIPZÁROS tokhoz nem kerülhet SÍNES
+    láb)
+-   anyagválasztás ellenőrzését (MaterialSelector)
+
+------------------------------------------------------------------------
+
+6) MaterialSelector integrálása
+
+A BOM‑entry:
+
+-   family = Lab
+-   quantity = 2
+
+A RoleMap:
+
+-   NP/CIP + Lab → NP-CL*, NP-SL*
+
+A MaterialSelector:
+
+-   prefix + szín + hossz alapján kiválasztja a konkrét anyagot.
+
+Az audit ellenőrizheti:
+
+-   hogy a Request‑ben lévő materialId megfelel‑e a RoleMap + BOM
+    logikának.
+
+------------------------------------------------------------------------
+
+7) Prefix‑heurisztikák fokozatos kivezetése
+
+A jelenlegi audit:
+
+-   NP‑CL → Lab
+-   NP‑CZ → Zaro
+-   NP‑SZ → Zaro
+-   NP‑SL → Lab
+-   stb.
+
+Ez redundáns, mert:
+
+-   a materials.csv már tartalmazza a MaterialFamily mezőt
+-   a RoleMap már tartalmazza a prefix → family kapcsolatot
+
+A prefix‑heurisztika csak fallback lesz.
+
+------------------------------------------------------------------------
+
+8) Új audit modul: BOM‑alapú AuditService
+
+A jelenlegi audit modulok:
+
+-   NaphaloMaterialAggregator
+-   NaphaloBomRules
+-   NaphaloTypeDetector
+-   NaphaloSizeRules
+-   NaphaloOwnerRules
+-   NaphaloDueRules
+
+Ezeket össze kell fésülni egy új, BOM‑alapú audit pipeline‑ba:
+
+Új pipeline:
+
+1.  groupByExternalRef
+2.  termékvariáns meghatározása
+3.  BOM lekérése
+4.  tényleges anyagok aggregálása
+5.  BOM vs actual összevetése
+6.  RoleMap prefix‑validáció
+7.  MaterialSelector validáció
+8.  összegzés
+
+------------------------------------------------------------------------
+
+9) A „mekkora” BOM bevezetése (második kör)
+
+A BOM‑entry bővítése:
+
+-   family
+-   quantity
+-   dimensionRule (pl. fullWidth_mm - 13 mm)
+
+Ez lehetővé teszi:
+
+-   termékbevitel → automatikus Request generálás
+-   Request → automatikus anyagválasztás
+-   audit → automatikus ellenőrzés
+
+Ez a jövő, de nem az első kör.
+
+------------------------------------------------------------------------
+
+⭐ 10) PATCHING TERV (STRICT MODE)
+
+Ez lesz az utolsó pont, ahogy kérted.
+
+PATCH 1 — Request modell bővítése
+
+-   új mezők: productTypeId, productSubtypeId
+-   repository frissítése: typeCode + subtypeCode feloldása
+
+PATCH 2 — BOM‑alapú audit magjának létrehozása
+
+-   új modul: BomAuditCore
+-   BOM lekérés + expected counts számítás
+
+PATCH 3 — MaterialFamily aggregátor frissítése
+
+-   prefix‑heurisztika helyett MaterialFamily használata
+
+PATCH 4 — RoleMap integráció
+
+-   ellenőrzés: a Request‑ben lévő anyag prefixe illeszkedik‑e a
+    RoleMap‑re
+
+PATCH 5 — MaterialSelector integráció
+
+-   ellenőrzés: a Request‑ben lévő anyag megfelel‑e a selector logikának
+
+PATCH 6 — NaphaloAuditService refaktor
+
+-   új pipeline: BOM → actual → selector → summary
+
+PATCH 7 — Prefix‑heurisztikák kivezetése
+
+-   régi NP‑CL, NP‑SZ, NP‑CZ táblák törlése vagy fallback‑re állítása
+
+PATCH 8 — „Mekkora” BOM előkészítése
+
+-   BOMEntry bővítése dimensionRule mezővel (még nem implementáljuk)
+
+------------------------------------------------------------------------
+
+⭐ Készen állok a PATCH 1-re
+
+Ha mondod:
+
+„PATCH 1: Request bővítése”
+
+akkor indul a STRICT MODE patch‑session.

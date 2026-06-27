@@ -11,6 +11,7 @@
 class MaterialRepository {
 public:
     static bool loadFromCSV(MaterialRegistry& registry);
+    void exportCsv(const QString &path);
 private:
     // 📥 CSV betöltés → visszaadja az anyagok listáját
     static QVector<MaterialMaster> loadFromCSV_private(CsvReader::FileContext& filePath);
@@ -36,6 +37,7 @@ private:
         QString goodLeftOverMaxStr;
         QString externalCodeStr;
         QString description;
+        QString familyStr;
     };
 
     static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, CsvReader::FileContext& ctx);

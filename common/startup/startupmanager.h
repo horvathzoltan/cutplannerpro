@@ -60,6 +60,8 @@ private:
     StartupStatus initReusableStockRegistry();
     StartupStatus initStorageRegistry();
     StartupStatus initCuttingMachineRegistry(); // ✂️ Vágógépek betöltése
-
     StartupStatus initRalColors();
+    StartupStatus initProductTypeRegistry();
+    StartupStatus initProductSubtypeRegistry();
+    StartupStatus initBomRegistry();
 };

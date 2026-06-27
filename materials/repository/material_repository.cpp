@@ -16,6 +16,7 @@
 #include <common/filenamehelper.h>
 #include <common/csvimporter.h>
 #include <common/color/namedcolor.h>
+#include <materials/model/material_family_utils.h>
 #include "materials/model/cutting_mode.h"
 #include "materials/model/painting_mode.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
@@ -69,6 +70,9 @@ bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 
     registry.setData(loaded); // 🔧 Anyagregisztráció
     zInfo(QString("✅ %1 anyag sikeresen importálva a fájlból: %2").arg(loaded.size()).arg(fn));
+
+    //registry.applyFamilyDetection();
+
     return true;
 }
 
@@ -110,9 +114,25 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     bool okLength = false;
     row.stockLength = lengthStr.toDouble(&okLength);
 
-    if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
-        QString msg = L("⚠️ Érvénytelen barcode vagy hossz");
-        ctx.addError(ctx.currentLineNumber(), msg);
+    // if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
+    //     QString msg = L("⚠️ Érvénytelen barcode vagy hossz");
+    //     ctx.addError(ctx.currentLineNumber(), msg);
+    //     return std::nullopt;
+    // }
+
+    if (row.barcode.isEmpty()) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ Üres barcode");
+        return std::nullopt;
+    }
+
+    if (!okLength) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ A hossz mező nem szám");
+        return std::nullopt;
+    }
+
+    // 0 hosszú anyagok engedélyezve (motorok, fittingek, textilek)
+    if (row.stockLength < 0) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ Negatív hossz nem megengedett");
         return std::nullopt;
     }
 
@@ -124,6 +144,13 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     if (parts.size() >= 16) row.goodLeftOverMaxStr = parts[15].trimmed();
     if (parts.size() >= 17) row.externalCodeStr    = parts[16].trimmed();
     if (parts.size() >= 18) row.description    = parts[17].trimmed();
+
+    if (parts.size() >= 19)
+        row.familyStr = parts[18].trimmed();
+    else {
+        ctx.addError(ctx.currentLineNumber(), "❌ Hiányzik a 'family' mező");
+        return std::nullopt;
+    }
 
     return row;
 }
@@ -190,8 +217,78 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::File
     m.externalCode = row.externalCodeStr;
     m.description = row.description;
 
+    // family beolvasása
+    m.family = MaterialFamilyUtils::fromString(row.familyStr);
+
+    // // kötelező mező
+    // if (m.family == MaterialFamily::Unknown) {
+    //     ctx.addError(ctx.currentLineNumber(),
+    //                  QString("❌ Érvénytelen vagy hiányzó family mező: '%1'")
+    //                      .arg(row.familyStr));
+    //     return std::nullopt;
+    // }
+
     return m;
 
+}
+
+void MaterialRepository::exportCsv(const QString& path) {
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        zError(QString("❌ exportCsv: Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
+        return;
+    }
+
+    QTextStream out(&f);
+
+    out << "name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;"
+           "cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;"
+           "goodLeftOverMax;externalCode;description;family\n";
+
+    const auto& materials = MaterialRegistry::instance().readAll();
+
+    int written = 0;
+
+    for (const auto& m : materials) {
+        out << m.name << ";"
+            << m.barcode << ";"
+            << m.stockLength_mm << ";";
+
+        if (m.shape.isRound()) {
+            out << m.diameter_mm << ";"
+                << "" << ";";
+        }
+        else if (m.shape.isRectangular()) {
+            out << m.size_mm.width() << ";"
+                << m.size_mm.height() << ";";
+        }
+        else {
+            out << "" << ";"
+                << "" << ";";
+        }
+
+        out << m.shape.toString() << ";"
+            << m.defaultMachineId << ";"
+            << m.type.toString() << ";"
+            << m.color.name() << ";"
+            << CuttingModeUtils::toString(m.cuttingMode) << ";"
+            << PaintingModeUtils::toString(m.paintingMode) << ";"
+            << m.trim_mm << ";"
+            << m.minLeftOver_mm << ";"
+            << m.scrap_mm << ";"
+            << m.goodLeftOver_Min_mm << ";"
+            << m.goodLeftOver_Max_mm << ";"
+            << m.externalCode << ";"
+            << m.description << ";"
+            << MaterialFamilyUtils::toString(m.family)
+            << "\n";
+
+        written++;
+    }
+
+    f.close();
+
+    zInfo(QString("📦 exportCsv: %1 anyag kiírva ide: %2").arg(written).arg(path));
 }
 
 

@@ -19,6 +19,7 @@ void SettingsManager::load(int argc, char* argv[]) {
         detectTestMode(argc, argv);
  }
 
+// "--test akármi"
 void SettingsManager::detectTestMode(int argc, char* argv[]) {
     for (int i = 1; i < argc - 1; ++i) {
         QString arg = argv[i];

@@ -1,5 +1,6 @@
 #pragma once
 #include <QString>
+#include "materials/model/material_family_detector.h"
 #include "naphalo_prefix_match.h"   // ahol a matchPrefix van
 
 static inline QString profilePostfixFor(const QString& barcode)

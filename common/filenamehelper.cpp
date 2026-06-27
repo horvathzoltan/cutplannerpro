@@ -184,3 +184,15 @@ QString FileNameHelper::emojiCacheDir()
     QDir().mkpath(dir);
     return dir;
 }
+
+QString FileNameHelper::getProductTypeCsvFile() const {
+    return QDir(_projectPath).filePath("product_type.csv");
+}
+
+QString FileNameHelper::getProductSubtypeCsvFile() const {
+    return QDir(_projectPath).filePath("product_subtype.csv");
+}
+
+QString FileNameHelper::getBomCsvFile() const {
+    return QDir(_projectPath).filePath("bom.csv");
+}

@@ -30,6 +30,15 @@ SOURCES += \
     model/cutting/plan/audit/naphalo_type_detector.cpp \
     model/storageaudit/auditcontext.cpp \
     presenter/stockpresenter.cpp \
+    product/registry/bom_registry.cpp \
+    product/registry/material_role_registry.cpp \
+    product/registry/product_subtype_registry.cpp \
+    product/registry/product_type_registry.cpp \
+    product/repository/bom_repository.cpp \
+    product/repository/material_role_repository.cpp \
+    product/repository/product_subtype_repository.cpp \
+    product/repository/product_type_repository.cpp \
+    product/selector/material_selector.cpp \
     service/buildnumber.cpp \
     service/cutting/summary/cutplan_input_summary.cpp \
     service/cutting/summary/cutplan_input_summary_builder.cpp \
@@ -40,7 +49,6 @@ SOURCES += \
     service/storageaudit/auditcontextbuilder.cpp \
     service/storageaudit/auditstatemanager.cpp \
     common/color/namedcolor.cpp \
-    common/csvimporter.cpp \
     common/eventlogger.cpp \
     common/filehelper.cpp \
     common/filenamehelper.cpp \
@@ -72,7 +80,6 @@ SOURCES += \
     model/cutting/result/resultmodel.cpp \
     model/identifiableentity.cpp \
     model/leftoverstockentry.cpp \
-    materials/model/material_group.cpp \
     materials/model/material_type.cpp \
     model/picking/pickingcomparisonresult.cpp \
     model/picking/pickingitem.cpp \
@@ -132,6 +139,9 @@ HEADERS += \
     common/sysinfohelper.h \
     common/testlabelmaker.h \
     common/texthelper.h \
+    materials/model/material_family.h \
+    materials/model/material_family_detector.h \
+    materials/model/material_family_utils.h \
     materials/model/scoringparams.h \
     materials/model/trimmingparams.h \
     model/cutting/optimizer/cutengine.h \
@@ -177,6 +187,19 @@ HEADERS += \
     model/storage/storageutils.h \
     model/storageaudit/audit_enums.h \
     presenter/stockpresenter.h \
+    product/model/bom_entry.h \
+    product/model/material_role.h \
+    product/model/product_subtype.h \
+    product/model/product_type.h \
+    product/registry/bom_registry.h \
+    product/registry/material_role_registry.h \
+    product/registry/product_subtype_registry.h \
+    product/registry/product_type_registry.h \
+    product/repository/bom_repository.h \
+    product/repository/material_role_repository.h \
+    product/repository/product_subtype_repository.h \
+    product/repository/product_type_repository.h \
+    product/selector/material_selector.h \
     service/buildnumber.h \
     service/cutting/instruction/cuttinginstructionutils.h \
     service/cutting/instruction/labelmodel.h \
@@ -379,15 +402,19 @@ DISTFILES += \
     run_4.txt \
     run_5.txt \
     run_Refaktor_terv_fokuszpontok \
+    testdata/bom.csv \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \
     testdata/cutting_plans/cuttingplan_20260622-074056_hibateszt.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \
+    testdata/material_rolemap.csv \
     testdata/materialgroup_members.csv \
     testdata/materialgroups.csv \
     testdata/materials.csv \
+    testdata/materials_old.csv \
+    testdata/product_subtype.csv \
     testdata/ral_colors/classic.csv \
     testdata/ral_colors/design.csv \
     testdata/ral_colors/p1.csv \

@@ -254,6 +254,12 @@ QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
         }
     }
 
+    // ÚJ: ha nincs szeparátor, de a fejléc nem üres → 1 oszlopos CSV
+    if (!lines.isEmpty()) {
+        return ','; // default, de mindegy, mert nem lesz szeparátor a sorban
+    }
+
     zWarning("❌ Nem sikerült szeparátort detektálni a fejléc alapján.");
-    return QChar(); // ❌ Nem sikerült detektálni
+    return QChar();
+
 }

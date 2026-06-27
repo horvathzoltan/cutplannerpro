@@ -1,4 +1,5 @@
 #include "common/testlabelmaker.h"
+#include "materials/repository/material_repository.h"
 #include "view/MainWindow.h"
 
 #include <QApplication>
@@ -46,11 +47,6 @@ int main(int argc, char *argv[])
     Logger::Init(Logger::ErrLevel::INFO, Logger::DbgLevel::TRACE, false, false);
     SettingsManager::instance().load(argc, argv);
 
-    // --test maki
-    if (SettingsManager::instance().isTestMode()) {
-        TestManager::instance().runBusinessLogicTests(SettingsManager::instance().testProfile());
-        return 0;
-    }
 
     // 🔧 Eseménynapló fájl megnyitása még az init előtt
     EventLogger::instance().setLogFile("eventlog.txt");
@@ -79,6 +75,19 @@ int main(int argc, char *argv[])
         QMessageBox::warning(nullptr, "Figyelmeztetés",
                              "Az alkalmazás elindult, de a következő problémák felmerültek:\n\n" +
                                  status.warnings().join("\n"));
+    }
+
+    // --test maki
+    if (SettingsManager::instance().isTestMode()) {
+        auto testProfile = SettingsManager::instance().testProfile();
+        // --test detect-family
+        // if(testProfile == "detect-family"){
+        //     MaterialRepository repo;
+        //     repo.exportCsv("materials_out.csv");
+        //     return 0;
+        // }
+        TestManager::instance().runBusinessLogicTests(testProfile);
+        return 0;
     }
 
     MainWindow window;

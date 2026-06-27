@@ -3,6 +3,8 @@
 #include <QVector>
 #include <QUuid>
 #include <QString>
+
+#include <materials/model/material_family_detector.h>
 //#include <optional>
 #include "materials/model/material_master.h"
 
@@ -28,5 +30,11 @@ public:
     bool isBarcodeUnique(const QString& barcode) const;
 
     bool isEmpty() const { return _data.isEmpty(); }
+
+    void applyFamilyDetection() {
+        for (auto& m : _data) {
+            m.family = MaterialFamilyDetector::detect_fromBarcode(m.barcode);
+        }
+    }
 
 };

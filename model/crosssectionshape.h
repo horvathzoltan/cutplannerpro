@@ -20,4 +20,9 @@ public:
 
     // 💡 Később jöhet: isValid(diameter, width, height)
     // QColor uiColor() const;
+
+    // 🔥 Kényelmi függvények
+    inline bool isRectangular() const { return value == Shape::Rectangular; }
+    inline bool isRound() const       { return value == Shape::Round; }
+    inline bool isCustom() const      { return value == Shape::Custom; }
 };

@@ -1,89 +1,69 @@
-name;barcode;length;dim1;dim2;shape;machineBarcode;type;color;cuttingMode;paintingMode;trim_mm;minLeftOver_mm;scrap_mm;goodLeftOver_Min_mm;goodLeftOver_Max_mm;externalCode;description
-#napháló tengelyek
-Csőtengely Ø70x5000mm;NP-ROLL60-5000;5000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;"";""
-Csőtengely Ø70x6000mm;NP-ROLL60-6000;6000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;"";""
-Csőtengely Ø70x7000mm;NP-ROLL60-7000;7000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;"";""
-#napháló zárósúlyok
-Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;"";""
-Zárósúly Ø12x4000mm;NP-BAR12-4000;4000;12;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;"";""
-Zárósúly Ø22x3000mm;NP-BAR22-3000;3000;22;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;"";""
-Zárósúly Ø22x4000mm;NP-BAR22-4000;4000;22;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;"80170055";""
-#napháló FEHÉR - RAL9010 - pure white
-# tok
-NaphálóTok;NP-T-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170156";""
-NaphálóTokFedél;NP-TF-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170156";""
-# záró
-CipzárosZáró;NP-CZ-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170038";""
-SinesZáró;NP-SZ-9010-6;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170160";""
-SinesZáró;NP-SZ-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;300;1000;1800;"80170107";""
-# láb/lefutó
-CipzárosLáb;NP-CL-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;500;1000;1500;"80170202";""
-Lábtakaró;NP-CLT-9010;7000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;500;1000;1500;"80170030";""
-SinesLáb;NP-SL-9010;6000;;;;CM2;Aluminum;RAL9010;Length;Paintable;15;70;500;1000;1500;"80170164";""
-#napháló ANTRACIT - RAL7016 - anthracite grey
-# tok
-NaphálóTok;NP-T-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170157";""
-NaphálóTokFedél;NP-TF-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170157";""
-# záró
-CipzárosZáró;NP-CZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;7be0;300;1000;1800;"80170051";""
-SinesZáró;NP-SZ-7016-6;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
-SinesZáró;NP-SZ-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;300;1000;1800;"80170109";""
-# láb/lefutó
-CipzárosLáb;NP-CL-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"80170051";""
-Lábtakaró;NP-CLT-7016;7000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"";""
-SinesLáb;NP-SL-7016;6000;;;;CM2;Aluminum;RAL7016;Length;Paintable;15;70;500;1000;1500;"80170165";""
-#napháló NATÚR
-# tok
-NaphálóTok;NP-T;6000;;;;CM2;Aluminum;;Length;Paintable;15;70;300;1000;1800;"80170426";""
-NaphálóTokFedél;NP-TF;6000;;;;CM2;Aluminum;;Length;Paintable;15;70;300;1000;1800;"80170426";""
-# záró
-CipzárosZáró;NP-CZ;7000;;;;CM2;Aluminum;;Length;Paintable;15;70;300;1000;1800;"80170425";""
-SinesZáró;NP-SZ;6000;;;;CM2;Aluminum;;Length;Paintable;15;70;300;1000;1800;"80170427";""
-# láb/lefutó
-CipzárosLáb;NP-CL;7000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"80170429";""
-Lábtakaró;NP-CLT;7000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"80170023";""
-SinesLáb;NP-SL;6000;;;;CM2;Aluminum;;Length;Paintable;15;70;500;1000;1500;"80170428";""
-# napháló kiegészítők
-CipzárosLábbetét;NP-CLB;6000;;;;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;"80170020";""
-CipzárosLábbetétR;NP-CLBR;5000;;;;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;"";""
-Bowden;NP-B-50m;50000;;;;CM2;Steel;;Length;None;0;0;0;0;0;"";""
-#napháló meghajtás
-NaphálóMotor-10Nm;NP-MOT-10;0;;Machine;CM3;Electric;;;Piece;None;0;0;0;0;0;"";""
-NaphálóMotor-20Nm;NP-MOT-20;0;;Machine;CM3;Electric;;;Piece;None;0;0;0;0;0;"";""
-CsuklósHajtókar;NP-HK;0;;Machine;CM3;Steel;;;Piece;None;0;0;0;0;0;"";""
-#tengelyek
-Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1000;"";""
-Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1000;"";""
-Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1000;"";""
-Tengely Ø32 hornyos;TE-H-32;6000;32;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1200;"";""
-Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1200;"";""
-Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1200;"";""
-Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminum;;Length;None;15;70;300;600;1200;"80050528";""
-#sávroló
-SávrolóTok;SR-T;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;20;100;300;600;1500;"";""
-FelsőSín;SR-FSN;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;20;50;300;600;1500;"";""
-SávrolóZáró;SR-Z;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1500;"";""
-SávrolóPálca;SP-6000;6000;14;;Round;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1500;"";""
-#mini
-MiniTok;MT;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;20;100;300;600;1500;"";""
-MinitokosZáró;MT-Z;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1500;"";""
-MinitokosPálca;MT-P;6000;8;;Round;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1500;"";""
-MinitokosLáb;MT-L;6000;25.7;3.6;Rectangular;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1500;"";""
-#roletta
-AlsóPálca;ROL-P;6000;10;;Round;CM2;Aluminum;;Length;None;30;100;300;600;1000;"";""
-ÚjGyöngyösZáró;ROL-GYZ;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1200;"";""
-ErősítettZáró;ROL-EZ;6000;;;;CM2;Aluminum;RAL9016;Length;Paintable;15;70;300;600;1200;"";""
-RugósRugó;ROL-RRG;0;;Spring;CM3;Steel;;;Piece;None;0;0;0;0;0;"";""
-TetőtériRugó;ROL-TRG;0;;Spring;CM3;Steel;;;Piece;None;0;0;0;0;0;"";""
-#roletta kiegészítők
-RolettaVászon;ROL-FAB;0;;;;CM2;Fabric;;Length;None;0;0;0;0;0;"";""
-AlsóPálcaDugó;ROL-PD;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"";""
-TengelyVég;ROL-TEV;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"";""
-MinitokosVégelem_Set_Bal;MT-VE-B;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"BP.243.S.RAL9016.SOL","EndCap for BP.242"
-MinitokosVégelem_Set_Jobb;MT-VE-J;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"BP.243.S.RAL9016.SAG","EndCap for BP.242"
-#
-SávrolóKonzol1;SR-KONZOL_1;0;;Fitting;CM3;Steel;;;Piece;None;0;0;0;0;0;"BP.183.RAL9016","SideBracket for 47mm Rail"
-SávrolóKonzol2;SR-KONZOL_2;0;;Fitting;CM3;Steel;;;Piece;None;0;0;0;0;0;"BP.182.RAL9016","SideBracket with Lock for 47mm Rail"
-MinitokosPálcaVégdugó_SR;MT-PVD-SR;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"BP.235.RAL9016","EndCap for 16mm BottomRail"
-MinitokosPálcaVégdugó_ROL;MT-PVD-ROL;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"BP.873.RAL9016","EndCap"
-NagyTokosPofa;NP-TP;0;;Fitting;CM3;Plastic;;;Piece;None;0;0;0;0;0;"BP.107.RAL9016","EndCap L&R for BP103"
+name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;goodLeftOverMax;externalCode;description;family
+Csőtengely Ø70x5000mm;NP-ROLL60-5000;5000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø70x6000mm;NP-ROLL60-6000;6000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø70x7000mm;NP-ROLL60-7000;7000;70;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø78x6000mm;NP-ROLL78-6000;6000;78;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø78x7000mm;NP-ROLL78-7000;7000;78;;Round;CM1;Steel;;Length;None;0;50;600;1000;1800;;;Tengely
+Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;;;Suly
+Zárósúly Ø12x4000mm;NP-BAR12-4000;4000;12;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;;;Suly
+Zárósúly Ø22x3000mm;NP-BAR22-3000;3000;22;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;;;Suly
+Zárósúly Ø22x4000mm;NP-BAR22-4000;4000;22;;Round;CM1;Steel;;Length;None;0;10;300;1000;1800;80170055;;Suly
+NaphálóTok;NP-T-9010;6000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;300;1000;1800;80170156;;Tok
+NaphálóTokFedél;NP-TF-9010;6000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;300;1000;1800;80170156;;TokFed
+CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;300;1000;1800;80170038;;Zaro
+SinesZáró;NP-SZ-9010-6;6000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;300;1000;1800;80170160;;Zaro
+SinesZáró;NP-SZ-9010;7000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;300;1000;1800;80170107;;Zaro
+CipzárosLáb;NP-CL-9010;7000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;500;1000;1500;80170202;;Lab
+Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;500;1000;1500;80170030;;Unknown
+SinesLáb;NP-SL-9010;6000;;;Custom;CM2;Aluminium;Pure white;Length;Paintable;15;70;500;1000;1500;80170164;;Lab
+NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;300;1000;1800;80170157;;Tok
+NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;300;1000;1800;80170157;;TokFed
+CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;300;1000;1800;80170051;;Zaro
+SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
+SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
+CipzárosLáb;NP-CL-7016;7000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;500;1000;1500;80170051;;Lab
+Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;500;1000;1500;;;Unknown
+SinesLáb;NP-SL-7016;6000;;;Custom;CM2;Aluminium;Anthracite grey;Length;Paintable;15;70;500;1000;1500;80170165;;Lab
+NaphálóTok;NP-T;6000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;300;1000;1800;80170426;;Tok
+NaphálóTokFedél;NP-TF;6000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;300;1000;1800;80170426;;TokFed
+CipzárosZáró;NP-CZ;7000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;300;1000;1800;80170425;;Zaro
+SinesZáró;NP-SZ;6000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;300;1000;1800;80170427;;Zaro
+CipzárosLáb;NP-CL;7000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;500;1000;1500;80170429;;Lab
+Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;500;1000;1500;80170023;;Unknown
+SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;Length;Paintable;15;70;500;1000;1500;80170428;;Lab
+CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;80170020;;Kiegeszito
+CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;Length;Paintable;0;0;500;1000;1500;;;Kiegeszito
+Bowden;NP-B-50m;50000;;;Custom;CM2;Steel;;Length;None;0;0;0;0;0;;;Bowden
+NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;Piece;None;0;0;0;0;0;;;Motor
+NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;Piece;None;0;0;0;0;0;;;Motor
+CsuklósHajtókar;NP-HK;0;;;Custom;Steel;Unknown;;Piece;None;0;0;0;0;0;;;HajtoElem
+Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1000;;;Tengely
+Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1000;;;Tengely
+Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1000;;;Tengely
+Tengely Ø32 hornyos;TE-H-32;6000;32;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1200;;;Tengely
+Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1200;;;Tengely
+Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1200;;;Tengely
+Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminium;;Length;None;15;70;300;600;1200;80050528;;Tengely
+SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;20;100;300;600;1500;;;Unknown
+FelsőSín;SR-FSN;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;20;50;300;600;1500;;;Unknown
+SávrolóZáró;SR-Z;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1500;;;Zaro
+SávrolóPálca;SP-6000;6000;14;;Round;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1500;;;Palca
+MiniTok;MT;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;20;100;300;600;1500;;;Unknown
+MinitokosZáró;MT-Z;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1500;;;Zaro
+MinitokosPálca;MT-P;6000;8;;Round;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1500;;;Palca
+MinitokosLáb;MT-L;6000;25.7;3.6;Rectangular;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1500;;;Lab
+AlsóPálca;ROL-P;6000;10;;Round;CM2;Aluminium;;Length;None;30;100;300;600;1000;;;Palca
+ÚjGyöngyösZáró;ROL-GYZ;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1200;;;Zaro
+ErősítettZáró;ROL-EZ;6000;;;Custom;CM2;Aluminium;Traffic white;Length;Paintable;15;70;300;600;1200;;;Zaro
+RugósRugó;ROL-RRG;0;;;Custom;Steel;Unknown;;Piece;None;0;0;0;0;0;;;Rugo
+TetőtériRugó;ROL-TRG;0;;;Custom;Steel;Unknown;;Piece;None;0;0;0;0;0;;;Rugo
+RolettaVászon;ROL-FAB;0;;;Custom;CM2;Unknown;;Length;None;0;0;0;0;0;;;Textil
+AlsóPálcaDugó;ROL-PD;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;;;Fitting
+TengelyVég;ROL-TEV;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;;;Fitting
+MinitokosVégelem_Set_Bal;MT-VE-B;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;BP.243.S.RAL9016.SOL,EndCap for BP.242;;Fitting
+MinitokosVégelem_Set_Jobb;MT-VE-J;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;BP.243.S.RAL9016.SAG,EndCap for BP.242;;Fitting
+SávrolóKonzol1;SR-KONZOL_1;0;;;Custom;Steel;Unknown;;Piece;None;0;0;0;0;0;BP.183.RAL9016,SideBracket for 47mm Rail;;Unknown
+SávrolóKonzol2;SR-KONZOL_2;0;;;Custom;Steel;Unknown;;Piece;None;0;0;0;0;0;BP.182.RAL9016,SideBracket with Lock for 47mm Rail;;Unknown
+MinitokosPálcaVégdugó_SR;MT-PVD-SR;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;BP.235.RAL9016,EndCap for 16mm BottomRail;;Fitting
+MinitokosPálcaVégdugó_ROL;MT-PVD-ROL;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;BP.873.RAL9016,EndCap;;Fitting
+NagyTokosPofa;NP-TP;0;;;Custom;Plastic;Unknown;;Piece;None;0;0;0;0;0;BP.107.RAL9016,EndCap L&R for BP103;;TokVeg

@@ -1,0 +1,10 @@
+type;code;name
+NP;CIP;Cipzáros
+NP;SIN;Sínes
+NP;BOW;Bowdenes
+ROL;ALAP;Alap
+ROL;RUG;Rugós
+ROL;TET;Tetőtéri
+SR;T;Tokozott
+SR;TN;TokNélküli
+SR;MINIT;Minitokos
