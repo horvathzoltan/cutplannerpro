@@ -51,6 +51,18 @@ class CuttingPresenter : public QObject {
 public:
     explicit CuttingPresenter(MainWindow* view, QObject *parent = nullptr);
 
+    struct CuttingRequestPatch {
+        bool updateLength        = false;
+        bool updateMaterial      = false;
+        bool updateLeftRight     = false;
+
+        bool updateOwner         = false;
+        bool updateDueDate       = false;
+        bool updateProductType   = false;
+        bool updateProductSubtype= false;
+        bool updateColor         = false;
+    };
+
     // Vágási igények
     void add_CuttingPlanRequest(const Cutting::Plan::Request& req);
     void update_CuttingPlanRequest(const Cutting::Plan::Request& updated);
@@ -123,6 +135,13 @@ public:
     void ExportLeftoverIntakeForm_Pdf();
     void Paint();
     void Audit();
+    void BOM_audit();
+    void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
+private:
+    void applyPatch(Cutting::Plan::Request& target,
+                    const Cutting::Plan::Request& updated,
+                    const CuttingRequestPatch& patch);
+
 private:
     MainWindow* view;
     Cutting::Optimizer::OptimizerModel model;

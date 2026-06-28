@@ -25,6 +25,13 @@ public:
         return out;
     }
 
+    const ProductSubtype* findById(const QUuid& id) const {
+        for (const auto& t : _data)
+            if (t.id == id)
+                return &t;
+        return nullptr;
+    }
+
     // const ProductSubtype* findByName(const QString& name) const {
     //     for (const auto& s : _data)
     //         if (s.name.compare(name, Qt::CaseInsensitive) == 0)

@@ -3,6 +3,7 @@
 #include "../../../model/cutting/plan/request.h"
 #include "ui_addinputdialog.h"
 #include "materials/registry/material_registry.h"
+#include "view/common/layouts/qflowlayout.h"
 #include "view/dialog/materialsearch/materialsearchdialog.h"
 
 #include <QCompleter>
@@ -10,6 +11,8 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <common/eventlogger.h>
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
 
 QString AddInputDialog::s_lastExternalRef;
 QMap<QString, AddInputDialog::RequestContext> AddInputDialog::_contexts;
@@ -17,7 +20,9 @@ QSet<QString> AddInputDialog::s_ownerCache;
 
 bool AddInputDialog::s_lastRepeat = false;
 
-AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
+AddInputDialog::AddInputDialog(QWidget *parent,
+                               DialogMode mode,
+                               const Cutting::Plan::Request* initial)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
     , current_requestId(QUuid::createUuid())
@@ -34,6 +39,43 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     _shiftEnterAccepted = false;
 
     ui->setupUi(this);
+
+    // ⭐ ProductType layout
+    auto* typeLayout = new QFlowLayout(ui->groupBox_productType);
+    ui->groupBox_productType->setLayout(typeLayout);
+    // ⭐ ProductType rádiógombok dinamikus generálása
+    //auto* typeLayout = ui->groupBox_productType->findChild<QVBoxLayout*>("verticalLayout");
+    for (const auto& type : ProductTypeRegistry::instance().readAll()) {
+        auto* rb = new QRadioButton(type.name, this);
+        rb->setProperty("typeId", type.id);
+        typeLayout->addWidget(rb);
+        connect(rb, &QRadioButton::toggled, this, &AddInputDialog::onProductTypeChanged);
+    }
+
+    auto* subtypeStack = ui->stackedWidget_stackSubtype;
+
+    // ⭐ QStackedWidget old page-ek eltávolítása
+    while (subtypeStack->count() > 0) {
+        QWidget* w = subtypeStack->widget(0);
+        subtypeStack->removeWidget(w);
+        w->deleteLater();
+    }
+
+    // ⭐ ProductSubtype panelek dinamikus generálása
+    for (const auto& type : ProductTypeRegistry::instance().readAll()) {
+        auto* page = new QWidget(this);
+        page->setProperty("typeId", type.id);
+        //auto* lay = new QVBoxLayout(page);
+        auto* lay = new QFlowLayout(page);
+
+        for (const auto& st : ProductSubtypeRegistry::instance().findByTypeId(type.id)) {
+            auto* rb = new QRadioButton(st.name, page);
+            rb->setProperty("subtypeId", st.id);
+            lay->addWidget(rb);
+        }
+
+        subtypeStack->addWidget(page);
+    }
 
     ui->editLength->installEventFilter(this);
 
@@ -63,6 +105,10 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
 
     connect(ui->editReference, &QLineEdit::editingFinished,
             this, [this]() {
+        // ⭐ UPDATE módban nincs context workflow
+                if (_contextMode == ContextMode::Update)
+                    return;
+
                 QString ref = ui->editReference->text().trimmed();
 
                 // ⭐ 1) üres → nincs workflow
@@ -92,6 +138,29 @@ AddInputDialog::AddInputDialog(QWidget *parent, DialogMode mode)
     connect(ui->sliderHandler, &QSlider::valueChanged,
             this, &AddInputDialog::updateSliderLabels);
 
+
+    // ⭐ MODE-AWARE INITIALIZATION
+    if (mode == DialogMode::Update && initial) {
+        // 1) Azonosító
+        current_requestId = initial->requestId;
+
+        // 2) Mezők visszatöltése
+        applyRequestToWidgets(*initial);
+
+        // 3) Kontextus mód
+        _contextMode = ContextMode::Update;
+        updateContextModeLabel();
+
+        // 4) Nem szerkeszthető mezők pedig NINCSENEK
+        // azaz
+        // MINDEN mező szerkeszthető
+        setContextEditable(true);
+
+        // 5) Fókusz
+        applyInitialFocus();
+
+        return;   // ❗ NINCS initializeDialog()
+    }
 
     // ⭐ Induló inicializálás
     QTimer::singleShot(0, this, [this]() {
@@ -332,9 +401,11 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
         req.rightCount = totalPieces - left;
     }
 
+    // ⭐ ProductType (getter)
+    req.productTypeId = selectedProductTypeId();
 
-    // Altípus
-    req.subtype = parseSubtypeFromRadioButtons();
+    // ⭐ ProductSubtype (getter — NEM mezőből!)
+    req.productSubtypeId = selectedProductSubtypeId();
 
     req.dueDate = ui->editDueDate->date();
 
@@ -348,19 +419,37 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 bool AddInputDialog::validateInputs() {
 
     Cutting::Plan::Request req = getModel();
+    QStringList errors;
+
+    // 1) J/B darabszám
     const int totalPieces = req.quantity;
     const int l = req.leftCount;
     const int r = req.rightCount;
 
-    // J/B darabszám ellenőrzés
     if ((l + r != totalPieces) && !(l == 0 && r == 0)) {
-        QMessageBox::warning(this,
-                             "Hibás J/B megadás",
-                             "A balos és jobbos darabszám összege nem egyezik meg a teljes darabszámmal.");
-        return false;
+        errors << "A balos és jobbos darabszám összege nem egyezik meg a teljes darabszámmal.";
     }
 
-    QStringList errors = req.invalidReasons();
+    // 2) Request saját hibái
+    errors << req.invalidReasons();
+
+    // 3) Hossz
+    if (req.requiredLength < 100)
+        errors << "A vágási hossz nem lehet 100 mm alatt.";
+    if (req.requiredLength < 200)
+        errors << "200 mm alatti darabot nem vágunk.";
+
+    // 4) Dátum
+    if (!req.dueDate.isValid())
+        errors << "A határidő érvénytelen.";
+
+    // 5) Type/Subtype
+    if (req.productTypeId.isNull())
+        errors << "Nincs kiválasztva terméktípus.";
+    if (req.productSubtypeId.isNull())
+        errors << "Nincs kiválasztva altípus.";
+
+    // 6) Ha van hiba → egyetlen ablak
     if (!errors.isEmpty()) {
         QMessageBox::warning(this,
                              "Adatellenőrzés",
@@ -368,88 +457,60 @@ bool AddInputDialog::validateInputs() {
         return false;
     }
 
-    int len = ui->editLength->text().toInt();
-    if (len < 100) {
-        QMessageBox::warning(this,
-                             "Hibás hossz",
-                             "A vágási hossz nem lehet 100 mm alatt. "
-                             "Ha tizedespontot írtál, javítsd ki egész számra.");
-        return false;
-    }
-
-    if (len < 200) {
-        QMessageBox::warning(this,
-                             "Túl rövid darab",
-                             "200 mm alatti darabot nem vágunk. "
-                             "A gyorsdaraboló nem szalámiszeletelő.");
-        return false;
-    }
-
-    if (!req.dueDate.isValid()) {
-        QMessageBox::warning(this, "Hibás dátum", "A határidő érvénytelen.");
-        return false;
-    }
-
     return true;
 }
 
-
-Subtype AddInputDialog::parseSubtypeFromRadioButtons() const
-{
-    if (ui->radioButton_alap->isChecked())
-        return Subtype::Alap;
-    else if (ui->radioButton_rugos->isChecked())
-        return Subtype::Rugos;
-    else if (ui->radioButton_tetoteri->isChecked())
-        return Subtype::Tetoteri;
-    else
-        return Subtype::None;
-}
 
 void AddInputDialog::accept() {
     if (!validateInputs())
         return;
 
-    const QString ref = ui->editReference->text().trimmed();
+    Cutting::Plan::Request req = getModel();   // ⭐ egyetlen forrás
+
+    const QString ref = req.externalReference;
     s_lastExternalRef = ref;
     s_lastRepeat = ui->chk_Repeat->isChecked();
 
     RequestContext ctx;
-    ctx.ownerName = ui->editOwner->text().trimmed();
-    ctx.dueDate   = ui->editDueDate->date();
-    ctx.subtype   = parseSubtypeFromRadioButtons();
-    ctx.side      = ui->radioLeft->isChecked() ? HandlerSide::Left
-                                          : HandlerSide::Right;
-    ctx.defaultMaterialId = ui->comboMaterial->currentData().toUuid();
+    ctx.ownerName        = req.ownerName;
+    ctx.dueDate          = req.dueDate;
 
-    ctx.color = ui->edit_Color->text().trimmed();
+    // ⭐ ProductType / ProductSubtype getterből
+    ctx.productTypeId    = req.productTypeId;
+    ctx.productSubtypeId = req.productSubtypeId;
+
+    // ⭐ Side → a Request már kiszámolta
+    ctx.side             = (req.leftCount > 0 ? HandlerSide::Left
+                                  : HandlerSide::Right);
+
+    ctx.defaultMaterialId = req.materialId;
+    ctx.color             = req.color;
 
     _contexts[ref] = ctx;
-
-    s_ownerCache.insert(ui->editOwner->text().trimmed());
+    s_ownerCache.insert(req.ownerName);
 
     QDialog::accept();
 }
 
 
-void AddInputDialog::setModel(const Cutting::Plan::Request& req)
-{
-    // ⭐ 1) Azonosító beállítása
-    current_requestId = req.requestId;
+// void AddInputDialog::setModel(const Cutting::Plan::Request& req)
+// {
+//     // ⭐ 1) Azonosító beállítása
+//     current_requestId = req.requestId;
 
-    // ⭐ 2) UI mezők feltöltése modulárisan
-    applyRequestToWidgets(req);
+//     // ⭐ 2) UI mezők feltöltése modulárisan
+//     applyRequestToWidgets(req);
 
-    // ⭐ 3) Update mód → Existing context
-    _contextMode = ContextMode::Existing;
-    updateContextModeLabel();
+//     // ⭐ 3) Update mód → Existing context
+//     _contextMode = ContextMode::Existing;
+//     updateContextModeLabel();
 
-    // ⭐ 4) Update módban nem szerkeszthető
-    setContextEditable(false);
+//     // ⭐ 4) Update módban nem szerkeszthető
+//     setContextEditable(false);
 
-    // ⭐ 5) Fókusz beállítása
-    applyInitialFocus();
-}
+//     // ⭐ 5) Fókusz beállítása
+//     applyInitialFocus();
+// }
 
 
 
@@ -561,7 +622,10 @@ void AddInputDialog::reject() {
 void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
 {
     applyOwnerAndDate(ctx);
-    applySubtypeFromContext(ctx);
+
+    applyProductTypeFromContext(ctx);
+    applyProductSubtypeFromContext(ctx);
+
     applySideFromContext(ctx);
     applyMaterialFromContext(ctx);
     applyColorFromContext(ctx);
@@ -574,21 +638,13 @@ void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
     applyReferenceFromRequest(req);
     applyDateFromRequest(req);
     applyColorFromRequest(req);
-    applySubtypeFromRequest(req);
+
+    applyProductTypeFromRequest(req);
+    applyProductSubtypeFromRequest(req);
+
     applySideFromRequest(req);
     applyMaterialFromRequest(req);
     applyLengthAndQuantityFromRequest(req);
-}
-
-
-void AddInputDialog::applySubtype(Subtype t)
-{
-    switch (t) {
-    case Subtype::Alap:     ui->radioButton_alap->setChecked(true); break;
-    case Subtype::Rugos:    ui->radioButton_rugos->setChecked(true); break;
-    case Subtype::Tetoteri: ui->radioButton_tetoteri->setChecked(true); break;
-    default:                ui->radioButton_nincs->setChecked(true); break;
-    }
 }
 
 void AddInputDialog::applySide(HandlerSide side)
@@ -605,7 +661,10 @@ void AddInputDialog::setContextEditable(bool editable)
     setReferenceEditable(editable);
     setOwnerEditable(editable);
     setDateEditable(editable);
-    setSubtypeEditable(editable);
+
+    setProductTypeEditable(editable);
+    setProductSubtypeEditable(editable);
+
     setSideEditable(editable);
     setColorEditable(editable);
     setQuantityEditable(editable);
@@ -667,30 +726,23 @@ void AddInputDialog::loadContextMap()
         QString line = QString::fromUtf8(f.readLine()).trimmed();
         if (line.isEmpty()) continue;
 
+        //externalRef ; ownerName ; dueDate ; productTypeId ; productSubtypeId ; side ; materialBarcode ; color
         auto parts = line.split(';');
-
-        // régi formátum: 6 mező
-        // új formátum: 7 mező
-        if (parts.size() < 6)
+        if (parts.size() < 8)
             continue;
 
         RequestContext ctx;
         ctx.ownerName = parts[1];
         ctx.dueDate = QDate::fromString(parts[2], "yyyy-MM-dd");
-        ctx.subtype = SubtypeUtils::parse(parts[3]);
-        ctx.side = HandlerSideUtils::parse(parts[4]);
-        //ctx.defaultMaterialId = QUuid(parts[5]);
+        ctx.productTypeId    = QUuid(parts[3]);
+        ctx.productSubtypeId = QUuid(parts[4]);
+        ctx.side = HandlerSideUtils::parse(parts[5]);
 
-
-        auto matBarcode = parts[5];
+        auto matBarcode = parts[6];
         auto* mat = MaterialRegistry::instance().findByBarcode(matBarcode);
         ctx.defaultMaterialId = mat?mat->id:QUuid();
 
-        // ÚJ: szín mező, ha van
-        if (parts.size() >= 7)
-            ctx.color = parts[6];
-        else
-            ctx.color = "";   // régi sor → üres szín
+        ctx.color = parts[7];
 
         _contexts[parts[0]] = ctx;
     }
@@ -710,11 +762,13 @@ void AddInputDialog::saveContextMap()
         auto *mat = MaterialRegistry::instance().findById(ctx.defaultMaterialId);
         QString matBarcode = mat?mat->barcode:"";
 
-        QString line = QString("%1;%2;%3;%4;%5;%6;%7\n")
+        //externalRef ; ownerName ; dueDate ; productTypeId ; productSubtypeId ; side ; materialBarcode ; color
+        QString line = QString("%1;%2;%3;%4;%5;%6;%7;%8\n")
                            .arg(it.key())
                            .arg(ctx.ownerName)
                            .arg(ctx.dueDate.toString("yyyy-MM-dd"))
-                           .arg(SubtypeUtils::toString_CSV(ctx.subtype))
+                           .arg(ctx.productTypeId.toString())
+                           .arg(ctx.productSubtypeId.toString())
                            .arg(HandlerSideUtils::toDisplayText(ctx.side))
                            .arg(matBarcode)
                            .arg(ctx.color);
@@ -741,6 +795,9 @@ void AddInputDialog::updateContextModeLabel()
     case ContextMode::NewOrder:
         text = "Mód: ÚJ MEGRENDELŐ";
         break;
+    case ContextMode::Update:
+        text = "Mód: MÓDOSÍTÁS";
+        break;
     }
 
     ui->label_ContextMode->setText(text);
@@ -753,12 +810,17 @@ void AddInputDialog::applyOwnerAndDate(const RequestContext& ctx)
     ui->editDueDate->setDate(ctx.dueDate);
 }
 
-
-
-void AddInputDialog::applySubtypeFromContext(const RequestContext& ctx)
+void AddInputDialog::applyProductTypeFromContext(const RequestContext& ctx)
 {
-    applySubtype(ctx.subtype);
+    setSelectedProductTypeId(ctx.productTypeId);
 }
+
+void AddInputDialog::applyProductSubtypeFromContext(const RequestContext& ctx)
+{
+    setSelectedProductSubtypeId(ctx.productSubtypeId);
+}
+
+
 void AddInputDialog::applySideFromContext(const RequestContext& ctx)
 {
     applySide(ctx.side);
@@ -786,13 +848,7 @@ void AddInputDialog::setDateEditable(bool editable)
 {
     ui->editDueDate->setEnabled(editable);
 }
-void AddInputDialog::setSubtypeEditable(bool editable)
-{
-    ui->radioButton_alap->setEnabled(editable);
-    ui->radioButton_rugos->setEnabled(editable);
-    ui->radioButton_tetoteri->setEnabled(editable);
-    ui->radioButton_nincs->setEnabled(editable);
-}
+
 void AddInputDialog::setSideEditable(bool editable)
 {
     ui->radioLeft->setEnabled(editable);
@@ -824,10 +880,7 @@ void AddInputDialog::applyColorFromRequest(const Cutting::Plan::Request& req)
 {
     ui->edit_Color->setText(req.color);
 }
-void AddInputDialog::applySubtypeFromRequest(const Cutting::Plan::Request& req)
-{
-    applySubtype(req.subtype);
-}
+
 void AddInputDialog::applySideFromRequest(const Cutting::Plan::Request& req)
 {
     applySide(req.leftCount > 0 ? HandlerSide::Left : HandlerSide::Right);
@@ -855,3 +908,97 @@ void AddInputDialog::setReferenceEditable(bool editable)
 {
     ui->editReference->setEnabled(editable);
 }
+
+void AddInputDialog::onProductTypeChanged(bool checked)
+{
+    if (!checked)
+        return;
+
+    QUuid typeId = sender()->property("typeId").toUuid();
+    auto* stack = ui->stackedWidget_stackSubtype;
+
+    for (int i = 0; i < stack->count(); ++i) {
+        QWidget* page = stack->widget(i);
+        if (page->property("typeId").toUuid() == typeId) {
+            stack->setCurrentWidget(page);
+            break;
+        }
+    }
+}
+
+
+QUuid AddInputDialog::selectedProductTypeId() const
+{
+    for (auto* rb : ui->groupBox_productType->findChildren<QRadioButton*>()) {
+        if (rb->isChecked())
+            return rb->property("typeId").toUuid();
+    }
+    return QUuid(); // nincs kiválasztva
+}
+
+QUuid AddInputDialog::selectedProductSubtypeId() const
+{
+    auto* stack = ui->stackedWidget_stackSubtype;
+    QWidget* page = stack->currentWidget();
+    if (!page)
+        return QUuid();
+
+    for (auto* rb : page->findChildren<QRadioButton*>()) {
+        if (rb->isChecked())
+            return rb->property("subtypeId").toUuid();
+    }
+
+    return QUuid();
+}
+
+void AddInputDialog::setSelectedProductTypeId(const QUuid& typeId)
+{
+    for (auto* rb : ui->groupBox_productType->findChildren<QRadioButton*>()) {
+        if (rb->property("typeId").toUuid() == typeId) {
+            rb->setChecked(true);
+            return;
+        }
+    }
+}
+
+void AddInputDialog::setSelectedProductSubtypeId(const QUuid& subtypeId)
+{
+    auto* stack = ui->stackedWidget_stackSubtype;
+
+    for (int i = 0; i < stack->count(); ++i) {
+        QWidget* page = stack->widget(i);
+
+        // subtype page must match the selected type
+        for (auto* rb : page->findChildren<QRadioButton*>()) {
+            if (rb->property("subtypeId").toUuid() == subtypeId) {
+                stack->setCurrentWidget(page);
+                rb->setChecked(true);
+                return;
+            }
+        }
+    }
+}
+
+void AddInputDialog::applyProductTypeFromRequest(const Cutting::Plan::Request& req)
+{
+    setSelectedProductTypeId(req.productTypeId);
+}
+void AddInputDialog::applyProductSubtypeFromRequest(const Cutting::Plan::Request& req)
+{
+    setSelectedProductSubtypeId(req.productSubtypeId);
+}
+void AddInputDialog::setProductTypeEditable(bool editable)
+{
+    for (auto* rb : ui->groupBox_productType->findChildren<QRadioButton*>())
+        rb->setEnabled(editable);
+}
+void AddInputDialog::setProductSubtypeEditable(bool editable)
+{
+    auto* stack = ui->stackedWidget_stackSubtype;
+    for (int i = 0; i < stack->count(); ++i) {
+        QWidget* page = stack->widget(i);
+        for (auto* rb : page->findChildren<QRadioButton*>())
+            rb->setEnabled(editable);
+    }
+}
+

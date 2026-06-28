@@ -60,6 +60,7 @@
 #include <model/cutting/plan/audit/naphalo_audit_service.h>
 
 #include <model/cutting/plan/audit/naphalo_audit_types.h>
+#include <model/cutting/plan/audit/product_bom_audit_service.h>
 
 CuttingPresenter::CuttingPresenter(MainWindow* view, QObject *parent)
     : QObject(parent), view(view) {}
@@ -97,21 +98,92 @@ void CuttingPresenter::add_CuttingPlanRequest(const Cutting::Plan::Request& req)
     }
  }
 
-void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r) {
-    bool ok = CuttingPlanRequestRegistry::instance().updateRequest(r); // 🔁 adatbázis update
+void CuttingPresenter::applyPatch(Cutting::Plan::Request& target,
+                                  const Cutting::Plan::Request& updated,
+                                  const CuttingRequestPatch& patch)
+{
+    if (patch.updateLength)
+        target.requiredLength = updated.requiredLength;
 
-    if (ok){
-        if(view){
-            view->updateRow_InputTable(r);
+    if (patch.updateMaterial)
+        target.materialId = updated.materialId;
+
+    if (patch.updateLeftRight) {
+        target.leftCount  = updated.leftCount;
+        target.rightCount = updated.rightCount;
+        target.quantity   = updated.quantity;
+    }
+
+    if (patch.updateOwner)
+        target.ownerName = updated.ownerName;
+
+    if (patch.updateDueDate)
+        target.dueDate = updated.dueDate;
+
+    if (patch.updateProductType)
+        target.productTypeId = updated.productTypeId;
+
+    if (patch.updateProductSubtype)
+        target.productSubtypeId = updated.productSubtypeId;
+
+    if (patch.updateColor)
+        target.color = updated.color;
+}
+
+void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r) {
+    auto opt = CuttingPlanRequestRegistry::instance().findById(r.requestId);
+    if (!opt) {
+        qWarning() << "❌ Sikertelen frissítés: nincs ilyen requestId:" << r.requestId;
+        return;
+    }
+
+    Cutting::Plan::Request target = *opt;
+
+    CuttingRequestPatch patch;
+    patch.updateLength    = true;
+    patch.updateMaterial  = true;
+    //patch.updateLeftRight = true;
+
+    applyPatch(target, r, patch);
+
+    bool ok = CuttingPlanRequestRegistry::instance().updateRequest(target);
+
+    if (ok) {
+        if (view) {
+            view->updateRow_InputTable(target);
+        }
+    } else {
+        qWarning() << "❌ Sikertelen frissítés: nincs ilyen requestId:" << r.requestId;
+        return;
+    }
+}
+
+void CuttingPresenter::update_AllRequestsWithSameReference(
+    const Cutting::Plan::Request& updated)
+{
+    CuttingRequestPatch patch;
+    patch.updateOwner         = true;
+    patch.updateDueDate       = true;
+    patch.updateProductType   = true;
+    patch.updateProductSubtype= true;
+    patch.updateColor         = true;
+    patch.updateLeftRight     = true;
+
+    auto all = CuttingPlanRequestRegistry::instance().readAll();
+
+    for (auto& req : all) {
+        // if (req.requestId == updated.requestId)
+        //     continue;
+        if (req.externalReference == updated.externalReference) {
+            applyPatch(req, updated, patch);
+
+            bool ok = CuttingPlanRequestRegistry::instance().updateRequest(req);
+            if (ok && view) {
+                view->updateRow_InputTable(req);
+            }
         }
     }
-    else
-    {
-         qWarning() << "❌ Sikertelen frissítés: nincs ilyen requestId:" << r.requestId;
-         return;
-     }
-
- }
+}
 
 void CuttingPresenter::remove_CuttingPlanRequest(const QUuid& requestId) {
     CuttingPlanRequestRegistry::instance().removeRequest(requestId);  // ✅ Globális törlés
@@ -956,7 +1028,9 @@ void CuttingPresenter::GenerateCutInstructions()
 
             auto pwm = plan.getPieceMaterialBy_pieceId(seg._pieceId);
             ci.side = pwm.side;
-            ci.subtype = pwm.subtype;
+//            ci.subtype = pwm.subtype;
+            ci.productTypeId = pwm.productTypeId;
+            ci.productSubtypeId = pwm.productSubtypeId;
 
             // if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
             //     if (!reusedLeftovers.contains(plan.leftoverBarcode))
@@ -1762,8 +1836,6 @@ void CuttingPresenter::AuditRequestsByExternalRef_old()
 
 void CuttingPresenter::Audit()
 {
-    AuditRequestsByExternalRef_old();
-
     AuditRequestsByExternalRef();
 }
 
@@ -1821,6 +1893,55 @@ void CuttingPresenter::AuditRequestsByExternalRef()
     }
 
     zInfo("=== AUDIT VÉGE ===");
+}
+
+
+void CuttingPresenter::BOM_audit()
+{
+    zInfo("=== PRODUCT BOM AUDIT ===");
+
+    const auto all = CuttingPlanRequestRegistry::instance().readAll();
+    auto result = ProductBomAuditService::run(all);
+
+    // 🔹 Audit üzenetek kiírása
+    for (const auto& m : result.messages) {
+        QString line = QString(">> [%1] %2")
+        .arg(m.ref)
+            .arg(m.text);
+        zInfo(line);
+    }
+
+    // 🔹 Summary kiírása
+    zInfo("=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===");
+
+    for (auto it = result.summary.perCustomer.begin();
+         it != result.summary.perCustomer.end(); ++it)
+    {
+        const QString& customer = it.key();
+        const CountPerType& s = it.value();
+
+        QString qualitySummary =
+            QString("jó=%1, hibás=%2").arg(s.good).arg(s.bad);
+
+        QString icon;
+        if (s.total > 0 && s.bad == 0) icon = "✅";
+        else if (s.bad > 0)            icon = "❌";
+        else                           icon = "•";
+
+        QString badList;
+        if (!s.badRefs.isEmpty())
+            badList = QString(" (%1)").arg(s.badRefs.join(", "));
+
+        QString line = QString("   %1 %2 | %3%4")
+                           .arg(icon)
+                           .arg(customer)
+                           .arg(qualitySummary)
+                           .arg(badList);
+
+        zInfo(line);
+    }
+
+    zInfo("=== PRODUCT BOM AUDIT VÉGE ===");
 }
 
 

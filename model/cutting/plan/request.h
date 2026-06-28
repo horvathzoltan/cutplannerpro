@@ -45,45 +45,44 @@ inline HandlerSide parse(const QString& str2) {
 
 } // namespace HandlerSideUtils
 
-enum class Subtype {
-    None,
-    Alap,
-    Rugos,
-    Tetoteri
-};
+// enum class Subtype {
+//     None,
+//     Alap,
+//     Rugos,
+//     Tetoteri
+// };
 
-namespace SubtypeUtils {
+// namespace SubtypeUtils {
 
-inline QString toString_CSV(Subtype t) {
-    switch (t) {
-    case Subtype::None:     return "none";
-    case Subtype::Alap:     return "alap";
-    case Subtype::Rugos:    return "rugos";
-    case Subtype::Tetoteri: return "tetoteri";
-    }
-    return "none";
-}
+// inline QString toString_CSV(Subtype t) {
+//     switch (t) {
+//     case Subtype::None:     return "none";
+//     case Subtype::Alap:     return "alap";
+//     case Subtype::Rugos:    return "rugos";
+//     case Subtype::Tetoteri: return "tetoteri";
+//     }
+//     return "none";
+// }
 
-inline QString toDisplayText(Subtype t) {
-    switch (t) {
-    case Subtype::None:     return "none";
-    case Subtype::Alap:     return "alap";
-    case Subtype::Rugos:    return "rugós";
-    case Subtype::Tetoteri: return "tetőtéri";
-    }
-    return "none";
-}
+// inline QString toDisplayText(Subtype t) {
+//     switch (t) {
+//     case Subtype::None:     return "none";
+//     case Subtype::Alap:     return "alap";
+//     case Subtype::Rugos:    return "rugós";
+//     case Subtype::Tetoteri: return "tetőtéri";
+//     }
+//     return "none";
+// }
 
-inline Subtype parse(const QString& s) {
-    QString v = s.trimmed().toLower();
-    if (v == "alap")     return Subtype::Alap;
-    if (v == "rugos")    return Subtype::Rugos;
-    if (v == "tetoteri") return Subtype::Tetoteri;
-    return Subtype::None;
-}
+// inline Subtype parse(const QString& s) {
+//     QString v = s.trimmed().toLower();
+//     if (v == "alap")     return Subtype::Alap;
+//     if (v == "rugos")    return Subtype::Rugos;
+//     if (v == "tetoteri") return Subtype::Tetoteri;
+//     return Subtype::None;
+// }
 
-} //endof namespace SubtypeUtils
-
+// } //endof namespace SubtypeUtils
 
 struct Tolerance{
     double min_mm; ///< negatív eltérés mm-ben
@@ -187,7 +186,10 @@ struct Request {
     int leftCount = 0;   ///< Balos darabok száma
     int rightCount = 0;  ///< Jobbos darabok száma
 
-    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+    //Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+
+    QUuid productTypeId;        ///< 🔗 A termék típusa (ProductType)
+    QUuid productSubtypeId;     ///< 🔗 A termék altípusa (ProductSubtype)
 
     // 🎨 Anyag színe - ebben a színben kéri a megrendelő a terméket (RAL vagy HEX kód)
     NamedColor requiredColor;

@@ -21,6 +21,9 @@ public:
         case MaterialFamily::Textil:     return "Textil";
         case MaterialFamily::TokVeg:     return "TokVeg";
         case MaterialFamily::Csavar:     return "Csavar";
+        case MaterialFamily::Bowden:     return "Bowden";
+        case MaterialFamily::FelsoSin:   return "FelsoSin";
+
         default:                         return "Unknown";
         }
     }
@@ -43,6 +46,8 @@ public:
         if (v == "textil")     return MaterialFamily::Textil;
         if (v == "tokveg")     return MaterialFamily::TokVeg;
         if (v == "csavar")     return MaterialFamily::Csavar;
+        if (v == "bowden")   return MaterialFamily::Bowden;
+        if (v == "felsosin") return MaterialFamily::FelsoSin;
 
         return MaterialFamily::Unknown;
     }

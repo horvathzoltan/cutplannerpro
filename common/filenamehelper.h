@@ -67,9 +67,8 @@ public:
     //QString getRalEffectCsvFile() const;
     QString getProductTypeCsvFile() const;
     QString getProductSubtypeCsvFile() const;
-
     QString getBomCsvFile() const;
-
+    QString getMaterialRoleCsvFile() const;
 
     static QString emojiCacheDir();
 };

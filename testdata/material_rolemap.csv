@@ -13,37 +13,37 @@ NP;SIN;Zaro;NP-SZ*
 NP;SIN;Lab;NP-SL*
 NP;SIN;Tengely;NP-ROLL60*
 NP;SIN;Tengely;NP-ROLL78*
-NP;SIN;Suly;NP-BAR22*
+NP;SIN;Suly;NP-BAR12*
 
 NP;BOW;Tok;NP-T*
 NP;BOW;TokFed;NP-TF*
-NP;BOW;Zaro;NP-CZ*
+NP;BOW;Zaro;NP-SZ*
 NP;BOW;Bowden;NP-B*
 NP;BOW;Tengely;NP-ROLL60*
 NP;BOW;Tengely;NP-ROLL78*
-NP;BOW;Suly;NP-BAR22*
+NP;BOW;Suly;NP-BAR12*
 
-ROL;ALAP;Tengely;TE-*
+ROL;ALAP;Tengely;TE*
 ROL;ALAP;Palca;ROL-P*
 
-ROL;RUG;Tengely;TE-*
+ROL;RUG;Tengely;TE*
 ROL;RUG;Palca;ROL-P*
 
-ROL;TET;Tengely;TE-*
+ROL;TET;Tengely;TE*
 ROL;TET;Palca;ROL-P*
 
 SR;T;Tok;SR-T*
 SR;T;Zaro;SR-Z*
-SR;T;Palca;SP-*
-SR;T;Tengely;TE-*
+SR;T;Palca;SP*
+SR;T;Tengely;TE*
 
 SR;TN;FelsoSin;SR-FSN*
 SR;TN;Zaro;SR-Z*
-SR;TN;Palca;SP-*
-SR;TN;Tengely;TE-*
+SR;TN;Palca;SP*
+SR;TN;Tengely;TE*
 
 SR;MINIT;Tok;MT*
 SR;MINIT;Zaro;MT-Z*
 SR;MINIT;Palca;MT-P*
 SR;MINIT;Láb;MT-L*
-SR;MINIT;Tengely;TE-*
+SR;MINIT;Tengely;TE*

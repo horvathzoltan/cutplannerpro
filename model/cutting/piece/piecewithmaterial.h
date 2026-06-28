@@ -21,7 +21,10 @@ public:
     PieceInfo info;
     QUuid materialId = QUuid(); // Anyag azonosítója (UUID);
 
-    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+    //Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+    QUuid productTypeId;
+    QUuid productSubtypeId;
+
     HandlerSide side = HandlerSide::None; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
 
     PieceWithMaterial();

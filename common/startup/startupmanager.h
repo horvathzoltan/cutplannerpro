@@ -64,4 +64,5 @@ private:
     StartupStatus initProductTypeRegistry();
     StartupStatus initProductSubtypeRegistry();
     StartupStatus initBomRegistry();
+    StartupStatus initMaterialRoleRegistry();
 };

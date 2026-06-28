@@ -1,28 +1,21 @@
 #include "naphalo_type_detector.h"
-#include "naphalo_material_aggregator.h"
+#include "product/registry/product_subtype_registry.h"
 
 NaphaloType NaphaloTypeDetector::detect(const QVector<Cutting::Plan::Request>& list)
 {
     if (list.isEmpty())
         return NaphaloType::Unknown;
 
-    auto materials = NaphaloMaterialAggregator::aggregate(list);
+    auto* subtype = ProductSubtypeRegistry::instance().findById(list.first().productSubtypeId);
+    if (!subtype)
+        return NaphaloType::Unknown;
 
-    int labCount = NaphaloMaterialAggregator::sumGroup(materials, NaphaloGroup::Lab) * 2;
-    int czCount  = NaphaloMaterialAggregator::sumGroup(materials, NaphaloGroup::CipzarosZaro);
-    int szCount  = NaphaloMaterialAggregator::sumGroup(materials, NaphaloGroup::SinesZaro);
+    QString code = subtype->code.trimmed();
 
-    // CIPZÁROS
-    if (czCount > 0)
-        return NaphaloType::Cipzaros;
-
-    // SÍNES
-    if (szCount > 0 && labCount > 0)
-        return NaphaloType::Sines;
-
-    // BOWDENES
-    if (szCount > 0 && labCount == 0)
-        return NaphaloType::Bowdenes;
+    if (code == "CIP") return NaphaloType::Cipzaros;
+    if (code == "SZ")  return NaphaloType::Sines;
+    if (code == "BOW") return NaphaloType::Bowdenes;
 
     return NaphaloType::Unknown;
+
 }

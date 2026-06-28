@@ -41,7 +41,10 @@ struct CutInstruction {
     QString externalReference;     // ⭐ darab-szintű externalReference (pl. 1444.1/5)
 
     HandlerSide side = HandlerSide::None; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
-    Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+    //Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
+
+    QUuid productTypeId;
+    QUuid productSubtypeId;
 
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;

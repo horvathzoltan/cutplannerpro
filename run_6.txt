@@ -1,0 +1,195 @@
+Rendben, Zoltán — készítek egy külön, félretehető, kristálytiszta
+fejlesztési tervet az X‑macro alapú, automatikus enum‑rendszerre, ami
+majd leváltja a kézzel karbantartott MaterialFamilyUtils‑t és minden
+driftet megszüntet.
+
+Nem most valósítjuk meg, csak lefektetjük a tervet, hogy később pontosan
+tudjuk, mit kell csinálni.
+
+------------------------------------------------------------------------
+
+📘 Terv: MaterialFamily → teljes X‑macro átállítás
+
+🎯 Cél
+
+A MaterialFamily enum:
+
+-   automatikusan legyen stringelhető (toString)
+-   automatikusan legyen parsolható (fromString)
+-   automatikusan legyen bejárható (values[])
+-   ne kelljen kézzel karbantartani
+-   ne okozzon driftet BOM import/export során
+-   egységes legyen a teljes CutPlannerPro architektúrában
+
+------------------------------------------------------------------------
+
+🧩 1. Létrehozni az X‑macro listát
+
+A MaterialFamily enum értékei egyetlen SSOT listában:
+
+    #define MATERIAL_FAMILY_LIST(X) \
+        X(Unknown) \
+        X(Tok) \
+        X(TokFed) \
+        X(Zaro) \
+        X(Lab) \
+        X(Palca) \
+        X(Tengely) \
+        X(Suly) \
+        X(Motor) \
+        X(HajtoElem) \
+        X(Rugo) \
+        X(Fitting) \
+        X(Kiegeszito) \
+        X(Textil) \
+        X(TokVeg) \
+        X(Csavar) \
+        X(Bowden) \
+        X(FelsoSin)
+
+Ez lesz a központi igazságforrás.
+
+------------------------------------------------------------------------
+
+🧱 2. Enum generálása X‑macroval
+
+    zEnum(MaterialFamily, MATERIAL_FAMILY_LIST)
+
+Ez automatikusan létrehozza:
+
+    enum class MaterialFamily {
+        Unknown,
+        Tok,
+        TokFed,
+        ...
+        Bowden,
+        FelsoSin
+    };
+
+------------------------------------------------------------------------
+
+🛠️ 3. Helper generálása (toString, values[], fromString)
+
+A meglévő zEnum_helpers makrót ki kell egészíteni egy automatikus
+fromString() generátorral.
+
+A terv:
+
+-   toString() → már működik
+-   values[] → már működik
+-   fromString() → új funkció
+
+A makró kiegészítése:
+
+    #define ENUM_FROMSTRING_IF(name) \
+        if (v == QString(#name).toLower()) return EEE::name;
+
+Majd beépítjük a helperbe:
+
+    static EnumName fromString(const QString& s) {
+        const QString v = s.trimmed().toLower();
+        ENUM_LIST(ENUM_FROMSTRING_IF)
+        return EEE::Unknown;
+    }
+
+Ez automatikusan generálja a teljes parsolási logikát.
+
+------------------------------------------------------------------------
+
+🔄 4. MaterialFamilyUtils megszüntetése
+
+A régi kézi implementáció:
+
+-   driftelt
+-   hiányos volt
+-   BOM import hibákat okozott
+-   BOM export hibákat okozott
+
+A terv szerint:
+
+-   MaterialFamilyUtils teljesen megszűnik
+-   helyette:
+
+    MaterialFamilyHelpers::toString(f)
+    MaterialFamilyHelpers::fromString("Tok")
+    MaterialFamilyHelpers::values
+
+------------------------------------------------------------------------
+
+🔌 5. BOM import átállítása
+
+A BOM import jelenleg:
+
+    MaterialFamily fam = MaterialFamilyUtils::fromString(familyStr);
+
+A terv szerint:
+
+    MaterialFamily fam = MaterialFamilyHelpers::fromString(familyStr);
+
+Ez drift‑mentes lesz.
+
+------------------------------------------------------------------------
+
+📤 6. BOM export átállítása
+
+Jelenleg:
+
+    MaterialFamilyUtils::toString(ctx.family)
+
+A terv szerint:
+
+    MaterialFamilyHelpers::toString(ctx.family)
+
+Ez garantálja a szimmetriát.
+
+------------------------------------------------------------------------
+
+🧪 7. Tesztelési terv
+
+1.  BOM CSV import teszt
+    -   minden family felismerése
+    -   Bowden, FelsoSin is
+2.  BOM export teszt
+    -   visszaírt CSV → újra importálható legyen
+3.  Cutting plan import teszt
+    -   family mezők helyesen parsolódnak
+4.  MaterialFamilyDetector teszt
+    -   prefixek működnek
+    -   enum bővítése nem tör semmit
+
+------------------------------------------------------------------------
+
+📦 8. Migrációs terv
+
+1.  X‑macro lista létrehozása
+2.  Enum generálása
+3.  Helper generálása
+4.  MaterialFamilyUtils törlése
+5.  BOM import/export átállítása
+6.  Cutting plan import átállítása
+7.  Tesztelés
+8.  Commit: PATCH-MF-XMACRO
+
+------------------------------------------------------------------------
+
+🧭 9. Miért tesszük félre?
+
+Mert:
+
+-   a MaterialFamily X‑macro átállítás nem sürgős
+-   a BOM import most már működik a gyors javítással
+-   a fő fókuszunk jelenleg AddInputDialog + context + request
+    architektúra
+-   később, amikor stabil a rendszer, akkor érdemes a teljes
+    enum‑rendszert modernizálni
+
+Ez a terv készen áll, félretesszük, és amikor eljön az ideje,
+elővesszük.
+
+------------------------------------------------------------------------
+
+📌 Terv félretéve. Mehetünk tovább a fejlesztéssel.
+
+Ha szeretnéd, mondhatod:
+
+„Folytassuk a dialógus fejlesztését.”

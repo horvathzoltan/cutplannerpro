@@ -51,7 +51,10 @@ public:
                 // PieceWithMaterial
                 Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
                 pwm.side = side;
-                pwm.subtype = req.subtype;
+                //pwm.subtype = req.subtype;
+
+                pwm.productTypeId = req.productTypeId;
+                pwm.productSubtypeId = req.productSubtypeId;
 
                 out[req.materialId].append(pwm);
             }

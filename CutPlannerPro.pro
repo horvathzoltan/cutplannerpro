@@ -28,6 +28,7 @@ SOURCES += \
     model/cutting/plan/audit/naphalo_size_rules.cpp \
     model/cutting/plan/audit/naphalo_summary_builder.cpp \
     model/cutting/plan/audit/naphalo_type_detector.cpp \
+    model/cutting/plan/audit/product_bom_audit_service.cpp \
     model/storageaudit/auditcontext.cpp \
     presenter/stockpresenter.cpp \
     product/registry/bom_registry.cpp \
@@ -132,6 +133,7 @@ HEADERS += \
     common/barcodepainter.h \
     common/color/colorconstants.h \
     common/emojihelper.h \
+    common/enum_utils.h \
     common/fontaudithelper.h \
     common/fontversionhelper.h \
     common/identifierutils.h \
@@ -172,6 +174,7 @@ HEADERS += \
     model/cutting/plan/audit/naphalo_size_rules.h \
     model/cutting/plan/audit/naphalo_summary_builder.h \
     model/cutting/plan/audit/naphalo_type_detector.h \
+    model/cutting/plan/audit/product_bom_audit_service.h \
     model/cutting/plan/parentinfo.h \
     model/cutting/plan/segments.h \
     model/inventorysnapshot.h \
@@ -200,6 +203,7 @@ HEADERS += \
     product/repository/product_subtype_repository.h \
     product/repository/product_type_repository.h \
     product/selector/material_selector.h \
+    product/subtype_utils.h \
     service/buildnumber.h \
     service/cutting/instruction/cuttinginstructionutils.h \
     service/cutting/instruction/labelmodel.h \
@@ -401,6 +405,7 @@ DISTFILES += \
     run_3.txt \
     run_4.txt \
     run_5.txt \
+    run_6.txt \
     run_Refaktor_terv_fokuszpontok \
     testdata/bom.csv \
     testdata/csvlist.sh \

@@ -282,6 +282,10 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_Audit, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Audit_clicked);
+
+    connect(ui->btn_BOMaudit, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_BOMaudit_clicked);
+
 }
 
 void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
@@ -1148,6 +1152,11 @@ void MainWindow::handle_btn_Painter_clicked(){
 void MainWindow::handle_btn_Audit_clicked(){
     presenter->Audit();
 }
+
+void MainWindow::handle_btn_BOMaudit_clicked(){
+    presenter->BOM_audit();
+}
+
 
 void MainWindow::switchToCuttingPlanTab()
 {

@@ -8,7 +8,7 @@ NP;CIP;Suly;1
 
 NP;SIN;Tok;1
 NP;SIN;TokFed;1
-NP;SIN;Záró;1
+NP;SIN;Zaro;1
 NP;SIN;Lab;2
 NP;SIN;Tengely;1
 NP;SIN;Suly;1
@@ -43,4 +43,4 @@ SR;MINIT;Tok;1
 SR;MINIT;Tengely;1
 SR;MINIT;Zaro;1
 SR;MINIT;Palca;1
-SR;MINIT;Láb;2
+SR;MINIT;Lab;2

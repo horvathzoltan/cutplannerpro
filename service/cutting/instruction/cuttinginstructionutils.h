@@ -18,6 +18,7 @@
 #include <model/storageaudit/storageauditrow.h>
 #include <service/storageaudit/storageauditservice.h>
 #include <common/identifierutils.h>
+#include "product/subtype_utils.h"
 #include "settings/settingsmanager.h"
 
 
@@ -661,10 +662,13 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
         lm.parts.append({ owner,     true,  true,  0, Qt::AlignCenter });
 
-        QString a = "";
-        if(ci.subtype != Subtype::None){
-            a+= SubtypeUtils::toDisplayText(ci.subtype);
-        }
+        // QString a = "";
+        // if(ci.subtype != Subtype::None){
+        //     a+= SubtypeUtils::toDisplayText(ci.subtype);
+        // }
+        QString a;
+        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
+                                                      ci.productSubtypeId);
 
         if(ci.side != HandlerSide::None) {
             if(!a.isEmpty()) a += ", ";

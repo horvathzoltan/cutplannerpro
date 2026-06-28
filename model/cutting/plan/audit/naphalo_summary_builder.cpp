@@ -16,7 +16,7 @@ void NaphaloSummaryBuilder::update(
     auto& s = summary[customer];
 
     s.total++;
-
+    // explicit subtypeCode alapú típus (CIP / SZ / BOW)
     if (type == NaphaloType::Cipzaros) s.cipzaros++;
     if (type == NaphaloType::Sines)    s.sines++;
     if (type == NaphaloType::Bowdenes) s.bowdenes++;

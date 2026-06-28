@@ -32,13 +32,14 @@ inline static void Connect(
 
             Cutting::Plan::Request original = *opt;
 
-            AddInputDialog dialog(w, DialogMode::Update);
-            dialog.setModel(original);
+            AddInputDialog dialog(w, DialogMode::Update, &original);
+            //dialog.setModel(original);
 
             if (dialog.exec() != QDialog::Accepted)
                 return;
 
             Cutting::Plan::Request updated = dialog.getModel();
+            presenter->update_AllRequestsWithSameReference(updated);
             presenter->update_CuttingPlanRequest(updated);
         });
 }

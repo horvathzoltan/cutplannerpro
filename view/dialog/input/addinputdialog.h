@@ -15,14 +15,17 @@ class AddInputDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddInputDialog(QWidget *parent = nullptr, DialogMode mode = DialogMode::Create);
+    explicit AddInputDialog(QWidget *parent = nullptr,
+                            DialogMode mode = DialogMode::Create,
+                            const Cutting::Plan::Request* initial = nullptr);
     ~AddInputDialog();
 
     enum class ContextMode {
         Editing,
         Existing,    // létező tételszám
         Sequential,  // sorozatbevitel (haladunk előre)
-        NewOrder     // új megrendelő
+        NewOrder,
+        Update        // új megrendelő
     };
 
     QUuid selectedMaterialId() const;
@@ -35,7 +38,7 @@ public:
     void accept() override;
     void reject() override;
     Cutting::Plan::Request getModel() const;
-    void setModel(const Cutting::Plan::Request& request);
+    //void setModel(const Cutting::Plan::Request& request);
     bool wasShiftEnter() const { return _shiftEnterAccepted; }
 
     bool shouldRepeat();
@@ -48,14 +51,12 @@ private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo();
     bool validateInputs();
-    Subtype parseSubtypeFromRadioButtons() const;
 
     void onQuantityChanged(int totalPieces);
-    void updateHandlerSideControls();
+    //void updateHandlerSideControls();
     void updateSliderLabels();
 
     QUuid current_requestId;
-
 
     static QString s_lastExternalRef;
     static bool s_lastRepeat;
@@ -64,7 +65,7 @@ private:
     inline static const QString CONTEXT_CACHE_FN = "context_cache.csv";
 
     bool _shiftEnterAccepted = false;
-    QString _sliderInputBuffer;
+    //QString _sliderInputBuffer;
     QString _nextSuggestedRef;
     QString _originalReference;
 
@@ -74,18 +75,21 @@ private:
     struct RequestContext {
         QString ownerName;     // Megrendelő neve
         QDate   dueDate;       // Határidő
-        Subtype subtype;       // Alap / Rugós / Tetőtéri
-        HandlerSide side;      // Bal / Jobb (egy napháló motor oldala nem változik)
+
+        QUuid   productTypeId;
+        QUuid   productSubtypeId;
+
+        HandlerSide side;      // Bal / Jobb
         QUuid   defaultMaterialId; // Opcionális: legutóbb használt anyag ehhez a tételszámhoz
         QString color;
     };
+
 
     static QMap<QString, RequestContext> _contexts;
 
     void applyContextToWidgets(const RequestContext& ctx);
     void setContextEditable(bool editable);
     void applyRequestToWidgets(const Cutting::Plan::Request& req);
-    void applySubtype(Subtype t);
     void applySide(HandlerSide side);
     void loadOwnerCache();
     void saveOwnerCache();
@@ -110,14 +114,12 @@ private:
     void initializeDialog();
 
     void applyOwnerAndDate(const RequestContext& ctx);
-    void applySubtypeFromContext(const RequestContext& ctx);
     void applySideFromContext(const RequestContext& ctx);
     void applyMaterialFromContext(const RequestContext& ctx);
     void applyColorFromContext(const RequestContext& ctx);
 
     void setOwnerEditable(bool editable);
     void setDateEditable(bool editable);
-    void setSubtypeEditable(bool editable);
     void setSideEditable(bool editable);
     void setColorEditable(bool editable);
     void setQuantityEditable(bool editable);
@@ -126,15 +128,26 @@ private:
     void applyReferenceFromRequest(const Cutting::Plan::Request& req);
     void applyDateFromRequest(const Cutting::Plan::Request& req);
     void applyColorFromRequest(const Cutting::Plan::Request& req);
-    void applySubtypeFromRequest(const Cutting::Plan::Request& req);
     void applySideFromRequest(const Cutting::Plan::Request& req);
     void applyMaterialFromRequest(const Cutting::Plan::Request& req);
     void applyLengthAndQuantityFromRequest(const Cutting::Plan::Request& req);
 
     void setReferenceEditable(bool editable);
 
+
+    QUuid selectedProductTypeId() const;
+    void applyProductTypeFromContext(const RequestContext &ctx);
+    void applyProductSubtypeFromContext(const RequestContext &ctx);
+    QUuid selectedProductSubtypeId() const;
+    void setSelectedProductTypeId(const QUuid &typeId);
+    void setSelectedProductSubtypeId(const QUuid &subtypeId);
+    void applyProductTypeFromRequest(const Cutting::Plan::Request &req);
+    void applyProductSubtypeFromRequest(const Cutting::Plan::Request &req);
+    void setProductTypeEditable(bool editable);
+    void setProductSubtypeEditable(bool editable);
+
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();
-
+    void onProductTypeChanged(bool checked);
 };

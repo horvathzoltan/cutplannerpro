@@ -59,7 +59,7 @@ NaphaloAuditResult NaphaloAuditService::run(const QVector<Cutting::Plan::Request
         for (const QString& msg : size.messages)
             result.messages.append({ ref, msg, size.hasError });
 
-        // --- TYPE DETECTION ---
+        // --- TYPE DETECTION (explicit subtypeCode alapú) ---
         auto type = NaphaloTypeDetector::detect(list);
 
         // --- SUMMARY UPDATE ---

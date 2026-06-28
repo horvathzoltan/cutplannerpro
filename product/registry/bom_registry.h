@@ -29,4 +29,6 @@ public:
                 out.append(e);
         return out;
     }
+
+    QHash<MaterialFamily, double> bomMap(const QUuid& typeId, const QUuid& subtypeId) const;
 };

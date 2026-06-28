@@ -196,3 +196,8 @@ QString FileNameHelper::getProductSubtypeCsvFile() const {
 QString FileNameHelper::getBomCsvFile() const {
     return QDir(_projectPath).filePath("bom.csv");
 }
+
+QString FileNameHelper::getMaterialRoleCsvFile() const {
+    return QDir(_projectPath).filePath("material_rolemap.csv");
+}
+

@@ -4,6 +4,7 @@
 #include "materials/view/material_cell_generator.h"
 #include "../../columnindexes/inputtable_columns.h"
 #include "../tablerowviewmodel.h"
+#include "product/subtype_utils.h"
 
 #include <QPushButton>
 namespace Request::ViewModel::RowGenerator {
@@ -71,7 +72,10 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     vm.cells[InputTableColumns::Quantity] =
         TableCellViewModel::fromText(QString::number(request.quantity), "",baseColor, fgColor, true);
 
-    QString subtypeTxt = request.subtype != Subtype::None? SubtypeUtils::toDisplayText(request.subtype):"";
+    //QString subtypeTxt = request.subtype != Subtype::None? SubtypeUtils::toDisplayText(request.subtype):"";
+    QString subtypeTxt =
+        SubtypeUtils::toProductVariantDisplayText(request.productTypeId,
+                                                  request.productSubtypeId);
     vm.cells[InputTableColumns::SubType] =
         TableCellViewModel::fromText(subtypeTxt, "",baseColor, fgColor, true);
 

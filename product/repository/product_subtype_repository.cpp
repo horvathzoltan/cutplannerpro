@@ -49,6 +49,7 @@ ProductSubtypeRepository::convertRow(const QVector<QString>& parts,
     ProductSubtype s;
     s.id = QUuid::createUuid();
     s.typeId = type->id;
+    s.code = subtypeCode;
     s.name = subtypeName;
     return s;
 }

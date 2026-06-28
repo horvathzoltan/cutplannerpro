@@ -7,7 +7,13 @@
 
 class MaterialRoleRegistry
 {
+private:
+    MaterialRoleRegistry() = default;   // ⭐ singleton ctor
+    QVector<MaterialRole> m_roles;
+
 public:
+    static MaterialRoleRegistry& instance();   // ⭐ singleton accessor
+
     void load(const QVector<MaterialRole>& roles);
 
     QVector<QString> prefixesFor(
@@ -16,18 +22,5 @@ public:
         MaterialFamily family
         ) const;
 
-private:
-    // productTypeId → productSubtypeId → family → prefix-list
-    // QMap<
-    //     QUuid,
-    //     QMap<
-    //         QUuid,
-    //         QMap<
-    //             MaterialFamily,
-    //             QVector<QString>
-    //             >
-    //         >
-    //     > m_index;
-
-    QVector<MaterialRole> m_roles;   // ⭐ egyszerű, átlátható
+    MaterialFamily familyForBarcode(const QString& barcode) const;
 };

@@ -23,9 +23,11 @@
 #include "../color/namedcolor.h"
 
 #include <product/repository/bom_repository.h>
+#include <product/repository/material_role_repository.h>
 #include <product/repository/product_subtype_repository.h>
 #include <product/repository/product_type_repository.h>
 
+#include <product/registry/material_role_registry.h>
 #include <product/registry/product_type_registry.h>
 
 StartupStatus StartupManager::runStartupSequence() {
@@ -48,6 +50,10 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus bomStatus = initBomRegistry();
     if (!bomStatus.isSuccess())
         return bomStatus;
+
+    StartupStatus roleStatus = initMaterialRoleRegistry();
+    if (!roleStatus.isSuccess())
+        return roleStatus;
 
     StartupStatus storageStatus = initStorageRegistry();
     if (!storageStatus.isSuccess())
@@ -82,6 +88,7 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(productTypeStatus.warnings());
     finalStatus.addWarnings(productSubtypeStatus.warnings());
     finalStatus.addWarnings(bomStatus.warnings());
+    finalStatus.addWarnings(roleStatus.warnings());
 
     finalStatus.addWarnings(groupStatus.warnings());
     finalStatus.addWarnings(stockStatus.warnings());
@@ -477,5 +484,25 @@ StartupStatus StartupManager::initBomRegistry() {
     }
 
     EventLogger::instance().zEvent(StatusHelper::getMessage(true, "BOM init"));
+    return StartupStatus::success();
+}
+
+StartupStatus StartupManager::initMaterialRoleRegistry() {
+    auto& helper = FileNameHelper::instance();
+    QString fn = helper.getMaterialRoleCsvFile();
+
+    MaterialRoleRepository repo;
+    auto roles = repo.load(fn);
+
+    if (roles.isEmpty()) {
+        return StartupStatus::failure("❌ material_role.csv üres vagy hibás");
+    }
+
+    MaterialRoleRegistry::instance().load(roles);
+
+    zInfo(QString("✅ %1 rolemap sor importálva: %2")
+              .arg(roles.size())
+              .arg(fn));
+
     return StartupStatus::success();
 }
