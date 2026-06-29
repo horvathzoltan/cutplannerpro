@@ -1,4 +1,19 @@
-leftover felvételi lap: az elmoji nem látszik
+RAL color ST9007 ami 9007 szín de strukturált felületminőségben
+
+Anyag keresése: invalid HEX, és minden szín fekete
+a color.name()  nem adott stringet kiíráskor
+valahogy vissza kell olvasni a régiből, és rendesen kiírni
+
+sorozat: a job/bal ugyanúgy az user számára
+kitöltendő mint a méret, tehát nem kell rá emlékezni
+sorozat: ha már felvettük a tokot, nem kell mégegyszer felvenni. 
+de van bom, meg van egy munkalap sorrend. ha nincs, fel kell venni, de kérdés:
+egye hát ennek nem a bomban van a helye.de felveni meg csak azt kell, ami a bom-ban van. 
+elég nagy hibalehetőség lenne nem összekötni a kettőt, valahogy.
+sorozat: ha én beírom a tételszámot, megszürkül, ha a gép tölti ki, nem szürkül meg
+létező tételszámnál pedig jó
+
+leftover felvételi lap: az emoji nem látszik
 
 
 címkére mindíg kell az altípus

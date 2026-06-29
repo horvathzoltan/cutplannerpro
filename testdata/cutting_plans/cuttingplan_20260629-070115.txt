@@ -1,0 +1,31 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1883";"Főnök";0;0;3990;;1;0;1;"ST9007";NP-T;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;3880;;1;0;1;"ST9007";NP-T;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;3670;;1;0;1;"7016";NP-T-7016;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;3850;;1;1;0;"";NP-T-7016;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;3850;;1;0;1;"7016";NP-T-7016;Width;false;2026-06-30;NP;CIP
+"1883";"Főnök";0;0;4015;;1;0;1;"ST9007";NP-TF;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;3905;;1;0;1;"ST9007";NP-TF;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;3695;;1;0;1;"7016";NP-TF-7016;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;3875;;1;1;0;"7016";NP-TF-7016;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;3875;;1;0;1;"7016";NP-TF-7016;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;3715;;1;1;0;"7016";NP-TF-7016;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;3690;;1;1;0;"7016";NP-T-7016;Width;false;2026-06-30;NP;CIP
+"1883";"Főnök";0;0;1007;;1;0;1;"ST9007";NP-CL;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;1037;;1;0;1;"ST9007";NP-CL;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"7016";NP-CL-7016;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"7016";NP-CL-7016;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"7016";NP-CL-7016;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"7016";NP-CL-7016;Width;false;2026-06-30;NP;CIP
+"1883";"Főnök";0;0;3897;;1;0;1;"ST9007";NP-CZ;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;3787;;1;0;1;"ST9007";NP-CZ;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;3577;;1;0;1;"7016";NP-CZ-7016;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;3757;;1;1;0;"7016";NP-CZ-7016;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;3757;;1;0;1;"7016";NP-CZ-7016;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;3597;;1;1;0;"7016";NP-CZ-7016;Width;false;2026-06-30;NP;CIP
+"1883";"Főnök";0;0;1007;;1;0;1;"ST9007";NP-CLBR;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;1037;;1;0;1;"ST9007";NP-CLBR;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"7016";NP-CLBR;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"7016";NP-CLBR;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"7016";NP-CLBR;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"7016";NP-CLBR;Width;false;2026-06-30;NP;CIP

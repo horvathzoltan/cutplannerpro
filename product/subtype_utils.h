@@ -9,29 +9,52 @@
 
 namespace SubtypeUtils {
 
+//inline QString toProductVariantDisplayText(const QUuid& typeId, const QUuid& subtypeId)
+//{
+//    const bool typeMissing    = typeId.isNull();
+//    const bool subtypeMissing = subtypeId.isNull();
+
+//    const auto* type    = typeMissing    ? nullptr : ProductTypeRegistry::instance().findById(typeId);
+//    const auto* subtype = subtypeMissing ? nullptr : ProductSubtypeRegistry::instance().findById(subtypeId);
+
+//    // 🔹 Mindkettő hiányzik → régi CSV, nincs típus
+//    if (!type && !subtype)
+//        return "(ismeretlen/ismeretlen)";
+
+//    // 🔹 Van típus, nincs altípus
+//    if (type && !subtype)
+//        return type->name + "/ismeretlen";
+
+//    // 🔹 Nincs típus, van altípus
+//    if (!type && subtype)
+//        return "ismeretlen/" + subtype->name;
+
+//    // 🔹 Mindkettő létezik
+//    return type->name + "/" + subtype->name;
+//}
+
 inline QString toProductVariantDisplayText(const QUuid& typeId, const QUuid& subtypeId)
 {
-    const bool typeMissing    = typeId.isNull();
+    //const bool typeMissing    = typeId.isNull();
     const bool subtypeMissing = subtypeId.isNull();
 
-    const auto* type    = typeMissing    ? nullptr : ProductTypeRegistry::instance().findById(typeId);
+    //const auto* type    = typeMissing    ? nullptr : ProductTypeRegistry::instance().findById(typeId);
     const auto* subtype = subtypeMissing ? nullptr : ProductSubtypeRegistry::instance().findById(subtypeId);
 
     // 🔹 Mindkettő hiányzik → régi CSV, nincs típus
-    if (!type && !subtype)
-        return "(ismeretlen/ismeretlen)";
+    //if (!type && !subtype)
+    //    return "(ismeretlen/ismeretlen)";
 
     // 🔹 Van típus, nincs altípus
-    if (type && !subtype)
-        return type->name + "/ismeretlen";
+    if (!subtype)
+        return "ismeretlen tip.";
 
     // 🔹 Nincs típus, van altípus
-    if (!type && subtype)
-        return "ismeretlen/" + subtype->name;
+    //if (subtype)
+        return subtype->name;
 
     // 🔹 Mindkettő létezik
-    return type->name + "/" + subtype->name;
+    //return type->name + "/" + subtype->name;
 }
-
 
 } // namespace SubtypeUtils
