@@ -52,7 +52,7 @@ NamedColor::NamedColor(const QString& code)
         m_code = m_color.name().toUpper(); // HEX formában
     } else{
         m_color = QColor(Qt::black);
-        m_name = "Invalid HEX";
+        m_name = "unknown";
         m_code = code;
     }
 

@@ -156,6 +156,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         // MINDEN mező szerkeszthető
         setContextEditable(true);
 
+        ui->chk_Repeat->hide();   // ⭐ UPDATE módban nincs sorozatbevitel
+
         // 5) Fókusz
         applyInitialFocus();
 
@@ -178,20 +180,76 @@ AddInputDialog::~AddInputDialog()
     delete ui;
 }
 
+// void AddInputDialog::initializeDialog()
+// {
+//     // ⭐ Ha van nextRef → Sequential indul
+//     if (!_nextSuggestedRef.isEmpty()) {
+//         ui->editReference->setText(_nextSuggestedRef);
+//         _contextMode = ContextMode::Sequential;
+//         applySequentialContext(_nextSuggestedRef);
+//     }
+//     else {
+//         // ⭐ Ha nincs → NewOrder indul
+//         ui->editReference->clear();
+//         _contextMode = ContextMode::NewOrder;
+//         applyNewOrderContext();
+//     }
+
+//     _contextMode = detectContextMode(ui->editReference->text());
+//     applyContextMode(_contextMode, ui->editReference->text());
+//     updateContextModeLabel();
+//     applyInitialFocus();
+// }
+
 void AddInputDialog::initializeDialog()
 {
-    // ⭐ Ha van nextRef → Sequential indul
+    //
+    // 1) CREATE mód → teljesen üres indulás
+    //
+    if (_mode == DialogMode::Create) {
+        ui->editReference->clear();
+        _contextMode = ContextMode::NewOrder;
+
+        // teljes reset
+        applyNewOrderContext();
+        updateContextModeLabel();
+        applyInitialFocus();
+        return;
+    }
+
+
+    //
+    // 2) UPDATE mód → már korábban visszatöltöttük a mezőket
+    //    initializeDialog() nem fut Update módban (lásd konstruktor)
+    //
+    //    → ide nem jutunk el Update módban
+    //
+
+
+    //
+    // 3) NEM CREATE mód → sorozat vagy kézi tételszám workflow
+    //
     if (!_nextSuggestedRef.isEmpty()) {
+        // Sorozat mód
         ui->editReference->setText(_nextSuggestedRef);
         _contextMode = ContextMode::Sequential;
+
         applySequentialContext(_nextSuggestedRef);
     }
     else {
-        // ⭐ Ha nincs → NewOrder indul
+        // Új megrendelő workflow
         ui->editReference->clear();
         _contextMode = ContextMode::NewOrder;
+
         applyNewOrderContext();
     }
+
+    //
+    // 4) Kontextus workflow lefuttatása
+    //
+    QString ref = ui->editReference->text().trimmed();
+    _contextMode = detectContextMode(ref);
+    applyContextMode(_contextMode, ref);
 
     updateContextModeLabel();
     applyInitialFocus();
@@ -288,6 +346,16 @@ void AddInputDialog::resetForNewOrder()
 
     ui->editLength->clear();
     ui->spinQuantity->setValue(1);
+
+    ui->radioLeft->setAutoExclusive(false);
+    ui->radioRight->setAutoExclusive(false);
+
+    ui->radioLeft->setChecked(false);
+    ui->radioRight->setChecked(false);
+
+    ui->radioLeft->setAutoExclusive(true);
+    ui->radioRight->setAutoExclusive(true);
+    ui->sliderHandler->setValue(0);
 }
 
 void AddInputDialog::resetForSequential()
@@ -297,6 +365,17 @@ void AddInputDialog::resetForSequential()
 
     ui->editLength->clear();
     ui->spinQuantity->setValue(1);
+
+    ui->radioLeft->setAutoExclusive(false);
+    ui->radioRight->setAutoExclusive(false);
+
+    ui->radioLeft->setChecked(false);
+    ui->radioRight->setChecked(false);
+
+    ui->radioLeft->setAutoExclusive(true);
+    ui->radioRight->setAutoExclusive(true);
+    ui->sliderHandler->setValue(0);
+
 }
 
 void AddInputDialog::applyInitialFocus()
@@ -523,12 +602,21 @@ void AddInputDialog::onQuantityChanged(int totalPieces)
 {
     if (totalPieces <= 1) {
         ui->stackHandlerSide->setCurrentIndex(0);   // radio mód
-        ui->radioLeft->setChecked(true);            // default: balos
+        //ui->radioLeft->setChecked(true);            // default: balos
+        ui->radioLeft->setAutoExclusive(false);
+        ui->radioRight->setAutoExclusive(false);
+
+        ui->radioLeft->setChecked(false);
+        ui->radioRight->setChecked(false);
+
+        ui->radioLeft->setAutoExclusive(true);
+        ui->radioRight->setAutoExclusive(true);
+        ui->sliderHandler->setValue(0);
     } else {
         ui->stackHandlerSide->setCurrentIndex(1);   // slider mód
         ui->sliderHandler->setMinimum(0);
         ui->sliderHandler->setMaximum(totalPieces);
-        ui->sliderHandler->setValue(totalPieces);   // default: minden bal
+        //ui->sliderHandler->setValue(totalPieces);   // default: minden bal
     }
     updateSliderLabels();
 }
@@ -593,7 +681,34 @@ bool AddInputDialog::eventFilter(QObject *obj, QEvent *event)
 
 void AddInputDialog::on_btn_MaterialSearch_clicked()
 {
-    MaterialSearchDialog dlg(this);
+
+    // a színt is át lehetne adni
+
+    // 1) Jelenlegi típus és altípus lekérése
+    QUuid typeId = selectedProductTypeId();
+    QUuid subtypeId = selectedProductSubtypeId();
+
+    QString typeCode = "Mind";
+    QString subtypeCode = "Mind";
+
+    if (!typeId.isNull()) {
+        auto* t = ProductTypeRegistry::instance().findById(typeId);
+        if (t) typeCode = t->code;
+    }
+
+    if (!subtypeId.isNull()) {
+        auto* st = ProductSubtypeRegistry::instance().findById(subtypeId);
+        if (st) subtypeCode = st->code;
+    }
+
+    // 2) MaterialSearchDialog előre beállított szűrővel
+    MaterialSearchDialog dlg(
+        this,
+        "Nincs",        // initialColor
+        typeCode,       // initialType
+        subtypeCode,    // initialSubtype
+        ""              // initialSearch
+        );
 
     if (dlg.exec() != QDialog::Accepted)
         return;
@@ -734,8 +849,18 @@ void AddInputDialog::loadContextMap()
         RequestContext ctx;
         ctx.ownerName = parts[1];
         ctx.dueDate = QDate::fromString(parts[2], "yyyy-MM-dd");
-        ctx.productTypeId    = QUuid(parts[3]);
-        ctx.productSubtypeId = QUuid(parts[4]);
+        // ctx.productTypeId    = QUuid(parts[3]);
+        // ctx.productSubtypeId = QUuid(parts[4]);
+
+        QString typeCode = parts[3].trimmed();
+        QString subtypeCode = parts[4].trimmed();
+
+        auto* type = ProductTypeRegistry::instance().findByCode(typeCode);
+        auto* subtype = ProductSubtypeRegistry::instance().findByCode(subtypeCode);
+
+        ctx.productTypeId    = type ? type->id : QUuid();
+        ctx.productSubtypeId = subtype ? subtype->id : QUuid();
+
         ctx.side = HandlerSideUtils::parse(parts[5]);
 
         auto matBarcode = parts[6];
@@ -762,16 +887,24 @@ void AddInputDialog::saveContextMap()
         auto *mat = MaterialRegistry::instance().findById(ctx.defaultMaterialId);
         QString matBarcode = mat?mat->barcode:"";
 
+        auto* type = ProductTypeRegistry::instance().findById(ctx.productTypeId);
+        auto* subtype = ProductSubtypeRegistry::instance().findById(ctx.productSubtypeId);
+
+        QString typeCode = type ? type->code : "";
+        QString subtypeCode = subtype ? subtype->code : "";
+
+
         //externalRef ; ownerName ; dueDate ; productTypeId ; productSubtypeId ; side ; materialBarcode ; color
         QString line = QString("%1;%2;%3;%4;%5;%6;%7;%8\n")
                            .arg(it.key())
                            .arg(ctx.ownerName)
                            .arg(ctx.dueDate.toString("yyyy-MM-dd"))
-                           .arg(ctx.productTypeId.toString())
-                           .arg(ctx.productSubtypeId.toString())
+                           .arg(typeCode)
+                           .arg(subtypeCode)
                            .arg(HandlerSideUtils::toDisplayText(ctx.side))
                            .arg(matBarcode)
                            .arg(ctx.color);
+
 
         f.write(line.toUtf8());
     }

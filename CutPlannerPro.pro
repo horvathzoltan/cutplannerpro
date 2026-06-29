@@ -406,6 +406,7 @@ DISTFILES += \
     run_4.txt \
     run_5.txt \
     run_6.txt \
+    run_7.txt \
     run_Refaktor_terv_fokuszpontok \
     testdata/bom.csv \
     testdata/csvlist.sh \

@@ -24,7 +24,14 @@ class MaterialSearchDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit MaterialSearchDialog(QWidget* parent = nullptr);
+    explicit MaterialSearchDialog(
+        QWidget* parent = nullptr,
+        const QString& initialColor = "Nincs",
+        const QString& initialType = "Mind",
+        const QString& initialSubtype = "Mind",
+        const QString& initialSearch = ""
+        );
+
     ~MaterialSearchDialog();
 
     MaterialSelection selection() const;
@@ -43,13 +50,30 @@ private:
     // Debounce timer
     QTimer debounce;
 
-
     QWidget* categoryFilterPanel;
-    QButtonGroup* categoryButtons;
 
-    QString selectedCategory() const;
-    QString prefixOf(const QString& name) const;
-    void buildCategoryButtons();
+    // ⭐ ProductType kategória
+    QButtonGroup* typeButtons;
+
+    QString initColor;
+    QString initType;
+    QString initSubtype;
+    QString initSearch;
+
+    void buildTypeButtons();
+    QString selectedType() const;
+
+    // ⭐ ProductSubtype kategória
+    QButtonGroup* subtypeButtons;
+
+    QWidget* typePanel;        // Típusok panel
+    QVBoxLayout* typeLayout;   // Típusok layout
+
+    QWidget* subtypePanel;     // Altípusok panel
+    QVBoxLayout* subtypeLayout;// Altípusok layout
+
+    void buildSubtypeButtons();
+    QString selectedSubtype() const;
 
 
     // Belső logika
@@ -57,5 +81,4 @@ private:
     void applyFilter(const QString& text);
     QString selectedColor() const;
     void addSeparator(const QString &title);
-    QStringList extractTokens(const QString &name) const;
 };

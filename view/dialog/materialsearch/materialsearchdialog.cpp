@@ -3,11 +3,52 @@
 #include "view/common/layouts/qflowlayout.h"
 #include "view/dialog/materialfinder/materialdelegate.h"
 
-MaterialSearchDialog::MaterialSearchDialog(QWidget* parent)
+#include <QLabel>
+
+#include <product/registry/material_role_registry.h>
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
+
+static void clearLayout(QLayout* layout)
+{
+    if (!layout)
+        return;
+
+    while (QLayoutItem* item = layout->takeAt(0)) {
+
+        if (QWidget* w = item->widget()) {
+            w->deleteLater();
+        }
+
+        // Ha layout van benne, NEM töröljük!
+        // Csak eltávolítjuk, és Qt majd felszabadítja,
+        // amikor a parent panel új layoutot kap.
+        if (QLayout* child = item->layout()) {
+            clearLayout(child);
+        }
+
+        delete item;   // ez már biztonságos
+    }
+}
+
+
+
+MaterialSearchDialog::MaterialSearchDialog(
+    QWidget* parent,
+    const QString& initialColor,
+    const QString& initialType,
+    const QString& initialSubtype,
+    const QString& initialSearch)
     : QDialog(parent),
     model(new QStandardItemModel(this)),
     colorButtons(new QButtonGroup(this))
 {
+    initColor = initialColor;
+    initType = initialType;
+    initSubtype = initialSubtype;
+    initSearch = initialSearch;
+
+
     setWindowTitle("Anyag keresése");
     resize(600, 500);
 
@@ -19,23 +60,77 @@ MaterialSearchDialog::MaterialSearchDialog(QWidget* parent)
     colorLayout->setContentsMargins(0,0,0,0);
     layout->addWidget(colorFilterPanel);
 
-    buildColorButtons();
-
-
-    // 1/b) KATEGÓRIA SZŰRŐ PANEL
     categoryFilterPanel = new QWidget(this);
-    //auto* catLayout = new QHBoxLayout(categoryFilterPanel);
-    auto* catLayout = new QFlowLayout(categoryFilterPanel);
-    //catLayout->setContentsMargins(0,0,0,0);
+    auto* catLayout = new QVBoxLayout(categoryFilterPanel);
     categoryFilterPanel->setLayout(catLayout);
     layout->addWidget(categoryFilterPanel);
 
-    categoryButtons = new QButtonGroup(this);
+    typePanel = new QWidget(this);
+    typeLayout = new QVBoxLayout(typePanel);
+    typePanel->setLayout(typeLayout);
+    catLayout->addWidget(typePanel);
+
+    subtypePanel = new QWidget(this);
+    subtypeLayout = new QVBoxLayout(subtypePanel);
+    subtypePanel->setLayout(subtypeLayout);
+    catLayout->addWidget(subtypePanel);
+
+    buildColorButtons();
+
+
+    // ⭐ ProductType gombok
+    typeButtons = new QButtonGroup(this);
+    buildTypeButtons();
+
+
+    // ⭐ ProductSubtype gombok
+    subtypeButtons = new QButtonGroup(this);
+    buildSubtypeButtons();
+
+    connect(typeButtons, &QButtonGroup::idClicked, this, [this]() {
+        QTimer::singleShot(0, this, [this]() {
+            buildSubtypeButtons();
+            applyFilter(searchEdit->text());
+        });
+    });
+
+    connect(subtypeButtons, &QButtonGroup::idClicked, this, [this]() {
+        applyFilter(searchEdit->text());
+    });
+
+
+    // ⭐ előválasztás: szín
+    for (auto* btn : colorButtons->buttons()) {
+        if (btn->text() == initColor)
+            btn->setChecked(true);
+    }
+
+    // ⭐ előválasztás: type
+    for (auto* btn : typeButtons->buttons()) {
+        if (btn->property("typeCode").toString() == initType)
+            btn->setChecked(true);
+    }
+
+    // ⭐ subtype gombsor újraépítése a type alapján
+    buildSubtypeButtons();
+
+    // ⭐ előválasztás: subtype
+    for (auto* btn : subtypeButtons->buttons()) {
+        if (btn->property("subtypeCode").toString() == initSubtype)
+            btn->setChecked(true);
+    }
+
+    applyFilter(initSearch);
+
 
     // 2) KERESŐMEZŐ
     searchEdit = new QLineEdit(this);
     searchEdit->setPlaceholderText("Írj be legalább 3 karaktert (név, barcode, external code)...");
     layout->addWidget(searchEdit);
+
+    if (!initSearch.isEmpty())
+        searchEdit->setText(initSearch);
+
 
     // 3) TALÁLATI LISTA
     resultList = new QListView(this);
@@ -51,8 +146,6 @@ MaterialSearchDialog::MaterialSearchDialog(QWidget* parent)
 
     // ANYAGOK BETÖLTÉSE
     allMaterials = MaterialRegistry::instance().readAll();
-
-    buildCategoryButtons();
 
     // DEBOUNCE
     debounce.setInterval(250);
@@ -75,7 +168,7 @@ MaterialSearchDialog::MaterialSearchDialog(QWidget* parent)
         QDialog::accept();
     });
 
-    applyFilter("");
+    applyFilter(initSearch);
 }
 
 MaterialSearchDialog::~MaterialSearchDialog() {}
@@ -140,12 +233,53 @@ void MaterialSearchDialog::applyFilter(const QString& text)
 
     QString color = selectedColor();
     QString t = text.trimmed().toLower();
-    QString cat = selectedCategory();
 
     QVector<MaterialMaster> exactMatches;
     QVector<MaterialMaster> prefixMatches;
     QVector<MaterialMaster> substringMatches;
     QVector<MaterialMaster> fuzzyMatches;
+
+    QString typeCode = selectedType();
+    QUuid typeId;
+
+    if (typeCode != "Mind") {
+        for (const auto& t : ProductTypeRegistry::instance().readAll()) {
+            if (t.code == typeCode) {
+                typeId = t.id;
+                break;
+            }
+        }
+    }
+
+    QString subtypeCode = selectedSubtype();
+    QUuid subtypeId;
+
+    if (subtypeCode != "Mind") {
+        for (const auto& st : ProductSubtypeRegistry::instance().readAll()) {
+            if (st.code == subtypeCode) {
+                subtypeId = st.id;
+                break;
+            }
+        }
+    }
+
+    QVector<MaterialRole> roles =
+        MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
+
+    QSet<MaterialFamily> allowedFamilies;
+    QStringList allowedPrefixes;
+
+    for (const auto& r : roles) {
+        allowedFamilies.insert(r.family);
+        allowedPrefixes.append(r.barcodePrefix);
+    }
+
+
+
+    bool useRoleFilter =
+        (typeCode != "Mind") &&
+        (subtypeCode != "Mind");
+
 
     // Ha nincs keresőkifejezés → teljes lista (szín szerint)
     if (t.length() < 3) {
@@ -155,10 +289,27 @@ void MaterialSearchDialog::applyFilter(const QString& text)
             if (color != "Nincs" && m.color.name() != color)
                 continue;
 
-            // KATEGÓRIA SZŰRÉS
-            QStringList toks = extractTokens(m.name);
-            if (cat != "Mind" && !toks.contains(cat))
-                continue;
+            if (useRoleFilter) {
+                // Family szűrés
+                if (!allowedFamilies.contains(m.family))
+                    continue;
+
+                // Barcode prefix szűrés
+                bool prefixOk = false;
+                for (const QString& p : allowedPrefixes) {
+                    QString px = p;
+                    if (px.endsWith("*"))
+                        px.chop(1);
+
+                    if (m.barcode.startsWith(px)) {
+                        prefixOk = true;
+                        break;
+                    }
+                }
+
+                if (!prefixOk)
+                    continue;
+            }
 
             auto* item = new QStandardItem();
             item->setData(QVariant::fromValue(m), Qt::UserRole);
@@ -173,11 +324,6 @@ void MaterialSearchDialog::applyFilter(const QString& text)
     for (const auto& m : allMaterials) {
 
         if (color != "Nincs" && m.color.name() != color)
-            continue;
-
-        // Kategória szűrés
-        QStringList toks = extractTokens(m.name);
-        if (cat != "Mind" && !toks.contains(cat))
             continue;
 
         QString name = m.name.toLower();
@@ -304,125 +450,148 @@ void MaterialSearchDialog::addSeparator(const QString& title)
 }
 
 
-QString MaterialSearchDialog::prefixOf(const QString& name) const
+void MaterialSearchDialog::buildTypeButtons()
 {
-    QStringList parts = name.split(" ", Qt::SkipEmptyParts);
-    if (parts.isEmpty())
-        return "Egyéb";
+    // panel + gyerek layoutok teljes kiürítése
+    clearLayout(typeLayout);
 
-    QString p = parts[0].trimmed();
+    // gombcsoport ürítése
+    for (auto* btn : typeButtons->buttons())
+        typeButtons->removeButton(btn);
 
-    // RAL kódok külön kategória
-    if (p.startsWith("RAL", Qt::CaseInsensitive))
-        return "RAL";
 
-    return p;
-}
+    // szeparátor
+    auto* sep = new QLabel("Típusok");
+    sep->setStyleSheet("font-weight: bold; margin-bottom: 4px;");
+    typeLayout->addWidget(sep);
 
-// void MaterialSearchDialog::buildCategoryButtons()
-// {
-//     QSet<QString> cats;
+    // gombsor
+    auto* row = new QHBoxLayout();
+    row->setContentsMargins(0, 0, 0, 6);
+    row->setAlignment(Qt::AlignLeft);
 
-//     for (const auto& m : allMaterials)
-//         cats.insert(prefixOf(m.name));
-
-//     auto* layout = qobject_cast<QHBoxLayout*>(categoryFilterPanel->layout());
-
-//     // "Mind" gomb
-//     auto* allBtn = new QRadioButton("Mind");
-//     allBtn->setChecked(true);
-//     categoryButtons->addButton(allBtn, -1);
-//     layout->addWidget(allBtn);
-
-//     int id = 0;
-//     for (const QString& c : cats) {
-//         auto* btn = new QRadioButton(c);
-//         categoryButtons->addButton(btn, id++);
-//         layout->addWidget(btn);
-//     }
-
-//     layout->addStretch();
-
-//     connect(categoryButtons, &QButtonGroup::idClicked, this, [this]() {
-//         applyFilter(searchEdit->text());
-//     });
-// }
-
-QString MaterialSearchDialog::selectedCategory() const
-{
-    QAbstractButton* btn = categoryButtons->checkedButton();
-    if (!btn)
-        return "Mind";
-
-    return btn->text();
-}
-
-QStringList MaterialSearchDialog::extractTokens(const QString& name) const
-{
-    QString n = name;
-
-    // 1) CamelCase szétszedése (ha van)
-    n.replace(QRegularExpression("([a-záéíóöőúüű])([A-ZÁÉÍÓÖŐÚÜŰ])"), "\\1 \\2");
-
-    // 2) számok, kötőjelek, speciális karakterek → szóköz
-    n.replace(QRegularExpression("[^A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]"), " ");
-
-    // 3) tokenizálás
-    QStringList parts = n.split(" ", Qt::SkipEmptyParts);
-
-    // 4) kiszűrjük a túl rövid vagy értelmetlen tokeneket
-    QStringList result;
-    for (QString p : parts) {
-        if (p.length() < 3) continue;        // pl. "Ø18", "NP"
-        if (p.toLower() == "mm") continue;   // mértékegység
-        result << p;
-    }
-
-    if (result.isEmpty())
-        result << "Egyéb";
-
-    return result;
-}
-
-void MaterialSearchDialog::buildCategoryButtons()
-{
-    QMap<QString,int> freq;
-
-    // 1) tokenek összegyűjtése és gyakoriság számítása
-    for (const auto& m : allMaterials) {
-        for (const QString& t : extractTokens(m.name))
-            freq[t]++;
-    }
-
-    // 2) csak a gyakori tokenekből lesz kategória
-    QList<QString> cats;
-    for (auto it = freq.begin(); it != freq.end(); ++it) {
-        if (it.value() >= 3)   // legalább 3 anyagban szerepel
-            cats << it.key();
-    }
-
-    cats.sort(Qt::CaseInsensitive);
-
-    auto* layout = static_cast<QFlowLayout*>(categoryFilterPanel->layout());
-
+    typeLayout->addLayout(row);
 
     // "Mind" gomb
     auto* allBtn = new QRadioButton("Mind");
     allBtn->setChecked(true);
-    categoryButtons->addButton(allBtn, -1);
-    layout->addWidget(allBtn);
+    allBtn->setProperty("typeCode", "Mind");
+    typeButtons->addButton(allBtn);
+    row->addWidget(allBtn);
 
-    int id = 0;
-    for (const QString& c : cats) {
-        auto* btn = new QRadioButton(c);
-        categoryButtons->addButton(btn, id++);
-        layout->addWidget(btn);
+    // típus gombok
+    for (const auto& t : ProductTypeRegistry::instance().readAll()) {
+        auto* btn = new QRadioButton(t.name);
+        btn->setProperty("typeCode", t.code);
+        typeButtons->addButton(btn);
+        row->addWidget(btn);
     }
 
-    //layout->addStretch();
 
-    connect(categoryButtons, &QButtonGroup::idClicked, this, [this]() {
-        applyFilter(searchEdit->text());
-    });
+    // connect(typeButtons, &QButtonGroup::idClicked, this, [this]() {
+    //     // subtype reset
+    //     // ⭐ subtype reset minden esetben
+    //     for (auto* btn : subtypeButtons->buttons())
+    //         btn->setChecked(false);
+
+
+    //     // ⭐ subtype újraépítése garantáltan a következő event loop ciklusban
+    //     QTimer::singleShot(0, this, [this]() {
+    //         buildSubtypeButtons();
+    //         applyFilter(searchEdit->text());
+    //     });
+
+    // });
+
+}
+
+void MaterialSearchDialog::buildSubtypeButtons()
+{
+    // panel + gyerek layoutok teljes kiürítése
+    clearLayout(subtypeLayout);
+
+    // gombcsoport ürítése
+    for (auto* btn : subtypeButtons->buttons())
+        subtypeButtons->removeButton(btn);
+
+
+    // szeparátor
+    auto* sep = new QLabel("Altípusok");
+    sep->setStyleSheet("font-weight: bold; margin-top: 6px;");
+    subtypeLayout->addWidget(sep);
+
+    // gombsor
+    auto* row = new QHBoxLayout();
+    row->setContentsMargins(0, 6, 0, 0);
+    row->setAlignment(Qt::AlignLeft);
+    subtypeLayout->addLayout(row);
+
+    // "Mind" gomb
+    auto* allBtn = new QRadioButton("Mind");
+    allBtn->setChecked(true);
+    allBtn->setProperty("subtypeCode", "Mind");
+    subtypeButtons->addButton(allBtn);
+    row->addWidget(allBtn);
+
+    // typeId lekérése
+    QString typeCode = selectedType();
+    bool typeIsMind = (typeCode == "Mind");
+
+    if (typeIsMind) {
+        // csak a Mind gomb maradjon
+        return;
+    }
+
+    QUuid typeId;
+
+    if (typeCode != "Mind") {
+        for (const auto& t : ProductTypeRegistry::instance().readAll()) {
+            if (t.code == typeCode) {
+                typeId = t.id;
+                break;
+            }
+        }
+    }
+
+    // altípus gombok
+    for (const auto& st : ProductSubtypeRegistry::instance().readAll()) {
+        if (typeCode != "Mind" && st.typeId != typeId)
+            continue;
+
+        auto* btn = new QRadioButton(st.name);
+        btn->setProperty("subtypeCode", st.code);
+        subtypeButtons->addButton(btn);
+        row->addWidget(btn);
+    }
+
+    // reset + Mind kiválasztása
+    for (auto* btn : subtypeButtons->buttons())
+        btn->setChecked(false);
+
+    if (!subtypeButtons->buttons().isEmpty())
+        subtypeButtons->buttons().first()->setChecked(true);
+
+    // connect(subtypeButtons, &QButtonGroup::idClicked, this, [this]() {
+    //     applyFilter(searchEdit->text());
+    // });
+
+}
+
+
+QString MaterialSearchDialog::selectedSubtype() const
+{
+    QAbstractButton* btn = subtypeButtons->checkedButton();
+    if (!btn)
+        return "Mind";
+    return btn->property("subtypeCode").toString();
+}
+
+
+QString MaterialSearchDialog::selectedType() const
+{
+    QAbstractButton* btn = typeButtons->checkedButton();
+    if (!btn)
+        return "Mind";
+    return btn->property("typeCode").toString();
 }
 

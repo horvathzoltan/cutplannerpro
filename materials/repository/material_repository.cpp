@@ -270,7 +270,7 @@ void MaterialRepository::exportCsv(const QString& path) {
         out << m.shape.toString() << ";"
             << m.defaultMachineId << ";"
             << m.type.toString() << ";"
-            << m.color.name() << ";"
+            << m.color.code() << ";"
             << CuttingModeUtils::toString(m.cuttingMode) << ";"
             << PaintingModeUtils::toString(m.paintingMode) << ";"
             << m.trim_mm << ";"

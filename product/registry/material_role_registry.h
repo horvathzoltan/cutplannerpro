@@ -23,4 +23,10 @@ public:
         ) const;
 
     MaterialFamily familyForBarcode(const QString& barcode) const;
+
+    QVector<MaterialRole> findRoles(
+        const QUuid& productTypeId,
+        const QUuid& productSubtypeId
+        ) const;
+
 };

@@ -51,3 +51,22 @@ MaterialFamily MaterialRoleRegistry::familyForBarcode(const QString& barcode) co
     return MaterialFamily::Unknown;
 }
 
+QVector<MaterialRole> MaterialRoleRegistry::findRoles(
+    const QUuid& productTypeId,
+    const QUuid& productSubtypeId
+    ) const
+{
+    QVector<MaterialRole> result;
+
+    for (const auto& r : m_roles)
+    {
+        if (r.productTypeId == productTypeId &&
+            r.productSubtypeId == productSubtypeId)
+        {
+            result.append(r);
+        }
+    }
+
+    return result;
+}
+

@@ -1,9 +1,25 @@
 RAL color ST9007 ami 9007 szín de strukturált felületminőségben
 
-Anyag keresése: invalid HEX, és minden szín fekete
-a color.name()  nem adott stringet kiíráskor
-valahogy vissza kell olvasni a régiből, és rendesen kiírni
+enum class SurfaceType {
+    Smooth,
+    FineStructure,
+    CoarseStructure,
+    Matt,
+    Glossy,
+    Satin
+};
 
+request:
+NamedColor requiredColor;
+SurfaceType requiredSurface;
+
+material:
+SurfaceType surface;
+
+on_btn_MaterialSearch_clicked - a materialselectorban a a ral colort is be lehetne állítani
+
+
+************ elvileg ez kész
 sorozat: a job/bal ugyanúgy az user számára
 kitöltendő mint a méret, tehát nem kell rá emlékezni
 sorozat: ha már felvettük a tokot, nem kell mégegyszer felvenni. 
@@ -18,11 +34,12 @@ leftover felvételi lap: az emoji nem látszik
 
 címkére mindíg kell az altípus
 címkét, vágási tervet tokcsaládra, lábcsaládra - láb típusra kell szétbontani, ha az user kéri.
+a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
+vágni
+
 
 címke -> enum bevezetése a materialba?
 
-a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
-vágni
 
 az optimalizáció csökkenti a készletet? nem kellene.
 a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag

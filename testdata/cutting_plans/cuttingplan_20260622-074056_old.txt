@@ -5,9 +5,9 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1826";"Braun Győr";0;0;2770;;1;1;0;"";NP-T;Width;false;2026-06-29;NP;CIP
 "1829";"Braun Győr";0;0;3065;;1;1;0;"";NP-T;Width;false;2026-06-23;NP;BOW
 "1832";"Napex Pécs";0;0;1215;;1;1;0;"";NP-T;Width;false;2026-06-26;NP;CIP
-"1833";"Napex Pécs";0;0;1215;;1;1;0;"";NP-T;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1215;;1;0;1;"";NP-T;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1215;;1;1;0;"";NP-T;Width;false;2026-06-26;NP;CIP
-"1835";"Napex Pécs";0;0;1215;;1;1;0;"";NP-T;Width;false;2026-06-26;NP;CIP
+"1835";"Napex Pécs";0;0;1215;;1;0;1;"";NP-T;Width;false;2026-06-26;NP;CIP
 "1848";"Napex Pécs";0;0;1355;;1;1;0;"";NP-T;Width;false;2026-06-29;NP;BOW
 "1804";"Frama";0;0;2725;;1;1;0;"";NP-TF;Width;false;2026-06-25;NP;CIP
 "1814";"Frama";0;0;3275;;1;1;0;"";NP-TF;Width;false;2026-06-23;NP;CIP
@@ -15,9 +15,9 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1826";"Braun Győr";0;0;2795;;1;1;0;"";NP-TF;Width;false;2026-06-29;NP;CIP
 "1829";"Braun Győr";0;0;3065;;1;1;0;"";NP-TF;Width;false;2026-06-23;NP;BOW
 "1832";"Napex Pécs";0;0;1240;;1;1;0;"";NP-TF;Width;false;2026-06-26;NP;CIP
-"1833";"Napex Pécs";0;0;1240;;1;1;0;"";NP-TF;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1240;;1;0;1;"";NP-TF;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1240;;1;1;0;"";NP-TF;Width;false;2026-06-26;NP;CIP
-"1835";"Napex Pécs";0;0;1240;;1;1;0;"";NP-TF;Width;false;2026-06-26;NP;CIP
+"1835";"Napex Pécs";0;0;1240;;1;0;1;"";NP-TF;Width;false;2026-06-26;NP;CIP
 "1848";"Napex Pécs";0;0;1355;;1;1;0;"";NP-TF;Width;false;2026-06-29;NP;BOW
 "1804";"Frama";0;0;2607;;1;1;0;"";NP-CZ;Width;false;2026-06-25;NP;CIP
 "1814";"Frama";0;0;3157;;1;1;0;"";NP-CZ;Width;false;2026-06-23;NP;CIP
@@ -25,20 +25,24 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1826";"Braun Győr";0;0;2677;;1;1;0;"";NP-CZ;Width;false;2026-06-29;NP;CIP
 "1829";"Braun Győr";0;0;3030;;1;1;0;"";NP-SZ;Width;false;2026-06-23;NP;BOW
 "1832";"Napex Pécs";0;0;1122;;1;1;0;"";NP-CZ;Width;false;2026-06-26;NP;CIP
-"1833";"Napex Pécs";0;0;1122;;1;1;0;"";NP-CZ;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1122;;1;0;1;"";NP-CZ;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1122;;1;1;0;"";NP-CZ;Width;false;2026-06-26;NP;CIP
-"1835";"Napex Pécs";0;0;1122;;1;1;0;"";NP-CZ;Width;false;2026-06-26;NP;CIP
+"1835";"Napex Pécs";0;0;1122;;1;0;1;"";NP-CZ;Width;false;2026-06-26;NP;CIP
 "1848";"Napex Pécs";0;0;1320;;1;1;0;"";NP-SZ;Width;false;2026-06-29;NP;BOW
 "1804";"Frama";0;0;2277;;1;1;0;"";NP-CL;Width;false;2026-06-25;NP;CIP
 "1814";"Frama";0;0;2447;;1;1;0;"";NP-CL;Width;false;2026-06-23;NP;CIP
 "1826";"Braun Győr";0;0;1702;;1;1;0;"";NP-CL;Width;false;2026-06-29;NP;CIP
 "1832";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CL;Width;false;2026-06-26;NP;CIP
-"1833";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CL;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1472;;1;0;1;"";NP-CL;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CL;Width;false;2026-06-26;NP;CIP
-"1835";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CL;Width;false;2026-06-26;NP;CIP
+"1835";"Napex Pécs";0;0;1472;;1;0;1;"";NP-CL;Width;false;2026-06-26;NP;CIP
 "1814";"Frama";0;0;2447;;1;1;0;"";NP-CLBR;Width;false;2026-06-23;NP;CIP
 "1826";"Braun Győr";0;0;1702;;1;1;0;"";NP-CLBR;Width;false;2026-06-29;NP;CIP
 "1832";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
-"1833";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1472;;1;0;1;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
-"1835";"Napex Pécs";0;0;1472;;1;1;0;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
+"1835";"Napex Pécs";0;0;1472;;1;0;1;"";NP-CLBR;Width;false;2026-06-26;NP;CIP
+"1832";"Napex Pécs";0;0;1210;;1;1;0;"";NP-CLT;Width;false;2026-06-26;NP;CIP
+"1832";"Napex Pécs";0;0;1251;;1;1;0;"";NP-CLT;Width;false;2026-06-26;NP;CIP
+"1833";"Napex Pécs";0;0;1252;;1;0;1;"";NP-CLT;Width;false;2026-06-26;NP;CIP
+"1834";"Napex Pécs";0;0;1256;;1;1;0;"";NP-CLT;Width;false;2026-06-26;NP;CIP
