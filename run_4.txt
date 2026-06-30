@@ -6,6 +6,13 @@ stock: kell az utolsó módosítás dátum a táblázatba, sőt!
 leftover stock: szintúgy - de ott majdnem kész van
  - a dátum színezés kell
 
+ - kell egy lista az auditálandó tételekről
+ - kell egy tárhelycímke-lista
+tárhely neveknben:  
+ - / karakter cseréje: / -> -
+ - whitespace normalizálás
+ - az ékezetes és ékezet nélküli nevek keveredése miatt a rendszer
+ „hamis egyediséget” lát, pedig a raktárosok szemében ugyanaz a hely.
 
 ************ elvileg ez kész
 sorozat: a job/bal ugyanúgy az user számára
