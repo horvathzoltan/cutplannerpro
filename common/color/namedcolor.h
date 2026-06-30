@@ -54,6 +54,8 @@ public:
 
     QString toString() const;
     bool isValid() const;
+    static QString normalizeRalExtended(const QString &raw);
+
 private:
     QColor m_color;
     QString m_name;
@@ -61,5 +63,4 @@ private:
     RalSystem m_system = RalSystem::Unknown;
 
     static QMap<RalSystem, QMap<QString, NamedColor>> ralColors_;
-    static QString normalizeRalExtended(const QString &raw);
 };

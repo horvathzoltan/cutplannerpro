@@ -138,6 +138,7 @@ HEADERS += \
     common/fontversionhelper.h \
     common/identifierutils.h \
     common/signalhelper.h \
+    common/surface/surfacetype.h \
     common/sysinfohelper.h \
     common/testlabelmaker.h \
     common/texthelper.h \

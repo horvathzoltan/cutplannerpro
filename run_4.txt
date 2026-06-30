@@ -7,27 +7,6 @@ leftover stock: szintúgy - de ott majdnem kész van
  - a dátum színezés kell
 
 
-RAL color ST9007 ami 9007 szín de strukturált felületminőségben
-
-enum class SurfaceType {
-    Smooth,
-    FineStructure,
-    CoarseStructure,
-    Matt,
-    Glossy,
-    Satin
-};
-
-request:
-NamedColor requiredColor;
-SurfaceType requiredSurface;
-
-material:
-SurfaceType surface;
-
-on_btn_MaterialSearch_clicked - a materialselectorban a a ral colort is be lehetne állítani
-
-
 ************ elvileg ez kész
 sorozat: a job/bal ugyanúgy az user számára
 kitöltendő mint a méret, tehát nem kell rá emlékezni
@@ -40,15 +19,10 @@ létező tételszámnál pedig jó
 
 leftover felvételi lap: az emoji nem látszik
 
-
-címkére mindíg kell az altípus
 címkét, vágási tervet tokcsaládra, lábcsaládra - láb típusra kell szétbontani, ha az user kéri.
 a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
 vágni
-
-
-címke -> enum bevezetése a materialba?
-
+**********************
 
 az optimalizáció csökkenti a készletet? nem kellene.
 a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag

@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QSizeF>
+#include "common/surface/surfacetype.h"
 #include "materials/model/material_family.h"
 #include "model/identifiableentity.h"
 #include "common/color/namedcolor.h"
@@ -31,7 +32,7 @@ struct MaterialMaster : public IdentifiableEntity {
 
     //QString coating;       // pl. fehér, szürke, szinterezhető
     NamedColor color; // 🎨 Anyag színe (RAL vagy HEX kód)
-
+    SurfaceType surface;
     PaintingMode paintingMode = PaintingMode::Paintable; // jelzi, ha az anyag festhető
     CuttingMode cuttingMode = CuttingMode::Length; // 🔧 Alapértelmezés: szálhossz vágás
 

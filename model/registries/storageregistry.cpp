@@ -7,10 +7,12 @@ StorageRegistry& StorageRegistry::instance() {
 
 void StorageRegistry::setData(const QVector<StorageEntry>& data) {
     _data = data;
+    _uniqueNameCache.clear();   // ⭐ invalidate cache
 }
 
 void StorageRegistry::clearAll() {
     _data.clear();
+    _uniqueNameCache.clear();   // ⭐ invalidate cache
 }
 
 const StorageEntry* StorageRegistry::findById(const QUuid& id) const {
@@ -78,4 +80,61 @@ bool StorageRegistry::isDescendantOf(const QUuid& childId, const QUuid& ancestor
     }
     return false;
 }
+
+QString StorageRegistry::uniqueHumanName(const QUuid& id)
+{
+    // 1) Cache hit
+    if (_uniqueNameCache.contains(id))
+        return _uniqueNameCache[id];
+
+    const StorageEntry* s = findById(id);
+    if (!s) return "—";
+
+    int depth = 1;
+
+    while (true) {
+        QString candidate = buildCandidate(s, depth);
+
+        if (isUniqueCandidate(candidate, id, depth)){
+            _uniqueNameCache[id] = candidate;   // ⭐ cache store
+            return candidate;
+            }
+
+        depth++;
+
+        // fallback: teljes path
+        if (depth > 10){   // soha nem lesz ilyen mély
+            _uniqueNameCache[id] = candidate;   // ⭐ cache store
+            return candidate;
+            }
+    }
+}
+
+bool StorageRegistry::isUniqueCandidate(const QString& candidate, const QUuid& selfId, int depth) const
+{
+    int count = 0;
+
+    for (const auto& s : _data) {
+        QString cand = buildCandidate(&s, depth);
+        if (cand == candidate && s.id != selfId)
+            count++;
+    }
+
+    return count == 0;
+}
+
+
+QString StorageRegistry::buildCandidate(const StorageEntry* s, int depth) const
+{
+    QStringList parts;
+    const StorageEntry* cur = s;
+
+    for (int i = 0; i < depth && cur; ++i) {
+        parts.prepend(cur->name);
+        cur = findById(cur->parentId);
+    }
+
+    return parts.join(" / ");
+}
+
 

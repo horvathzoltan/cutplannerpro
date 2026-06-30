@@ -79,6 +79,7 @@ private:
     // Belső logika
     void buildColorButtons();
     void applyFilter(const QString& text);
-    QString selectedColor() const;
+    //QString selectedColor() const;
     void addSeparator(const QString &title);
+    QString selectedColorCode() const;
 };

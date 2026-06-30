@@ -87,81 +87,99 @@ MaterialRepository::convertRowToMaterial(const QVector<QString>& parts, CsvReade
     const auto rowOpt = convertRowToMaterialRow(parts, ctx);
     if (!rowOpt.has_value()) return std::nullopt;
 
-    return buildMaterialFromRow(rowOpt.value(), ctx);
+    const MaterialRow& row = rowOpt.value();
+    // ⭐ LEVEL 1 VALIDÁCIÓ
+
+    auto v1 = row.validate_level1(ctx);
+
+    if (!v1.ok)
+        return std::nullopt;
+
+    return buildMaterialFromRow(row, v1, ctx);
 }
 
 std::optional<MaterialRepository::MaterialRow>
 MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 11) {
-        QString msg = L("⚠️ Kevés mező (legalább 9)");
-        ctx.addError(ctx.currentLineNumber(), msg);
+    if (parts.size() < FIELD_COUNT) {
+        ctx.addError(ctx.currentLineNumber(),
+                     QString("❌ Kevés mező: %1 mező érkezett, de legalább %2 szükséges")
+                         .arg(parts.size())
+                         .arg(FIELD_COUNT));
+        return std::nullopt;
+    }
+
+    if (parts.size() > FIELD_COUNT) {
+        ctx.addError(ctx.currentLineNumber(),
+                     QString("❌ Túl sok mező: %1 mező érkezett, de legfeljebb %2 lehet")
+                         .arg(parts.size())
+                         .arg(FIELD_COUNT));
         return std::nullopt;
     }
 
     MaterialRow row;
     row.name       = parts[0].trimmed();
     row.barcode    = parts[1].trimmed();
+    row.stockLengthStr = parts[2].trimmed();
     row.dim1       = parts[3].trimmed();
     row.dim2       = parts[4].trimmed();
     row.shapeStr   = parts[5].trimmed();
     row.machineId  = parts[6].trimmed();
     row.typeStr    = parts[7].trimmed();
-    row.colorStr = parts[8].trimmed();
-    row.cuttingMode = parts[9].trimmed();
-    row.paintingMode = parts[10].trimmed();
-
-    const QString lengthStr = parts[2].trimmed();
-    bool okLength = false;
-    row.stockLength = lengthStr.toDouble(&okLength);
-
-    // if (row.barcode.isEmpty() || !okLength || row.stockLength <= 0) {
-    //     QString msg = L("⚠️ Érvénytelen barcode vagy hossz");
-    //     ctx.addError(ctx.currentLineNumber(), msg);
-    //     return std::nullopt;
-    // }
-
-    if (row.barcode.isEmpty()) {
-        ctx.addError(ctx.currentLineNumber(), "⚠️ Üres barcode");
-        return std::nullopt;
-    }
-
-    if (!okLength) {
-        ctx.addError(ctx.currentLineNumber(), "⚠️ A hossz mező nem szám");
-        return std::nullopt;
-    }
-
-    // 0 hosszú anyagok engedélyezve (motorok, fittingek, textilek)
-    if (row.stockLength < 0) {
-        ctx.addError(ctx.currentLineNumber(), "⚠️ Negatív hossz nem megengedett");
-        return std::nullopt;
-    }
-
-    // új mezők opcionális beolvasása
-    if (parts.size() >= 12) row.trimStr            = parts[11].trimmed();
-    if (parts.size() >= 13) row.minLeftOverStr     = parts[12].trimmed();
-    if (parts.size() >= 14) row.scrapStr           = parts[13].trimmed();
-    if (parts.size() >= 15) row.goodLeftOverMinStr = parts[14].trimmed();
-    if (parts.size() >= 16) row.goodLeftOverMaxStr = parts[15].trimmed();
-    if (parts.size() >= 17) row.externalCodeStr    = parts[16].trimmed();
-    if (parts.size() >= 18) row.description    = parts[17].trimmed();
-
-    if (parts.size() >= 19)
-        row.familyStr = parts[18].trimmed();
-    else {
-        ctx.addError(ctx.currentLineNumber(), "❌ Hiányzik a 'family' mező");
-        return std::nullopt;
-    }
+    row.colorStr   = parts[8].trimmed();
+    row.surfaceStr = parts[9].trimmed();
+    row.cuttingMode= parts[10].trimmed();
+    row.paintingMode=parts[11].trimmed();
+    row.trimStr            = parts[12].trimmed();
+    row.minLeftOverStr     = parts[13].trimmed();
+    row.scrapStr           = parts[14].trimmed();
+    row.goodLeftOverMinStr = parts[15].trimmed();
+    row.goodLeftOverMaxStr = parts[16].trimmed();
+    row.externalCodeStr    = parts[17].trimmed();
+    row.description        = parts[18].trimmed();
+    row.familyStr          = parts[19].trimmed();
 
     return row;
 }
 
+MaterialRepository::MaterialRow::ValidatorResponse_level1
+MaterialRepository::MaterialRow::validate_level1(CsvReader::FileContext& ctx) const
+{
+    MaterialRepository::MaterialRow::ValidatorResponse_level1 r(true);
+
+    // 1) barcode kötelező
+    if (barcode.isEmpty()) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ Üres barcode");
+        return false;
+    }
+
+    // 2) stockLength szám-e?
+    bool okLength = false;
+    r.len = stockLengthStr.toDouble(&okLength);
+
+    if (!okLength) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ A stockLength mező nem szám");
+        return false;
+    }
+
+    // 3) negatív hossz tiltott
+    if (r.len < 0) {
+        ctx.addError(ctx.currentLineNumber(), "⚠️ Negatív hossz nem megengedett");
+        return false;
+    }
+
+    return r;
+}
+
+
 std::optional<MaterialMaster>
-MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::FileContext& ctx) {
+MaterialRepository::buildMaterialFromRow(const MaterialRow& row,
+                                         const MaterialRepository::MaterialRow::ValidatorResponse_level1& v1,
+                                         CsvReader::FileContext& ctx) {
     MaterialMaster m;
     m.id = QUuid::createUuid();
     m.name = row.name;
     m.barcode = row.barcode;
-    m.stockLength_mm = row.stockLength;
+    m.stockLength_mm = v1.len;
     m.defaultMachineId = row.machineId;
     m.shape = CrossSectionShape::fromString(row.shapeStr);
     m.type = MaterialType::fromString(row.typeStr);
@@ -197,6 +215,14 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row, CsvReader::File
         }
     } else {
         m.color = NamedColor(); // nincs festve
+    }
+
+    // ⭐ Felületminőség hozzárendelés (SM, FS, CS, MT, GL, ST)
+    if (!row.surfaceStr.isEmpty()) {
+        m.surface = SurfaceTypeUtils::fromCode(row.surfaceStr);
+    } else {
+        // ha üres → ipari default: Smooth
+        m.surface = SurfaceType::Smooth;
     }
 
     // új mezők parse + fallback
@@ -241,9 +267,10 @@ void MaterialRepository::exportCsv(const QString& path) {
 
     QTextStream out(&f);
 
-    out << "name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;"
-           "cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;"
-           "goodLeftOverMax;externalCode;description;family\n";
+    out << "name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;"
+            "cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;"
+            "goodLeftOverMax;externalCode;description;family\n";
+
 
     const auto& materials = MaterialRegistry::instance().readAll();
 
@@ -271,6 +298,7 @@ void MaterialRepository::exportCsv(const QString& path) {
             << m.defaultMachineId << ";"
             << m.type.toString() << ";"
             << m.color.code() << ";"
+            << SurfaceTypeUtils::toCode(m.surface) << ";"
             << CuttingModeUtils::toString(m.cuttingMode) << ";"
             << PaintingModeUtils::toString(m.paintingMode) << ";"
             << m.trim_mm << ";"

@@ -82,6 +82,7 @@ private:
         HandlerSide side;      // Bal / Jobb
         QUuid   defaultMaterialId; // Opcionális: legutóbb használt anyag ehhez a tételszámhoz
         QString color;
+        QString surfaceCode;   // ⭐ új mező
     };
 
 
@@ -146,6 +147,10 @@ private:
     void setProductTypeEditable(bool editable);
     void setProductSubtypeEditable(bool editable);
 
+    void populateSurfaceCombo();
+    void applySurfaceFromContext(const RequestContext &ctx);
+    void setSurfaceEditable(bool editable);
+    void applySurfaceFromRequest(const Cutting::Plan::Request &req);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

@@ -101,9 +101,12 @@ MaterialSearchDialog::MaterialSearchDialog(
 
     // ⭐ előválasztás: szín
     for (auto* btn : colorButtons->buttons()) {
-        if (btn->text() == initColor)
+        if (btn->property("colorCode").toString() == initColor) {
             btn->setChecked(true);
+            break;
+        }
     }
+
 
     // ⭐ előválasztás: type
     for (auto* btn : typeButtons->buttons()) {
@@ -178,29 +181,46 @@ MaterialSearchDialog::~MaterialSearchDialog() {}
 void MaterialSearchDialog::buildColorButtons()
 {
     auto materials = MaterialRegistry::instance().readAll();
-    QSet<QString> colors;
+    QSet<QString> colorCodes;   // ⭐ RAL/HEX kódok
+    QMap<QString, QString> codeToName; // ⭐ kód → emberi név
 
-    for (const auto& m : materials)
-        colors.insert(m.color.name());
+    for (const auto& m : materials) {
+        QString code = m.color.code();   // pl. "7016"
+        QString name = m.color.name();   // pl. "Anthracite Grey"
+
+        if (!code.isEmpty()) {
+            colorCodes.insert(code);
+            codeToName[code] = name;
+        }
+    }
 
     auto* layout = qobject_cast<QHBoxLayout*>(colorFilterPanel->layout());
 
-    // "Nincs" gomb
-    auto* noneBtn = new QRadioButton("Nincs");
+    // ⭐ "Nincs szín" gomb
+    auto* noneBtn = new QRadioButton("Nincs szín");
     noneBtn->setChecked(true);
+    noneBtn->setProperty("colorCode", "Nincs");
     colorButtons->addButton(noneBtn, -1);
     layout->addWidget(noneBtn);
 
-    // Színek
+    // ⭐ Színek
     int id = 0;
-    for (const QString& c : colors) {
-        auto* btn = new QRadioButton(c);
+    for (const QString& code : colorCodes) {
+
+        QString display = QString("%1 – %2")
+                              .arg(code)
+                              .arg(codeToName.value(code));
+
+        auto* btn = new QRadioButton(display);
+        btn->setProperty("colorCode", code);   // ⭐ RAL/HEX kód property-ben
+
         colorButtons->addButton(btn, id++);
         layout->addWidget(btn);
     }
 
     layout->addStretch();
 }
+
 
 
 static int levenshtein(const QString& s1, const QString& s2)
@@ -231,7 +251,6 @@ void MaterialSearchDialog::applyFilter(const QString& text)
 {
     model->clear();
 
-    QString color = selectedColor();
     QString t = text.trimmed().toLower();
 
     QVector<MaterialMaster> exactMatches;
@@ -286,8 +305,10 @@ void MaterialSearchDialog::applyFilter(const QString& text)
         for (const auto& m : allMaterials) {
 
             // SZÍN SZŰRÉS
-            if (color != "Nincs" && m.color.name() != color)
+            QString selectedCode = selectedColorCode();  // új függvény
+            if (selectedCode != "Nincs" && m.color.code() != selectedCode)
                 continue;
+
 
             if (useRoleFilter) {
                 // Family szűrés
@@ -323,8 +344,10 @@ void MaterialSearchDialog::applyFilter(const QString& text)
     // 4-szintű keresés
     for (const auto& m : allMaterials) {
 
-        if (color != "Nincs" && m.color.name() != color)
+        QString selectedCode = selectedColorCode();
+        if (selectedCode != "Nincs" && m.color.code() != selectedCode)
             continue;
+
 
         QString name = m.name.toLower();
         QString bc   = m.barcode.toLower();
@@ -432,14 +455,14 @@ MaterialSelection MaterialSearchDialog::selection() const
 
 
 // ⭐ AKTUÁLIS SZÍN LEKÉRÉSE
-QString MaterialSearchDialog::selectedColor() const
-{
-    QAbstractButton* btn = colorButtons->checkedButton();
-    if (!btn)
-        return "Nincs";
+// QString MaterialSearchDialog::selectedColor() const
+// {
+//     QAbstractButton* btn = colorButtons->checkedButton();
+//     if (!btn)
+//         return "Nincs";
 
-    return btn->text();
-}
+//     return btn->text();
+// }
 
 void MaterialSearchDialog::addSeparator(const QString& title)
 {
@@ -593,5 +616,14 @@ QString MaterialSearchDialog::selectedType() const
     if (!btn)
         return "Mind";
     return btn->property("typeCode").toString();
+}
+
+QString MaterialSearchDialog::selectedColorCode() const
+{
+    QAbstractButton* btn = colorButtons->checkedButton();
+    if (!btn)
+        return "Nincs";
+
+    return btn->property("colorCode").toString();
 }
 

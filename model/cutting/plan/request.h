@@ -5,6 +5,7 @@
 #include <QDate>
 
 #include "../../../common/color/namedcolor.h"
+#include "common/surface/surfacetype.h"
 
 
 /**
@@ -195,6 +196,7 @@ struct Request {
     NamedColor requiredColor;
 
     QString color;
+    SurfaceType surface;
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 

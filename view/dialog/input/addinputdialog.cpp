@@ -85,6 +85,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     populateMaterialCombo();
 
+    populateSurfaceCombo();
+
     // ⭐ Tiszta tételszám ajánlás
     _nextSuggestedRef = computeNextReference();
 
@@ -105,7 +107,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(ui->editReference, &QLineEdit::editingFinished,
             this, [this]() {
-        // ⭐ UPDATE módban nincs context workflow
+                // ⭐ UPDATE módban nincs context workflow
                 if (_contextMode == ContextMode::Update)
                     return;
 
@@ -201,52 +203,114 @@ AddInputDialog::~AddInputDialog()
 //     applyInitialFocus();
 // }
 
+// void AddInputDialog::initializeDialog()
+// {
+//     //
+//     // 1) CREATE mód → teljesen üres indulás
+//     //
+//     if (_mode == DialogMode::Create) {
+//         ui->editReference->clear();
+//         _contextMode = ContextMode::NewOrder;
+
+//         // teljes reset
+//         applyNewOrderContext();
+//         updateContextModeLabel();
+//         applyInitialFocus();
+//         return;
+//     }
+
+
+//     //
+//     // 2) UPDATE mód → már korábban visszatöltöttük a mezőket
+//     //    initializeDialog() nem fut Update módban (lásd konstruktor)
+//     //
+//     //    → ide nem jutunk el Update módban
+//     //
+
+
+//     //
+//     // 3) NEM CREATE mód → sorozat vagy kézi tételszám workflow
+//     //
+//     if (!_nextSuggestedRef.isEmpty()) {
+//         // Sorozat mód
+//         ui->editReference->setText(_nextSuggestedRef);
+//         _contextMode = ContextMode::Sequential;
+
+//         applySequentialContext(_nextSuggestedRef);
+//     }
+//     else {
+//         // Új megrendelő workflow
+//         ui->editReference->clear();
+//         _contextMode = ContextMode::NewOrder;
+
+//         applyNewOrderContext();
+//     }
+
+//     //
+//     // 4) Kontextus workflow lefuttatása
+//     //
+//     QString ref = ui->editReference->text().trimmed();
+//     _contextMode = detectContextMode(ref);
+//     applyContextMode(_contextMode, ref);
+
+//     updateContextModeLabel();
+//     applyInitialFocus();
+// }
+
 void AddInputDialog::initializeDialog()
 {
     //
-    // 1) CREATE mód → teljesen üres indulás
+    // 1) CREATE mód
     //
     if (_mode == DialogMode::Create) {
+
+        // ⭐ Ha van előző tétel és repeat be volt kapcsolva,
+        //    és van érvényes nextRef → SOROZAT mód induljon
+        if (s_lastRepeat && !_nextSuggestedRef.isEmpty()) {
+
+            // következő tételszám beírása
+            ui->editReference->setText(_nextSuggestedRef);
+            _contextMode = ContextMode::Sequential;
+
+            // előző tétel kontextusának visszatöltése
+            applySequentialContext(_nextSuggestedRef);
+
+            // context workflow lefuttatása
+            QString ref = ui->editReference->text().trimmed();
+            _contextMode = detectContextMode(ref);
+            applyContextMode(_contextMode, ref);
+
+            updateContextModeLabel();
+            applyInitialFocus();
+            return;
+        }
+
+        // ⭐ Ha nincs repeat vagy nincs nextRef → ÚJ MEGRENDELŐ
         ui->editReference->clear();
         _contextMode = ContextMode::NewOrder;
 
-        // teljes reset
         applyNewOrderContext();
         updateContextModeLabel();
         applyInitialFocus();
         return;
     }
 
-
     //
-    // 2) UPDATE mód → már korábban visszatöltöttük a mezőket
-    //    initializeDialog() nem fut Update módban (lásd konstruktor)
-    //
-    //    → ide nem jutunk el Update módban
-    //
-
-
-    //
-    // 3) NEM CREATE mód → sorozat vagy kézi tételszám workflow
+    // 2) NEM CREATE mód → sorozat vagy kézi tételszám workflow
     //
     if (!_nextSuggestedRef.isEmpty()) {
-        // Sorozat mód
         ui->editReference->setText(_nextSuggestedRef);
         _contextMode = ContextMode::Sequential;
 
         applySequentialContext(_nextSuggestedRef);
     }
     else {
-        // Új megrendelő workflow
         ui->editReference->clear();
         _contextMode = ContextMode::NewOrder;
 
         applyNewOrderContext();
     }
 
-    //
-    // 4) Kontextus workflow lefuttatása
-    //
     QString ref = ui->editReference->text().trimmed();
     _contextMode = detectContextMode(ref);
     applyContextMode(_contextMode, ref);
@@ -343,6 +407,7 @@ void AddInputDialog::resetForNewOrder()
     ui->editDueDate->setDate(QDate::currentDate().addDays(1));
 
     ui->edit_Color->clear();
+    ui->comboBox_Surface->setCurrentIndex(-1);   // ⭐ surface törlése
 
     ui->editLength->clear();
     ui->spinQuantity->setValue(1);
@@ -376,6 +441,9 @@ void AddInputDialog::resetForSequential()
     ui->radioRight->setAutoExclusive(true);
     ui->sliderHandler->setValue(0);
 
+    // ⭐ NEM törlünk színt és surface-t
+    // ui->edit_Color->clear();        // ❌ TILOS
+    // ui->comboBox_Surface->setCurrentIndex(-1); // ❌ TILOS
 }
 
 void AddInputDialog::applyInitialFocus()
@@ -488,7 +556,10 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.dueDate = ui->editDueDate->date();
 
-        req.color = ui->edit_Color->text().trimmed();
+    req.color = ui->edit_Color->text().trimmed();
+
+    QString surfaceCode = ui->comboBox_Surface->currentData().toString();
+    req.surface = SurfaceTypeUtils::fromCode(surfaceCode);
 
     return req;
 }
@@ -564,6 +635,9 @@ void AddInputDialog::accept() {
 
     ctx.defaultMaterialId = req.materialId;
     ctx.color             = req.color;
+
+    auto surfaceCode= SurfaceTypeUtils::toCode(req.surface);
+    ctx.surfaceCode = surfaceCode;
 
     _contexts[ref] = ctx;
     s_ownerCache.insert(req.ownerName);
@@ -701,10 +775,17 @@ void AddInputDialog::on_btn_MaterialSearch_clicked()
         if (st) subtypeCode = st->code;
     }
 
+    QString currentColor = ui->edit_Color->text().trimmed();
+    if (currentColor.isEmpty()){
+        currentColor = "Nincs";
+    }else{
+        currentColor = NamedColor::normalizeRalExtended(currentColor);
+    }
+
     // 2) MaterialSearchDialog előre beállított szűrővel
     MaterialSearchDialog dlg(
         this,
-        "Nincs",        // initialColor
+        currentColor,   // ⭐ SZÍN ÁTADÁSA,        // initialColor
         typeCode,       // initialType
         subtypeCode,    // initialSubtype
         ""              // initialSearch
@@ -744,6 +825,8 @@ void AddInputDialog::applyContextToWidgets(const RequestContext& ctx)
     applySideFromContext(ctx);
     applyMaterialFromContext(ctx);
     applyColorFromContext(ctx);
+
+    applySurfaceFromContext(ctx);
 }
 
 
@@ -760,6 +843,8 @@ void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
     applySideFromRequest(req);
     applyMaterialFromRequest(req);
     applyLengthAndQuantityFromRequest(req);
+
+    applySurfaceFromRequest(req);   // ⭐ HIÁNYZÓ, MOST KELL
 }
 
 void AddInputDialog::applySide(HandlerSide side)
@@ -782,6 +867,7 @@ void AddInputDialog::setContextEditable(bool editable)
 
     setSideEditable(editable);
     setColorEditable(editable);
+    setSurfaceEditable(editable);
     setQuantityEditable(editable);
 }
 
@@ -828,6 +914,8 @@ void AddInputDialog::on_btn_Reset_clicked()
 
     // ⭐ Fókusz beállítása
     applyInitialFocus();
+
+    s_lastRepeat = false;
 }
 
 
@@ -843,7 +931,7 @@ void AddInputDialog::loadContextMap()
 
         //externalRef ; ownerName ; dueDate ; productTypeId ; productSubtypeId ; side ; materialBarcode ; color
         auto parts = line.split(';');
-        if (parts.size() < 8)
+        if (parts.size() < 9)
             continue;
 
         RequestContext ctx;
@@ -868,6 +956,7 @@ void AddInputDialog::loadContextMap()
         ctx.defaultMaterialId = mat?mat->id:QUuid();
 
         ctx.color = parts[7];
+        ctx.surfaceCode = parts[8].trimmed();
 
         _contexts[parts[0]] = ctx;
     }
@@ -895,7 +984,7 @@ void AddInputDialog::saveContextMap()
 
 
         //externalRef ; ownerName ; dueDate ; productTypeId ; productSubtypeId ; side ; materialBarcode ; color
-        QString line = QString("%1;%2;%3;%4;%5;%6;%7;%8\n")
+        QString line = QString("%1;%2;%3;%4;%5;%6;%7;%8;%9\n")
                            .arg(it.key())
                            .arg(ctx.ownerName)
                            .arg(ctx.dueDate.toString("yyyy-MM-dd"))
@@ -903,7 +992,7 @@ void AddInputDialog::saveContextMap()
                            .arg(subtypeCode)
                            .arg(HandlerSideUtils::toDisplayText(ctx.side))
                            .arg(matBarcode)
-                           .arg(ctx.color);
+                           .arg(ctx.color).arg(ctx.surfaceCode);
 
 
         f.write(line.toUtf8());
@@ -933,7 +1022,17 @@ void AddInputDialog::updateContextModeLabel()
         break;
     }
 
-    ui->label_ContextMode->setText(text);
+    QString a;
+    switch(_mode){
+    case DialogMode::Create:
+        a = "Create";
+        break;
+    case DialogMode::Update:
+        a = "Update";
+        break;
+    }
+
+    ui->label_ContextMode->setText(a+", "+text);
 }
 
 
@@ -991,6 +1090,11 @@ void AddInputDialog::setColorEditable(bool editable)
 {
     ui->edit_Color->setEnabled(editable);
 }
+void AddInputDialog::setSurfaceEditable(bool editable)
+{
+    ui->comboBox_Surface->setEnabled(editable);
+}
+
 void AddInputDialog::setQuantityEditable(bool editable)
 {
     ui->spinQuantity->setEnabled(editable);
@@ -1133,5 +1237,30 @@ void AddInputDialog::setProductSubtypeEditable(bool editable)
         for (auto* rb : page->findChildren<QRadioButton*>())
             rb->setEnabled(editable);
     }
+}
+
+void AddInputDialog::populateSurfaceCombo() {
+    ui->comboBox_Surface->clear();
+    ui->comboBox_Surface->addItem("Smooth", "SM");
+    ui->comboBox_Surface->addItem("Fine Structure", "FS");
+    ui->comboBox_Surface->addItem("Coarse Structure", "CS");
+    ui->comboBox_Surface->addItem("Matt", "MT");
+    ui->comboBox_Surface->addItem("Glossy", "GL");
+    ui->comboBox_Surface->addItem("Satin", "ST");
+}
+
+void AddInputDialog::applySurfaceFromContext(const RequestContext& ctx)
+{
+    int idx = ui->comboBox_Surface->findData(ctx.surfaceCode);
+    if (idx >= 0)
+        ui->comboBox_Surface->setCurrentIndex(idx);
+}
+
+void AddInputDialog::applySurfaceFromRequest(const Cutting::Plan::Request& req)
+{
+    QString code = SurfaceTypeUtils::toCode(req.surface);
+    int idx = ui->comboBox_Surface->findData(code);
+    if (idx >= 0)
+        ui->comboBox_Surface->setCurrentIndex(idx);
 }
 

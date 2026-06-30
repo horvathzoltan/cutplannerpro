@@ -62,7 +62,8 @@ void StockTableManager::addRow(const StockEntry& entry) {
 
     // 🏷️ Storage name
     const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-    QString storageName = storage ? storage->name : "—";   
+    //QString storageName = storage ? storage->name : "—";
+    QString storageName = StorageRegistry::instance().uniqueHumanName(entry.storageId);
 
     auto* storagePanel = TableUtils::createStorageCell(storageName, entry.entryId, this, [this, entry]() {
         emit editStorageRequested(entry.entryId);
@@ -165,8 +166,13 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             // 🏷️ Storage name        
             auto* storagePanel = _table->cellWidget(rowIx, ColStorageName);
             const auto* storage = StorageRegistry::instance().findById(entry.storageId);
-            QString storageName = storage ? storage->name : "—";
+            //QString storageName = storage ? storage->name : "—";
+            QString storageName = StorageRegistry::instance().uniqueHumanName(entry.storageId);
+
             TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
+
+
+
 
 
             auto* commentPanel = _table->cellWidget(rowIx, ColComment);

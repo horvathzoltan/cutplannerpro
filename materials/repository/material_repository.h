@@ -19,15 +19,19 @@ private:
     struct MaterialRow {
         QString name;
         QString barcode;
-        double stockLength;
+        QString stockLengthStr;
         QString dim1;
         QString dim2;
         QString shapeStr;
         QString machineId;
         QString typeStr;
+
         QString colorStr; // 🎨 Opcionális színmező (RAL, HEX vagy üres)
-        QString cuttingMode;
+        QString surfaceStr;
         QString paintingMode;
+
+        QString cuttingMode;
+
 
         // ÚJ MEZŐK
         QString trimStr;
@@ -38,9 +42,25 @@ private:
         QString externalCodeStr;
         QString description;
         QString familyStr;
+
+        struct ValidatorResponse_level1{
+            ValidatorResponse_level1(bool a){
+                ok = a;
+                //len=0.0;
+            }
+            bool ok = false;
+            double len = 0.0;
+        };
+
+        ValidatorResponse_level1 validate_level1(CsvReader::FileContext& ctx) const;
     };
 
     static std::optional<MaterialMaster> convertRowToMaterial(const QVector<QString>& parts, CsvReader::FileContext& ctx);
     static std::optional<MaterialRow>convertRowToMaterialRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
-    static std::optional<MaterialMaster> buildMaterialFromRow(const MaterialRow &row, CsvReader::FileContext& ctx);
+    static std::optional<MaterialMaster> buildMaterialFromRow(const MaterialRow &row,
+                                                              const MaterialRepository::MaterialRow::ValidatorResponse_level1& v1,
+                                                              CsvReader::FileContext& ctx);
+
+    static const int FIELD_COUNT = 20;
+    //static bool validate_level1(const MaterialRow& row, CsvReader::FileContext& ctx);
 };

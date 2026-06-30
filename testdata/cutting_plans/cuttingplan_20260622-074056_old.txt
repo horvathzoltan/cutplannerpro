@@ -46,3 +46,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1832";"Napex Pécs";0;0;1251;;1;1;0;"";NP-CLT;Width;false;2026-06-26;NP;CIP
 "1833";"Napex Pécs";0;0;1252;;1;0;1;"";NP-CLT;Width;false;2026-06-26;NP;CIP
 "1834";"Napex Pécs";0;0;1256;;1;1;0;"";NP-CLT;Width;false;2026-06-26;NP;CIP
+"1804";"maki";0;0;1123;;1;0;1;"";NP-SZ;Width;false;2026-07-01;NP;CIP

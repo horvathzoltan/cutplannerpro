@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
     // --test maki
     if (SettingsManager::instance().isTestMode()) {
         auto testProfile = SettingsManager::instance().testProfile();
-        // --test detect-family
-        // if(testProfile == "detect-family"){
+        //--test materialexport
+        // if(testProfile == "materialexport"){
         //     MaterialRepository repo;
         //     repo.exportCsv("materials_out.csv");
         //     return 0;

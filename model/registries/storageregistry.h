@@ -2,6 +2,7 @@
 
 #include <QVector>
 #include <QUuid>
+#include <QMap>
 //#include <optional>
 #include "../storageentry.h"
 
@@ -9,8 +10,12 @@ class StorageRegistry {
 private:
     StorageRegistry() = default;
     QVector<StorageEntry> _data;
+    QMap<QUuid, QString> _uniqueNameCache;
 
-        void collectChildrenRecursive(const QUuid& parentId, QStringList& out) const;
+    void collectChildrenRecursive(const QUuid& parentId, QStringList& out) const;
+    bool isUniqueCandidate(const QString& candidate, const QUuid& selfId, int depth) const;
+    QString buildCandidate(const StorageEntry *s, int depth) const;
+
 public:
     static StorageRegistry& instance();
 
@@ -35,4 +40,6 @@ public:
     QVector<StorageEntry> getRecursive(const QUuid &rootId) const;
     void collectChildrenRecursive(const QUuid &parentId, QVector<StorageEntry> &out) const;
     bool isDescendantOf(const QUuid &childId, const QUuid &ancestorId) const;
+    QString uniqueHumanName(const QUuid &id);
+    //bool isUnique(const QString &name);
 };
