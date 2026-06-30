@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1883";"Főnök";0;0;3909;;1;0;1;"ST9007";NP-ROLL60-6000;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;3799;;1;0;1;"ST9007";NP-ROLL60-6000;Width;false;2026-06-30;NP;CIP
+"1883";"Főnök";0;0;3845;;1;0;1;"ST9007";NP-BAR12-4000;Width;false;2026-06-30;NP;CIP
+"1884";"Főnök";0;0;3735;;1;0;1;"ST9007";NP-BAR12-4000;Width;false;2026-06-30;NP;CIP

@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1820";"Árnyék és Rovar, Bcs.";0;0;3589;;1;0;1;"7016";NP-ROLL78-7000;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;3769;;1;1;0;"7016";NP-ROLL78-7000;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;3769;;1;0;1;"7016";NP-ROLL78-7000;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;3609;;1;1;0;"7016";NP-ROLL78-7000;Width;false;2026-06-30;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;3525;;1;0;1;"7016";NP-BAR22-4000;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;3705;;1;1;0;"7016";NP-BAR22-4000;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;3705;;1;0;1;"7016";NP-BAR22-4000;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;3545;;1;1;0;"7016";NP-BAR22-4000;Width;false;2026-06-30;NP;CIP

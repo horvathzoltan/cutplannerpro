@@ -1,3 +1,12 @@
+stock: kell az utolsó módosítás dátum a táblázatba, sőt!
+ - ha túl régi, legyen piros a háttér!
+ - ha nagyon fiatal, legyen zöld a háttér.
+ - a storage path is kellene
+
+leftover stock: szintúgy - de ott majdnem kész van
+ - a dátum színezés kell
+
+
 RAL color ST9007 ami 9007 szín de strukturált felületminőségben
 
 enum class SurfaceType {
