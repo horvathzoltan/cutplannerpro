@@ -19,8 +19,9 @@
  */
 namespace InputTableColumns {
 enum Column {
-    Owner = 0,       ///< Megrendelő neve
-    ExternalRef,     ///< Külső hivatkozás / tételszám
+    ExternalRef = 0,
+    Owner,       ///< Megrendelő neve
+    DueDate,     ///< Külső hivatkozás / tételszám
     Material,
     Length,          ///< Nominális vágási hossz (mm)
     Tolerance,       ///< Tűrés szöveges formátumban

@@ -92,13 +92,19 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
 // }
 
-inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor)
+inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor, SurfaceType surface)
 {
     QString text = requiredColor.isValid() ? requiredColor.name() : "Nincs szín";
     QString tooltip = QString("Igényelt szín: %1").arg(text);
 
+    if(requiredColor.isValid()){
+        QString surfaceTxt = SurfaceTypeUtils::toCode(surface);
+        text += " (" + surfaceTxt+")";
+        tooltip += QString("\nFelület: %1").arg(SurfaceTypeUtils::toString(surface));
+    }
+
     // Festés jelzés, ha eltér az anyag színétől - illetve ha az anyag natúr, akkor is festeni kell
-    bool isPaintingNeeded = requiredColor.isValid() && requiredColor.name() != matColor.name();
+    bool isPaintingNeeded = requiredColor.isValid() && requiredColor.code() != matColor.code();
     if (isPaintingNeeded) {
         text += " 🎨";
         tooltip += "\n🎨 Festés szükséges";

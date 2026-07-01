@@ -1,5 +1,6 @@
 // inputtablerowgenerator.h
 #include "../../../model/cutting/plan/request.h"
+#include "common/emojihelper.h"
 #include "materials/model/material_master.h"
 #include "materials/view/material_cell_generator.h"
 #include "../../columnindexes/inputtable_columns.h"
@@ -40,10 +41,17 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     //                                  Qt::black);
 
     // Owner + ExternalRef
-    vm.cells[InputTableColumns::Owner] =
-        TableCellViewModel::fromText(request.ownerName,"",baseColor, fgColor, true);
     vm.cells[InputTableColumns::ExternalRef] =
         TableCellViewModel::fromText(request.externalReference, "",baseColor, fgColor, true);
+    vm.cells[InputTableColumns::Owner] =
+        TableCellViewModel::fromText(request.ownerName,"",baseColor, fgColor, true);
+
+    QString dueDateStr = request.dueDate.isValid() ? request.dueDate.toString("yyyy-MM-dd") : "";
+    int daysLeft = QDate::currentDate().daysTo(request.dueDate);
+    QString iconKey = EmojiHelper::priorityIconFor_emoji(daysLeft);
+
+    vm.cells[InputTableColumns::DueDate] =
+        TableCellViewModel::fromText(iconKey+" " + dueDateStr, "",baseColor, fgColor, true);
 
     // Length + Tolerance
     vm.cells[InputTableColumns::Length] =
@@ -80,7 +88,7 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
         TableCellViewModel::fromText(subtypeTxt, "",baseColor, fgColor, true);
 
     // Color
-    auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color);
+    auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color, request.surface);
     colorCell.background = baseColor;
     colorCell.foreground = fgColor;
     vm.cells[InputTableColumns::Color] = colorCell;

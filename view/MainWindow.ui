@@ -244,12 +244,17 @@
             </attribute>
             <column>
              <property name="text">
+              <string>externalReference</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
               <string>Owner</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>externalReference</string>
+              <string>DueDate</string>
              </property>
             </column>
             <column>
@@ -711,6 +716,16 @@
             <column>
              <property name="text">
               <string>Comment</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>CreatedAt</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>LastSeenAt</string>
              </property>
             </column>
             <column>

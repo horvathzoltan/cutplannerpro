@@ -11,10 +11,10 @@
 namespace EmojiHelper
 {
 
-inline QString priorityIconFor_old(int daysLeft)
+inline QString priorityIconFor_emoji(int daysLeft)
 {
     if (daysLeft<0)
-        return "🌞";
+        return "✔";
     if (daysLeft <= 1)
         return "🔥";   // Tűz – SOS
     if (daysLeft <= 3)

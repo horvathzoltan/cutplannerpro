@@ -69,7 +69,7 @@ StockRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
 
 std::optional<StockRepository::StockEntryRow>
 StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 6) {
+    if (parts.size() < 4) {
         QString msg = L("⚠️ Kevés oszlop");
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
