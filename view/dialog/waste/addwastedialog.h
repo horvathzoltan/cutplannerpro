@@ -48,4 +48,5 @@ private:
 
     int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
     bool validateBarcodeFormat(const QString &bc) const;
+    void applyInitialFocus();
 };

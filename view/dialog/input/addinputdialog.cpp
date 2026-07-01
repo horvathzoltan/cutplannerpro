@@ -426,10 +426,10 @@ void AddInputDialog::resetForNewOrder()
 void AddInputDialog::resetForSequential()
 {
     // ⭐ Dátum → holnap
-    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    //ui->editDueDate->setDate(QDate::currentDate().addDays(1));
 
     ui->editLength->clear();
-    ui->spinQuantity->setValue(1);
+    //ui->spinQuantity->setValue(1);
 
     ui->radioLeft->setAutoExclusive(false);
     ui->radioRight->setAutoExclusive(false);

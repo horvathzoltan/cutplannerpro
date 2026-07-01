@@ -1,0 +1,48 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1897";"Kezs Ablak, Bcs.";0;0;2965;;1;0;1;"8003";NP-T;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;3180;;1;0;1;"8003";NP-T;Width;false;2026-07-07;NP;CIP
+"1894";"An-Ger";0;0;1925;;1;0;1;"9010";NP-T-9010;Width;false;2026-07-07;NP;BOW
+"1897";"Kezs Ablak, Bcs.";0;0;2990;;1;0;1;"8003";NP-TF;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;3205;;1;0;1;"8003";NP-TF;Width;false;2026-07-07;NP;CIP
+"1894";"An-Ger";0;0;1925;;1;0;1;"9010";NP-TF-9010;Width;false;2026-07-07;NP;BOW
+"1897";"Kezs Ablak, Bcs.";0;0;2967;;1;0;1;"8003";NP-CL;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;2967;;1;0;1;"8003";NP-CL;Width;false;2026-07-07;NP;CIP
+"1894";"An-Ger";0;0;1890;;1;0;1;"9010";NP-SZ-9010;Width;false;2026-07-07;NP;BOW
+"1894";"An-Ger";0;0;1884;;1;0;1;"9010";NP-ROLL60-6000;Width;false;2026-07-07;NP;BOW
+"1894";"An-Ger";0;0;1845;;1;0;1;"9010";NP-BAR12-4000;Width;false;2026-07-07;NP;BOW
+"1897";"Kezs Ablak, Bcs.";0;0;2872;;1;0;1;"8003";NP-CZ;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;3087;;1;0;1;"8003";NP-CZ;Width;false;2026-07-07;NP;CIP
+"1897";"Kezs Ablak, Bcs.";0;0;2884;;1;0;1;"8003";NP-ROLL60-6000;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;3099;;1;0;1;"8003";NP-ROLL60-6000;Width;false;2026-07-07;NP;CIP
+"1897";"Kezs Ablak, Bcs.";0;0;2820;;1;0;1;"8003";NP-BAR22-4000;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;3035;;1;0;1;"8003";NP-BAR22-4000;Width;false;2026-07-07;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2310;;1;0;1;"8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2320;;1;0;1;"8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2290;;1;0;1;"8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2330;;1;0;1;"8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2335;;1;0;1;"8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2345;;1;0;1;"8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2315;;1;0;1;"8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2355;;1;0;1;"8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2217;;1;0;1;"8014";NP-CZ;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2227;;1;0;1;"8014";NP-CZ;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2197;;1;0;1;"8014";NP-CZ;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2237;;1;0;1;"8014";NP-CZ;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2229;;1;0;1;"8014";NP-ROLL60-6000;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2239;;1;0;1;"8014";NP-ROLL60-6000;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2209;;1;0;1;"8014";NP-ROLL60-6000;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2249;;1;0;1;"8014";NP-ROLL60-6000;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2165;;1;0;1;"8014";NP-BAR22-4000;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2175;;1;0;1;"8014";NP-BAR22-4000;Width;false;2026-07-08;NP;CIP
+"1889";"Szoat Bt., Nyh.";0;0;2245;;1;0;1;"8014";NP-BAR22-4000;Width;false;2026-07-08;NP;CIP
+"1890";"Szoat Bt., Nyh.";0;0;2185;;1;0;1;"8014";NP-BAR22-4000;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2340;;1;0;1;"8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2365;;1;0;1;"8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2247;;1;0;1;"8014";NP-CZ;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2259;;1;0;1;"8014";NP-ROLL60-6000;Width;false;2026-07-08;NP;CIP
+"1891";"Szoat Bt., Nyh.";0;0;2195;;1;0;1;"8014";NP-BAR22-4000;Width;false;2026-07-08;NP;CIP

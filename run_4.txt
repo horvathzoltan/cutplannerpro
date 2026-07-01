@@ -1,3 +1,10 @@
+request: ha létező tételszám,
+ - az anyagra lehetne emlékezni, de csak ha azonos típus, altípus és azonos szín!
+cuttingplan fül:
+    - táblában nincs kint a határidő
+    - color nem jól van kitöltve
+    - lehetne akár színes bogyó is benne!
+
 stock: kell az utolsó módosítás dátum a táblázatba, sőt!
  - ha túl régi, legyen piros a háttér!
  - ha nagyon fiatal, legyen zöld a háttér.

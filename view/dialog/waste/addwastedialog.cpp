@@ -76,9 +76,18 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
     }
     ui->editBarcode->setText(bc);
 
+
     ui->chk_Repeat->setChecked(s_lastRepeat);
+
+    QTimer::singleShot(0, this, [this]() {
+        applyInitialFocus();
+    });
+
 }
 
+void AddWasteDialog::applyInitialFocus(){
+    ui->editLength->setFocus();
+}
 
 AddWasteDialog::~AddWasteDialog()
 {
@@ -178,7 +187,11 @@ void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
 
     ui->editBarcode->setText(bc);
 
-    ui->editLength->setText(QString::number(entry.availableLength_mm));
+    QString makmak = (entry.availableLength_mm>0)
+            ?QString::number(entry.availableLength_mm)
+            :QString();
+
+    ui->editLength->setText(makmak);
 
     auto leftoverTxt = LeftoverSourceUtils::toString(entry.source);
     ui->editSourceValue->setText(leftoverTxt);
