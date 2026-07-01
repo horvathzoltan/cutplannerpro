@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QColor>
+#include <QDateTime>
 #include <QString>
 #include <QUuid>
 #include "materials/model/material_master.h"
@@ -14,6 +15,10 @@ struct StockEntry {
     QUuid storageId;                // 📦 Tárolási hely azonosítója
 
     QString comment; // 💬 Felhasználói megjegyzés
+
+    // ⭐ ÚJ MEZŐK
+    QDateTime createdAt = QDateTime::currentDateTime();
+    QDateTime lastSeenAt = QDateTime::currentDateTime();
 
     QString materialName() const;  // 📛 Anyag neve
     QString materialBarcode() const; // 🧾 Vonalkód

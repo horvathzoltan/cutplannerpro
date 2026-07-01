@@ -8,7 +8,7 @@
 namespace StockTable{
 namespace RowStyler{
 
-inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity, const MaterialMaster* mat)
+inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity, const MaterialMaster* mat, const QDateTime& lastSeenAt)
 {
     if (!table) return;
 
@@ -37,6 +37,20 @@ inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity
 
     MaterialRowStyler::applyMaterialStyle(table, row, mat,{ColLength, ColQuantity});
 
+    //QColor createdColor = ColorLogicUtils::colorForAge(entry.createdAt);
+    //TableStyleUtils::setCellStyle(table, row, StockTableManager::ColCreatedAt, createdColor, Qt::black);
+
+    {
+        QColor ageColor = ColorLogicUtils::colorForAge(lastSeenAt);
+
+        if (auto* item = table->item(row, StockTableManager::ColLastSeenAt)) {
+            item->setBackground(ageColor);
+            item->setForeground(Qt::black);
+        }
+    }
+
 }
+
+
 } // endof namespace RowStyler
 } // endof namespace StockTable

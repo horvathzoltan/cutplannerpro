@@ -43,6 +43,12 @@ inline static void Connect(
                    if (dialog.exec() != QDialog::Accepted) return;
 
                    StockEntry updated = dialog.getModel();
+
+                   // csak akkor audit, ha a mennyiség változott
+                   if (updated.quantity != original.quantity) {
+                       updated.lastSeenAt = QDateTime::currentDateTime();
+                   }
+
                    presenter->update_StockEntry(updated);
                });
 
@@ -62,6 +68,7 @@ inline static void Connect(
                    if (newQty < 0) return; // opcionális validáció
 
                    original.quantity = newQty;
+                   original.lastSeenAt = QDateTime::currentDateTime();
                    presenter->update_StockEntry(original);
                });
 

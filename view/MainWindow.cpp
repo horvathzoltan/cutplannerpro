@@ -476,6 +476,9 @@ void MainWindow::handle_btn_AddStockEntry_clicked()
         return;
 
     StockEntry entry = dlg.getModel();
+    entry.createdAt = QDateTime::currentDateTime();
+    entry.lastSeenAt = entry.createdAt;
+
     presenter->add_StockEntry(entry);
 }
 

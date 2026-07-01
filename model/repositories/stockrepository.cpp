@@ -4,10 +4,10 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include "../../common/filehelper.h"
+//#include "../../common/filehelper.h"
 #include "../../common/filenamehelper.h"
 #include "../../common/csvimporter.h"
-#include "settings/settingsmanager.h"
+//#include "settings/settingsmanager.h"
 #include "../registries/storageregistry.h"
 #include "../../common/logger.h"
 
@@ -69,8 +69,14 @@ StockRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
 
 std::optional<StockRepository::StockEntryRow>
 StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 3) {
+    if (parts.size() < 6) {
         QString msg = L("⚠️ Kevés oszlop");
+        ctx.addError(ctx.currentLineNumber(), msg);
+        return std::nullopt;
+    }
+
+    if (parts.size() > 6) {
+        QString msg = L("⚠️ Tűl sok oszlop");
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
@@ -89,6 +95,24 @@ StockRepository::convertRowToStockEntryRow(const QVector<QString>& parts, CsvRea
         QString msg = L("⚠️ Sor %1: hibás barcode vagy mennyiség");
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
+    }
+
+    // ⭐ ÚJ: createdAt
+    if (parts.size() >= 5) {
+        row.createdAt = QDateTime::fromString(parts[4].trimmed(), "yyyy-MM-dd HH:mm:ss");
+        if (!row.createdAt.isValid())
+            row.createdAt = QDateTime::currentDateTime();
+    } else {
+        row.createdAt = QDateTime::currentDateTime();
+    }
+
+    // ⭐ ÚJ: lastSeenAt
+    if (parts.size() >= 6) {
+        row.lastSeenAt = QDateTime::fromString(parts[5].trimmed(), "yyyy-MM-dd HH:mm:ss");
+        if (!row.lastSeenAt.isValid())
+            row.lastSeenAt = row.createdAt;
+    } else {
+        row.lastSeenAt = row.createdAt;
     }
     return row;
 }
@@ -116,6 +140,10 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::Fil
     entry.quantity   = row.quantity;
     entry.storageId  = storage->id; // 🔗 Tároló UUID beállítása
     entry.comment = row.comment; // 🆕 új mező
+
+    // ⭐ ÚJ: dátumok átadása
+    entry.createdAt  = row.createdAt;
+    entry.lastSeenAt = row.lastSeenAt;
 
     return entry;
 }
@@ -170,7 +198,9 @@ bool StockRepository::saveToCSV(const QVector<StockEntry>& snapshot, const QStri
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
 
-    out << "materialBarcode;quantity;storageBarcode;comment\n";
+    //out << "materialBarcode;quantity;storageBarcode;comment\n";
+    out << "materialBarcode;quantity;storageBarcode;comment;createdAt;lastSeenAt\n";
+
 
     for (const StockEntry& entry : snapshot) {
         const auto* mat = MaterialRegistry::instance().findById(entry.materialId);
@@ -185,7 +215,11 @@ bool StockRepository::saveToCSV(const QVector<StockEntry>& snapshot, const QStri
         out << mat->barcode << ';'
             << entry.quantity << ';'
             << storageBarcode << ';'
-            << CsvHelper::escape(entry.comment) << '\n';
+            << CsvHelper::escape(entry.comment) << ';'
+            << entry.createdAt.toString("yyyy-MM-dd HH:mm:ss") << ';'
+            << entry.lastSeenAt.toString("yyyy-MM-dd HH:mm:ss")
+            << '\n';
+
     }
 
     return true;

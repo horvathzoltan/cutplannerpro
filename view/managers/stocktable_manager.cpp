@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include "../../model/registries/stockregistry.h"
 #include "../../model/registries/storageregistry.h"
+#include "model/storage/storageutils.h"
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), _table(table), _parent(parent)
@@ -61,7 +62,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
 
 
     // 🏷️ Storage name
-    const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+    //const auto* storage = StorageRegistry::instance().findById(entry.storageId);
     //QString storageName = storage ? storage->name : "—";
     QString storageName = StorageRegistry::instance().uniqueHumanName(entry.storageId);
 
@@ -70,6 +71,20 @@ void StockTableManager::addRow(const StockEntry& entry) {
     });
     _table->setCellWidget(rowIx, ColStorageName, storagePanel);
     //storagePanel->setToolTip(QString("Tároló: %1").arg(storageName));
+
+    QString storagePathTree = StorageUtils::buildPathTree(entry.storageId);
+    storagePanel->setToolTip(storagePathTree);
+
+
+    auto* itemCreated = new QTableWidgetItem(entry.createdAt.toString("yyyy-MM-dd HH:mm"));
+    itemCreated->setTextAlignment(Qt::AlignCenter);
+    _table->setItem(rowIx, ColCreatedAt, itemCreated);
+
+    auto* itemSeen = new QTableWidgetItem(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
+    itemSeen->setTextAlignment(Qt::AlignCenter);
+    _table->setItem(rowIx, ColLastSeenAt, itemSeen);
+
+
 
     // 🏷️ Komment panel
     auto* commentPanel = TableUtils::createCommentCell(entry.comment, entry.entryId, this, [this, entry]() {
@@ -114,7 +129,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
         emit moveRequested(entryId);  // vagy akár külön signal: moveRequested(entryId);
     });
 
-    StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat);
+    StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat, entry.lastSeenAt);
 }
 
 void StockTableManager::updateRow(const StockEntry& entry) {
@@ -165,13 +180,22 @@ void StockTableManager::updateRow(const StockEntry& entry) {
 
             // 🏷️ Storage name        
             auto* storagePanel = _table->cellWidget(rowIx, ColStorageName);
-            const auto* storage = StorageRegistry::instance().findById(entry.storageId);
+            //const auto* storage = StorageRegistry::instance().findById(entry.storageId);
             //QString storageName = storage ? storage->name : "—";
             QString storageName = StorageRegistry::instance().uniqueHumanName(entry.storageId);
 
             TableUtils::updateStorageCell(storagePanel, storageName, entry.entryId);
+            QString storagePathTree = StorageUtils::buildPathTree(entry.storageId);
+            storagePanel->setToolTip(storagePathTree);
 
 
+            auto* itemCreated = _table->item(rowIx, ColCreatedAt);
+            if (itemCreated)
+                itemCreated->setText(entry.createdAt.toString("yyyy-MM-dd HH:mm"));
+
+            auto* itemSeen = _table->item(rowIx, ColLastSeenAt);
+            if (itemSeen)
+                itemSeen->setText(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
 
 
 
@@ -179,7 +203,7 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             TableUtils::updateCommentCell(commentPanel, entry.comment, entry.entryId);
 
             // 🎨 Stílus újraalkalmazás
-            StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat);
+            StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat, entry.lastSeenAt);
           //  return;
         //}
   //  }

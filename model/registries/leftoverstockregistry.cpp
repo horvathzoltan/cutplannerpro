@@ -98,6 +98,7 @@ bool LeftoverStockRegistry::removeEntry(const QUuid& entryId) {
     }
     return false;
 }
+
 bool LeftoverStockRegistry::updateEntry(const LeftoverStockEntry& updatedEntry) {
     for (auto& entry : _data) {
         if (entry.entryId == updatedEntry.entryId) {

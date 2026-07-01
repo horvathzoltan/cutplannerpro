@@ -3,6 +3,7 @@
 #include "../../common/color/colorconstants.h"
 #include "materials/model/material_master.h"
 #include <QColor>
+#include <QDateTime>
 #include <QWidget>
 
 namespace ColorLogicUtils {
@@ -34,6 +35,20 @@ inline void applyBadgeBackground(QWidget* widget, const QColor& base) {
                               "padding-top: 6px; padding-bottom: 6px;"
                               ).arg(base.name()));
 }
+
+inline QColor colorForAge(const QDateTime& lastSeen)
+{
+    QDateTime now = QDateTime::currentDateTime();
+    qint64 days = lastSeen.daysTo(now);
+
+    if (days > 7)
+        return QColor(255, 160, 160);   // piros
+    if (days > 3)
+        return QColor(255, 220, 170);   // narancs
+
+    return QColor(200, 255, 200);   // halványzöld – friss
+}
+
 
 // inline QColor resolveBaseColor(const MaterialMaster& mat) {
 //     //if (!mat) return QColor(Qt::lightGray);

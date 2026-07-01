@@ -23,6 +23,10 @@ private:
         int quantity;
         QString storageBarcode;
         QString comment;
+
+        // ⭐ ÚJ MEZŐK
+        QDateTime createdAt;
+        QDateTime lastSeenAt;
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

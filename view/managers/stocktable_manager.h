@@ -45,9 +45,12 @@ public:
     static constexpr int ColQuantity = 4;
     static constexpr int ColStorageName = 5;
     static constexpr int ColComment  = 6;
+    static constexpr int ColCreatedAt = 7;
+    static constexpr int ColLastSeenAt  = 8;
+
     // static constexpr int ColCuttingMode  = 7;
     // static constexpr int ColPaintingMode  = 8;
-    static constexpr int ColAction = 7;  // oszlop a gomboknak - legutolsó
+    static constexpr int ColAction = 9;  // oszlop a gomboknak - legutolsó
 
 
     void highlight(const QUuid &id);

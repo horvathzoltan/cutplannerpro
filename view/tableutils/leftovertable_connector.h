@@ -43,6 +43,7 @@ inline static void Connect(
                        return;
 
                    LeftoverStockEntry updated = dialog.getModel();
+
                    presenter->update_LeftoverStockEntry(updated);
                });
 

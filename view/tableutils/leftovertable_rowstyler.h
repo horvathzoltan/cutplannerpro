@@ -3,6 +3,7 @@
 #include "materials/view/material_row_styler.h"
 #include "../../model/leftoverstockentry.h"
 #include "../managers/leftovertable_manager.h"
+#include "view/tableutils/colorlogicutils.h"
 #include <model/registries/cuttingmachineregistry.h>
 #include <model/machine/machineutils.h>
 
@@ -143,41 +144,14 @@ inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* mat, 
     // 5) Audit aging – túl régen volt ellenőrizve
     // -----------------------------
     {
-        QDateTime now = QDateTime::currentDateTime();
-        qint64 days = entry.lastSeenAt.daysTo(now);
+        QColor ageColor = ColorLogicUtils::colorForAge(entry.lastSeenAt);
 
         if (auto* item = table->item(row, LeftoverTableManager::ColLastSeenAt)) {
-
-            if (days > 90) {
-                // 🔥 Kritikus: 90+ napja nem auditálták
-                item->setBackground(QColor(255, 160, 160));   // erős, de nem rikító piros
-                item->setToolTip(
-                    QString("⚠️ Kritikus: %1 napja nem auditált leftover!\n"
-                            "Utolsó audit: %2")
-                        .arg(days)
-                        .arg(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"))
-                    );
-            }
-            else if (days > 30) {
-                // ⚠️ Figyelmeztetés: 30–90 nap
-                item->setBackground(QColor(255, 220, 170));   // narancs
-                item->setToolTip(
-                    QString("⚠️ Figyelmeztetés: %1 napja nem auditált leftover.\n"
-                            "Utolsó audit: %2")
-                        .arg(days)
-                        .arg(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"))
-                    );
-            }
-            else {
-                // Friss audit → opcionálisan tooltip
-                item->setToolTip(
-                    QString("Utolsó audit: %1 (%2 napja)")
-                        .arg(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"))
-                        .arg(days)
-                    );
-            }
+            item->setBackground(ageColor);
+            item->setForeground(Qt::black);
         }
     }
+
 
 
 }
