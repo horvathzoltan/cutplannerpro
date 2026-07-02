@@ -26,16 +26,18 @@ struct PaintMaterialSummary {
 };
 
 struct PaintColorGroup {
-    QString color;
+    NamedColor color;
     QHash<QUuid, PaintMaterialSummary> materials; // key: materialId
 
     // --- TÍPUSONKÉNTI POFA ---
     int cipzarosPofa = 0;
     int sinesPofa = 0;
     int bowdenesPofa = 0;
+    bool pofaFestheto = false;
 
     int sumPofa() const {return  cipzarosPofa + sinesPofa + bowdenesPofa;}
     int csavar = 0;
+    bool csavarFestheto = false;
 };
 
 struct PaintPlan {

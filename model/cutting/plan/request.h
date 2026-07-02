@@ -194,9 +194,8 @@ struct Request {
 
     // 🎨 Anyag színe - ebben a színben kéri a megrendelő a terméket (RAL vagy HEX kód)
     NamedColor requiredColor;
-
-    QString color;
     SurfaceType surface;
+    //QString color;
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 

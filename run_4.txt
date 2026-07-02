@@ -3,13 +3,6 @@ request: ha létező tételszám,
  - az anyagra lehetne emlékezni, de csak ha azonos típus,
  altípus és azonos szín!
 
-cutrequest fül:
-    - táblában nincs kint a határidő
-    - color nem jól van kitöltve
-    - lehetne akár színes bogyó is benne!
-
-a color dolgot a requestben rendbe kell tenni
-
  - kell egy lista az auditálandó tételekről
  - kell egy tárhelycímke-lista
 tárhely neveknben:  

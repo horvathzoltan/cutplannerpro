@@ -106,8 +106,8 @@ inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, cons
     // Festés jelzés, ha eltér az anyag színétől - illetve ha az anyag natúr, akkor is festeni kell
     bool isPaintingNeeded = requiredColor.isValid() && requiredColor.code() != matColor.code();
     if (isPaintingNeeded) {
-        text += " 🎨";
-        tooltip += "\n🎨 Festés szükséges";
+        text = "🖌️ " + text;
+        tooltip += "\n🖌️ Festés szükséges";
     }
 
     QWidget* panel = new QWidget();

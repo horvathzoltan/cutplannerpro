@@ -58,6 +58,39 @@ NamedColor::NamedColor(const QString& code)
 
 }
 
+NamedColor NamedColor::fromUserInput(const QString& raw)
+{
+    QString s = raw.trimmed();
+
+    if (s.isEmpty())
+        return NamedColor(); // invalid
+
+    // 1) HEX
+    if (s.startsWith("#"))
+        return NamedColor::fromHex(s);
+
+    // 2) RAL normalizálás
+    QString normalized = NamedColor::normalizeRalExtended(s);
+    if (normalized.startsWith("RAL"))
+        return NamedColor::fromRal(normalized);
+
+    // 3) Ha csak szám → RAL Classic
+    QRegularExpression re("^\\d{4}$");
+    if (re.match(s).hasMatch()) {
+        QString ral = "RAL " + s;
+        return NamedColor::fromRal(ral);
+    }
+
+    // 4) Qt színnevek
+    if (QColor::colorNames().contains(s.toLower())) {
+        QColor c(s.toLower());
+        return NamedColor(c, s.toLower(), c.name().toUpper(), RalSystem::Unknown);
+    }
+
+    // 5) Egyéb → invalid
+    return NamedColor();
+}
+
 QString NamedColor::normalizeRalExtended(const QString& raw) {
     QString code = raw.trimmed().toUpper();
 

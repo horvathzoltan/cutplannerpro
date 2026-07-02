@@ -343,7 +343,19 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     //     req.requiredColor = NamedColor(); // nincs festve
     // }
 
-    req.color = row.requiredColorName;
+    //req.color = row.requiredColorName;
+
+    // 🎨 Szín hozzárendelés – RAL, HEX vagy üres
+    if (!row.requiredColorName.isEmpty()) {
+        req.requiredColor = NamedColor(row.requiredColorName);
+        if (!req.requiredColor.isValid()) {
+            QString msg = L("⚠️ Ismeretlen színformátum: %1").arg( row.requiredColorName);
+            ctx.addError(ctx.currentLineNumber(), msg);
+        }
+    } else {
+        req.requiredColor = NamedColor(); // nincs festve
+    }
+
     req.dueDate = row.dueDate.isValid()
                       ? row.dueDate
                       : QDate::currentDate();
@@ -463,7 +475,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << req.quantity << ";"
             << req.leftCount << ";"
             << req.rightCount << ";"
-            << "\"" << req.color << "\";"
+            << "\"" << req.requiredColor.code() << "\";"
             << material->barcode << ";"
             << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
             << (req.isMeasurementNeeded ? "true" : "false") << ";"

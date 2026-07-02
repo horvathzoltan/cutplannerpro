@@ -1,7 +1,7 @@
 name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;goodLeftOverMax;externalCode;description;family
-Csőtengely Ø70x5000mm;NP-ROLL60-5000;5000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
-Csőtengely Ø70x6000mm;NP-ROLL60-6000;6000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
-Csőtengely Ø70x7000mm;NP-ROLL60-7000;7000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø70x5000mm;NP-ROLL70-5000;5000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø70x6000mm;NP-ROLL70-6000;6000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
+Csőtengely Ø70x7000mm;NP-ROLL70-7000;7000;70;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
 Csőtengely Ø78x6000mm;NP-ROLL78-6000;6000;78;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
 Csőtengely Ø78x7000mm;NP-ROLL78-7000;7000;78;;Round;CM1;Steel;;SM;Length;None;0;50;600;1000;1800;;;Tengely
 Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;SM;Length;None;0;10;300;1000;1800;;;Suly
@@ -31,8 +31,8 @@ SinesZáró;NP-SZ;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;100
 CipzárosLáb;NP-CL;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab
 Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Unknown
 SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab
-CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;Paintable;0;0;500;1000;1500;80170020;;Kiegeszito
-CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;Paintable;0;0;500;1000;1500;;;Kiegeszito
+CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170020;;Kiegeszito
+CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Kiegeszito
 Bowden;NP-B-50m;50000;;;Custom;CM2;Steel;;SM;Length;None;0;0;0;0;0;;;Bowden
 NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
 NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
