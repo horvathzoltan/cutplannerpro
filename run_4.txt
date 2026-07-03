@@ -4,7 +4,6 @@ request: ha létező tételszám,
  altípus és azonos szín!
 
 cutrequest fül:
-    - táblában nincs kint a határidő
     - color nem jól van kitöltve
     - lehetne akár színes bogyó is benne!
 
