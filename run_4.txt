@@ -3,12 +3,15 @@ request: ha létező tételszám,
  - az anyagra lehetne emlékezni, de csak ha azonos típus,
  altípus és azonos szín!
 
+<<<<<<< HEAD
 cutrequest fül:
     - color nem jól van kitöltve
     - lehetne akár színes bogyó is benne!
 
 a color dolgot a requestben rendbe kell tenni
 
+=======
+>>>>>>> ed03c8e605c777ceca626ffacb62db04d9b4bb73
  - kell egy lista az auditálandó tételekről
  - kell egy tárhelycímke-lista
 tárhely neveknben:  

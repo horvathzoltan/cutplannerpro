@@ -5,6 +5,14 @@
 
 static inline QString profilePostfixFor(const QString& barcode)
 {
+    // TOK
+    if (matchPrefix(barcode, "NP-T"))
+        return "20 cm";
+
+    // TOKFEDÉL
+    if (matchPrefix(barcode, "NP-TF"))
+        return "18 cm";
+
     // CIPZÁROS LÁB
     if (matchPrefix(barcode, "NP-CL"))
         return "27 cm"; // láb + takaró = 18+9
@@ -20,11 +28,11 @@ static inline QString profilePostfixFor(const QString& barcode)
 
     // CIPZÁROS ZÁRÓ
     if (matchPrefix(barcode, "NP-CZ"))
-        return "13 mm";
+        return "13 cm";
 
     // SÍNES ZÁRÓ
     if (matchPrefix(barcode, "NP-SZ"))
-        return "11 mm";
+        return "11 m";
 
     // POFA
     if (matchPrefix(barcode, "NP-POF"))

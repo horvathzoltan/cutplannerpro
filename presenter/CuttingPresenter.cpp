@@ -127,7 +127,7 @@ void CuttingPresenter::applyPatch(Cutting::Plan::Request& target,
         target.productSubtypeId = updated.productSubtypeId;
 
     if (patch.updateColor)
-        target.color = updated.color;
+        target.requiredColor = updated.requiredColor;
 }
 
 void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r) {
@@ -1385,16 +1385,40 @@ PaintPlan CuttingPresenter::buildPaintPlan()
         // --- A CSOPORT ÖSSZES REQUESTJÉNEK FELDOLGOZÁSA ---
         for (const auto& req : list)
         {
-            QString color = req.color.trimmed();
-            if (color.isEmpty())
-                color = QStringLiteral("Nincs szín megadva");
+            QString colorCode = req.requiredColor.code();
+            if (colorCode.isEmpty())
+                colorCode = QStringLiteral("Nincs szín megadva");
 
-            auto& colorGroup = plan.byColor[color];
-            colorGroup.color = color;
-
+            auto& colorGroup = plan.byColor[colorCode];
+            colorGroup.color = req.requiredColor;
+            colorGroup.pofaFestheto = false;
+            colorGroup.csavarFestheto = false;
             // Anyag lekérése
             const MaterialMaster* mat = MaterialRegistry::instance().findById(req.materialId);
-            QString barcode = mat ? mat->barcode : "";
+
+            // 0) Ha nincs anyag → kihagyjuk
+            if(!mat)
+                continue;
+
+            // 1) Ha nem festhető → kihagyjuk
+            if (mat->paintingMode == PaintingMode::None)
+                continue;
+
+            // 2) Ha a request színe és felülete megegyezik az anyag saját színével → kihagyjuk
+            bool sameColor = (req.requiredColor.code() == mat->color.code());
+            //bool sameSurface = (req.surface == mat->surface);
+
+            // if(req.requiredColor.code().contains("9010")){
+            //     zInfo("FEHÉR");
+            //     }
+
+            // if (sameColor && sameSurface)
+            //     continue;
+
+            if (sameColor)
+                continue;
+
+            QString barcode = mat->barcode;
 
             // Szorzó (CL/SL → 2)
             int szorzo = 1;
@@ -1410,16 +1434,15 @@ PaintPlan CuttingPresenter::buildPaintPlan()
 
             // --- POFA / CSAVAR TÍPUS SZERINT ---
             if (matchPrefix(barcode, "NP-T")) {
+                colorGroup.pofaFestheto = true;
                 if (type == NaphaloType::Cipzaros) colorGroup.cipzarosPofa += 2;
                 if (type == NaphaloType::Sines)    colorGroup.sinesPofa += 2;
                 if (type == NaphaloType::Bowdenes) colorGroup.bowdenesPofa += 2;
             }
 
             if (matchPrefix(barcode, "NP-TF")) {
+                colorGroup.csavarFestheto = true;
                 colorGroup.csavar +=2;
-                // if (type == NaphaloType::Cipzaros) colorGroup.cipzarosCsavar += 2;
-                // if (type == NaphaloType::Sines)    colorGroup.sinesCsavar += 2;
-                // if (type == NaphaloType::Bowdenes) colorGroup.bowdenesCsavar += 2;
             }
         }
     }
@@ -1441,7 +1464,15 @@ void CuttingPresenter::Paint()
     {
         const auto& colorGroup = plan.byColor[color];
 
-        zInfo(QString(">> SZÍN: %1").arg(color));
+        // --- HA ÜRES A CSOPORT → KIHAGYJUK ---
+        if (colorGroup.materials.isEmpty() &&
+            colorGroup.sumPofa() == 0 &&
+            colorGroup.csavar == 0)
+        {
+            continue;   // ❗ NEM írjuk ki a színblokkot
+        }
+
+        zInfo(QString(">> SZÍN: %1").arg(colorGroup.color.toString()));
         zInfo("----------------------------------------");
 
         // Anyagok ábécé sorrendben
@@ -1489,28 +1520,53 @@ void CuttingPresenter::Paint()
         }
 
         // --- TÍPUSONKÉNTI POFÁK ---
-        zInfo("   POFÁK:");
-        zInfo(QString("      Cipzáros: %1").arg(colorGroup.cipzarosPofa));
-        zInfo(QString("      Sines:    %1").arg(colorGroup.sinesPofa));
-        zInfo(QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa));
+        if (colorGroup.sumPofa() > 0)
+        {
+            zInfo("   POFÁK:");
+            if(colorGroup.cipzarosPofa>0){
+                zInfo(QString("      Cipzáros: %1").arg(colorGroup.cipzarosPofa));
+            }
+            if(colorGroup.sinesPofa > 0){
+                zInfo(QString("      Sines:    %1").arg(colorGroup.sinesPofa));
+            }
+            if(colorGroup.bowdenesPofa > 0){
+                zInfo(QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa));
+            }
+            QString postfix1 = profilePostfixFor("NP-POF");
+            if (!postfix1.isEmpty()) {
+                zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1));
+            } else{
+                zInfo(QString("      Összesen: %1 db").arg(colorGroup.sumPofa()));
+            }
+        }
+        else
+        {
+            if (colorGroup.pofaFestheto)
+                // ❗ HIBA: nincs pofa, pedig kellene - de csak ha festhető a tok
+                zWarning("   ⚠️ HIBA: Ehhez a színhez nem számolódott pofa!");
+            else
+                zInfo("   (Ehhez a színhez nem kell pofa)");
+        }
 
-        QString postfix1 = profilePostfixFor("NP-POF");
-        if (!postfix1.isEmpty()) {
-            zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1));
-        } else{
-            zInfo(QString("      Összesen: %1 db").arg(colorGroup.sumPofa()));
-        }
         // --- TÍPUSONKÉNTI CSAVAROK ---
-        zInfo("   CSAVAROK:");
-        QString postfix2 = profilePostfixFor("NP-CSAV");
-        if (!postfix2.isEmpty()) {
-            zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2));
-        } else{
-            zInfo(QString("      Összesen: %1 db").arg(colorGroup.csavar));
+        if (colorGroup.csavar > 0)
+        {
+            zInfo("   CSAVAROK:");
+            QString postfix2 = profilePostfixFor("NP-CSAV");
+            if (!postfix2.isEmpty()) {
+                zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2));
+            } else{
+                zInfo(QString("      Összesen: %1 db").arg(colorGroup.csavar));
+            }
         }
-        // zInfo(QString("      Cipzáros: %1").arg(colorGroup.cipzarosCsavar));
-        // zInfo(QString("      Sines:    %1").arg(colorGroup.sinesCsavar));
-        // zInfo(QString("      Bowdenes: %1").arg(colorGroup.bowdenesCsavar));
+        else
+        {
+            if (colorGroup.csavarFestheto)
+                // ❗ HIBA: nincs csavar, pedig kellene - de csak ha festhető a tokfedél
+                zWarning("   ⚠️ HIBA: Ehhez a színhez nem számolódott csavar!");
+            else
+                zInfo("   (Ehhez a színhez nem kell csavar)");
+        }
 
         zInfo("========================================");
     }

@@ -556,7 +556,9 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.dueDate = ui->editDueDate->date();
 
-    req.color = ui->edit_Color->text().trimmed();
+    QString colorName = ui->edit_Color->text().trimmed();
+    //req.color = colorName;
+    req.requiredColor = NamedColor::fromUserInput(colorName);
 
     QString surfaceCode = ui->comboBox_Surface->currentData().toString();
     req.surface = SurfaceTypeUtils::fromCode(surfaceCode);
@@ -634,7 +636,7 @@ void AddInputDialog::accept() {
                                   : HandlerSide::Right);
 
     ctx.defaultMaterialId = req.materialId;
-    ctx.color             = req.color;
+    ctx.color             = req.requiredColor.code();
 
     auto surfaceCode= SurfaceTypeUtils::toCode(req.surface);
     ctx.surfaceCode = surfaceCode;
@@ -1115,7 +1117,7 @@ void AddInputDialog::applyDateFromRequest(const Cutting::Plan::Request& req)
 }
 void AddInputDialog::applyColorFromRequest(const Cutting::Plan::Request& req)
 {
-    ui->edit_Color->setText(req.color);
+    ui->edit_Color->setText(req.requiredColor.code());
 }
 
 void AddInputDialog::applySideFromRequest(const Cutting::Plan::Request& req)

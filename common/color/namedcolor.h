@@ -39,6 +39,8 @@ public:
     //NamedColor(const QColor &color, const QString &name, const QString &code);
     NamedColor(const QColor& color, const QString& name, const QString& code, RalSystem system);
 
+    static NamedColor fromUserInput(const QString& raw);
+
     static bool initRalColors(const QList<RalSource>& sources);
     //static NamedColor fromRal(const QString& ralCode);
     //static QMap<QString, NamedColor> loadRalDatabase(const QString& filePath);
