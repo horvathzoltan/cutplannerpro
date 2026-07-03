@@ -1,3 +1,14 @@
+materialsearch
+
+ - szín szűrő:
+ a nincs szín = nem kérünk szín szűrést
+ a nincs szín -> nyers, natúr anyag -> erre viszont kell majd szűrés
+
+addinputdialog:
+ - új tétel felvitele: a szín elé kell írni a RAL-t , nem valami felhasználóbarát
+ - sorozat: emlékezhetne az előző anyagra, de a méretre nem! talkán emlékszik is,
+ - létező tételszám módban emlékezhetne az anyagra
+ - J/B - itt kell egy unknown  -ez a vágás optimalizálást nem befolyásolja csak a szerelést
 
 request: ha létező tételszám,
  - az anyagra lehetne emlékezni, de csak ha azonos típus,
