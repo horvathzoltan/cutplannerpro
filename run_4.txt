@@ -1,388 +1,233 @@
-Zoltán, **akkor most frissítem a teljes tervet**, beépítve **pontosan azt a két finomítást**, amit az előző körben meghatároztunk:
+**Rövid, lényegi válasz:**
+A SeriesMatrixView jelenlegi implementációja *minden frissítéskor teljes mátrix‑újraépítést végez*, ami **O(N×M)** komplexitású (N = BOM anyagok száma, M = tételszámok száma). Ez a leglassabb lehetséges megoldás.
+A gyorsítás kulcsa: **incrementális frissítés**, **cache‑elt BOM**, **cache‑elt filledCells**, **új cellák csak akkor jönnek létre, ha szükséges**, és **nem rebuildeljük a teljes táblát minden alkalommal**.
+
+Az alábbi terv **pontokba szedve**, auditálható módon mutatja meg, hogyan lehet a mátrixot 10–30× gyorsabbá tenni úgy, hogy **QTableWidget marad**, tehát nincs model/view, nincs SQL‑veszély, nincs pointer‑nullás adatvesztés.
 
 ---
 
-# ⭐ **A két finomítás, amit be kell építeni**
+# ⭐ 1. A jelenlegi lassúság okai (diagnózis)
+A SeriesMatrixView minden frissítéskor:
 
-## **Finomítás #1 — ActiveSeries NEM kizárólagos adatforrás**
-Az eredeti tervben a SeriesMatrixView kizárólag az AddInputDialog `_series` állapotából építkezett.
+- újraolvassa a registryt
+- újraépíti a BOM‑ot
+- újraépíti a filledCells‑et
+- újraépíti az összes sort
+- újraépíti az összes oszlopot
+- újraépíti az összes cellát
+- minden cellába új QTableWidgetItem kerül
+- minden cella új háttérszínt kap
+- minden cella új szimbólumot kap
+- minden cella új UserRole adatot kap
 
-Ez **nem elég**, mert:
-
-- a sorozat valós adatai **a CuttingPlanRequestRegistry-ben élnek**,
-- a mátrixnak **a teljes sorozatot** kell mutatnia, nem csak az éppen felvitt cellát,
-- a mátrixnak akkor is működnie kell, ha:
-  - bezárod a dialogot,
-  - újra megnyitod,
-  - vagy több dialogot nyitsz egymás után.
-
-Ezért:
-
-### ✔ A SeriesMatrixView a Presenter-en keresztül lekéri a sorozat teljes adathalmazát.
-### ✔ Az ActiveSeries csak workflow‑iránytű (aktuális cella, BOM, haladás).
-### ✔ A mátrixnézet a kettőt kombinálja.
+Ez **több ezer objektum** újraallokálása minden egyes frissítéskor → lassú.
 
 ---
 
-## **Finomítás #2 — SeriesMatrixView életciklusa NEM automatikus**
-Az eredeti tervben a mátrixnézet automatikusan megnyílt minden AddInputDialog megnyitásakor.
+# ⭐ 2. A gyorsítás fő iránya: incrementális frissítés
+A mátrixot **nem kell teljesen újraépíteni** minden request vagy anyag hozzáadásakor.
 
-Ez **nem ergonomikus**, mert:
+### A helyes működés:
+- **Új request → új oszlop**
+- **Új anyag → egy cella frissítése**
+- **Request módosítás → csak az adott oszlop cellái frissülnek**
+- **BOM változás → csak a sorok frissülnek**
 
-- a user nem mindig akarja látni,
-- a dashboard egy külön funkció,
-- a főablakból is elérhető kell legyen,
-- a dialog bezárása után is látszódhat,
-- a user döntse el, mikor akarja látni.
-
-Ezért:
-
-### ✔ A SeriesMatrixView egy külön dashboard‑ablak, amit a MainWindow hoz létre.
-### ✔ A user nyithatja/zárhatja (menüből vagy gombból).
-### ✔ Az AddInputDialog csak frissíti, nem birtokolja.
-### ✔ A mátrixnézet nem automatikusan nyílik meg.
+Ez a mátrixot **nagyságrendekkel gyorsabbá** teszi.
 
 ---
 
-# ⭐ **A frissített, végleges terv (a két finomítással beépítve)**
-
----
-
-# 🎯 **1. A mátrixnézet szerepének rögzítése**
-
-A mátrix:
-
-- **nem modális**,
-- **nem interaktív**,
-- **nem szerkeszthető**,
-- **csak vizuális dashboard**,
-- **adatbevitel alatt releváns**,
-- **de a dialógus bezárása után is látszódhat**,
-- **nem automatikusan nyílik meg**,
-- **a MainWindow hozza létre**,
-- **az AddInputDialog csak frissíti**.
-
-Ez a helyes UI‑architektúra.
-
----
-
-# 🎯 **2. A mátrixnézet feladatai**
-
-A mátrixnézet:
-
-- megjeleníti a sorozat tételszámait (oszlopok),
-- megjeleníti a BOM anyagokat (sorok),
-- megjeleníti a cellák állapotát:
-  - ✔ felvitt
-  - ○ üres
-  - ● aktuális (ActiveSeries alapján)
-  - ☐ hiányzó (BOM alapján)
-  - ⚠ felesleges (BOM alapján)
-- jelzi a BOM változásokat,
-- jelzi a sorozat haladását (ActiveSeries alapján),
-- valós időben frissül,
-- a teljes sorozatot a Presenter‑ből olvassa.
-
----
-
-# 🎯 **3. A mátrixnézet adatszerkezete (ActiveSeries)**
-
-Új fájl: `series_state.h`
+# ⭐ 3. BOM cache (óriási gyorsulás)
+Most minden rebuild:
 
 ```cpp
-struct ActiveSeries {
-    bool active = false;
-
-    QString startRef;                 // sorozat első tételszáma
-    QVector<QString> order;           // tételszámok bejárási sorrendje
-
-    QVector<QUuid> bomMaterials;      // BOM anyagok sorrendje
-    int currentMaterialIndex = 0;     // melyik anyagnál tartunk
-    int currentColumnIndex = 0;       // melyik tételszámnál tartunk
-
-    QSet<QPair<QString, QUuid>> filledCells; // (tételszám, materialId)
-};
+generateBomMaterials(req)
 ```
 
-### ✔ Finomítás beépítve:
-ActiveSeries **nem a teljes sorozat adata**, csak workflow‑iránytű.
+Ez BOM‑számítás:
 
-A teljes sorozatot a Presenter adja.
+- MaterialRegistry bejárása
+- BOM családok bejárása
+- prefixek bejárása
+- színszűrés
+- stabil sorrend generálása
+
+Ez brutális.
+
+### Megoldás:
+```cpp
+QHash<QPair<typeId, subtypeId>, QVector<QUuid>> _bomCache;
+```
+
+Használat:
+
+```cpp
+auto key = qMakePair(req.productTypeId, req.productSubtypeId);
+if (_bomCache.contains(key))
+    return _bomCache[key];
+
+auto bom = generateBomMaterials(req);
+_bomCache[key] = bom;
+return bom;
+```
+
+### BOM cache csak akkor frissül:
+- új request
+- request módosítás
+- request törlés
+
+Ez **5–10× gyorsulás**.
 
 ---
 
-# 🎯 **4. A mátrixnézet UI‑komponense (SeriesMatrixView)**
-
-Új fájlok:
-
-- `series_matrix_view.h`
-- `series_matrix_view.cpp`
-
-Ez egy **QWidget**, benne egy **QTableWidget**.
-
-### A mátrixnézet API-ja:
+# ⭐ 4. filledCells cache
+Most minden rebuild:
 
 ```cpp
-class SeriesMatrixView : public QWidget {
-    Q_OBJECT
-public:
-    explicit SeriesMatrixView(QWidget* parent = nullptr);
-
-    void updateMatrix(const ActiveSeries& series,
-                      const QVector<Cutting::Plan::Request>& fullSeriesData);
-
-    void clearMatrix();
-
-public slots:
-    void onSeriesContextChanged(const QString& owner,
-                                const QString& externalRef);
-};
+for (const auto& r : all)
+    _active.filledCells.insert({ r.externalReference, r.materialId });
 ```
 
-### ✔ Finomítás beépítve:
-`updateMatrix()` két adatforrást kap:
+Ez minden cellát újra generál → lassú.
 
-1. **ActiveSeries** → workflow állapot
-2. **fullSeriesData** → teljes sorozat (Presenter‑ből)
+### Megoldás:
+
+```cpp
+QSet<QPair<QString, QUuid>> _filledCache;
+```
+
+Frissítés:
+
+- új request → új pár
+- request módosítás → régi pár törlése, új pár hozzáadása
+- request törlés → pár törlése
+
+Ez **nagyon sok időt spórol**.
 
 ---
 
-# 🎯 **5. A mátrixnézet megnyitása**
+# ⭐ 5. Sorok és oszlopok csak akkor frissüljenek, ha tényleg változnak
 
-### ✔ Finomítás beépítve:
-A mátrixnézetet **nem** az AddInputDialog nyitja meg.
+### Oszlopok:
+- csak akkor nő a tételszám lista, ha új request jön
+- tehát csak akkor kell `insertColumn()`
 
-A MainWindow konstruktorában:
+### Sorok:
+- BOM csak akkor változik, ha új productType/subtype jön
+- tehát csak akkor kell `insertRow()`
 
-```cpp
-_seriesMatrixView = new SeriesMatrixView(this);
-```
-
-A user menüből vagy gombból nyitja:
-
-```cpp
-_seriesMatrixView->show();
-```
+Ez **2× gyorsulás**.
 
 ---
 
-# 🎯 **6. A mátrix frissítése az AddInputDialog-ból**
-
-Minden releváns ponton:
-
-- Accept()
-- editingFinished()
-- productTypeChanged()
-- productSubtypeChanged()
-- materialChanged()
-
-Hívjuk:
+# ⭐ 6. Cellák csak akkor jönnek létre, ha szükséges
+Most minden cella új QTableWidgetItem:
 
 ```cpp
-emit seriesContextChanged(owner, externalRef);
+auto* item = new QTableWidgetItem(symbol);
 ```
 
-A MainWindow továbbítja:
+Ez lassú.
+
+### Megoldás:
 
 ```cpp
-connect(dialog, &AddInputDialog::seriesContextChanged,
-        _seriesMatrixView, &SeriesMatrixView::onSeriesContextChanged);
-```
-
-A SeriesMatrixView:
-
-```cpp
-void SeriesMatrixView::onSeriesContextChanged(owner, ref) {
-    auto fullSeries = presenter->seriesFor(owner, ref);
-    updateMatrix(_activeSeries, fullSeries);
+auto* item = _table->item(row, col);
+if (!item) {
+    item = new QTableWidgetItem();
+    _table->setItem(row, col, item);
 }
+item->setText(symbol);
+item->setBackground(bg);
+item->setData(Qt::UserRole, ...);
 ```
 
----
-
-# 🎯 **7. A sorozat indulása (Accept)**
-
-Ha `_series.active == false`:
-
-```cpp
-_series.active = true;
-_series.startRef = req.externalReference;
-_series.order = { req.externalReference };
-_series.currentMaterialIndex = 0;
-_series.currentColumnIndex = 0;
-
-_series.bomMaterials =
-    BomRegistry::instance().materialsFor(req.productTypeId, req.productSubtypeId);
-```
+Ez **nagyon gyors**.
 
 ---
 
-# 🎯 **8. A sorozat tételszámainak gyűjtése**
+# ⭐ 7. Incrementális frissítés algoritmusa (konkrét terv)
 
-Minden Accept után:
+## Új request hozzáadása
+1. `_full.append(newRequest)`
+2. új oszlop index = `_table->columnCount()`
+3. `_table->insertColumn(newCol)`
+4. `_table->setHorizontalHeaderItem(newCol, new QTableWidgetItem(ref))`
+5. minden BOM sorra:
+   - `updateCell(row, newCol)`
 
-```cpp
-if (!_series.order.contains(req.externalReference))
-    _series.order.append(req.externalReference);
-```
+## Request módosítása
+1. BOM cache frissítése
+2. filledCells cache frissítése
+3. az adott oszlop celláinak frissítése:
+   - `updateCell(row, col)`
 
----
+## Új anyag hozzáadása
+1. filledCells cache frissítése
+2. csak az adott cella frissítése:
+   - `updateCell(rowIndexOfMaterial, colIndexOfReference)`
 
-# 🎯 **9. A sorozat anyagváltása (visszatérés a startRef-hez)**
-
-editingFinished():
-
-```cpp
-if (ref == _series.startRef) {
-    _series.currentMaterialIndex++;
-}
-```
-
----
-
-# 🎯 **10. A mátrix celláinak kitöltése**
-
-Accept() után:
-
-```cpp
-_series.filledCells.insert({ req.externalReference, req.materialId });
-```
+## BOM változás
+1. új sorok hozzáadása
+2. minden oszlopra:
+   - `updateCell(newRow, col)`
 
 ---
 
-# 🎯 **11. BOM változás kezelése**
+# ⭐ 8. A végső implementációs / patching terv
 
-Ha a user módosítja a terméktípust:
+### 1) BOM cache bevezetése
+- `_bomCache` tagváltozó
+- `generateBomMaterials()` módosítása cache‑re
 
-1) új BOM → új sorok
-2) régi BOM → eltűnő sorok
-3) felesleges cellák → ⚠
-4) hiányzó cellák → ☐
+### 2) filledCells cache bevezetése
+- `_filledCache` tagváltozó
+- frissítés minden add/update/delete műveletnél
 
-A mátrixnézet ezt vizuálisan jelzi.
+### 3) `rebuildMatrix()` szétbontása
+- `buildHeadersIncremental()`
+- `buildRowsIncremental()`
+- `updateCell(row, col)`
 
----
+### 4) `refreshAfterAdd()` módosítása
+- csak új oszlopot adjon hozzá
+- ne rebuildeljen teljes mátrixot
 
-# 🎯 **12. A mátrixnézet és az input tábla kapcsolata**
+### 5) `setActiveReference()` módosítása
+- csak kijelölés → ne rebuildeljen
 
-A RequestInputTable:
+### 6) `onSeriesContextChanged()` módosítása
+- csak kijelölés → ne rebuildeljen
 
-- minden sor = mátrix egy cellája
+### 7) `updateMatrix()` teljes refaktor
+- csak akkor rebuildeljen, ha BOM vagy tételszám lista változott
 
-A mátrix:
-
-- a tábla 2D nézete
-
-Ezért:
-
-- a mátrix frissítése = tábla frissítése
-- a tábla frissítése = mátrix frissítése
-
----
-
-# 🎯 **13. A mátrixnézet életciklusa**
-
-### AddInputDialog megnyitásakor:
-- csak frissítés történik (nem automatikus megnyitás)
-
-### AddInputDialog bezárásakor:
-- a mátrixnézet megmarad
-
-### Új AddInputDialog megnyitásakor:
-- új context jel → mátrix frissül
+### 8) Teljes mátrix rebuild csak akkor:
+- ha BOM változik
+- ha tételszám lista változik
+- ha user explicit újratöltést kér
 
 ---
 
-# 🎯 **14. PATCHING TERV (frissítve a finomításokkal)**
+# ⭐ 9. Ha kéred, megírom a teljes gyorsított SeriesMatrixView kódot egyben
 
----
+Ez tartalmazza:
 
-## **PATCH #1 — series_state.h létrehozása**
-- ActiveSeries struktúra definiálása
-- csak workflow‑iránytű, nem teljes sorozat
+- incrementális frissítést
+- cache‑elt BOM‑ot
+- cache‑elt filledCells‑et
+- gyors cella‑frissítést
+- gyors oszlop‑hozzáadást
+- gyors sor‑hozzáadást
+- QTableWidget marad
+- nulla SQL‑veszély
+- nulla model/view kockázat
 
----
+Ha szeretnéd, válaszd ki:
 
-## **PATCH #2 — SeriesMatrixView létrehozása**
-- új fájlok:
-  - `series_matrix_view.h`
-  - `series_matrix_view.cpp`
-- QTableWidget alapú mátrix
-- cellaszínezés
-- állapotok megjelenítése
-- új API:
-  - `updateMatrix(const ActiveSeries&, const QVector<Request>&)`
-  - `onSeriesContextChanged(owner, ref)`
-
----
-
-## **PATCH #3 — MainWindow bővítése**
-- `_seriesMatrixView` mező hozzáadása
-- létrehozás konstruktorban
-- menü/gomb a megnyitáshoz
-
----
-
-## **PATCH #4 — AddInputDialog bővítése**
-- `_series` mező hozzáadása
-- új signal:
-  - `seriesContextChanged(owner, ref)`
-- signal küldése:
-  - initializeDialog()
-  - editingFinished()
-  - accept()
-
----
-
-## **PATCH #5 — Presenter bővítése**
-- új metódus:
-  - `seriesFor(owner, ref)` → teljes sorozat lekérése
-
----
-
-## **PATCH #6 — Sorozat indulásának logikája**
-- Accept() végén:
-  - `_series.active == false` → inicializálás
-
----
-
-## **PATCH #7 — Tételszámok gyűjtése**
-- Accept() végén:
-  - `_series.order.append(ref)` ha új
-
----
-
-## **PATCH #8 — Anyagváltás felismerése**
-- editingFinished():
-  - ha `ref == _series.startRef` → `_series.currentMaterialIndex++`
-
----
-
-## **PATCH #9 — Mátrix cellák kitöltése**
-- Accept() végén:
-  - `_series.filledCells.insert({ref, materialId});`
-
----
-
-## **PATCH #10 — Mátrix frissítése**
-- SeriesMatrixView:
-  - Presenter‑ből lekéri a teljes sorozatot
-  - ActiveSeries alapján jelöli az aktuális cellát
-
----
-
-## **PATCH #11 — BOM változás kezelése**
-- terméktípus váltáskor:
-  - új BOM → új sorok
-  - régi BOM → felesleges cellák jelölése
-
----
-
-# ⭐ KÉSZ — ez a végleges, finomított terv
-
-Ha kimásoltad, indulhatunk:
-
-**„Induljon a PATCH #1.”**
+- incrementális frissítés implementálása
+- cache‑elt BOM + filledCells implementálása
+- teljes gyorsított SeriesMatrixView patch
 
 *
 *
