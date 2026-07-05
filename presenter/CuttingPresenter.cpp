@@ -2000,6 +2000,54 @@ void CuttingPresenter::BOM_audit()
     zInfo("=== PRODUCT BOM AUDIT VÉGE ===");
 }
 
+QVector<Cutting::Plan::Request>
+CuttingPresenter::seriesFor(const QString& owner,
+                            const QString& externalRefPrefix) const
+{
+    QVector<Cutting::Plan::Request> out;
+
+    // 1) Az összes request lekérése a registry-ből
+    const auto& all = CuttingPlanRequestRegistry::instance().readAll();
+
+    // 2) Szűrés: owner + prefix
+    for (const auto& req : all)
+    {
+        if (req.ownerName.compare(owner, Qt::CaseInsensitive) != 0)
+            continue;
+
+        if (!req.externalReference.startsWith(externalRefPrefix))
+            continue;
+
+        out.append(req);
+    }
+
+    // 3) Rendezés tételszám szerint (numerikus)
+    std::sort(out.begin(), out.end(),
+              [](const auto& a, const auto& b) {
+                  return a.externalReference.toInt() < b.externalReference.toInt();
+              });
+
+    return out;
+}
+
+QVector<Cutting::Plan::Request>
+CuttingPresenter::requestsByExternalReference(const QString& externalRef)
+{
+    QVector<Cutting::Plan::Request> result;
+
+    // 🔍 Minden request a registryben van
+    auto all = CuttingPlanRequestRegistry::instance().readAll();
+
+    for (const auto& r : all) {
+        if (r.externalReference == externalRef) {
+            result.append(r);
+        }
+    }
+
+    return result;
+}
+
+
 
 
 /*relocation*/

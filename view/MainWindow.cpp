@@ -37,6 +37,9 @@
 
 #include <view/dialog/materialfinder/materialfinderdialog.h>
 
+#include "view/dialog/input/series_matrix_view.h"
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -45,10 +48,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     initEventLogWidget();
 
+    _actSeriesMatrix = new QAction(tr("📊 Sorozat mátrix"), this);
+    _actSeriesMatrix->setShortcut(QKeySequence("Ctrl+M"));
+    _actSeriesMatrix->setCheckable(true);
+    _actSeriesMatrix->setChecked(false);
+
     ActionConnectorModel m1{
         .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
-        .actSettings = MainWindowUIBuilder::createSettingsAction(this)
+        .actSettings = MainWindowUIBuilder::createSettingsAction(this),
+        .actSeriesMatrix   =   _actSeriesMatrix // 🔹 egyszerű action
     };
+
+    // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
+    // ui->actionSeriesMatrix->setText("📊 Mátrix");
+
+
 
     mainToolbarBuilder(m1);
     ActionConnector_connect(m1);
@@ -205,6 +219,9 @@ MainWindow::MainWindow(QWidget *parent)
                 SettingsManager::instance().setUseReusableLeftovers(checked);
             });
 
+    _seriesMatrixView = new SeriesMatrixView(this, presenter);
+    _seriesMatrixView->hide();   // nem automatikusan jelenik meg
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
@@ -292,6 +309,7 @@ void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
 {
     ui->mainToolBar->addAction(m.actMaterialFinder);
     ui->mainToolBar->addAction(m.actSettings);
+    ui->mainToolBar->addAction(m.actSeriesMatrix);   // 🔹 ÚJ
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
@@ -300,6 +318,33 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
             this, &MainWindow::handle_act_MaterialFinder_clicked);
     connect(m.actSettings, &QAction::triggered,
             this, &MainWindow::handle_act_Settings_clicked);
+    connect(m.actSeriesMatrix, &QAction::toggled,
+            this, [this](bool checked) {
+                _seriesMatrixView->setVisible(checked);
+
+                if (checked) {
+
+                    // 🔍 1) összes request lekérése
+                    auto all = CuttingPlanRequestRegistry::instance().readAll();
+
+                    if (!all.isEmpty()) {
+
+                        // 🔍 2) utolsó tételszám meghatározása
+                        const auto& last = all.last();
+                        QString lastRef   = last.externalReference;
+                        QString lastOwner = last.ownerName;
+
+                        // 🔥 3) automatikus sorozat betöltés
+                        _seriesMatrixView->onSeriesContextChanged(lastOwner, lastRef);
+                    }
+
+                    _seriesMatrixView->raise();
+                    _seriesMatrixView->activateWindow();
+                }
+            });
+    connect(_seriesMatrixView, &SeriesMatrixView::matrixClosed,
+            this, &MainWindow::onSeriesMatrixClosed);
+
 }
 
 MainWindow::~MainWindow()
@@ -457,11 +502,29 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
     while(true){
         AddInputDialog dialog(this, DialogMode::Create);
 
+        connect(&dialog, &AddInputDialog::seriesContextChanged,
+                this, [this, &dialog](const QString& owner, const QString& ref) {
+
+                    // 1) ActiveSeries átvétele a dialogból
+                    ActiveSeries s = dialog.seriesState();
+
+                    // 2) Teljes sorozat lekérése a Presenter-ből
+                    auto full = presenter->seriesFor(owner, ref);
+
+                    // 3) Mátrix frissítése
+                    //_seriesMatrixView->updateMatrix(s, {});
+                    _seriesMatrixView->setActiveReference(ref);
+                });
+
+
         if (dialog.exec() != QDialog::Accepted)
             return;
 
         Cutting::Plan::Request request = dialog.getModel();
         presenter->add_CuttingPlanRequest(request);
+
+        // ⭐ Új request bekerült → mátrixot újra kell tölteni
+        _seriesMatrixView->refreshAfterAdd(request.externalReference);
 
         if(!dialog.shouldRepeat())
             break;
@@ -1218,5 +1281,9 @@ void MainWindow::onShowNotFoundMessage(const QString& msg)
     QMessageBox::information(this, "Keresés", msg);
 }
 
+void MainWindow::onSeriesMatrixClosed()
+{
+    _actSeriesMatrix->setChecked(false);
+}
 
 

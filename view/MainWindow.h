@@ -13,6 +13,7 @@
 #include "managers/storageaudittable_manager.h"
 #include "presenter/stockpresenter.h"
 #include "tableutils/highlightdelegate.h"
+#include "view/dialog/input/series_matrix_view.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -68,6 +69,9 @@ public:
     void refresh_InputTableFromRegistry();
 
     bool isChkUseLeftoversChecked();
+
+    SeriesMatrixView* seriesMatrixView() const { return _seriesMatrixView; }
+
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -109,13 +113,16 @@ private slots:
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
     void onShowNotFoundMessage(const QString& msg);
+
+    void onSeriesMatrixClosed();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
     StockPresenter* stockPresenter = nullptr;
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
-
+    SeriesMatrixView* _seriesMatrixView = nullptr;
     // input tábla - vágási terv
     std::unique_ptr<InputTableManager> inputTableManager = nullptr;
     // stock tábla - anyagkészlet - alapanyag raktárkészlet
@@ -131,6 +138,8 @@ private:
 
     std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
 
+
+    QAction* _actSeriesMatrix = nullptr;
 
 private:
     static constexpr int TAB_CUTREQUEST        = 0;
@@ -156,6 +165,7 @@ private:
     struct ActionConnectorModel{
         QAction* actMaterialFinder = nullptr;
         QAction* actSettings = nullptr;
+        QAction* actSeriesMatrix = nullptr;
     };
 
     void ActionConnector_connect(ActionConnectorModel& a);

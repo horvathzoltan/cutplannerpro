@@ -63,6 +63,8 @@ SOURCES += \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
     view/dialog/input/clonerequestdialog.cpp \
+    view/dialog/input/matrix_cell_delegate.cpp \
+    view/dialog/input/series_matrix_view.cpp \
     view/dialog/materialfinder/materialdelegate.cpp \
     view/dialog/materialfinder/materialfinderdialog.cpp \
     view/dialog/materialsearch/materialsearchdialog.cpp \
@@ -254,6 +256,9 @@ HEADERS += \
     view/common/layouts/qflowlayout.h \
     view/dialog/dialogmode.h \
     view/dialog/input/clonerequestdialog.h \
+    view/dialog/input/matrix_cell_delegate.h \
+    view/dialog/input/series_matrix_view.h \
+    view/dialog/input/series_state.h \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \
     view/dialog/materialsearch/materialsearchdialog.h \

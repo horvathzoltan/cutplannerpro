@@ -139,6 +139,12 @@ public:
     void Audit();
     void BOM_audit();
     void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
+
+    QVector<Cutting::Plan::Request>
+    seriesFor(const QString& owner,
+              const QString& externalRefPrefix) const;
+    QVector<Cutting::Plan::Request> requestsByExternalReference(const QString &externalRef);
+
 private:
     void applyPatch(Cutting::Plan::Request& target,
                     const Cutting::Plan::Request& updated,

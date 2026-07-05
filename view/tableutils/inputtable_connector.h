@@ -33,7 +33,8 @@ inline static void Connect(
             Cutting::Plan::Request original = *opt;
 
             AddInputDialog dialog(w, DialogMode::Update, &original);
-            //dialog.setModel(original);
+            // QObject::connect(&dialog, &AddInputDialog::seriesContextChanged,
+            //         w->seriesMatrixView(), &SeriesMatrixView::onSeriesContextChanged);
 
             if (dialog.exec() != QDialog::Accepted)
                 return;
@@ -41,6 +42,8 @@ inline static void Connect(
             Cutting::Plan::Request updated = dialog.getModel();
             presenter->update_AllRequestsWithSameReference(updated);
             presenter->update_CuttingPlanRequest(updated);
+            // ⭐ Mátrix frissítése UPDATE után
+            w->seriesMatrixView()->refreshAfterAdd(updated.externalReference);
         });
 }
 }; //end namespace InputTableConnector
