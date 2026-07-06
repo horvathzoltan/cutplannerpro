@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1935";"Frama, Georgies";0;0;2485;;1;1;0;"7016";NP-T-7016;Width;false;2026-07-09;NP;CIP
+"1936";"Frama, Georgies";0;0;2420;;1;0;1;"7016";NP-T-7016;Width;false;2026-07-09;NP;CIP
+"1935";"Frama, Georgies";0;0;2510;;1;1;0;"7016";NP-TF-7016;Width;false;2026-07-09;NP;CIP
+"1936";"Frama, Georgies";0;0;2445;;1;0;1;"7016";NP-TF-7016;Width;false;2026-07-09;NP;CIP
+"1935";"Frama, Georgies";0;0;2392;;1;1;0;"7016";NP-CZ-7016;Width;false;2026-07-09;NP;CIP
+"1936";"Frama, Georgies";0;0;2327;;1;0;1;"7016";NP-CZ-7016;Width;false;2026-07-09;NP;CIP
+"1935";"Frama, Georgies";0;0;2172;;1;1;0;"7016";NP-CL-7016;Width;false;2026-07-09;NP;CIP
+"1936";"Frama, Georgies";0;0;2207;;1;0;1;"7016";NP-CL-7016;Width;false;2026-07-09;NP;CIP

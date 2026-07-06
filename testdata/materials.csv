@@ -14,7 +14,7 @@ CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Painta
 SinesZáró;NP-SZ-9010-6;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170160;;Zaro
 SinesZáró;NP-SZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170107;;Zaro
 CipzárosLáb;NP-CL-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170202;;Lab
-Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170030;;Unknown
+Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170030;;Lab
 SinesLáb;NP-SL-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab
 NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170157;;Tok
 NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170157;;TokFed
@@ -22,17 +22,17 @@ CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Painta
 SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
 SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
 CipzárosLáb;NP-CL-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170051;;Lab
-Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170049;;Unknown
+Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170049;;Lab
 SinesLáb;NP-SL-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170165;;Lab
 NaphálóTok;NP-T;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;Tok
 NaphálóTokFedél;NP-TF;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;TokFed
 CipzárosZáró;NP-CZ;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170425;;Zaro
 SinesZáró;NP-SZ;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170427;;Zaro
 CipzárosLáb;NP-CL;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab
-Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Unknown
+Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab
 SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab
-CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170020;;Kiegeszito
-CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Kiegeszito
+CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab
+CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Lab
 Bowden;NP-B-50m;50000;;;Custom;CM2;Steel;;SM;Length;None;0;0;0;0;0;;;Bowden
 NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
 NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
