@@ -3,7 +3,7 @@ NP;CIP;Tok;NP-T*
 NP;CIP;TokFed;NP-TF*
 NP;CIP;Zaro;NP-CZ*
 NP;CIP;Lab;NP-CL*
-NP;CIP;Tengely;NP-ROLL60*
+NP;CIP;Tengely;NP-ROLL70*
 NP;CIP;Tengely;NP-ROLL78*
 NP;CIP;Suly;NP-BAR22*
 
@@ -11,7 +11,7 @@ NP;SIN;Tok;NP-T*
 NP;SIN;TokFed;NP-TF*
 NP;SIN;Zaro;NP-SZ*
 NP;SIN;Lab;NP-SL*
-NP;SIN;Tengely;NP-ROLL60*
+NP;SIN;Tengely;NP-ROLL70*
 NP;SIN;Tengely;NP-ROLL78*
 NP;SIN;Suly;NP-BAR12*
 
@@ -19,7 +19,7 @@ NP;BOW;Tok;NP-T*
 NP;BOW;TokFed;NP-TF*
 NP;BOW;Zaro;NP-SZ*
 NP;BOW;Bowden;NP-B*
-NP;BOW;Tengely;NP-ROLL60*
+NP;BOW;Tengely;NP-ROLL70*
 NP;BOW;Tengely;NP-ROLL78*
 NP;BOW;Suly;NP-BAR12*
 

@@ -16,14 +16,14 @@ SinesZáró;NP-SZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;
 CipzárosLáb;NP-CL-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170202;;Lab
 Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170030;;Lab
 SinesLáb;NP-SL-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab
-NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170157;;Tok
-NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170157;;TokFed
-CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170051;;Zaro
-SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
-SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
-CipzárosLáb;NP-CL-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170051;;Lab
-Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170049;;Lab
-SinesLáb;NP-SL-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170165;;Lab
+NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170157;;Tok
+NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170157;;TokFed
+CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170051;;Zaro
+SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
+SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
+CipzárosLáb;NP-CL-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170051;;Lab
+Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170049;;Lab
+SinesLáb;NP-SL-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170165;;Lab
 NaphálóTok;NP-T;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;Tok
 NaphálóTokFedél;NP-TF;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;TokFed
 CipzárosZáró;NP-CZ;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170425;;Zaro

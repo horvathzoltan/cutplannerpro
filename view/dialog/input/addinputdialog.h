@@ -4,6 +4,7 @@
 #include "view/dialog/dialogmode.h"
 #include <QDialog>
 #include <QUuid>
+#include "series_state.h"
 
 
 namespace Ui {
@@ -43,6 +44,8 @@ public:
 
     bool shouldRepeat();
 
+    const ActiveSeries& seriesState() const { return _series; }
+
 protected:
     void keyPressEvent(QKeyEvent *e) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -57,6 +60,8 @@ private:
     void updateSliderLabels();
 
     QUuid current_requestId;
+    ActiveSeries _series;
+
 
     static QString s_lastExternalRef;
     static bool s_lastRepeat;
@@ -151,8 +156,18 @@ private:
     void applySurfaceFromContext(const RequestContext &ctx);
     void setSurfaceEditable(bool editable);
     void applySurfaceFromRequest(const Cutting::Plan::Request &req);
+    void updateColorPreview();
+
+    void updateSeriesStateAfterAccept(const Cutting::Plan::Request& req);
+    void updateSeriesStateAfterEditingFinished(const QString& ref);
+
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();
     void onProductTypeChanged(bool checked);
+
+signals:
+    void seriesContextChanged(const QString& owner,
+                              const QString& externalRefPrefix);
+
 };

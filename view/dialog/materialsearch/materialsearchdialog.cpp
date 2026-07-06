@@ -196,12 +196,18 @@ void MaterialSearchDialog::buildColorButtons()
 
     auto* layout = qobject_cast<QHBoxLayout*>(colorFilterPanel->layout());
 
-    // ⭐ "Nincs szín" gomb
-    auto* noneBtn = new QRadioButton("Nincs szín");
-    noneBtn->setChecked(true);
-    noneBtn->setProperty("colorCode", "Nincs");
-    colorButtons->addButton(noneBtn, -1);
-    layout->addWidget(noneBtn);
+    // 1) MIND (nincs szűrés)
+    auto* allBtn = new QRadioButton("Mind");
+    allBtn->setChecked(true);
+    allBtn->setProperty("colorCode", "ALL");
+    colorButtons->addButton(allBtn, -1);
+    layout->addWidget(allBtn);
+
+    // 2) NATÚR (szín nélküli anyagok)
+    auto* rawBtn = new QRadioButton("Natúr");
+    rawBtn->setProperty("colorCode", "RAW");
+    colorButtons->addButton(rawBtn, -2);
+    layout->addWidget(rawBtn);
 
     // ⭐ Színek
     int id = 0;
@@ -305,9 +311,21 @@ void MaterialSearchDialog::applyFilter(const QString& text)
         for (const auto& m : allMaterials) {
 
             // SZÍN SZŰRÉS
-            QString selectedCode = selectedColorCode();  // új függvény
-            if (selectedCode != "Nincs" && m.color.code() != selectedCode)
-                continue;
+            QString selectedCode = selectedColorCode();
+
+            if (selectedCode == "ALL") {
+                // nincs szűrés
+            }
+            else if (selectedCode == "RAW") {
+                // csak natúr anyagok
+                if (m.color.isValid())
+                    continue;
+            }
+            else {
+                // konkrét szín
+                if (m.color.code() != selectedCode)
+                    continue;
+            }
 
 
             if (useRoleFilter) {
@@ -615,8 +633,10 @@ QString MaterialSearchDialog::selectedType() const
     QAbstractButton* btn = typeButtons->checkedButton();
     if (!btn)
         return "Mind";
+
     return btn->property("typeCode").toString();
 }
+
 
 QString MaterialSearchDialog::selectedColorCode() const
 {
