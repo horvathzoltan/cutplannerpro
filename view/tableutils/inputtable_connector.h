@@ -17,8 +17,18 @@ inline static void Connect(
         manager,
         &InputTableManager::deleteRequested,
         w,
-        [presenter](const QUuid& id) {
+        [w, presenter](const QUuid& id) {
+
+            auto opt = CuttingPlanRequestRegistry::instance().findById(id);
+            if (opt) {
+                auto r = *opt;
+            w->seriesMatrixView()->removeFilledCell(r.externalReference, r.materialId);
+            }
+
             presenter->remove_CuttingPlanRequest(id);
+
+            // ⭐ BOM cache kiütése
+            w->seriesMatrixView()->clearBomCache();
         });
 
     //
@@ -42,6 +52,16 @@ inline static void Connect(
             Cutting::Plan::Request updated = dialog.getModel();
             presenter->update_AllRequestsWithSameReference(updated);
             presenter->update_CuttingPlanRequest(updated);
+
+            // ⭐ filledCells cache frissítése
+            w->seriesMatrixView()->updateFilledCell(
+                original.externalReference, original.materialId,
+                updated.externalReference, updated.materialId
+                );
+
+            // ⭐ BOM cache kiütése
+            w->seriesMatrixView()->clearBomCache();
+
             // ⭐ Mátrix frissítése UPDATE után
             w->seriesMatrixView()->refreshAfterAdd(updated.externalReference);
         });

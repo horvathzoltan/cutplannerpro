@@ -46,3 +46,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1235";"TesztElek";0;0;1500;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-07-06;NP;CIP
 "1235";"TesztElek";0;0;1254;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-07-06;NP;CIP
 "1236";"TesztElek";0;0;1141;;1;0;0;"RAL 7016";NP-CL;Width;false;2026-07-06;NP;CIP
+"1236";"TesztElek";0;0;1234;;1;0;1;"RAL 7016";NP-CL;Width;false;2026-07-06;NP;CIP

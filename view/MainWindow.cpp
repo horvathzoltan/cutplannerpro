@@ -335,7 +335,26 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
                         QString lastOwner = last.ownerName;
 
                         // 🔥 3) automatikus sorozat betöltés
-                        _seriesMatrixView->onSeriesContextChanged(lastOwner, lastRef);
+                        //_seriesMatrixView->onSeriesContextChanged(lastOwner, lastRef);
+                        ActiveSeries s;
+                        s.active = true;
+                        s.startRef = lastRef;
+                        QSet<QString> seen;
+                        for (const auto& r : all) {
+                            if (!seen.contains(r.externalReference)) {
+                                seen.insert(r.externalReference);
+                                s.order.append(r.externalReference);
+                            }
+                        }
+                        s.currentColumnIndex = s.order.indexOf(lastRef);
+                        s.currentMaterialIndex = 0;
+
+                        // ⭐ filledCells induló feltöltése
+                        for (const auto& r : all)
+                            _seriesMatrixView->addFilledCell(r.externalReference.trimmed(), r.materialId);
+
+                        _seriesMatrixView->updateMatrix(s, all);
+
                     }
 
                     _seriesMatrixView->raise();
@@ -512,8 +531,8 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
                     auto full = presenter->seriesFor(owner, ref);
 
                     // 3) Mátrix frissítése
-                    //_seriesMatrixView->updateMatrix(s, {});
-                    _seriesMatrixView->setActiveReference(ref);
+                    _seriesMatrixView->updateMatrix(s, full);
+                    //_seriesMatrixView->setActiveReference(ref);
                 });
 
 
@@ -522,6 +541,11 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
 
         Cutting::Plan::Request request = dialog.getModel();
         presenter->add_CuttingPlanRequest(request);
+
+        // ⭐ filledCells cache frissítése
+        _seriesMatrixView->addFilledCell(request.externalReference, request.materialId);
+        // ⭐ BOM cache kiütése
+        _seriesMatrixView->clearBomCache();
 
         // ⭐ Új request bekerült → mátrixot újra kell tölteni
         _seriesMatrixView->refreshAfterAdd(request.externalReference);

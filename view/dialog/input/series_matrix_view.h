@@ -23,9 +23,21 @@ public:
     void setActiveReference(const QString &ref);
     void refreshAfterAdd(const QString &ref);
 
-public slots:
-    void onSeriesContextChanged(const QString& owner,
-                                const QString& externalRefPrefix);
+    void clearBomCache();
+
+    void addFilledCell(const QString& ref, const QUuid& matId);
+    void removeFilledCell(const QString& ref, const QUuid& matId);
+    void updateFilledCell(const QString& oldRef, const QUuid& oldMat,
+                          const QString& newRef, const QUuid& newMat);
+
+    void addColumn(const QString& ref);
+    void updateCell(int row, int col);   // a következő lépésben implementáljuk
+
+    void addRow(const QUuid& matId);
+
+// public slots:
+//     void onSeriesContextChanged(const QString& owner,
+//                                 const QString& externalRefPrefix);
 
 signals:
     void matrixClosed();
@@ -52,4 +64,16 @@ private:
     void computeMaterialSets();
     QVector<QUuid> generateBomMaterials(const Cutting::Plan::Request &req);
     const Cutting::Plan::Request *findRequestByExternalRef(const QString &ref) const;
-    };
+
+    QHash<QPair<QUuid, QUuid>, QVector<QUuid>> _bomCache;
+    inline QPair<QUuid, QUuid> bomKey(const Cutting::Plan::Request& req) const {
+        return qMakePair(req.productTypeId, req.productSubtypeId);
+    }
+
+    QSet<QPair<QString, QUuid>> _filledCache;
+
+    int findColumnIndex(const QString& ref) const;
+
+};
+
+
