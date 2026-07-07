@@ -1,0 +1,14 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1897";"Kezs Ablak, Bcs.";0;0;2967;;1;0;1;"RAL 8003";NP-CLB;Width;false;2026-07-07;NP;CIP
+"1898";"Kezs Ablak, Bcs.";0;0;2967;;1;0;1;"RAL 8003";NP-CLB;Width;false;2026-07-07;NP;CIP
+"1935";"Frama, Georgies";0;0;2127;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-09;NP;CIP
+"1936";"Frama, Georgies";0;0;2207;;1;0;1;"RAL 7016";NP-CLB;Width;false;2026-07-09;NP;CIP
+"1820";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"";NP-CLB;Width;false;2026-06-30;NP;CIP
+"1821";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"";NP-CLB;Width;false;2026-06-30;NP;CIP
+"1822";"Árnyék és Rovar, Bcs.";0;0;2137;;1;0;1;"";NP-CLB;Width;false;2026-06-30;NP;CIP
+"1823";"Árnyék és Rovar, Bcs.";0;0;2137;;1;1;0;"";NP-CLB;Width;false;2026-06-30;NP;CIP
+"1851";"Losonczi R., Pécs";0;0;2127;;1;0;1;"";NP-CLB;Width;false;2026-06-26;NP;CIP
+"1852";"Losonczi R., Pécs";0;0;2127;;1;1;0;"";NP-CLB;Width;false;2026-06-26;NP;CIP
+"1853";"Losonczi R., Pécs";0;0;2067;;1;0;1;"";NP-CLB;Width;false;2026-06-26;NP;CIP
+"1854";"Losonczi R., Pécs";0;0;2587;;1;1;0;"";NP-CLB;Width;false;2026-06-26;NP;CIP
+"1826";"Braun, Győr";0;0;1702;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP

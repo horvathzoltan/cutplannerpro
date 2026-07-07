@@ -1,0 +1,11 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1807";"Félegyházi, Mezőtúr";0;0;2257;;1;1;0;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1810";"Ro-Konzol, Győr";0;0;2507;;1;1;0;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1811";"Ro-Konzol, Győr";0;0;2427;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1857";"ÁrnyékGuru, Győr";0;0;2607;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1858";"ÁrnyékGuru, Győr";0;0;2622;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1859";"ÁrnyékGuru, Győr";0;0;2622;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1879";"JaraRolling";0;0;2717;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1880";"JaraRolling";0;0;2717;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1877";"JaraRolling";0;0;2717;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
+"1878";"JaraRolling";0;0;2717;;1;0;1;"";NP-CLB;Width;false;2026-06-29;NP;CIP
