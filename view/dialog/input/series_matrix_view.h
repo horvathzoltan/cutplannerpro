@@ -35,10 +35,12 @@ public:
 
     void addRow(const QUuid& matId);
 
+    void setActiveSeries(const ActiveSeries& s) {_active = s;}
 // public slots:
 //     void onSeriesContextChanged(const QString& owner,
 //                                 const QString& externalRefPrefix);
 
+    QVector<QUuid> buildSectionedBomList();
 signals:
     void matrixClosed();
 

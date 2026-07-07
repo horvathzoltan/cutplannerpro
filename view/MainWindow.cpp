@@ -221,6 +221,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     _seriesMatrixView = new SeriesMatrixView(this, presenter);
     _seriesMatrixView->hide();   // nem automatikusan jelenik meg
+    connect(_seriesMatrixView, &SeriesMatrixView::matrixClosed,
+            this, &MainWindow::onSeriesMatrixClosed);
 
     translate();
     zEventINFO("✅ MainWindow inited");
@@ -361,8 +363,7 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
                     _seriesMatrixView->activateWindow();
                 }
             });
-    connect(_seriesMatrixView, &SeriesMatrixView::matrixClosed,
-            this, &MainWindow::onSeriesMatrixClosed);
+
 
 }
 
@@ -524,15 +525,24 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
         connect(&dialog, &AddInputDialog::seriesContextChanged,
                 this, [this, &dialog](const QString& owner, const QString& ref) {
 
-                    // 1) ActiveSeries átvétele a dialogból
-                    ActiveSeries s = dialog.seriesState();
+                // // 1) teljes sorozat
+                // auto full = CuttingPlanRequestRegistry::instance().readAll();
 
-                    // 2) Teljes sorozat lekérése a Presenter-ből
-                    auto full = presenter->seriesFor(owner, ref);
+                // // 2) ActiveSeries frissítése (DE NEM updateMatrix!)
+                // ActiveSeries s;
+                // s.active = true;
+                // s.startRef = ref;
 
-                    // 3) Mátrix frissítése
-                    _seriesMatrixView->updateMatrix(s, full);
-                    //_seriesMatrixView->setActiveReference(ref);
+                // // 3) teljes tételszám-lista
+                // for (const auto& r : full)
+                //     s.order.append(r.externalReference);
+
+                // // 4) aktuális oszlop beállítása
+                // s.currentColumnIndex = s.order.indexOf(ref);
+                // s.currentMaterialIndex = 0;
+
+                // // 5) csak az ActiveSeries-t frissítjük
+                // _seriesMatrixView->setActiveSeries(s);
                 });
 
 

@@ -6,6 +6,8 @@
 
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
 
 #include <model/registries/cuttingplanrequestregistry.h>
 
@@ -14,6 +16,8 @@ SeriesMatrixView::SeriesMatrixView(QWidget* parent,
     : QWidget(nullptr)
     , _presenter(presenter)
 {
+    setWindowFlags(Qt::Window);
+
     auto* layout = new QVBoxLayout(this);
     _table = new QTableWidget(this);
 
@@ -31,25 +35,82 @@ SeriesMatrixView::SeriesMatrixView(QWidget* parent,
     resize(900, 600);
 }
 
+QVector<QUuid> SeriesMatrixView::buildSectionedBomList()
+{
+    QSet<QUuid> unique;
+    QVector<QUuid> ordered;
+
+    // --- 1) minden request BOM-ját összegyűjtjük ---
+    for (const auto& r : _full) {
+        auto bom = generateBomMaterials(r);
+
+        for (const auto& id : bom) {
+            if (!unique.contains(id)) {
+                unique.insert(id);
+                ordered << id;
+            }
+        }
+    }
+
+    // --- 2) család + barcode szerinti rendezés ---
+    std::sort(ordered.begin(), ordered.end(),
+              [](const QUuid& a, const QUuid& b) {
+                  auto* ma = MaterialRegistry::instance().findById(a);
+                  auto* mb = MaterialRegistry::instance().findById(b);
+                  if (!ma || !mb) return false;
+
+                  if (ma->family != mb->family)
+                      return (int)ma->family < (int)mb->family;
+
+                  return ma->barcode < mb->barcode;
+              });
+
+    return ordered;
+}
+
+
+
 
 void SeriesMatrixView::updateMatrix(const ActiveSeries& active,
-                                    const QVector<Cutting::Plan::Request>&)
+                                    const QVector<Cutting::Plan::Request>& fullSeries)
 {
-    _full = CuttingPlanRequestRegistry::instance().readAll();
+    _full = fullSeries;//CuttingPlanRequestRegistry::instance().readAll();
 
+
+    // ⭐ filledCells megőrzése
+    auto savedFilled = _active.filledCells;
 
     _active = active;
 
+    // --- 4) Fallback: ha a dialogból érkező order üres, építsük újra ---
+    if (_active.order.isEmpty()) {
+        for (const auto& r : _full)
+            _active.order.append(r.externalReference);
+    }
+
+    // --- 0) tételszámok deduplikálása ---
+    {
+        QSet<QString> seen;
+        QStringList dedup;
+
+        for (const auto& ref : _active.order) {
+            if (!seen.contains(ref)) {
+                seen.insert(ref);
+                dedup << ref;
+            }
+        }
+
+        _active.order = dedup;
+    }
+
+    // ⭐ visszatöltés
+    _active.filledCells = savedFilled;
+
     // --- BOM inicializálása hideg induláskor ---
     if (_active.bomMaterials.isEmpty()) {
-        QSet<QUuid> bomSet;
-        for (const auto& r : _full) {
-            auto bom = generateBomMaterials(r);
-            for (const auto& id : bom)
-                bomSet.insert(id);
-        }
-        _active.bomMaterials = QVector<QUuid>(bomSet.begin(), bomSet.end());
+        _active.bomMaterials = buildSectionedBomList();
     }
+
 
     bool bomChanged = (_active.bomMaterials.size() != _table->rowCount());
     bool refsChanged = ((_table->columnCount() - 1) != _active.order.size());
@@ -166,7 +227,7 @@ void SeriesMatrixView::rebuildMatrix()
     buildHeaders();
 
     buildRows();
-    // fillCells();
+    fillCells();
 }
 
 void SeriesMatrixView::buildHeaders()
@@ -268,15 +329,29 @@ void SeriesMatrixView::buildHeaders()
 // }
 void SeriesMatrixView::buildRows()
 {
-    int bomCount = _active.bomMaterials.size();
-
-    // --- rebuildMatrix után mindig teljes rebuild ---
     _table->setRowCount(0);
-    //_table->setRowCount(bomCount);
 
-    for (int i = 0; i < bomCount; ++i)
-        addRow(_active.bomMaterials[i]);
+    const auto& mats = _active.bomMaterials;
+
+    for (int i = 0; i < mats.size(); ++i) {
+        _table->insertRow(i);
+
+        auto* mat = MaterialRegistry::instance().findById(mats[i]);
+        QString name = mat ? mat->toDisplay() : "(ismeretlen anyag)";
+
+        auto* item = new QTableWidgetItem(name);
+        item->setFont(QFont("Segoe UI", 8));
+        item->setForeground(QColor("#333333"));
+
+        // --- NINCS színezés ---
+        item->setBackground(Qt::white);
+
+        _table->setItem(i, 0, item);
+    }
 }
+
+
+
 
 const Cutting::Plan::Request* SeriesMatrixView::findRequestByExternalRef(const QString& ref) const
 {
@@ -581,12 +656,12 @@ QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Reque
                     continue;
 
                 // színszűrés
-                bool materialHasColor = mat.color.isValid() &&
-                                        !mat.color.code().trimmed().isEmpty();
+                // bool materialHasColor = mat.color.isValid() &&
+                //                         !mat.color.code().trimmed().isEmpty();
 
-                if (materialHasColor &&
-                    mat.color.code() != reqColor.code())
-                    continue;
+                // if (materialHasColor &&
+                //     mat.color.code() != reqColor.code())
+                //     continue;
 
                 result.append(mat.id);
             }
@@ -615,14 +690,26 @@ void SeriesMatrixView::refreshAfterAdd(const QString& ref)
 {
     _full = CuttingPlanRequestRegistry::instance().readAll();
 
+    // ⭐ PIPÁK SZINKRONIZÁLÁSA
+    _active.filledCells = _filledCache;
+
+    // ⭐ BOM SZINKRONIZÁLÁSA
+    _active.bomMaterials = buildSectionedBomList();
+
     int idx = findColumnIndex(ref);
 
     if (_table->rowCount() == 0 || _active.bomMaterials.isEmpty()) {
         ActiveSeries s;
         s.active = true;
         s.startRef = ref;
-        for (const auto& r : _full)
-            s.order.append(r.externalReference);
+        QSet<QString> seen;
+        for (const auto& r : _full) {
+            if (!seen.contains(r.externalReference)) {
+                seen.insert(r.externalReference);
+                s.order.append(r.externalReference);
+            }
+        }
+
         s.currentColumnIndex = s.order.indexOf(ref);
         s.currentMaterialIndex = 0;
 
@@ -639,7 +726,15 @@ void SeriesMatrixView::refreshAfterAdd(const QString& ref)
     _active.currentColumnIndex = idx - 1;
     _active.currentMaterialIndex = 0;
 
-    updateCell(_active.currentMaterialIndex, idx);
+    // --- HIÁNYZÓ LÉPÉS ---
+    if (!_active.order.contains(ref)) {
+        _active.order.append(ref);
+    }
+
+    // ❗ NEM egy cella, hanem az egész oszlop frissítése
+    for (int row = 0; row < _active.bomMaterials.size(); ++row) {
+        updateCell(row, idx);
+    }
 }
 
 
@@ -705,9 +800,9 @@ void SeriesMatrixView::updateCell(int row, int col)
 
     bool isFilled = _active.filledCells.contains({ref, matId});
 
-    qDebug() << "ref header:" << ref;
-    for (auto& p : _active.filledCells)
-        qDebug() << "filledCells ref:" << p.first;
+    // qDebug() << "ref header:" << ref;
+    // for (auto& p : _active.filledCells)
+    //     qDebug() << "filledCells ref:" << p.first;
 
     const auto* req = findRequestByExternalRef(ref);
     auto bomForThisColumn = generateBomMaterials(*req);
