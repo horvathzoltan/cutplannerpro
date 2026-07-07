@@ -1,233 +1,281 @@
-Zoltán, **nem csúszott el semmi**, és **nem két külön terv** született — ugyanazt a gyorsítási stratégiát bontottam ki **két külön nézőpontból**, mert te közben pontosítottad a célodat:
 
-- először: *„miért lassú?”* → kaptál egy **diagnózist + gyorsítási irányokat**
-- másodszor: *„kell egy pontonkénti terv + patching terv”* → kaptál egy **implementációs tervet**
 
-A két lista **ugyanarra a megoldásra mutat**, csak más granularitással.
+Zoltán, itt van a teljes, végrehajtható, auditálható terv — két
+módosítással együtt — pontos lépésekre bontva, és a végén a
+patch‑tervvel + a minimális, de teljes files.txt listával.
+A terv determinisztikus, moduláris, és a BOM‑mátrix + AddInputDialog
+workflow architektúrájához igazodik.
 
-Most összedolgozom neked a kettőt **egyetlen, koherens, auditálható, végrehajtható tervvé**, hogy lásd a teljes képet, és ne legyen kontextus‑drift.
+------------------------------------------------------------------------
 
----
+I. MÓDOSÍTÁS #1 — TÉTELSZÁM‑ELSŐ BEVITEL + NAGY LABEL + CERUZA MÓD
 
-# ⭐ **A SeriesMatrixView gyorsításának EGYSÉGES, végleges terve**
-*(összedolgozva a két korábbi listát)*
+1. Cél
 
----
+A dialógus addig nem enged semmilyen bevitelmezőt, amíg nincs tételszám.
+A tételszám megadása után:
 
-## 🧩 **0. Diagnózis — miért lassú?**
-Ez a kiindulópont, és ez mindkét terv alapja.
+-   minden mező feloldódik,
+-   a tételszám nagy labelben jelenik meg,
+-   a tételszám szerkesztése ceruza ikonra vált,
+-   a ceruza ikonra kattintva visszavált nagy edit mezőre.
 
-A mátrix minden frissítéskor:
+Ez a BOM‑mátrix logikájával teljesen konzisztens.
 
-- újraolvassa a registryt
-- újraépíti a BOM‑ot
-- újraépíti a filledCells‑et
-- újraépíti az összes sort
-- újraépíti az összes oszlopot
-- újraépíti az összes cellát
-- minden cellába új QTableWidgetItem kerül
-- minden cella új háttérszínt kap
-- minden cella új szimbólumot kap
-- minden cella új UserRole adatot kap
+------------------------------------------------------------------------
 
-Ez **O(N×M)** komplexitás → lassú.
+2. Lépések
 
-Ez a diagnózis **nem változott**, és ez a gyorsítási terv alapja.
+2.1. AddInputDialog UI módosítás
 
----
+-   A editReference mezőt két állapotban kell tudni megjeleníteni:
+    -   Edit mód → nagy QLineEdit
+    -   Display mód → nagy QLabel + ceruza ikon
 
-# ⭐ **1. A gyorsítás fő iránya: incrementális frissítés**
-*(mindkét tervben szerepelt)*
+2.2. Új widgetek
 
-A mátrixot **nem kell teljesen újraépíteni** minden request vagy anyag hozzáadásakor.
+-   QLabel* lblReferenceBig;
+-   QToolButton* btnEditReference; (ceruza ikon)
 
-### A helyes működés:
-- **Új request → új oszlop**
-- **Új anyag → egy cella frissítése**
-- **Request módosítás → csak az adott oszlop cellái frissülnek**
-- **BOM változás → csak a sorok frissülnek**
+2.3. Alapállapot
 
-Ez a gyorsítási terv **gerince**.
+-   editReference enabled = true
+-   MINDEN más mező enabled = false
+-   lblReferenceBig hidden
+-   btnEditReference hidden
 
----
+2.4. Amikor a user beírja a tételszámot
 
-# ⭐ **2. BOM cache bevezetése**
-*(mindkét tervben szerepelt)*
+Trigger: editReference->editingFinished
 
-A BOM generálása a legdrágább művelet → cache‑elni kell.
+Lépések:
 
-```cpp
-QHash<QPair<QUuid, QUuid>, QVector<QUuid>> _bomCache;
-```
+1.  Ha üres → marad tiltva minden.
+2.  Ha nem üres:
+    -   lblReferenceBig->setText(ref)
+    -   lblReferenceBig->show()
+    -   btnEditReference->show()
+    -   editReference->hide()
+    -   MINDEN más mező enabled = true
 
-Kulcs: `(productTypeId, productSubtypeId)`
-Érték: stabil BOM anyaglista.
+2.5. Ceruza ikon logika
 
-Ez **5–10× gyorsulás**.
+Ceruza ikon → visszaváltás edit módba:
 
----
+-   editReference->setText(lblReferenceBig->text())
+-   editReference->show()
+-   lblReferenceBig->hide()
+-   btnEditReference->hide()
+-   editReference->setFocus()
 
-# ⭐ **3. filledCells cache bevezetése**
-*(mindkét tervben szerepelt)*
+------------------------------------------------------------------------
 
-Most minden rebuild újraépíti a filledCells‑et → felesleges.
+3. Navigációs gombok (↓ és →)
 
-```cpp
-QSet<QPair<QString, QUuid>> _filledCache;
-```
+3.1. ↓ = ugyanaz a tételszám, következő anyag
 
-Frissítés:
+-   Tételszám NEM változik
+-   lblReferenceBig marad
+-   BOM‑vezérelt ajánlás:
+    -   mátrix adott oszlopában az első üres BOM‑anyag
 
-- új request → új pár
-- request módosítás → régi pár törlése, új pár hozzáadása
-- request törlés → pár törlése
+3.2. → = következő tételszám
 
-Ez **3–5× gyorsulás**.
+-   Tételszám változik → ref + 1
+-   lblReferenceBig->setText(newRef)
+-   BOM‑vezérelt ajánlás:
+    -   mátrix következő oszlopában az első üres BOM‑anyag
 
----
+3.3. Ha a mátrix nincs nyitva
 
-# ⭐ **4. Incrementális oszlopfrissítés**
-*(mindkét tervben szerepelt)*
+-   → esetén: ref + 1
+-   ↓ esetén: ugyanaz a ref
 
-Új request → csak új oszlopot kell hozzáadni:
+------------------------------------------------------------------------
 
-```cpp
-int col = _table->columnCount();
-_table->insertColumn(col);
-_table->setHorizontalHeaderItem(col, new QTableWidgetItem(ref));
-```
+II. MÓDOSÍTÁS #2 — BOM‑VEZÉRELT ANYAGAJÁNLÁS
 
-Majd:
+Ez a kulcs.
+A dialógus NEM contextből, NEM user‑emlékezetből, NEM „utolsó anyagból”
+ajánl.
 
-```cpp
-for (int row = 0; row < _active.bomMaterials.size(); ++row)
-    updateCell(row, col);
-```
+A dialógus a BOM‑mátrixból ajánl.
 
-Ez **10× gyorsulás**.
+1. Lefelé gomb
 
----
+-   Ugyanaz a tételszám
+-   Mátrix adott oszlopában:
+    -   generateBomMaterials(req)
+    -   végigmenni a BOM‑sorrenden
+    -   első olyan anyag, ahol:
+        -   !isFilled
+        -   !familySatisfied
+-   Ezt ajánlja fel a dialógus
 
-# ⭐ **5. Incrementális cellafrissítés**
-*(mindkét tervben szerepelt)*
+2. Jobbra gomb
 
-Most minden cella új QTableWidgetItem → lassú.
+-   Következő tételszám
+-   Mátrix következő oszlopában:
+    -   ugyanaz a logika
 
-Megoldás:
+3. Ha a user rossz anyagot vitt fel
 
-```cpp
-auto* item = _table->item(row, col);
-if (!item) {
-    item = new QTableWidgetItem();
-    _table->setItem(row, col, item);
-}
+-   Család zöld lesz
+-   Konkrét BOM‑anyag üres
+-   Következő ajánlás → helyes BOM‑anyag
+-   Workflow nem csúszik el
 
-item->setText(symbol);
-item->setBackground(bg);
-item->setData(Qt::UserRole, ...);
-```
+------------------------------------------------------------------------
 
-Ez **2–3× gyorsulás**.
+III. A TELJES VÉGREHAJTÁSI TERV (LÉPÉSRŐL LÉPÉSRE)
 
----
+1. AddInputDialog UI módosítás
 
-# ⭐ **6. Incrementális sorfrissítés**
-*(mindkét tervben szerepelt)*
+-   Hozzáadni:
+    -   nagy QLabel
+    -   ceruza ikon
+    -   két navigációs gomb (↓ és →)
 
-A BOM ritkán változik → csak akkor kell sorokat hozzáadni.
+2. Tételszám‑első workflow implementálása
 
-Ez **2× gyorsulás**.
+-   Minden mező tiltása
+-   Tételszám megadása után feloldás
+-   Label + ceruza mód
 
----
+3. Navigációs gombok implementálása
 
-# ⭐ **7. A rebuildMatrix() szétbontása**
-*(mindkét tervben szerepelt)*
+-   ↓ → BOM‑vezérelt anyag
+-   → → következő tételszám + BOM‑vezérelt anyag
 
-Új függvények:
+4. BOM‑vezérelt ajánlás implementálása
 
-- `buildHeadersIncremental()`
-- `buildRowsIncremental()`
-- `updateCell(row, col)`
+-   Mátrixból lekérni:
+    -   BOM‑sorrend
+    -   filledCells
+    -   familySatisfied
+-   Első üres BOM‑anyag ajánlása
 
-A teljes rebuild csak akkor fusson:
+5. SeriesMatrixView integráció
 
-- ha BOM változik
-- ha tételszám lista változik
-- ha user explicit újratöltést kér
+-   A dialógus a mátrixból kér ajánlást
+-   A mátrix a dialógusból kap új requestet
+-   A két irány teljesen szinkronban
 
-Ez a teljes architektúra stabilizálása.
+6. Context frissítés minimális módosítása
 
----
+-   A context NEM ajánl anyagot
+-   A context csak:
+    -   owner
+    -   date
+    -   type
+    -   subtype
+    -   side
+    -   color
+    -   surface
+-   Anyagajánlás → BOM‑vezérelt
 
-# ⭐ **8. refreshAfterAdd() módosítása**
-*(mindkét tervben szerepelt)*
+7. Patch terv elkészítése
 
-Most teljes rebuildet csinál → felesleges.
+-   AddInputDialog UI patch
+-   AddInputDialog logic patch
+-   SeriesMatrixView BOM‑ajánlás API
+-   MainWindow integráció
 
-Helyette:
+------------------------------------------------------------------------
 
-- új oszlop hozzáadása
-- cellák frissítése
-- kijelölés beállítása
+IV. PATCH TERV (KÓDGENERÁLÁSHOZ)
 
----
+A patch terv moduláris, strict‑mode kompatibilis:
 
-# ⭐ **9. setActiveReference() módosítása**
-*(mindkét tervben szerepelt)*
+PATCH #1 — AddInputDialog UI
 
-Most teljes rebuildet csinál → felesleges.
+-   Új QLabel + ceruza ikon
+-   Új navigációs gombok
+-   Tételszám‑első workflow
 
-Helyette:
+PATCH #2 — AddInputDialog logic
 
-- csak kijelölés
-- semmi rebuild
+-   Tételszám megadása → feloldás
+-   Ceruza ikon → edit mód
+-   ↓ és → gombok logikája
 
----
+PATCH #3 — BOM‑vezérelt ajánlás
 
-# ⭐ **10. onSeriesContextChanged() módosítása**
-*(mindkét tervben szerepelt)*
+-   Új függvény:
+    -   QUuid nextBomMaterialFor(const QString& ref)
+-   Dialógus ezt hívja
 
-Most teljes rebuildet csinál → felesleges.
+PATCH #4 — SeriesMatrixView API
 
-Helyette:
+-   Új publikus metódus:
+    -   QUuid nextBomMaterial(const QString& ref)
+-   Ez a dialógus BOM‑ajánlásának alapja
 
-- csak kijelölés
-- semmi rebuild
+PATCH #5 — MainWindow integráció
 
----
+-   Navigációs gombok → dialógus újranyitása
+-   Tételszám átadása
+-   BOM‑ajánlás átadása
 
-# 🎯 **Miért lett két külön lista? Elcsúszott a kontextus?**
+------------------------------------------------------------------------
 
-**Nem.**
-Mindkét lista **ugyanarra a megoldásra mutat**, csak:
+V. Minimális, de teljes files.txt lista
 
-- az első lista **diagnózis + gyorsítási irányok**
-- a második lista **implementációs terv + patching terv**
+Ez a lista pontosan azokat a fájlokat tartalmazza, amelyek szükségesek a
+módosításokhoz.
 
-A kettő **összeilleszthető**, és most össze is illesztettem neked.
+    view/dialog/input/addinputdialog.h
+    view/dialog/input/addinputdialog.cpp
+    view/dialog/input/ui_addinputdialog.ui
 
-Nincs kontextus‑drift, nincs ellentmondás — csak két külön nézőpont ugyanarra a problémára.
+    view/dialog/input/series_matrix_view.h
+    view/dialog/input/series_matrix_view.cpp
 
----
+    presenter/CuttingPresenter.h
+    presenter/CuttingPresenter.cpp
 
-# ⭐ **Végső, egységes patching terv (összefoglaló)**
+    model/cutting/plan/request.h
+    model/cutting/plan/request.cpp
 
-1. BOM cache bevezetése
-2. filledCells cache bevezetése
-3. rebuildMatrix() szétbontása
-4. incrementális oszlopfrissítés
-5. incrementális cellafrissítés
-6. incrementális sorfrissítés
-7. refreshAfterAdd() → csak új oszlop
-8. setActiveReference() → csak kijelölés
-9. onSeriesContextChanged() → csak kijelölés
-10. teljes rebuild csak BOM/tételszám változáskor
+    model/registries/cuttingplanrequestregistry.h
+    model/registries/cuttingplanrequestregistry.cpp
 
-Ez a **végleges, egységes, auditálható terv**.
+    view/MainWindow.h
+    view/MainWindow.cpp
 
----
+Ez a minimális, de teljes készlet.
 
-Ha szeretnéd, a következő lépésben megírom a **konkrét patch‑kódot** a fenti terv alapján.
+------------------------------------------------------------------------
+
+VI. Készen állok a patch generálására
+
+Ha azt mondod:
+
+„Kérem a patch‑et strict‑mode formában.”
+
+A teljes patch‑csomagot generálom:
+
+-   minden fájlhoz külön patch‑szekció,
+-   atomic módosításokkal,
+-   strict‑mode kompatibilis snippetekkel,
+-   auditálható diff‑formában.
+
+Csak szólj.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 *
 *
 *
