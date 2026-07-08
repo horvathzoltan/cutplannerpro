@@ -41,6 +41,11 @@ public:
 //                                 const QString& externalRefPrefix);
 
     QVector<QUuid> buildSectionedBomList();
+
+    QUuid nextBomMaterial(const QString& ref) const;
+
+    QString nextBomReference_2(const QString &currentRef);
+    QString nextBomReference(const QString &currentRef);
 signals:
     void matrixClosed();
 
@@ -64,10 +69,10 @@ private:
     QSet<QUuid> _bomMaterialsSet;     // BOM anyagok halmaza
 
     void computeMaterialSets();
-    QVector<QUuid> generateBomMaterials(const Cutting::Plan::Request &req);
+    QVector<QUuid> generateBomMaterials(const Cutting::Plan::Request &req) const;
     const Cutting::Plan::Request *findRequestByExternalRef(const QString &ref) const;
 
-    QHash<QPair<QUuid, QUuid>, QVector<QUuid>> _bomCache;
+    mutable QHash<QPair<QUuid, QUuid>, QVector<QUuid>> _bomCache;
     inline QPair<QUuid, QUuid> bomKey(const Cutting::Plan::Request& req) const {
         return qMakePair(req.productTypeId, req.productSubtypeId);
     }

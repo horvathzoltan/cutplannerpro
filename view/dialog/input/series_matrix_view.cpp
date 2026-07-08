@@ -588,7 +588,7 @@ void SeriesMatrixView::computeMaterialSets()
 
 // }
 
-QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Request& req)
+QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Request& req) const
 {
     auto key = qMakePair(req.productTypeId, req.productSubtypeId);
 
@@ -694,6 +694,7 @@ void SeriesMatrixView::refreshAfterAdd(const QString& ref)
     _active.filledCells = _filledCache;
 
     // ⭐ BOM SZINKRONIZÁLÁSA
+    clearBomCache();
     _active.bomMaterials = buildSectionedBomList();
 
     int idx = findColumnIndex(ref);
@@ -926,3 +927,91 @@ int SeriesMatrixView::findColumnIndex(const QString& ref) const
     }
     return -1;
 }
+
+QUuid SeriesMatrixView::nextBomMaterial(const QString& ref) const
+{
+    int col = findColumnIndex(ref);
+    if (col == -1)
+        return QUuid();
+
+    const auto* req = findRequestByExternalRef(ref);
+    if (!req)
+        return QUuid();
+
+    auto bom = generateBomMaterials(*req);
+
+    for (const auto& matId : bom) {
+        bool isFilled = _active.filledCells.contains({ref, matId});
+
+        bool familySatisfied = false;
+        auto* mat = MaterialRegistry::instance().findById(matId);
+        MaterialFamily fam = mat ? mat->family : MaterialFamily::Unknown;
+
+        for (const auto& r : _full) {
+            if (r.externalReference == ref) {
+                auto* m2 = MaterialRegistry::instance().findById(r.materialId);
+                if (m2 && m2->family == fam) {
+                    familySatisfied = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isFilled && !familySatisfied)
+            return matId;
+    }
+
+    if (!bom.isEmpty())
+        return bom.first();
+
+    return QUuid();
+}
+
+QString SeriesMatrixView::nextBomReference_2(const QString& currentRef)
+{
+    // Ha nincs aktív sorozat, nincs mit számolni
+    if (_active.order.isEmpty())
+        return QString();
+
+    int maxRef = -1;
+
+    // 1) Az összes ismert tételszámot végigjárjuk
+    for (const auto& refStr : _active.order) {
+        bool ok = false;
+        int ref = refStr.toInt(&ok);
+        if (ok && ref > maxRef)
+            maxRef = ref;
+    }
+
+    // 2) Ha semelyik nem volt értelmes szám
+    if (maxRef < 0)
+        return QString();
+
+    // 3) Következő tételszám
+    return QString::number(maxRef + 1);
+}
+
+QString SeriesMatrixView::nextBomReference(const QString& currentRef)
+{
+    // 1) Ha nincs sorozat → nincs mit tenni
+    if (_active.order.isEmpty())
+        return QString();
+
+    // 2) Megkeressük az aktuális tételszám indexét
+    int idx = _active.order.indexOf(currentRef);
+    if (idx < 0)
+        return QString();   // nincs ilyen tételszám
+
+    // 3) Ha van következő tételszám → azt adjuk vissza
+    if (idx + 1 < _active.order.size())
+        return _active.order[idx + 1];
+
+    // 4) Ha az utolsón állunk → új tételszám = utolsó + 1
+    bool ok = false;
+    int last = currentRef.toInt(&ok);
+    if (!ok)
+        return QString();
+
+    return QString::number(last + 1);
+}
+

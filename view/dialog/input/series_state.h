@@ -44,6 +44,9 @@ struct ActiveSeries
     // Felvitt cellák: (tételszám, materialId)
     QSet<QPair<QString, QUuid>> filledCells;
 
+    // Szerkesztési mód jelző
+    bool editingMode = false;
+
     // Reset funkció (új sorozat indításakor)
     void reset()
     {

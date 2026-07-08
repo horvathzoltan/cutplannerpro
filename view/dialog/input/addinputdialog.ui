@@ -6,14 +6,83 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>587</width>
-    <height>468</height>
+    <width>608</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label_ContextMode">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_ref">
+     <property name="text">
+      <string>Külső tételszám:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="layoutReferenceUnified">
+     <item>
+      <widget class="QLineEdit" name="editReference"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblReferenceBig">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>—</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnEditReference">
+       <property name="text">
+        <string>✏️</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnNextMaterial">
+       <property name="text">
+        <string>↓ Köv. anyag</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnNextRef">
+       <property name="text">
+        <string>→ Köv. tételszám</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Darabszám</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QSpinBox" name="spinQuantity">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_owner">
      <property name="text">
@@ -38,61 +107,31 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="label">
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Vágási hossz [mm]</string>
+      <string>RAL color</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
-    <widget class="QLineEdit" name="editLength"/>
-   </item>
-   <item row="15" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_productType">
-     <property name="title">
-      <string>Termék típus</string>
-     </property>
-    </widget>
-   </item>
-   <item row="21" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="21" column="1">
-    <widget class="QCheckBox" name="chk_Repeat">
-     <property name="text">
-      <string>Új tétel felvitele</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_ref">
-     <property name="text">
-      <string>Külső tételszám:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+   <item row="8" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLineEdit" name="editReference"/>
+      <widget class="QLineEdit" name="edit_Color"/>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_Reset">
+      <widget class="QLabel" name="label_Surface">
        <property name="text">
-        <string>Reset</string>
+        <string>Felület:</string>
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_Surface"/>
+     </item>
     </layout>
    </item>
+
    <item row="10" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -113,27 +152,19 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_5">
+   </item>   
+   <item row="11" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>RAL color</string>
+      <string>Vágási hossz [mm]</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Darabszám</string>
-     </property>
-    </widget>
+   <item row="11" column="1">
+    <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="5" column="1">
-    <widget class="QSpinBox" name="spinQuantity">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
+   <item row="12" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="layout_colorPreview"/>
    </item>
    <item row="13" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackHandlerSide">
@@ -182,10 +213,10 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_ContextMode">
-     <property name="text">
-      <string>TextLabel</string>
+   <item row="15" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_productType">
+     <property name="title">
+      <string>Termék típus</string>
      </property>
     </widget>
    </item>
@@ -198,27 +229,46 @@
      <widget class="QWidget" name="page_2"/>
     </widget>
    </item>
-   <item row="8" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item row="21" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QLineEdit" name="edit_Color"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_Surface">
+      <widget class="QCheckBox" name="chk_Repeat">
        <property name="text">
-        <string>Felület:</string>
+        <string>Új tétel felvitele</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_Surface"/>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_Reset">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
      </item>
     </layout>
-   </item>
-   <item row="9" column="0" colspan="2">
-    <widget class="QWidget" name="colorPreviewPanel">
-     <layout class="QHBoxLayout" name="layout_colorPreview"/>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -231,8 +281,6 @@
   <tabstop>editLength</tabstop>
   <tabstop>radioLeft</tabstop>
   <tabstop>radioRight</tabstop>
-  <tabstop>chk_Repeat</tabstop>
-  <tabstop>btn_Reset</tabstop>
   <tabstop>btn_MaterialSearch</tabstop>
   <tabstop>sliderHandler</tabstop>
  </tabstops>

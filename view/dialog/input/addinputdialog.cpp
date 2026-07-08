@@ -25,10 +25,13 @@ bool AddInputDialog::s_lastRepeat = false;
 
 AddInputDialog::AddInputDialog(QWidget *parent,
                                DialogMode mode,
-                               const Cutting::Plan::Request* initial)
+                               const Cutting::Plan::Request* initial,
+                               SeriesMatrixView* matrix)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
+    , _matrix(matrix)
     , current_requestId(QUuid::createUuid())
+
 {
     if (_contexts.isEmpty()) {
         loadContextMap();
@@ -42,6 +45,24 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     _shiftEnterAccepted = false;
 
     ui->setupUi(this);
+
+    ui->editReference->installEventFilter(this);
+
+    // NINCS stackReferenceMode használat
+    lblReferenceBig    = ui->lblReferenceBig;
+    btnEditReference   = ui->btnEditReference;
+    btnNextRef         = ui->btnNextRef;
+    btnNextMaterial    = ui->btnNextMaterial;
+
+    // Kezdő állapot: nincs tételszám → edit mode
+    enterReferenceEditMode();
+    lockAllFieldsUntilReference();
+
+    connect(ui->btnEditReference, &QToolButton::clicked,
+            this, &AddInputDialog::on_btnEditReference_clicked);
+
+
+
 
     // ⭐ ProductType layout
     auto* typeLayout = new QFlowLayout(ui->groupBox_productType);
@@ -115,35 +136,94 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(ui->editReference, &QLineEdit::editingFinished,
             this, [this]() {
-                // ⭐ UPDATE módban nincs context workflow
-                if (_contextMode == ContextMode::Update)
-                    return;
 
                 QString ref = ui->editReference->text().trimmed();
-
-                // ⭐ 1) üres → nincs workflow
-                if (ref.isEmpty())
+                if (ref.isEmpty()) {
+                    enterReferenceEditMode();      // mindent vissza beíró módba
                     return;
+                }
 
-                // ⭐ 2) nem változott → nincs workflow
-                if (ref == _originalReference)
-                    return;
+                // Van tételszám → display+nav mód
+                enterReferenceDisplayMode(ref);
+                                //ui->editReference->setFocus();
 
-                // ⭐ 3) változott → workflow indul
-                _contextMode = detectContextMode(ref);
-                applyContextMode(_contextMode, ref);
-                updateContextModeLabel();
-
-                // ⭐ 4) új eredeti érték mentése
-                _originalReference = ref;
-
-                // ⭐ PATCH #3 — workflow frissítése
-                updateSeriesStateAfterEditingFinished(ref);
-
-                // ⭐ PATCH #3 — jelzés a SeriesMatrixView felé
-                emit seriesContextChanged(ui->editOwner->text().trimmed(), ref);
-
+                // ⭐ Context workflow (meglévő kód)
+                if (_contextMode != ContextMode::Update) {
+                    _contextMode = detectContextMode(ref);
+                    applyContextMode(_contextMode, ref);
+                    updateContextModeLabel();
+                    _originalReference = ref;
+                    updateSeriesStateAfterEditingFinished(ref);
+                    emit seriesContextChanged(ui->editOwner->text().trimmed(), ref);
+                }
             });
+
+    connect(btnNextRef, &QPushButton::clicked, this, [this]() {
+
+        QString next;
+
+        if (_matrix) {
+            next = _matrix->nextBomReference(ui->editReference->text().trimmed());
+        }
+
+        // Fallback: régi logika, ha mátrix nem ad semmit
+        if (next.isEmpty()) {
+            next = computeNextReference();
+        }
+
+        if (next.isEmpty())
+            return;
+
+        ui->editReference->setText(next);
+        enterReferenceDisplayMode(next);
+
+        // BOM anyag ajánlás
+        if (_matrix) {
+            QUuid matId = _matrix->nextBomMaterial(next);
+            if (!matId.isNull()) {
+                int idx = ui->comboMaterial->findData(matId);
+                if (idx >= 0) {
+                    ui->comboMaterial->setCurrentIndex(idx);
+                    return;
+                }
+            }
+        }
+
+        ui->comboMaterial->setCurrentIndex(0);
+    });
+
+
+    connect(btnNextMaterial, &QPushButton::clicked, this, [this]() {
+
+        // 🔹 Combo üres → nincs mit tenni
+        if (ui->comboMaterial->count() == 0)
+            return;
+
+        QString ref = ui->editReference->text().trimmed();
+        if (ref.isEmpty())
+            return;   // nincs tételszám → nem navigálunk
+
+        // 🔹 Ha van mátrix → BOM ajánlás
+        if (_matrix) {
+            QUuid matId = _matrix->nextBomMaterial(ref);
+
+            if (!matId.isNull()) {
+                int idx = ui->comboMaterial->findData(matId);
+                if (idx >= 0) {
+                    ui->comboMaterial->setCurrentIndex(idx);
+                    return;
+                }
+            }
+        }
+
+        // 🔹 Fallback: combo következő elem
+        int idx = ui->comboMaterial->currentIndex();
+        if (idx < ui->comboMaterial->count() - 1)
+            ui->comboMaterial->setCurrentIndex(idx + 1);
+
+        // ❌ NINCS módváltás
+        // NAV mód = Display mód része → nem kell váltani
+    });
 
 
 
@@ -274,69 +354,29 @@ AddInputDialog::~AddInputDialog()
 
 void AddInputDialog::initializeDialog()
 {
+    QString ref = ui->editReference->text().trimmed();
+
     //
-    // 1) CREATE mód
+    // 1) Ha nincs tételszám → EDIT MODE
     //
-    if (_mode == DialogMode::Create) {
-
-        // ⭐ Ha van előző tétel és repeat be volt kapcsolva,
-        //    és van érvényes nextRef → SOROZAT mód induljon
-        if (s_lastRepeat && !_nextSuggestedRef.isEmpty()) {
-
-            // következő tételszám beírása
-            ui->editReference->setText(_nextSuggestedRef);
-            _contextMode = ContextMode::Sequential;
-
-            // előző tétel kontextusának visszatöltése
-            applySequentialContext(_nextSuggestedRef);
-
-            // context workflow lefuttatása
-            QString ref = ui->editReference->text().trimmed();
-            _contextMode = detectContextMode(ref);
-            applyContextMode(_contextMode, ref);
-
-            updateContextModeLabel();
-            applyInitialFocus();
-            return;
-        }
-
-        // ⭐ Ha nincs repeat vagy nincs nextRef → ÚJ MEGRENDELŐ
-        ui->editReference->clear();
-        _contextMode = ContextMode::NewOrder;
-
-        applyNewOrderContext();
-        updateContextModeLabel();
-        applyInitialFocus();
+    if (ref.isEmpty()) {
+        enterReferenceEditMode();
         return;
     }
 
     //
-    // 2) NEM CREATE mód → sorozat vagy kézi tételszám workflow
+    // 2) Ha van tételszám → DISPLAY MODE
     //
-    if (!_nextSuggestedRef.isEmpty()) {
-        ui->editReference->setText(_nextSuggestedRef);
-        _contextMode = ContextMode::Sequential;
+    enterReferenceDisplayMode(ref);
 
-        applySequentialContext(_nextSuggestedRef);
-    }
-    else {
-        ui->editReference->clear();
-        _contextMode = ContextMode::NewOrder;
-
-        applyNewOrderContext();
-    }
-
-    QString ref = ui->editReference->text().trimmed();
+    // Kontextus workflow (ha kell)
     _contextMode = detectContextMode(ref);
     applyContextMode(_contextMode, ref);
-
     updateContextModeLabel();
-    applyInitialFocus();
 
-    emit seriesContextChanged(ui->editOwner->text().trimmed(),
-                              ui->editReference->text().trimmed());
-
+    emit seriesContextChanged(ui->editOwner->text().trimmed(), ref);
 }
+
 
 
 AddInputDialog::ContextMode AddInputDialog::detectContextMode(const QString& ref)
@@ -745,21 +785,21 @@ void AddInputDialog::updateSliderLabels()
 
 void AddInputDialog::keyPressEvent(QKeyEvent *e)
 {
-    // Shift+Enter → OK + új tétel
-    // if ((e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) &&
-    //     (e->modifiers() & Qt::ShiftModifier))
-    // {
-    //     if (validateInputs()) {
-    //         _shiftEnterAccepted = true;
-    //         accept();
-    //     }
-    //     return;
-    // }
-
     // Enter → OK, de csak ha nem QLineEdit-ben vagyunk
     if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter)
     {
         QWidget *w = focusWidget();
+
+        // ⭐ ENTER a tételszám mezőben → csak módváltás, NEM accept
+        if (w == ui->editReference)
+        {
+            QString ref = ui->editReference->text().trimmed();
+            if (!ref.isEmpty())
+            {
+                enterReferenceDisplayMode(ref);
+            }
+            return;   // ❗ Kritikus: NEM acceptálunk
+        }
 
         if (qobject_cast<QLineEdit*>(w)) {
             focusNextChild();
@@ -784,6 +824,23 @@ void AddInputDialog::keyPressEvent(QKeyEvent *e)
 //⭐ Length mező automatikus kijelölése
 bool AddInputDialog::eventFilter(QObject *obj, QEvent *event)
 {
+    // ⭐ Tételszám mező speciális ENTER-kezelése
+    if (obj == ui->editReference && event->type() == QEvent::KeyPress) {
+        auto *ke = static_cast<QKeyEvent*>(event);
+
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+
+            QString ref = ui->editReference->text().trimmed();
+            if (!ref.isEmpty()) {
+                enterReferenceDisplayMode(ref);
+            }
+
+            // ⭐ Kritikus: elnyeljük az eseményt → NEM megy tovább a dialoghoz
+            return true;
+        }
+    }
+
+    // meglévő length-selectAll logika
     if (obj == ui->editLength && event->type() == QEvent::FocusIn) {
         ui->editLength->selectAll();
     }
@@ -1304,14 +1361,19 @@ void AddInputDialog::applySurfaceFromRequest(const Cutting::Plan::Request& req)
 
 void AddInputDialog::updateColorPreview()
 {
-    QWidget* panel = ui->colorPreviewPanel;
-    auto* lay = qobject_cast<QHBoxLayout*>(panel->layout());
+    // 1) Layout közvetlen elérése
+    auto* lay = ui->layout_colorPreview;
+    if (!lay)
+        return;
 
+    // 2) Layout kiürítése
     while (QLayoutItem* item = lay->takeAt(0)) {
-        if (item->widget()) item->widget()->deleteLater();
+        if (QWidget* w = item->widget())
+            w->deleteLater();
         delete item;
     }
 
+    // 3) Szín értelmezése
     QString raw = ui->edit_Color->text().trimmed();
     NamedColor nc = NamedColor::fromUserInput(raw);
 
@@ -1319,117 +1381,88 @@ void AddInputDialog::updateColorPreview()
     const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
 
     bool paintingNeeded = false;
-    if (mat && nc.isValid()) {
-        if (mat->paintingMode != PaintingMode::None)
-            paintingNeeded = (nc.code() != mat->color.code());
+    if (mat && nc.isValid() && mat->paintingMode != PaintingMode::None) {
+        paintingNeeded = (nc.code() != mat->color.code());
     }
 
-    int len = ui->editLength->text().toInt();
-    int qty = ui->spinQuantity->value();
+    int len   = ui->editLength->text().toInt();
+    int qty   = ui->spinQuantity->value();
     int total = (paintingNeeded ? len * qty : 0);
     QString postfix = (mat ? profilePostfixFor(mat->barcode) : QString());
 
-    QLabel* box = new QLabel(panel);
-    box->setFixedSize(16,16);
+    // 4) Szín kocka
+    QLabel* box = new QLabel(this);
+    box->setFixedSize(16, 16);
     if (nc.isValid())
-        box->setStyleSheet(QString("background-color:%1; border:1px solid #444;")
-                               .arg(nc.color().name()));
+        box->setStyleSheet(
+            QString("background-color:%1; border:1px solid #444;")
+                .arg(nc.color().name()));
     lay->addWidget(box);
 
-    QLabel* codeLbl = new QLabel(nc.isValid() ? nc.code() : QString("Ismeretlen"), panel);
+    // 5) Kód + név
+    QLabel* codeLbl = new QLabel(nc.isValid() ? nc.code() : QString("Ismeretlen"), this);
     lay->addWidget(codeLbl);
 
-    QLabel* nameLbl = new QLabel(nc.isValid() ? nc.name() : QString(""), panel);
+    QLabel* nameLbl = new QLabel(nc.isValid() ? nc.name() : QString(), this);
     lay->addWidget(nameLbl);
 
-    if (paintingNeeded && mat->paintingMode != PaintingMode::None) {
-        QLabel* icon = new QLabel("🖌️", panel);
+    // 6) Festés info
+    if (paintingNeeded && mat && mat->paintingMode != PaintingMode::None) {
+        QLabel* icon = new QLabel("🖌️", this);
         lay->addWidget(icon);
 
-        QLabel* lenLbl = new QLabel(
+        QString text =
             postfix.isEmpty()
                 ? QString("%1 mm").arg(total)
                 : QString("%1 mm (%2 m × %3)")
                       .arg(total)
                       .arg(total / 1000.0, 0, 'f', 2)
-                      .arg(postfix),
-            panel);
+                      .arg(postfix);
+
+        QLabel* lenLbl = new QLabel(text, this);
         lay->addWidget(lenLbl);
     }
-
 
     lay->addStretch();
 }
 
-
 void AddInputDialog::updateSeriesStateAfterAccept(const Cutting::Plan::Request& req)
 {
-    //
-    // 1) Sorozat indulása
-    //
-    if (!_series.active) {
+    // 1) Ha szerkesztünk → csak cella frissítés
+    if (_contextMode == ContextMode::Update) {
+        _series.filledCells.insert({ req.externalReference, req.materialId });
+        _series.editingMode = true;   // ← VISSZAJÖHET
+        return;
+    }
 
+    // 2) Sorozat indulása
+    if (!_series.active) {
         _series.active = true;
         _series.startRef = req.externalReference;
-
         _series.order.clear();
         _series.order.append(req.externalReference);
 
-        // BOM anyagok lekérése
-        auto bomMap = BomRegistry::instance().bomMap(req.productTypeId,
-                                                     req.productSubtypeId);
-
-        // 1) BOM anyagok lekérése (konkrét anyagok!)
-        auto roles = MaterialRoleRegistry::instance()
-                         .findRoles(req.productTypeId, req.productSubtypeId);
-
-        _series.bomMaterials.clear();
-
-        NamedColor reqColor = req.requiredColor;
-
-        for (const auto& role : roles) {
-
-            QString prefix = role.barcodePrefix.trimmed();
-            if (prefix.endsWith("*"))
-                prefix.chop(1);
-
-            for (const auto& mat : MaterialRegistry::instance().readAll()) {
-
-                // 1) Prefix egyezés → csak a megfelelő terméktípus anyagai
-                if (!mat.barcode.startsWith(prefix))
-                    continue;
-
-                // 2) Szín egyezés → csak a megfelelő színű anyagok
-                if (mat.color.code() != reqColor.code())
-                    continue;
-
-                _series.bomMaterials.append(mat.id);
-            }
-        }
+        // BOM anyagok betöltése
+        loadBomMaterials(req);
 
         _series.currentMaterialIndex = 0;
         _series.currentColumnIndex = 0;
     }
 
-    //
-    // 2) Tételszám hozzáadása a sorozathoz
-    //
+    // 3) Új tételszám hozzáadása
     if (!_series.order.contains(req.externalReference)) {
         _series.order.append(req.externalReference);
     }
 
-    //
-    // 3) Cellakitöltés (✔)
-    //
+    // 4) Cellakitöltés
     _series.filledCells.insert({ req.externalReference, req.materialId });
 
-    //
-    // 4) Aktuális oszlop frissítése
-    //
+    // 5) Oszlop index frissítése
     int ix = _series.order.indexOf(req.externalReference);
     if (ix >= 0)
         _series.currentColumnIndex = ix;
 }
+
 
 
 void AddInputDialog::updateSeriesStateAfterEditingFinished(const QString& ref)
@@ -1437,16 +1470,132 @@ void AddInputDialog::updateSeriesStateAfterEditingFinished(const QString& ref)
     if (!_series.active)
         return;
 
-    // Ha visszatértünk a startRef-hez → anyagváltás
+    // 1) Ha szerkesztünk → nincs anyagváltás
+    if (_contextMode == ContextMode::Update) {
+        _series.editingMode = true;
+        return;
+    }
+
+    _series.editingMode = false;
+
+    // 2) Ha visszatértünk a startRef-hez → anyagváltás
     if (ref == _series.startRef) {
         _series.currentMaterialIndex++;
         if (_series.currentMaterialIndex >= _series.bomMaterials.size())
             _series.currentMaterialIndex = 0;
     }
 
-    // Oszlop index frissítése
+    // 3) Oszlop index frissítése
     int ix = _series.order.indexOf(ref);
     if (ix >= 0)
         _series.currentColumnIndex = ix;
 }
 
+void AddInputDialog::lockAllFieldsUntilReference()
+{
+    // ⭐ Csak a tételszám mező aktív
+    ui->editReference->setEnabled(true);
+
+    ui->editOwner->setEnabled(false);
+    ui->editDueDate->setEnabled(false);
+    ui->comboMaterial->setEnabled(false);
+    ui->btn_MaterialSearch->setEnabled(false);
+    ui->edit_Color->setEnabled(false);
+    ui->comboBox_Surface->setEnabled(false);
+    ui->editLength->setEnabled(false);
+    ui->spinQuantity->setEnabled(false);
+    ui->stackHandlerSide->setEnabled(false);
+    ui->groupBox_productType->setEnabled(false);
+    ui->stackedWidget_stackSubtype->setEnabled(false);
+
+}
+
+
+void AddInputDialog::unlockAllFieldsAfterReference()
+{
+    ui->editOwner->setEnabled(true);
+    ui->editDueDate->setEnabled(true);
+    ui->comboMaterial->setEnabled(true);
+    ui->btn_MaterialSearch->setEnabled(true);
+    ui->edit_Color->setEnabled(true);
+    ui->comboBox_Surface->setEnabled(true);
+    ui->editLength->setEnabled(true);
+    ui->spinQuantity->setEnabled(true);
+    ui->stackHandlerSide->setEnabled(true);
+    ui->groupBox_productType->setEnabled(true);
+    ui->stackedWidget_stackSubtype->setEnabled(true);
+}
+
+void AddInputDialog::on_btnEditReference_clicked(bool checked)
+{
+    Q_UNUSED(checked);
+    enterReferenceEditMode();
+}
+
+void AddInputDialog::updateSeriesNavigationButtons()
+{
+    bool enable = _series.active && _contextMode != ContextMode::Update;
+
+    btnNextRef->setEnabled(enable);
+    btnNextMaterial->setEnabled(enable);
+}
+
+void AddInputDialog::loadBomMaterials(const Cutting::Plan::Request& req)
+{
+    _series.bomMaterials.clear();
+
+    auto roles = MaterialRoleRegistry::instance()
+                     .findRoles(req.productTypeId, req.productSubtypeId);
+
+    NamedColor reqColor = req.requiredColor;
+
+    for (const auto& role : roles) {
+
+        QString prefix = role.barcodePrefix.trimmed();
+        if (prefix.endsWith("*"))
+            prefix.chop(1);
+
+        for (const auto& mat : MaterialRegistry::instance().readAll()) {
+
+            if (!mat.barcode.startsWith(prefix))
+                continue;
+
+            if (mat.color.code() != reqColor.code())
+                continue;
+
+            _series.bomMaterials.append(mat.id);
+        }
+    }
+}
+
+void AddInputDialog::enterReferenceEditMode()
+{
+    // Csak beírás, minden más tiltva
+    ui->editReference->show();
+    ui->editReference->setEnabled(true);
+    ui->editReference->setFocus();
+    ui->editReference->selectAll();
+
+    lblReferenceBig->hide();
+    btnEditReference->hide();
+    btnNextRef->hide();
+    btnNextMaterial->hide();
+
+    lockAllFieldsUntilReference();
+}
+
+void AddInputDialog::enterReferenceDisplayMode(const QString& ref)
+{
+    // Van tételszám → mutatás + nav
+    ui->editReference->hide();
+    ui->editReference->setEnabled(false);
+
+    lblReferenceBig->setText(ref);
+    lblReferenceBig->show();
+
+    btnEditReference->show();
+    btnNextRef->show();
+    btnNextMaterial->show();
+
+    unlockAllFieldsAfterReference();
+}

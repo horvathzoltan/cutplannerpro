@@ -3,7 +3,10 @@
 #include "../../../model/cutting/plan/request.h"
 #include "view/dialog/dialogmode.h"
 #include <QDialog>
+#include <QLabel>
+#include <QToolButton>
 #include <QUuid>
+#include "series_matrix_view.h"
 #include "series_state.h"
 
 
@@ -18,7 +21,8 @@ class AddInputDialog : public QDialog
 public:
     explicit AddInputDialog(QWidget *parent = nullptr,
                             DialogMode mode = DialogMode::Create,
-                            const Cutting::Plan::Request* initial = nullptr);
+                            const Cutting::Plan::Request* initial = nullptr,
+                            SeriesMatrixView* matrix = nullptr);
     ~AddInputDialog();
 
     enum class ContextMode {
@@ -51,11 +55,27 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
+private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo();
     bool validateInputs();
+    SeriesMatrixView* _matrix = nullptr;
 
-    void onQuantityChanged(int totalPieces);
+
+    // ⭐ Tételszám UI elemek (egy layouton)
+    QLabel* lblReferenceBig = nullptr;
+    QToolButton* btnEditReference = nullptr;
+    QPushButton* btnNextRef = nullptr;
+    QPushButton* btnNextMaterial = nullptr;
+
+    // ⭐ Kétmódú workflow metódusok
+    void enterReferenceEditMode();              // nincs tételszám → beírás
+    void enterReferenceDisplayMode(const QString& ref); // van tételszám → mutatás + nav
+
+    void lockAllFieldsUntilReference();
+    void unlockAllFieldsAfterReference();
+
+        void onQuantityChanged(int totalPieces);
     //void updateHandlerSideControls();
     void updateSliderLabels();
 
@@ -161,10 +181,14 @@ private:
     void updateSeriesStateAfterAccept(const Cutting::Plan::Request& req);
     void updateSeriesStateAfterEditingFinished(const QString& ref);
 
+    void updateSeriesNavigationButtons();
+    void loadBomMaterials(const Cutting::Plan::Request &req);
+
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();
     void onProductTypeChanged(bool checked);
+    void on_btnEditReference_clicked(bool checked);
 
 signals:
     void seriesContextChanged(const QString& owner,

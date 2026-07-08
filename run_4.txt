@@ -224,24 +224,24 @@ V. Minimális, de teljes files.txt lista
 Ez a lista pontosan azokat a fájlokat tartalmazza, amelyek szükségesek a
 módosításokhoz.
 
-    view/dialog/input/addinputdialog.h
-    view/dialog/input/addinputdialog.cpp
-    view/dialog/input/ui_addinputdialog.ui
+view/dialog/input/addinputdialog.h
+view/dialog/input/addinputdialog.cpp
+view/dialog/input/ui_addinputdialog.ui
 
-    view/dialog/input/series_matrix_view.h
-    view/dialog/input/series_matrix_view.cpp
+view/dialog/input/series_matrix_view.h
+view/dialog/input/series_matrix_view.cpp
 
-    presenter/CuttingPresenter.h
-    presenter/CuttingPresenter.cpp
+presenter/CuttingPresenter.h
+presenter/CuttingPresenter.cpp
 
-    model/cutting/plan/request.h
-    model/cutting/plan/request.cpp
+model/cutting/plan/request.h
+model/cutting/plan/request.cpp
 
-    model/registries/cuttingplanrequestregistry.h
-    model/registries/cuttingplanrequestregistry.cpp
+model/registries/cuttingplanrequestregistry.h
+model/registries/cuttingplanrequestregistry.cpp
 
-    view/MainWindow.h
-    view/MainWindow.cpp
+view/MainWindow.h
+view/MainWindow.cpp
 
 Ez a minimális, de teljes készlet.
 
