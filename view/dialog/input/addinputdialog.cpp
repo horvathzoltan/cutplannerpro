@@ -53,6 +53,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     btnEditReference   = ui->btnEditReference;
     btnNextRef         = ui->btnNextRef;
     btnNextMaterial    = ui->btnNextMaterial;
+    btnFirstRef = ui->btnFirstRef;
 
     // Kezdő állapot: nincs tételszám → edit mode
     enterReferenceEditMode();
@@ -226,6 +227,38 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     });
 
 
+    connect(btnFirstRef, &QPushButton::clicked, this, [this]() {
+
+        if (!_matrix)
+            return;
+
+        // 1) első tételszám lekérése
+        QString first = _matrix->firstBomReference();
+        if (first.isEmpty())
+            return;
+
+        // 2) dialógus mezőbe beírjuk
+        ui->editReference->setText(first);
+
+        // 3) display mód aktiválása
+        enterReferenceDisplayMode(first);
+
+        // 4) mátrixban is oda ugrunk
+        //_matrix->jumpToFirstReference();
+
+        // 5) BOM ajánlás az első tételszámhoz
+        QUuid matId = _matrix->nextBomMaterial(first);
+        if (!matId.isNull()) {
+            int idx = ui->comboMaterial->findData(matId);
+            if (idx >= 0) {
+                ui->comboMaterial->setCurrentIndex(idx);
+                return;
+            }
+        }
+
+        // fallback
+        ui->comboMaterial->setCurrentIndex(0);
+    });
 
     // qty változás → handler‑UI váltás
     connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged),

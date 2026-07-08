@@ -1015,3 +1015,31 @@ QString SeriesMatrixView::nextBomReference(const QString& currentRef)
     return QString::number(last + 1);
 }
 
+QString SeriesMatrixView::firstBomReference() const
+{
+    if (_active.order.isEmpty())
+        return QString();
+
+    return _active.order.first();
+}
+
+void SeriesMatrixView::jumpToFirstReference()
+{
+    if (_active.order.isEmpty())
+        return;
+
+    QString first = _active.order.first();
+
+    int col = findColumnIndex(first);
+    if (col == -1)
+        return;
+
+    _active.currentColumnIndex = col - 1;
+    _active.currentMaterialIndex = 0;
+
+    // teljes oszlop frissítés
+    for (int row = 0; row < _active.bomMaterials.size(); ++row)
+        updateCell(row, col);
+}
+
+

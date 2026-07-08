@@ -67,6 +67,7 @@ private:
     QToolButton* btnEditReference = nullptr;
     QPushButton* btnNextRef = nullptr;
     QPushButton* btnNextMaterial = nullptr;
+    QPushButton* btnFirstRef = nullptr;
 
     // ⭐ Kétmódú workflow metódusok
     void enterReferenceEditMode();              // nincs tételszám → beírás

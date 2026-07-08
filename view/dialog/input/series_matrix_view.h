@@ -46,6 +46,8 @@ public:
 
     QString nextBomReference_2(const QString &currentRef);
     QString nextBomReference(const QString &currentRef);
+    QString firstBomReference() const;
+    void jumpToFirstReference();
 signals:
     void matrixClosed();
 
