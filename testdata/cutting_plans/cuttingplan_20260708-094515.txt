@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1901";"AluschattenKönig";0;0;2447;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP
+"1902";"AluschattenKönig";0;0;2447;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP
+"1903";"AluschattenKönig";0;0;2812;;1;0;1;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP
+"1904";"AluschattenKönig";0;0;2812;;1;0;1;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP
+"1905";"AluschattenKönig";0;0;2812;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP
+"1906";"AluschattenKönig";0;0;2842;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-08;NP;CIP

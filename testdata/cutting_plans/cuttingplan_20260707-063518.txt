@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1887";"Szoat Bt., Nyh.";0;0;2310;;1;0;1;"RAL 8014";NP-T;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2335;;1;0;1;"RAL 8014";NP-TF;Width;false;2026-07-08;NP;CIP
+"1887";"Szoat Bt., Nyh.";0;0;2007;;1;0;1;"RAL 8014";NP-CL;Width;false;2026-07-08;NP;CIP
+"1888";"Szoat Bt., Nyh.";0;0;2217;;1;0;1;"RAL 8014";NP-CZ;Width;false;2026-07-08;NP;CIP
