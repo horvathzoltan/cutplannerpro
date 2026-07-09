@@ -194,17 +194,45 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     });
 
 
-    connect(btnNextMaterial, &QPushButton::clicked, this, [this]() {
+    // connect(btnNextMaterial, &QPushButton::clicked, this, [this]() {
 
-        // 🔹 Combo üres → nincs mit tenni
-        if (ui->comboMaterial->count() == 0)
-            return;
+    //     // 🔹 Combo üres → nincs mit tenni
+    //     if (ui->comboMaterial->count() == 0)
+    //         return;
+
+    //     QString ref = ui->editReference->text().trimmed();
+    //     if (ref.isEmpty())
+    //         return;   // nincs tételszám → nem navigálunk
+
+    //     // 🔹 Ha van mátrix → BOM ajánlás
+    //     if (_matrix) {
+    //         QUuid matId = _matrix->nextBomMaterial(ref);
+
+    //         if (!matId.isNull()) {
+    //             int idx = ui->comboMaterial->findData(matId);
+    //             if (idx >= 0) {
+    //                 ui->comboMaterial->setCurrentIndex(idx);
+    //                 return;
+    //             }
+    //         }
+    //     }
+
+    //     // 🔹 Fallback: combo következő elem
+    //     int idx = ui->comboMaterial->currentIndex();
+    //     if (idx < ui->comboMaterial->count() - 1)
+    //         ui->comboMaterial->setCurrentIndex(idx + 1);
+
+    //     // ❌ NINCS módváltás
+    //     // NAV mód = Display mód része → nem kell váltani
+    // });
+
+    connect(btnNextMaterial, &QPushButton::clicked, this, [this]() {
 
         QString ref = ui->editReference->text().trimmed();
         if (ref.isEmpty())
-            return;   // nincs tételszám → nem navigálunk
+            return;
 
-        // 🔹 Ha van mátrix → BOM ajánlás
+        // ⭐ BOM‑alapú körkörös navigáció
         if (_matrix) {
             QUuid matId = _matrix->nextBomMaterial(ref);
 
@@ -212,18 +240,11 @@ AddInputDialog::AddInputDialog(QWidget *parent,
                 int idx = ui->comboMaterial->findData(matId);
                 if (idx >= 0) {
                     ui->comboMaterial->setCurrentIndex(idx);
-                    return;
                 }
             }
         }
 
-        // 🔹 Fallback: combo következő elem
-        int idx = ui->comboMaterial->currentIndex();
-        if (idx < ui->comboMaterial->count() - 1)
-            ui->comboMaterial->setCurrentIndex(idx + 1);
-
-        // ❌ NINCS módváltás
-        // NAV mód = Display mód része → nem kell váltani
+        // ❌ Fallback teljes eltávolítása
     });
 
 
@@ -389,20 +410,21 @@ void AddInputDialog::initializeDialog()
 {
     QString ref = ui->editReference->text().trimmed();
 
-    //
-    // 1) Ha nincs tételszám → EDIT MODE
-    //
+    // Repeat BOM workflow → ugyanazon tételszámon folytatunk
+    if (ref.isEmpty() && s_lastRepeat && !s_lastExternalRef.isEmpty()) {
+        ref = s_lastExternalRef;
+        ui->editReference->setText(ref);
+    }
+
+    // 1) Ha továbbra sincs tételszám → EDIT MODE
     if (ref.isEmpty()) {
         enterReferenceEditMode();
         return;
     }
 
-    //
-    // 2) Ha van tételszám → DISPLAY MODE
-    //
+    // 2) Ha van tételszám → DISPLAY MODE + NAV
     enterReferenceDisplayMode(ref);
 
-    // Kontextus workflow (ha kell)
     _contextMode = detectContextMode(ref);
     applyContextMode(_contextMode, ref);
     updateContextModeLabel();

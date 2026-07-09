@@ -33,6 +33,8 @@ SeriesMatrixView::SeriesMatrixView(QWidget* parent,
 
     setWindowTitle("Sorozat mátrix");
     resize(900, 600);
+
+    _colorless.build();
 }
 
 QVector<QUuid> SeriesMatrixView::buildSectionedBomList()
@@ -655,13 +657,25 @@ QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Reque
                 if (!mat.barcode.startsWith(prefix))
                     continue;
 
-                // színszűrés
+                //színszűrés
                 // bool materialHasColor = mat.color.isValid() &&
                 //                         !mat.color.code().trimmed().isEmpty();
 
-                // if (materialHasColor &&
-                //     mat.color.code() != reqColor.code())
-                //     continue;
+                // // ⭐ Festett termék → csak a megfelelő színvariáns mehet át
+                // if (effectiveColor.isValid() &&
+                //     !effectiveColor.code().trimmed().isEmpty()) {
+
+                //     if (materialHasColor &&
+                //         mat.color.code() != effectiveColor.code())
+                //         continue;
+
+                //     // ⭐ Natúr variáns TILOS festett termékhez
+                //     if (!materialHasColor)
+                //         continue;
+                // }
+
+
+
 
                 result.append(mat.id);
             }
@@ -928,7 +942,112 @@ int SeriesMatrixView::findColumnIndex(const QString& ref) const
     return -1;
 }
 
-QUuid SeriesMatrixView::nextBomMaterial(const QString& ref) const
+NamedColor SeriesMatrixView::effectiveColorForReference(const QString& ref) const
+{
+    NamedColor color;
+
+    for (const auto& r : _full) {
+        if (r.externalReference == ref &&
+            r.requiredColor.isValid() &&
+            !r.requiredColor.code().trimmed().isEmpty()) {
+            color = r.requiredColor;
+            break;
+        }
+    }
+
+    if (!color.isValid() || color.code().trimmed().isEmpty()) {
+        for (const auto& p : _filledCache) {
+            if (p.first != ref)
+                continue;
+
+            auto* m = MaterialRegistry::instance().findById(p.second);
+            if (m && m->color.isValid() &&
+                !m->color.code().trimmed().isEmpty()) {
+                color = m->color;
+                break;
+            }
+        }
+    }
+
+    return color;
+}
+
+QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Request& req,
+                                                      const NamedColor& effectiveColor) const
+{
+    QVector<QUuid> result;
+
+    auto bomFamilies = BomRegistry::instance()
+                           .bomMap(req.productTypeId, req.productSubtypeId);
+
+    QList<MaterialFamily> famOrder = bomFamilies.keys();
+    std::sort(famOrder.begin(), famOrder.end(),
+              [](MaterialFamily a, MaterialFamily b) {
+                  return static_cast<int>(a) < static_cast<int>(b);
+              });
+
+    auto roles = MaterialRoleRegistry::instance()
+                     .findRoles(req.productTypeId, req.productSubtypeId);
+
+    std::sort(roles.begin(), roles.end(),
+              [](const MaterialRole& a, const MaterialRole& b) {
+                  return a.barcodePrefix < b.barcodePrefix;
+              });
+
+    auto mats = MaterialRegistry::instance().readAll();
+    std::sort(mats.begin(), mats.end(),
+              [](const MaterialMaster& a, const MaterialMaster& b) {
+                  return a.barcode < b.barcode;
+              });
+
+    for (MaterialFamily fam : famOrder) {
+
+        QStringList famPrefixes;
+        for (const auto& role : roles) {
+            if (role.family == fam) {
+                QString prefix = role.barcodePrefix.trimmed();
+                if (prefix.endsWith("*"))
+                    prefix.chop(1);
+                famPrefixes << prefix;
+            }
+        }
+        famPrefixes.sort();
+
+        for (const auto& prefix : famPrefixes) {
+            for (const auto& mat : mats) {
+
+                if (mat.family != fam)
+                    continue;
+
+                if (!mat.barcode.startsWith(prefix))
+                    continue;
+
+                bool materialHasColor = mat.color.isValid() &&
+                                        !mat.color.code().trimmed().isEmpty();
+
+                // ⭐ Festett termék → csak a megfelelő színvariáns mehet át
+                if (effectiveColor.isValid() &&
+                    !effectiveColor.code().trimmed().isEmpty()) {
+
+                    if (materialHasColor &&
+                        mat.color.code() != effectiveColor.code())
+                        continue;
+
+                    // ⭐ Natúr variáns TILOS festett termékhez
+                    if (!materialHasColor)
+                        continue;
+                }
+
+                result.append(mat.id);
+            }
+        }
+    }
+
+    return result;
+}
+
+
+QUuid SeriesMatrixView::nextBomMaterial(const QString& ref)
 {
     int col = findColumnIndex(ref);
     if (col == -1)
@@ -938,14 +1057,54 @@ QUuid SeriesMatrixView::nextBomMaterial(const QString& ref) const
     if (!req)
         return QUuid();
 
-    auto bom = generateBomMaterials(*req);
 
-    for (const auto& matId : bom) {
+
+    // ⭐ Színérzékeny BOM az adott tételszámra
+    NamedColor baseColor = effectiveColorForReference(ref);
+    //auto bom = generateBomMaterials(*req, baseColor);
+    auto columnBom = generateBomMaterials(*req, baseColor);
+    auto& globalBom = _active.bomMaterials;
+
+    QHash<MaterialFamily, QUuid> repFromBom;
+
+    for (const QUuid& id : globalBom) {
+        auto* m = MaterialRegistry::instance().findById(id);
+        if (!m) continue;
+
+        MaterialFamily fam = m->family;
+
+        if (_colorless.isColorless(fam)) {
+            if (!repFromBom.contains(fam))
+                repFromBom[fam] = id;
+        }
+    }
+
+    if (globalBom.isEmpty())
+        return QUuid();
+
+    // ⭐ Körkörös induló index
+    int n = globalBom.size();
+    int start = _active.currentMaterialIndex % n;
+
+    // ⭐ Körkörös bejárás
+    for (int offset = 1; offset <= n; ++offset) {
+
+        int idx = (start + offset) % n;
+        QUuid matId = globalBom[idx];
+
+
+
         bool isFilled = _active.filledCells.contains({ref, matId});
 
+        // család-szintű kielégítés
         bool familySatisfied = false;
         auto* mat = MaterialRegistry::instance().findById(matId);
         MaterialFamily fam = mat ? mat->family : MaterialFamily::Unknown;
+
+        bool familyColorless = _colorless.isColorless(fam);
+        bool isBom = columnBom.contains(matId);
+        if (!familyColorless && !isBom)
+            continue;
 
         for (const auto& r : _full) {
             if (r.externalReference == ref) {
@@ -957,15 +1116,67 @@ QUuid SeriesMatrixView::nextBomMaterial(const QString& ref) const
             }
         }
 
-        if (!isFilled && !familySatisfied)
+        bool colorOk = true;
+
+
+        // ⭐ színhelyesség
+        bool materialHasColor = mat && mat->color.isValid() &&
+                                !mat->color.code().trimmed().isEmpty();
+
+        // ⭐ Színfüggetlen családok → nincs színszűrés
+
+        if (!familyColorless) {
+            if (materialHasColor &&
+                mat->color.code() != baseColor.code())
+                colorOk = false;
+
+            if (!materialHasColor &&
+                baseColor.isValid() &&
+                !baseColor.code().trimmed().isEmpty())
+                colorOk = false;
+        }
+
+
+        // if (!isFilled && !familySatisfied && colorOk) {
+        //     _active.currentMaterialIndex = idx;
+        //     return matId;
+        // }
+
+        // ⭐ Colorless család → csak az első variáns kell
+        if (familyColorless) {
+            //QUuid rep = _colorless.representativeOf(fam);
+            QUuid rep = repFromBom.value(fam);
+
+
+            // csak a reprezentáns anyag mehet át
+            if (matId == rep && !familySatisfied) {
+                _active.currentMaterialIndex = idx;
+                return matId;
+            }
+
+            // minden más variánst átugrunk
+            continue;
+        }
+        // ⭐ Színérzékeny család → teljes feltétel
+        if (!isFilled && !familySatisfied && colorOk) {
+            _active.currentMaterialIndex = idx;
             return matId;
+        }
+
+
+
     }
 
-    if (!bom.isEmpty())
-        return bom.first();
+    // ⭐ fallback: első színhelyes BOM-anyag
+    for (int idx = 0; idx < n; ++idx) {
+        QUuid matId = globalBom[idx];
+        _active.currentMaterialIndex = idx;
+        return matId;
+    }
 
     return QUuid();
 }
+
 
 QString SeriesMatrixView::nextBomReference_2(const QString& currentRef)
 {

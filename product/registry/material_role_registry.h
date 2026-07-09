@@ -14,6 +14,8 @@ private:
 public:
     static MaterialRoleRegistry& instance();   // ⭐ singleton accessor
 
+    QVector<MaterialRole> readAll() const;
+
     void load(const QVector<MaterialRole>& roles);
 
     QVector<QString> prefixesFor(

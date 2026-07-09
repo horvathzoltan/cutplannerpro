@@ -406,6 +406,10 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     SettingsManager::instance().save();
 
+    // ⭐ Mátrix ablak bezárása
+    if (_seriesMatrixView && _seriesMatrixView->isVisible())
+        _seriesMatrixView->close();
+
     // ✅ Bezárás engedélyezése
     event->accept();
 }

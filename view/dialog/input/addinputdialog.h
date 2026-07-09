@@ -76,7 +76,7 @@ private:
     void lockAllFieldsUntilReference();
     void unlockAllFieldsAfterReference();
 
-        void onQuantityChanged(int totalPieces);
+    void onQuantityChanged(int totalPieces);
     //void updateHandlerSideControls();
     void updateSliderLabels();
 

@@ -70,3 +70,8 @@ QVector<MaterialRole> MaterialRoleRegistry::findRoles(
     return result;
 }
 
+QVector<MaterialRole> MaterialRoleRegistry::readAll() const
+{
+    return m_roles;
+}
+
