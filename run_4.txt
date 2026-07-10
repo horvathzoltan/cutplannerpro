@@ -1,3 +1,12 @@
+leftover intake:
+ - a címke maradó részére nem kell vonalkód - kézi bevitelnál, de ha nem akarjuk bepötsögni a kódot akkor jól jön
+ de jelenleg nem olyan a funkció
+
+ - a vonalkód mellett ahogy a termék címkén margó van a ragacsnak, erre is kell olyan
+
+Audit BOM:
+ - 2 példányt várunk el, 2 is van, de 1-et találunk és ez fáj neki.
+
 
 
 Zoltán, itt van a teljes, végrehajtható, auditálható terv — két
