@@ -1435,14 +1435,14 @@ PaintPlan CuttingPresenter::buildPaintPlan()
             // --- POFA / CSAVAR TÍPUS SZERINT ---
             if (matchPrefix(barcode, "NP-T")) {
                 colorGroup.pofaFestheto = true;
-                if (type == NaphaloType::Cipzaros) colorGroup.cipzarosPofa += 2;
-                if (type == NaphaloType::Sines)    colorGroup.sinesPofa += 2;
-                if (type == NaphaloType::Bowdenes) colorGroup.bowdenesPofa += 2;
+                if (type == NaphaloType::Cipzaros) colorGroup.cipzarosPofa += 2*req.quantity;
+                if (type == NaphaloType::Sines)    colorGroup.sinesPofa += 2*req.quantity;
+                if (type == NaphaloType::Bowdenes) colorGroup.bowdenesPofa += 2*req.quantity;
             }
 
             if (matchPrefix(barcode, "NP-TF")) {
                 colorGroup.csavarFestheto = true;
-                colorGroup.csavar +=2;
+                colorGroup.csavar +=2*req.quantity;
             }
         }
     }

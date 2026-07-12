@@ -1264,8 +1264,12 @@ void AddInputDialog::loadReference(const QString& ref)
     auto state = getReferenceState(ref);
     applyReferenceState(state);
 
-    if(last)
+    if(last){
         applyRequestToWidgets(*last);
+    }else {
+        // ⭐ ÚJ TÉTELSZÁM → ajánlott határidő: mai nap
+        ui->editDueDate->setDate(QDate::currentDate());//.addDays(1)
+    }
 
     initializeBomModel(ref);
 }

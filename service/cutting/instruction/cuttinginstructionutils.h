@@ -213,9 +213,9 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     lines << QString("CutPlan: %1").arg(planIdStr);
     lines << QString("📅 Dátum: %1").arg(dateStr);
     lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
-    lines << "────────────────────────────────";
+    lines << "──────────────────────────────────";
     lines << buildMaterialStockReportForMachine_AUDIT(mc);
-    lines << "────────────────────────────────";
+    lines << "──────────────────────────────────";
 
     // --- új: szálak és hullók összesítése ---
 
@@ -234,7 +234,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
         lines << QString("  • %1 db (%2)")
                      .arg(scrapList.size())
                      .arg(scrapList.join(", "));
-        lines << "────────────────────────────────";
+        lines << "──────────────────────────────────";
     }
 
 
@@ -246,7 +246,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     lines << "📤 Gyártási output:";
     lines << QString("  • Levágott darabok: %1 db").arg(outputCount);
     lines << QString("  • Eltérés: %1 db").arg(diff);
-    lines << "────────────────────────────────";
+    lines << "──────────────────────────────────";
 
     QString prevRod;
 
@@ -344,6 +344,19 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
     int wIcon = maxWidth(colIcon);
     int wSize = maxWidth(colSize);
 
+    // ⭐ 1) Rúd-előfordulások összeszámlálása
+    QHash<QString, int> rodTotalCount;
+    for (const auto& ci : mc.cutInstructions) {
+        QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
+        ? ci.barcode
+        : ci.rodId;
+        rodTotalCount[rodKey] += 1;
+    }
+
+    // ⭐ 2) Rúd-előfordulások követése renderelés közben
+    QHash<QString, int> rodSeenCount;
+
+
     QString prevSizeStr;
     int repeatCount = 1;
     bool firstOfBlock = true;
@@ -357,7 +370,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
 
         bool rodChanged = (ci.rodId != prevRod);
         if (rodChanged && !prevRod.isEmpty())
-            lines << "──────────────";
+            lines << "────────────────";
         prevRod = ci.rodId;
 
         // QString rodLabel = (rodChanged)
@@ -367,9 +380,21 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& plan
                                      ? ci.barcode
                                      : ci.rodId;
 
+        // ⭐ PATCH: hanyadik előfordulás?
+        int seen = rodSeenCount[rodIdOrBarcode]++;   // 0 = első, 1 = második, stb.
+        int total = rodTotalCount[rodIdOrBarcode];   // összes előfordulás
+
+        // ⭐ PATCH: alap rodLabel (többször szereplő rudaknál az elsőt jelöljük *)
+        QString baseRodLabel;
+        if (total > 1 && seen == 0) {
+            baseRodLabel = QString("%1 *").arg(rodIdOrBarcode);   // első előfordulás jelölése
+        } else {
+            baseRodLabel = rodIdOrBarcode+"  ";                        // további előfordulások vagy egyszeri rúd
+        }
+
         QString rodLabel = (rodChanged)
-                               ? QString("%1 □").arg(rodIdOrBarcode)
-                               : rodIdOrBarcode + "  ";
+                               ? QString("%1 □").arg(baseRodLabel)
+                               : baseRodLabel + "  ";
 
         QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
         QString icon = ci.isManualCut ? "📏" : "✂️";

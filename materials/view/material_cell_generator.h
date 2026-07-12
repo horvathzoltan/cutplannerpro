@@ -94,7 +94,7 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
 inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor, SurfaceType surface)
 {
-    QString text = requiredColor.isValid() ? requiredColor.name() : "Nincs szín";
+    QString text = requiredColor.isValid() ? requiredColor.code()+": "+requiredColor.name() : "Nincs szín";
     QString tooltip = QString("Igényelt szín: %1").arg(text);
 
     if(requiredColor.isValid()){
