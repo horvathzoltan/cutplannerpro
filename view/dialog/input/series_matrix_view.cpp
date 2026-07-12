@@ -34,7 +34,7 @@ SeriesMatrixView::SeriesMatrixView(QWidget* parent,
     setWindowTitle("Sorozat mátrix");
     resize(900, 600);
 
-    _colorless.build();
+    //_colorless.build();
 }
 
 QVector<QUuid> SeriesMatrixView::buildSectionedBomList()
@@ -1047,192 +1047,192 @@ QVector<QUuid> SeriesMatrixView::generateBomMaterials(const Cutting::Plan::Reque
 }
 
 
-QUuid SeriesMatrixView::nextBomMaterial(const QString& ref)
-{
-    int col = findColumnIndex(ref);
-    if (col == -1)
-        return QUuid();
+// QUuid SeriesMatrixView::nextBomMaterial(const QString& ref)
+// {
+//     int col = findColumnIndex(ref);
+//     if (col == -1)
+//         return QUuid();
 
-    const auto* req = findRequestByExternalRef(ref);
-    if (!req)
-        return QUuid();
-
-
-
-    // ⭐ Színérzékeny BOM az adott tételszámra
-    NamedColor baseColor = effectiveColorForReference(ref);
-    //auto bom = generateBomMaterials(*req, baseColor);
-    auto columnBom = generateBomMaterials(*req, baseColor);
-    auto& globalBom = _active.bomMaterials;
-
-    QHash<MaterialFamily, QUuid> repFromBom;
-
-    for (const QUuid& id : globalBom) {
-        auto* m = MaterialRegistry::instance().findById(id);
-        if (!m) continue;
-
-        MaterialFamily fam = m->family;
-
-        if (_colorless.isColorless(fam)) {
-            if (!repFromBom.contains(fam))
-                repFromBom[fam] = id;
-        }
-    }
-
-    if (globalBom.isEmpty())
-        return QUuid();
-
-    // ⭐ Körkörös induló index
-    int n = globalBom.size();
-    int start = _active.currentMaterialIndex % n;
-
-    // ⭐ Körkörös bejárás
-    for (int offset = 1; offset <= n; ++offset) {
-
-        int idx = (start + offset) % n;
-        QUuid matId = globalBom[idx];
+//     const auto* req = findRequestByExternalRef(ref);
+//     if (!req)
+//         return QUuid();
 
 
 
-        bool isFilled = _active.filledCells.contains({ref, matId});
+//     // ⭐ Színérzékeny BOM az adott tételszámra
+//     NamedColor baseColor = effectiveColorForReference(ref);
+//     //auto bom = generateBomMaterials(*req, baseColor);
+//     auto columnBom = generateBomMaterials(*req, baseColor);
+//     auto& globalBom = _active.bomMaterials;
 
-        // család-szintű kielégítés
-        bool familySatisfied = false;
-        auto* mat = MaterialRegistry::instance().findById(matId);
-        MaterialFamily fam = mat ? mat->family : MaterialFamily::Unknown;
+//     QHash<MaterialFamily, QUuid> repFromBom;
 
-        bool familyColorless = _colorless.isColorless(fam);
-        bool isBom = columnBom.contains(matId);
-        if (!familyColorless && !isBom)
-            continue;
+//     for (const QUuid& id : globalBom) {
+//         auto* m = MaterialRegistry::instance().findById(id);
+//         if (!m) continue;
 
-        for (const auto& r : _full) {
-            if (r.externalReference == ref) {
-                auto* m2 = MaterialRegistry::instance().findById(r.materialId);
-                if (m2 && m2->family == fam) {
-                    familySatisfied = true;
-                    break;
-                }
-            }
-        }
+//         MaterialFamily fam = m->family;
 
-        bool colorOk = true;
+//         if (_colorless.isColorless(fam)) {
+//             if (!repFromBom.contains(fam))
+//                 repFromBom[fam] = id;
+//         }
+//     }
 
+//     if (globalBom.isEmpty())
+//         return QUuid();
 
-        // ⭐ színhelyesség
-        bool materialHasColor = mat && mat->color.isValid() &&
-                                !mat->color.code().trimmed().isEmpty();
+//     // ⭐ Körkörös induló index
+//     int n = globalBom.size();
+//     int start = _active.currentMaterialIndex % n;
 
-        // ⭐ Színfüggetlen családok → nincs színszűrés
+//     // ⭐ Körkörös bejárás
+//     for (int offset = 1; offset <= n; ++offset) {
 
-        if (!familyColorless) {
-            if (materialHasColor &&
-                mat->color.code() != baseColor.code())
-                colorOk = false;
-
-            if (!materialHasColor &&
-                baseColor.isValid() &&
-                !baseColor.code().trimmed().isEmpty())
-                colorOk = false;
-        }
-
-
-        // if (!isFilled && !familySatisfied && colorOk) {
-        //     _active.currentMaterialIndex = idx;
-        //     return matId;
-        // }
-
-        // ⭐ Colorless család → csak az első variáns kell
-        if (familyColorless) {
-            //QUuid rep = _colorless.representativeOf(fam);
-            QUuid rep = repFromBom.value(fam);
-
-
-            // csak a reprezentáns anyag mehet át
-            if (matId == rep && !familySatisfied) {
-                _active.currentMaterialIndex = idx;
-                return matId;
-            }
-
-            // minden más variánst átugrunk
-            continue;
-        }
-        // ⭐ Színérzékeny család → teljes feltétel
-        if (!isFilled && !familySatisfied && colorOk) {
-            _active.currentMaterialIndex = idx;
-            return matId;
-        }
+//         int idx = (start + offset) % n;
+//         QUuid matId = globalBom[idx];
 
 
 
-    }
+//         bool isFilled = _active.filledCells.contains({ref, matId});
 
-    // ⭐ fallback: első színhelyes BOM-anyag
-    for (int idx = 0; idx < n; ++idx) {
-        QUuid matId = globalBom[idx];
-        _active.currentMaterialIndex = idx;
-        return matId;
-    }
+//         // család-szintű kielégítés
+//         bool familySatisfied = false;
+//         auto* mat = MaterialRegistry::instance().findById(matId);
+//         MaterialFamily fam = mat ? mat->family : MaterialFamily::Unknown;
 
-    return QUuid();
-}
+//         bool familyColorless = _colorless.isColorless(fam);
+//         bool isBom = columnBom.contains(matId);
+//         if (!familyColorless && !isBom)
+//             continue;
+
+//         for (const auto& r : _full) {
+//             if (r.externalReference == ref) {
+//                 auto* m2 = MaterialRegistry::instance().findById(r.materialId);
+//                 if (m2 && m2->family == fam) {
+//                     familySatisfied = true;
+//                     break;
+//                 }
+//             }
+//         }
+
+//         bool colorOk = true;
 
 
-QString SeriesMatrixView::nextBomReference_2(const QString& currentRef)
-{
-    // Ha nincs aktív sorozat, nincs mit számolni
-    if (_active.order.isEmpty())
-        return QString();
+//         // ⭐ színhelyesség
+//         bool materialHasColor = mat && mat->color.isValid() &&
+//                                 !mat->color.code().trimmed().isEmpty();
 
-    int maxRef = -1;
+//         // ⭐ Színfüggetlen családok → nincs színszűrés
 
-    // 1) Az összes ismert tételszámot végigjárjuk
-    for (const auto& refStr : _active.order) {
-        bool ok = false;
-        int ref = refStr.toInt(&ok);
-        if (ok && ref > maxRef)
-            maxRef = ref;
-    }
+//         if (!familyColorless) {
+//             if (materialHasColor &&
+//                 mat->color.code() != baseColor.code())
+//                 colorOk = false;
 
-    // 2) Ha semelyik nem volt értelmes szám
-    if (maxRef < 0)
-        return QString();
+//             if (!materialHasColor &&
+//                 baseColor.isValid() &&
+//                 !baseColor.code().trimmed().isEmpty())
+//                 colorOk = false;
+//         }
 
-    // 3) Következő tételszám
-    return QString::number(maxRef + 1);
-}
 
-QString SeriesMatrixView::nextBomReference(const QString& currentRef)
-{
-    // 1) Ha nincs sorozat → nincs mit tenni
-    if (_active.order.isEmpty())
-        return QString();
+//         // if (!isFilled && !familySatisfied && colorOk) {
+//         //     _active.currentMaterialIndex = idx;
+//         //     return matId;
+//         // }
 
-    // 2) Megkeressük az aktuális tételszám indexét
-    int idx = _active.order.indexOf(currentRef);
-    if (idx < 0)
-        return QString();   // nincs ilyen tételszám
+//         // ⭐ Colorless család → csak az első variáns kell
+//         if (familyColorless) {
+//             //QUuid rep = _colorless.representativeOf(fam);
+//             QUuid rep = repFromBom.value(fam);
 
-    // 3) Ha van következő tételszám → azt adjuk vissza
-    if (idx + 1 < _active.order.size())
-        return _active.order[idx + 1];
 
-    // 4) Ha az utolsón állunk → új tételszám = utolsó + 1
-    bool ok = false;
-    int last = currentRef.toInt(&ok);
-    if (!ok)
-        return QString();
+//             // csak a reprezentáns anyag mehet át
+//             if (matId == rep && !familySatisfied) {
+//                 _active.currentMaterialIndex = idx;
+//                 return matId;
+//             }
 
-    return QString::number(last + 1);
-}
+//             // minden más variánst átugrunk
+//             continue;
+//         }
+//         // ⭐ Színérzékeny család → teljes feltétel
+//         if (!isFilled && !familySatisfied && colorOk) {
+//             _active.currentMaterialIndex = idx;
+//             return matId;
+//         }
 
-QString SeriesMatrixView::firstBomReference() const
-{
-    if (_active.order.isEmpty())
-        return QString();
 
-    return _active.order.first();
-}
+
+//     }
+
+//     // ⭐ fallback: első színhelyes BOM-anyag
+//     for (int idx = 0; idx < n; ++idx) {
+//         QUuid matId = globalBom[idx];
+//         _active.currentMaterialIndex = idx;
+//         return matId;
+//     }
+
+//     return QUuid();
+// }
+
+
+// QString SeriesMatrixView::nextBomReference_2(const QString& currentRef)
+// {
+//     // Ha nincs aktív sorozat, nincs mit számolni
+//     if (_active.order.isEmpty())
+//         return QString();
+
+//     int maxRef = -1;
+
+//     // 1) Az összes ismert tételszámot végigjárjuk
+//     for (const auto& refStr : _active.order) {
+//         bool ok = false;
+//         int ref = refStr.toInt(&ok);
+//         if (ok && ref > maxRef)
+//             maxRef = ref;
+//     }
+
+//     // 2) Ha semelyik nem volt értelmes szám
+//     if (maxRef < 0)
+//         return QString();
+
+//     // 3) Következő tételszám
+//     return QString::number(maxRef + 1);
+// }
+
+// QString SeriesMatrixView::nextBomReference(const QString& currentRef)
+// {
+//     // 1) Ha nincs sorozat → nincs mit tenni
+//     if (_active.order.isEmpty())
+//         return QString();
+
+//     // 2) Megkeressük az aktuális tételszám indexét
+//     int idx = _active.order.indexOf(currentRef);
+//     if (idx < 0)
+//         return QString();   // nincs ilyen tételszám
+
+//     // 3) Ha van következő tételszám → azt adjuk vissza
+//     if (idx + 1 < _active.order.size())
+//         return _active.order[idx + 1];
+
+//     // 4) Ha az utolsón állunk → új tételszám = utolsó + 1
+//     bool ok = false;
+//     int last = currentRef.toInt(&ok);
+//     if (!ok)
+//         return QString();
+
+//     return QString::number(last + 1);
+// }
+
+// QString SeriesMatrixView::firstBomReference() const
+// {
+//     if (_active.order.isEmpty())
+//         return QString();
+
+//     return _active.order.first();
+// }
 
 void SeriesMatrixView::jumpToFirstReference()
 {

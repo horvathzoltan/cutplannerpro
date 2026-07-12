@@ -95,3 +95,32 @@ void CuttingPlanRequestRegistry::clone(const QString& newFileName){
     SettingsManager::instance().setCuttingPlanFileName(newFileName);
     persist();
 }
+
+Cutting::Plan::Request* CuttingPlanRequestRegistry::getFirstRequest(const QString& ref){
+
+    for (Cutting::Plan::Request &r : _data) {
+        if (r.externalReference == ref)
+            return &r;
+    }
+
+    return nullptr;
+}
+
+Cutting::Plan::Request* CuttingPlanRequestRegistry::getLastRequest(const QString& ref){
+    Cutting::Plan::Request* last = nullptr;
+
+    for (Cutting::Plan::Request &r : _data) {
+        if (r.externalReference == ref)
+            last = &r;
+    }
+
+    return last;
+}
+
+QString CuttingPlanRequestRegistry::getFirstReference(){
+    Cutting::Plan::Request* last = nullptr;
+
+    if(_data.isEmpty()) return QString();
+
+    return _data.first().externalReference;
+}

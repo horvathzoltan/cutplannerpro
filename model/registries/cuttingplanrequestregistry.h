@@ -44,4 +44,7 @@ public:
     }
 
     void clone(const QString& newFileName);
+    Cutting::Plan::Request *getFirstRequest(const QString &ref);
+    Cutting::Plan::Request *getLastRequest(const QString &ref);
+    QString getFirstReference();
 };

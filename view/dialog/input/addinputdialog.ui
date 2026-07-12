@@ -6,21 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>608</width>
-    <height>499</height>
+    <width>642</width>
+    <height>571</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>1</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_ContextMode">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label_ref">
      <property name="text">
@@ -35,6 +40,18 @@
      </item>
      <item>
       <widget class="QLabel" name="lblReferenceBig">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <pointsize>20</pointsize>
@@ -76,19 +93,23 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Darabszám</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QSpinBox" name="spinQuantity">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
+   <item row="5" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0">
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEditHead">
+       <property name="text">
+        <string>Head edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_owner">
@@ -101,27 +122,57 @@
     <widget class="QLineEdit" name="editOwner"/>
    </item>
    <item row="7" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Darabszám</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QSpinBox" name="spinQuantity">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_productType">
+     <property name="title">
+      <string>Termék típus</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="2">
+    <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="page"/>
+     <widget class="QWidget" name="page_2"/>
+    </widget>
+   </item>
+   <item row="15" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>dueDate</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="15" column="1">
     <widget class="QDateEdit" name="editDueDate">
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
+   <item row="16" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>RAL color</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="16" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLineEdit" name="edit_Color"/>
@@ -138,14 +189,32 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
+   <item row="18" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEditItem">
+       <property name="text">
+        <string>Item edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="19" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Anyag</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="19" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
      <item>
       <widget class="QComboBox" name="comboMaterial"/>
@@ -159,83 +228,20 @@
      </item>
     </layout>
    </item>
-   <item row="11" column="0">
+   <item row="20" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Vágási hossz [mm]</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="20" column="1">
     <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="12" column="0" colspan="2">
+   <item row="21" column="0" colspan="2">
     <layout class="QHBoxLayout" name="layout_colorPreview"/>
    </item>
-   <item row="13" column="0" colspan="2">
-    <widget class="QStackedWidget" name="stackHandlerSide">
-     <widget class="QWidget" name="pageRadio">
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="QRadioButton" name="radioLeft">
-         <property name="text">
-          <string>Bal</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioRight">
-         <property name="text">
-          <string>Jobb</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="pageSlider">
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="QLabel" name="labelLeftValue">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="sliderHandler">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelRightValue">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="15" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_productType">
-     <property name="title">
-      <string>Termék típus</string>
-     </property>
-    </widget>
-   </item>
-   <item row="19" column="0" colspan="2">
-    <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2"/>
-    </widget>
-   </item>
-   <item row="21" column="0">
+   <item row="30" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
@@ -245,7 +251,7 @@
      </property>
     </widget>
    </item>
-   <item row="21" column="1">
+   <item row="30" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <widget class="QCheckBox" name="chk_Repeat">
@@ -276,12 +282,82 @@
      </item>
     </layout>
    </item>
+   <item row="14" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QStackedWidget" name="stackHandlerSide">
+       <widget class="QWidget" name="pageRadio">
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QRadioButton" name="radioLeft">
+           <property name="text">
+            <string>Bal</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioRight">
+           <property name="text">
+            <string>Jobb</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="pageSlider">
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="labelLeftValue">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="sliderHandler">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelRightValue">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="chkUnknownSide">
+       <property name="text">
+        <string>Nincs</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>editReference</tabstop>
   <tabstop>spinQuantity</tabstop>
-  <tabstop>editOwner</tabstop>
   <tabstop>editDueDate</tabstop>
   <tabstop>comboMaterial</tabstop>
   <tabstop>editLength</tabstop>

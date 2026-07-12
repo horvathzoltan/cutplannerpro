@@ -1,5 +1,10 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
-"1234";"TesztElek";0;0;2000;;1;0;1;"RAL 7016";NP-CL-7016;Width;false;2026-07-06;NP;CIP
-"1255";"Teszt Elek";0;0;1233;;1;0;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-07-08;NP;CIP
-"1234";"TesztElek";0;0;1123;;1;0;1;"RAL 7016";NP-T;Width;false;2026-07-06;NP;CIP
-"1234";"TesztElek";0;0;1250;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-07-06;NP;CIP
+"1234";"Teszt Elek";0;0;2000;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-07-06;NP;CIP
+"1255";"Teszt Ábrahám";0;0;1233;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-07-08;NP;CIP
+"1111";"Majom Alfréd";0;0;2000;;1;0;1;"";NP-ROLL70-5000;Width;false;2000-01-01;NP;SIN
+"1234";"Teszt Elek";0;0;2010;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-07-06;NP;CIP
+"1234";"Teszt Elek";0;0;1995;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-07-06;NP;CIP
+"1234";"Teszt Elek";0;0;1500;;1;0;1;"RAL 7016";NP-CL-7016;Width;false;2026-07-06;NP;CIP
+"1234";"Teszt Elek";0;0;1998;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-07-06;NP;CIP
+"1234";"Teszt Elek";0;0;1235;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-06;NP;CIP
+"1255";"Teszt Ábrahám";0;0;2000;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-07-08;NP;CIP

@@ -31,10 +31,10 @@ public:
 
     bool isEmpty() const { return _data.isEmpty(); }
 
-    void applyFamilyDetection() {
-        for (auto& m : _data) {
-            m.family = MaterialFamilyDetector::detect_fromBarcode(m.barcode);
-        }
-    }
+    // void applyFamilyDetection() {
+    //     for (auto& m : _data) {
+    //         m.family = MaterialFamilyDetector::detect_fromBarcode(m.barcode);
+    //     }
+    // }
 
 };

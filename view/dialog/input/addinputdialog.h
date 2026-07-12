@@ -14,6 +14,19 @@ namespace Ui {
 class AddInputDialog;
 }
 
+enum class ReferenceState {
+    NewReference,   // nincs HEAD, nincs ITEM
+    HeadOnly,       // van HEAD, nincs ITEM
+    FullRequest     // van HEAD, van ITEM
+};
+
+enum class EditMode {
+    None,       // nézelődés
+    HeadEdit,   // HEAD szerkesztés
+    ItemEdit    // ITEM szerkesztés
+};
+
+
 class AddInputDialog : public QDialog
 {
     Q_OBJECT
@@ -24,14 +37,6 @@ public:
                             const Cutting::Plan::Request* initial = nullptr,
                             SeriesMatrixView* matrix = nullptr);
     ~AddInputDialog();
-
-    enum class ContextMode {
-        Editing,
-        Existing,    // létező tételszám
-        Sequential,  // sorozatbevitel (haladunk előre)
-        NewOrder,
-        Update        // új megrendelő
-    };
 
     QUuid selectedMaterialId() const;
     int length() const;
@@ -48,13 +53,12 @@ public:
 
     bool shouldRepeat();
 
-    const ActiveSeries& seriesState() const { return _series; }
+    //const ActiveSeries& seriesState() const { return _series; }
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
 
-private:
 private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo();
@@ -71,17 +75,29 @@ private:
 
     // ⭐ Kétmódú workflow metódusok
     void enterReferenceEditMode();              // nincs tételszám → beírás
-    void enterReferenceDisplayMode(const QString& ref); // van tételszám → mutatás + nav
+    void loadReference(const QString& ref); // van tételszám → mutatás + nav
 
     void lockAllFieldsUntilReference();
-    void unlockAllFieldsAfterReference();
+//    void unlockAllFieldsAfterReference();
 
     void onQuantityChanged(int totalPieces);
     //void updateHandlerSideControls();
     void updateSliderLabels();
 
     QUuid current_requestId;
-    ActiveSeries _series;
+
+    struct HeadFields {
+        QString owner;
+        QDate   due;
+        QString color;
+        QString surfaceCode;
+        QUuid   typeId;
+        QUuid   subtypeId;
+
+        int quantity = 1;
+        int leftCount = 0;
+        int rightCount = 0;
+    };
 
 
     static QString s_lastExternalRef;
@@ -92,58 +108,33 @@ private:
 
     bool _shiftEnterAccepted = false;
     //QString _sliderInputBuffer;
-    QString _nextSuggestedRef;
-    QString _originalReference;
+    //QString _nextSuggestedRef;
+    //QString _originalReference;
 
     DialogMode _mode = DialogMode::Create;
-    ContextMode _contextMode = ContextMode::NewOrder;
 
-    struct RequestContext {
-        QString ownerName;     // Megrendelő neve
-        QDate   dueDate;       // Határidő
-
-        QUuid   productTypeId;
-        QUuid   productSubtypeId;
-
-        HandlerSide side;      // Bal / Jobb
-        QUuid   defaultMaterialId; // Opcionális: legutóbb használt anyag ehhez a tételszámhoz
-        QString color;
-        QString surfaceCode;   // ⭐ új mező
+    struct BOM_Model{
+        QVector<QUuid> bomList;
+        QVector<QUuid> missingList;
+        int missingIndex = 0;
+        int materialCycleIndex = 0;
     };
 
+    BOM_Model _bomModel;
+    EditMode _editMode;
 
-    static QMap<QString, RequestContext> _contexts;
-
-    void applyContextToWidgets(const RequestContext& ctx);
-    void setContextEditable(bool editable);
+    //void applyContextToWidgets(const RequestContext& ctx);
+    void setHeadEditable(bool editable);
     void applyRequestToWidgets(const Cutting::Plan::Request& req);
     void applySide(HandlerSide side);
     void loadOwnerCache();
     void saveOwnerCache();
-
-    void loadContextMap();
-    void saveContextMap();
-
-    ContextMode detectContextMode(const QString& ref);
-    void applyContextMode(ContextMode mode, const QString& ref);
-
-    void applyExistingContext(const QString& ref);
-    void applySequentialContext(const QString& ref);
-    void applyNewOrderContext();
-
-    void resetForNewOrder();
-    void resetForSequential();
 
     void applyInitialFocus();
     QString computeNextReference();
 
     void updateContextModeLabel();
     void initializeDialog();
-
-    void applyOwnerAndDate(const RequestContext& ctx);
-    void applySideFromContext(const RequestContext& ctx);
-    void applyMaterialFromContext(const RequestContext& ctx);
-    void applyColorFromContext(const RequestContext& ctx);
 
     void setOwnerEditable(bool editable);
     void setDateEditable(bool editable);
@@ -155,16 +146,13 @@ private:
     void applyReferenceFromRequest(const Cutting::Plan::Request& req);
     void applyDateFromRequest(const Cutting::Plan::Request& req);
     void applyColorFromRequest(const Cutting::Plan::Request& req);
-    void applySideFromRequest(const Cutting::Plan::Request& req);
     void applyMaterialFromRequest(const Cutting::Plan::Request& req);
-    void applyLengthAndQuantityFromRequest(const Cutting::Plan::Request& req);
 
     void setReferenceEditable(bool editable);
 
+    QString computeNextItemNumber();
 
     QUuid selectedProductTypeId() const;
-    void applyProductTypeFromContext(const RequestContext &ctx);
-    void applyProductSubtypeFromContext(const RequestContext &ctx);
     QUuid selectedProductSubtypeId() const;
     void setSelectedProductTypeId(const QUuid &typeId);
     void setSelectedProductSubtypeId(const QUuid &subtypeId);
@@ -174,17 +162,39 @@ private:
     void setProductSubtypeEditable(bool editable);
 
     void populateSurfaceCombo();
-    void applySurfaceFromContext(const RequestContext &ctx);
     void setSurfaceEditable(bool editable);
     void applySurfaceFromRequest(const Cutting::Plan::Request &req);
     void updateColorPreview();
 
-    void updateSeriesStateAfterAccept(const Cutting::Plan::Request& req);
-    void updateSeriesStateAfterEditingFinished(const QString& ref);
+    // void updateSeriesStateAfterAccept(const Cutting::Plan::Request& req);
+    // void updateSeriesStateAfterEditingFinished(const QString& ref);
 
     void updateSeriesNavigationButtons();
-    void loadBomMaterials(const Cutting::Plan::Request &req);
 
+    void applySideFromRequest(const Cutting::Plan::Request &req);
+    void resetUiForNextReference();
+    void resetUiForExistingReference();
+    void resetUiForNewReference();
+    void loadHeadFields(const QString &ref);
+    //void copyHeadFieldsFromPrevious(const QString &prevRef);
+    void updateHeadFieldsInRegistry(const QString &ref);
+    AddInputDialog::HeadFields headFromRegistry(const QString& ref) const;
+    AddInputDialog::HeadFields currentHeadFromDialog() const;
+    bool headFieldsDiffer(const HeadFields &a, const HeadFields &b) const;
+
+    QUuid computeNextMaterialForCurrentRef();
+    QVector<QUuid> generateBomForRequest(const Cutting::Plan::Request &req);
+    void applyLengthFromRequest(const Cutting::Plan::Request &req);
+    void applyQuantityFromRequest(const Cutting::Plan::Request &req);
+    void applyFields_Head(const Cutting::Plan::Request &r);
+    void applyFields_Item(const Cutting::Plan::Request &req);
+    void initializeBomModel(const QString &ref);
+    ReferenceState getReferenceState(const QString &ref);
+    void applyReferenceState(ReferenceState state);
+    void setLengthEditable(bool editable);
+    void setMaterialEditable(bool editable);
+    void setItemEditable(bool editable);
+    void applySide_Slider(int l, int r);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

@@ -32,7 +32,7 @@ static inline QString profilePostfixFor(const QString& barcode)
 
     // SÍNES ZÁRÓ
     if (matchPrefix(barcode, "NP-SZ"))
-        return "11 m";
+        return "11 cm";
 
     // POFA
     if (matchPrefix(barcode, "NP-POF"))
