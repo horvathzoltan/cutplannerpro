@@ -1097,41 +1097,41 @@ void CuttingPresenter::ExportCutInstructions()
     }
 
     // --- 2) LabelTable ---
-    {
-        QString path = dir + "/" + baseName + "_CutInstructions_Labels.txt";
-        QFile f(path);
-        if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            zEvent("❌ Nem sikerült megnyitni a LabelTable fájlt.");
-            return;
-        }
+    // {
+    //     QString path = dir + "/" + baseName + "_CutInstructions_Labels.txt";
+    //     QFile f(path);
+    //     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    //         zEvent("❌ Nem sikerült megnyitni a LabelTable fájlt.");
+    //         return;
+    //     }
 
-        QTextStream out(&f);
-        out.setEncoding(QStringConverter::Utf8);
+    //     QTextStream out(&f);
+    //     out.setEncoding(QStringConverter::Utf8);
 
-        out << QString("🏷️ Címketáblák (gépenként)");
-        out << QString("CutPlan: %1\n").arg(baseName);
-        out << QString("📅 Dátum: %1\n\n").arg(dateStr);
+    //     out << QString("🏷️ Címketáblák (gépenként)");
+    //     out << QString("CutPlan: %1\n").arg(baseName);
+    //     out << QString("📅 Dátum: %1\n\n").arg(dateStr);
 
-        bool firstPage = true;
+    //     bool firstPage = true;
 
-        for (const auto& mc : _machineCutsList) {
-            if (!firstPage)
-                out << "\n\n";
+    //     for (const auto& mc : _machineCutsList) {
+    //         if (!firstPage)
+    //             out << "\n\n";
 
-            firstPage = false;
+    //         firstPage = false;
 
 
-            out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
+    //         out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
 
-            auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-            //out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, printedPageHeight);
-            //out << CuttingInstructionUtils::formatLabelStackPaged(labels, printedLineWidth, 2, printedPageHeight);
-            out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
-            //out << "\n\n";
-        }
+    //         auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+    //         //out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, printedPageHeight);
+    //         //out << CuttingInstructionUtils::formatLabelStackPaged(labels, printedLineWidth, 2, printedPageHeight);
+    //         out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
+    //         //out << "\n\n";
+    //     }
 
-        zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
-    }
+    //     zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
+    // }
 
     // --- 3) LabelTable PDF ---
 
@@ -1450,9 +1450,19 @@ PaintPlan CuttingPresenter::buildPaintPlan()
     return plan;
 }
 
-void CuttingPresenter::Paint()
+QString CuttingPresenter::Paint(const QString& planIdStr)
 {
-    zInfo("=== FESTÉSI TERV (TXT) ===");
+    QStringList out;
+    //out << "=== FESTÉSI TERV (TXT) ===";
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+
+    out << QString("📄 Festési terv");
+    out << QString("CutPlan: %1").arg(planIdStr);
+    out << QString("📅 Dátum: %1").arg(dateStr);
+    out << "──────────────────────────────────";
+
 
     PaintPlan plan = buildPaintPlan();
 
@@ -1472,8 +1482,9 @@ void CuttingPresenter::Paint()
             continue;   // ❗ NEM írjuk ki a színblokkot
         }
 
-        zInfo(QString(">> SZÍN: %1").arg(colorGroup.color.toString()));
-        zInfo("----------------------------------------");
+        out << "";
+        out<< QString("SZÍN: %1").arg(colorGroup.color.toString());
+        out<< "──────────────────────────────────";
 
         // Anyagok ábécé sorrendben
         QList<QUuid> materials = colorGroup.materials.keys();
@@ -1489,20 +1500,20 @@ void CuttingPresenter::Paint()
             const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
             QString matName = mat ? mat->toDisplay() : "???";
 
-            zInfo(QString("   Anyag: %1").arg(matName));
+            out<<QString("   Anyag: %1").arg(matName);
 
             QString barcode = mat?mat->barcode:"???";
             QString postfix = profilePostfixFor(barcode);
 
             if (!postfix.isEmpty()) {
-                zInfo(QString("      Teljes hossz: %1 mm (%2 m × %3)")
+                out<<QString("      Teljes hossz: %1 mm (%2 m × %3)")
                           .arg(s.totalLength_mm)
                           .arg(s.totalLength_mm / 1000.0, 0, 'f', 2)
-                          .arg(postfix));
+                          .arg(postfix);
             } else {
-                zInfo(QString("      Teljes hossz: %1 mm (%2 m)")
+                out<<QString("      Teljes hossz: %1 mm (%2 m)")
                           .arg(s.totalLength_mm)
-                          .arg(s.totalLength_mm / 1000.0, 0, 'f', 2));
+                          .arg(s.totalLength_mm / 1000.0, 0, 'f', 2);
             }
 
 
@@ -1515,63 +1526,92 @@ void CuttingPresenter::Paint()
                 tetelszamok << QString("%1 (%2)").arg(b, c);
             }
 
-            zInfo(QString("      Tételszámok: %1").arg(tetelszamok.join(", ")));
-            zInfo("");
+            out<<QString("      Tételszámok: %1").arg(tetelszamok.join(", "));
+            out<<"";
         }
 
         // --- TÍPUSONKÉNTI POFÁK ---
         if (colorGroup.sumPofa() > 0)
         {
-            zInfo("   POFÁK:");
+            out<<"   POFÁK:";
             if(colorGroup.cipzarosPofa>0){
-                zInfo(QString("      Cipzáros: %1").arg(colorGroup.cipzarosPofa));
+                out<<QString("      Cipzáros: %1").arg(colorGroup.cipzarosPofa);
             }
             if(colorGroup.sinesPofa > 0){
-                zInfo(QString("      Sines:    %1").arg(colorGroup.sinesPofa));
+                out<<QString("      Sines:    %1").arg(colorGroup.sinesPofa);
             }
             if(colorGroup.bowdenesPofa > 0){
-                zInfo(QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa));
+                out<<QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa);
             }
             QString postfix1 = profilePostfixFor("NP-POF");
             if (!postfix1.isEmpty()) {
-                zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1));
+                out<<QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1);
             } else{
-                zInfo(QString("      Összesen: %1 db").arg(colorGroup.sumPofa()));
+                out<<QString("      Összesen: %1 db").arg(colorGroup.sumPofa());
             }
         }
         else
         {
             if (colorGroup.pofaFestheto)
                 // ❗ HIBA: nincs pofa, pedig kellene - de csak ha festhető a tok
-                zWarning("   ⚠️ HIBA: Ehhez a színhez nem számolódott pofa!");
+                out<<"   ⚠️ HIBA: Ehhez a színhez nem számolódott pofa!";
             else
-                zInfo("   (Ehhez a színhez nem kell pofa)");
+                out<<"   (Ehhez a színhez nem kell pofa)";
         }
 
         // --- TÍPUSONKÉNTI CSAVAROK ---
         if (colorGroup.csavar > 0)
         {
-            zInfo("   CSAVAROK:");
+            out<<"   CSAVAROK:";
             QString postfix2 = profilePostfixFor("NP-CSAV");
             if (!postfix2.isEmpty()) {
-                zInfo(QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2));
+                out<<QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2);
             } else{
-                zInfo(QString("      Összesen: %1 db").arg(colorGroup.csavar));
+                out<<QString("      Összesen: %1 db").arg(colorGroup.csavar);
             }
         }
         else
         {
             if (colorGroup.csavarFestheto)
                 // ❗ HIBA: nincs csavar, pedig kellene - de csak ha festhető a tokfedél
-                zWarning("   ⚠️ HIBA: Ehhez a színhez nem számolódott csavar!");
+                out<<"   ⚠️ HIBA: Ehhez a színhez nem számolódott csavar!";
             else
-                zInfo("   (Ehhez a színhez nem kell csavar)");
+                out<<"   (Ehhez a színhez nem kell csavar)";
         }
 
-        zInfo("========================================");
+        out<<"──────────────────────────────────";
     }
 
-    zInfo("=== FESTÉSI TERV VÉGE ===");
+    //out<<"=== FESTÉSI TERV VÉGE ===";
+    return out.join("\n");
+}
+
+void CuttingPresenter::ExportPaintPlan()
+{
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm");
+    QString path = QString("%1/paintplan_%2.txt").arg(dir, baseName);
+
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        zEvent("❌ Nem sikerült megnyitni a PaintPlan fájlt.");
+        return;
+    }
+
+    QString txt = Paint(baseName);
+
+    QTextStream out(&f);
+    out.setEncoding(QStringConverter::Utf8);
+    out << txt;
+
+    zEvent(QString("🎨 Festési terv exportálva: %1").arg(path));
 }
 
 

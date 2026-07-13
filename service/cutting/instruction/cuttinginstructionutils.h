@@ -182,7 +182,8 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
 
 
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
-inline QString formatMachineCutsEvent(const MachineCuts& mc, const QString& planIdStr, const int printedLW)
+inline QString formatMachineCutsEvent(const MachineCuts& mc,
+                                      const QString& planIdStr, const int printedLW)
 {
     QStringList lines;
     //QString planId = mc.machineHeader.planId.toString();

@@ -1250,7 +1250,7 @@ void MainWindow::handle_btn_ExportCutInstruction_clicked() {
 }
 
 void MainWindow::handle_btn_Painter_clicked(){
-        presenter->Paint();
+        presenter->ExportPaintPlan();
 }
 
 void MainWindow::handle_btn_Audit_clicked(){

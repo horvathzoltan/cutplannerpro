@@ -135,7 +135,8 @@ public:
 
     void ExportLeftoverIntakeForm();
     void ExportLeftoverIntakeForm_Pdf();
-    void Paint();
+    void ExportPaintPlan();
+
     void Audit();
     void BOM_audit();
     void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
@@ -162,5 +163,6 @@ private:
     PaintPlan buildPaintPlan();
     void AuditRequestsByExternalRef();
     void AuditRequestsByExternalRef_old();
+    QString Paint(const QString& planIdStr);
 };
 
