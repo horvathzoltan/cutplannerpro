@@ -2043,7 +2043,6 @@ void CuttingPresenter::BOM_audit()
 
 
 
-
 /*relocation*/
 
 

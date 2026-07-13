@@ -224,6 +224,25 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_seriesMatrixView, &SeriesMatrixView::matrixClosed,
             this, &MainWindow::onSeriesMatrixClosed);
 
+    ui->splitterStock->setStretchFactor(0, 1);  // treeStorage
+    ui->splitterStock->setStretchFactor(1, 5);  // tableStock
+
+    buildStorageTree();
+
+    connect(ui->treeStorage, &QTreeWidget::itemSelectionChanged, this, [this]() {
+        auto* item = ui->treeStorage->currentItem();
+        if (!item) return;
+
+        QUuid storageId = item->data(0, Qt::UserRole).toUuid();
+        stockPresenter->filterStockByStorage(storageId);
+    });
+
+    connect(stockTableManager.get(), &StockTableManager::leftoverNavigateRequested,
+            this, [this](const QUuid& id) {
+                ui->midBox->setCurrentWidget(ui->tab_4);
+                leftoverTableManager->highlight(id);
+            });
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
@@ -1322,6 +1341,33 @@ void MainWindow::onShowNotFoundMessage(const QString& msg)
 void MainWindow::onSeriesMatrixClosed()
 {
     _actSeriesMatrix->setChecked(false);
+}
+
+void MainWindow::buildStorageTree()
+{
+    ui->treeStorage->clear();
+
+    const auto& storages = StorageRegistry::instance().readAll();
+    QHash<QUuid, QTreeWidgetItem*> nodes;
+
+    // Node-ok létrehozása
+    for (const auto& s : storages) {
+        auto* item = new QTreeWidgetItem();
+        item->setText(0, s.name);
+        item->setData(0, Qt::UserRole, s.id);
+        nodes[s.id] = item;
+    }
+
+    // Hierarchia felépítése parentId alapján
+    for (const auto& s : storages) {
+        if (s.parentId.isNull()) {
+            ui->treeStorage->addTopLevelItem(nodes[s.id]);
+        } else {
+            nodes[s.parentId]->addChild(nodes[s.id]);
+        }
+    }
+
+    ui->treeStorage->expandAll();
 }
 
 

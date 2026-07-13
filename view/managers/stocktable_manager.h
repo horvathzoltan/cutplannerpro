@@ -2,6 +2,8 @@
 
 #include <QTableWidget>
 #include <QWidget>
+
+#include <model/leftoverstockentry.h>
 //#include <QUuid>
 
 #include "../tableutils/RowTracker.h"
@@ -19,6 +21,8 @@ private:
     RowTracker _rows;
     int _highlightedRow = -1;
 
+    void addLeftoverRow(const LeftoverStockEntry& e);
+
 public:
     StockTableManager(QTableWidget* table, QWidget* parent = nullptr);
 
@@ -34,6 +38,7 @@ signals:
     void editStorageRequested(const QUuid& requestId);
     void editCommentRequested(const QUuid& requestId);
     void moveRequested(const QUuid& requestId);
+    void leftoverNavigateRequested(const QUuid& entryId);
 
 public:
     static constexpr auto EntryId_Key = "entryId"; // button eventekhez
@@ -55,6 +60,7 @@ public:
 
     void highlight(const QUuid &id);
     void clearHighlight();
+    void refresh_TableFiltered(const QSet<QUuid> &storageIds);
 };
 
 

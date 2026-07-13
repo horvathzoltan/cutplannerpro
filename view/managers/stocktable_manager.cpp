@@ -12,6 +12,7 @@
 #include "../../model/registries/stockregistry.h"
 #include "../../model/registries/storageregistry.h"
 #include "model/storage/storageutils.h"
+#include <model/registries/leftoverstockregistry.h>
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), _table(table), _parent(parent)
@@ -272,21 +273,159 @@ void StockTableManager::highlight(const QUuid& id)
     _highlightedRow = row;
 }
 
+void StockTableManager::refresh_TableFiltered(const QSet<QUuid>& storageIds)
+{
+    TableUtils::clearSafely(_table);
+    _rows.clear();
 
-// void StockTableManager::clearHighlight()
+    const auto& stockEntries = StockRegistry::instance().readAll();
+
+    for (const auto& entry : stockEntries)
+    {
+        if (!storageIds.contains(entry.storageId))
+            continue;
+
+        addRow(entry);   // RowTracker újraépül
+    }
+
+    const auto& leftovers = LeftoverStockRegistry::instance().readAll();
+    for (const auto& e : leftovers)
+    {
+        if (storageIds.contains(e.storageId))
+            addLeftoverRow(e);
+    }
+
+}
+
+// void StockTableManager::addLeftoverRow(const LeftoverStockEntry& e)
 // {
-//     if (_highlightedRow < 0)
-//         return;
+//     int row = _table->rowCount();
+//     _table->insertRow(row);
 
-//     for (int col = 0; col < _table->columnCount(); ++col) {
-//         if (auto* item = _table->item(_highlightedRow, col)) {
-//             item->setBackground(Qt::NoBrush);
-//         }
-//     }
+//     // teljes sor colspan
+//     _table->setSpan(row, 0, 1, _table->columnCount());
 
-//     _highlightedRow = -1;
+//     // fő cella – leftover információ
+//     auto* item = new QTableWidgetItem(
+//         QString("LEFTOVER: %1 | %2 mm")
+//             .arg(e.barcode)
+//             .arg(e.availableLength_mm)
+//         );
+//     item->setData(Qt::UserRole, e.entryId);          // leftover entryId
+//     item->setData(Qt::UserRole + 1, "leftoverRow");  // típusjelölés
+//     item->setForeground(Qt::gray);
+//     item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+//     _table->setItem(row, 0, item);
+
+//     // navigációs gomb
+//     auto* btnNav = TableUtils::createIconButton("➡️", "Ugrás a leftoverre", e.entryId);
+
+//     // panel a gombnak
+//     auto* panel = new QWidget();
+//     auto* layout = new QHBoxLayout(panel);
+//     layout->setContentsMargins(0, 0, 0, 0);
+//     layout->addWidget(btnNav);
+
+//     _table->setCellWidget(row, 0, panel);
+
+//     // jelzés a MainWindow felé
+//     connect(btnNav, &QPushButton::clicked, this, [this, e]() {
+//         emit leftoverNavigateRequested(e.entryId);
+//     });
 // }
 
+void StockTableManager::addLeftoverRow(const LeftoverStockEntry& e)
+{
+    int row = _table->rowCount();
+    _table->insertRow(row);
+
+    // 1️⃣ Barcode cella
+    auto* itemBarcode = new QTableWidgetItem(e.barcode);
+    itemBarcode->setForeground(Qt::gray);
+    itemBarcode->setTextAlignment(Qt::AlignCenter);
+    itemBarcode->setData(Qt::UserRole, e.entryId);
+    itemBarcode->setData(Qt::UserRole + 1, "leftoverRow");
+    _table->setItem(row, ColBarcode, itemBarcode);
+
+    // 2️⃣ Anyagnév + bogyós színwidget
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(e.materialId);
+    QString materialName = mat ? mat->name : "(ismeretlen)";
+    QColor materialColor = mat ? mat->color.color() : QColor(Qt::gray);
+    QString colorTooltip = mat ? mat->color.name() : "";
+
+    TableUtils::setMaterialNameCell(_table, row, ColName,
+                                    materialName,
+                                    materialColor,
+                                    colorTooltip);
+
+    // leftover sor szürke betűszín
+    if (auto* w = _table->cellWidget(row, ColName)) {
+        w->setStyleSheet("color: gray;");
+    }
+
+    // 3️⃣ Hossz cella
+    auto* itemLength = new QTableWidgetItem(QString::number(e.availableLength_mm));
+    itemLength->setForeground(Qt::gray);
+    itemLength->setTextAlignment(Qt::AlignCenter);
+    _table->setItem(row, ColLength, itemLength);
+
+    // 4️⃣ CreatedAt cella
+    auto* itemCreated = new QTableWidgetItem(e.createdAt.toString("yyyy-MM-dd HH:mm"));
+    itemCreated->setForeground(Qt::gray);
+    itemCreated->setTextAlignment(Qt::AlignCenter);
+    _table->setItem(row, ColCreatedAt, itemCreated);
+
+    // 5️⃣ LastSeenAt cella
+    auto* itemSeen = new QTableWidgetItem(e.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
+    itemSeen->setForeground(Qt::gray);
+    itemSeen->setTextAlignment(Qt::AlignCenter);
+    _table->setItem(row, ColLastSeenAt, itemSeen);
+
+    // 6️⃣ Navi gomb cella
+    auto* btnNav = TableUtils::createIconButton("➡️", "Ugrás a leftoverre", e.entryId);
+
+    auto* panel = new QWidget();
+    auto* layout = new QHBoxLayout(panel);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setAlignment(Qt::AlignCenter);
+    layout->addWidget(btnNav);
+
+    _table->setCellWidget(row, ColAction, panel);
+
+    connect(btnNav, &QPushButton::clicked, this, [this, e]() {
+        emit leftoverNavigateRequested(e.entryId);
+    });
 
 
+    // -----------------------------
+    // Prefix ellenőrzés (RSM / RST)
+    // -----------------------------
+    {
+        QString prefix = e.barcode.left(3).toUpper();
+        bool prefixOk = (prefix == "RSM" || prefix == "RST");
 
+        if (!prefixOk) {
+            if (auto* item = _table->item(row, ColBarcode)) {
+                item->setBackground(QColor(255, 220, 220)); // halvány piros
+                item->setToolTip(QString(
+                                     "⚠️ Hibás leftover kód: '%1'\n"
+                                     "Csak RSM és RST prefix engedélyezett."
+                                     ).arg(prefix));
+            }
+        }
+    }
+
+    // -----------------------------
+    // Audit aging – túl régen volt ellenőrizve
+    // -----------------------------
+    {
+        QColor ageColor = ColorLogicUtils::colorForAge(e.lastSeenAt);
+
+        if (auto* item = _table->item(row, ColLastSeenAt)) {
+            item->setBackground(ageColor);
+            item->setForeground(Qt::black);
+        }
+    }
+
+}

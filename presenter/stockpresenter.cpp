@@ -5,6 +5,9 @@
 
 #include <materials/registry/material_registry.h>
 
+#include <model/registries/storageregistry.h>
+#include <view/MainWindow.h>
+
 StockPresenter::StockPresenter(MainWindow* view, QObject* parent)
     : QObject(parent),
     view(view)
@@ -66,6 +69,31 @@ void StockPresenter::findMaterial(const QUuid& materialId, int minLength, int ma
     emit showNotFoundMessage("Nincs megfelelő leftover vagy stock.");
 }
 
+QSet<QUuid> StockPresenter::collectSubtreeStorageIds(const QUuid& rootId)
+{
+    QSet<QUuid> result;
+    result.insert(rootId);
+
+    const auto& storages = StorageRegistry::instance().readAll();
+
+    bool added = true;
+    while (added) {
+        added = false;
+        for (const auto& s : storages) {
+            if (result.contains(s.parentId) && !result.contains(s.id)) {
+                result.insert(s.id);
+                added = true;
+            }
+        }
+    }
+    return result;
+}
+
+void StockPresenter::filterStockByStorage(const QUuid& storageId)
+{
+    QSet<QUuid> subtree = collectSubtreeStorageIds(storageId);
+    view->getStockTableManager()->refresh_TableFiltered(subtree);
+}
 
 
 // void StockPresenter::materialChosen(const StockEntry& entry)

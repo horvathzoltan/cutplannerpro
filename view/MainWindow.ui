@@ -644,95 +644,113 @@
          <attribute name="title">
           <string>Stock</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QPushButton" name="btn_AddStockEntry">
-              <property name="toolTip">
-               <string notr="true" extracomment="Egy meglévő anyag első bevitele a készletbe. Akkor használd, ha az anyag eddig nem szerepelt a raktárban."/>
-              </property>
+           <widget class="QSplitter" name="splitterStock">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <widget class="QTreeWidget" name="treeStorage">
+             <column>
               <property name="text">
-               <string>Új Tétel</string>
+               <string notr="true">1</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="tableStock">
-            <property name="editTriggers">
-             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
-            </property>
-            <column>
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Barcode</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Length (mm)</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Shape</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Quantity</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Storage</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Comment</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>CreatedAt</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>LastSeenAt</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Actions</string>
-             </property>
-            </column>
+             </column>
+            </widget>
+            <widget class="QWidget" name="verticalLayoutWidget">
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QPushButton" name="btn_AddStockEntry">
+                  <property name="toolTip">
+                   <string notr="true" extracomment="Egy meglévő anyag első bevitele a készletbe. Akkor használd, ha az anyag eddig nem szerepelt a raktárban."/>
+                  </property>
+                  <property name="text">
+                   <string>Új Tétel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tableStock">
+                <property name="editTriggers">
+                 <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+                </property>
+                <column>
+                 <property name="text">
+                  <string>Name</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Barcode</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Length (mm)</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Shape</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Quantity</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Storage</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Comment</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>CreatedAt</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>LastSeenAt</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Actions</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -742,9 +760,6 @@
           <string>Leftovers</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-          </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>

@@ -71,6 +71,8 @@ public:
     bool isChkUseLeftoversChecked();
 
     SeriesMatrixView* seriesMatrixView() const { return _seriesMatrixView; }
+    StockPresenter* getStockPresenter() const { return stockPresenter; }
+    StockTableManager* getStockTableManager() const { return stockTableManager.get(); }
 
 private slots:
     void handle_btn_NewRequest_clicked();
@@ -170,5 +172,6 @@ private:
 
     void ActionConnector_connect(ActionConnectorModel& a);
     void mainToolbarBuilder(ActionConnectorModel& m1);
+    void buildStorageTree();
 };
 #endif // MAINWINDOW_H
