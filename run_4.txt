@@ -1,421 +1,377 @@
-leftover intake:
- - a címke maradó részére nem kell vonalkód - kézi bevitelnál, de ha nem akarjuk bepötsögni a kódot akkor jól jön
- de jelenleg nem olyan a funkció
+Zoltán, **nagyon jó irányba gondolkodsz**, és most már két külön problémát látok:
 
- - a vonalkód mellett ahogy a termék címkén margó van a ragacsnak, erre is kell olyan
+1. **A leftover sorok stílusának kiszervezése** → teljesen jogos, mert a prefix‑ellenőrzés + audit aging duplikálódik.
+2. **A szemelési (audit) workflow megtervezése** → ez már egy *komolyabb domain‑logikai modul*, amit érdemes tisztán megtervezni.
 
-Audit BOM:
- - 2 példányt várunk el, 2 is van, de 1-et találunk és ez fáj neki.
+Mindkettőt meg tudjuk csinálni, de először **szétválasztom a két témát**, hogy tisztán láss.
 
+---
 
+# ⭐ 1) A leftover sorok stílusának kiszervezése (prefix + aging)
 
-Zoltán, itt van a teljes, végrehajtható, auditálható terv — két
-módosítással együtt — pontos lépésekre bontva, és a végén a
-patch‑tervvel + a minimális, de teljes files.txt listával.
-A terv determinisztikus, moduláris, és a BOM‑mátrix + AddInputDialog
-workflow architektúrájához igazodik.
+Ez **tökéletesen megoldható**, és **kell is**, mert:
 
-------------------------------------------------------------------------
+- a stock leftover sorokban is kell prefix‑ellenőrzés
+- a leftover táblában is kell prefix‑ellenőrzés
+- a stock leftover sorokban is kell audit aging
+- a leftover táblában is kell audit aging
 
-I. MÓDOSÍTÁS #1 — TÉTELSZÁM‑ELSŐ BEVITEL + NAGY LABEL + CERUZA MÓD
+Ezért a duplikált kódot **ki kell szervezni** egy közös utilba.
 
-1. Cél
+### ✔ Javasolt hely:
+`tableutils/colorlogicutils.h` vagy
+`tableutils/leftoverstyleutils.h`
 
-A dialógus addig nem enged semmilyen bevitelmezőt, amíg nincs tételszám.
-A tételszám megadása után:
+### ✔ Javasolt két függvény:
 
--   minden mező feloldódik,
--   a tételszám nagy labelben jelenik meg,
--   a tételszám szerkesztése ceruza ikonra vált,
--   a ceruza ikonra kattintva visszavált nagy edit mezőre.
+#### 1) `applyLeftoverPrefixStyle(QTableWidget* table, int row, int colBarcode, const QString& barcode)`
+#### 2) `applyLeftoverAgeStyle(QTableWidget* table, int row, int colLastSeenAt, const QDateTime& lastSeenAt)`
 
-Ez a BOM‑mátrix logikájával teljesen konzisztens.
+Ezeket a stock leftover sorokban és a leftover táblában is hívhatod.
 
-------------------------------------------------------------------------
+---
 
-2. Lépések
+# ⭐ 2) A szemelési (audit) workflow — ez már domain‑logika
 
-2.1. AddInputDialog UI módosítás
+A gondolatod **nagyon jó**, és ipari rendszerekben pont így működik:
 
--   A editReference mezőt két állapotban kell tudni megjeleníteni:
-    -   Edit mód → nagy QLineEdit
-    -   Display mód → nagy QLabel + ceruza ikon
+### ✔ A leftovereknek van egy „lastSeenAt” mezője
+Ez már most is jelzi, hogy mikor láttuk utoljára.
 
-2.2. Új widgetek
+### ✔ A szemelés lényege:
+- kapsz egy listát a rég nem látott leftoverekről
+- kimész a raktárba
+- megnézed őket
+- ami megvan → lastSeenAt frissül
+- ami nincs meg → „nem talált” számláló nő
+- ami sokszor nincs meg → gyanús, de nem töröljük automatikusan
+- ami más storage‑ban van → jelzés, hogy rossz helyen van
 
--   QLabel* lblReferenceBig;
--   QToolButton* btnEditReference; (ceruza ikon)
+Ez **pont az audit aging logika**, amit már elkezdtünk.
 
-2.3. Alapállapot
+---
 
--   editReference enabled = true
--   MINDEN más mező enabled = false
--   lblReferenceBig hidden
--   btnEditReference hidden
+# ⭐ 2.1) Mi kell ehhez?
 
-2.4. Amikor a user beírja a tételszámot
+### ✔ 1) Egy új mező a leftoverben:
+`int notFoundCount = 0;`
 
-Trigger: editReference->editingFinished
+Ez a „hányszor nem találtuk meg” számláló.
 
-Lépések:
+### ✔ 2) Egy új funkció:
+`void markSeen(const QUuid& entryId);`
+→ lastSeenAt = now
 
-1.  Ha üres → marad tiltva minden.
-2.  Ha nem üres:
-    -   lblReferenceBig->setText(ref)
-    -   lblReferenceBig->show()
-    -   btnEditReference->show()
-    -   editReference->hide()
-    -   MINDEN más mező enabled = true
+### ✔ 3) Egy új funkció:
+`void markNotFound(const QUuid& entryId);`
+→ notFoundCount++
 
-2.5. Ceruza ikon logika
+### ✔ 4) Egy új táblázatnézet:
+„Szemelési lista” → csak a rég nem látott leftoverek
 
-Ceruza ikon → visszaváltás edit módba:
+### ✔ 5) Egy új gomb a leftover sorokban:
+„Szemelve” → lastSeenAt frissítése
 
--   editReference->setText(lblReferenceBig->text())
--   editReference->show()
--   lblReferenceBig->hide()
--   btnEditReference->hide()
--   editReference->setFocus()
+### ✔ 6) Egy új gomb:
+„Nem volt meg” → notFoundCount++
 
-------------------------------------------------------------------------
+---
 
-3. Navigációs gombok (↓ és →)
+# ⭐ 2.2) Mi történik, ha egy leftover nincs ott, ahol lennie kéne?
 
-3.1. ↓ = ugyanaz a tételszám, következő anyag
+Pontosan ezt mondtad:
 
--   Tételszám NEM változik
--   lblReferenceBig marad
--   BOM‑vezérelt ajánlás:
-    -   mátrix adott oszlopában az első üres BOM‑anyag
+> ha nem ok, és n-szer nem ok, nem biztos hogy törlendő, inkább megkeresendő
 
-3.2. → = következő tételszám
+Ez ipari logika.
 
--   Tételszám változik → ref + 1
--   lblReferenceBig->setText(newRef)
--   BOM‑vezérelt ajánlás:
-    -   mátrix következő oszlopában az első üres BOM‑anyag
+### ✔ A rendszer NEM törli automatikusan
+### ✔ Csak jelzi, hogy gyanús
+### ✔ A user dönt
+### ✔ A rendszer segít megtalálni
 
-3.3. Ha a mátrix nincs nyitva
+---
 
--   → esetén: ref + 1
--   ↓ esetén: ugyanaz a ref
+# ⭐ 2.3) Mi történik, ha egy leftover megvan, de rossz storage‑ban?
 
-------------------------------------------------------------------------
+Ez is ipari logika:
 
-II. MÓDOSÍTÁS #2 — BOM‑VEZÉRELT ANYAGAJÁNLÁS
+- a leftover sor kap egy „rossz gépben / rossz storage‑ban” jelzést
+- a user átmozgatja
+- lastSeenAt frissül
+- notFoundCount resetelhető
 
-Ez a kulcs.
-A dialógus NEM contextből, NEM user‑emlékezetből, NEM „utolsó anyagból”
-ajánl.
+Ez már most is működik a RowStylerben.
 
-A dialógus a BOM‑mátrixból ajánl.
+---
 
-1. Lefelé gomb
+# ⭐ 3) Vissza a konkrét kérdésedhez:
 
--   Ugyanaz a tételszám
--   Mátrix adott oszlopában:
-    -   generateBomMaterials(req)
-    -   végigmenni a BOM‑sorrenden
-    -   első olyan anyag, ahol:
-        -   !isFilled
-        -   !familySatisfied
--   Ezt ajánlja fel a dialógus
+> az addLeftoverRow-ban a stock táblában csak a leftover sorokra ezt a stílus beállítót rá lehet-e ereszteni?
 
-2. Jobbra gomb
+### ✔ A teljes RowStyler NEM ereszthető rá
+→ mert a stock táblában más oszlopok vannak
 
--   Következő tételszám
--   Mátrix következő oszlopában:
-    -   ugyanaz a logika
+### ✔ De a prefix + aging részek IGEN
+→ és ezeket ki is szervezzük külön függvényekbe
 
-3. Ha a user rossz anyagot vitt fel
+---
 
--   Család zöld lesz
--   Konkrét BOM‑anyag üres
--   Következő ajánlás → helyes BOM‑anyag
--   Workflow nem csúszik el
+# ⭐ 4) Kézzel beilleszthető, végleges util függvények
 
-------------------------------------------------------------------------
+## 🔧 PATCH — leftoverstyleutils.h
 
-III. A TELJES VÉGREHAJTÁSI TERV (LÉPÉSRŐL LÉPÉSRE)
+```cpp
+#pragma once
+#include <QTableWidget>
+#include <QColor>
+#include <QDateTime>
+#include "view/tableutils/colorlogicutils.h"
 
-1. AddInputDialog UI módosítás
+namespace LeftoverStyleUtils {
 
--   Hozzáadni:
-    -   nagy QLabel
-    -   ceruza ikon
-    -   két navigációs gomb (↓ és →)
+inline void applyPrefixStyle(QTableWidget* table, int row, int colBarcode, const QString& barcode)
+{
+    QString prefix = barcode.left(3).toUpper();
+    bool ok = (prefix == "RSM" || prefix == "RST");
 
-2. Tételszám‑első workflow implementálása
-
--   Minden mező tiltása
--   Tételszám megadása után feloldás
--   Label + ceruza mód
-
-3. Navigációs gombok implementálása
-
--   ↓ → BOM‑vezérelt anyag
--   → → következő tételszám + BOM‑vezérelt anyag
-
-4. BOM‑vezérelt ajánlás implementálása
-
--   Mátrixból lekérni:
-    -   BOM‑sorrend
-    -   filledCells
-    -   familySatisfied
--   Első üres BOM‑anyag ajánlása
-
-5. SeriesMatrixView integráció
-
--   A dialógus a mátrixból kér ajánlást
--   A mátrix a dialógusból kap új requestet
--   A két irány teljesen szinkronban
-
-6. Context frissítés minimális módosítása
-
--   A context NEM ajánl anyagot
--   A context csak:
-    -   owner
-    -   date
-    -   type
-    -   subtype
-    -   side
-    -   color
-    -   surface
--   Anyagajánlás → BOM‑vezérelt
-
-7. Patch terv elkészítése
-
--   AddInputDialog UI patch
--   AddInputDialog logic patch
--   SeriesMatrixView BOM‑ajánlás API
--   MainWindow integráció
-
-------------------------------------------------------------------------
-
-IV. PATCH TERV (KÓDGENERÁLÁSHOZ)
-
-A patch terv moduláris, strict‑mode kompatibilis:
-
-PATCH #1 — AddInputDialog UI
-
--   Új QLabel + ceruza ikon
--   Új navigációs gombok
--   Tételszám‑első workflow
-
-PATCH #2 — AddInputDialog logic
-
--   Tételszám megadása → feloldás
--   Ceruza ikon → edit mód
--   ↓ és → gombok logikája
-
-PATCH #3 — BOM‑vezérelt ajánlás
-
--   Új függvény:
-    -   QUuid nextBomMaterialFor(const QString& ref)
--   Dialógus ezt hívja
-
-PATCH #4 — SeriesMatrixView API
-
--   Új publikus metódus:
-    -   QUuid nextBomMaterial(const QString& ref)
--   Ez a dialógus BOM‑ajánlásának alapja
-
-PATCH #5 — MainWindow integráció
-
--   Navigációs gombok → dialógus újranyitása
--   Tételszám átadása
--   BOM‑ajánlás átadása
-
-------------------------------------------------------------------------
-
-V. Minimális, de teljes files.txt lista
-
-Ez a lista pontosan azokat a fájlokat tartalmazza, amelyek szükségesek a
-módosításokhoz.
-
-view/dialog/input/addinputdialog.h
-view/dialog/input/addinputdialog.cpp
-view/dialog/input/ui_addinputdialog.ui
-
-view/dialog/input/series_matrix_view.h
-view/dialog/input/series_matrix_view.cpp
-
-presenter/CuttingPresenter.h
-presenter/CuttingPresenter.cpp
-
-model/cutting/plan/request.h
-model/cutting/plan/request.cpp
-
-model/registries/cuttingplanrequestregistry.h
-model/registries/cuttingplanrequestregistry.cpp
-
-view/MainWindow.h
-view/MainWindow.cpp
-
-Ez a minimális, de teljes készlet.
-
-------------------------------------------------------------------------
-
-VI. Készen állok a patch generálására
-
-Ha azt mondod:
-
-„Kérem a patch‑et strict‑mode formában.”
-
-A teljes patch‑csomagot generálom:
-
--   minden fájlhoz külön patch‑szekció,
--   atomic módosításokkal,
--   strict‑mode kompatibilis snippetekkel,
--   auditálható diff‑formában.
-
-Csak szólj.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*
-*
-*
-*
-*
-*
-*
-*
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-cutrequest fül:
-    - color nem jól van kitöltve
-    - lehetne akár színes bogyó is benne!
-
-a color dolgot a requestben rendbe kell tenni
-
-=======
->>>>>>> ed03c8e605c777ceca626ffacb62db04d9b4bb73
- - kell egy lista az auditálandó tételekről
- - kell egy tárhelycímke-lista
-tárhely neveknben:  
- - / karakter cseréje: / -> -
- - whitespace normalizálás
- - az ékezetes és ékezet nélküli nevek keveredése miatt a rendszer
- „hamis egyediséget” lát, pedig a raktárosok szemében ugyanaz a hely.
-
-************ elvileg ez kész
-sorozat: a job/bal ugyanúgy az user számára
-kitöltendő mint a méret, tehát nem kell rá emlékezni
-sorozat: ha már felvettük a tokot, nem kell mégegyszer felvenni. 
-de van bom, meg van egy munkalap sorrend. ha nincs, fel kell venni, de kérdés:
-egye hát ennek nem a bomban van a helye.de felveni meg csak azt kell, ami a bom-ban van. 
-elég nagy hibalehetőség lenne nem összekötni a kettőt, valahogy.
-sorozat: ha én beírom a tételszámot, megszürkül, ha a gép tölti ki, nem szürkül meg
-létező tételszámnál pedig jó
-
-leftover felvételi lap: az emoji nem látszik
-
-címkét, vágási tervet tokcsaládra, lábcsaládra - láb típusra kell szétbontani, ha az user kéri.
-a tokokat és lábakat külön kéne venni, igyz hogy egy tervben vannak, de két menetben kellebe
-vágni
-**********************
-
-az optimalizáció csökkenti a készletet? nem kellene.
-a készletet csak akkor kellene csökkenteni, amikor a fűrész az anyagba belevág. addig az anyag
-azonos a raktárban található anyagokkal, és nincs köztük külömbség
-
-nem tudjuk mely anyagokat kell felvenni, és milyen készlettel azok felvétele is egyenként
-történik. az optimalizáció a valós készleten dolgozik, emiatt rendelkezni kell a készlettel
-
-stock: tárhely készletét keresni, lekérni, módosítani? vágó tárhely audit: tudni kéne
-mi van rajta de úgy hogy át is írhassuk
-
-festési terv: az alapanyagok külömbözősége miatt a cipzáros nem vonható össze a bowdenessel
-vagy a sinessel, de a bowdenes meg a sines összevonható - a bowdenes egy láb nélküli sines -
-
-festeni akkor kell egy anyagot, ha a gyári színe eltér a kívánttól,
-vagy a felületminöségén akarunk javítani - tehát beadhatjuk a fehéret fehrre, ha sérült. de ha sértetlen, nem.
-festeni csak festhető anyagokat festünk. festhetetlent nem.
-
-
-vasudvar
-    - külső
-    - belső
-         -jobb
-            -első_1
-            -első_2    
-            -hátsó_1            
-            -hátsó_2
-         -bal
-            -első_1
-                polcok: 1-2-3
-            -első_2
-                polcok: 1-2-3
-            -hátsó_1
-            -hátsó_2
-
-             
-11111111-1111-4111-8111-111111111111;Vasudvar;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;VAS;"Vasudvar fő egység"
-22222222-2222-4222-8222-222222222222;Külső;Warehouse;11111111-1111-4111-8111-111111111111;VAS_KULS;"Vasudvar külső rész"
-33333333-3333-4333-8333-333333333333;Belső;Warehouse;11111111-1111-4111-8111-111111111111;VAS_BEL;"Vasudvar belső rész"
-44444444-4444-4444-8444-444444444444;Jobb;Warehouse;33333333-3333-4333-8333-333333333333;VAS_JOBB;"Belső jobb oldal"
-55555555-5555-4555-8555-555555555555;Első_1;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_E1;"Jobb első 1"
-66666666-6666-4666-8666-666666666666;Első_2;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_E2;"Jobb első 2"
-77777777-7777-4777-8777-777777777777;Hátsó_1;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_H1;"Jobb hátsó 1"
-88888888-8888-4888-8888-888888888888;Hátsó_2;Shelf;44444444-4444-4444-8444-444444444444;VAS_JOBB_H2;"Jobb hátsó 2"
-99999999-9999-4999-8999-999999999999;Bal;Warehouse;33333333-3333-4333-8333-333333333333;VAS_BAL;"Belső bal oldal"
-aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;Első_1;Warehouse;99999999-9999-4999-8999-999999999999;VAS_BAL_E1;"Bal első 1"
-bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb;Polc 1;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P1;"Bal első 1 – polc 1"
-cccccccc-cccc-4ccc-8ccc-cccccccccccc;Polc 2;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P2;"Bal első 1 – polc 2"
-dddddddd-dddd-4ddd-8ddd-dddddddddddd;Polc 3;Shelf;aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa;VAS_BAL_E1_P3;"Bal első 1 – polc 3"
-eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;Első_2;Warehouse;99999999-9999-4999-8999-999999999999;VAS_BAL_E2;"Bal első 2"
-ffffffff-ffff-4fff-8fff-ffffffffffff;Polc 1;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P1;"Bal első 2 – polc 1"
-abababab-abab-4bab-8bab-abababababab;Polc 2;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P2;"Bal első 2 – polc 2"
-cdcdcdcd-cdcd-4dcd-8dcd-cdcdcdcdcdcd;Polc 3;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P3;"Bal első 2 – polc 3"
-efefefef-efef-4fef-8fef-efefefefefef;Hátsó_1;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H1;"Bal hátsó 1"
-f0f0f0f0-f0f0-4f0f-8f0f-f0f0f0f0f0f0;Hátsó_2;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H2;"Bal hátsó 2"
-
-
-stock: a fogytán lévő készletek listája - pdf
-
-
-/**/
-
-
-
-
-kell egy audit - terméktípusra
-mindennek beadjuk a terméktípusát, és levezetünk egy auditot, mindene megvan-e
-lehetne auditálni méretet, pl ha egy láb nem azonos hossz a lábbetéttel, láb takaróval...
-
-
-btn_ExportLeftoverForm
-formatLeftoverIntakeForm_OnePage
-makeManualLeftoverId
-
-
-// 🔥 Barcode egyediség ellenőrzése
-if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
-    QMessageBox::warning(this,
-                         "Duplikált vonalkód",
-                         "Ez a vonalkód már létezik a hullók között!");
-    return false;
+    if (!ok) {
+        if (auto* item = table->item(row, colBarcode)) {
+            item->setBackground(QColor(255, 220, 220));
+            item->setToolTip(QString(
+                "⚠️ Hibás leftover kód: '%1'\n"
+                "Csak RSM és RST prefix engedélyezett."
+            ).arg(prefix));
+        }
+    }
 }
+
+inline void applyAgeStyle(QTableWidget* table, int row, int colLastSeenAt, const QDateTime& lastSeenAt)
+{
+    QColor ageColor = ColorLogicUtils::colorForAge(lastSeenAt);
+
+    if (auto* item = table->item(row, colLastSeenAt)) {
+        item->setBackground(ageColor);
+        item->setForeground(Qt::black);
+    }
+}
+
+}
+```
+
+---
+
+# ⭐ 5) addLeftoverRow végére beillesztendő
+
+```cpp
+LeftoverStyleUtils::applyPrefixStyle(_table, row, ColBarcode, e.barcode);
+LeftoverStyleUtils::applyAgeStyle(_table, row, ColLastSeenAt, e.lastSeenAt);
+```
+
+---
+
+# ⭐ 6) Következő lépés
+
+Ha szeretnéd, megtervezem a **teljes szemelési workflow-t**, beleértve:
+
+- új mezők
+- új registry funkciók
+- új UI gombok
+- új szemelési nézet
+- új audit riport
+- patch‑terv minden érintett fájlra
+
+Csak mondd:
+**„Kérem a szemelési workflow tervét”**
+
+
+Zoltán, **nagyon jó, hogy ezt így végiggondoltad**, mert most már teljesen tisztán látszik:
+
+### ✔ A leftover táblában már *van* vizuális szemelési jelzés (piruló háttér → aging)
+### ✔ A leftover sorokban *kell* egy „szemelve” gomb (zöld)
+### ✔ A szemeléshez *nem kell új táblázatnézet*
+### ✔ A szemeléshez *kell egy workflow*, ami 20 darab leftover barcode‑ot ad ellenőrzésre
+### ✔ A szemelés eredménye:
+- „megvan” → lastSeenAt frissül
+- „nincs meg” → notFoundCount++
+
+És a legfontosabb:
+
+### ❗ A „nem látott” leftovereket **nem töröljük automatikusan**
+→ csak jelöljük, hogy gyanús
+→ a user dönt
+→ a rendszer segít megtalálni
+
+Ez ipari logika, és pont így működik minden raktári audit rendszerben.
+
+---
+
+# ⭐ 1) A szemelési workflow célja
+
+A cél egy **„Szemelési lap”**, ami:
+
+- tartalmaz kb. 20 leftover barcode‑ot
+- ezek a „rég nem látott” leftoverek
+- a user kimegy a raktárba
+- pipálja:
+  - ✔ megvan
+  - ✘ nincs meg
+- a rendszer:
+  - ✔ esetén → lastSeenAt frissül
+  - ✘ esetén → notFoundCount++
+
+Ez a workflow **nem töröl semmit**, csak **auditál**.
+
+---
+
+# ⭐ 2) Kell-e a „nem látottakat belőni”?
+
+Igen, de nem úgy, hogy „töröljük”, hanem:
+
+### ✔ Ha megvan → lastSeenAt frissül
+### ✔ Ha nincs meg → notFoundCount++
+### ✔ Ha sokszor nincs meg → gyanús leftover
+### ✔ Ha rossz storage‑ban van → jelzés, hogy át kell mozgatni
+### ✔ Ha máshol megtaláljuk → lastSeenAt frissül + storageId frissül
+
+Ez egy **intelligens audit**, nem egy „törlőgép”.
+
+---
+
+# ⭐ 3) A szemelési lap generálása
+
+A leftover registry már tartalmaz:
+
+- `lastSeenAt`
+- `createdAt`
+
+Ez alapján könnyű kiválasztani a „rég nem látott” leftovereket:
+
+### Példa:
+
+```cpp
+QVector<LeftoverStockEntry> candidates;
+for (const auto& e : LeftoverStockRegistry::instance().readAll()) {
+    if (e.lastSeenAt.daysTo(QDateTime::currentDateTime()) > 30)
+        candidates.append(e);
+}
+```
+
+Majd:
+
+```cpp
+auto list = candidates.mid(0, 20);
+```
+
+Ez a 20 darab leftover kerül a szemelési lapra.
+
+---
+
+# ⭐ 4) A szemelési lap UI
+
+Nem kell új táblázat.
+
+A leftover táblában:
+
+- a sorok már pirulnak (aging)
+- a sorok már jelzik a prefix hibát
+- a sorok már jelzik a gép‑kompatibilitást
+
+Most jön a két új gomb:
+
+### ✔ „Megvan” gomb → zöld
+→ lastSeenAt = now
+→ notFoundCount = 0 (opcionális)
+
+### ✔ „Nincs meg” gomb → piros
+→ notFoundCount++
+→ tooltip: „2x nem volt meg”
+
+Ezek a gombok a leftover sorok **ColAction** oszlopába kerülnek.
+
+---
+
+# ⭐ 5) A szemelési logika a registryben
+
+Két új metódus:
+
+```cpp
+bool markSeen(const QUuid& id) {
+    auto opt = findById(id);
+    if (!opt) return false;
+
+    auto e = *opt;
+    e.lastSeenAt = QDateTime::currentDateTime();
+    e.notFoundCount = 0;
+    return updateEntry(e);
+}
+
+bool markNotFound(const QUuid& id) {
+    auto opt = findById(id);
+    if (!opt) return false;
+
+    auto e = *opt;
+    e.notFoundCount++;
+    return updateEntry(e);
+}
+```
+
+Ez **nem töröl**, csak auditál.
+
+---
+
+# ⭐ 6) A stock leftover sorok stílusa
+
+A stock leftover sorokban:
+
+- prefix ellenőrzés
+- audit aging
+- anyagnév + bogyó
+- hossz
+- createdAt
+- lastSeenAt
+- navi gomb
+
+Ez már most működik.
+
+A prefix + aging stílus **kiszervezhető** egy utilba, ahogy előző üzenetben megterveztük.
+
+---
+
+# ⭐ 7) A kérdésedre a konkrét válasz:
+
+> kell egy funkció, amivel belőjjük a látott barcodeokat. a nem látottakat vajon be kell-e lőni?
+
+### ✔ Igen, mindkettőt be kell lőni.
+
+### ✔ „Megvan” → lastSeenAt frissül
+### ✔ „Nincs meg” → notFoundCount++
+
+A „nem látott” leftovereket **nem töröljük**, csak jelöljük.
+
+Ez a helyes ipari workflow.
+
+---
+
+# ⭐ 8) Ha kéred, megcsinálom a teljes PATCH‑csomagot:
+
+- leftover registry bővítése (notFoundCount + markSeen + markNotFound)
+- leftover táblába két új gomb (✔ és ✘)
+- leftover sor stílus frissítése (prefix + aging utilból)
+- szemelési lap generálása (20 darab rég nem látott leftover)
+- MainWindow integráció
+
+Csak mondd:
+**„Kérem a szemelési patch‑csomagot”**
+
+
+
+
+
+
+
+
+
 
 1. Mindíg ütközésmentes leftover id-t adjon, kell a registrybe szolgáltatás aminek
 van int paramétere, mint kezdőérték, és arra nézve keres következő szabad vonalkódot
