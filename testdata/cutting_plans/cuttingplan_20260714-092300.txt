@@ -1,0 +1,16 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1949";"Jakufa-Ép, Nyh.";0;0;3830;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-07-15;NP;CIP
+"1949";"Jakufa-Ép, Nyh.";0;0;3855;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-07-15;NP;CIP
+"1949";"Jakufa-Ép, Nyh.";0;0;3737;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-07-15;NP;CIP
+"1949";"Jakufa-Ép, Nyh.";0;0;2257;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-15;NP;CIP
+"1949";"Jakufa-Ép, Nyh.";0;0;2257;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-07-15;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;3970;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-07-20;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;3995;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-07-20;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;3877;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-07-20;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;2397;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-07-20;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;2397;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2970;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2995;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2877;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2397;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2397;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-07-20;NP;CIP
