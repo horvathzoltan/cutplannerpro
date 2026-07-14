@@ -183,7 +183,8 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
 
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
 inline QString formatMachineCutsEvent(const MachineCuts& mc,
-                                      const QString& planIdStr, const int printedLW)
+                                      const QString& planIdStr,
+                                      const int printedLW)
 {
     QStringList lines;
     //QString planId = mc.machineHeader.planId.toString();
@@ -366,12 +367,14 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     // --- 2. FÁZIS: RENDERELÉS DINAMIKUS OSZLOPSZÉLESSÉGGEL ---
     prevRod.clear();
     idx = 0;
-
+    QString prevSepAfterSize = "   ";
+    bool isFirstLine = true;
     for (const auto& ci : mc.cutInstructions) {
 
         bool rodChanged = (ci.rodId != prevRod);
-        if (rodChanged && !prevRod.isEmpty())
-            lines << "────────────────";
+        // if (rodChanged && !prevRod.isEmpty())
+        //     lines << QString("────────────────|                 |                 %1")
+        //                  .arg(sepLineConnector.trimmed());
         prevRod = ci.rodId;
 
         // QString rodLabel = (rodChanged)
@@ -386,12 +389,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         int total = rodTotalCount[rodIdOrBarcode];   // összes előfordulás
 
         // ⭐ PATCH: alap rodLabel (többször szereplő rudaknál az elsőt jelöljük *)
-        QString baseRodLabel;
-        if (total > 1 && seen == 0) {
-            baseRodLabel = QString("%1 *").arg(rodIdOrBarcode);   // első előfordulás jelölése
-        } else {
-            baseRodLabel = rodIdOrBarcode+"  ";                        // további előfordulások vagy egyszeri rúd
-        }
+        // ⭐ PATCH: bogyós jelölés
+        QString rodMarker = (seen == 0) ? " ●" : " ○";   // új rúd = ●, használt = ○
+
+        QString baseRodLabel = QString("%1 %2").arg(rodIdOrBarcode).arg(rodMarker);
 
         QString rodLabel = (rodChanged)
                                ? QString("%1 □").arg(baseRodLabel)
@@ -434,53 +435,82 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         QString iconP = icon.leftJustified(wIcon, ' ');
         QString sizeP = sizeFull.rightJustified(wSize, ' ');
 
-        // --- pieceLabel vágása printedLW alapján ---
-        int fixedLen = wStep + 1 + wRod + 3 + wMat + 3 + wIcon + 1 + wSize + 5;
-        int maxPieceLen = printedLW - fixedLen;
-        if (maxPieceLen < 5) maxPieceLen = 5;
-
-        QString piece = pieceLabel;
-        if (piece.length() > maxPieceLen)
-            piece = piece.left(maxPieceLen - 1) + "…";
-
-        // bool isRepeatedSize = (sizeCount.value(sizeStr, 0) > 1);
-        // QString sepAfterSize = isRepeatedSize ? " ║ " : " | ";
-
-        // QString multiplier = "";
-        // if (isRepeatedSize && firstOfBlock) {
-        //     multiplier = QString("  ×%1").arg(sizeCount[sizeStr]);
-        // }
-
+        // --- ismétlődés logika ---
         int count = sizeCount.value(sizeStr, 0);
         bool isRepeated = (count > 1);
 
-        QString sepAfterSize;
+        // 1) sepAfterSize – CSAK EGYSZER!
+        // QString sepAfterSize;
         // if (!isRepeated) {
-        //     sepAfterSize = " | ";
+        //     sepAfterSize = "   ";
         // } else if (firstOfBlock) {
-        //     sepAfterSize = "  ╽ "; //╽
+        //     sepAfterSize = " ╖ "; //╽
         // } else if (repeatCount == count) {
-        //     sepAfterSize = " ╿ "; //╿
+        //     sepAfterSize = " ╜ "; //╿
         // } else {
-        //     sepAfterSize = " ┃ ";
+        //     sepAfterSize = " ║ ";//┃
         // }
 
+
+        QString sepAfterSize;
+        QString sepLineConnector;
+
         if (!isRepeated) {
-            sepAfterSize = " | ";
+            sepAfterSize = "   ";
+            sepLineConnector = "   ";
         } else if (firstOfBlock) {
-            sepAfterSize = " ╖ "; //╽
+            sepAfterSize = " ╖ ";
+            sepLineConnector = " ║ ";
         } else if (repeatCount == count) {
-            sepAfterSize = " ╜ "; //╿
+            sepAfterSize = " ╜ ";
+            sepLineConnector = " ║ ";
         } else {
-            sepAfterSize = " ║ ";//┃
+            sepAfterSize = " ║ ";
+            sepLineConnector = " ║ ";
         }
 
+        if (!isFirstLine && rodChanged && !prevRod.isEmpty()) {
+
+            // kapocs csak akkor, ha a blokk FOLYTATÓDIK két sor között
+            bool prevInBlock = (prevSepAfterSize == " ╖ " || prevSepAfterSize == " ║ ");
+            bool currInBlock = (sepAfterSize == " ║ " || sepAfterSize == " ╜ ");
+
+            QString sepLineConnector =
+                (prevInBlock && currInBlock)
+                    ? " ║ "
+                    : "   ";
+
+            lines << QString("────────────────|                 |                %1")
+                         .arg(sepLineConnector.trimmed());
+        }
+
+
+        // 2) multiplier
         QString multiplier = "";
         if (isRepeated && firstOfBlock) {
             multiplier = QString("  ×%1").arg(count);
         }
 
-        // --- végső sor ---
+        // 3) fixedLen – már a valós sepAfterSize + multiplier alapján
+        int fixedLen =
+            stepP.length() + 1 +
+            rodP.length() + 3 +
+            matP.length() + 3 +
+            iconP.length() + 1 +
+            sizeP.length() + sepAfterSize.length() +
+            2 +               // " □"
+            multiplier.length();
+
+        // 4) pieceLabel levágása
+        int maxPieceLen = printedLW - fixedLen;
+        if (maxPieceLen < 5)
+            maxPieceLen = 5;
+
+        QString piece = pieceLabel;
+        if (piece.length() > maxPieceLen)
+            piece = piece.left(maxPieceLen - 1) + "…";
+
+        // 5) végső sor
         lines << QString("%1 %2 | %3 | %4 %5%6%7%8")
                      .arg(stepP)
                      .arg(rodP)
@@ -488,10 +518,13 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
                      .arg(iconP)
                      .arg(sizeP)
                      .arg(sepAfterSize)
-                     .arg(piece+" □")
+                     .arg(piece + " □")
                      .arg(multiplier);
 
+        prevSepAfterSize = sepAfterSize;
+
         prevSizeStr = sizeStr;
+        isFirstLine = false;
     }
 
 
