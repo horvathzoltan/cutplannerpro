@@ -35,4 +35,8 @@ public:
 
     std::optional<LeftoverStockEntry> findByBarcode(const QString &barcode) const;
     bool existsBarcode(const QString& barcode, const QUuid& ignoreId = QUuid()) const;
+
+    bool markSeen(const QUuid& entryId);
+    bool markNotFound(const QUuid& entryId);
+
 };

@@ -12,6 +12,7 @@
 #include "../../model/registries/stockregistry.h"
 #include "../../model/registries/storageregistry.h"
 #include "model/storage/storageutils.h"
+#include "view/tableutils/leftoverstyleutils.h"
 #include <model/registries/leftoverstockregistry.h>
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
@@ -401,31 +402,12 @@ void StockTableManager::addLeftoverRow(const LeftoverStockEntry& e)
     // -----------------------------
     // Prefix ellenőrzés (RSM / RST)
     // -----------------------------
-    {
-        QString prefix = e.barcode.left(3).toUpper();
-        bool prefixOk = (prefix == "RSM" || prefix == "RST");
+    LeftoverStyleUtils::applyPrefixStyle(_table, row,
+                                         StockTableManager::ColBarcode,
+                                         e.barcode);
 
-        if (!prefixOk) {
-            if (auto* item = _table->item(row, ColBarcode)) {
-                item->setBackground(QColor(255, 220, 220)); // halvány piros
-                item->setToolTip(QString(
-                                     "⚠️ Hibás leftover kód: '%1'\n"
-                                     "Csak RSM és RST prefix engedélyezett."
-                                     ).arg(prefix));
-            }
-        }
-    }
-
-    // -----------------------------
-    // Audit aging – túl régen volt ellenőrizve
-    // -----------------------------
-    {
-        QColor ageColor = ColorLogicUtils::colorForAge(e.lastSeenAt);
-
-        if (auto* item = _table->item(row, ColLastSeenAt)) {
-            item->setBackground(ageColor);
-            item->setForeground(Qt::black);
-        }
-    }
+    LeftoverStyleUtils::applyAgeStyle(_table, row,
+                                      StockTableManager::ColLastSeenAt,
+                                      e.lastSeenAt);
 
 }

@@ -30,6 +30,7 @@ SOURCES += \
     model/cutting/plan/audit/naphalo_type_detector.cpp \
     model/cutting/plan/audit/product_bom_audit_service.cpp \
     model/storageaudit/auditcontext.cpp \
+    presenter/leftoverpresenter.cpp \
     presenter/stockpresenter.cpp \
     product/registry/bom_registry.cpp \
     product/registry/material_role_registry.cpp \
@@ -68,6 +69,7 @@ SOURCES += \
     view/dialog/materialfinder/materialdelegate.cpp \
     view/dialog/materialfinder/materialfinderdialog.cpp \
     view/dialog/materialsearch/materialsearchdialog.cpp \
+    view/dialog/waste/leftoverreviewdialog.cpp \
     view/dialog/waste/scrapbybarcodedialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
@@ -192,6 +194,7 @@ HEADERS += \
     model/relocation/relocationauditstatus.h \
     model/storage/storageutils.h \
     model/storageaudit/audit_enums.h \
+    presenter/leftoverpresenter.h \
     presenter/stockpresenter.h \
     product/model/bom_entry.h \
     product/model/material_role.h \
@@ -262,6 +265,7 @@ HEADERS += \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \
     view/dialog/materialsearch/materialsearchdialog.h \
+    view/dialog/waste/leftoverreviewdialog.h \
     view/dialog/waste/scrapbybarcodedialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
@@ -269,6 +273,7 @@ HEADERS += \
     view/tableutils/auditgroupsynchronizer.h \
     view/tableutils/colorutils.h \
     view/tableutils/highlightdelegate.h \
+    view/tableutils/leftoverstyleutils.h \
     view/tableutils/rowid.h \
     view/tableutils/storageaudittable_connector.h \
     view/tableutils/storageaudittable_rowstyler.h \
@@ -398,6 +403,7 @@ FORMS += \
     view/dialog/stock/editcommentdialog.ui \
     view/dialog/stock/editquantitydialog.ui \
     view/dialog/stock/editstoragedialog.ui \
+    view/dialog/waste/leftoverreviewdialog.ui \
     view/dialog/waste/scrapbybarcodedialog.ui
 
 # Default rules for deployment.

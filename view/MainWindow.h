@@ -12,6 +12,7 @@
 #include "managers/relocationplantable_manager.h"
 #include "managers/storageaudittable_manager.h"
 #include "presenter/stockpresenter.h"
+#include "presenter/leftoverpresenter.h"
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
 
@@ -118,10 +119,15 @@ private slots:
 
     void onSeriesMatrixClosed();
 
+    void handle_btn_ReviewForm_clicked();
+    void handle_btn_Review_clicked();
+
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* presenter = nullptr;
     StockPresenter* stockPresenter = nullptr;
+    LeftoverPresenter* leftoverPresenter = nullptr;
+
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
     SeriesMatrixView* _seriesMatrixView = nullptr;

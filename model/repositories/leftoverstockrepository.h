@@ -24,6 +24,7 @@ private:
         QString createdAtStr;
         QString lastSeenAtStr;
         QString statusStr;
+        int notFoundCount = 0;
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot

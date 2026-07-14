@@ -13,6 +13,7 @@
 #include "model/leftover/leftoverstatusutils.h"
 #include "model/leftover/leftoverutils.h"
 #include "model/storage/storageutils.h"
+#include "view/tableutils/leftoverstyleutils.h"
 #include <view/dialog/waste/scrapbybarcodedialog.h>
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
@@ -70,7 +71,12 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     itemCreated->setTextAlignment(Qt::AlignCenter);
     table->setItem(rowIx, ColCreatedAt, itemCreated);
 
-    auto* itemSeen = new QTableWidgetItem(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
+    QString seenText = entry.lastSeenAt.toString("yyyy-MM-dd HH:mm");
+    if (entry.notFoundCount > 0) {
+        seenText += QString(" (%1×)").arg(entry.notFoundCount);
+    }
+
+    auto* itemSeen = new QTableWidgetItem(seenText);
     itemSeen->setTextAlignment(Qt::AlignCenter);
     table->setItem(rowIx, ColLastSeenAt, itemSeen);
 
@@ -127,7 +133,14 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     });
 
     // 🎨 Stílus
-    LeftoverTable::RowStyler::applyStyle(table, rowIx, mat, entry);
+
+    LeftoverStyleUtils::applyPrefixStyle(table, rowIx,
+                                         LeftoverTableManager::ColBarcode,
+                                         entry.barcode);
+
+    LeftoverStyleUtils::applyAgeStyle(table, rowIx,
+                                      LeftoverTableManager::ColLastSeenAt,
+                                      entry.lastSeenAt);
 }
 /*
 ColMaterial         = 0
@@ -199,8 +212,13 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
 
             // 🕒 LAST SEEN AT
             auto* itemSeen = table->item(rowIx, ColLastSeenAt);
-            if (itemSeen)
-                itemSeen->setText(entry.lastSeenAt.toString("yyyy-MM-dd HH:mm"));
+            if (itemSeen) {
+                QString text = entry.lastSeenAt.toString("yyyy-MM-dd HH:mm");
+                if (entry.notFoundCount > 0) {
+                    text += QString(" (%1×)").arg(entry.notFoundCount);
+                }
+                itemSeen->setText(text);
+            }
 
             // 🛠️ Forrás
             auto* itemSource = table->item(rowIx, ColSource);
@@ -233,6 +251,13 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
 
           //  QUuid currentId3 = _rowId.get(rowIx);
           //  zInfo("rowIx:"+QString::number(rowIx)+ "currentId3:"+currentId3.toString());
+            LeftoverStyleUtils::applyPrefixStyle(table, rowIx,
+                                                 LeftoverTableManager::ColBarcode,
+                                                 entry.barcode);
+
+            LeftoverStyleUtils::applyAgeStyle(table, rowIx,
+                                              LeftoverTableManager::ColLastSeenAt,
+                                              entry.lastSeenAt);
             return;
   //      }
 //    }

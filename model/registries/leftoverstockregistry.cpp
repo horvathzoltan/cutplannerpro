@@ -133,4 +133,28 @@ bool LeftoverStockRegistry::existsBarcode(const QString& barcode,
     return false;
 }
 
+bool LeftoverStockRegistry::markSeen(const QUuid& entryId)
+{
+    for (auto& entry : _data) {
+        if (entry.entryId == entryId) {
+            entry.lastSeenAt = QDateTime::currentDateTime();
+            entry.notFoundCount = 0;
+            persist();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LeftoverStockRegistry::markNotFound(const QUuid& entryId)
+{
+    for (auto& entry : _data) {
+        if (entry.entryId == entryId) {
+            entry.notFoundCount++;
+            persist();
+            return true;
+        }
+    }
+    return false;
+}
 

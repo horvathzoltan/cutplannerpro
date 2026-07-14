@@ -55,26 +55,6 @@ inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* mat, 
 
 
     // -----------------------------
-    // Hibás prefix jelzése
-    // -----------------------------
-    {
-        QString prefix = entry.barcode.left(3).toUpper();
-        bool prefixOk = (prefix == "RSM" || prefix == "RST");
-
-        if (!prefixOk) {
-            if (auto* item = table->item(row, LeftoverTableManager::ColBarcode)) {
-                item->setBackground(QColor(255, 220, 220)); // halvány piros
-                item->setToolTip(QString(
-                                     "⚠️ Hibás leftover kód: '%1'\n"
-                                     "Csak RSM és RST prefix engedélyezett."
-                                     ).arg(prefix));
-            }
-        }
-    }
-
-
-
-    // -----------------------------
     // 4) Gép-kompatibilitás ellenőrzése
     // -----------------------------
     {
@@ -139,20 +119,6 @@ inline void applyStyle(QTableWidget* table, int row, const MaterialMaster* mat, 
 
 
     }
-
-    // -----------------------------
-    // 5) Audit aging – túl régen volt ellenőrizve
-    // -----------------------------
-    {
-        QColor ageColor = ColorLogicUtils::colorForAge(entry.lastSeenAt);
-
-        if (auto* item = table->item(row, LeftoverTableManager::ColLastSeenAt)) {
-            item->setBackground(ageColor);
-            item->setForeground(Qt::black);
-        }
-    }
-
-
 
 }
 

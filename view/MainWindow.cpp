@@ -91,7 +91,6 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onShowNotFoundMessage);
 
 
-
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
@@ -99,6 +98,9 @@ MainWindow::MainWindow(QWidget *parent)
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, presenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
+
+    leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
+
 
     // 🔦 Sorvezető delegate bekötése
     _highlightDelegate = new HighlightDelegate(ui->tableCuttingInstruction);
@@ -323,6 +325,12 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_BOMaudit, &QPushButton::clicked,
             this, &MainWindow::handle_btn_BOMaudit_clicked);
+
+    connect(ui->btn_ReviewForm, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_ReviewForm_clicked);
+
+    connect(ui->btn_Review, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_Review_clicked);
 
 }
 
@@ -631,22 +639,6 @@ void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
 void MainWindow::handle_btn_LeftoverDisposal_clicked()
 {
     leftoverTableManager->openScrapDialog();
-    // const auto confirm = QMessageBox::question(this, "Selejtezés",
-    //                                            "Biztosan eltávolítod a túl rövid reusable darabokat? Ezek archiválásra kerülnek és kikerülnek a készletből.",
-    //                                            QMessageBox::Yes | QMessageBox::No);
-
-    // if (confirm == QMessageBox::Yes) {
-    //     presenter->scrapShortLeftovers(); // 🔧 Selejtezési logika átkerül Presenterbe
-
-    //     refresh_StockTable(); // ha a reusable a készletben is megjelenik
-    //     //ReusableStockRegistry::instance().all());
-    //     refresh_LeftoversTable();
-    //     // updateArchivedWasteTable(); → ha van külön nézet hozzá
-
-    //     QMessageBox::information(this, "Selejtezés kész",
-    //                              "A túl rövid reusable darabok selejtezése megtörtént.");
-    // }
-
 }
 
 void MainWindow::handle_btn_Optimize_clicked() {
@@ -1280,6 +1272,13 @@ void MainWindow::handle_btn_BOMaudit_clicked(){
     presenter->BOM_audit();
 }
 
+void MainWindow::handle_btn_ReviewForm_clicked(){
+    leftoverPresenter->ReviewForm();
+}
+
+void MainWindow::handle_btn_Review_clicked(){
+    leftoverPresenter->Review();
+}
 
 void MainWindow::switchToCuttingPlanTab()
 {

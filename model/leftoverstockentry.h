@@ -40,6 +40,8 @@ struct LeftoverStockEntry {
     QDateTime lastSeenAt = QDateTime::currentDateTime();
     LeftoverStatus status = LeftoverStatus::Unknown;
 
+    int notFoundCount = 0;   // 🔍 Audit: hányszor nem találtuk meg
+
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const LeftoverStockEntry& other) const;
 
