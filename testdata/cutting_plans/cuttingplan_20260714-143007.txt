@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"30";"Generálkiv., Pécs";0;0;1825;;2;1;1;"RAL 8003";NP-T;Width;false;2026-07-17;NP;CIP
+"30";"Generálkiv., Pécs";0;0;1850;;2;1;1;"RAL 8003";NP-TF;Width;false;2026-07-17;NP;CIP
+"30";"Generálkiv., Pécs";0;0;1732;;2;1;1;"RAL 8003";NP-CZ;Width;false;2026-07-17;NP;CIP
+"30";"Generálkiv., Pécs";0;0;2397;;2;1;1;"RAL 8003";NP-CL;Width;false;2026-07-17;NP;CIP
+"30";"Generálkiv., Pécs";0;0;2397;;2;1;1;"RAL 8003";NP-CLB;Width;false;2026-07-17;NP;CIP

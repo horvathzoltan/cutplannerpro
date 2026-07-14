@@ -837,6 +837,7 @@ void AddInputDialog::setLengthEditable(bool editable)
 void AddInputDialog::setMaterialEditable(bool editable)
 {
     ui->comboMaterial->setEnabled(editable);
+    ui->btn_MaterialSearch->setEnabled(editable);
 }
 
 void AddInputDialog::applyOwnerFromRequest(const Cutting::Plan::Request& req)
