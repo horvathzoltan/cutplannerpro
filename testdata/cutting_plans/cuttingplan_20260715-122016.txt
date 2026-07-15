@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1969";"Frama, Sorel";0;0;1629;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-16;NP;CIP
+"1969";"Frama, Sorel";0;0;1565;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-16;NP;CIP
+"1967";"Frama, Sorel";0;0;2549;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-16;NP;CIP
+"1967";"Frama, Sorel";0;0;2485;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-16;NP;CIP
+"1968";"Frama, Sorel";0;0;1739;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-15;NP;CIP
+"1968";"Frama, Sorel";0;0;1675;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-15;NP;CIP
