@@ -1273,7 +1273,7 @@ void MainWindow::handle_btn_BOMaudit_clicked(){
 }
 
 void MainWindow::handle_btn_ReviewForm_clicked(){
-    leftoverPresenter->ReviewForm();
+    leftoverPresenter->ExportReviewFormPdf();
 }
 
 void MainWindow::handle_btn_Review_clicked(){

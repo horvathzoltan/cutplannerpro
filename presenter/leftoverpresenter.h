@@ -11,6 +11,9 @@ public:
     void Review();      // Szemle dialog
     void ReviewForm();  // később
 
+    //void ReviewFormPdf();
+    void ExportReviewFormPdf();   // ⬅ ÚJ
+
 private:
     void processAuditCode(const QString& auditCode);
 

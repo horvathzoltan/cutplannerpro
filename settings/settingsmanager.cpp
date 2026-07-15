@@ -247,3 +247,11 @@ void SettingsManager::setValue(const QString& key, const QVariant& value)
     _settings.setValue(key, value);
     _settings.sync();
 }
+
+int SettingsManager::leftoverAgeThresholdDays() const {
+    return _settings.value(SettingsKeys::LeftoverAgeThresholdDays, 7).toInt();
+}
+
+void SettingsManager::setLeftoverAgeThresholdDays(int days) {
+    persist(SettingsKeys::LeftoverAgeThresholdDays, QString::number(days));
+}

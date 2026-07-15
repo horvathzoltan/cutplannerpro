@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QDateTime>
 #include <QWidget>
+#include <settings/settingsmanager.h>
 
 namespace ColorLogicUtils {
 
@@ -41,9 +42,11 @@ inline QColor colorForAge(const QDateTime& lastSeen)
     QDateTime now = QDateTime::currentDateTime();
     qint64 days = lastSeen.daysTo(now);
 
-    if (days > 7)
+    int daysThreshold = SettingsManager::instance().leftoverAgeThresholdDays();
+
+    if (days > daysThreshold)
         return QColor(255, 160, 160);   // piros
-    if (days > 3)
+    if (days > daysThreshold/2)
         return QColor(255, 220, 170);   // narancs
 
     return QColor(200, 255, 200);   // halványzöld – friss

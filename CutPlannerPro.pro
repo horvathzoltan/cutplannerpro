@@ -131,7 +131,8 @@ SOURCES += \
     view/managers/relocationplantable_manager.cpp \
     view/managers/resultstable_manager.cpp \
     view/managers/stocktable_manager.cpp \
-    view/managers/storageaudittable_manager.cpp
+    view/managers/storageaudittable_manager.cpp \
+    view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
     common/barcodepainter.h \
@@ -359,6 +360,7 @@ HEADERS += \
     view/columnindexes/tablecuttinginstruction_columns.h \
     view/eventloghelpers.h \
     view/managers/cuttinginstructiontable_manager.h \
+    view/utils/leftoverreviewform_utils.h \
     view/viewmodels/audit/cellgenerator.h \
     view/viewmodels/audit/rowgenerator.h \
     view/viewmodels/cutting/rowgenerator.h \

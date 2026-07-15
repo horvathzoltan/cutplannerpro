@@ -32,6 +32,8 @@ inline constexpr auto LastActiveTab = "last_active_tab";
 inline constexpr auto UseReusableLeftovers = "use_reusable_leftovers";
 
 inline constexpr auto MaterialFinderRange = "material_finder_range_mm";
+
+inline constexpr auto LeftoverAgeThresholdDays = "leftover_age_threshold_days";
 }
 
 enum class TestMode {
@@ -92,6 +94,9 @@ public:
     // useReusableLeftovers
     void setUseReusableLeftovers(bool enabled);
     bool useReusableLeftovers() const;
+
+    int leftoverAgeThresholdDays() const;
+    void setLeftoverAgeThresholdDays(int days);
 
     int lastActiveTab() const;
     void setLastActiveTab(int ix);
