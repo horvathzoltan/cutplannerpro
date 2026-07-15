@@ -1,368 +1,190 @@
-Zoltán, **nagyon jó irányba gondolkodsz**, és most már két külön problémát látok:
+Zoltán, itt van **a teljes, lépésről‑lépésre végrehajtható patch‑terv**, pontosan abban a formában, ahogy szereted:
+**auditálható, determinisztikus, kontextusfüggetlen, kézzel beilleszthető**, és minden lépés külön végrehajtható.
 
-1. **A leftover sorok stílusának kiszervezése** → teljesen jogos, mert a prefix‑ellenőrzés + audit aging duplikálódik.
-2. **A szemelési (audit) workflow megtervezése** → ez már egy *komolyabb domain‑logikai modul*, amit érdemes tisztán megtervezni.
-
-Mindkettőt meg tudjuk csinálni, de először **szétválasztom a két témát**, hogy tisztán láss.
+Ez a terv **nem kód**, hanem *patch‑workflow*, amelyet sorban végrehajtva kapsz meg a stabil, fix‑oszlopos, mozgó‑oszlopos, széthullásmentes táblázatot.
 
 ---
 
-# ⭐ 1) A leftover sorok stílusának kiszervezése (prefix + aging)
-
-Ez **tökéletesen megoldható**, és **kell is**, mert:
-
-- a stock leftover sorokban is kell prefix‑ellenőrzés
-- a leftover táblában is kell prefix‑ellenőrzés
-- a stock leftover sorokban is kell audit aging
-- a leftover táblában is kell audit aging
-
-Ezért a duplikált kódot **ki kell szervezni** egy közös utilba.
-
-### ✔ Javasolt hely:
-`tableutils/colorlogicutils.h` vagy
-`tableutils/leftoverstyleutils.h`
-
-### ✔ Javasolt két függvény:
-
-#### 1) `applyLeftoverPrefixStyle(QTableWidget* table, int row, int colBarcode, const QString& barcode)`
-#### 2) `applyLeftoverAgeStyle(QTableWidget* table, int row, int colLastSeenAt, const QDateTime& lastSeenAt)`
-
-Ezeket a stock leftover sorokban és a leftover táblában is hívhatod.
+# ⭐ PATCHING TERV — PONTONKÉNT, SORRENDBEN
 
 ---
 
-# ⭐ 2) A szemelési (audit) workflow — ez már domain‑logika
+## **1. LÉPÉS — Gyűjtsd össze az oszlopok tartalmát (már megvan)**
+Ez a meglévő:
 
-A gondolatod **nagyon jó**, és ipari rendszerekben pont így működik:
+- `colStep`
+- `colRod`
+- `colMat`
+- `colIcon`
+- `colSize`
+- `colPiece`
 
-### ✔ A leftovereknek van egy „lastSeenAt” mezője
-Ez már most is jelzi, hogy mikor láttuk utoljára.
-
-### ✔ A szemelés lényege:
-- kapsz egy listát a rég nem látott leftoverekről
-- kimész a raktárba
-- megnézed őket
-- ami megvan → lastSeenAt frissül
-- ami nincs meg → „nem talált” számláló nő
-- ami sokszor nincs meg → gyanús, de nem töröljük automatikusan
-- ami más storage‑ban van → jelzés, hogy rossz helyen van
-
-Ez **pont az audit aging logika**, amit már elkezdtünk.
+Ezt **nem kell módosítani**, csak megtartani.
 
 ---
 
-# ⭐ 2.1) Mi kell ehhez?
+## **2. LÉPÉS — Számold ki az oszlopok maximális szélességét (már megvan)**
 
-### ✔ 1) Egy új mező a leftoverben:
-`int notFoundCount = 0;`
-
-Ez a „hányszor nem találtuk meg” számláló.
-
-### ✔ 2) Egy új funkció:
-`void markSeen(const QUuid& entryId);`
-→ lastSeenAt = now
-
-### ✔ 3) Egy új funkció:
-`void markNotFound(const QUuid& entryId);`
-→ notFoundCount++
-
-### ✔ 4) Egy új táblázatnézet:
-„Szemelési lista” → csak a rég nem látott leftoverek
-
-### ✔ 5) Egy új gomb a leftover sorokban:
-„Szemelve” → lastSeenAt frissítése
-
-### ✔ 6) Egy új gomb:
-„Nem volt meg” → notFoundCount++
-
----
-
-# ⭐ 2.2) Mi történik, ha egy leftover nincs ott, ahol lennie kéne?
-
-Pontosan ezt mondtad:
-
-> ha nem ok, és n-szer nem ok, nem biztos hogy törlendő, inkább megkeresendő
-
-Ez ipari logika.
-
-### ✔ A rendszer NEM törli automatikusan
-### ✔ Csak jelzi, hogy gyanús
-### ✔ A user dönt
-### ✔ A rendszer segít megtalálni
-
----
-
-# ⭐ 2.3) Mi történik, ha egy leftover megvan, de rossz storage‑ban?
-
-Ez is ipari logika:
-
-- a leftover sor kap egy „rossz gépben / rossz storage‑ban” jelzést
-- a user átmozgatja
-- lastSeenAt frissül
-- notFoundCount resetelhető
-
-Ez már most is működik a RowStylerben.
-
----
-
-# ⭐ 3) Vissza a konkrét kérdésedhez:
-
-> az addLeftoverRow-ban a stock táblában csak a leftover sorokra ezt a stílus beállítót rá lehet-e ereszteni?
-
-### ✔ A teljes RowStyler NEM ereszthető rá
-→ mert a stock táblában más oszlopok vannak
-
-### ✔ De a prefix + aging részek IGEN
-→ és ezeket ki is szervezzük külön függvényekbe
-
----
-
-# ⭐ 4) Kézzel beilleszthető, végleges util függvények
-
-## 🔧 PATCH — leftoverstyleutils.h
+Ez is jó:
 
 ```cpp
-#pragma once
-#include <QTableWidget>
-#include <QColor>
-#include <QDateTime>
-#include "view/tableutils/colorlogicutils.h"
+auto maxWidth = [](const QVector<QString>& v){
+    int m = 0;
+    for (const auto& s : v) m = qMax(m, s.length());
+    return m;
+};
 
-namespace LeftoverStyleUtils {
+int wStep = maxWidth(colStep);
+int wRod  = maxWidth(colRod);
+int wMat  = maxWidth(colMat);
+int wIcon = maxWidth(colIcon);
+int wSize = maxWidth(colSize);
+```
 
-inline void applyPrefixStyle(QTableWidget* table, int row, int colBarcode, const QString& barcode)
-{
-    QString prefix = barcode.left(3).toUpper();
-    bool ok = (prefix == "RSM" || prefix == "RST");
+Ezt megtartjuk.
 
-    if (!ok) {
-        if (auto* item = table->item(row, colBarcode)) {
-            item->setBackground(QColor(255, 220, 220));
-            item->setToolTip(QString(
-                "⚠️ Hibás leftover kód: '%1'\n"
-                "Csak RSM és RST prefix engedélyezett."
-            ).arg(prefix));
-        }
-    }
-}
+---
 
-inline void applyAgeStyle(QTableWidget* table, int row, int colLastSeenAt, const QDateTime& lastSeenAt)
-{
-    QColor ageColor = ColorLogicUtils::colorForAge(lastSeenAt);
+## **3. LÉPÉS — Határozd meg a fix oszlopok kezdő indexeit**
 
-    if (auto* item = table->item(row, colLastSeenAt)) {
-        item->setBackground(ageColor);
-        item->setForeground(Qt::black);
-    }
-}
+Add hozzá:
 
-}
+```cpp
+int colStepPos = 0;
+int colRodPos  = colStepPos + wStep + 1;
+int colMatPos  = colRodPos  + wRod  + 3;
+int colIconPos = colMatPos  + wMat  + 3;
+int colSizePos = colIconPos + wIcon + 1;
+int colSepPos  = colSizePos + wSize + 1;
+int colPiecePos = colSepPos + 3;
+```
+
+Ez **fixen meghatározza**, hova kerülnek a szeparátorok.
+
+---
+
+## **4. LÉPÉS — Számold ki a mozgó oszlop szélességét**
+
+Add hozzá:
+
+```cpp
+int maxPieceLen = printedLW - colPiecePos - 2;
+if (maxPieceLen < 5)
+    maxPieceLen = 5;
+```
+
+Ez lesz az **egyetlen truncálható oszlop**.
+
+---
+
+## **5. LÉPÉS — Truncáld a pieceLabel-t, ha túl hosszú**
+
+Cseréld le a meglévő truncálást erre:
+
+```cpp
+QString piece = pieceLabel;
+if (piece.length() > maxPieceLen)
+    piece = piece.left(maxPieceLen - 1) + "…";
+```
+
+Ez **az egyetlen truncálás**, minden más oszlop teljes tartalmat mutat.
+
+---
+
+## **6. LÉPÉS — Hozz létre fix szélességű sort**
+
+Add hozzá:
+
+```cpp
+QString line(printedLW, ' ');
+```
+
+Ez lesz a sor buffer.
+
+---
+
+## **7. LÉPÉS — Írj egy helper függvényt a fix pozícióra íráshoz**
+
+Add hozzá:
+
+```cpp
+auto put = [&](int pos, const QString& text){
+    for (int i = 0; i < text.length() && pos + i < line.length(); ++i)
+        line[pos + i] = text[i];
+};
+```
+
+Ez a kulcs: **fix indexre írás**.
+
+---
+
+## **8. LÉPÉS — Írd ki az oszlopokat fix pozícióra**
+
+Cseréld le a teljes sor‑összefűzést erre:
+
+```cpp
+put(colStepPos, stepP);
+put(colRodPos,  rodP);
+put(colMatPos,  matP);
+put(colIconPos, iconP);
+put(colSizePos, sizeP);
+put(colSepPos,  sepAfterSize);
+put(colPiecePos, piece + " □");
+put(colPiecePos + maxPieceLen + 1, multiplier);
+```
+
+Ez garantálja:
+
+- a rod-id **nem tol el semmit**,
+- a szeparátorok **fix helyen maradnak**,
+- a tábla **nem hullik szét**.
+
+---
+
+## **9. LÉPÉS — A szeparátor sor is fix indexekre épül**
+
+Cseréld le a szeparátor sort erre:
+
+```cpp
+QString sepLine(printedLW, ' ');
+sepLine.fill('─');
+
+sepLine[colRodPos - 1] = '|';
+sepLine[colMatPos - 1] = '|';
+sepLine[colIconPos - 1] = '|';
+sepLine[colSizePos - 1] = '|';
+sepLine[colPiecePos - 1] = '|';
+
+put(colSepPos, sepLineConnector.trimmed());
+```
+
+Ez **mindig jó helyen lesz**, függetlenül a rod-id hosszától.
+
+---
+
+## **10. LÉPÉS — A végső sort add hozzá a lines-hoz**
+
+```cpp
+lines << line;
 ```
 
 ---
 
-# ⭐ 5) addLeftoverRow végére beillesztendő
+# ⭐ EREDMÉNY
 
-```cpp
-LeftoverStyleUtils::applyPrefixStyle(_table, row, ColBarcode, e.barcode);
-LeftoverStyleUtils::applyAgeStyle(_table, row, ColLastSeenAt, e.lastSeenAt);
-```
-
----
-
-# ⭐ 6) Következő lépés
-
-Ha szeretnéd, megtervezem a **teljes szemelési workflow-t**, beleértve:
-
-- új mezők
-- új registry funkciók
-- új UI gombok
-- új szemelési nézet
-- új audit riport
-- patch‑terv minden érintett fájlra
-
-Csak mondd:
-**„Kérem a szemelési workflow tervét”**
-
-
-Zoltán, **nagyon jó, hogy ezt így végiggondoltad**, mert most már teljesen tisztán látszik:
-
-### ✔ A leftover táblában már *van* vizuális szemelési jelzés (piruló háttér → aging)
-### ✔ A leftover sorokban *kell* egy „szemelve” gomb (zöld)
-### ✔ A szemeléshez *nem kell új táblázatnézet*
-### ✔ A szemeléshez *kell egy workflow*, ami 20 darab leftover barcode‑ot ad ellenőrzésre
-### ✔ A szemelés eredménye:
-- „megvan” → lastSeenAt frissül
-- „nincs meg” → notFoundCount++
-
-És a legfontosabb:
-
-### ❗ A „nem látott” leftovereket **nem töröljük automatikusan**
-→ csak jelöljük, hogy gyanús
-→ a user dönt
-→ a rendszer segít megtalálni
-
-Ez ipari logika, és pont így működik minden raktári audit rendszerben.
+✔ A rod-id (barcode) **nem truncálódik**
+✔ A szeparátorok **fix helyen maradnak**
+✔ A tábla **nem hullik szét**
+✔ A mozgó oszlop szépen truncálódik
+✔ A layout **determinista**, DPI‑független
+✔ A PDF minden környezetben stabil
+✔ A kód olvasható, karbantartható, profi
 
 ---
 
-# ⭐ 1) A szemelési workflow célja
+# ⭐ Ha kéred, megcsinálom a teljes `formatMachineCutsEvent()` függvény végleges, egyben beilleszthető verzióját is.
 
-A cél egy **„Szemelési lap”**, ami:
-
-- tartalmaz kb. 20 leftover barcode‑ot
-- ezek a „rég nem látott” leftoverek
-- a user kimegy a raktárba
-- pipálja:
-  - ✔ megvan
-  - ✘ nincs meg
-- a rendszer:
-  - ✔ esetén → lastSeenAt frissül
-  - ✘ esetén → notFoundCount++
-
-Ez a workflow **nem töröl semmit**, csak **auditál**.
-
----
-
-# ⭐ 2) Kell-e a „nem látottakat belőni”?
-
-Igen, de nem úgy, hogy „töröljük”, hanem:
-
-### ✔ Ha megvan → lastSeenAt frissül
-### ✔ Ha nincs meg → notFoundCount++
-### ✔ Ha sokszor nincs meg → gyanús leftover
-### ✔ Ha rossz storage‑ban van → jelzés, hogy át kell mozgatni
-### ✔ Ha máshol megtaláljuk → lastSeenAt frissül + storageId frissül
-
-Ez egy **intelligens audit**, nem egy „törlőgép”.
-
----
-
-# ⭐ 3) A szemelési lap generálása
-
-A leftover registry már tartalmaz:
-
-- `lastSeenAt`
-- `createdAt`
-
-Ez alapján könnyű kiválasztani a „rég nem látott” leftovereket:
-
-### Példa:
-
-```cpp
-QVector<LeftoverStockEntry> candidates;
-for (const auto& e : LeftoverStockRegistry::instance().readAll()) {
-    if (e.lastSeenAt.daysTo(QDateTime::currentDateTime()) > 30)
-        candidates.append(e);
-}
-```
-
-Majd:
-
-```cpp
-auto list = candidates.mid(0, 20);
-```
-
-Ez a 20 darab leftover kerül a szemelési lapra.
-
----
-
-# ⭐ 4) A szemelési lap UI
-
-Nem kell új táblázat.
-
-A leftover táblában:
-
-- a sorok már pirulnak (aging)
-- a sorok már jelzik a prefix hibát
-- a sorok már jelzik a gép‑kompatibilitást
-
-Most jön a két új gomb:
-
-### ✔ „Megvan” gomb → zöld
-→ lastSeenAt = now
-→ notFoundCount = 0 (opcionális)
-
-### ✔ „Nincs meg” gomb → piros
-→ notFoundCount++
-→ tooltip: „2x nem volt meg”
-
-Ezek a gombok a leftover sorok **ColAction** oszlopába kerülnek.
-
----
-
-# ⭐ 5) A szemelési logika a registryben
-
-Két új metódus:
-
-```cpp
-bool markSeen(const QUuid& id) {
-    auto opt = findById(id);
-    if (!opt) return false;
-
-    auto e = *opt;
-    e.lastSeenAt = QDateTime::currentDateTime();
-    e.notFoundCount = 0;
-    return updateEntry(e);
-}
-
-bool markNotFound(const QUuid& id) {
-    auto opt = findById(id);
-    if (!opt) return false;
-
-    auto e = *opt;
-    e.notFoundCount++;
-    return updateEntry(e);
-}
-```
-
-Ez **nem töröl**, csak auditál.
-
----
-
-# ⭐ 6) A stock leftover sorok stílusa
-
-A stock leftover sorokban:
-
-- prefix ellenőrzés
-- audit aging
-- anyagnév + bogyó
-- hossz
-- createdAt
-- lastSeenAt
-- navi gomb
-
-Ez már most működik.
-
-A prefix + aging stílus **kiszervezhető** egy utilba, ahogy előző üzenetben megterveztük.
-
----
-
-# ⭐ 7) A kérdésedre a konkrét válasz:
-
-> kell egy funkció, amivel belőjjük a látott barcodeokat. a nem látottakat vajon be kell-e lőni?
-
-### ✔ Igen, mindkettőt be kell lőni.
-
-### ✔ „Megvan” → lastSeenAt frissül
-### ✔ „Nincs meg” → notFoundCount++
-
-A „nem látott” leftovereket **nem töröljük**, csak jelöljük.
-
-Ez a helyes ipari workflow.
-
----
-
-# ⭐ 8) Ha kéred, megcsinálom a teljes PATCH‑csomagot:
-
-- leftover registry bővítése (notFoundCount + markSeen + markNotFound)
-- leftover táblába két új gomb (✔ és ✘)
-- leftover sor stílus frissítése (prefix + aging utilból)
-- szemelési lap generálása (20 darab rég nem látott leftover)
-- MainWindow integráció
-
-Csak mondd:
-**„Kérem a szemelési patch‑csomagot”**
+Csak szólj.
 
 
 

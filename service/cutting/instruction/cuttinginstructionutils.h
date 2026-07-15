@@ -480,8 +480,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
                     ? " ║ "
                     : "   ";
 
-            lines << QString("────────────────|                 |                %1")
-                         .arg(sepLineConnector.trimmed());
+            // lines << QString("────────────────|                 |                %1")
+            //              .arg(sepLineConnector.trimmed());
+
+            lines << QString("────────────────");
         }
 
 
