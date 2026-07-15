@@ -1,0 +1,11 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1960";"Frama, Orosz R.";0;0;2496;;1;1;0;"RAL 8019";NP-ROLL70-7000;Width;false;2026-07-16;NP;BOW
+"1960";"Frama, Orosz R.";0;0;2465;;1;1;0;"RAL 8019";NP-BAR12-4000;Width;false;2026-07-16;NP;BOW
+"1958";"Frama, Orosz R.";0;0;2946;;1;1;0;"RAL 8019";NP-ROLL70-7000;Width;false;2026-07-16;NP;BOW
+"1958";"Frama, Orosz R.";0;0;2915;;1;1;0;"RAL 8019";NP-BAR12-4000;Width;false;2026-07-16;NP;BOW
+"1959";"Frama, Orosz R.";0;0;2946;;1;0;1;"RAL 8019";NP-ROLL70-7000;Width;false;2026-07-16;NP;BOW
+"1959";"Frama, Orosz R.";0;0;2515;;1;0;1;"RAL 8019";NP-BAR12-4000;Width;false;2026-07-16;NP;BOW
+"1955";"An-Ger";0;0;3954;;2;0;2;"RAL 1015";NP-ROLL78-7000;Width;false;2026-07-17;NP;BOW
+"1955";"An-Ger";0;0;3915;;2;0;2;"RAL 1015";NP-BAR12-4000;Width;false;2026-07-17;NP;BOW
+"30";"Generálkiv., Pécs";0;0;1744;;2;1;1;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-17;NP;CIP
+"30";"Generálkiv., Pécs";0;0;1680;;2;1;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-07-17;NP;CIP
