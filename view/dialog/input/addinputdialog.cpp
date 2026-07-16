@@ -58,14 +58,13 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     btnFirstRef = ui->btnFirstRef;
 
     // Kezdő állapot: nincs tételszám → edit mode
-    enterReferenceEditMode();
-    lockAllFieldsUntilReference();
+    if (mode != DialogMode::Update) {
+        enterReferenceEditMode();
+        lockAllFieldsUntilReference();
+    }
 
     connect(ui->btnEditReference, &QToolButton::clicked,
             this, &AddInputDialog::on_btnEditReference_clicked);
-
-
-
 
     // ⭐ ProductType layout
     auto* typeLayout = new QFlowLayout(ui->groupBox_productType);
@@ -183,30 +182,27 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             this, &AddInputDialog::updateSliderLabels);
 
 
-    // ⭐ MODE-AWARE INITIALIZATION
-    if (mode == DialogMode::Update && initial) {
-        // 1) Azonosító
-        current_requestId = initial->requestId;
+    // // ⭐ MODE-AWARE INITIALIZATION
+    // if (mode == DialogMode::Update && initial) {
 
-        // 2) Mezők visszatöltése
-        applyRequestToWidgets(*initial);
+    //     // késleltetett inicializálás, amikor a UI már stabil
+    //     QTimer::singleShot(0, this, [this, initial]() {
 
-        // 3) Kontextus mód
-        //_contextMode = ContextMode::Update;
-        //updateContextModeLabel();
+    //         current_requestId = initial->requestId;
 
-        // 4) Nem szerkeszthető mezők pedig NINCSENEK
-        // azaz
-        // MINDEN mező szerkeszthető
-        setHeadEditable(true);
+    //         applyRequestToWidgets(*initial);
 
-        ui->chk_Repeat->hide();   // ⭐ UPDATE módban nincs sorozatbevitel
+    //         setHeadEditable(true);
+    //         ui->chk_Repeat->hide();
 
-        // 5) Fókusz
-        applyInitialFocus();
+    //         ui->editReference->setText(initial->externalReference);
+    //         loadReference(initial->externalReference);
 
-        return;   // ❗ NINCS initializeDialog()
-    }
+    //         applyInitialFocus();
+    //     });
+
+    //     return;
+    // }
 
     connect(ui->btnEditHead, &QPushButton::clicked, this, [this]() {
         if(_editMode != EditMode::HeadEdit){
@@ -254,10 +250,38 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
 
     // ⭐ Induló inicializálás
-    QTimer::singleShot(0, this, [this]() {
-        initializeDialog();
-        ui->chk_Repeat->setChecked(s_lastRepeat);   // ⭐ repeat visszatöltése
-        //_originalReference = ui->editReference->text().trimmed();   // ⭐ eredeti érték mentése
+    // QTimer::singleShot(0, this, [this]() {
+
+    //     initializeDialog();
+    //     ui->chk_Repeat->setChecked(s_lastRepeat);   // ⭐ repeat visszatöltése
+    //     //_originalReference = ui->editReference->text().trimmed();   // ⭐ eredeti érték mentése
+
+
+    // });
+
+    QTimer::singleShot(0, this, [this, mode, initial]() {
+
+        if (mode == DialogMode::Update && initial) {
+
+            current_requestId = initial->requestId;
+
+            applyRequestToWidgets(*initial);
+
+            setHeadEditable(true);
+            ui->chk_Repeat->hide();
+
+            ui->editReference->setText(initial->externalReference);
+            loadReference(initial->externalReference);
+
+            applyInitialFocus();
+        }
+        else {
+            initializeDialog();
+            ui->chk_Repeat->setChecked(s_lastRepeat);
+        }
+        _suppressPreview = false;
+        updateColorPreview();
+
     });
 
 }
@@ -435,10 +459,11 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
             req.rightCount = ui->radioRight->isChecked() ? 1 : 0;
         }
          else {
-            int left = ui->sliderHandler->value();
-            left = std::clamp(left, 0, totalPieces);
+            int right = ui->sliderHandler->value();
+            int left  = totalPieces - right;
+
             req.leftCount  = left;
-            req.rightCount = totalPieces - left;
+            req.rightCount = right;
 
         }
     } else{
@@ -568,8 +593,8 @@ void AddInputDialog::onQuantityChanged(int totalPieces)
 void AddInputDialog::updateSliderLabels()
 {
     int totalPieces = ui->spinQuantity->value();
-    int left        = ui->sliderHandler->value();
-    int right       = totalPieces - left;
+    int right        = ui->sliderHandler->value();
+    int left       = totalPieces - right;
 
     ui->labelLeftValue->setText(QString::number(left));
     ui->labelRightValue->setText(QString::number(right));
@@ -705,6 +730,7 @@ void AddInputDialog::reject() {
 
 void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
 {
+    bool _suppressPreview = true;
     applyFields_Head(req);
     applyFields_Item(req);
 }
@@ -731,7 +757,7 @@ void AddInputDialog::applySide_Slider(int l, int r)
         ui->sliderHandler->setValue(0);
     } else{
         ui->chkUnknownSide->setChecked(false);
-        ui->sliderHandler->setValue(l);
+        ui->sliderHandler->setValue(r);
     }
 }
 
@@ -1022,6 +1048,10 @@ void AddInputDialog::applySurfaceFromRequest(const Cutting::Plan::Request& req)
 
 void AddInputDialog::updateColorPreview()
 {
+
+    if (_suppressPreview)
+        return;
+
     // 1) Layout közvetlen elérése
     auto* lay = ui->layout_colorPreview;
     if (!lay)
@@ -1052,7 +1082,7 @@ void AddInputDialog::updateColorPreview()
     QString postfix = (mat ? profilePostfixFor(mat->barcode) : QString());
 
     // 4) Szín kocka
-    QLabel* box = new QLabel(this);
+    QLabel* box = new QLabel();
     box->setFixedSize(16, 16);
     if (nc.isValid())
         box->setStyleSheet(
@@ -1273,6 +1303,17 @@ void AddInputDialog::loadReference(const QString& ref)
     }
 
     initializeBomModel(ref);
+
+    if (_mode == DialogMode::Update) {
+        setHeadEditable(true);
+        setItemEditable(true);
+    }
+
+    QApplication::processEvents();
+    layout()->activate();
+    lblReferenceBig->updateGeometry();
+    lblReferenceBig->raise();
+
 }
 
 

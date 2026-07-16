@@ -179,15 +179,13 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
     return out.join("\n");
 }
 
-
-
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
 inline QString formatMachineCutsEvent(const MachineCuts& mc,
                                       const QString& planIdStr,
                                       const int printedLW)
 {
     QStringList lines;
-    //QString planId = mc.machineHeader.planId.toString();
+
     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
 
     int inputCount = 0;
@@ -195,23 +193,18 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     for (const auto& ci : mc.cutInstructions) {
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         if (req) {
-            inputCount += 1;//req->quantity;
-            //bool ok = false;
-            //int v = req->externalReference.toInt(&ok);
-            //if (ok) refs.append(v);
+            inputCount += 1;
             refs.append(ci.externalReference);
         }
     }
 
     QString compressed = TextHelper::compressRanges_String(refs);
 
-    int outputCount = 0;
-    for (const auto& ci : mc.cutInstructions)
-        outputCount++;
-
+    int outputCount = mc.cutInstructions.size();
     int diff = outputCount - inputCount;
 
-    lines << QString("📄 Vágási utasítások (gépenkénti)");
+    // --- fejlécek ---
+    lines << "📄 Vágási utasítások (gépenkénti)";
     lines << QString("CutPlan: %1").arg(planIdStr);
     lines << QString("📅 Dátum: %1").arg(dateStr);
     lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
@@ -219,18 +212,13 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     lines << buildMaterialStockReportForMachine_AUDIT(mc);
     lines << "──────────────────────────────────";
 
-    // --- új: szálak és hullók összesítése ---
-
+    // --- hullók ---
     QSet<QString> usedLeftoverRods;
-
-    for (const auto& ci : mc.cutInstructions) {
+    for (const auto& ci : mc.cutInstructions)
         if (ci.source == Cutting::Plan::Source::Reusable)
-            usedLeftoverRods.insert(ci.barcode);//.insert(ci.rodId+ " → " + ci.barcode);
-    }
+            usedLeftoverRods.insert(ci.barcode);
 
     QStringList scrapList = usedLeftoverRods.values();
-    // scrapList.sort();
-
     if (!scrapList.isEmpty()) {
         lines << "♻️ Érintett hullók:";
         lines << QString("  • %1 db (%2)")
@@ -239,9 +227,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         lines << "──────────────────────────────────";
     }
 
-
-    //
-
+    // --- input/output ---
     lines << "📥 Gyártási input:";
     lines << QString("  • Kért darabszám: %1 db").arg(inputCount);
     lines << QString("  • Kért tételszámok: %1").arg(compressed);
@@ -250,104 +236,41 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     lines << QString("  • Eltérés: %1 db").arg(diff);
     lines << "──────────────────────────────────";
 
+    // --- előkészítés ---
     QString prevRod;
-
     int maxStep = mc.cutInstructions.isEmpty()
                       ? 0
                       : mc.cutInstructions.last().globalStepId;
 
     int width = qMax(3, QString::number(maxStep).length());
 
-    // ➊ max méret-szélesség kiszámítása
-    int maxSizeLen = 0;
     QVector<QString> sizeStrings;
     sizeStrings.reserve(mc.cutInstructions.size());
+    QHash<QString,int> sizeCount;
 
-    for (const auto& ci : mc.cutInstructions) {
-        QString s = QString::number(ci.cutSize_mm, 'f', 1); // pl. "1145.0"
-        sizeStrings.append(s);
-        if (s.length() > maxSizeLen)
-            maxSizeLen = s.length();
-    }
-
-    // ismétrődő méret kiszámolás
-    QHash<QString, int> sizeCount;
     for (const auto& ci : mc.cutInstructions) {
         QString s = QString::number(ci.cutSize_mm, 'f', 1);
+        sizeStrings.append(s);
         sizeCount[s] += 1;
     }
 
-    int idx = 0;
-
-    // --- 1. FÁZIS: OSZLOPOK ELŐGYŰJTÉSE ---
-    QVector<QString> colStep;
-    QVector<QString> colRod;
-    QVector<QString> colMat;
-    QVector<QString> colIcon;
-    QVector<QString> colSize;
-    QVector<QString> colPiece;
-
-    QString prevRodTmp;
-
-    int idxTmp = 0;
-    for (const auto& ci : mc.cutInstructions) {
-
-        // QString rodLabelTmp = (ci.rodId != prevRodTmp)
-        // ? QString("%1 □").arg(ci.rodId)
-        // : ci.rodId + "  ";
-
-        QString rodIdOrBarcodeTmp = (ci.source == Cutting::Plan::Source::Reusable)
-                                        ? ci.barcode
-                                        : ci.rodId;
-
-        QString rodLabelTmp = (rodIdOrBarcodeTmp != prevRodTmp)
-                                  ? QString("%1 □").arg(rodIdOrBarcodeTmp)
-                                  : rodIdOrBarcodeTmp + "  ";
-
-
-        prevRodTmp = ci.rodId;
-
-        QString stepTmp = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
-        QString iconTmp = ci.isManualCut ? "📏" : "✂️";
-
-        const MaterialMaster* matTmp =
-            MaterialRegistry::instance().findById(ci.materialId);
-
-        QString materialLabelTmp = matTmp
-                                       ? QString("%1").arg(matTmp->name)
-                                       : QString("Material:%1").arg(ci.materialId.toString(QUuid::WithoutBraces));
-
-        QString sizeStrTmp = sizeStrings[idxTmp++];
-        QString sizeFullTmp = QString("%1 mm □").arg(sizeStrTmp);
-
-        auto reqTmp = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-        QString pieceLabelTmp = reqTmp
-                                    ? QString("%1. %2").arg(ci.externalReference).arg(reqTmp->ownerName)
-                                    : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
-
-        colStep.append(stepTmp);
-        colRod.append(rodLabelTmp);
-        colMat.append(materialLabelTmp);
-        colIcon.append(iconTmp);
-        colSize.append(sizeFullTmp);
-        colPiece.append(pieceLabelTmp);
-    }
-
-    // oszlopszélességek kiszámítása
-    auto maxWidth = [](const QVector<QString>& v){
-        int m = 0;
-        for (const auto& s : v) m = qMax(m, s.length());
-        return m;
+    // --- MODEL ---
+    struct MachineCutsEvent_Row {
+        QString colStepRod;
+        QString colMaterial;
+        QString colIconSizeCap;
+        QString colPiece;
+        QString colMult;
+        QString capStr;   // kapocs karakter: "╖", "║", "╜", vagy ""
+        QString rodId;
     };
 
-    int wStep = maxWidth(colStep);
-    int wRod  = maxWidth(colRod);
-    int wMat  = maxWidth(colMat);
-    int wIcon = maxWidth(colIcon);
-    int wSize = maxWidth(colSize);
+    QVector<MachineCutsEvent_Row> rows;
+    rows.reserve(mc.cutInstructions.size());
 
-    // ⭐ 1) Rúd-előfordulások összeszámlálása
-    QHash<QString, int> rodTotalCount;
+    QHash<QString,int> rodTotalCount;
+    QHash<QString,int> rodSeenCount;
+
     for (const auto& ci : mc.cutInstructions) {
         QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
         ? ci.barcode
@@ -355,51 +278,34 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         rodTotalCount[rodKey] += 1;
     }
 
-    // ⭐ 2) Rúd-előfordulások követése renderelés közben
-    QHash<QString, int> rodSeenCount;
-
-
     QString prevSizeStr;
+    QString prevSepAfterSize = "   ";
     int repeatCount = 1;
     bool firstOfBlock = true;
+    int idx = 0;
 
-
-    // --- 2. FÁZIS: RENDERELÉS DINAMIKUS OSZLOPSZÉLESSÉGGEL ---
-    prevRod.clear();
-    idx = 0;
-    QString prevSepAfterSize = "   ";
-    bool isFirstLine = true;
+    // --- MODEL FELTÖLTÉSE ---
     for (const auto& ci : mc.cutInstructions) {
 
-        bool rodChanged = (ci.rodId != prevRod);
-        // if (rodChanged && !prevRod.isEmpty())
-        //     lines << QString("────────────────|                 |                 %1")
-        //                  .arg(sepLineConnector.trimmed());
-        prevRod = ci.rodId;
+        MachineCutsEvent_Row row;
 
-        // QString rodLabel = (rodChanged)
-        //                        ? QString("%1 □").arg(ci.rodId)
-        //                        : ci.rodId + "  ";
+        QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
+
         QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
                                      ? ci.barcode
                                      : ci.rodId;
 
-        // ⭐ PATCH: hanyadik előfordulás?
-        int seen = rodSeenCount[rodIdOrBarcode]++;   // 0 = első, 1 = második, stb.
-        int total = rodTotalCount[rodIdOrBarcode];   // összes előfordulás
-
-        // ⭐ PATCH: alap rodLabel (többször szereplő rudaknál az elsőt jelöljük *)
-        // ⭐ PATCH: bogyós jelölés
-        QString rodMarker = (seen == 0) ? " ●" : " ○";   // új rúd = ●, használt = ○
+        int seen = rodSeenCount[rodIdOrBarcode]++;
+        QString rodMarker = (seen == 0) ? " ●" : " ○";
 
         QString baseRodLabel = QString("%1 %2").arg(rodIdOrBarcode).arg(rodMarker);
 
-        QString rodLabel = (rodChanged)
+        bool rodChanged = (ci.rodId != prevRod);
+        QString rodLabel = rodChanged
                                ? QString("%1 □").arg(baseRodLabel)
                                : baseRodLabel + "  ";
 
-        QString step = QString("%1.").arg(ci.globalStepId, width, 10, QLatin1Char(' '));
-        QString icon = ci.isManualCut ? "📏" : "✂️";
+        prevRod = ci.rodId;
 
         const MaterialMaster* mat =
             MaterialRegistry::instance().findById(ci.materialId);
@@ -411,129 +317,177 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         QString sizeStr = sizeStrings[idx++];
         QString sizeFull = QString("%1 mm □").arg(sizeStr);
 
-        // ismétlődés detektálása
         bool sameAsPrev = (sizeStr == prevSizeStr);
+        int count = sizeCount.value(sizeStr, 0);
+        bool isRepeated = (count > 1);
 
         if (sameAsPrev) {
             repeatCount++;
             firstOfBlock = false;
         } else {
-            // ha új méret jön, az előző blokkot lezárjuk
             repeatCount = 1;
             firstOfBlock = true;
         }
+
+        QString sepAfterSize;
+        QString sepLineConnector;
+        QString capStr;
+
+        if (!isRepeated) {
+            sepAfterSize   = "   ";
+            sepLineConnector = "   ";
+            capStr         = "";
+        } else if (firstOfBlock) {
+            sepAfterSize   = " ╖ ";
+            sepLineConnector = " ║ ";
+            capStr         = "╖";
+        } else if (repeatCount == count) {
+            sepAfterSize   = " ╜ ";
+            sepLineConnector = " ║ ";
+            capStr         = "╜";
+        } else {
+            sepAfterSize   = " ║ ";
+            sepLineConnector = " ║ ";
+            capStr         = "║";
+        }
+
+        prevSizeStr = sizeStr;
+
+        QString icon = ci.isManualCut ? "📏" : "✂️";
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabel = req
                                  ? QString("%1. %2").arg(ci.externalReference).arg(req->ownerName)
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
 
-        // --- oszlopok paddinggel ---
-        QString stepP = step.leftJustified(wStep, ' ');
-        QString rodP  = rodLabel.leftJustified(wRod, ' ');
-        QString matP  = materialLabel.leftJustified(wMat, ' ');
-        QString iconP = icon.leftJustified(wIcon, ' ');
-        QString sizeP = sizeFull.rightJustified(wSize, ' ');
-
-        // --- ismétlődés logika ---
-        int count = sizeCount.value(sizeStr, 0);
-        bool isRepeated = (count > 1);
-
-        // 1) sepAfterSize – CSAK EGYSZER!
-        // QString sepAfterSize;
-        // if (!isRepeated) {
-        //     sepAfterSize = "   ";
-        // } else if (firstOfBlock) {
-        //     sepAfterSize = " ╖ "; //╽
-        // } else if (repeatCount == count) {
-        //     sepAfterSize = " ╜ "; //╿
-        // } else {
-        //     sepAfterSize = " ║ ";//┃
-        // }
-
-
-        QString sepAfterSize;
-        QString sepLineConnector;
-
-        if (!isRepeated) {
-            sepAfterSize = "   ";
-            sepLineConnector = "   ";
-        } else if (firstOfBlock) {
-            sepAfterSize = " ╖ ";
-            sepLineConnector = " ║ ";
-        } else if (repeatCount == count) {
-            sepAfterSize = " ╜ ";
-            sepLineConnector = " ║ ";
-        } else {
-            sepAfterSize = " ║ ";
-            sepLineConnector = " ║ ";
-        }
-
-        if (!isFirstLine && rodChanged && !prevRod.isEmpty()) {
-
-            // kapocs csak akkor, ha a blokk FOLYTATÓDIK két sor között
-            bool prevInBlock = (prevSepAfterSize == " ╖ " || prevSepAfterSize == " ║ ");
-            bool currInBlock = (sepAfterSize == " ║ " || sepAfterSize == " ╜ ");
-
-            QString sepLineConnector =
-                (prevInBlock && currInBlock)
-                    ? " ║ "
-                    : "   ";
-
-            // lines << QString("────────────────|                 |                %1")
-            //              .arg(sepLineConnector.trimmed());
-
-            lines << QString("────────────────");
-        }
-
-
-        // 2) multiplier
         QString multiplier = "";
-        if (isRepeated && firstOfBlock) {
+        if (isRepeated && firstOfBlock)
             multiplier = QString("  ×%1").arg(count);
-        }
 
-        // 3) fixedLen – már a valós sepAfterSize + multiplier alapján
-        int fixedLen =
-            stepP.length() + 1 +
-            rodP.length() + 3 +
-            matP.length() + 3 +
-            iconP.length() + 1 +
-            sizeP.length() + sepAfterSize.length() +
-            2 +               // " □"
-            multiplier.length();
-
-        // 4) pieceLabel levágása
-        int maxPieceLen = printedLW - fixedLen;
-        if (maxPieceLen < 5)
-            maxPieceLen = 5;
-
-        QString piece = pieceLabel;
-        if (piece.length() > maxPieceLen)
-            piece = piece.left(maxPieceLen - 1) + "…";
-
-        // 5) végső sor
-        lines << QString("%1 %2 | %3 | %4 %5%6%7%8")
-                     .arg(stepP)
-                     .arg(rodP)
-                     .arg(matP)
-                     .arg(iconP)
-                     .arg(sizeP)
-                     .arg(sepAfterSize)
-                     .arg(piece + " □")
-                     .arg(multiplier);
-
-        prevSepAfterSize = sepAfterSize;
-
-        prevSizeStr = sizeStr;
-        isFirstLine = false;
+        row.colStepRod     = step + " " + rodLabel;
+        row.colMaterial    = materialLabel;
+        row.colIconSizeCap = icon + " " + sizeFull + " " + sepAfterSize;
+        row.colPiece       = pieceLabel;
+        row.colMult        = multiplier;
+        row.capStr = capStr;
+        row.rodId = rodIdOrBarcode;
+        rows.push_back(row);
     }
 
+    // --- OSZLOPSZÉLESSÉGEK ---
+    auto maxWidth = [&](auto getter){
+        int m = 0;
+        for (const auto& r : rows)
+            m = qMax(m, getter(r).length());
+        return m;
+    };
+
+    int wStepRod     = maxWidth([](auto& r){ return r.colStepRod; });
+    int wMaterial    = maxWidth([](auto& r){ return r.colMaterial; });
+    int wIconSizeCap = maxWidth([](auto& r){ return r.colIconSizeCap; });
+    int wPiece       = maxWidth([](auto& r){ return r.colPiece; });
+    int wMult        = maxWidth([](auto& r){ return r.colMult; });
+
+    // --- FIX OSZLOPINDEXEK ---
+    int colStepRodPos     = 0;
+    int colMaterialPos    = colStepRodPos + wStepRod + 3;
+    int colIconSizeCapPos = colMaterialPos + wMaterial + 3;
+    int colPiecePos       = colIconSizeCapPos + wIconSizeCap + 3;
+    int colMultPos        = colPiecePos + wPiece + 3;
+    int colCheckboxPos = colPiecePos + wPiece + 1;
+
+    // --- PIECE TRUNCÁLÁSA ---
+    int maxPieceLen = printedLW - colPiecePos - 3;
+    if (maxPieceLen < 5)
+        maxPieceLen = 5;
+
+    for (auto& r : rows) {
+        if (r.colPiece.length() > maxPieceLen)
+            r.colPiece = r.colPiece.left(maxPieceLen - 1) + "…";
+    }
+
+    // --- HELPER ---
+    auto put = [&](QString& line, int pos, const QString& text){
+        for (int i = 0; i < text.length() && pos + i < line.length(); ++i)
+            line[pos + i] = text[i];
+    };
+
+    auto writeSeparator = [&](const MachineCutsEvent_Row& r){
+
+        // ha nincs kapocs vagy lezáró kapocs → nincs szeparátor
+        // if (r.capStr.isEmpty() || r.capStr == "╜")
+        //     return;
+
+        //int sepLen = colMultPos + wMult;
+        int sepLen = colIconSizeCapPos + wIconSizeCap;
+
+        QString sep(sepLen, ' ');
+
+        // az első oszlophatárig vízszintes vonal
+        for (int i = 0; i < colMaterialPos; ++i)
+            sep[i] = u'─';
+
+        //sep[colMaterialPos - 1]    = '|';
+        // sep[colIconSizeCapPos - 1] = '|';
+        // sep[colPiecePos - 1]       = '|';
+        // sep[colMultPos - 1]        = '|';
+
+        // kapocs folytatási szabály
+        QChar sepCap = ' ';
+        if (r.capStr == "╖") sepCap = u'║';
+        else if (r.capStr == "║") sepCap = u'║';
+        else sepCap = ' '; // "╜" vagy ""
+
+        if (sepCap != ' ') {
+
+            int capPos = colIconSizeCapPos
+                         + r.colIconSizeCap.length()
+                         - r.capStr.length() - 1;
+
+            if (capPos >= 0 && capPos < sep.length())
+                sep[capPos] = sepCap;
+        }
+
+        lines << sep;
+    };
+
+
+    // --- KIÍRÁS ---
+    bool first = true;
+    const MachineCutsEvent_Row* prevRow = nullptr;
+    for (const auto& r : rows) {
+
+        if (prevRow != nullptr && r.rodId != prevRow->rodId) {
+            writeSeparator(*prevRow);   // ⭐ előző sor kapcsa
+        }
+
+        first = false;
+
+        QString line(printedLW, ' ');
+
+        put(line, colStepRodPos,     r.colStepRod);
+        put(line, colMaterialPos,    r.colMaterial);
+        put(line, colIconSizeCapPos, r.colIconSizeCap);
+        put(line, colPiecePos,       r.colPiece);
+
+        // checkbox külön oszlopban
+        if (colCheckboxPos < line.length())
+            line[colCheckboxPos] = u'□';
+
+        put(line, colMultPos,        r.colMult);
+
+        line[colMaterialPos - 1]    = '|';
+        line[colIconSizeCapPos - 1] = '|';
+        //line[colPiecePos - 1]       = '|';
+        //line[colMultPos - 1]        = '|';
+
+        lines << line;
+
+            prevRow = &r;   // ⭐ frissítjük az előző sort
+    }
 
     return lines.join("\n");
 }
-
-
 
 
 
@@ -1514,481 +1468,7 @@ inline QVector<RenderLine> buildRenderLines(
 //     return bbox.height();
 // }
 
-inline void formatLabelColumnFlow_Pdf_szar(const QVector<LabelModel>& labels,
-                                      QPainter& painter,
-                                      QPdfWriter& writer,
-                                      const QRectF& pageRect,
-                                      int columns,
-                                      qreal cellHeight)
-{
-    if (labels.isEmpty() || columns <= 0)
-        return;
 
-    const qreal glueMargin = 90.0; // ~0.76 cm
-    const qreal barcodeHeight0 = 80.0;   // kétszer magasabb
-    const qreal gap = 8.0;   // kb. 2–3 mm
-
-    QFontMetrics fm(painter.font());
-    const qreal lineHeight = fm.height() + 2.0;
-
-    // oszlopszélesség – biztonsági margóval
-    const qreal colWidth = (pageRect.width() / columns)-100;
-
-    // emoji panel fix szélessége
-    const qreal emojiPanelWidth = cellHeight/2;
-
-    //qreal leftOffset = glueMargin + emojiPanelWidth;
-
-    // belső padding
-    const qreal pad = 4.0;
-
-    // hány karakter fér a tartalmi panelbe?
-    // auto maxCharsForCell = [&](qreal w) -> int {
-    //     qreal avg = fm.horizontalAdvance("M");
-    //     if (avg <= 0) avg = 8.0;
-    //     qreal inner = w - pad * 2;
-    //     return qMax(4, int(inner / avg));
-    // };
-
-    //const int cellWidthChars = maxCharsForCell(colWidth - emojiPanelWidth);
-
-    // struct Cell {
-    //     QString emoji1;            // prio
-    //     QString emoji2; //group icon
-    //     QVector<QString> lines;   // tartalom
-    //     QString barcode;
-    // };
-
-    // QVector<Cell> cells;
-    //cells.reserve(labels.size());
-
-    // 1) LabelModel → sorokra tördelve
-//     for (const auto& lm : labels) {
-// //        zInfo("labels_tostring:"+lm.toString());
-// //        for(const auto& p:lm.parts){
-// //            zInfo("_label_part:"+p.text);
-// //        }
-//         QVector<QString> lines =
-//                 buildLabelCellLines(lm.parts, cellWidthChars);
-//         //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
-//         cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
-//     }
-
-    // 2) oszlopfolytonos tördelés
-    int colIndex = 0;
-    int columnNumberLabel = 1;
-
-    qreal x = pageRect.left();
-    qreal y = pageRect.top();
-
-    // vastagabb keret
-    QPen oldPen = painter.pen();
-    painter.setPen(QPen(Qt::black, 1.2));
-
-    auto drawColumnHeader = [&](int num) {
-        qreal headerHeight = cellHeight * 0.5;
-        QRectF rect(x, y, colWidth, headerHeight);
-        painter.drawRect(rect);
-        painter.drawText(rect, Qt::AlignCenter, QString::number(num));
-        y += headerHeight;
-    };
-
-    drawColumnHeader(columnNumberLabel);
-
-    // --- FONTOK ELŐKÉSZÍTÉSE ---
-    QFont normalFont = painter.font();
-
-    // keskeny, sűrű small font
-    // QFont smallFont("Roboto Condensed");
-    // if (!QFontInfo(smallFont).exactMatch()) {
-    //     smallFont = QFont("Arial Narrow");   // fallback
-    // }
-    // smallFont.setPointSizeF(normalFont.pointSizeF() * 0.85);
-
-    // smallFont = normalFont, csak kisebb méretben
-    QFont smallFont = normalFont;
-    smallFont.setPointSizeF(normalFont.pointSizeF() * 0.60);
-
-
-    // qDebug() << "normalFont height =" << QFontMetrics(normalFont).height();
-    // qDebug() << "smallFont height  =" << QFontMetrics(smallFont).height();
-
-    // qDebug() << "normalFont pointSizeF =" << normalFont.pointSizeF();
-    // qDebug() << "smallFont pointSizeF  =" << smallFont.pointSizeF();
-
-    // qDebug() << "normalFont family =" << QFontInfo(normalFont).family();
-    // qDebug() << "smallFont family  =" << QFontInfo(smallFont).family();
-
-//    int realSmallHeight = measureGlyphHeight(smallFont);
-//    int realNormalHeight = measureGlyphHeight(normalFont);
-
-   // qDebug() << "REAL small height =" << realSmallHeight;
-    //qDebug() << "REAL normal height =" << realNormalHeight;
-
-
-
-    for (int i = 0; i < labels.size(); ++i) {
-
-        const auto& label = labels[i];
-
-        // új oszlop / új lap
-        if (y + cellHeight > pageRect.bottom()) {
-            colIndex++;
-            columnNumberLabel++;
-
-            if (colIndex >= columns) {
-                writer.newPage();
-                colIndex = 0;
-                //columnNumberLabel = 1;
-            }
-
-            x = pageRect.left() + colIndex * colWidth;
-            y = pageRect.top();
-
-            drawColumnHeader(columnNumberLabel);
-        }
-
-        // cella kerete
-        QRectF rect(x, y, colWidth, cellHeight);
-        painter.drawRect(rect);
-
-        // 🔒 KLIP A CELLÁRA
-        painter.save();
-        //painter.setClipRect(rect);
-
-        qreal dottedX = rect.left() + glueMargin;
-
-        // ragasztócsík széle
-        QPen dottedPen(Qt::black, 1, Qt::DotLine);
-        painter.setPen(dottedPen);
-        painter.drawLine(
-            QPointF(dottedX, rect.top()),
-            QPointF(dottedX, rect.bottom())
-            );
-        painter.setPen(oldPen);
-
-        // EMOJI PANEL
-        // --- EMOJI PANEL: két függőleges félpanel ---
-        if(label.hasEmoji()){
-            qreal halfHeight = cellHeight / 2.0;
-            QRectF emojiRectTop(rect.left() + glueMargin, rect.top(), emojiPanelWidth, halfHeight);
-            QRectF emojiRectBottom(rect.left() + glueMargin, rect.top() + halfHeight, emojiPanelWidth, halfHeight);
-
-            // két karakter szétválasztása
-            QString topChar = label.priorityIcon;
-            QString bottomChar = label.groupIcon;
-
-            // kisebb emoji + gap
-            int emojiSize = emojiPanelWidth * 0.8;      // 60% méret
-            int emojiMargin = (emojiPanelWidth - emojiSize) / 2;
-
-            // render
-            //QImage topImg = EmojiHelper::renderEmojiStandalone(topChar, emojiSize);
-            //QImage bottomImg = EmojiHelper::renderEmojiStandalone(bottomChar, emojiSize);
-
-            QPixmap topPixmap   = EmojiHelper::loadPriorityIcon(topChar, emojiSize);
-            QPixmap bottomPixmap = EmojiHelper::loadEmoji(bottomChar, emojiSize);
-
-            QImage topImg   = topPixmap.toImage();
-            QImage bottomImg = bottomPixmap.toImage();
-
-            // cél téglalapok (gap-pel)
-            QRectF topTarget(
-                emojiRectTop.left() + emojiMargin,
-                emojiRectTop.top() + emojiMargin,
-                emojiSize,
-                emojiSize
-                );
-
-            QRectF bottomTarget(
-                emojiRectBottom.left() + emojiMargin,
-                emojiRectBottom.top() + emojiMargin,
-                emojiSize,
-                emojiSize
-                );
-
-            // rajzolás
-            if (!topChar.isEmpty())
-                painter.drawImage(topTarget, topImg);
-
-            if (!bottomChar.isEmpty())
-                painter.drawImage(bottomTarget, bottomImg);
-
-        }
-        // TARTALMI PANEL
-        //bool hasEmoji = label//!(cell.emoji1.isEmpty() && cell.emoji2.isEmpty());
-
-        // QRectF contentRect(
-        //     hasEmoji ? rect.left() + emojiPanelWidth : rect.left(),
-        //     rect.top(),
-        //     hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
-        //     rect.height()
-        //     );
-        // QRectF contentRect(
-        //     label.hasEmoji() ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
-        //     rect.top(),
-        //     label.hasEmoji() ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
-        //     rect.height()
-        //     );
-
-
-        //painter.drawRect(contentRect);
-
-        // vertikális középre igazítás
-        //qreal totalTextHeight = label.parts.size() * lineHeight;
-        //qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
-
-        //qreal lastTextBottom= 0.0;
-
-        // for (int li = 0; li < label.parts.size(); ++li) {
-        //     QRectF textRect(contentRect.left() + pad,
-        //                     startY + li * lineHeight,
-        //                     contentRect.width() - pad * 2,
-        //                     lineHeight);
-
-        //     QString txt1 = label.parts[li].text;
-        //     painter.drawText(textRect,
-        //                      Qt::AlignLeft | Qt::AlignVCenter,
-        //                      txt1);
-
-        //     // itt frissítjük a legalsó szövegkoordinátát
-        //     if (textRect.bottom() > lastTextBottom)
-        //         lastTextBottom = textRect.bottom();
-
-        //     //zInfo("labeltext:"+txt1);
-        // }
-
-
-
-
-        // --- SORONKÉNTI RENDER ---
-        // for (int li = 0; li < label.parts.size(); ++li) {
-
-        //     const auto& part = label.parts[li];
-
-        //     // small flag → smallFont, különben normalFont
-        //     painter.setFont(part.small ? smallFont : normalFont);
-
-        //     Qt::Alignment align = part.align | Qt::AlignVCenter;
-
-        //     QRectF textRect(
-        //         contentRect.left() + pad,
-        //         startY + li * lineHeight,
-        //         contentRect.width() - pad * 2,
-        //         lineHeight
-        //         );
-
-        //     painter.drawText(textRect, align, part.text);
-
-        //     if (textRect.bottom() > lastTextBottom)
-        //         lastTextBottom = textRect.bottom();
-        // }
-
-
-        //bool isRod = !label.hasEmoji();   // vagy explicit flag, ha van
-
-        // QRectF contentRect(
-        //     isRod ? rect.left() : rect.left() + glueMargin + emojiPanelWidth,
-        //     rect.top(),
-        //     isRod ? rect.width() : rect.width() - glueMargin - emojiPanelWidth,
-        //     rect.height()
-        //     );
-        QRectF contentRect(
-            rect.left() + glueMargin + (label.hasEmoji() ? emojiPanelWidth : 0),
-            rect.top(),
-            rect.width() - glueMargin - (label.hasEmoji() ? emojiPanelWidth : 0),
-            rect.height()
-            );
-
-
-        // --- SOROK KISZÁMÍTÁSA ---
-        QVector<RenderLine> renderLines =
-            buildRenderLines(label.parts, fm, contentRect.width() - pad * 2);
-
-        // helyes sor-magasság számítás
-        qreal totalTextHeight = renderLines.size() * lineHeight;
-        qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
-
-        // --- SOROK RAJZOLÁSA ---
-        qreal yCursor = startY;
-        qreal lastTextBottom = startY;
-
-        qreal lineHeightPx = 0;
-
-        for (const auto& line : renderLines) {
-
-            // 1) Sor tényleges magassága (max font height a sorban)
-            qreal lineHeightPx = 0;
-
-            auto updateHeight = [&](const LabelPart& p){
-                QFontMetrics fm2(p.small ? smallFont : normalFont);
-                lineHeightPx = qMax(lineHeightPx, qreal(fm2.height()));
-            };
-
-            for (const auto& p : line.left)   updateHeight(p);
-            for (const auto& p : line.center) updateHeight(p);
-            for (const auto& p : line.right)  updateHeight(p);
-
-            // 2) A sor téglalapja (csak Y és szélesség számít)
-            QRectF lineRect(
-                contentRect.left() + pad,
-                yCursor,
-                contentRect.width() - pad*2,
-                lineHeightPx
-                );
-
-            // 3) Használható vízszintes sáv
-            qreal minX = rect.left()
-                         + glueMargin
-                         + (label.hasEmoji() ? emojiPanelWidth : 0)
-                         + pad;
-
-            qreal maxX = rect.right() - pad;
-            qreal usableWidth = maxX - minX;
-
-            qreal xL = minX;
-
-            for (const auto& p : line.left) {
-
-                QFont f = p.small ? smallFont : normalFont;
-                painter.setFont(f);
-                QFontMetrics fm2(f);
-
-                QString txt = p.text;
-                qreal w = fm2.horizontalAdvance(txt);
-
-                if (w > usableWidth) {
-                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
-                    w = fm2.horizontalAdvance(txt);
-                }
-
-                qreal h = fm2.height() * 1.3;
-
-                QRectF r(minX, yCursor, usableWidth, h);
-
-                painter.drawText(r, Qt::AlignLeft | Qt::AlignBaseline, txt);
-
-                xL += w;
-            }
-
-
-            qreal xR = maxX;
-
-            for (int i = line.right.size() - 1; i >= 0; --i) {
-
-                const auto& p = line.right[i];
-
-                QFont f = p.small ? smallFont : normalFont;
-                painter.setFont(f);
-                QFontMetrics fm2(f);
-
-                QString txt = p.text;
-                qreal w = fm2.horizontalAdvance(txt);
-
-                if (w > usableWidth) {
-                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
-                    w = fm2.horizontalAdvance(txt);
-                }
-
-                qreal h = fm2.height() * 1.3;
-
-                QRectF r(minX, yCursor, usableWidth, h);
-
-                painter.drawText(r, Qt::AlignRight | Qt::AlignBaseline, txt);
-
-                xR -= w;
-            }
-
-
-            // -------------------------
-            // KÖZÉP ZÓNA – 1. FÁZIS: valós szélességek
-            // -------------------------
-            struct CenterRun {
-                QString text;
-                QFont   font;
-                qreal   width;
-            };
-
-            QVector<CenterRun> centerRuns;
-            centerRuns.reserve(line.center.size());
-
-            qreal centerW = 0;
-
-            for (const auto& p : line.center) {
-                QFont f = p.small ? smallFont : normalFont;
-                QFontMetrics fm2(f);
-
-                QString txt = p.text;
-                qreal w = fm2.horizontalAdvance(txt);
-
-                if (w > usableWidth) {
-                    txt = fm2.elidedText(txt, Qt::ElideRight, usableWidth);
-                    w = fm2.horizontalAdvance(txt);
-                }
-
-                centerRuns.push_back({ txt, f, w });
-                centerW += w;
-            }
-
-            if (centerW > usableWidth)
-                centerW = usableWidth;
-
-            // középre igazított induló X
-            qreal xC = minX + (usableWidth - centerW) / 2.0;
-
-            // -------------------------
-            // KÖZÉP ZÓNA – 2. FÁZIS: rajzolás
-            // -------------------------
-            for (const auto& run : centerRuns) {
-
-                painter.setFont(run.font);
-                QFontMetrics fm2(run.font);
-
-                // PDF backend miatt extra magasság
-                qreal h = fm2.height() * 1.3;
-
-                // A rect mindig a TELJES usableWidth szélességű
-                QRectF r(minX, yCursor, usableWidth, h);
-
-                painter.drawText(r, Qt::AlignHCenter | Qt::AlignBaseline, run.text);
-
-                xC += run.width;
-            }
-
-
-            // 4) Sorléptetés
-            yCursor += lineHeightPx + 1;
-            lastTextBottom = yCursor;
-        }
-
-
-
-        if (!label.barcode.isEmpty()) {
-            //qreal lastTextBottom = startY + cell.lines.size() * lineHeight;
-            qreal barcodeTop = lastTextBottom + gap;   // gap = pl. 6–10 px
-
-            //qreal barcodeBottom = rect.bottom();
-            //qreal barcodeHeight = barcodeBottom - barcodeTop;
-            qreal cellBottom = contentRect.bottom();
-            qreal availableHeight = cellBottom - barcodeTop;
-            qreal barcodeHeight = qMin(availableHeight, barcodeHeight0);
-            qreal barcodeY = cellBottom - barcodeHeight;
-            QRectF bcRect(
-                contentRect.left(),
-                barcodeY,
-                contentRect.width(),
-                barcodeHeight
-                );
-            BarcodePainter::drawCode128(painter, label.barcode, bcRect);
-        }
-
-        painter.restore();
-
-        y += cellHeight;
-    }
-
-    painter.setPen(oldPen);
-}
 
 inline void formatLeftoverIntakeForm_Pdf(
     QPainter& painter,
@@ -2140,10 +1620,12 @@ inline void formatLeftoverIntakeForm_Pdf(
         //QRectF textRect4(xCol4, textY, col4, lineH);
         //painter.drawText(textRect4, Qt::AlignCenter, code);
 
+        const qreal glueMargin = 90.0;   // ragacs margó
+
         BarcodePainter::drawCode128(
             painter,
             code,
-            QRectF(xCol4 + sidePad, barcodeY, col4-2*sidePad, barcodeH)
+            QRectF(xCol4 + sidePad +glueMargin, barcodeY, col4-2*sidePad-glueMargin, barcodeH)
             );
 
         // 3) alsó üres sor
@@ -2159,6 +1641,18 @@ inline void formatLeftoverIntakeForm_Pdf(
         // painter.drawLine(xCol4, cellTop, xCol4, cellBottom);
 
         drawTableFrame(cellTop, cellBottom);
+
+        // 🔥 Ragasztócsík jelölése a Cut-off label oszlopban
+
+        QPen dottedPen(Qt::black, 1, Qt::DotLine);
+        painter.setPen(dottedPen);
+
+        painter.drawLine(
+            QPointF(xCol4 + glueMargin, cellTop),
+            QPointF(xCol4 + glueMargin, cellBottom)
+            );
+
+        painter.setPen(QPen(Qt::black, 0.75));   // visszaállítjuk
 
         // következő blokk
         y += blockHeight;

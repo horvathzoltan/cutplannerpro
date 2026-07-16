@@ -2,7 +2,7 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "1929";"Otthonka, Bp.";0;0;2755;;1;0;0;"RAL 7040";NP-T;Width;false;2026-07-14;NP;BOW
 "1929";"Otthonka, Bp.";0;0;2755;;1;0;0;"RAL 7040";NP-TF;Width;false;2026-07-14;NP;BOW
 "1929";"Otthonka, Bp.";0;0;2720;;1;0;0;"RAL 7040";NP-SZ;Width;false;2026-07-14;NP;BOW
-"1955";"An-Ger";0;0;3995;;2;0;2;"RAL 1015";NP-T;Width;false;2026-07-17;NP;BOW
+"1955";"An-Ger";0;0;3960;;2;0;2;"RAL 1015";NP-SZ;Width;false;2026-07-17;NP;BOW
 "1955";"An-Ger";0;0;3995;;2;0;2;"RAL 1015";NP-TF;Width;false;2026-07-17;NP;BOW
 "1955";"An-Ger";0;0;3960;;2;0;2;"RAL 1015";NP-SZ;Width;false;2026-07-17;NP;BOW
 "1958";"Frama, Orosz R.";0;0;2995;;1;1;0;"RAL 8019";NP-T;Width;false;2026-07-16;NP;BOW

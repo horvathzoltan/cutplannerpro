@@ -34,17 +34,6 @@ private:
 
     static bool _isVerbose; // 👉 debug logging flag
 
-public:
-    // static constexpr auto RequestId_Key = "requestId";
-
-    // //row1
-    // static constexpr int ColName     = 0; // Anyag neve
-    // //row2
-    // static constexpr int ColLength   = 0; // Hossz
-    // static constexpr int ColQty      = 1; // Mennyiség
-    // static constexpr int ColAction   = 2; // Művelet (pl. törlés gomb)
-    // //row3
-    // static constexpr int ColMetaRowSpanStart = 0; // Alsó összefoglaló sor – kiterjesztés kezdete
 
 };
 

@@ -168,6 +168,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
     });
 
+    ui->tableInput->setColumnHidden(5, true);   // Tolerance
+    ui->tableInput->setColumnHidden(10, true);  // Measurement
+
     connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged,
             this, [this](AuditStateManager::AuditOutdatedReason reason) {
                 switch (reason) {

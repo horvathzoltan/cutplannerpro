@@ -64,7 +64,7 @@ private:
     void populateMaterialCombo();
     bool validateInputs();
     SeriesMatrixView* _matrix = nullptr;
-
+    bool _suppressPreview = false;
 
     // ⭐ Tételszám UI elemek (egy layouton)
     QLabel* lblReferenceBig = nullptr;
