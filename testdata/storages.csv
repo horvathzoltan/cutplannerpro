@@ -40,4 +40,6 @@ abababab-abab-4bab-8bab-abababababab;Polc 2;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeee
 cdcdcdcd-cdcd-4dcd-8dcd-cdcdcdcdcdcd;Polc 3;Shelf;eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee;VAS_BAL_E2_P3;"Bal első 2 – polc 3"
 efefefef-efef-4fef-8fef-efefefefefef;Hátsó_1;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H1;"Bal hátsó 1"
 f0f0f0f0-f0f0-4f0f-8f0f-f0f0f0f0f0f0;Hátsó_2;Shelf;99999999-9999-4999-8999-999999999999;VAS_BAL_H2;"Bal hátsó 2"
-
+33333333-3333-4333-8333-333333333334;Roletta;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;ROL;"RolettaMűhely"
+33333333-3333-4333-8333-333333333335;Raktár1;Warehouse;33333333-3333-4333-8333-333333333334;ROL_R1;"Raktár 1"
+33333333-3333-4333-8333-333333333336;Raktár2;Warehouse;33333333-3333-4333-8333-333333333334;ROL_R2;"Raktár 2"

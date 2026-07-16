@@ -1,3 +1,8 @@
+Címkepótlás
+új anyag felvétele 
+- roletta nem jó a köv.anyag
+- a szerkesztés gombra nem jó az ablak, nincsen tételszám
+
 Zoltán, itt van **a teljes, lépésről‑lépésre végrehajtható patch‑terv**, pontosan abban a formában, ahogy szereted:
 **auditálható, determinisztikus, kontextusfüggetlen, kézzel beilleszthető**, és minden lépés külön végrehajtható.
 

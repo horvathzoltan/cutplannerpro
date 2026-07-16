@@ -1,0 +1,33 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1982";"Karlan Business";0;0;2545;;1;1;0;"RAL 8003";NP-T;Width;false;2026-07-20;NP;BOW
+"1982";"Karlan Business";0;0;2545;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;BOW
+"1982";"Karlan Business";0;0;2510;;1;1;0;"RAL 8003";NP-SZ;Width;false;2026-07-20;NP;BOW
+"1982";"Karlan Business";0;0;7000;;1;1;0;"RAL 8003";NP-B-50m;Width;false;2026-07-20;NP;BOW
+"1982";"Karlan Business";0;0;2504;;1;1;0;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;BOW
+"1982";"Karlan Business";0;0;2465;;1;1;0;"RAL 8003";NP-BAR12-4000;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;2805;;1;0;1;"RAL 8003";NP-T;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;2805;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;2770;;1;0;1;"RAL 8003";NP-SZ;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;7000;;1;0;1;"RAL 8003";NP-B-50m;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;2764;;1;0;1;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;BOW
+"1983";"Karlan Business";0;0;2725;;1;0;1;"RAL 8003";NP-BAR12-4000;Width;false;2026-07-20;NP;BOW
+"1984";"Karlan Business";0;0;2845;;1;0;1;"RAL 8003";NP-T;Width;false;2026-07-16;NP;BOW
+"1984";"Karlan Business";0;0;2845;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-07-16;NP;BOW
+"1984";"Karlan Business";0;0;2810;;1;0;1;"RAL 8003";NP-SZ;Width;false;2026-07-16;NP;BOW
+"1984";"Karlan Business";0;0;7000;;1;0;1;"RAL 8003";NP-B-50m;Width;false;2026-07-16;NP;BOW
+"1984";"Karlan Business";0;0;2804;;1;0;1;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-16;NP;BOW
+"1984";"Karlan Business";0;0;2765;;1;0;1;"RAL 8003";NP-BAR12-4000;Width;false;2026-07-16;NP;BOW
+"1";"Molnár Ferenc, Győr";0;0;2140;;1;1;0;"RAL 8003";NP-T;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2165;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2047;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1297;;1;1;0;"RAL 8003";NP-CL;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1297;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2059;;1;1;0;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1995;;1;1;0;"RAL 8003";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2185;;1;0;1;"RAL 8003";NP-T;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2210;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2092;;1;0;1;"RAL 8003";NP-CZ;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2097;;1;0;1;"RAL 8003";NP-CL;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2097;;1;0;1;"RAL 8003";NP-CLB;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2104;;1;0;1;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2050;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP

@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1916";"Fábián P.";0;0;2015;;1;0;1;"";ROL-P;Width;false;2026-07-16;ROL;ALAP
+"1916";"Fábián P.";0;0;2025;;1;0;1;"";TE-R-23;Width;false;2026-07-16;ROL;ALAP
+"1903";"Generálkiv., Pécs";0;0;895;;1;1;0;"";TE-R-23;Width;false;2026-07-24;ROL;ALAP
+"1903";"Generálkiv., Pécs";0;0;885;;1;1;0;"";ROL-P;Width;false;2026-07-24;ROL;ALAP
+"1904";"Generálkiv., Pécs";0;0;705;;1;1;0;"";ROL-P;Width;false;2026-07-24;ROL;ALAP
+"1904";"Generálkiv., Pécs";0;0;715;;1;1;0;"";TE-R-23;Width;false;2026-07-24;ROL;ALAP
