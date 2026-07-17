@@ -1,0 +1,49 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"14";"Szajkó, Győr";0;0;3645;;1;1;0;"RAL 1015";NP-T;Width;false;2026-07-20;NP;SIN
+"14";"Szajkó, Győr";0;0;3645;;1;1;0;"RAL 1015";NP-TF;Width;false;2026-07-20;NP;SIN
+"14";"Szajkó, Győr";0;0;3575;;1;1;0;"RAL 1015";NP-SZ;Width;false;2026-07-20;NP;SIN
+"14";"Szajkó, Győr";0;0;1198;;1;1;0;"RAL 1015";NP-SL;Width;false;2026-07-20;NP;SIN
+"14";"Szajkó, Győr";0;0;3594;;1;1;0;"RAL 1015";NP-ROLL70-7000;Width;false;2026-07-20;NP;SIN
+"14";"Szajkó, Győr";0;0;3530;;1;1;0;"RAL 1015";NP-BAR12-4000;Width;false;2026-07-20;NP;SIN
+"17";"O.J.";0;0;2830;;1;0;1;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2830;;1;0;1;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2830;;1;1;0;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2830;;1;1;0;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2720;;1;1;0;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2720;;1;1;0;"RAL 7013";NP-T;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2855;;1;0;1;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2855;;1;0;1;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2855;;1;1;0;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2855;;1;1;0;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2745;;1;1;0;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2745;;1;1;0;"RAL 7013";NP-TF;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2737;;1;0;1;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2737;;1;0;1;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2737;;1;1;0;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2737;;1;1;0;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2627;;1;1;0;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2627;;1;1;0;"RAL 7013";NP-CZ;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2497;;1;0;1;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2497;;1;0;1;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CL;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2497;;1;0;1;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2497;;1;0;1;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2497;;1;1;0;"RAL 7013";NP-CLB;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2749;;1;0;1;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2749;;1;0;1;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2749;;1;1;0;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2749;;1;1;0;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2639;;1;1;0;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2639;;1;1;0;"RAL 7013";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"17";"O.J.";0;0;2685;;1;0;1;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"18";"O.J.";0;0;2685;;1;0;1;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"19";"O.J.";0;0;2685;;1;1;0;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"20";"O.J.";0;0;2685;;1;1;0;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"21";"O.J.";0;0;2575;;1;1;0;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"22";"O.J.";0;0;2575;;1;1;0;"RAL 7013";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
