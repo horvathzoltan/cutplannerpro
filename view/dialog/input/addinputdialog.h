@@ -183,7 +183,7 @@ private:
     bool headFieldsDiffer(const HeadFields &a, const HeadFields &b) const;
 
     QUuid computeNextMaterialForCurrentRef();
-    QVector<QUuid> generateBomForRequest(const Cutting::Plan::Request &req);
+    //QVector<QUuid> generateBomForRequest(const Cutting::Plan::Request &req);
     void applyLengthFromRequest(const Cutting::Plan::Request &req);
     void applyQuantityFromRequest(const Cutting::Plan::Request &req);
     void applyFields_Head(const Cutting::Plan::Request &r);
@@ -195,6 +195,9 @@ private:
     void setMaterialEditable(bool editable);
     void setItemEditable(bool editable);
     void applySide_Slider(int l, int r);
+    //QVector<QUuid> generateBom(QUuid typeId, QUuid subtypeId, NamedColor reqColor);
+    void refreshBom();
+    //void initializeBomModel_old(const QString &ref);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

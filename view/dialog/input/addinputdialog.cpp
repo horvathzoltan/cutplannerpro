@@ -17,6 +17,7 @@
 #include <product/registry/material_role_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
+#include <product/selector/material_selector.h>
 
 QString AddInputDialog::s_lastExternalRef;
 //QMap<QString, AddInputDialog::RequestContext> AddInputDialog::_contexts;
@@ -75,7 +76,13 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         auto* rb = new QRadioButton(type.name, this);
         rb->setProperty("typeId", type.id);
         typeLayout->addWidget(rb);
-        connect(rb, &QRadioButton::toggled, this, &AddInputDialog::onProductTypeChanged);
+        connect(rb, &QRadioButton::toggled, this, [this](bool checked){
+            if (!checked) return;
+
+            refreshBom();
+            onProductTypeChanged(true);   // megmarad a subtype stack váltás
+        });
+
     }
 
     auto* subtypeStack = ui->stackedWidget_stackSubtype;
@@ -98,6 +105,13 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             auto* rb = new QRadioButton(st.name, page);
             rb->setProperty("subtypeId", st.id);
             lay->addWidget(rb);
+
+            connect(rb, &QRadioButton::toggled, this, [this](bool checked){
+                if (!checked) return;
+
+                refreshBom();
+            });
+
         }
 
         subtypeStack->addWidget(page);
@@ -249,16 +263,14 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     });
 
 
+
+
+
+    connect(ui->edit_Color, &QLineEdit::textChanged, this, [this](){
+        refreshBom();
+    });
+
     // ⭐ Induló inicializálás
-    // QTimer::singleShot(0, this, [this]() {
-
-    //     initializeDialog();
-    //     ui->chk_Repeat->setChecked(s_lastRepeat);   // ⭐ repeat visszatöltése
-    //     //_originalReference = ui->editReference->text().trimmed();   // ⭐ eredeti érték mentése
-
-
-    // });
-
     QTimer::singleShot(0, this, [this, mode, initial]() {
 
         if (mode == DialogMode::Update && initial) {
@@ -291,6 +303,46 @@ AddInputDialog::~AddInputDialog()
     saveOwnerCache();
     //saveContextMap();
     delete ui;
+}
+
+
+// void AddInputDialog::refreshBom()
+// {
+//     auto bom = generateBom(
+//         selectedProductTypeId(),
+//         selectedProductSubtypeId(),
+//         NamedColor::fromUserInput(ui->edit_Color->text())
+//         );
+
+//     _bomModel.bomList = bom;
+//     _bomModel.missingList = bom;
+//     _bomModel.missingIndex = 0;
+// }
+void AddInputDialog::refreshBom()
+{
+    // 1) Aktuális request (szín, hossz, stb.)
+    Cutting::Plan::Request req = getModel();
+
+    // 2) Tiszta BOM generálás (színfüggetlen)
+    auto bom = MaterialRegistry::instance().generateBom(
+        req.productTypeId,
+        req.productSubtypeId
+        );
+
+    // 3) Preferencia alkalmazása
+    auto ranked = MaterialSelector::rankMaterials(bom, req);
+
+    // 4) BOM modell frissítése
+    _bomModel.bomList = ranked;
+    _bomModel.missingList = ranked;
+    _bomModel.missingIndex = 0;
+
+    // 5) UI: preferált anyag automatikus kiválasztása
+    if (!ranked.isEmpty()) {
+        int idx = ui->comboMaterial->findData(ranked.first());
+        if (idx >= 0)
+            ui->comboMaterial->setCurrentIndex(idx);
+    }
 }
 
 
@@ -1392,6 +1444,37 @@ void AddInputDialog::applyReferenceState(ReferenceState state)
 
 // }
 
+// void AddInputDialog::initializeBomModel_old(const QString& ref)
+// {
+//     // reset
+//     _bomModel.bomList.clear();
+//     _bomModel.missingList.clear();
+//     _bomModel.missingIndex = 0;
+
+//     // FIRST request kell a BOM generáláshoz
+//     auto* first = CuttingPlanRequestRegistry::instance().getFirstRequest(ref);
+//     if (!first)
+//         return;
+
+//     // 1) BOM lista generálása
+//     _bomModel.bomList = generateBom(first->productTypeId, first->productSubtypeId, first->requiredColor);
+
+//     // 2) eddig felhasznált anyagok összegyűjtése
+//     QSet<QUuid> used;
+//     for (const auto& r : CuttingPlanRequestRegistry::instance().readAll()) {
+//         if (r.externalReference == ref)
+//             used.insert(r.materialId);
+//     }
+
+//     // 3) missing lista felépítése
+//     for (const QUuid& id : _bomModel.bomList) {
+//         if (!used.contains(id))
+//             _bomModel.missingList << id;
+//     }
+
+//     // 4) index reset
+//     _bomModel.missingIndex = 0;
+// }
 
 void AddInputDialog::initializeBomModel(const QString& ref)
 {
@@ -1400,29 +1483,30 @@ void AddInputDialog::initializeBomModel(const QString& ref)
     _bomModel.missingList.clear();
     _bomModel.missingIndex = 0;
 
+    refreshBom();
     // FIRST request kell a BOM generáláshoz
-    auto* first = CuttingPlanRequestRegistry::instance().getFirstRequest(ref);
-    if (!first)
-        return;
+    // auto* first = CuttingPlanRequestRegistry::instance().getFirstRequest(ref);
+    // if (!first)
+    //     return;
 
-    // 1) BOM lista generálása
-    _bomModel.bomList = generateBomForRequest(*first);
+    // // 1) BOM lista generálása
+    // _bomModel.bomList = generateBomForRequest(*first);
 
-    // 2) eddig felhasznált anyagok összegyűjtése
-    QSet<QUuid> used;
-    for (const auto& r : CuttingPlanRequestRegistry::instance().readAll()) {
-        if (r.externalReference == ref)
-            used.insert(r.materialId);
-    }
+    // // 2) eddig felhasznált anyagok összegyűjtése
+    // QSet<QUuid> used;
+    // for (const auto& r : CuttingPlanRequestRegistry::instance().readAll()) {
+    //     if (r.externalReference == ref)
+    //         used.insert(r.materialId);
+    // }
 
-    // 3) missing lista felépítése
-    for (const QUuid& id : _bomModel.bomList) {
-        if (!used.contains(id))
-            _bomModel.missingList << id;
-    }
+    // // 3) missing lista felépítése
+    // for (const QUuid& id : _bomModel.bomList) {
+    //     if (!used.contains(id))
+    //         _bomModel.missingList << id;
+    // }
 
-    // 4) index reset
-    _bomModel.missingIndex = 0;
+    // // 4) index reset
+    // _bomModel.missingIndex = 0;
 }
 
 
@@ -1468,110 +1552,169 @@ QString AddInputDialog::computeNextItemNumber()
     return QString::number(maxRef + 1);
 }
 
-QVector<QUuid> AddInputDialog::generateBomForRequest(const Cutting::Plan::Request& req)
-{
-    QVector<QUuid> ordered;
+// QVector<QUuid> AddInputDialog::generateBomForRequest(const Cutting::Plan::Request& req)
+// {
+//     QVector<QUuid> ordered;
 
-    QHash<MaterialFamily, double> bomFamilies =
-        BomRegistry::instance().bomMap(req.productTypeId, req.productSubtypeId);
+//     QHash<MaterialFamily, double> bomFamilies =
+//         BomRegistry::instance().bomMap(req.productTypeId, req.productSubtypeId);
 
-    QVector<MaterialRole> roles = MaterialRoleRegistry::instance().findRoles(
-        req.productTypeId, req.productSubtypeId);
+//     QVector<MaterialRole> roles = MaterialRoleRegistry::instance().findRoles(
+//         req.productTypeId, req.productSubtypeId);
 
-    NamedColor reqColor = req.requiredColor;
+//     NamedColor reqColor = req.requiredColor;
 
-    QList<MaterialFamily> famOrder;
+//     QList<MaterialFamily> famOrder;
 
-    for (const auto& e : BomRegistry::instance().readAll()) {
-        if (e.productTypeId == req.productTypeId &&
-            e.productSubtypeId == req.productSubtypeId)
-        {
-            famOrder << e.family;
-        }
-    }
+//     for (const auto& e : BomRegistry::instance().readAll()) {
+//         if (e.productTypeId == req.productTypeId &&
+//             e.productSubtypeId == req.productSubtypeId)
+//         {
+//             famOrder << e.family;
+//         }
+//     }
 
-    QStringList famNames;
-    for (MaterialFamily f : famOrder)
-        famNames << MaterialFamilyUtils::toString(f);
+//     QStringList famNames;
+//     for (MaterialFamily f : famOrder)
+//         famNames << MaterialFamilyUtils::toString(f);
 
-    QString t = ProductTypeRegistry::instance().findById(req.productTypeId)->name;
-    QString subt = ProductSubtypeRegistry::instance().findById(req.productSubtypeId)->name;
+//     QString t = ProductTypeRegistry::instance().findById(req.productTypeId)->name;
+//     QString subt = ProductSubtypeRegistry::instance().findById(req.productSubtypeId)->name;
 
-    qDebug() << "=== BOM DEBUG START ===";
-    // qDebug() << "ProductType:" << t;
-    // qDebug() << "ProductSubtype:" << subt;
-    // qDebug() << "RequiredColor:" << reqColor.code();
-     qDebug() << "famOrder:" << famNames;
+//     qDebug() << "=== BOM DEBUG START ===";
+//     // qDebug() << "ProductType:" << t;
+//     // qDebug() << "ProductSubtype:" << subt;
+//     // qDebug() << "RequiredColor:" << reqColor.code();
+//      qDebug() << "famOrder:" << famNames;
 
-    for (MaterialFamily fam : famOrder) {
+//     for (MaterialFamily fam : famOrder) {
 
-        // qDebug() << "\n--- FAMILY:" <<  MaterialFamilyUtils::toString(fam) << "---";
+//         // qDebug() << "\n--- FAMILY:" <<  MaterialFamilyUtils::toString(fam) << "---";
 
-        // 1) prefixek
-        QStringList famPrefixes;
-        for (const auto& role : roles) {
-            if (role.family == fam) {
-                QString prefix = role.barcodePrefix.trimmed();
-                if (prefix.endsWith("*"))
-                    prefix.chop(1);
-                famPrefixes << prefix;
-            }
-        }
+//         // 1) prefixek
+//         QStringList famPrefixes;
+//         for (const auto& role : roles) {
+//             if (role.family == fam) {
+//                 QString prefix = role.barcodePrefix.trimmed();
+//                 if (prefix.endsWith("*"))
+//                     prefix.chop(1);
+//                 famPrefixes << prefix;
+//             }
+//         }
 
-        //qDebug() << "Prefixes for family:" << famPrefixes;
+//         //qDebug() << "Prefixes for family:" << famPrefixes;
 
-        // 2) anyagok keresése
-        bool found = false;
+//         // 2) anyagok keresése
+//         bool found = false;
 
-        for (const auto& prefix : famPrefixes) {
+//         for (const auto& prefix : famPrefixes) {
 
-            //qDebug() << "  Checking prefix:" << prefix;
+//             //qDebug() << "  Checking prefix:" << prefix;
 
-            for (const auto& mat : MaterialRegistry::instance().readAll()) {
+//             for (const auto& mat : MaterialRegistry::instance().readAll()) {
 
-                bool prefixMatch = matchPrefix(mat.barcode, prefix);
-                bool familyMatch = (mat.family == fam);
+//                 bool prefixMatch = matchPrefix(mat.barcode, prefix);
+//                 bool familyMatch = (mat.family == fam);
 
-                bool materialHasColor = mat.color.isValid() &&
-                                        !mat.color.code().trimmed().isEmpty();
-                bool colorMatch = (!materialHasColor ||
-                                   mat.color.code() == reqColor.code());
+//                 bool materialHasColor = mat.color.isValid() &&
+//                                         !mat.color.code().trimmed().isEmpty();
+//                 bool colorMatch = (!materialHasColor ||
+//                                    mat.color.code() == reqColor.code());
 
-                // qDebug() << "    Material:" << mat.barcode
-                //          << "family:" << MaterialFamilyUtils::toString(mat.family)
-                //          << "color:" << mat.color.code()
-                //          << "prefixMatch:" << prefixMatch
-                //          << "familyMatch:" << familyMatch
-                //          << "colorMatch:" << colorMatch;
+//                 // qDebug() << "    Material:" << mat.barcode
+//                 //          << "family:" << MaterialFamilyUtils::toString(mat.family)
+//                 //          << "color:" << mat.color.code()
+//                 //          << "prefixMatch:" << prefixMatch
+//                 //          << "familyMatch:" << familyMatch
+//                 //          << "colorMatch:" << colorMatch;
 
-                if (!prefixMatch) continue;
-                if (!familyMatch) continue;
-                if (!colorMatch) continue;
+//                 if (!prefixMatch) continue;
+//                 if (!familyMatch) continue;
+//                 if (!colorMatch) continue;
 
-                // ⭐ csak az első anyag a családból
-                ordered << mat.id;
-                // qDebug() << "    >>> SELECTED:" << mat.barcode;
-                found = true;
-                goto next_family;
-            }
-        }
+//                 // ⭐ csak az első anyag a családból
+//                 ordered << mat.id;
+//                 // qDebug() << "    >>> SELECTED:" << mat.barcode;
+//                 found = true;
+//                 goto next_family;
+//             }
+//         }
 
-        // if (!found)
-        //     qDebug() << "    !!! NO MATERIAL FOUND FOR FAMILY !!!";
+//         // if (!found)
+//         //     qDebug() << "    !!! NO MATERIAL FOUND FOR FAMILY !!!";
 
-    next_family:;
-    }
+//     next_family:;
+//     }
 
-    QStringList oNames;
-    for (auto& o : ordered)
-        oNames << MaterialRegistry::instance().findById(o)->barcode;
-    qDebug() << "Final BOM list:" << oNames;
+//     QStringList oNames;
+//     for (auto& o : ordered)
+//         oNames << MaterialRegistry::instance().findById(o)->barcode;
+//     qDebug() << "Final BOM list:" << oNames;
 
-    qDebug() << "\n=== BOM DEBUG END ===";
+//     qDebug() << "\n=== BOM DEBUG END ===";
 
 
-    return ordered;
-}
+//     return ordered;
+// }
+
+// QVector<QUuid> AddInputDialog::generateBom(
+//     QUuid typeId,
+//     QUuid subtypeId,
+//     NamedColor reqColor)
+// {
+//     QVector<QUuid> ordered;
+
+//     // 1) BOM családok
+//     QHash<MaterialFamily, double> bomFamilies =
+//         BomRegistry::instance().bomMap(typeId, subtypeId);
+
+//     // 2) Rolemap prefixek
+//     QVector<MaterialRole> roles =
+//         MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
+
+//     // 3) BOM sorrend
+//     QList<MaterialFamily> famOrder;
+//     for (const auto& e : BomRegistry::instance().readAll()) {
+//         if (e.productTypeId == typeId &&
+//             e.productSubtypeId == subtypeId)
+//         {
+//             famOrder << e.family;
+//         }
+//     }
+
+//     // 4) Családonként ANYAGLISTA (nem csak az első!)
+//     for (MaterialFamily fam : famOrder) {
+
+//         QStringList famPrefixes;
+//         for (const auto& role : roles) {
+//             if (role.family == fam) {
+//                 famPrefixes << role.barcodePrefix.trimmed();   // ⭐ csillag marad!
+//             }
+//         }
+
+//         for (const auto& prefix : famPrefixes) {
+//             for (const auto& mat : MaterialRegistry::instance().readAll()) {
+
+//                 bool prefixMatch = MaterialFamilyUtils::matchPrefix(mat.barcode, prefix);
+//                 if (!prefixMatch) continue;
+
+//                 bool familyMatch = (mat.family == fam);
+//                 if (!familyMatch) continue;
+
+//                 bool materialHasColor = mat.color.isValid() &&
+//                                         !mat.color.code().trimmed().isEmpty();
+//                 bool colorMatch = (!materialHasColor ||
+//                                    mat.color.code() == reqColor.code());
+//                 if (!colorMatch) continue;
+
+//                 // ⭐ NINCS goto → teljes család feljön
+//                 ordered << mat.id;
+//             }
+//         }
+//     }
+
+//     return ordered;
+// }
 
 
 

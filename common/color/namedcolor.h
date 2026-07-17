@@ -57,6 +57,7 @@ public:
     QString toString() const;
     bool isValid() const;
     static QString normalizeRalExtended(const QString &raw);
+    double lightness() const;
 
 private:
     QColor m_color;

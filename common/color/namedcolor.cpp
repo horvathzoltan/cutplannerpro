@@ -253,3 +253,38 @@ QString NamedColor::toString() const
 bool NamedColor::isValid() const {
     return m_color.isValid();
 }
+
+double NamedColor::lightness() const
+{
+    // 1) HEX vagy Qt szín → HSL lightness
+    if (m_code.startsWith("#") || QColor::colorNames().contains(m_code.toLower())) {
+        return m_color.lightnessF();   // 0.0 – 1.0
+    }
+
+    // 2) RAL → világosság a kódból
+    if (m_code.startsWith("RAL")) {
+        // RAL 7016 → "7016"
+        QRegularExpression re("RAL\\s*(\\d{4})");
+        auto match = re.match(m_code);
+        if (match.hasMatch()) {
+            QString digits = match.captured(1);
+            int first = digits.left(1).toInt();
+
+            // RAL világosság kategória
+            switch (first) {
+            case 1: return 0.85;   // világos
+            case 2: return 0.75;
+            case 3: return 0.65;
+            case 4: return 0.55;
+            case 5: return 0.50;
+            case 6: return 0.45;
+            case 7: return 0.35;   // sötét
+            case 8: return 0.25;
+            case 9: return 0.90;   // fehér / ezüst
+            }
+        }
+    }
+
+    // 3) fallback
+    return m_color.lightnessF();
+}

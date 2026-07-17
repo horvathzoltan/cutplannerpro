@@ -1422,7 +1422,7 @@ PaintPlan CuttingPresenter::buildPaintPlan()
 
             // Szorzó (CL/SL → 2)
             int szorzo = 1;
-            if (matchPrefix(barcode, "NP-CL") || matchPrefix(barcode,"NP-SL"))
+            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*") || MaterialFamilyUtils::matchPrefix(barcode,"NP-SL*"))
                 szorzo = 2;
 
             // ANYAG AGGREGÁLÁS
@@ -1433,14 +1433,14 @@ PaintPlan CuttingPresenter::buildPaintPlan()
             summary.requestIds.append(req.requestId);
 
             // --- POFA / CSAVAR TÍPUS SZERINT ---
-            if (matchPrefix(barcode, "NP-T")) {
+            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-T*")) {
                 colorGroup.pofaFestheto = true;
                 if (type == NaphaloType::Cipzaros) colorGroup.cipzarosPofa += 2*req.quantity;
                 if (type == NaphaloType::Sines)    colorGroup.sinesPofa += 2*req.quantity;
                 if (type == NaphaloType::Bowdenes) colorGroup.bowdenesPofa += 2*req.quantity;
             }
 
-            if (matchPrefix(barcode, "NP-TF")) {
+            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-TF*")) {
                 colorGroup.csavarFestheto = true;
                 colorGroup.csavar +=2*req.quantity;
             }
@@ -1710,34 +1710,34 @@ void CuttingPresenter::AuditRequestsByExternalRef_old()
             int len = req.requiredLength;
 
             // CIPZÁROS LÁB
-            if (matchPrefix(barcode,"NP-CL"))
+            if (MaterialFamilyUtils::matchPrefix(barcode,"NP-CL*"))
                 labCount += qty * 2;
 
             // CIPZÁROS LÁBBETÉT
-            if (matchPrefix(barcode,"NP-CLB"))
+            if (MaterialFamilyUtils::matchPrefix(barcode,"NP-CLB*"))
                 labbetetCount += qty * 2;
 
-            if (matchPrefix(barcode, "NP-CLBR"))
+            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CLBR"))
                 labbetetCount += qty * 2;
 
             // SINES LÁB
-            if (matchPrefix(barcode , "NP-SL" ))
+            if (MaterialFamilyUtils::matchPrefix(barcode , "NP-SL*" ))
                 labCount += qty * 2;
 
             // TOK
-            if (matchPrefix(barcode , "NP-T"))
+            if (MaterialFamilyUtils::matchPrefix(barcode , "NP-T*"))
                 tokCount += qty;
 
             // TOKFEDÉL
-            if (matchPrefix(barcode , "NP-TF"))
+            if (MaterialFamilyUtils::matchPrefix(barcode , "NP-TF*"))
                 tokFedCount += qty;
 
             // CIPZÁROS ZÁRÓ
-            if (matchPrefix(barcode , "NP-CZ"))
+            if (MaterialFamilyUtils::matchPrefix(barcode , "NP-CZ*"))
                 czCount += qty;
 
             // SINES ZÁRÓ
-            if (matchPrefix(barcode, "NP-SZ" ))
+            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-SZ*" ))
                 szCount += qty;
 
             materialCount[barcode] += qty;

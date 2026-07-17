@@ -225,7 +225,7 @@ private:
     QSet<QUuid> _bomMaterialsSet;     // BOM anyagok halmaza
 
     void computeMaterialSets();
-    QVector<QUuid> generateBomMaterials(const Cutting::Plan::Request &req) const;
+    //QVector<QUuid> generateBomMaterials(const Cutting::Plan::Request &req) const;
     const Cutting::Plan::Request *findRequestByExternalRef(const QString &ref) const;
 
     mutable QHash<QPair<QUuid, QUuid>, QVector<QUuid>> _bomCache;

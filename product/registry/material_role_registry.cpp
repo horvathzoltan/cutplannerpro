@@ -1,5 +1,8 @@
 #include "material_role_registry.h"
 #include "materials/model/material_family_detector.h"
+#include "product/materialfamily_utils.h"
+
+#include <materials/model/material_family_utils.h>
 
 void MaterialRoleRegistry::load(const QVector<MaterialRole>& roles)
 {
@@ -38,13 +41,7 @@ MaterialFamily MaterialRoleRegistry::familyForBarcode(const QString& barcode) co
 {
     for (const auto& r : m_roles)
     {
-        QString px = r.barcodePrefix.trimmed();
-
-        // ha csillag van a végén, levágjuk (emberi jelölés)
-        if (px.endsWith("*"))
-            px.chop(1);
-
-        if (matchPrefix(barcode, px))
+        if (MaterialFamilyUtils::matchPrefix(barcode, r.barcodePrefix))
             return r.family;
     }
 

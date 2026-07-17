@@ -37,4 +37,5 @@ public:
     //     }
     // }
 
+    QVector<QUuid> generateBom(QUuid typeId, QUuid subtypeId) const;
 };
