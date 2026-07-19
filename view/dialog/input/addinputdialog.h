@@ -7,7 +7,6 @@
 #include <QToolButton>
 #include <QUuid>
 #include "series_matrix_view.h"
-#include "series_state.h"
 
 
 namespace Ui {
@@ -48,12 +47,8 @@ public:
     void accept() override;
     void reject() override;
     Cutting::Plan::Request getModel() const;
-    //void setModel(const Cutting::Plan::Request& request);
     bool wasShiftEnter() const { return _shiftEnterAccepted; }
-
     bool shouldRepeat();
-
-    //const ActiveSeries& seriesState() const { return _series; }
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
@@ -78,13 +73,15 @@ private:
     void loadReference(const QString& ref); // van tételszám → mutatás + nav
 
     void lockAllFieldsUntilReference();
-//    void unlockAllFieldsAfterReference();
 
     void onQuantityChanged(int totalPieces);
-    //void updateHandlerSideControls();
     void updateSliderLabels();
 
     QUuid current_requestId;
+
+    int _lengthHint = -1;
+    QTimer* _lengthDebounceTimer = nullptr;
+    QTimer* _colorDebounceTimer = nullptr;
 
     struct HeadFields {
         QString owner;
@@ -104,26 +101,20 @@ private:
     static bool s_lastRepeat;
     static QSet<QString> s_ownerCache;
     inline static const QString OWNER_CACHE_FN = "owner_cache.csv";
-    inline static const QString CONTEXT_CACHE_FN = "context_cache.csv";
 
     bool _shiftEnterAccepted = false;
-    //QString _sliderInputBuffer;
-    //QString _nextSuggestedRef;
-    //QString _originalReference;
 
     DialogMode _mode = DialogMode::Create;
 
-    struct BOM_Model{
-        QVector<QUuid> bomList;
-        QVector<QUuid> missingList;
-        int missingIndex = 0;
-        int materialCycleIndex = 0;
+    struct BOM_Model {
+        QVector<QUuid> bomList;        // aktuális ajánlott BOM (családonként 1)
+        QSet<QUuid> addedMaterials;    // az adott externalReference-hez már rögzített anyagok
+        QUuid lastSuggestedMaterial;   // utoljára ajánlott anyag ID
     };
 
     BOM_Model _bomModel;
     EditMode _editMode;
 
-    //void applyContextToWidgets(const RequestContext& ctx);
     void setHeadEditable(bool editable);
     void applyRequestToWidgets(const Cutting::Plan::Request& req);
     void applySide(HandlerSide side);
@@ -133,7 +124,6 @@ private:
     void applyInitialFocus();
     QString computeNextReference();
 
-    void updateContextModeLabel();
     void initializeDialog();
 
     void setOwnerEditable(bool editable);
@@ -166,24 +156,17 @@ private:
     void applySurfaceFromRequest(const Cutting::Plan::Request &req);
     void updateColorPreview();
 
-    // void updateSeriesStateAfterAccept(const Cutting::Plan::Request& req);
-    // void updateSeriesStateAfterEditingFinished(const QString& ref);
-
-    void updateSeriesNavigationButtons();
-
     void applySideFromRequest(const Cutting::Plan::Request &req);
     void resetUiForNextReference();
     void resetUiForExistingReference();
     void resetUiForNewReference();
     void loadHeadFields(const QString &ref);
-    //void copyHeadFieldsFromPrevious(const QString &prevRef);
     void updateHeadFieldsInRegistry(const QString &ref);
     AddInputDialog::HeadFields headFromRegistry(const QString& ref) const;
     AddInputDialog::HeadFields currentHeadFromDialog() const;
     bool headFieldsDiffer(const HeadFields &a, const HeadFields &b) const;
 
     QUuid computeNextMaterialForCurrentRef();
-    //QVector<QUuid> generateBomForRequest(const Cutting::Plan::Request &req);
     void applyLengthFromRequest(const Cutting::Plan::Request &req);
     void applyQuantityFromRequest(const Cutting::Plan::Request &req);
     void applyFields_Head(const Cutting::Plan::Request &r);
@@ -195,9 +178,7 @@ private:
     void setMaterialEditable(bool editable);
     void setItemEditable(bool editable);
     void applySide_Slider(int l, int r);
-    //QVector<QUuid> generateBom(QUuid typeId, QUuid subtypeId, NamedColor reqColor);
     void refreshBom();
-    //void initializeBomModel_old(const QString &ref);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

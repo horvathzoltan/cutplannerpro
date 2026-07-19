@@ -197,7 +197,7 @@ HEADERS += \
     model/storageaudit/audit_enums.h \
     presenter/leftoverpresenter.h \
     presenter/stockpresenter.h \
-    product/materialfamily_utils.h \
+    product/material_role_utils.h \
     product/model/bom_entry.h \
     product/model/material_role.h \
     product/model/product_subtype.h \

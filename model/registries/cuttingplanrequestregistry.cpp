@@ -124,3 +124,15 @@ QString CuttingPlanRequestRegistry::getFirstReference(){
 
     return _data.first().externalReference;
 }
+
+QVector<Cutting::Plan::Request> CuttingPlanRequestRegistry::findByExternalReference(const QString& ref) const
+{
+    QVector<Cutting::Plan::Request> result;
+
+    for (const auto& r : _data) {
+        if (r.externalReference == ref)
+            result.append(r);
+    }
+
+    return result;
+}

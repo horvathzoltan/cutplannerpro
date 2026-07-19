@@ -1,6 +1,5 @@
 #include "material_role_registry.h"
 #include "materials/model/material_family_detector.h"
-#include "product/materialfamily_utils.h"
 
 #include <materials/model/material_family_utils.h>
 
