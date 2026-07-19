@@ -29,6 +29,7 @@
 
 #include <product/registry/material_role_registry.h>
 #include <product/registry/product_type_registry.h>
+#include <product/registry/productattributeregistry.h>
 
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
@@ -506,3 +507,11 @@ StartupStatus StartupManager::initMaterialRoleRegistry() {
 
     return StartupStatus::success();
 }
+
+StartupStatus StartupManager::initProductAttributeRegistry()
+{
+    ProductAttributeRegistry::instance().initDefaults();
+    zInfo("✅ ProductAttributeRegistry feltöltve");
+    return StartupStatus::success();
+}
+

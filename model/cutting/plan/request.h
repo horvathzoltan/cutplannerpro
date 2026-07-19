@@ -199,6 +199,17 @@ struct Request {
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 
+
+    QMap<QString, QString> attributes;
+
+    void setAttribute(const QString& key, const QString& value) {
+        attributes[key] = value;
+    }
+
+    QString getAttribute(const QString& key) const {
+        return attributes.value(key);
+    }
+
     /**
      * @brief Ellenőrzi, hogy az igény érvényes-e.
      *

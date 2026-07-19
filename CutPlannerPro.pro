@@ -36,6 +36,7 @@ SOURCES += \
     product/registry/material_role_registry.cpp \
     product/registry/product_subtype_registry.cpp \
     product/registry/product_type_registry.cpp \
+    product/registry/productattributeregistry.cpp \
     product/repository/bom_repository.cpp \
     product/repository/material_role_repository.cpp \
     product/repository/product_subtype_repository.cpp \
@@ -206,6 +207,7 @@ HEADERS += \
     product/registry/material_role_registry.h \
     product/registry/product_subtype_registry.h \
     product/registry/product_type_registry.h \
+    product/registry/productattributeregistry.h \
     product/repository/bom_repository.h \
     product/repository/material_role_repository.h \
     product/repository/product_subtype_repository.h \
