@@ -1,0 +1,17 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1987";"Kezs Ablak, Bcs.";0;0;1010;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;917;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;1035;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CL-7016;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CLB;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CLT-7016;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;929;;1;0;1;"RAL 7016";NP-ROLL70-6000;Width;false;2026-07-21;NP;CIP
+"1987";"Kezs Ablak, Bcs.";0;0;865;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;1040;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;1065;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CL-7016;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;947;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CLB;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;959;;1;0;1;"RAL 7016";NP-ROLL70-6000;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;895;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP
+"1988";"Kezs Ablak, Bcs.";0;0;2297;;1;0;1;"RAL 7016";NP-CLT-7016;Width;false;2026-07-21;NP;CIP

@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1963";"Ablakbeépítő, Mtúr.";0;0;3889;;1;1;0;"RAL 7016";NP-ROLL78-7000;Width;false;2026-07-20;NP;CIP
+"1963";"Ablakbeépítő, Mtúr.";0;0;825;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2889;;1;1;0;"RAL 7016";NP-ROLL70-6000;Width;false;2026-07-20;NP;CIP
+"1964";"Ablakbeépítő, Mtúr.";0;0;2825;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP

@@ -1,0 +1,15 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1";"Molnár Ferenc, Győr";0;0;2140;;1;1;0;"RAL 8003";NP-T;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2165;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2047;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1297;;1;1;0;"RAL 8003";NP-CL;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1297;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;2059;;1;1;0;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"1";"Molnár Ferenc, Győr";0;0;1995;;1;1;0;"RAL 8003";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2185;;1;0;1;"RAL 8003";NP-T;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2210;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2092;;1;0;1;"RAL 8003";NP-CZ;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2097;;1;0;1;"RAL 8003";NP-CL;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2097;;1;0;1;"RAL 8003";NP-CLB;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2104;;1;0;1;"RAL 8003";NP-ROLL70-7000;Width;false;2026-07-20;NP;CIP
+"2";"Molnár Ferenc, Győr";0;0;2050;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-07-20;NP;CIP

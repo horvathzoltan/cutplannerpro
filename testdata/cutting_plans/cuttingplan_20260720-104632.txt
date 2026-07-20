@@ -1,0 +1,3 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode
+"1923";"Braun, Győr";0;0;2197;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-07-20;NP;CIP
+"1924";"Braun, Győr";0;0;2197;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-07-20;NP;CIP
