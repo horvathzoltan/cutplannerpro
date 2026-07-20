@@ -79,7 +79,7 @@ private:
 
     QUuid current_requestId;
 
-    int _lengthHint = -1;
+    //int _lengthHint = -1;
     QTimer* _lengthDebounceTimer = nullptr;
     QTimer* _colorDebounceTimer = nullptr;
 
@@ -169,6 +169,8 @@ private:
     QUuid computeNextMaterialForCurrentRef();
     void applyLengthFromRequest(const Cutting::Plan::Request &req);
     void applyQuantityFromRequest(const Cutting::Plan::Request &req);
+    void applyWidth(const Cutting::Plan::Request& req);
+    void applyHeight(const Cutting::Plan::Request& req);
     void applyFields_Head(const Cutting::Plan::Request &r);
     void applyFields_Item(const Cutting::Plan::Request &req);
     void initializeBomModel(const QString &ref);
@@ -179,6 +181,8 @@ private:
     void setItemEditable(bool editable);
     void applySide_Slider(int l, int r);
     void refreshBom();
+    void updateAttributePanel();
+    void applyAttributes(const Cutting::Plan::Request &r);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

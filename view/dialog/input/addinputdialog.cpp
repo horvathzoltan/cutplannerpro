@@ -19,6 +19,7 @@
 #include <product/registry/material_role_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
+#include <product/registry/productattributeregistry.h>
 #include <product/selector/material_selector.h>
 
 QString AddInputDialog::s_lastExternalRef;
@@ -46,6 +47,9 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     _shiftEnterAccepted = false;
 
     ui->setupUi(this);
+
+    ui->stackedWidget_stackSubtype->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    ui->stackHandlerSide->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     ui->editReference->installEventFilter(this);
 
@@ -210,7 +214,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         } else{
             _editMode = EditMode::None;
         }
-        loadReference(ui->editReference->text().trimmed());
+        //loadReference(ui->editReference->text().trimmed());
+        applyReferenceState(getReferenceState(ui->editReference->text().trimmed()));
     });
 
     connect(ui->btnEditItem, &QPushButton::clicked, this, [this]() {
@@ -220,7 +225,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             _editMode = EditMode::None;
         }
 
-        loadReference(ui->editReference->text().trimmed());
+        applyReferenceState(getReferenceState(ui->editReference->text().trimmed()));
+        //loadReference(ui->editReference->text().trimmed());
     });
 
     connect(ui->chkUnknownSide, &QCheckBox::toggled, this, [this](bool checked){
@@ -259,19 +265,29 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         refreshBom();
     });
 
-    connect(ui->editLength, &QLineEdit::textChanged,
-            this, [this](const QString& txt){
-                bool ok = false;
-                int L = txt.toInt(&ok);
-
-                if (ok) {
-                    _lengthHint = L;
-                    _lengthDebounceTimer->start();   // csak akkor indul, ha van érték
-                } else {
-                    // ❗ Üres vagy érvénytelen → NEM indítunk BOM-frissítést
-                    // ❗ Így a NextMaterial nem fut kétszer
-                }
+    connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
+            this, [this](int){
+                _lengthDebounceTimer->start();
             });
+
+    // connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
+    //         this, [this](int){
+    //             refreshBom();
+    //         });
+
+    // connect(ui->editLength, &QLineEdit::textChanged,
+    //         this, [this](const QString& txt){
+    //             bool ok = false;
+    //             int L = txt.toInt(&ok);
+
+    //             if (ok) {
+    //                 _lengthHint = L;
+    //                 _lengthDebounceTimer->start();   // csak akkor indul, ha van érték
+    //             } else {
+    //                 // ❗ Üres vagy érvénytelen → NEM indítunk BOM-frissítést
+    //                 // ❗ Így a NextMaterial nem fut kétszer
+    //             }
+    //         });
 
 
     // --- COLOR DEBOUNCE ---
@@ -316,6 +332,12 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     });
 
+    ui->groupBox_attributes->setVisible(false);
+    ui->groupBox_attributes->setMaximumHeight(0);
+
+    ui->groupBox_attributes->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    ui->groupBox_attributes->hide();
+
 }
 
 AddInputDialog::~AddInputDialog()
@@ -350,12 +372,12 @@ void AddInputDialog::refreshBom()
     Cutting::Plan::Request req = getModel();
 
     //2) Selector input: req + hint (lokális kontextus)
-    Cutting::Plan::Request selReq = req;
-    if (selReq.requiredLength <= 0 && _lengthHint > 0)
-        selReq.requiredLength = _lengthHint;
+    // Cutting::Plan::Request selReq = req;
+    // if (selReq <= 0 && _lengthHint > 0)
+    //     selReq.requiredLength = _lengthHint;
 
 
-    zInfo("selReq.requiredLength: "+QString::number(selReq.requiredLength));
+    //zInfo("selReq.requiredLength: "+QString::number(req.requiredLength));
 
     // 3) Tiszta BOM generálás
     auto bom = MaterialRegistry::instance().generateBom(
@@ -364,7 +386,7 @@ void AddInputDialog::refreshBom()
         );
 
     // 4) Preferencia alkalmazása (jobbágy)
-    auto ranked = MaterialSelector::rankMaterials(bom, selReq);
+    auto ranked = MaterialSelector::rankMaterials(bom, req);
 
     // 5) BOM utófeldolgozás (király)
     QMap<MaterialRole, QUuid> bestPerRole;
@@ -435,16 +457,16 @@ void AddInputDialog::refreshBom()
     zInfo("=== END Recommended BOM ===");
 
     // 3) ComboMaterial szinkronizálása a lastSuggestedMaterial-hez
-    if (!_bomModel.lastSuggestedMaterial.isNull()) {
-        int idx = ui->comboMaterial->findData(_bomModel.lastSuggestedMaterial);
-        if (idx >= 0) {
-            ui->comboMaterial->setCurrentIndex(idx);
-            zInfo(QString("comboMaterial synced to %1")
-                      .arg(_bomModel.lastSuggestedMaterial.toString()));
-        } else {
-            zInfo("comboMaterial: lastSuggestedMaterial not found in combo");
-        }
-    }
+    // if (!_bomModel.lastSuggestedMaterial.isNull()) {
+    //     int idx = ui->comboMaterial->findData(_bomModel.lastSuggestedMaterial);
+    //     if (idx >= 0) {
+    //         ui->comboMaterial->setCurrentIndex(idx);
+    //         zInfo(QString("comboMaterial synced to %1")
+    //                   .arg(_bomModel.lastSuggestedMaterial.toString()));
+    //     } else {
+    //         zInfo("comboMaterial: lastSuggestedMaterial not found in combo");
+    //     }
+    // }
 
 }
 
@@ -642,9 +664,17 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
     if (surfaceCode.isValid())
         req.surface = SurfaceTypeUtils::fromCode(surfaceCode.toString());
 
-    if (req.requiredLength <= 0 && _lengthHint > 0)
-        req.requiredLength = _lengthHint;
+    req.fullWidth_mm = ui->spinBox_width->value();
+    req.fullHeight_mm = ui->spinBox_height->value();
 
+    req.attributes.clear();
+
+    if (ui->groupBox_attributes->isVisible()) {
+        if (ui->radioAttrMotoros->isChecked())
+            req.attributes["meghajtas"] = "motoros";
+        else if (ui->radioAttrKurblis->isChecked())
+            req.attributes["meghajtas"] = "kurblis";
+    }
 
     return req;
 }
@@ -695,6 +725,12 @@ bool AddInputDialog::validateInputs() {
                              "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
         return false;
     }
+
+    if (req.fullWidth_mm <= 0)
+        errors << "A termék szélessége nincs megadva.";
+
+    if (req.fullHeight_mm <= 0)
+        errors << "A termék magassága nincs megadva.";
 
     return true;
 }
@@ -1081,6 +1117,14 @@ void AddInputDialog::applyQuantityFromRequest(const Cutting::Plan::Request& req)
     ui->spinQuantity->setValue(req.quantity);
 }
 
+void AddInputDialog::applyWidth(const Cutting::Plan::Request& req){
+        ui->spinBox_width->setValue(req.fullWidth_mm);
+}
+
+void AddInputDialog::applyHeight(const Cutting::Plan::Request& req){
+    ui->spinBox_height->setValue(req.fullHeight_mm);
+}
+
 void AddInputDialog::setReferenceEditable(bool editable)
 {
     ui->editReference->setEnabled(editable);
@@ -1101,6 +1145,8 @@ void AddInputDialog::onProductTypeChanged(bool checked)
             break;
         }
     }
+
+    updateAttributePanel();
 }
 
 
@@ -1331,8 +1377,8 @@ void AddInputDialog::loadReference(const QString& ref)
     if(last){
         applyRequestToWidgets(*last);
         // ⭐ HOSSZ HINT: ha már volt anyag → registry a forrás
-        if (last->requiredLength > 0)
-            _lengthHint = last->requiredLength;
+        // if (last->requiredLength > 0)
+        //     _lengthHint = last->requiredLength;
 
     }else {
         // ⭐ ÚJ TÉTELSZÁM → ajánlott határidő: mai nap
@@ -1530,7 +1576,18 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
         return QUuid(); // minden hozzá van adva
     }
 
-    // 2) Ha van lastSuggestedMaterial → keressük meg a BOM-ban
+    // ⭐ ÚJ LOGIKA: ha a lastSuggestedMaterial még nincs addedMaterials-ben,
+    // akkor EZ az aktuális jelölt → NEM szabad átugrani
+    if (!_bomModel.addedMaterials.contains(_bomModel.lastSuggestedMaterial)) {
+
+        auto * mat = MaterialRegistry::instance().findById(_bomModel.lastSuggestedMaterial);
+        QString matName = mat?mat->toReportLabel():"?";
+        zInfo("  USING current lastSuggestedMaterial (not yet added): " + matName);
+        return _bomModel.lastSuggestedMaterial;
+    }
+
+    // 2) Ha van lastSuggestedMaterial ÉS már hozzá lett adva →
+    // keressük meg a BOM-ban, és lépjünk tovább
     int idx = _bomModel.bomList.indexOf(_bomModel.lastSuggestedMaterial);
     zInfo("  indexOf(lastSuggestedMaterial) in BOM: " + QString::number(idx));
 
@@ -1560,7 +1617,6 @@ void AddInputDialog::loadHeadFields(const QString& ref)
         applyFields_Head(*last);
 }
 
-
 void AddInputDialog::applyFields_Head(const Cutting::Plan::Request& r){
     applyOwnerFromRequest(r);
     applyDateFromRequest(r);
@@ -1572,6 +1628,10 @@ void AddInputDialog::applyFields_Head(const Cutting::Plan::Request& r){
     // ⭐ quantity + handler side visszatöltése
     applyQuantityFromRequest(r);
     applySideFromRequest(r);
+
+    applyWidth(r);
+    applyHeight(r);
+    applyAttributes(r);
 }
 
 void AddInputDialog::applyFields_Item(const Cutting::Plan::Request& req){
@@ -1673,3 +1733,56 @@ void AddInputDialog::updateHeadFieldsInRegistry(const QString& ref)
     }
 }
 
+void AddInputDialog::updateAttributePanel()
+{
+    QString typeCode;
+    QString subtypeCode;
+
+    auto typeId = selectedProductTypeId();
+    auto subtypeId = selectedProductSubtypeId();
+
+    auto* type = ProductTypeRegistry::instance().findById(typeId);
+    auto* subtype = ProductSubtypeRegistry::instance().findById(subtypeId);
+
+    if (!type) {
+        ui->groupBox_attributes->hide();
+        return;
+    }
+
+    typeCode = type->code;
+    subtypeCode = subtype ? subtype->code : "*";
+
+    // lekérjük az attribútumokat
+    QMap<QString, QString> attrs =
+        ProductAttributeRegistry::instance().getAll(typeCode, subtypeCode);
+
+    if (!attrs.contains("meghajtas")) {
+        ui->groupBox_attributes->hide();
+        return;
+    }
+
+    ui->groupBox_attributes->show();
+
+    QString def = attrs["meghajtas"];
+
+    if (def == "motoros")
+        ui->radioAttrMotoros->setChecked(true);
+    else
+        ui->radioAttrKurblis->setChecked(true);
+}
+
+void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
+{
+    if (!r.attributes.contains("meghajtas")) {
+        ui->groupBox_attributes->hide();
+        return;
+    }
+
+    ui->groupBox_attributes->show();
+
+    QString v = r.attributes["meghajtas"];
+    if (v == "motoros")
+        ui->radioAttrMotoros->setChecked(true);
+    else
+        ui->radioAttrKurblis->setChecked(true);
+}

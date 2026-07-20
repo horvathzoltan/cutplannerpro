@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
-    <height>578</height>
+    <width>764</width>
+    <height>654</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -121,28 +121,69 @@
    <item row="6" column="1">
     <widget class="QLineEdit" name="editOwner"/>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Darabszám</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QSpinBox" name="spinQuantity">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-    </widget>
+   <item row="8" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,0,1,0,1">
+     <item>
+      <widget class="QSpinBox" name="spinQuantity">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Méret:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_width">
+       <property name="maximum">
+        <number>5000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_7">
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>×</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_height">
+       <property name="maximum">
+        <number>4000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_productType">
      <property name="title">
       <string>Termék típus</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
      <property name="currentIndex">
       <number>1</number>
@@ -151,138 +192,7 @@
      <widget class="QWidget" name="page_2"/>
     </widget>
    </item>
-   <item row="15" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>dueDate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="1">
-    <widget class="QDateEdit" name="editDueDate">
-     <property name="calendarPopup">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>RAL color</string>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLineEdit" name="edit_Color"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_Surface">
-       <property name="text">
-        <string>Felület:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox_Surface"/>
-     </item>
-    </layout>
-   </item>
-   <item row="18" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
-     <item>
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnEditItem">
-       <property name="text">
-        <string>Item edit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="19" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Anyag</string>
-     </property>
-    </widget>
-   </item>
-   <item row="19" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-     <item>
-      <widget class="QComboBox" name="comboMaterial"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_MaterialSearch">
-       <property name="text">
-        <string>Keresés...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="20" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Vágási hossz [mm]</string>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="1">
-    <widget class="QLineEdit" name="editLength"/>
-   </item>
-   <item row="21" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="layout_colorPreview"/>
-   </item>
-   <item row="30" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="30" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QCheckBox" name="chk_Repeat">
-       <property name="text">
-        <string>Új tétel felvitele</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_Reset">
-       <property name="text">
-        <string>Reset</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="14" column="0" colspan="2">
+   <item row="15" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QStackedWidget" name="stackHandlerSide">
@@ -290,6 +200,12 @@
         <layout class="QHBoxLayout">
          <item>
           <widget class="QRadioButton" name="radioLeft">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Bal</string>
            </property>
@@ -297,6 +213,12 @@
          </item>
          <item>
           <widget class="QRadioButton" name="radioRight">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Jobb</string>
            </property>
@@ -346,6 +268,12 @@
      </item>
      <item>
       <widget class="QCheckBox" name="chkUnknownSide">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Nincs</string>
        </property>
@@ -353,11 +281,184 @@
      </item>
     </layout>
    </item>
+   <item row="17" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>dueDate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="1">
+    <widget class="QDateEdit" name="editDueDate">
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>RAL color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLineEdit" name="edit_Color"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_Surface">
+       <property name="text">
+        <string>Felület:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_Surface"/>
+     </item>
+    </layout>
+   </item>
+   <item row="20" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEditItem">
+       <property name="text">
+        <string>Item edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="21" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Anyag</string>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+     <item>
+      <widget class="QComboBox" name="comboMaterial"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_MaterialSearch">
+       <property name="text">
+        <string>Keresés...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="22" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Vágási hossz [mm]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="1">
+    <widget class="QLineEdit" name="editLength"/>
+   </item>
+   <item row="23" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="layout_colorPreview"/>
+   </item>
+   <item row="31" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="31" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QCheckBox" name="chk_Repeat">
+       <property name="text">
+        <string>Új tétel felvitele</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_Reset">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="16" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_attributes">
+     <property name="title">
+      <string>Meghajtás</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioAttrMotoros">
+        <property name="text">
+         <string>motoros</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioAttrKurblis">
+        <property name="text">
+         <string>kurblis</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>editReference</tabstop>
-  <tabstop>spinQuantity</tabstop>
   <tabstop>editDueDate</tabstop>
   <tabstop>comboMaterial</tabstop>
   <tabstop>editLength</tabstop>

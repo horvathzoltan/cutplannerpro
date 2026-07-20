@@ -88,6 +88,9 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
     case CSVVersion::V4_ProductVariant:
         return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V4, true);
 
+    case CSVVersion::V5_Attributes:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V5, true);
+
     default:
         ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
         return {};
@@ -118,10 +121,15 @@ CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(
     if (hasHandlerSide && !hasLeft)
         return CSVVersion::V1_OldHandlerSide;
 
-    // ⭐ V4: dueDate + typeCode + subtypeCode
     bool hasTypeCode    = cols.contains("typeCode", Qt::CaseInsensitive);
     bool hasSubtypeCode = cols.contains("subtypeCode", Qt::CaseInsensitive);
+    bool hasAttributes  = cols.contains("attributes", Qt::CaseInsensitive);
 
+    // ⭐ V5: dueDate + typeCode + subtypeCode + attributes
+    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes)
+        return CSVVersion::V5_Attributes;
+
+    // ⭐ V4: dueDate + typeCode + subtypeCode (attributes nélkül)
     if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode)
         return CSVVersion::V4_ProductVariant;
 
@@ -135,6 +143,7 @@ CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(
 
     return CuttingRequestRepository::CSVVersion::Unknown;
 }
+
 
 
 
@@ -281,7 +290,42 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V4(const QVector<QString
     return row;
 }
 
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V5(const QVector<QString>& parts,
+                                                           CsvReader::FileContext& ctx)
+{
+    if (parts.size() < 17) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V5)"));
+        return std::nullopt;
+    }
 
+    CuttingRequestRow row;
+    row.externalReference = parts[0].trimmed();
+    row.ownerName         = parts[1].trimmed();
+    row.fullWidth_mm      = parts[2].trimmed().toInt();
+    row.fullHeight_mm     = parts[3].trimmed().toInt();
+    row.requiredLength    = parts[4].trimmed().toInt();
+    row.toleranceStr      = parts[5].trimmed();
+    row.quantity          = parts[6].trimmed().toInt();
+
+    row.leftCount         = parts[7].trimmed().toInt();
+    row.rightCount        = parts[8].trimmed().toInt();
+
+    row.requiredColorName = parts[9].trimmed();
+    row.barcode           = parts[10].trimmed();
+    row.relevantDimStr    = parts[11].trimmed();
+    row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+
+    QString dueStr = parts[13].trimmed();
+    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+    row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+    row.typeCode    = parts[14].trimmed();
+    row.subtypeCode = parts[15].trimmed();
+
+    row.attributesStr = parts[16].trimmed();
+    return row;
+}
 
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
@@ -385,6 +429,7 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.productTypeId    = type?type->id:QUuid();
     req.productSubtypeId = subtype?subtype->id:QUuid();
 
+    req.attributes = parseAttributes(row.attributesStr);
     return req;
 }
 
@@ -425,6 +470,15 @@ CuttingRequestRepository::convertRowToCuttingRequest_V4(const QVector<QString>& 
     return buildCuttingRequestFromRow(rowOpt.value(), ctx);
 }
 
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V5(const QVector<QString>& parts,
+                                                        CsvReader::FileContext& ctx)
+{
+    const auto rowOpt = convertRowToCuttingRequestRow_V5(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
 
 bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& registry, const QString& filePath) {
     QFile file(filePath);
@@ -443,7 +497,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     //out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate\n";
 
     // új fejléc (V4):
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes\n";
 
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
@@ -465,6 +519,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
         QString typeCode = type ? type->code : "";
         QString subtypeCode = subtype ? subtype->code : "";
 
+        QString attrStr = serializeAttributes(req.attributes);
 
         out << "\"" << req.externalReference << "\";"
             << "\"" << req.ownerName << "\";"
@@ -481,7 +536,8 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << (req.isMeasurementNeeded ? "true" : "false") << ";"
             << dueStr << ";"
             << typeCode << ";"
-            << subtypeCode
+            << subtypeCode << ";"
+            << attrStr
             << "\n";
 
     }
@@ -489,5 +545,33 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
 
     file.close();
     return true;
+}
+
+QString CuttingRequestRepository::serializeAttributes(const QMap<QString, QString>& attrs)
+{
+    QStringList parts;
+    for (auto it = attrs.begin(); it != attrs.end(); ++it) {
+        parts << QString("%1=%2").arg(it.key(), it.value());
+    }
+    return parts.join("|");
+}
+
+QMap<QString, QString> CuttingRequestRepository::parseAttributes(const QString& s)
+{
+    QMap<QString, QString> map;
+    if (s.trimmed().isEmpty())
+        return map;
+
+    const auto parts = s.split("|", Qt::SkipEmptyParts);
+    for (const QString& p : parts) {
+        const int eq = p.indexOf('=');
+        if (eq <= 0) continue;
+
+        QString key = p.left(eq).trimmed();
+        QString val = p.mid(eq + 1).trimmed();
+        if (!key.isEmpty())
+            map[key] = val;
+    }
+    return map;
 }
 

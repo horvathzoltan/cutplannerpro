@@ -88,7 +88,7 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
         TableCellViewModel::fromText(subtypeTxt, "",baseColor, fgColor, true);
 
     // Color
-    auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color, request.surface);
+    auto colorCell = CellGenerators::requestColorCell(request.requiredColor, mat->color, request.surface, mat->paintingMode);
     colorCell.background = baseColor;
     colorCell.foreground = fgColor;
     vm.cells[InputTableColumns::Color] = colorCell;

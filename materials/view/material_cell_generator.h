@@ -92,7 +92,7 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
 // }
 
-inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor, SurfaceType surface)
+inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, const NamedColor& matColor, SurfaceType surface, PaintingMode matPaintingMode)
 {
     QString text = requiredColor.isValid() ? requiredColor.code()+": "+requiredColor.name() : "Nincs szín";
     QString tooltip = QString("Igényelt szín: %1").arg(text);
@@ -103,11 +103,30 @@ inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, cons
         tooltip += QString("\nFelület: %1").arg(SurfaceTypeUtils::toString(surface));
     }
 
+    bool szinazonos = requiredColor.code() == matColor.code();
+    bool festheto = matPaintingMode != PaintingMode::None;
     // Festés jelzés, ha eltér az anyag színétől - illetve ha az anyag natúr, akkor is festeni kell
-    bool isPaintingNeeded = requiredColor.isValid() && requiredColor.code() != matColor.code();
+    bool isPaintingNeeded =
+        requiredColor.isValid()
+        //&& matColor.isValid()
+        && !szinazonos
+        && festheto;
+
     if (isPaintingNeeded) {
         text = "🖌️ " + text;
         tooltip += "\n🖌️ Festés szükséges";
+    } else{
+        text = "";
+        if(szinazonos){
+            if(!text.isEmpty()) text+=", ";
+            text += "szinazonos";
+            tooltip += "\nFestés nem szükséges";
+        }
+        if(!festheto){
+            if(!text.isEmpty()) text+=", ";
+            text += "nem festhető";
+            tooltip = "Az anyag nem festhető";
+        }
     }
 
     QWidget* panel = new QWidget();
@@ -116,22 +135,27 @@ inline TableCellViewModel requestColorCell(const NamedColor& requiredColor, cons
     layout->setSpacing(4);
     layout->setAlignment(Qt::AlignLeft);      // balra igazítás
 
-    QLabel* nameLabel = new QLabel(text);
-    layout->addWidget(nameLabel);
+    //if (isPaintingNeeded) {
+        QLabel* nameLabel = new QLabel(text);
+        layout->addWidget(nameLabel);
 
-    if (requiredColor.isValid()) {
-        QColor fgColor = requiredColor.color().lightness() < 128 ? Qt::white : Qt::black;
-        QLabel* colorBox = new QLabel();
-        //colorBox->setAlignment(Qt::AlignVCenter); // függőleges közép
+        if (isPaintingNeeded) {
+            if (requiredColor.isValid()) {
+                QColor fgColor = requiredColor.color().lightness() < 128 ? Qt::white : Qt::black;
+                QLabel* colorBox = new QLabel();
+                //colorBox->setAlignment(Qt::AlignVCenter); // függőleges közép
 
-        colorBox->setFixedSize(12,12);
-        colorBox->setStyleSheet(QString(
-                                    "background-color: %1; color: %2; "
-                                    "border-radius: 5px; "
-                                    "border: 1px solid #888;"
-                                    ).arg(requiredColor.color().name(), fgColor.name()));
-        layout->addWidget(colorBox);
-    }
+                colorBox->setFixedSize(12,12);
+                colorBox->setStyleSheet(QString(
+                                            "background-color: %1; color: %2; "
+                                            "border-radius: 5px; "
+                                            "border: 1px solid #888;"
+                                            ).arg(requiredColor.color().name(), fgColor.name()));
+
+                layout->addWidget(colorBox);
+            }
+        }
+   // }
 
     panel->setLayout(layout);
     return TableCellViewModel::fromWidget(panel, tooltip);
