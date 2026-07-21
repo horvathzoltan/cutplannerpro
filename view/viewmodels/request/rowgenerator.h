@@ -83,7 +83,8 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     //QString subtypeTxt = request.subtype != Subtype::None? SubtypeUtils::toDisplayText(request.subtype):"";
     QString subtypeTxt =
         SubtypeUtils::toProductVariantDisplayText(request.productTypeId,
-                                                  request.productSubtypeId);
+                                                  request.productSubtypeId,
+                                                  request.attributes);
     vm.cells[InputTableColumns::SubType] =
         TableCellViewModel::fromText(subtypeTxt, "",baseColor, fgColor, true);
 

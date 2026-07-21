@@ -50,26 +50,26 @@ public:
     {
         QMap<QString, QString> result;
 
-        // subtype-specifikus attribútumok
-        if (_map.contains(productTypeId) &&
-            _map[productTypeId].contains(productSubtypeId))
-        {
-            for (auto it = _map[productTypeId][productSubtypeId].begin();
-                 it != _map[productTypeId][productSubtypeId].end(); ++it)
-            {
-                result[it.key()] = it.value();
-            }
-        }
+        if (_map.contains(productTypeId)) {
+            const auto& subMap = _map[productTypeId];
 
-        // wildcard attribútumok (ha nincs felülírva)
-        if (_map.contains(productTypeId) &&
-            _map[productTypeId].contains("*"))
-        {
-            for (auto it = _map[productTypeId]["*"].begin();
-                 it != _map[productTypeId]["*"].end(); ++it)
-            {
-                if (!result.contains(it.key()))
+            if (subMap.contains(productSubtypeId)) {
+                // subtype-specifikus attribútumok
+                for (auto it = subMap[productSubtypeId].cbegin();
+                     it != subMap[productSubtypeId].cend(); ++it)
+                {
                     result[it.key()] = it.value();
+                }
+            }
+
+            if (subMap.contains("*")) {
+                // wildcard attribútumok
+                for (auto it = subMap["*"].cbegin();
+                     it != subMap["*"].cend(); ++it)
+                {
+                    if (!result.contains(it.key()))
+                        result[it.key()] = it.value();
+                }
             }
         }
 

@@ -55,6 +55,7 @@ public:
 
                 pwm.productTypeId = req.productTypeId;
                 pwm.productSubtypeId = req.productSubtypeId;
+                pwm.attributes = req.attributes;
 
                 out[req.materialId].append(pwm);
             }

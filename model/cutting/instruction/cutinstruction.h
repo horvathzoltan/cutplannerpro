@@ -45,6 +45,7 @@ struct CutInstruction {
 
     QUuid productTypeId;
     QUuid productSubtypeId;
+    QMap<QString, QString> attributes; ///< termékhez tartozó további attribútumok (pl. szín, felület, stb.)
 
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;

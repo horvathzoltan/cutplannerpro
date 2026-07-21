@@ -183,6 +183,10 @@ private:
     void refreshBom();
     void updateAttributePanel();
     void applyAttributes(const Cutting::Plan::Request &r);
+    void groupboxAttributes_hide();
+    void groupboxAttributes_show();
+    QString currentProductTypeCode() const;
+    QString currentProductSubtypeCode() const;
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

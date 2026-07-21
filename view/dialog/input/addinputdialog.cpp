@@ -112,6 +112,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
                 if (!checked) return;
 
                 refreshBom();
+                updateAttributePanel();
             });
 
         }
@@ -329,15 +330,11 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         }
         _suppressPreview = false;
         updateColorPreview();
+        updateAttributePanel();
 
     });
 
-    ui->groupBox_attributes->setVisible(false);
-    ui->groupBox_attributes->setMaximumHeight(0);
-
-    ui->groupBox_attributes->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    ui->groupBox_attributes->hide();
-
+    //groupboxAttributes_hide();
 }
 
 AddInputDialog::~AddInputDialog()
@@ -346,7 +343,30 @@ AddInputDialog::~AddInputDialog()
     delete ui;
 }
 
+void AddInputDialog::groupboxAttributes_hide(){
+    bool v = ui->groupBox_attributes->isVisible();
 
+    zInfo(L("groupboxAttributes_hide:")+(v?"true":"false"));
+    if (!v)
+        return;   // már rejtve → nincs teendő
+
+    int h = ui->groupBox_attributes->sizeHint().height();
+    ui->groupBox_attributes->hide();
+    this->resize(this->width(), this->height() - h);
+}
+
+void AddInputDialog::groupboxAttributes_show(){
+    bool v = ui->groupBox_attributes->isVisible();
+
+    zInfo(L("groupboxAttributes_show:")+(v?"true":"false"));
+
+    if (v)
+        return;   // már látszik → nincs teendő
+
+    int h = ui->groupBox_attributes->sizeHint().height();
+    ui->groupBox_attributes->show();
+    this->resize(this->width(), this->height() + h);
+}
 
 void AddInputDialog::refreshBom()
 {
@@ -669,16 +689,38 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.attributes.clear();
 
-    if (ui->groupBox_attributes->isVisible()) {
+    // Ha a terméktípushoz van attribútum, akkor kiolvassuk
+    auto attrs = ProductAttributeRegistry::instance().getAll(
+        currentProductTypeCode(),
+        currentProductSubtypeCode());
+
+    if (attrs.contains("meghajtas")) {
         if (ui->radioAttrMotoros->isChecked())
             req.attributes["meghajtas"] = "motoros";
         else if (ui->radioAttrKurblis->isChecked())
             req.attributes["meghajtas"] = "kurblis";
+
+        zInfo("attr kiolvasva, meghajtas: " + req.attributes["meghajtas"]);
+    } else {
+        zInfo("attr NINCS kiolvasva");
     }
 
     return req;
 }
 
+QString AddInputDialog::currentProductTypeCode() const
+{
+    auto id = selectedProductTypeId();
+    auto* type = ProductTypeRegistry::instance().findById(id);
+    return type ? type->code : QString();
+}
+
+QString AddInputDialog::currentProductSubtypeCode() const
+{
+    auto id = selectedProductSubtypeId();
+    auto* st = ProductSubtypeRegistry::instance().findById(id);
+    return st ? st->code : QString("*");
+}
 
 
 bool AddInputDialog::validateInputs() {
@@ -1375,7 +1417,10 @@ void AddInputDialog::loadReference(const QString& ref)
     applyReferenceState(state);
 
     if(last){
-        applyRequestToWidgets(*last);
+        // ❗ csak akkor töltsük vissza, ha NEM Update módban vagyunk
+        if (_mode != DialogMode::Update) {
+            applyRequestToWidgets(*last);
+        }
         // ⭐ HOSSZ HINT: ha már volt anyag → registry a forrás
         // if (last->requiredLength > 0)
         //     _lengthHint = last->requiredLength;
@@ -1735,27 +1780,72 @@ void AddInputDialog::updateHeadFieldsInRegistry(const QString& ref)
 
 void AddInputDialog::updateAttributePanel()
 {
-    QString typeCode;
-    QString subtypeCode;
+    //zTrace();
 
-    auto typeId = selectedProductTypeId();
-    auto subtypeId = selectedProductSubtypeId();
+    bool wasVisible = ui->groupBox_attributes->isVisible();
+    //zInfo("ATTR: wasVisible = " + QString(wasVisible ? "true" : "false"));
 
-    auto* type = ProductTypeRegistry::instance().findById(typeId);
-    auto* subtype = ProductSubtypeRegistry::instance().findById(subtypeId);
+    auto* type = ProductTypeRegistry::instance().findById(selectedProductTypeId());
+    auto* subtype = ProductSubtypeRegistry::instance().findById(selectedProductSubtypeId());
+
+    QString typeName = type ? type->name : "N/A";
+    QString subtypeName = subtype ? subtype->name : "N/A";
+
+    //zInfo("ATTR: selected typeId = " + typeName);
+    //zInfo("ATTR: selected subtypeId = " + subtypeName);
+
+    // --- 1) nincs type → panel eltűnik ---
+    if (!type) {
+        //zInfo("ATTR: type == nullptr → hide panel");
+        if (wasVisible)
+            groupboxAttributes_hide();
+        return;
+    }
+
+    QString typeCode = type->code;
+    QString subtypeCode = subtype ? subtype->code : "*";
+
+    //zInfo("ATTR: typeCode = " + typeCode);
+    //zInfo("ATTR: subtypeCode = " + subtypeCode);
+
+    auto attrs = ProductAttributeRegistry::instance().getAll(typeCode, subtypeCode);
+
+    //zInfo("ATTR: attrs keys = " + QStringList(attrs.keys()).join(", "));
+
+    // --- 2) nincs attribútum → panel eltűnik ---
+    if (!attrs.contains("meghajtas")) {
+      //  zInfo("ATTR: meghajtas NOT found → hide panel");
+        if (wasVisible)
+            groupboxAttributes_hide();
+        return;
+    }
+
+    // --- 3) van attribútum → panel megjelenik ---
+    if (!wasVisible)
+        groupboxAttributes_show();
+
+    // ❗ NINCS rádióállítás itt
+    // applyAttributes fogja beállítani, ha van Request-érték
+    // ha nincs, akkor ő dönt a default-ról
+}
+
+void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
+{
+    zTrace();
+
+    // 1) Ha a type/subtype-hoz nincs attribútum → panel rejtve marad
+    auto* type = ProductTypeRegistry::instance().findById(r.productTypeId);
+    auto* subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
 
     if (!type) {
         ui->groupBox_attributes->hide();
         return;
     }
 
-    typeCode = type->code;
-    subtypeCode = subtype ? subtype->code : "*";
+    QString typeCode = type->code;
+    QString subtypeCode = subtype ? subtype->code : "*";
 
-    // lekérjük az attribútumokat
-    QMap<QString, QString> attrs =
-        ProductAttributeRegistry::instance().getAll(typeCode, subtypeCode);
-
+    auto attrs = ProductAttributeRegistry::instance().getAll(typeCode, subtypeCode);
     if (!attrs.contains("meghajtas")) {
         ui->groupBox_attributes->hide();
         return;
@@ -1763,26 +1853,22 @@ void AddInputDialog::updateAttributePanel()
 
     ui->groupBox_attributes->show();
 
-    QString def = attrs["meghajtas"];
-
-    if (def == "motoros")
-        ui->radioAttrMotoros->setChecked(true);
-    else
-        ui->radioAttrKurblis->setChecked(true);
-}
-
-void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
-{
-    if (!r.attributes.contains("meghajtas")) {
-        ui->groupBox_attributes->hide();
-        return;
+    // 2) Ha a Request-ben van érték → AZ élvez prioritást
+    QString v;
+    if (r.attributes.contains("meghajtas")) {
+        v = r.attributes["meghajtas"];
+    } else {
+        // 3) Ha nincs Request-érték → registry default
+        v = attrs["meghajtas"];
     }
 
-    ui->groupBox_attributes->show();
-
-    QString v = r.attributes["meghajtas"];
     if (v == "motoros")
         ui->radioAttrMotoros->setChecked(true);
     else
         ui->radioAttrKurblis->setChecked(true);
+
+    zInfo("applyAttributes: meghajtas = " + v);
 }
+
+
+

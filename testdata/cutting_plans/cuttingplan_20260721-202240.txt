@@ -1,0 +1,11 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes
+"1972";"Nevatech, Szeged";2970;2640;2859;;1;0;1;"RAL 9005";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"1972";"Nevatech, Szeged";2970;2640;2795;;1;0;1;"RAL 9005";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"1973";"Nevatech, Szeged";2970;2640;819;;1;1;0;"RAL 9005";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"1973";"Nevatech, Szeged";2970;2640;805;;1;1;0;"RAL 9005";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"1974";"Nevatech, Szeged";2970;2640;2859;;1;1;0;"RAL 9005";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"1974";"Nevatech, Szeged";2970;2640;2795;;1;1;0;"RAL 9005";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"33";"Nevatech, Szeged";2970;2640;2159;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"33";"Nevatech, Szeged";2970;2640;2095;;1;0;1;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"34";"Nevatech, Szeged";2970;2640;2119;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"34";"Nevatech, Szeged";2970;2640;2055;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros

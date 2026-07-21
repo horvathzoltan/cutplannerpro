@@ -49,7 +49,9 @@ inline static void Connect(
             if (dialog.exec() != QDialog::Accepted)
                 return;
 
+            zInfo("InputTableConnector getModel start");
             Cutting::Plan::Request updated = dialog.getModel();
+            zInfo("InputTableConnector getModel end");
             presenter->update_AllRequestsWithSameReference(updated);
             presenter->update_CuttingPlanRequest(updated);
 

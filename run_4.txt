@@ -1,3 +1,8 @@
+cutrequest:  FIXED
+ - ceruza button furán módosít: mindíg az utolsót. 
+tételszám alapján az utolsó req a default a köv adat felviteléhez, de! nem módosításnál. 
+ott rossz ez a logika!
+
 mátrix:
  - nem minden esetben jön fel a pipa, de a család zöldül
  - család vagy role alapon kell zöldíteni?

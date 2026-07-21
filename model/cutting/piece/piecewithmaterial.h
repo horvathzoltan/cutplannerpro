@@ -24,6 +24,7 @@ public:
     //Subtype subtype = Subtype::None; ///< Szerkezeti elem típusa (Alap, Rugós, Tetőteríti, stb.)
     QUuid productTypeId;
     QUuid productSubtypeId;
+    QMap<QString, QString> attributes; ///< Product attribútumok (key-value párok)
 
     HandlerSide side = HandlerSide::None; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
 

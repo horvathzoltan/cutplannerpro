@@ -53,16 +53,18 @@ class CuttingPresenter : public QObject {
 public:
     explicit CuttingPresenter(MainWindow* view, QObject *parent = nullptr);
 
-    struct CuttingRequestPatch {
+    struct CuttingRequestPatch {        
         bool updateLength        = false;
         bool updateMaterial      = false;
         bool updateLeftRight     = false;
 
+        bool updateWidthHeight = false;
         bool updateOwner         = false;
         bool updateDueDate       = false;
         bool updateProductType   = false;
         bool updateProductSubtype= false;
         bool updateColor         = false;
+        bool updateAttributes    = false;
     };
 
     // Vágási igények

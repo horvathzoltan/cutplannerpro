@@ -583,7 +583,9 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
         if (dialog.exec() != QDialog::Accepted)
             return;
 
+        //zInfo("MainWindow getModel start");
         Cutting::Plan::Request request = dialog.getModel();
+        //zInfo("MainWindow getModel end");
         presenter->add_CuttingPlanRequest(request);
 
         // ⭐ filledCells cache frissítése

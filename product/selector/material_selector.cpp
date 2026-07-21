@@ -20,14 +20,14 @@ QVector<QUuid> MaterialSelector::rankMaterials(
     const QVector<QUuid>& bomList,
     const Cutting::Plan::Request& req)
 {
-    qDebug() << "=== MaterialSelector INPUT ===";
-    qDebug() << "req.requiredColor.code =" << req.requiredColor.code();
-    qDebug() << "req.requiredColor.lightness =" << req.requiredColor.lightness();
-    qDebug() << "req.requiredColor.isValid =" << req.requiredColor.isValid();
-    qDebug() << "req.requiredLength =" << req.requiredLength;
-    qDebug() << "req.quantity =" << req.quantity;
-    qDebug() << "req.productTypeId =" << req.productTypeId;
-    qDebug() << "req.productSubtypeId =" << req.productSubtypeId;
+    // qDebug() << "=== MaterialSelector INPUT ===";
+    // qDebug() << "req.requiredColor.code =" << req.requiredColor.code();
+    // qDebug() << "req.requiredColor.lightness =" << req.requiredColor.lightness();
+    // qDebug() << "req.requiredColor.isValid =" << req.requiredColor.isValid();
+    // qDebug() << "req.requiredLength =" << req.requiredLength;
+    // qDebug() << "req.quantity =" << req.quantity;
+    // qDebug() << "req.productTypeId =" << req.productTypeId;
+    // qDebug() << "req.productSubtypeId =" << req.productSubtypeId;
 
     // qDebug() << "BOM list (input):";
     // for (auto id : bomList) {
@@ -41,7 +41,7 @@ QVector<QUuid> MaterialSelector::rankMaterials(
     //             << "  diameter=" << m->diameter_mm
     //             << "  stockLength=" << m->stockLength_mm;
     // }
-    qDebug() << "=== END INPUT ===";
+    // qDebug() << "=== END INPUT ===";
 
     QVector<Candidate> ranked;
     // 1) Családonkénti csoportosítás
@@ -177,27 +177,27 @@ QVector<QUuid> MaterialSelector::rankMaterials(
     // ⭐ DEBUG: listázzuk ki a rangsorolt anyagokat
     // ------------------------------------------------------------
 
-    qDebug() << "MaterialSelector ranked result:";
-    for (const auto& c : ranked) {
-        const MaterialMaster* m = MaterialRegistry::instance().findById(c.id);
-        if (!m) continue;
+    // qDebug() << "MaterialSelector ranked result:";
+    // for (const auto& c : ranked) {
+    //     const MaterialMaster* m = MaterialRegistry::instance().findById(c.id);
+    //     if (!m) continue;
 
-        qDebug().nospace()
-            << "  total=" << c.totalScore()
-            << "  [exact=" << c.breakdown.colorExact
-            << ", nat=" << c.breakdown.colorNat
-            << ", light=" << c.breakdown.colorLightness
-            << ", penalty=" << c.breakdown.colorPenalty
-            << ", axis=" << c.breakdown.axisPref
-            << ", stock=" << c.breakdown.stockPref
-            << "]"
-            << "  barcode=" << m->barcode
-            << "  name=" << m->name
-            << "  color=" << m->color.code()
-            << "  diameter=" << m->diameter_mm
-            << "  stockLength=" << m->stockLength_mm;
+    //     qDebug().nospace()
+    //         << "  total=" << c.totalScore()
+    //         << "  [exact=" << c.breakdown.colorExact
+    //         << ", nat=" << c.breakdown.colorNat
+    //         << ", light=" << c.breakdown.colorLightness
+    //         << ", penalty=" << c.breakdown.colorPenalty
+    //         << ", axis=" << c.breakdown.axisPref
+    //         << ", stock=" << c.breakdown.stockPref
+    //         << "]"
+    //         << "  barcode=" << m->barcode
+    //         << "  name=" << m->name
+    //         << "  color=" << m->color.code()
+    //         << "  diameter=" << m->diameter_mm
+    //         << "  stockLength=" << m->stockLength_mm;
 
-    }
+    // }
 
 
     return result;

@@ -7,6 +7,8 @@
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
+#include <QMap>
+
 namespace SubtypeUtils {
 
 //inline QString toProductVariantDisplayText(const QUuid& typeId, const QUuid& subtypeId)
@@ -33,28 +35,59 @@ namespace SubtypeUtils {
 //    return type->name + "/" + subtype->name;
 //}
 
-inline QString toProductVariantDisplayText(const QUuid& typeId, const QUuid& subtypeId)
+// inline QString toProductVariantDisplayText(const QUuid& typeId, const QUuid& subtypeId)
+// {
+//     //const bool typeMissing    = typeId.isNull();
+//     const bool subtypeMissing = subtypeId.isNull();
+
+//     //const auto* type    = typeMissing    ? nullptr : ProductTypeRegistry::instance().findById(typeId);
+//     const auto* subtype = subtypeMissing ? nullptr : ProductSubtypeRegistry::instance().findById(subtypeId);
+
+//     // 🔹 Mindkettő hiányzik → régi CSV, nincs típus
+//     //if (!type && !subtype)
+//     //    return "(ismeretlen/ismeretlen)";
+
+//     // 🔹 Van típus, nincs altípus
+//     if (!subtype)
+//         return "ismeretlen tip.";
+
+//     // 🔹 Nincs típus, van altípus
+//     //if (subtype)
+//         return subtype->name;
+
+//     // 🔹 Mindkettő létezik
+//     //return type->name + "/" + subtype->name;
+// }
+
+inline QString toProductVariantDisplayText(const QUuid& typeId,
+                                           const QUuid& subtypeId,
+                                           const QMap<QString, QString>& attributes)
 {
-    //const bool typeMissing    = typeId.isNull();
-    const bool subtypeMissing = subtypeId.isNull();
+    QStringList parts;
 
-    //const auto* type    = typeMissing    ? nullptr : ProductTypeRegistry::instance().findById(typeId);
-    const auto* subtype = subtypeMissing ? nullptr : ProductSubtypeRegistry::instance().findById(subtypeId);
+    // --- TYPE ---
+    if (!typeId.isNull()) {
+        auto* type = ProductTypeRegistry::instance().findById(typeId);
+        if (type)
+            parts << type->name;
+    }
 
-    // 🔹 Mindkettő hiányzik → régi CSV, nincs típus
-    //if (!type && !subtype)
-    //    return "(ismeretlen/ismeretlen)";
+    // --- SUBTYPE ---
+    if (!subtypeId.isNull()) {
+        auto* subtype = ProductSubtypeRegistry::instance().findById(subtypeId);
+        if (subtype)
+            parts << subtype->name;
+    }
 
-    // 🔹 Van típus, nincs altípus
-    if (!subtype)
-        return "ismeretlen tip.";
+    // --- ATTRIBUTES ---
+    for (auto it = attributes.begin(); it != attributes.end(); ++it) {
+        parts << QString("%1=%2").arg(it.key()).arg(it.value());
+    }
 
-    // 🔹 Nincs típus, van altípus
-    //if (subtype)
-        return subtype->name;
+    if (parts.isEmpty())
+        return "ismeretlen";
 
-    // 🔹 Mindkettő létezik
-    //return type->name + "/" + subtype->name;
+    return parts.join(", ");
 }
 
 } // namespace SubtypeUtils

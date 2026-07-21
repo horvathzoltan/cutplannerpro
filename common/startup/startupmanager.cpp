@@ -81,6 +81,10 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!cuttingMachineStatus.isSuccess())
         return cuttingMachineStatus;
 
+    StartupStatus productAttributeStatus = initProductAttributeRegistry();
+    if (!productAttributeStatus.isSuccess())
+        return productAttributeStatus;
+
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.addWarnings(ralColorStatus.warnings());
 
@@ -96,6 +100,8 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(reusableStockStatus.warnings());
     finalStatus.addWarnings(cuttingReqStatus.warnings());
     finalStatus.addWarnings(cuttingMachineStatus.warnings());
+
+    finalStatus.addWarnings(productAttributeStatus.warnings());
 
     EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %2 gép, %3 stock, %4 leftover")
                                        .arg(MaterialRegistry::instance().readAll().size())

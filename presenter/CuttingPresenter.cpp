@@ -102,6 +102,11 @@ void CuttingPresenter::applyPatch(Cutting::Plan::Request& target,
                                   const Cutting::Plan::Request& updated,
                                   const CuttingRequestPatch& patch)
 {
+    if(patch.updateWidthHeight){
+        target.fullWidth_mm = updated.fullWidth_mm;
+        target.fullHeight_mm = updated.fullHeight_mm;
+    }
+
     if (patch.updateLength)
         target.requiredLength = updated.requiredLength;
 
@@ -126,8 +131,13 @@ void CuttingPresenter::applyPatch(Cutting::Plan::Request& target,
     if (patch.updateProductSubtype)
         target.productSubtypeId = updated.productSubtypeId;
 
-    if (patch.updateColor)
+    if (patch.updateColor){
         target.requiredColor = updated.requiredColor;
+        target.surface = updated.surface;
+    }
+
+    if(patch.updateAttributes)
+        target.attributes = updated.attributes;
 }
 
 void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r) {
@@ -139,10 +149,16 @@ void CuttingPresenter::update_CuttingPlanRequest(const Cutting::Plan::Request& r
 
     Cutting::Plan::Request target = *opt;
 
+    // ezeket végigpatcheli sz összes fej szintű adaton
     CuttingRequestPatch patch;
+    patch.updateOwner       = true;
     patch.updateLength    = true;
+    patch.updateWidthHeight    = true;
     patch.updateMaterial  = true;
-    //patch.updateLeftRight = true;
+    patch.updateColor = true;
+    patch.updateAttributes = true;
+    patch.updateLeftRight = true;
+    patch.updateProductSubtype = true;
 
     applyPatch(target, r, patch);
 
@@ -1031,6 +1047,7 @@ void CuttingPresenter::GenerateCutInstructions()
 //            ci.subtype = pwm.subtype;
             ci.productTypeId = pwm.productTypeId;
             ci.productSubtypeId = pwm.productSubtypeId;
+            ci.attributes = pwm.attributes;
 
             // if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
             //     if (!reusedLeftovers.contains(plan.leftoverBarcode))
