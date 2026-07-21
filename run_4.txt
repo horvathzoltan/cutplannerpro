@@ -1,7 +1,28 @@
+mátrix:
+ - nem minden esetben jön fel a pipa, de a család zöldül
+ - család vagy role alapon kell zöldíteni?
+
+bom audit: 
+ - nem család hanem role alapján kell összesíteni
+ - kell termék fejléc a termékek auditja elé
+
 Címkepótlás
 új anyag felvétele 
 - roletta nem jó a köv.anyag
 - a szerkesztés gombra nem jó az ablak, nincsen tételszám
+
+Vágási utasítások
+ - Kért tételszámok: 33., 33., 33., 33., 33., 33–34., 34., 34., 34., 34., 34., 1987., 1987., 1987., 1987., 1987., 1987–1988., 1988., 1988., 1988., 1988., 1988–1989., 1989., 1989., 1989., 1989.
+ - az egyes utasítások ahogy el vannak vágva, nem kerül mögéjük a xN és a checkbox
+ - 153405 végű terv - egyszer 29, egyszer 30 tételesnek tűnik
+
+labels:
+ - a rúd címkére a számított hosszat (hulló) ki kellene írni
+
+leftoverintake:
+ - a cutoff labelre is kellene méret, de kellene neki saját kutrica amit kitöltünk tollal
+
+
 
 Zoltán, itt van **a teljes, lépésről‑lépésre végrehajtható patch‑terv**, pontosan abban a formában, ahogy szereted:
 **auditálható, determinisztikus, kontextusfüggetlen, kézzel beilleszthető**, és minden lépés külön végrehajtható.
