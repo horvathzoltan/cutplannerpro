@@ -682,9 +682,12 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         //     a+= SubtypeUtils::toDisplayText(ci.subtype);
         // }
         QString a;
-        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
+/*        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
                                                       ci.productSubtypeId,
                                                       ci.attributes);
+*/
+        auto* b = ProductSubtypeRegistry::instance().findById(ci.productSubtypeId);
+        a = b?b->name:"";
 
         if(ci.side != HandlerSide::None) {
             if(!a.isEmpty()) a += ", ";

@@ -21,8 +21,19 @@ Vágási utasítások
  - az egyes utasítások ahogy el vannak vágva, nem kerül mögéjük a xN és a checkbox
  - 153405 végű terv - egyszer 29, egyszer 30 tételesnek tűnik
 
-labels:
+Festési terv:
+     -  anyagszükséglet: Napháló típus : 20m anyag -> 1kg festék
+
+termékcímke - labels:
  - a rúd címkére a számított hosszat (hulló) ki kellene írni
+ - egy rudat akkor kell megjelölni, és akkor kell neki címke, ha :
+    1: értékelhető méretű hullót ad
+    2: többször felkerül a vágóra
+    azaz ami csak egyszer kerül fel, annak a lekerülője hulló, ha értékelhető a mérete, nem dobjuk el,
+    és akkor is fel kell címkéznünk a rudat, ha többször kerül fel a vágóra
+    a rúd címkéje tartalmazza a számított véghulló méretet -így annak elfogadával nem kell mérni
+ - kell a címkére a szín és a felület is
+ - tételszám, megrendelő, méret, altípus, attr értékek, vonalkód
 
 leftoverintake:
  - a cutoff labelre is kellene méret, de kellene neki saját kutrica amit kitöltünk tollal

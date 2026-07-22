@@ -9,3 +9,7 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "33";"Nevatech, Szeged";2970;2640;2095;;1;0;1;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
 "34";"Nevatech, Szeged";2970;2640;2119;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
 "34";"Nevatech, Szeged";2970;2640;2055;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-07-21;NP;CIP;meghajtas=motoros
+"7";"Arthy L.";3070;1650;2959;;1;0;1;"RAL 7016";NP-ROLL70-7000;Width;false;2026-07-22;NP;CIP;meghajtas=kurblis
+"7";"Arthy L.";3070;1650;2895;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-22;NP;CIP;meghajtas=kurblis
+"8";"Arthy L.";2860;1800;2749;;1;1;0;"RAL 7016";NP-ROLL70-7000;Width;false;2026-07-22;NP;CIP;meghajtas=motoros
+"8";"Arthy L.";2860;1800;2685;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-07-22;NP;CIP;meghajtas=motoros
