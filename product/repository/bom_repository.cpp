@@ -1,6 +1,9 @@
 #include "bom_repository.h"
 #include "common/filenamehelper.h"
 #include <QUuid>
+#include <materials/model/material_family_utils.h>
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
 
 bool BomRepository::loadFromCSV(BomRegistry& registry) {
     auto& helper = FileNameHelper::instance();

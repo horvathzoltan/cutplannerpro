@@ -20,6 +20,8 @@ SOURCES += \
     model/cutting/optimizer/reusablefitengine.cpp \
     model/cutting/optimizer/rodloopengine.cpp \
     model/cutting/optimizer/stockfitengine.cpp \
+    model/cutting/plan/audit/audit_header_rules.cpp \
+    model/cutting/plan/audit/audit_length_rules.cpp \
     model/cutting/plan/audit/naphalo_audit_service.cpp \
     model/cutting/plan/audit/naphalo_bom_rules.cpp \
     model/cutting/plan/audit/naphalo_due_rules.cpp \
@@ -169,6 +171,8 @@ HEADERS += \
     model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
     model/cutting/optimizer/telemetryhelper.h \
+    model/cutting/plan/audit/audit_header_rules.h \
+    model/cutting/plan/audit/audit_length_rules.h \
     model/cutting/plan/audit/naphalo_audit_service.h \
     model/cutting/plan/audit/naphalo_audit_types.h \
     model/cutting/plan/audit/naphalo_bom_rules.h \

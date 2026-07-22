@@ -5,10 +5,7 @@
 #include <optional>
 #include "common/csvimporter.h"
 #include "product/model/bom_entry.h"
-#include "product/registry/product_type_registry.h"
-#include "product/registry/product_subtype_registry.h"
 #include "product/registry/bom_registry.h"
-#include "materials/model/material_family_utils.h"
 
 class BomRepository {
 public:

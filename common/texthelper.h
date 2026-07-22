@@ -1,17 +1,25 @@
 #pragma once
 
+#include <QSet>
 #include <QStringList>
 
 
 namespace TextHelper {
 
 
-static QString compressRanges_int(QList<int>& nums)
+static QString compressRanges_int(QList<int> nums)
 {
     if (nums.isEmpty())
         return "—";
 
+    // ismétlődések kiszűrése
+    QSet<int> uniq;
+    for (int n : nums)
+        uniq.insert(n);
+
+    nums = uniq.values();
     std::sort(nums.begin(), nums.end());
+
 
     QStringList out;
     int start = nums.first();
@@ -41,6 +49,7 @@ static QString compressRanges_int(QList<int>& nums)
 
     return out.join(", ");
 }
+
 
 static QString compressRanges_String(const QStringList& refs)
 {

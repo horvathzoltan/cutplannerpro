@@ -3,11 +3,11 @@ cutrequest:  FIXED
 tételszám alapján az utolsó req a default a köv adat felviteléhez, de! nem módosításnál. 
 ott rossz ez a logika!
 
-mátrix:
+mátrix: FIXED
  - nem minden esetben jön fel a pipa, de a család zöldül
  - család vagy role alapon kell zöldíteni?
 
-bom audit: 
+bom audit: FIXED
  - nem család hanem role alapján kell összesíteni
  - kell termék fejléc a termékek auditja elé
 
@@ -17,9 +17,10 @@ Címkepótlás
 - a szerkesztés gombra nem jó az ablak, nincsen tételszám
 
 Vágási utasítások
- - Kért tételszámok: 33., 33., 33., 33., 33., 33–34., 34., 34., 34., 34., 34., 1987., 1987., 1987., 1987., 1987., 1987–1988., 1988., 1988., 1988., 1988., 1988–1989., 1989., 1989., 1989., 1989.
+ FIXED - Kért tételszámok: 33., 33., 33., 33., 33., 33–34., 34., 34., 34., 34., 34., 1987., 1987., 1987., 1987., 1987., 1987–1988., 1988., 1988., 1988., 1988., 1988–1989., 1989., 1989., 1989., 1989.
  - az egyes utasítások ahogy el vannak vágva, nem kerül mögéjük a xN és a checkbox
  - 153405 végű terv - egyszer 29, egyszer 30 tételesnek tűnik
+ - kellene valamilyen másfél karakter széles emoji a szeparátorba, mert felette sorba is mindíg van: ✂️
 
 Festési terv:
      -  anyagszükséglet: Napháló típus : 20m anyag -> 1kg festék

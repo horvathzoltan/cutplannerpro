@@ -29,11 +29,10 @@ bool AddInputDialog::s_lastRepeat = false;
 
 AddInputDialog::AddInputDialog(QWidget *parent,
                                DialogMode mode,
-                               const Cutting::Plan::Request* initial,
-                               SeriesMatrixView* matrix)
+                               const Cutting::Plan::Request* initial)
     : QDialog(parent)
     , ui(new Ui::AddInputDialog)
-    , _matrix(matrix)
+    //, _matrix(matrix)
     , current_requestId(QUuid::createUuid())
 
 {

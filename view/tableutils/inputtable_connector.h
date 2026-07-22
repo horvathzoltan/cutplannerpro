@@ -61,6 +61,7 @@ inline static void Connect(
                 updated.externalReference, updated.materialId
                 );
 
+
             // ⭐ BOM cache kiütése
             w->seriesMatrixView()->clearBomCache();
 

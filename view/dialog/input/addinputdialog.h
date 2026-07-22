@@ -33,8 +33,7 @@ class AddInputDialog : public QDialog
 public:
     explicit AddInputDialog(QWidget *parent = nullptr,
                             DialogMode mode = DialogMode::Create,
-                            const Cutting::Plan::Request* initial = nullptr,
-                            SeriesMatrixView* matrix = nullptr);
+                            const Cutting::Plan::Request* initial = nullptr);
     ~AddInputDialog();
 
     QUuid selectedMaterialId() const;
@@ -58,7 +57,7 @@ private:
     Ui::AddInputDialog *ui;
     void populateMaterialCombo();
     bool validateInputs();
-    SeriesMatrixView* _matrix = nullptr;
+    //SeriesMatrixView* _matrix = nullptr;
     bool _suppressPreview = false;
 
     // ⭐ Tételszám UI elemek (egy layouton)

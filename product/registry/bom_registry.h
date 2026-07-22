@@ -31,4 +31,6 @@ public:
     }
 
     QHash<MaterialFamily, double> bomMap(const QUuid& typeId, const QUuid& subtypeId) const;
+    QMap<QString, double> bomRoleMap(const QUuid& typeId, const QUuid& subtypeId) const;
+
 };

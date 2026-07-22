@@ -31,4 +31,5 @@ public:
         const QUuid& productSubtypeId
         ) const;
 
+    MaterialRole roleForBarcode(const QString& barcode) const;
 };

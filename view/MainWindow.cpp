@@ -554,7 +554,7 @@ void MainWindow::handle_btn_ClearRequest_clicked()
 void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
 
     while(true){
-        AddInputDialog dialog(this, DialogMode::Create, nullptr, _seriesMatrixView);
+        AddInputDialog dialog(this, DialogMode::Create, nullptr);
 
         connect(&dialog, &AddInputDialog::seriesContextChanged,
                 this, [this, &dialog](const QString& owner, const QString& ref) {

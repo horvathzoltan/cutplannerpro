@@ -25,3 +25,5 @@ class ProductBomAuditService {
 public:
     static ProductBomAuditResult run(const QVector<Cutting::Plan::Request>& all);
 };
+
+

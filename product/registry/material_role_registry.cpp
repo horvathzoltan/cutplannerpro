@@ -71,3 +71,21 @@ QVector<MaterialRole> MaterialRoleRegistry::readAll() const
     return m_roles;
 }
 
+MaterialRole MaterialRoleRegistry::roleForBarcode(const QString& barcode) const
+{
+    for (const auto& r : m_roles)
+    {
+        if (MaterialFamilyUtils::matchPrefix(barcode, r.barcodePrefix))
+            return r;
+    }
+
+    // Unknown role
+    MaterialRole unknown;
+    unknown.productTypeId = QUuid();
+    unknown.productSubtypeId = QUuid();
+    unknown.family = MaterialFamily::Unknown;
+    unknown.barcodePrefix = "Unknown";
+    return unknown;
+}
+
+
