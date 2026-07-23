@@ -66,4 +66,5 @@ private:
     StartupStatus initBomRegistry();
     StartupStatus initMaterialRoleRegistry();
     StartupStatus initProductAttributeRegistry();
+    StartupStatus initPowderConsumptionRegistry();
 };

@@ -24,6 +24,9 @@ struct ProductBomAuditResult {
 class ProductBomAuditService {
 public:
     static ProductBomAuditResult run(const QVector<Cutting::Plan::Request>& all);
+private:
+    static QHash<QString, QVector<Cutting::Plan::Request>>
+    groupByExternalRef(const QVector<Cutting::Plan::Request> &all);
 };
 
 

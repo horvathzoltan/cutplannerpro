@@ -3,7 +3,6 @@
 #include "common/logger.h"
 #include "audit_header_rules.h"
 #include "audit_length_rules.h"
-#include "naphalo_audit_service.h"            // groupByExternalRef reuse
 #include "product/material_role_utils.h"
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
@@ -14,12 +13,27 @@
 
 // product_bom_audit_service.cpp
 
+QHash<QString, QVector<Cutting::Plan::Request>>
+ProductBomAuditService::groupByExternalRef(const QVector<Cutting::Plan::Request>& all)
+{
+    QHash<QString, QVector<Cutting::Plan::Request>> groups;
+
+    for (const auto& req : all) {
+        QString ref = req.externalReference.trimmed();
+        if (ref.isEmpty())
+            ref = "<NINCS_TETELSZAM>";
+        groups[ref].append(req);
+    }
+
+    return groups;
+}
+
 ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::Request>& all)
 {
     ProductBomAuditResult result;
 
     // 1) Tételszámok csoportosítása
-    auto groups = NaphaloAuditService::groupByExternalRef(all);
+    auto groups = groupByExternalRef(all);
 
     for (auto it = groups.begin(); it != groups.end(); ++it)
     {
@@ -119,9 +133,13 @@ ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::R
             actual[roleKey] += r.quantity;
         }
 
+
+
         auto bomRoleMap = BomRegistry::instance().bomRoleMap(typeId, subtypeId);
 
         bool hasError = false;
+
+        int productCount = list.first().quantity;
 
         for (auto it2 = bomRoleMap.begin(); it2 != bomRoleMap.end(); ++it2)
         {
@@ -131,7 +149,9 @@ ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::R
             QString roleKey = MaterialRoleUtils::normalizePrefix(rawKey);
 
 
-            double expected = it2.value();
+            double expectedPerProduct = it2.value(); // BOM: db / termék
+            double expected = expectedPerProduct * productCount;
+
             double got = actual.value(roleKey, 0.0);
 
             if (got < expected) {

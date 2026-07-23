@@ -1,0 +1,4 @@
+type;subtype;length;weight;colorMult;surfaceMult
+NP;CIP;20;1.20;1.00;1.00
+NP;SIN;20;1.50;1.00;1.00
+NP;BOW;20;1.00;1.00;1.00

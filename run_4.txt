@@ -22,7 +22,7 @@ Vágási utasítások
  - 153405 végű terv - egyszer 29, egyszer 30 tételesnek tűnik
  - kellene valamilyen másfél karakter széles emoji a szeparátorba, mert felette sorba is mindíg van: ✂️
 
-Festési terv:
+Festési terv: FIXED
      -  anyagszükséglet: Napháló típus : 20m anyag -> 1kg festék
 
 termékcímke - labels:

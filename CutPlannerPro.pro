@@ -22,16 +22,12 @@ SOURCES += \
     model/cutting/optimizer/stockfitengine.cpp \
     model/cutting/plan/audit/audit_header_rules.cpp \
     model/cutting/plan/audit/audit_length_rules.cpp \
-    model/cutting/plan/audit/naphalo_audit_service.cpp \
-    model/cutting/plan/audit/naphalo_bom_rules.cpp \
-    model/cutting/plan/audit/naphalo_due_rules.cpp \
-    model/cutting/plan/audit/naphalo_material_aggregator.cpp \
-    model/cutting/plan/audit/naphalo_owner_rules.cpp \
-    model/cutting/plan/audit/naphalo_size_rules.cpp \
-    model/cutting/plan/audit/naphalo_summary_builder.cpp \
-    model/cutting/plan/audit/naphalo_type_detector.cpp \
     model/cutting/plan/audit/product_bom_audit_service.cpp \
     model/storageaudit/auditcontext.cpp \
+    paint/paint_calculator.cpp \
+    paint/paint_reporter.cpp \
+    paint/registry/powder_consumption_registry.cpp \
+    paint/repository/powder_consumption_repository.cpp \
     presenter/leftoverpresenter.cpp \
     presenter/stockpresenter.cpp \
     product/registry/bom_registry.cpp \
@@ -151,7 +147,6 @@ HEADERS += \
     common/testlabelmaker.h \
     common/texthelper.h \
     materials/model/material_family.h \
-    materials/model/material_family_detector.h \
     materials/model/material_family_utils.h \
     materials/model/scoringparams.h \
     materials/model/trimmingparams.h \
@@ -173,18 +168,8 @@ HEADERS += \
     model/cutting/optimizer/telemetryhelper.h \
     model/cutting/plan/audit/audit_header_rules.h \
     model/cutting/plan/audit/audit_length_rules.h \
-    model/cutting/plan/audit/naphalo_audit_service.h \
     model/cutting/plan/audit/naphalo_audit_types.h \
-    model/cutting/plan/audit/naphalo_bom_rules.h \
-    model/cutting/plan/audit/naphalo_due_rules.h \
-    model/cutting/plan/audit/naphalo_material_aggregator.h \
-    model/cutting/plan/audit/naphalo_owner_rules.h \
-    model/cutting/plan/audit/naphalo_prefix_match.h \
-    model/cutting/plan/audit/naphalo_prefix_utils.h \
     model/cutting/plan/audit/naphalo_profile_postfix.h \
-    model/cutting/plan/audit/naphalo_size_rules.h \
-    model/cutting/plan/audit/naphalo_summary_builder.h \
-    model/cutting/plan/audit/naphalo_type_detector.h \
     model/cutting/plan/audit/product_bom_audit_service.h \
     model/cutting/plan/parentinfo.h \
     model/cutting/plan/segments.h \
@@ -200,6 +185,12 @@ HEADERS += \
     model/relocation/relocationauditstatus.h \
     model/storage/storageutils.h \
     model/storageaudit/audit_enums.h \
+    paint/model/powder_consumption_model.h \
+    paint/paint_calculator.h \
+    paint/paint_plan.h \
+    paint/paint_reporter.h \
+    paint/registry/powder_consumption_registry.h \
+    paint/repository/powder_consumption_repository.h \
     presenter/leftoverpresenter.h \
     presenter/stockpresenter.h \
     product/material_role_utils.h \
@@ -441,6 +432,7 @@ DISTFILES += \
     testdata/materialgroups.csv \
     testdata/materials.csv \
     testdata/materials_old.csv \
+    testdata/powder_consumption.csv \
     testdata/product_subtype.csv \
     testdata/ral_colors/classic.csv \
     testdata/ral_colors/design.csv \

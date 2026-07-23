@@ -1320,7 +1320,7 @@ void AddInputDialog::updateColorPreview()
     int len   = ui->editLength->text().toInt();
     int qty   = ui->spinQuantity->value();
     int total = (paintingNeeded ? len * qty : 0);
-    QString postfix = (mat ? profilePostfixFor(mat->barcode) : QString());
+    QString postfix = (mat ? ProfileUtils::profilePostfixFor(mat->barcode) : QString());
 
     // 4) Szín kocka
     QLabel* box = new QLabel();

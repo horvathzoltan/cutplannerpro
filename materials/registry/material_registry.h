@@ -3,9 +3,6 @@
 #include <QVector>
 #include <QUuid>
 #include <QString>
-
-#include <materials/model/material_family_detector.h>
-//#include <optional>
 #include "materials/model/material_master.h"
 
 class MaterialRegistry {

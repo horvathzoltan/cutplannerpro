@@ -31,6 +31,8 @@
 #include <product/registry/product_type_registry.h>
 #include <product/registry/productattributeregistry.h>
 
+#include <paint/repository/powder_consumption_repository.h>
+
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
@@ -85,6 +87,11 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!productAttributeStatus.isSuccess())
         return productAttributeStatus;
 
+    StartupStatus powderStatus = initPowderConsumptionRegistry();
+    if (!powderStatus.isSuccess())
+        return powderStatus;
+
+
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.addWarnings(ralColorStatus.warnings());
 
@@ -102,6 +109,7 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(cuttingMachineStatus.warnings());
 
     finalStatus.addWarnings(productAttributeStatus.warnings());
+    finalStatus.addWarnings(powderStatus.warnings());
 
     EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %2 gép, %3 stock, %4 leftover")
                                        .arg(MaterialRegistry::instance().readAll().size())
@@ -521,3 +529,19 @@ StartupStatus StartupManager::initProductAttributeRegistry()
     return StartupStatus::success();
 }
 
+StartupStatus StartupManager::initPowderConsumptionRegistry()
+{
+    bool loaded = PowderConsumptionRepository::loadFromCSV(PowderConsumptionRegistry::instance());
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a festési normákat");
+        return StartupStatus::failure("❌ Nem sikerült betölteni a powder_consumption.csv fájlból.");
+    }
+
+    if (PowderConsumptionRegistry::instance().isEmpty()) {
+        EventLogger::instance().zEvent("❌ nincs adat a festési normákban");
+        return StartupStatus::failure("⚠️ A festési normák törzse üres. Legalább 1 sor szükséges.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "festési normák init"));
+    return StartupStatus::success();
+}

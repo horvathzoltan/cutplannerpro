@@ -1,6 +1,4 @@
 #include "material_role_registry.h"
-#include "materials/model/material_family_detector.h"
-
 #include <materials/model/material_family_utils.h>
 
 void MaterialRoleRegistry::load(const QVector<MaterialRole>& roles)

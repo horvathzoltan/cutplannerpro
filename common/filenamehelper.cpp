@@ -201,3 +201,6 @@ QString FileNameHelper::getMaterialRoleCsvFile() const {
     return QDir(_projectPath).filePath("material_rolemap.csv");
 }
 
+QString FileNameHelper::getPowderConsumptionCsvFile() const {
+    return QDir(_projectPath).filePath("powder_consumption.csv");
+}

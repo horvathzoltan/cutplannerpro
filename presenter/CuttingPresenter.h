@@ -18,35 +18,6 @@ Meghívja a modell metódusait (pl. optimize())
 */
 class MainWindow; // Előre deklaráljuk, hogy ne kelljen most includolni
 
-struct PaintMaterialSummary {
-    QUuid materialId;
-    int totalPieces = 0;
-    int totalLength_mm = 0;
-    QVector<QUuid> requestIds;
-};
-
-struct PaintColorGroup {
-    NamedColor color;
-    QHash<QUuid, PaintMaterialSummary> materials; // key: materialId
-
-    // --- TÍPUSONKÉNTI POFA ---
-    int cipzarosPofa = 0;
-    int sinesPofa = 0;
-    int bowdenesPofa = 0;
-    bool pofaFestheto = false;
-
-    int sumPofa() const {return  cipzarosPofa + sinesPofa + bowdenesPofa;}
-    int csavar = 0;
-    bool csavarFestheto = false;
-};
-
-struct PaintPlan {
-    QHash<QString, PaintColorGroup> byColor; // key: color string
-};
-
-
-
-
 class CuttingPresenter : public QObject {
     Q_OBJECT
 
@@ -162,9 +133,5 @@ private:
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
     void updateRow(const QUuid &rowId, std::function<void (StorageAuditRow &)> updater);
-    PaintPlan buildPaintPlan();
-    void AuditRequestsByExternalRef();
-    void AuditRequestsByExternalRef_old();
-    QString Paint(const QString& planIdStr);
 };
 
