@@ -10,6 +10,8 @@ struct LabelPart {
     Qt::Alignment align = Qt::AlignLeft;  // bal/közép/jobb
 
     bool small = false;
+    bool bold = false;
+    bool italic = false;
 };
 
 

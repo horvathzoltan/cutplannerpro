@@ -120,66 +120,6 @@ PaintPlan PaintCalculator::buildPlan()
             summary.powderKg += kg;
             colorGroup.powderKg += kg;
 
-            // --- NP-CL / NP-CLT összevonása egy festési egységgé ---
-            // if (isCL || isCLT)
-            // {
-            //     auto& summary = colorGroup.materials[CL_COMPOSITE_ID];
-            //     summary.materialId = CL_COMPOSITE_ID;
-
-            //     // --- NP-CL: festendő hossz ---
-            //     if (isCL)
-            //     {
-            //         summary.totalPieces += req.quantity * szorzo;
-            //         summary.totalLength_mm += req.quantity * req.requiredLength * szorzo;
-            //         summary.requestIds.append(req.requestId);
-
-            //         // FESTÉSI NORMA SZÁMÍTÁSA
-            //         double meters = (req.requiredLength * szorzo) / 1000.0;
-
-            //         auto model = PowderConsumptionRegistry::instance().find(req.productTypeId,
-            //                                                                 req.productSubtypeId);
-
-            //         double kgPerMeter = model.kgPerMeterCorrected();
-            //         double kg = meters * kgPerMeter * req.quantity;
-
-            //         summary.powderKg += kg;
-            //         colorGroup.powderKg += kg;
-            //     }
-
-            //     // --- NP-CLT: csak jelölés, nem növeli a festési hosszt ---
-            //     if (isCLT)
-            //     {
-            //         summary.hasCLT = true;
-            //         summary.requestIds.append(req.requestId); // CLT is tartozik a lábhoz
-            //     }
-
-            //     continue; // ❗ CL és CLT nem mehet tovább a normál ágra
-            // }
-
-
-            // ANYAG AGGREGÁLÁS
-            // PaintMaterialSummary &summary = colorGroup.materials[req.materialId];
-            // summary.materialId = req.materialId;
-            // summary.totalPieces += req.quantity * szorzo;
-            // summary.totalLength_mm += req.quantity * req.requiredLength * szorzo;
-            // summary.requestIds.append(req.requestId);
-
-            // // --- PORFOGYÁS SZÁMÍTÁSA ---
-            // double meters = (req.requiredLength * szorzo) / 1000.0;
-
-            // auto typeId    = req.productTypeId;
-            // auto subtypeId = req.productSubtypeId;
-
-            // auto model = PowderConsumptionRegistry::instance().find(typeId, subtypeId);
-            // double kgPerMeter = model.kgPerMeterCorrected();
-
-            // double kg = meters * kgPerMeter * req.quantity;
-
-            // // anyag szintű összegzés
-            // summary.powderKg += kg;
-
-            // // színcsoport szintű összegzés
-            // colorGroup.powderKg += kg;
 
             // --- POFA / CSAVAR TÍPUS SZERINT ---
             if (MaterialFamilyUtils::matchPrefix(barcode, "NP-T*")) {

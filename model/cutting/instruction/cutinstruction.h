@@ -78,5 +78,6 @@ struct MachineCuts{
     MachineHeader machineHeader;
     QVector<CutInstruction> cutInstructions;
 
-
+    QMap<QString, double> leftover_mm;
+    QMap<QString, QString> leftoverBarcode;
 };

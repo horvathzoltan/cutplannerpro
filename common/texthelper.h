@@ -58,9 +58,13 @@ static QString compressRanges_String(const QStringList& refs)
 
     QList<int> nums;
     for (const QString& r : refs){
+        // csak az első számot vesszük ki
+        QString cleaned = r.section(' ', 0, 0);   // "37 1/2" → "37"
+
         bool ok = false;
-        int n =  r.toInt(&ok);
-        if(ok) nums.append(n);
+        int n =  cleaned.toInt(&ok);
+        if(ok)
+            nums.append(n);
     }
 
     auto a = compressRanges_int(nums);

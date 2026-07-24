@@ -35,7 +35,9 @@ private:
     //QString currentBarcode;
     QUuid current_entryId; // Az aktuális anyag ID, ha szerkesztés módban vagyunk
 
-    QUuid current_storageId;     // 🆕
+    QUuid current_storageId;
+    QTimer* barcodeDebounceTimer;
+    // 🆕
     void populateStorageCombo(); // 🆕
     QUuid selectedStorageId() const; // 🆕
 
@@ -49,4 +51,6 @@ private:
     int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
     bool validateBarcodeFormat(const QString &bc) const;
     void applyInitialFocus();
+    void applyBarcodeSyntax();
+    bool eventFilter(QObject *obj, QEvent *event);
 };

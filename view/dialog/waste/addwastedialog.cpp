@@ -3,6 +3,7 @@
 #include "ui_addwastedialog.h"
 #include "materials/registry/material_registry.h"
 #include "view/dialog/materialsearch/materialsearchdialog.h"
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <common/identifierutils.h>
 #include "settings/settingsmanager.h"
@@ -55,10 +56,15 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 
     // Tárhely ajánlása
     if (!s_lastStorageId.isNull()) {
+        // 🔥 Körbevitelnél emlékezzen
         int sidx = ui->comboStorage->findData(s_lastStorageId);
         if (sidx >= 0)
             ui->comboStorage->setCurrentIndex(sidx);
+    } else {
+        // 🔥 Első megnyitáskor NE legyen kiválasztva semmi
+        ui->comboStorage->setCurrentIndex(-1);
     }
+
 
     // Prefix-aware ajánlás (pl. RSM-129 → RSM-130, maki-55 → maki-56)
     QString bc;
@@ -76,13 +82,55 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
     }
     ui->editBarcode->setText(bc);
 
-
     ui->chk_Repeat->setChecked(s_lastRepeat);
+
+    // barcodeDebounceTimer = new QTimer(this);
+    // barcodeDebounceTimer->setSingleShot(true);
+    // barcodeDebounceTimer->setInterval(1500); // 200 ms debounce
+
+    // connect(barcodeDebounceTimer, &QTimer::timeout,
+    //         this, &AddWasteDialog::applyBarcodeSyntax);
+
+    // connect(ui->editBarcode, &QLineEdit::textChanged, this, [this]() {
+    //     barcodeDebounceTimer->start();   // minden változás újraindítja
+    // });
+
+    ui->editBarcode->installEventFilter(this);
+
 
     QTimer::singleShot(0, this, [this]() {
         applyInitialFocus();
     });
 
+}
+
+bool AddWasteDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == ui->editBarcode && event->type() == QEvent::KeyPress) {
+
+        QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+
+            // 🔥 1) Elnyeljük az Entert → nem lesz QDialog::accept()
+            ke->accept();
+
+            // 🔥 2) Robbantás
+            applyBarcodeSyntax();
+
+            // 🔥 3) Ha a robbantás sikeres → mezők kitöltve → rögzítünk
+            if (!ui->editBarcode->text().contains("|") &&
+                availableLength() > 0 &&
+                !selectedMaterialId().isNull())
+            {
+                this->accept();   // 🔥 automatikus rögzítés
+            }
+
+            return true; // teljesen elnyeltük
+        }
+    }
+
+    return QDialog::eventFilter(obj, event);
 }
 
 void AddWasteDialog::applyInitialFocus(){
@@ -304,4 +352,48 @@ bool AddWasteDialog::validateBarcodeFormat(const QString& bc) const
     }
 
     return true;
+}
+
+void AddWasteDialog::applyBarcodeSyntax()
+{
+    QString raw = ui->editBarcode->text().trimmed();
+    if (raw.isEmpty())
+        return;
+
+    // Ha nincs pipe → sima barcode
+    if (!raw.contains("|"))
+        return;
+
+    QStringList parts = raw.split("|");
+    if (parts.size() < 2 || parts.size() > 3)
+        return; // hibás formátum → nem nyúlunk hozzá
+
+    QString id = parts[0].trimmed();
+    QString lenStr = parts[1].trimmed();
+
+    bool ok = false;
+    int len = lenStr.toInt(&ok);
+    if (!ok || len <= 0)
+        return; // hibás hossz → nem nyúlunk hozzá
+
+    // 🔥 1) Barcode mező kitöltése
+    ui->editBarcode->setText(id);
+
+    // 🔥 2) Hossz mező kitöltése
+    ui->editLength->setText(QString::number(len));
+
+    // 🔥 3) Anyag automatikus felismerése (ha van 3. mező)
+    if (parts.size() == 3) {
+        QString matCode = parts[2].trimmed();
+
+        for (int i = 0; i < ui->comboMaterial->count(); ++i) {
+            QString display = ui->comboMaterial->itemText(i).trimmed();
+
+            // ipari best practice: case-insensitive contains
+            if (display.contains(matCode, Qt::CaseInsensitive)) {
+                ui->comboMaterial->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
 }

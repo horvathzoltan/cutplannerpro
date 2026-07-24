@@ -625,7 +625,8 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
                 rodIdOrBarcode,
                 false, false,
                 0,
-                Qt::AlignCenter
+                Qt::AlignCenter,
+                false, false, false
             });
 
             const MaterialMaster* mat =
@@ -633,20 +634,98 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
 
             if(mat){
                 rod.parts.append({
-                    ":"+mat->toDisplay(), //toReportLabel(),
+                    mat->toDisplay(), //toReportLabel(),
                     false,      // trimmable
                     false,      // jumpable
                     1,          // targetRow → alsó sor
                     Qt::AlignCenter,
-                    true        // 🔥 small = true
+                    false , true, false       // 🔥 small = true
                 });
             }
 
             //rod.groupIcon = "🌞";
             //rod.priorityIcon = "🌞";
+            // 1) leftover keresése
+            QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
+                                 ? ci.barcode
+                                 : ci.rodId;
 
+            if (mc.leftover_mm.contains(rodKey)) {
+                double leftover = mc.leftover_mm[rodKey];
+                QString leftoverBc = mc.leftoverBarcode.value(rodKey);
+
+                rod.parts.append({
+                    QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
+                    false, false,
+                    0,
+                    Qt::AlignRight,
+                    false, false, false
+                });
+
+                rod.barcode = leftoverBc;
+            }
 
             out.append(rod);
+
+            // 🔥 leftover felvételi címke generálása
+            if (!rod.barcode.isEmpty() && rod.barcode.toLower()!="selejt") {
+
+                //double leftover = mc.leftover_mm.value(rodKey);
+                double leftover = mc.leftover_mm[rodKey];
+
+                // 🔥 megelőző negyed-dm határ
+                int trimmedLeftover = int(leftover / 25) * 25;
+
+
+                QString leftoverBc = rod.barcode;
+
+                // Code128 tartalom
+                QString code128 = QString("%1|%2|%3")
+                                      .arg(leftoverBc)
+                                      .arg(trimmedLeftover)
+                                      .arg(mat->barcode);
+
+                LabelModel lo;
+                lo.priorityIcon = "";//"♻️";          // opcionális
+                lo.groupIcon = "";               // nincs csoport
+                lo.barcode = code128;            // 🔥 ez lesz a vonalkód
+
+                // Sorok
+
+                lo.parts.append({
+                    mat->barcode,
+                    false, false,
+                    0,
+                    Qt::AlignCenter,
+                    false, false, false
+                });
+
+                lo.parts.append({
+                    leftoverBc,
+                    false, false,
+                    1,
+                    Qt::AlignCenter,
+                    false, false, false
+                });
+
+                lo.parts.append({
+                    QString("%1 mm").arg(trimmedLeftover),
+                    false, false,
+                    2,
+                    Qt::AlignCenter,
+                    false, false, false
+                });
+
+                // lo.parts.append({
+                //     code128,
+                //     false, false,
+                //     2,
+                //     Qt::AlignCenter,
+                //     true, false, false   // small
+                // });
+
+                out.append(lo);
+            }
         }
 
         // 2) Darab címke
@@ -674,20 +753,20 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
 
         //lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
         //lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
-        lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
-        lm.parts.append({ owner,     true,  true,  0, Qt::AlignCenter });
+        lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft, false, false, false });
+        lm.parts.append({ owner,     true,  true,  1, Qt::AlignCenter, false, true, false });
 
         // QString a = "";
         // if(ci.subtype != Subtype::None){
         //     a+= SubtypeUtils::toDisplayText(ci.subtype);
         // }
         QString a;
-/*        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
+        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
                                                       ci.productSubtypeId,
                                                       ci.attributes);
-*/
-        auto* b = ProductSubtypeRegistry::instance().findById(ci.productSubtypeId);
-        a = b?b->name:"";
+
+        // auto* b = ProductSubtypeRegistry::instance().findById(ci.productSubtypeId);
+        // a = b?b->name:"";
 
         if(ci.side != HandlerSide::None) {
             if(!a.isEmpty()) a += ", ";
@@ -695,9 +774,9 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         }
 
         if(!a.isEmpty()){
-            lm.parts.append({ " ("+a+")",   false, false, 0, Qt::AlignRight });
+            lm.parts.append({ a,   false, false, 2, Qt::AlignLeft, true, false, true });
         }
-        lm.parts.append({ " | "+sizeStr,   false, false, 0, Qt::AlignRight });
+        lm.parts.append({ " | "+sizeStr,   false, false, 0, Qt::AlignRight, false, false, false });
         out.append(lm);
     }
 
@@ -864,6 +943,29 @@ inline QString makeMiddleBorder(int cols, int cellWidth)
     }
     return mid;
 }
+
+inline QVector<QString> buildLabelCellLines_BY_TARGETROW(const QVector<LabelPart>& parts)
+{
+    // 1) sorok összegyűjtése targetRow alapján
+    QMap<int, QStringList> rows;
+
+    for (const auto& p : parts) {
+        rows[p.targetRow].append(p.text);
+    }
+
+    // 2) sorok összeállítása
+    QVector<QString> out;
+    QList<int> keys = rows.keys();
+    std::sort(keys.begin(), keys.end());
+
+    for (int rowIndex : keys) {
+        QString line = rows[rowIndex].join(" ");
+        out.append(line);
+    }
+
+    return out;
+}
+
 
 // --- buildLabelCellLines: címke cella 1–2 soros felépítése ---
 inline QVector<QString> buildLabelCellLines(const QVector<LabelPart>& parts,
@@ -1404,74 +1506,6 @@ inline QVector<RenderLine> buildRenderLines(
     return out;
 }
 
-// inline int measureGlyphHeight(const QFont& font)
-// {
-//     QImage img(200, 200, QImage::Format_ARGB32);
-//     img.fill(Qt::transparent);
-
-//     QPainter p(&img);
-//     p.setFont(font);
-//     p.setPen(Qt::black);
-
-//     // Kirajzolunk egy nagy, magas karaktert
-//     QString ch = "W";
-
-//     // Kirajzoljuk 0,0-tól
-//     p.drawText(0, 150, ch);
-//     p.end();
-
-//     // Pixelben lemérjük a nem-átlátszó pixelek tartományát
-//     int top = 200, bottom = 0;
-
-//     for (int y = 0; y < img.height(); ++y) {
-//         for (int x = 0; x < img.width(); ++x) {
-//             if (qAlpha(img.pixel(x, y)) > 0) {
-//                 top = qMin(top, y);
-//                 bottom = qMax(bottom, y);
-//             }
-//         }
-//     }
-
-//     return bottom - top + 1;
-// }
-
-// #include <QPdfWriter>
-// #include <QPdfDocument>
-// #include <QBuffer>
-// #include <QPainter>
-
-// qreal measurePdfGlyphHeight(const QFont& font)
-// {
-//     // 1) PDF memóriába
-//     QBuffer buffer;
-//     buffer.open(QIODevice::WriteOnly);
-
-//     QPdfWriter pdf(&buffer);
-//     pdf.setPageSize(QPageSize(QPageSize::A4));
-//     pdf.setResolution(72); // PDF natív DPI
-
-//     QPainter painter(&pdf);
-//     painter.setFont(font);
-
-//     // 2) Kirajzolunk egy karaktert
-//     QString ch = "W";
-//     painter.drawText(100, 200, ch);
-//     painter.end();
-
-//     // 3) PDF visszaolvasása
-//     QPdfDocument doc;
-//     doc.load(buffer.data());
-
-//     // 4) Bounding box kiolvasása
-//     // A teljes oldalra keresünk szöveget
-//     QRectF bbox = doc.getPage(0)->textSelectionBoundingBox(
-//         QPointF(0, 0),
-//         QPointF(1000, 1000)
-//         );
-
-//     return bbox.height();
-// }
-
 
 
 inline void formatLeftoverIntakeForm_Pdf(
@@ -1717,6 +1751,9 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         QString emoji1;            // prio
         QString emoji2; //group icon
         QVector<QString> lines;   // tartalom
+        QVector<bool> smallFlags;
+        QVector<bool> boldFlags;
+        QVector<bool> italicFlags;
         QString barcode;
     };
 
@@ -1725,14 +1762,42 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
     // 1) LabelModel → sorokra tördelve
     for (const auto& lm : labels) {
-        //        zInfo("labels_tostring:"+lm.toString());
-        //        for(const auto& p:lm.parts){
-        //            zInfo("_label_part:"+p.text);
-        //        }
         QVector<QString> lines =
-            buildLabelCellLines(lm.parts, cellWidthChars);
-        //QString emoji = "AB";//lm.priorityIcon + lm.groupIcon;
-        cells.push_back({ lm.priorityIcon,  lm.groupIcon , lines, lm.barcode });
+            buildLabelCellLines_BY_TARGETROW(lm.parts);
+
+        QMap<int, bool> smallByRow;
+        QMap<int, bool> boldByRow;
+        QMap<int, bool> italicByRow;
+
+        for (const auto& p : lm.parts) {
+            smallByRow[p.targetRow]  = smallByRow.value(p.targetRow, false)  || p.small;
+            boldByRow[p.targetRow]   = boldByRow.value(p.targetRow, false)   || p.bold;
+            italicByRow[p.targetRow] = italicByRow.value(p.targetRow, false) || p.italic;
+        }
+
+        QVector<bool> smallFlags;
+        QVector<bool> boldFlags;
+        QVector<bool> italicFlags;
+
+        QList<int> keys = smallByRow.keys();
+        std::sort(keys.begin(), keys.end());
+
+        for (int k : keys) {
+            smallFlags.append(smallByRow[k]);
+            boldFlags.append(boldByRow[k]);
+            italicFlags.append(italicByRow[k]);
+        }
+
+        cells.push_back({
+            lm.priorityIcon,
+            lm.groupIcon,
+            lines,
+            smallFlags,
+            boldFlags,
+            italicFlags,   // 🔥 új mező
+            lm.barcode
+        });
+
     }
 
     // 2) oszlopfolytonos tördelés
@@ -1864,10 +1929,16 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
         //     hasEmoji ? rect.width() - emojiPanelWidth : rect.width(),
         //     rect.height()
         //     );
+
+        auto b2 = barcodeMargin/2;
         QRectF contentRect(
-            hasEmoji ? rect.left() + glueMargin + emojiPanelWidth : rect.left() + glueMargin,
+            hasEmoji
+                ? rect.left() + glueMargin + emojiPanelWidth + b2
+                : rect.left() + glueMargin + b2,
             rect.top(),
-            hasEmoji ? rect.width() - glueMargin - emojiPanelWidth : rect.width() - glueMargin,
+            hasEmoji
+                ? rect.width() - glueMargin - emojiPanelWidth -b2*2
+                : rect.width() - glueMargin - b2*2,
             rect.height()
             );
 
@@ -1876,9 +1947,69 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
         // vertikális középre igazítás
         qreal totalTextHeight = cell.lines.size() * lineHeight;
-        qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+        //qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) / 2.0;
+
+        qreal startY = contentRect.top() + (contentRect.height() - totalTextHeight) /
+                                               (hasEmoji?4.0:2.0);
 
         qreal lastTextBottom= 0.0;
+
+        // for (int li = 0; li < cell.lines.size(); ++li) {
+        //     QRectF textRect(contentRect.left() + pad,
+        //                     startY + li * lineHeight,
+        //                     contentRect.width() - pad * 2,
+        //                     lineHeight);
+
+        //     QString txt1 = cell.lines[li];
+
+        //     QFont oldFont = painter.font();
+        //     QFont f = oldFont;
+        //     bool changed = false;
+
+        //     if (cell.smallFlags[li]) {
+        //         f.setPointSizeF(oldFont.pointSizeF() * 0.75);
+        //         changed = true;
+        //     }
+
+        //     if (cell.boldFlags[li]) {
+        //         f.setWeight(QFont::Bold);
+        //         changed = true;
+        //     }
+
+        //     if (cell.italicFlags[li]) {
+        //         f.setItalic(true);
+        //         changed = true;
+        //     }
+
+        //     if (changed)
+        //         painter.setFont(f);
+
+
+        //     // --- TRIMMELÉS: ha túl hosszú a cellához ---
+        //     QFontMetrics fm2(painter.font());
+        //     int maxWidthPx = textRect.width() - pad * 2;
+
+        //     if (fm2.horizontalAdvance(txt1) > maxWidthPx) {
+        //         // addig vágjuk, amíg belefér
+        //         while (txt1.length() > 1 && fm2.horizontalAdvance(txt1 + "…") > maxWidthPx) {
+        //             txt1.chop(1);
+        //         }
+        //         txt1 += "…";
+        //     }
+
+        //     painter.drawText(textRect,
+        //                      Qt::AlignLeft | Qt::AlignVCenter,
+        //                      txt1);
+
+        //     painter.setFont(oldFont);
+
+
+        //     // itt frissítjük a legalsó szövegkoordinátát
+        //     if (textRect.bottom() > lastTextBottom)
+        //         lastTextBottom = textRect.bottom();
+
+        //     //zInfo("labeltext:"+txt1);
+        // }
 
         for (int li = 0; li < cell.lines.size(); ++li) {
             QRectF textRect(contentRect.left() + pad,
@@ -1887,15 +2018,72 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                             lineHeight);
 
             QString txt1 = cell.lines[li];
+
+            // --- FONT módosítások (small, bold, italic) ---
+            QFont oldFont = painter.font();
+            QFont f = oldFont;
+            bool changed = false;
+
+            if (cell.smallFlags[li]) {
+                f.setPointSizeF(oldFont.pointSizeF() * 0.75);
+                changed = true;
+            }
+            if (cell.boldFlags[li]) {
+                f.setWeight(QFont::Bold);
+                changed = true;
+            }
+            if (cell.italicFlags[li]) {
+                f.setItalic(true);
+                changed = true;
+            }
+            if (changed)
+                painter.setFont(f);
+
+            // --- KÉTZÓNÁS FELBONTÁS "|" ALAPJÁN ---
+            QString left = txt1;
+            QString right;
+
+            int sep = txt1.indexOf("|");
+            if (sep != -1) {
+                left = txt1.left(sep).trimmed();
+                right = txt1.mid(sep + 1).trimmed();
+            }
+
+            // --- TRIMMELÉS mindkét zónára ---
+            QFontMetrics fm2(painter.font());
+            int maxWidthPx = textRect.width() - pad * 2;
+
+            // bal zóna trimmelése
+            if (fm2.horizontalAdvance(left) > maxWidthPx) {
+                while (left.length() > 1 && fm2.horizontalAdvance(left + "…") > maxWidthPx)
+                    left.chop(1);
+                left += "…";
+            }
+
+            // jobb zóna trimmelése
+            if (fm2.horizontalAdvance(right) > maxWidthPx) {
+                while (right.length() > 1 && fm2.horizontalAdvance(right + "…") > maxWidthPx)
+                    right.chop(1);
+                right += "…";
+            }
+
+            // --- RAJZOLÁS ---
+            // bal oldal
             painter.drawText(textRect,
                              Qt::AlignLeft | Qt::AlignVCenter,
-                             txt1);
+                             left);
 
-            // itt frissítjük a legalsó szövegkoordinátát
+            // jobb oldal
+            if (!right.isEmpty()) {
+                painter.drawText(textRect,
+                                 Qt::AlignRight | Qt::AlignVCenter,
+                                 right);
+            }
+
+            painter.setFont(oldFont);
+
             if (textRect.bottom() > lastTextBottom)
                 lastTextBottom = textRect.bottom();
-
-            //zInfo("labeltext:"+txt1);
         }
 
 
@@ -1917,8 +2105,6 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                 );
             BarcodePainter::drawCode128(painter, cell.barcode, bcRect);
         }
-
-
         y += cellHeight;
     }
 

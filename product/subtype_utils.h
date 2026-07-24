@@ -80,8 +80,11 @@ inline QString toProductVariantDisplayText(const QUuid& typeId,
     }
 
     // --- ATTRIBUTES ---
+    QString a;
     for (auto it = attributes.begin(); it != attributes.end(); ++it) {
-        parts << QString("%1=%2").arg(it.key()).arg(it.value());
+        if(!a.isEmpty()) a+=", ";
+        //a += QString("%1=%2").arg(it.key()).arg(it.value());
+        a += QString("%1").arg(it.value());
     }
 
     if (parts.isEmpty())

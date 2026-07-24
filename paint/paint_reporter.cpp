@@ -99,12 +99,27 @@ QString PaintReporter::toText(const PaintPlan& plan)
                        .arg(s.powderKg, 0, 'f', 2);
 
             // Request ID lista
+            // QStringList tetelszamok;
+            // for (const auto& id : s.requestIds) {
+            //     auto *a = CuttingPlanRequestRegistry::instance().findById(id);
+            //     QString b = a ? a->externalReference : "?";
+            //     QString c = a ? a->dueDate.toString("yyyy-MM-dd") : "?";
+            //     tetelszamok << QString("%1 (%2)").arg(b, c);
+            // }
+
             QStringList tetelszamok;
+            QSet<QString> seen;
+
             for (const auto& id : s.requestIds) {
                 auto *a = CuttingPlanRequestRegistry::instance().findById(id);
                 QString b = a ? a->externalReference : "?";
                 QString c = a ? a->dueDate.toString("yyyy-MM-dd") : "?";
-                tetelszamok << QString("%1 (%2)").arg(b, c);
+                QString entry = QString("%1 (%2)").arg(b, c);
+
+                if (!seen.contains(entry)) {
+                    seen.insert(entry);
+                    tetelszamok << entry;
+                }
             }
 
             out<<QString("      Tételszámok: %1").arg(tetelszamok.join(", "));
@@ -197,10 +212,10 @@ void PaintReporter::exportText(const QString& txt)
     QTextStream out(&f);
     out.setEncoding(QStringConverter::Utf8);
 
-    out << QString("📄 Festési terv");
-    out << QString("CutPlan: %1").arg(baseName);
-    out << QString("📅 Dátum: %1").arg(dateStr);
-    out << "──────────────────────────────────";
+    out << QString("📄 Festési terv\n");
+    out << QString("CutPlan: %1\n").arg(baseName);
+    out << QString("📅 Dátum: %1\n").arg(dateStr);
+    out << "──────────────────────────────────\n";
 
 
     out << txt;

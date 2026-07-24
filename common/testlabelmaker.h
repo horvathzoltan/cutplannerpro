@@ -162,7 +162,7 @@ inline int runCompactPdfTest(const QString& outPath = "/home/zoli/test_labels_co
         writer,
         pageRect,
         2,
-        240.0
+        300.0
         );
 
     painter.end();

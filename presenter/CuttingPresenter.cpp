@@ -999,6 +999,7 @@ void CuttingPresenter::GenerateCutInstructions()
         auto it = std::find_if(_machineCutsList.begin(), _machineCutsList.end(),
                                [&](const MachineCuts& mc){ return mc.machineHeader.machineId == plan.machineId; });
 
+
         if (it == _machineCutsList.end()) {
             MachineCuts mc;
             mc.machineHeader.machineId = plan.machineId;
@@ -1011,6 +1012,13 @@ void CuttingPresenter::GenerateCutInstructions()
             it = _machineCutsList.end() - 1;
         }
 
+        // 🔥 leftover beemelése — MOST már biztonságos
+        QString rodKey = plan.source == Cutting::Plan::Source::Reusable
+                             ? plan.sourceBarcode
+                             : plan.rodId;
+
+        it->leftover_mm[rodKey] = plan._segments.waste_mm();
+        it->leftoverBarcode[rodKey] = plan._segments.leftoverBarcode();
         // utolsó piece index
         //int lastPieceIdx = -1;
         // for (int j = plan._segments.size() - 1; j >= 0; --j){
@@ -1171,7 +1179,7 @@ void CuttingPresenter::ExportCutInstructions()
         QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
 
         const int cols = 2;
-        const qreal cellHeight = 240.0; // nagy, jól olvasható címke
+        const qreal cellHeight = 300.0; // nagy, jól olvasható címke
 
         // MONOSPACED FONT – kötelező a TXT‑s spacinghez
         QFont font("Noto Sans Mono", 11);//Noto Sans Mono
