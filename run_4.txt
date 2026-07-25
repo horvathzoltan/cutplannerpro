@@ -1,3 +1,26 @@
+PRODUCT BOM AUDIT
+ - írni kéne, pipálni kéne milyen tesztekre ment át, vagy bukott el mert így nem lehet követni mi történik, úgy nagyobb lenne az audit értéke
+
+hulló felvétel:
+ - fókusz a méreten van, mivel elvileg az anyagra emlékezik, így kérdés
+ hogy a kompozit bárkódot a barcode vagy a length mezőbe kelljen-e beírni - kellene egy explode fn, és azt bárhonnan hívhatnánk.
+ - máshogy is emlékezhetne az anyagra
+ - anyagkereső emlékezhetne a legutóbbi beállításaira
+ - anyag combo: elvileg az összes anyagnak kéne benne lennie, de talán át lehetne csoportosítani, ekor sajnos az indexe használhatatlanná válik
+    talán lehetne egy listboxba emlékezetet tenni a combo mellé?
+
+súly toldás:
+    - 3000 mm szálból 3925-öt levágni nem lehet, a program eldobja és címkét sem generál hozzá
+    - ehelyett kellene egy súly toldás:
+    - súlyt 2 db-ból lehet toldani, többől nem
+    - 2 vékony súly = 1 vastag súly
+    - hullók előnyben!
+
+anyagfelvétel:
+ - j/b -> nincs chk - ha becsekkolom, a j/b radion rajta marad a bigyesz - talán ennek a franckarikának nem is chkboxnak kéne lennie, hanem radionak
+ - nem minden tiltódik le jól.
+ - ha a méretet beírtam, ENTER -re rögzítsen! jelenleg csak a fókusz megy a következő widgetre.
+
 cutrequest:  FIXED
  - ceruza button furán módosít: mindíg az utolsót. 
 tételszám alapján az utolsó req a default a köv adat felviteléhez, de! nem módosításnál. 
