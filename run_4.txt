@@ -1,7 +1,7 @@
 PRODUCT BOM AUDIT
  - írni kéne, pipálni kéne milyen tesztekre ment át, vagy bukott el mert így nem lehet követni mi történik, úgy nagyobb lenne az audit értéke
 
-hulló felvétel:
+hulló felvétel: FIXED
  - fókusz a méreten van, mivel elvileg az anyagra emlékezik, így kérdés
  hogy a kompozit bárkódot a barcode vagy a length mezőbe kelljen-e beírni - kellene egy explode fn, és azt bárhonnan hívhatnánk.
  - máshogy is emlékezhetne az anyagra
@@ -16,7 +16,7 @@ súly toldás:
     - 2 vékony súly = 1 vastag súly
     - hullók előnyben!
 
-anyagfelvétel:
+anyagfelvétel: FIXED
  - j/b -> nincs chk - ha becsekkolom, a j/b radion rajta marad a bigyesz - talán ennek a franckarikának nem is chkboxnak kéne lennie, hanem radionak
  - nem minden tiltódik le jól.
  - ha a méretet beírtam, ENTER -re rögzítsen! jelenleg csak a fókusz megy a következő widgetre.

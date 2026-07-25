@@ -114,6 +114,10 @@ private:
     BOM_Model _bomModel;
     EditMode _editMode;
 
+    bool _savedLeft = false;
+    bool _savedRight = false;
+    int _savedSlider = 0;
+
     void setHeadEditable(bool editable);
     void applyRequestToWidgets(const Cutting::Plan::Request& req);
     void applySide(HandlerSide side);
@@ -168,8 +172,7 @@ private:
     QUuid computeNextMaterialForCurrentRef();
     void applyLengthFromRequest(const Cutting::Plan::Request &req);
     void applyQuantityFromRequest(const Cutting::Plan::Request &req);
-    void applyWidth(const Cutting::Plan::Request& req);
-    void applyHeight(const Cutting::Plan::Request& req);
+    void applyFullSize(const Cutting::Plan::Request& req);
     void applyFields_Head(const Cutting::Plan::Request &r);
     void applyFields_Item(const Cutting::Plan::Request &req);
     void initializeBomModel(const QString &ref);
@@ -186,6 +189,7 @@ private:
     void groupboxAttributes_show();
     QString currentProductTypeCode() const;
     QString currentProductSubtypeCode() const;
+    void setFullSizeEditable(bool editable);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

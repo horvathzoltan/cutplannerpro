@@ -230,14 +230,44 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     });
 
     connect(ui->chkUnknownSide, &QCheckBox::toggled, this, [this](bool checked){
+        int qty = ui->spinQuantity->value();
+
         if (checked) {
-            // UNKNOWN állapot aktiválása
-            ui->radioLeft->setChecked(false);
-            ui->radioRight->setChecked(false);
-            ui->sliderHandler->setValue(0);
+            if (qty == 1) {
+                // 🔥 mentés
+                _savedLeft = ui->radioLeft->isChecked();
+                _savedRight = ui->radioRight->isChecked();
+
+                // 🔥 rádiók törlése
+                ui->radioLeft->setAutoExclusive(false);
+                ui->radioRight->setAutoExclusive(false);
+
+                ui->radioLeft->setChecked(false);
+                ui->radioRight->setChecked(false);
+
+                ui->radioLeft->setAutoExclusive(true);
+                ui->radioRight->setAutoExclusive(true);
+            } else {
+                // 🔥 slider mentés
+                _savedSlider = ui->sliderHandler->value();
+
+                // 🔥 slider törlése
+                ui->sliderHandler->setValue(0);
+            }
         }
-        // ha unchecked → nem csinálunk semmit
-        // mert a rádiók/slider majd maguk állítják be a helyes oldalt
+        else
+        {
+            int qty = ui->spinQuantity->value();
+
+            if (qty == 1) {
+                // 🔥 rádiók visszaállítása
+                ui->radioLeft->setChecked(_savedLeft);
+                ui->radioRight->setChecked(_savedRight);
+            } else {
+                // 🔥 slider visszaállítása
+                ui->sliderHandler->setValue(_savedSlider);
+            }
+        }
     });
 
     connect(ui->radioLeft, &QRadioButton::toggled, this, [this](bool checked){
@@ -269,26 +299,6 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             this, [this](int){
                 _lengthDebounceTimer->start();
             });
-
-    // connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
-    //         this, [this](int){
-    //             refreshBom();
-    //         });
-
-    // connect(ui->editLength, &QLineEdit::textChanged,
-    //         this, [this](const QString& txt){
-    //             bool ok = false;
-    //             int L = txt.toInt(&ok);
-
-    //             if (ok) {
-    //                 _lengthHint = L;
-    //                 _lengthDebounceTimer->start();   // csak akkor indul, ha van érték
-    //             } else {
-    //                 // ❗ Üres vagy érvénytelen → NEM indítunk BOM-frissítést
-    //                 // ❗ Így a NextMaterial nem fut kétszer
-    //             }
-    //         });
-
 
     // --- COLOR DEBOUNCE ---
     _colorDebounceTimer = new QTimer(this);
@@ -509,9 +519,6 @@ void AddInputDialog::initializeDialog()
 
     emit seriesContextChanged(ui->editOwner->text().trimmed(), ref);
 }
-
-
-
 
 void AddInputDialog::resetUiForExistingReference()
 {
@@ -897,9 +904,18 @@ bool AddInputDialog::eventFilter(QObject *obj, QEvent *event)
     }
 
     // meglévő length-selectAll logika
-    if (obj == ui->editLength && event->type() == QEvent::FocusIn) {
-        ui->editLength->selectAll();
+    if (obj == ui->editLength && event->type() == QEvent::KeyPress) {
+        auto *ke = static_cast<QKeyEvent*>(event);
+
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+
+            _shiftEnterAccepted = false;
+            accept();
+
+            return true;         // 🔥 elnyeljük → nincs fókuszváltás
+        }
     }
+
     return QDialog::eventFilter(obj, event);
 }
 
@@ -987,6 +1003,9 @@ void AddInputDialog::applySide(HandlerSide side)
         else if (side == HandlerSide::Right)
             ui->radioRight->setChecked(true);
     }
+
+    _savedLeft = ui->radioLeft->isChecked();
+    _savedRight = ui->radioRight->isChecked();
 }
 
 void AddInputDialog::applySide_Slider(int l, int r)
@@ -998,6 +1017,8 @@ void AddInputDialog::applySide_Slider(int l, int r)
         ui->chkUnknownSide->setChecked(false);
         ui->sliderHandler->setValue(r);
     }
+
+    _savedSlider = ui->sliderHandler->value();
 }
 
 void AddInputDialog::setHeadEditable(bool editable)
@@ -1013,6 +1034,7 @@ void AddInputDialog::setHeadEditable(bool editable)
     setColorEditable(editable);
     setSurfaceEditable(editable);
     setQuantityEditable(editable);
+    setFullSizeEditable(editable);
 }
 
 void AddInputDialog::setItemEditable(bool editable){
@@ -1078,6 +1100,7 @@ void AddInputDialog::setSideEditable(bool editable)
     ui->stackHandlerSide->setEnabled(editable);
     ui->radioLeft->setEnabled(editable);
     ui->radioRight->setEnabled(editable);
+    ui->chkUnknownSide->setEnabled(editable);
 }
 void AddInputDialog::setColorEditable(bool editable)
 {
@@ -1091,6 +1114,11 @@ void AddInputDialog::setSurfaceEditable(bool editable)
 void AddInputDialog::setQuantityEditable(bool editable)
 {
     ui->spinQuantity->setEnabled(editable);
+}
+
+void AddInputDialog::setFullSizeEditable(bool editable){
+    ui->spinBox_height->setEnabled(editable);
+    ui->spinBox_width->setEnabled(editable);
 }
 
 void AddInputDialog::setLengthEditable(bool editable)
@@ -1158,11 +1186,8 @@ void AddInputDialog::applyQuantityFromRequest(const Cutting::Plan::Request& req)
     ui->spinQuantity->setValue(req.quantity);
 }
 
-void AddInputDialog::applyWidth(const Cutting::Plan::Request& req){
-        ui->spinBox_width->setValue(req.fullWidth_mm);
-}
-
-void AddInputDialog::applyHeight(const Cutting::Plan::Request& req){
+void AddInputDialog::applyFullSize(const Cutting::Plan::Request& req){
+    ui->spinBox_width->setValue(req.fullWidth_mm);
     ui->spinBox_height->setValue(req.fullHeight_mm);
 }
 
@@ -1360,21 +1385,10 @@ void AddInputDialog::updateColorPreview()
 
 void AddInputDialog::lockAllFieldsUntilReference()
 {
+    setHeadEditable(false);
+    setItemEditable(false);
     // ⭐ Csak a tételszám mező aktív
     ui->editReference->setEnabled(true);
-
-    ui->editOwner->setEnabled(false);
-    ui->editDueDate->setEnabled(false);
-    ui->comboMaterial->setEnabled(false);
-    ui->btn_MaterialSearch->setEnabled(false);
-    ui->edit_Color->setEnabled(false);
-    ui->comboBox_Surface->setEnabled(false);
-    ui->editLength->setEnabled(false);
-    ui->spinQuantity->setEnabled(false);
-    ui->stackHandlerSide->setEnabled(false);
-    ui->groupBox_productType->setEnabled(false);
-    ui->stackedWidget_stackSubtype->setEnabled(false);
-
 }
 
 void AddInputDialog::on_btnEditReference_clicked(bool checked)
@@ -1673,8 +1687,7 @@ void AddInputDialog::applyFields_Head(const Cutting::Plan::Request& r){
     applyQuantityFromRequest(r);
     applySideFromRequest(r);
 
-    applyWidth(r);
-    applyHeight(r);
+    applyFullSize(r);
     applyAttributes(r);
 }
 

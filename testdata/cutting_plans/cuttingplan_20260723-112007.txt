@@ -55,3 +55,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "40";"Agora Fenster, Győr";2000;1130;1027;;1;0;1;"RAL 8016SRMATT";NP-CLT;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
 "40";"Agora Fenster, Győr";2000;1130;1889;;1;0;1;"RAL 8016SRMATT";NP-ROLL70-7000;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
 "40";"Agora Fenster, Győr";2000;1130;1825;;1;0;1;"RAL 8016SRMATT";NP-BAR22-3000;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"1235";"Maki Majom";2000;1000;1000;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-07-25;NP;CIP;meghajtas=motoros

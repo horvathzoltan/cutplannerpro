@@ -24,6 +24,7 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 {
     ui->setupUi(this);
     populateMaterialCombo();
+    ui->btn_RecentMaterials->rebuildMenu(ui->comboMaterial);
 
     connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
         MaterialSearchDialog dlg(this);
@@ -96,6 +97,7 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
     // });
 
     ui->editBarcode->installEventFilter(this);
+    ui->editLength->installEventFilter(this);
 
 
     QTimer::singleShot(0, this, [this]() {
@@ -107,30 +109,46 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 bool AddWasteDialog::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == ui->editBarcode && event->type() == QEvent::KeyPress) {
-
         QKeyEvent *ke = static_cast<QKeyEvent*>(event);
 
         if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+            //ke->accept();
+            compositeBarcodeHandler(ui->editBarcode->text());
+            return true;
+        }
+    }
 
-            // 🔥 1) Elnyeljük az Entert → nem lesz QDialog::accept()
-            ke->accept();
+    if (obj == ui->editLength && event->type() == QEvent::KeyPress) {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(event);
 
-            // 🔥 2) Robbantás
-            applyBarcodeSyntax();
-
-            // 🔥 3) Ha a robbantás sikeres → mezők kitöltve → rögzítünk
-            if (!ui->editBarcode->text().contains("|") &&
-                availableLength() > 0 &&
-                !selectedMaterialId().isNull())
-            {
-                this->accept();   // 🔥 automatikus rögzítés
-            }
-
-            return true; // teljesen elnyeltük
+        if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+            //ke->accept();
+            compositeBarcodeHandler(ui->editLength->text());
+            return true;
         }
     }
 
     return QDialog::eventFilter(obj, event);
+}
+
+void AddWasteDialog::compositeBarcodeHandler(const QString& b){
+    ParsedComposite p = parseCompositeBarcode(b);
+
+    if (!p.valid)
+        return;
+
+    applyParsedComposite(p);
+
+    // 🔥 Tárhely logika
+    if (ui->comboStorage->currentIndex() < 0) {
+        // nincs tárhely → fókusz oda
+        ui->comboStorage->setFocus();
+        return;
+    }
+
+    // van tárhely → automatikus rögzítés
+    this->accept();
+
 }
 
 void AddWasteDialog::applyInitialFocus(){
@@ -318,6 +336,12 @@ void AddWasteDialog::accept() {
         SettingsManager::instance().commitManualLeftoverCounter(shadowManualCounter);
 
     s_lastRepeat = ui->chk_Repeat->isChecked();
+
+
+    // recent anyag frissítése
+    ui->btn_RecentMaterials->rememberMaterial(selectedMaterialId());
+    ui->btn_RecentMaterials->rebuildMenu(ui->comboMaterial);
+
     QDialog::accept();
 }
 
@@ -354,46 +378,98 @@ bool AddWasteDialog::validateBarcodeFormat(const QString& bc) const
     return true;
 }
 
-void AddWasteDialog::applyBarcodeSyntax()
-{
-    QString raw = ui->editBarcode->text().trimmed();
-    if (raw.isEmpty())
-        return;
+// void AddWasteDialog::applyBarcodeSyntax()
+// {
+//     QString raw = ui->editBarcode->text().trimmed();
+//     if (raw.isEmpty())
+//         return;
 
-    // Ha nincs pipe → sima barcode
-    if (!raw.contains("|"))
-        return;
+//     // Ha nincs pipe → sima barcode
+//     if (!raw.contains("|"))
+//         return;
+
+//     QStringList parts = raw.split("|");
+//     if (parts.size() < 2 || parts.size() > 3)
+//         return; // hibás formátum → nem nyúlunk hozzá
+
+//     QString id = parts[0].trimmed();
+//     QString lenStr = parts[1].trimmed();
+
+//     bool ok = false;
+//     int len = lenStr.toInt(&ok);
+//     if (!ok || len <= 0)
+//         return; // hibás hossz → nem nyúlunk hozzá
+
+//     // 🔥 1) Barcode mező kitöltése
+//     ui->editBarcode->setText(id);
+
+//     // 🔥 2) Hossz mező kitöltése
+//     ui->editLength->setText(QString::number(len));
+
+//     // 🔥 3) Anyag automatikus felismerése (ha van 3. mező)
+//     if (parts.size() == 3) {
+//         QString matCode = parts[2].trimmed();
+
+//         for (int i = 0; i < ui->comboMaterial->count(); ++i) {
+//             QString display = ui->comboMaterial->itemText(i).trimmed();
+
+//             // ipari best practice: case-insensitive contains
+//             if (display.contains(matCode, Qt::CaseInsensitive)) {
+//                 ui->comboMaterial->setCurrentIndex(i);
+//                 break;
+//             }
+//         }
+//     }
+// }
+
+AddWasteDialog::ParsedComposite AddWasteDialog::parseCompositeBarcode(const QString& raw)
+{
+    ParsedComposite out;
+
+    if (raw.isEmpty())
+        return out;
 
     QStringList parts = raw.split("|");
     if (parts.size() < 2 || parts.size() > 3)
-        return; // hibás formátum → nem nyúlunk hozzá
+        return out;
 
-    QString id = parts[0].trimmed();
-    QString lenStr = parts[1].trimmed();
+    out.id = parts[0].trimmed();
 
     bool ok = false;
-    int len = lenStr.toInt(&ok);
-    if (!ok || len <= 0)
-        return; // hibás hossz → nem nyúlunk hozzá
+    out.length = parts[1].trimmed().toInt(&ok);
+    if (!ok || out.length <= 0)
+        return out;
 
-    // 🔥 1) Barcode mező kitöltése
-    ui->editBarcode->setText(id);
+    if (parts.size() == 3)
+        out.materialCode = parts[2].trimmed();
 
-    // 🔥 2) Hossz mező kitöltése
-    ui->editLength->setText(QString::number(len));
+    out.valid = true;
+    return out;
+}
 
-    // 🔥 3) Anyag automatikus felismerése (ha van 3. mező)
-    if (parts.size() == 3) {
-        QString matCode = parts[2].trimmed();
+void AddWasteDialog::applyParsedComposite(const ParsedComposite& p)
+{
+    if (!p.valid)
+        return;
 
+    // 1) Barcode mező
+    ui->editBarcode->setText(p.id);
+
+    // 2) Hossz mező
+    ui->editLength->setText(QString::number(p.length));
+
+    // 3) Anyag automatikus felismerése
+    if (!p.materialCode.isEmpty()) {
         for (int i = 0; i < ui->comboMaterial->count(); ++i) {
             QString display = ui->comboMaterial->itemText(i).trimmed();
-
-            // ipari best practice: case-insensitive contains
-            if (display.contains(matCode, Qt::CaseInsensitive)) {
+            if (display.contains(p.materialCode, Qt::CaseInsensitive)) {
                 ui->comboMaterial->setCurrentIndex(i);
                 break;
             }
         }
     }
+
+    // 4) Fókusz NE ugorjon át a hossz mezőre
+    //    → maradjon a barcode mezőn, vagy menjünk a storage-ra
+    //ui->editBarcode->setFocus();
 }

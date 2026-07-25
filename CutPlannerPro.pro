@@ -62,6 +62,7 @@ SOURCES += \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
+    view/common/widgets/recentmaterialswidget.cpp \
     view/dialog/input/clonerequestdialog.cpp \
     view/dialog/input/matrix_cell_delegate.cpp \
     view/dialog/input/series_matrix_view.cpp \
@@ -256,6 +257,7 @@ HEADERS += \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
     view/common/layouts/qflowlayout.h \
+    view/common/widgets/recentmaterialswidget.h \
     view/dialog/dialogmode.h \
     view/dialog/input/clonerequestdialog.h \
     view/dialog/input/matrix_cell_delegate.h \

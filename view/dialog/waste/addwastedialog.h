@@ -28,6 +28,15 @@ public:
     bool shouldRepeat();
 
 private:
+
+    struct ParsedComposite {
+        QString id;
+        int length = 0;
+        QString materialCode;
+        bool valid = false;
+    };
+
+
     Ui::AddWasteDialog *ui;
     void populateMaterialCombo();
     bool validateInputs();
@@ -51,6 +60,9 @@ private:
     int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
     bool validateBarcodeFormat(const QString &bc) const;
     void applyInitialFocus();
-    void applyBarcodeSyntax();
+    //void applyBarcodeSyntax();
     bool eventFilter(QObject *obj, QEvent *event);
+    AddWasteDialog::ParsedComposite parseCompositeBarcode(const QString &raw);
+    void applyParsedComposite(const ParsedComposite &p);
+    void compositeBarcodeHandler(const QString &b);
 };
