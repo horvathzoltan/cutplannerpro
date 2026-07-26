@@ -1,3 +1,6 @@
+toldás:
+ - ha hullót használunk toldásra, és és a kért méretnél 10 centivel rövidebbre jön ki, akkor azt elfogadjuk jónak, nem kell emiatt a 10 cm miatt egy nagyobb darabot elvágni
+
 PRODUCT BOM AUDIT
  - írni kéne, pipálni kéne milyen tesztekre ment át, vagy bukott el mert így nem lehet követni mi történik, úgy nagyobb lenne az audit értéke
 
@@ -9,7 +12,7 @@ hulló felvétel: FIXED
  - anyag combo: elvileg az összes anyagnak kéne benne lennie, de talán át lehetne csoportosítani, ekor sajnos az indexe használhatatlanná válik
     talán lehetne egy listboxba emlékezetet tenni a combo mellé?
 
-súly toldás:
+súly toldás: FIXED
     - 3000 mm szálból 3925-öt levágni nem lehet, a program eldobja és címkét sem generál hozzá
     - ehelyett kellene egy súly toldás:
     - súlyt 2 db-ból lehet toldani, többől nem

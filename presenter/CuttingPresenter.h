@@ -110,8 +110,7 @@ public:
     void ExportLeftoverIntakeForm_Pdf();
     void ExportPaintPlan();
 
-    void Audit();
-    void BOM_audit();
+    //QStringList BOM_audit();
     void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
 
 private:

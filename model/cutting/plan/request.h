@@ -6,146 +6,8 @@
 
 #include "../../../common/color/namedcolor.h"
 #include "common/surface/surfacetype.h"
-
-
-/**
- * @brief Egy vágási igényt reprezentáló adatstruktúra.
- *
- * Tartalmazza az anyag azonosítóját, a kívánt hosszúságot, darabszámot,
- * valamint opcionálisan a megrendelő nevét és a külső hivatkozási azonosítót.
- */
-enum HandlerSide{
-    Left,    ///< Balos kivitel – kezelő/hajtómű bal oldalon
-    Right,   ///< Jobbos kivitel – kezelő/hajtómű jobb oldalon
-    None   ///< Nem megadott – figyelmeztetés szükséges
-};
-
-namespace HandlerSideUtils {
-
-inline QString toDisplayText(HandlerSide side){
-    if(side == HandlerSide::Left) return "bal";
-    if(side == HandlerSide::Right) return "jobb";
-    return {};
-}
-
-// inline QString toCSVText(HandlerSide side){
-//     if(side == HandlerSide::Left) return "L";
-//     if(side == HandlerSide::Right) return "R";
-//     return {};
-// }
-
-inline HandlerSide parse(const QString& str2) {
-    QString str = str2.trimmed().toLower();
-    if (str == "left" || str == "l")   return HandlerSide::Left;
-    if (str == "right" || str == "r")  return HandlerSide::Right;
-
-    if (str == "bal" || str =="b")   return HandlerSide::Left;
-    if (str == "jobb" || str=="j")  return HandlerSide::Right;
-    return HandlerSide::None;
-}
-
-} // namespace HandlerSideUtils
-
-// enum class Subtype {
-//     None,
-//     Alap,
-//     Rugos,
-//     Tetoteri
-// };
-
-// namespace SubtypeUtils {
-
-// inline QString toString_CSV(Subtype t) {
-//     switch (t) {
-//     case Subtype::None:     return "none";
-//     case Subtype::Alap:     return "alap";
-//     case Subtype::Rugos:    return "rugos";
-//     case Subtype::Tetoteri: return "tetoteri";
-//     }
-//     return "none";
-// }
-
-// inline QString toDisplayText(Subtype t) {
-//     switch (t) {
-//     case Subtype::None:     return "none";
-//     case Subtype::Alap:     return "alap";
-//     case Subtype::Rugos:    return "rugós";
-//     case Subtype::Tetoteri: return "tetőtéri";
-//     }
-//     return "none";
-// }
-
-// inline Subtype parse(const QString& s) {
-//     QString v = s.trimmed().toLower();
-//     if (v == "alap")     return Subtype::Alap;
-//     if (v == "rugos")    return Subtype::Rugos;
-//     if (v == "tetoteri") return Subtype::Tetoteri;
-//     return Subtype::None;
-// }
-
-// } //endof namespace SubtypeUtils
-
-struct Tolerance{
-    double min_mm; ///< negatív eltérés mm-ben
-    double max_mm; ///< pozitív eltérés mm-ben
-
-    // CSV-hez: csak a tűrés szintaxis
-    QString toCsvString(bool withUnit = false) const {
-        QString unit = withUnit ? " mm" : "";
-        if (qFuzzyCompare(std::abs(min_mm), std::abs(max_mm)) && min_mm < 0 && max_mm > 0) {
-            return QString("+/-%1%2").arg(max_mm).arg(unit);
-        }
-        return QString("%1/%2%3").arg(min_mm).arg(max_mm).arg(unit);
-    }
-
-    // Emberi olvasásra: nominális mérettel kombinálva
-    QString toString(double nominal = 0, bool withUnit = true) const {
-        QString unit = withUnit ? " mm" : "";
-        if (qFuzzyCompare(std::abs(min_mm), std::abs(max_mm)) && min_mm < 0 && max_mm > 0) {
-            if (nominal != 0) {
-                return QString("%1 ±%2%3").arg(nominal).arg(max_mm).arg(unit);
-            }
-            return QString("+/-%1%2").arg(max_mm).arg(unit);
-        }
-        if (nominal != 0) {
-            return QString("%1 %2/%3%4").arg(nominal).arg(min_mm).arg(max_mm).arg(unit);
-        }
-        return QString("%1/%2%3").arg(min_mm).arg(max_mm).arg(unit);
-    }
-
-    static std::optional<Tolerance> fromString(const QString& s) {
-        if (s.isEmpty()) return std::nullopt;
-        QString str = s.trimmed();
-
-        if (str.startsWith("+/-")) {
-            bool ok = false;
-            double val = str.mid(3).toDouble(&ok);
-            if (ok) return Tolerance{ -val, val };
-            return std::nullopt;
-        }
-
-        if (str.contains("±")) {
-            auto parts = str.split("±");
-            if (parts.size() == 2) {
-                bool ok = false;
-                double val = parts[1].remove("mm").trimmed().toDouble(&ok);
-                if (ok) return Tolerance{ -val, val };
-            }
-        }
-
-        auto parts = str.split('/');
-        if (parts.size() == 2) {
-            bool ok1 = false, ok2 = false;
-            double minVal = parts[0].remove("mm").trimmed().toDouble(&ok1);
-            double maxVal = parts[1].remove("mm").trimmed().toDouble(&ok2);
-            if (ok1 && ok2) return Tolerance{ minVal, maxVal };
-        }
-
-        return std::nullopt;
-    }
-};
-
-enum class RelevantDimension { Width, Height };
+#include "relevantdimension.h"
+#include "tolerance.h"
 
 namespace Cutting {
 namespace Plan {
@@ -183,7 +45,6 @@ struct Request {
 
     std::optional<Tolerance> requiredTolerance;
 
-    //HandlerSide handlerSide = HandlerSide::Unknown; ///< kezelő/hajtómű oldala (bal/jobb/ismeretlen)
     int leftCount = 0;   ///< Balos darabok száma
     int rightCount = 0;  ///< Jobbos darabok száma
 
@@ -210,6 +71,9 @@ struct Request {
         return attributes.value(key);
     }
 
+    QString getAttributes(){
+
+    }
     /**
      * @brief Ellenőrzi, hogy az igény érvényes-e.
      *
@@ -231,6 +95,27 @@ struct Request {
     QString toString() const;
 
     QString displayText();
+
+    QString attributesToString() const
+    {
+        if (attributes.isEmpty())
+            return "{}";
+
+        QStringList parts;
+
+        // 🔒 determinisztikus sorrend (audit miatt kötelező)
+        QStringList keys = attributes.keys();
+        std::sort(keys.begin(), keys.end(), [](const QString& a, const QString& b){
+            return a.localeAwareCompare(b) < 0;
+        });
+
+        for (const QString& key : keys) {
+            parts << QString("%1=%2").arg(key, attributes.value(key));
+        }
+
+        return parts.join("; ");
+    }
+
 };
 } //endof namespace Plan
 } //endof namespace Cutting

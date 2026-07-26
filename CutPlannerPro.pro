@@ -14,6 +14,7 @@ message( "TARGET = "$$TARGI )
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    calculation/lengthcalculator.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -69,6 +70,7 @@ SOURCES += \
     view/dialog/materialfinder/materialdelegate.cpp \
     view/dialog/materialfinder/materialfinderdialog.cpp \
     view/dialog/materialsearch/materialsearchdialog.cpp \
+    view/dialog/textviewdialog.cpp \
     view/dialog/waste/leftoverreviewdialog.cpp \
     view/dialog/waste/scrapbybarcodedialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
@@ -135,6 +137,12 @@ SOURCES += \
     view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
+    calculation/calcmode.h \
+    calculation/lengthcalculator.h \
+    calculation/naphalo/calculation_naphalo_bowdenes.h \
+    calculation/naphalo/calculation_naphalo_cipzaras.h \
+    calculation/naphalo/calculation_naphalo_sines.h \
+    calculation/naphalo/calculatuon_naphalo.h \
     common/barcodepainter.h \
     common/color/colorconstants.h \
     common/emojihelper.h \
@@ -160,6 +168,7 @@ HEADERS += \
     model/cutting/optimizer/machineselecthelper.h \
     model/cutting/optimizer/pendinganalyzer.h \
     model/cutting/optimizer/piecebuilder.h \
+    model/cutting/optimizer/piecebuilder_toldas.h \
     model/cutting/optimizer/reusablefitengine.h \
     model/cutting/optimizer/rodloopengine.h \
     model/cutting/optimizer/segmentpostprocess.h \
@@ -172,8 +181,11 @@ HEADERS += \
     model/cutting/plan/audit/naphalo_audit_types.h \
     model/cutting/plan/audit/naphalo_profile_postfix.h \
     model/cutting/plan/audit/product_bom_audit_service.h \
+    model/cutting/plan/handlerside.h \
     model/cutting/plan/parentinfo.h \
+    model/cutting/plan/relevantdimension.h \
     model/cutting/plan/segments.h \
+    model/cutting/plan/tolerance.h \
     model/inventorysnapshot.h \
     model/leftover/leftoverstatus.h \
     model/leftover/leftoverstatusutils.h \
@@ -266,6 +278,7 @@ HEADERS += \
     view/dialog/materialfinder/materialdelegate.h \
     view/dialog/materialfinder/materialfinderdialog.h \
     view/dialog/materialsearch/materialsearchdialog.h \
+    view/dialog/textviewdialog.h \
     view/dialog/waste/leftoverreviewdialog.h \
     view/dialog/waste/scrapbybarcodedialog.h \
     view/tableutils/RowTracker.h \
@@ -398,6 +411,7 @@ FORMS += \
     view/dialog/input/addinputdialog.ui \
     view/dialog/input/clonerequestdialog.ui \
     view/dialog/materialfinder/MaterialFinderDialog.ui \
+    view/dialog/textviewdialog.ui \
     view/dialog/waste/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
     view/dialog/relocation/relocationquantitydialog.ui \

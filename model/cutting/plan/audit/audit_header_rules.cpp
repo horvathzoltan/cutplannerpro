@@ -1,5 +1,8 @@
 #include "audit_header_rules.h"
 
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
+
 HeaderAuditResult AuditHeaderRules::check(const QVector<Cutting::Plan::Request>& list)
 {
     HeaderAuditResult r;
@@ -10,126 +13,262 @@ HeaderAuditResult AuditHeaderRules::check(const QVector<Cutting::Plan::Request>&
     const auto& first = list.first();
 
     // --- 1) Kötelező fejadatok ellenőrzése ---
-    if (first.externalReference.trimmed().isEmpty()) {
-        r.messages << "❌ Hiányzó tételszám (externalReference)";
-        r.hasError = true;
-    }
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "externalReference not empty",
+        !first.externalReference.trimmed().isEmpty(),
+        "non-empty",
+        first.externalReference.trimmed()
+        );
 
-    if (first.ownerName.trimmed().isEmpty()) {
-        r.messages << "❌ Hiányzó megrendelő név (ownerName)";
-        r.hasError = true;
-    }
 
-    if (!first.dueDate.isValid()) {
-        r.messages << "❌ Hiányzó vagy érvénytelen határidő (dueDate)";
-        r.hasError = true;
-    }
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "ownerName not empty",
+        !first.ownerName.trimmed().isEmpty(),
+        "non-empty",
+        first.ownerName.trimmed()
+        );
 
-    if (first.productTypeId.isNull()) {
-        r.messages << "❌ Hiányzó terméktípus (productTypeId)";
-        r.hasError = true;
-    }
 
-    if (first.productSubtypeId.isNull()) {
-        r.messages << "❌ Hiányzó altípus (productSubtypeId)";
-        r.hasError = true;
-    }
+    // dueDate
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "dueDate is valid",
+        first.dueDate.isValid(),
+        "valid QDate",
+        first.dueDate.toString("yyyy-MM-dd")
+        );
 
-    if (first.quantity <= 0) {
-        r.messages << "❌ Hiányzó vagy érvénytelen darabszám (quantity)";
-        r.hasError = true;
-    }
+    // productTypeId
+    auto* type = ProductTypeRegistry::instance().findById(first.productTypeId);
+    QString typeName = type ? type->code : first.productTypeId.toString();
 
-    if (first.fullWidth_mm <= 0) {
-        r.messages << "⚠️ Hiányzó vagy érvénytelen teljes szélesség (fullWidth_mm)";
-        r.hasError = true;
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "productTypeId not null",
+        !first.productTypeId.isNull(),
+        "non-null",
+        typeName
+        );
+
+    // productSubtypeId
+    auto* subtype = ProductSubtypeRegistry::instance().findById(first.productSubtypeId);
+    QString subtypeName = subtype ? subtype->code : first.productSubtypeId.toString();
+
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "productSubtypeId not null",
+        !first.productSubtypeId.isNull(),
+        "non-null",
+        subtypeName
+        );
+
+
+    // quantity
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "quantity > 0",
+        first.quantity > 0,
+        "> 0",
+        QString::number(first.quantity)
+        );
+
+    // fullWidth_mm
+    bool widthValid = (first.fullWidth_mm > 0);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "fullWidth_mm > 0",
+        widthValid,
+        "> 0",
+        QString::number(first.fullWidth_mm)
+        );
+    if (!widthValid)
         r.hasValidDimensions = false;
-    }
 
-    if (first.fullHeight_mm <= 0) {
-        r.messages << "⚠️ Hiányzó vagy érvénytelen teljes magasság (fullHeight_mm)";
-        r.hasError = true;
+    // fullHeight_mm
+    bool heightValid = (first.fullHeight_mm > 0);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "HEAD",
+        "fullHeight_mm > 0",
+        heightValid,
+        "> 0",
+        QString::number(first.fullHeight_mm)
+        );
+    if (!heightValid)
         r.hasValidDimensions = false;
-    }
 
     // --- 2) Tételszámon belüli konzisztencia ---
     for (const auto& req : list)
     {
-        if (req.externalReference.trimmed() != first.externalReference.trimmed()) {
-            r.messages << "❌ Tételszám eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "externalReference consistent",
+            req.externalReference.trimmed() == first.externalReference.trimmed(),
+            first.externalReference.trimmed(),
+            req.externalReference.trimmed()
+            );
 
-        if (req.ownerName.trimmed() != first.ownerName.trimmed()) {
-            r.messages << QString("❌ Megrendelő eltérés: %1 ↔ %2")
-                              .arg(req.ownerName).arg(first.ownerName);
-            r.hasError = true;
-        }
 
-        if (req.dueDate != first.dueDate) {
-            r.messages << QString("❌ Határidő eltérés: %1 ↔ %2")
-                              .arg(req.dueDate.toString("yyyy-MM-dd"))
-                              .arg(first.dueDate.toString("yyyy-MM-dd"));
-            r.hasError = true;
-        }
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "ownerName consistent",
+            req.ownerName.trimmed() == first.ownerName.trimmed(),
+            first.ownerName.trimmed(),
+            req.ownerName.trimmed()
+            );
 
-        if (req.productTypeId != first.productTypeId) {
-            r.messages << "❌ Terméktípus eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
 
-        if (req.productSubtypeId != first.productSubtypeId) {
-            r.messages << "❌ Altípus eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "dueDate consistent",
+            req.dueDate == first.dueDate,
+            first.dueDate.toString("yyyy-MM-dd"),
+            req.dueDate.toString("yyyy-MM-dd")
+            );
 
-        if (req.quantity != first.quantity) {
-            r.messages << QString("❌ Darabszám eltérés: %1 ↔ %2")
-                              .arg(req.quantity).arg(first.quantity);
-            r.hasError = true;
-        }
 
-        if (req.leftCount != first.leftCount ||
-            req.rightCount != first.rightCount)
-        {
-            r.messages << "❌ Balos/jobbos darabszám eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
+        auto* typeFirst = ProductTypeRegistry::instance().findById(first.productTypeId);
+        auto* typeReq   = ProductTypeRegistry::instance().findById(req.productTypeId);
 
-        if (req.fullWidth_mm != first.fullWidth_mm) {
-            r.messages << QString("❌ Szélesség eltérés: %1 ↔ %2")
-                              .arg(req.fullWidth_mm).arg(first.fullWidth_mm);
-            r.hasError = true;
+        QString typeNameFirst = typeFirst ? typeFirst->code : first.productTypeId.toString();
+        QString typeNameReq   = typeReq   ? typeReq->code   : req.productTypeId.toString();
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "productTypeId consistent",
+            req.productTypeId == first.productTypeId,
+            typeNameFirst,
+            typeNameReq
+            );
+
+
+
+        auto* subtypeFirst = ProductSubtypeRegistry::instance().findById(first.productSubtypeId);
+        auto* subtypeReq   = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+        QString subtypeNameFirst = subtypeFirst ? subtypeFirst->code : first.productSubtypeId.toString();
+        QString subtypeNameReq   = subtypeReq   ? subtypeReq->code   : req.productSubtypeId.toString();
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "productSubtypeId consistent",
+            req.productSubtypeId == first.productSubtypeId,
+            subtypeNameFirst,
+            subtypeNameReq
+            );
+
+
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "quantity consistent",
+            req.quantity == first.quantity,
+            QString::number(first.quantity),
+            QString::number(req.quantity)
+            );
+
+
+        bool lrConsistent =
+            req.leftCount  == first.leftCount &&
+            req.rightCount == first.rightCount;
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "left/right count consistent",
+            lrConsistent,
+            QString("%1 / %2").arg(first.leftCount).arg(first.rightCount),
+            QString("%1 / %2").arg(req.leftCount).arg(req.rightCount)
+            );
+
+        bool widthConsistent = (req.fullWidth_mm == first.fullWidth_mm);
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "fullWidth_mm consistent",
+            widthConsistent,
+            QString::number(first.fullWidth_mm),
+            QString::number(req.fullWidth_mm)
+            );
+
+        if (!widthConsistent)
             r.hasValidDimensions = false;
-        }
 
-        if (req.fullHeight_mm != first.fullHeight_mm) {
-            r.messages << QString("❌ Magasság eltérés: %1 ↔ %2")
-                              .arg(req.fullHeight_mm).arg(first.fullHeight_mm);
-            r.hasError = true;
+
+        bool heightConsistent = (req.fullHeight_mm == first.fullHeight_mm);
+
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "HEAD",
+            "fullHeight_mm consistent",
+            heightConsistent,
+            QString::number(first.fullHeight_mm),
+            QString::number(req.fullHeight_mm)
+            );
+
+        if (!heightConsistent)
             r.hasValidDimensions = false;
-        }
 
-        if (req.relevantDim != first.relevantDim) {
-            r.messages << "❌ Releváns dimenzió eltérés egy tételszámon belül";
-            r.hasError = true;
+        bool relConsistent = (req.relevantDim == first.relevantDim);
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "relevantDim consistent",
+            relConsistent,
+            RelevantDimensionUtils::toString(first.relevantDim),
+            RelevantDimensionUtils::toString(req.relevantDim)
+            );
+
+        if (!relConsistent)
             r.hasValidDimensions = false;
-        }
 
-        if (req.surface != first.surface) {
-            r.messages << "❌ Felületkezelés eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
 
-        if (req.requiredColor.code() != first.requiredColor.code()) {
-            r.messages << "❌ Szín eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "surface consistent",
+            req.surface == first.surface,
+            SurfaceTypeUtils::toString(first.surface),
+            SurfaceTypeUtils::toString(req.surface)
+            );
 
-        if (req.attributes != first.attributes) {
-            r.messages << "❌ Attribútum eltérés egy tételszámon belül";
-            r.hasError = true;
-        }
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "requiredColor consistent",
+            req.requiredColor.code() == first.requiredColor.code(),
+            first.requiredColor.code(),
+            req.requiredColor.code()
+            );
+
+
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "HEAD",
+            "attributes consistent",
+            req.attributes == first.attributes,
+            first.attributesToString(),
+            req.attributesToString()
+            );
+
     }
 
     return r;

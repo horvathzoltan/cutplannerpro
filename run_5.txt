@@ -1,0 +1,222 @@
+Zoltán, itt a teljes, részletes, pontonként végrehajtható implementációs
+terv, amely végigvezet a toldás‑metaadat, toldás‑finomítás,
+PieceBuilder‑integráció, és a vágási terv/címke megjelenítés teljes
+beépítésén.
+
+Ez nem kód — ez lépésről lépésre végrehajtható patch‑terv, pontos
+sorrenddel, minden érintett modul megjelölésével.
+Ahol további részleteket szeretnél, ott Guided Linkeket tettem, hogy
+azonnal tudjunk mélyebbre menni.
+
+------------------------------------------------------------------------
+
+I. Toldás metaadat bevezetése (SpliceInfo)
+
+1. Új struct létrehozása
+
+Fájl: model/cutting/piece/spliceinfo.h
+
+    struct SpliceInfo {
+        enum class PartType { Main, Addon };
+
+        QUuid groupId;       // requestId vagy külön UUID
+        PartType type;       // Main / Addon
+        int partIndex;       // 1 vagy 2
+        int totalParts = 2;  // fix 2, később bővíthető
+    };
+
+------------------------------------------------------------------------
+
+2. PieceWithMaterial bővítése
+
+Fájl: model/cutting/piece/piecewithmaterial.h
+
+Új mező:
+
+    std::optional<SpliceInfo> splice;
+
+Getterek:
+
+    bool isSplice() const { return splice.has_value(); }
+    bool isSpliceMain() const { return splice && splice->type == SpliceInfo::PartType::Main; }
+    bool isSpliceAddon() const { return splice && splice->type == SpliceInfo::PartType::Addon; }
+    int spliceIndex() const { return splice ? splice->partIndex : 0; }
+    int spliceGroup() const { return splice ? splice->groupId : QUuid(); }
+    int spliceTotal() const { return splice ? splice->totalParts : 0; }
+
+------------------------------------------------------------------------
+
+II. Toldás finomítások beépítése
+
+3. Hulló tolerancia (10 cm)
+
+Fájl: piecebuilder_toldas.h
+
+    const int HULLO_TOLERANCE_MM = 100;
+
+Hulló + hulló és stock + hulló esetén:
+
+    if (combined >= need - HULLO_TOLERANCE_MM) {
+        // elfogadjuk, nem kell nagyobb darabot vágni
+    }
+
+------------------------------------------------------------------------
+
+4. Rúd tolerancia (2 cm)
+
+    const int ROD_TOLERANCE_MM = 20;
+    int effectiveNeed = need - ROD_TOLERANCE_MM;
+
+Minden toldási összehasonlítás innentől:
+
+    if (l1.availableLength_mm + l2.availableLength_mm >= effectiveNeed)
+
+------------------------------------------------------------------------
+
+III. Toldás metaadat kitöltése a PieceBuilderToldas-ban
+
+5. Fő darab metaadat
+
+    SpliceInfo sp;
+    sp.groupId = req.requestId;
+    sp.type = SpliceInfo::PartType::Main;
+    sp.partIndex = 1;
+
+    p.splice = sp;
+
+6. Toldó darab metaadat
+
+    SpliceInfo sp;
+    sp.groupId = req.requestId;
+    sp.type = SpliceInfo::PartType::Addon;
+    sp.partIndex = 2;
+
+    p.splice = sp;
+
+------------------------------------------------------------------------
+
+IV. PieceBuilder integráció
+
+7. buildPiecesByMaterial aláírás módosítása
+
+    buildPiecesByMaterial(const QVector<Request>& requests,
+                          const InventorySnapshot& inventorySnapshot)
+
+8. OptimizerModel::optimize() módosítása
+
+    auto piecesByMaterial =
+        PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
+
+------------------------------------------------------------------------
+
+9. Darab-sorszámozás visszaépítése
+
+A PieceBuilder-ben:
+
+    QString externalRef;
+    if (req.quantity > 1) {
+        externalRef = QString("%1 %2/%3")
+            .arg(req.externalReference)
+            .arg(i + 1)
+            .arg(req.quantity);
+    } else {
+        externalRef = req.externalReference;
+    }
+
+Majd:
+
+    p.info.externalReference = externalRef;
+
+------------------------------------------------------------------------
+
+10. Side kiosztás megtartása
+
+    HandlerSide side = HandlerSide::None;
+    if (leftRemaining > 0) { side = HandlerSide::Left; leftRemaining--; }
+    else if (rightRemaining > 0) { side = HandlerSide::Right; rightRemaining--; }
+
+    p.side = side;
+
+------------------------------------------------------------------------
+
+V. Vágási terv megjelenítés toldással
+
+11. CuttingPlanView módosítása
+
+Ha:
+
+    piece.isSplice()
+
+akkor külön blokkot jelenítünk meg:
+
+    TOLDOTT SÚLY (3925 mm)
+      • fő darab: 3000 mm
+      • toldó darab: 925 mm
+
+------------------------------------------------------------------------
+
+VI. Címkegenerátor módosítása
+
+12. Címkére toldás jelölése
+
+    if (piece.isSplice()) {
+        print("TOLDOTT SÚLY");
+        print(QString("%1/%2").arg(piece.spliceIndex()).arg(piece.spliceTotal()));
+    }
+
+------------------------------------------------------------------------
+
+VII. Audit és leftover lifecycle kompatibilitás
+
+13. Toldott darabok auditálása
+
+Az audit modulban:
+
+-   ha piece.isSpliceMain() → fő darab
+-   ha piece.isSpliceAddon() → toldó darab
+
+14. Toldott darabok leftover kezelése
+
+Semmit nem kell módosítani:
+a leftover lifecycle automatikusan kezeli a darabokat.
+
+------------------------------------------------------------------------
+
+VIII. Tesztelési terv
+
+15. Teszt esetek
+
+✔ NP-BAR toldás stock + stock
+
+✔ NP-BAR toldás hulló + hulló
+
+✔ NP-BAR toldás stock + hulló
+
+✔ hulló tolerancia (10 cm)
+
+✔ rúd tolerancia (2 cm)
+
+✔ darab-sorszámozás
+
+✔ side kiosztás
+
+✔ címke megjelenítés
+
+✔ vágási terv megjelenítés
+
+✔ leftover lifecycle
+
+✔ audit sorok
+
+------------------------------------------------------------------------
+
+IX. Következő lépések
+
+Ha szeretnéd, megcsinálom:
+
+-   a teljes PieceBuilderToldas patch-et
+-   a PieceWithMaterial splice mező patch-et
+-   a vágási terv toldás-megjelenítés patch-et
+-   a címkegenerátor toldás patch-et
+
+Csak válaszd ki, melyikkel folytassuk.

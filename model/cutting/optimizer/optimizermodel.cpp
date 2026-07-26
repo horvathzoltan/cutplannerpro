@@ -71,7 +71,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     QVector<LeftoverStockEntry> globalSnapshot = _inventorySnapshot.reusableInventory;
 
     InventoryHelper::logSnapshot(_inventorySnapshot.reusableInventory);
-    QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial = PieceBuilder::buildPiecesByMaterial(_requests);
+    QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial =
+        PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
 
     int rodId = 0;
     static int counter = 0;

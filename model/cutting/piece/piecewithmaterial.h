@@ -2,8 +2,10 @@
 
 #pragma once
 
+#include <QMap>
 #include <QUuid>
-#include "model/cutting/plan/request.h"
+//#include "model/cutting/plan/request.h"
+#include "model/cutting/plan/handlerside.h"
 #include "pieceinfo.h"
 
 /**

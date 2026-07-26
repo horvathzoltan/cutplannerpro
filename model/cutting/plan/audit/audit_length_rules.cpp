@@ -1,20 +1,24 @@
 #include "audit_length_rules.h"
 #include "product/material_role_utils.h"
 #include "materials/registry/material_registry.h"
-#include "materials/model/material_family_utils.h"
+//#include "materials/model/material_family_utils.h"
 
 #include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
 
 // NAPHÁLÓ típus felismerés (egyszerűsített)
 static bool isNaphalo(const QUuid& typeId, const QUuid& subtypeId)
 {
-    // Ha később lesz registry, ide kerül.
-    // Most: minden CIP / SZ / BOW altípus naphálós.
+    auto* st0 = ProductTypeRegistry::instance().findById(typeId);
+    if(!st0)
+        return false;
+    if(st0->code != "NP")
+        return false;
+
     auto* st = ProductSubtypeRegistry::instance().findById(subtypeId);
     if (!st) return false;
 
-    QString code = st->code.trimmed();
-    return (code == "CIP" || code == "SZ" || code == "BOW");
+    return (st->code == "CIP" || st->code == "SZ" || st->code == "BOW");
 }
 
 LengthAuditResult AuditLengthRules::check(
@@ -27,8 +31,11 @@ LengthAuditResult AuditLengthRules::check(
     if (list.isEmpty())
         return r;
 
+    // csak naphálóra fut
     if (!isNaphalo(typeId, subtypeId))
-        return r;   // csak naphálóra fut
+        return r;
+
+    const auto& first = list.first();
 
     // --- 1) Role-alapú hossz aggregálás ---
     QHash<QString, int> maxLen;   // role → max hossz
@@ -45,13 +52,19 @@ LengthAuditResult AuditLengthRules::check(
         QString key = role.barcodePrefix.trimmed();
 
         int len = req.requiredLength;
-        if (len <= 0) {
-            r.messages << QString("❌ Érvénytelen hossz (%1 mm) anyag: %2")
-                              .arg(len).arg(mm->barcode);
-            r.hasError = true;
-        }
+        bool lenValid = (len > 0);
 
-        maxLen[key] = qMax(maxLen.value(key, 0), len);
+        r.entries.add(
+            req.externalReference.trimmed(),
+            "LENGTH",
+            QString("length > 0 for role %1").arg(key),
+            lenValid,
+            "> 0",
+            QString("%1 (material %2)").arg(len).arg(mm->barcode)
+            );
+
+        if (lenValid)
+            maxLen[key] = qMax(maxLen.value(key, 0), len);
     }
 
     // --- 2) Role-kulcsok ---
@@ -71,51 +84,86 @@ LengthAuditResult AuditLengthRules::check(
 
     int lab = qMax(labCL, qMax(labCLT, labCLB));
 
-
     // --- 3) Méret-összefüggések ---
-    if (tok > 0 && tokfed > 0 && tok > tokfed) {
-        r.messages << QString("❌ Tok (%1 mm) nagyobb mint tokfedél (%2 mm)")
-                          .arg(tok).arg(tokfed);
-        r.hasError = true;
-    }
 
-    if (tengely > 0 && tok > 0 && tengely >= tok) {
-        r.messages << QString("❌ Tengely (%1 mm) nem lehet nagyobb vagy egyenlő a toknál (%2 mm)")
-                          .arg(tengely).arg(tok);
-        r.hasError = true;
-    }
+    // tok <= tokfed
+    bool tokTokfedValid = !(tok > 0 && tokfed > 0 && tok > tokfed);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "LENGTH",
+        "tok <= tokfed",
+        tokTokfedValid,
+        QString::number(tokfed),
+        QString::number(tok)
+        );
 
-    if (zaro > 0 && tengely > 0 && zaro >= tengely) {
-        r.messages << QString("❌ Záró (%1 mm) nem lehet nagyobb vagy egyenlő a tengelynél (%2 mm)")
-                          .arg(zaro).arg(tengely);
-        r.hasError = true;
-    }
+    // tengely < tok
+    bool tengelyTokValid = !(tengely > 0 && tok > 0 && tengely >= tok);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "LENGTH",
+        "tengely < tok",
+        tengelyTokValid,
+        QString::number(tok),
+        QString::number(tengely)
+        );
 
-    if (suly > 0 && zaro > 0 && suly >= zaro) {
-        r.messages << QString("❌ Súly (%1 mm) nem lehet nagyobb vagy egyenlő a zárónál (%2 mm)")
-                          .arg(suly).arg(zaro);
-        r.hasError = true;
-    }
+    // zaro < tengely
+    bool zaroTengelyValid = !(zaro > 0 && tengely > 0 && zaro >= tengely);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "LENGTH",
+        "zaro < tengely",
+        zaroTengelyValid,
+        QString::number(tengely),
+        QString::number(zaro)
+        );
+
+    // suly < zaro
+    bool sulyZaroValid = !(suly > 0 && zaro > 0 && suly >= zaro);
+    r.entries.add(
+        first.externalReference.trimmed(),
+        "LENGTH",
+        "suly < zaro",
+        sulyZaroValid,
+        QString::number(zaro),
+        QString::number(suly)
+        );
 
     // --- 4) Szélesség / magasság ellenőrzés ---
-    int width  = list.first().fullWidth_mm;
-    int height = list.first().fullHeight_mm;
+    int width  = first.fullWidth_mm;
+    int height = first.fullHeight_mm;
 
-    if(width>0){
-        if (tokfed > 0 && tokfed > width) {
-            r.messages << QString("❌ Tokfedél (%1 mm) nagyobb mint a szélesség (%2 mm)")
-                              .arg(tokfed).arg(width);
-            r.hasError = true;
-        }
+    if (width > 0) {
+        bool tokfedWidthValid = !(tokfed > 0 && tokfed > width);
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "LENGTH",
+            "tokfed <= width",
+            tokfedWidthValid,
+            QString::number(width),
+            QString::number(tokfed)
+            );
+
+        if (!tokfedWidthValid)
+            r.hasValidDimensions = false;
     }
 
-    if(height>0){
-        if (lab > 0 && lab > height) {
-            r.messages << QString("❌ Láb (%1 mm) nagyobb mint a magasság (%2 mm)")
-                              .arg(lab).arg(height);
-            r.hasError = true;
-        }
+    if (height > 0) {
+        bool labHeightValid = !(lab > 0 && lab > height);
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "LENGTH",
+            "lab <= height",
+            labHeightValid,
+            QString::number(height),
+            QString::number(lab)
+            );
+
+        if (!labHeightValid)
+            r.hasValidDimensions = false;
     }
 
     return r;
 }
+

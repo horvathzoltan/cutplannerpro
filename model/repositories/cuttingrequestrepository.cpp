@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include "../../common/filenamehelper.h"
+#include "model/cutting/plan/handlerside.h"
 #include "settings/settingsmanager.h"
 #include "materials/registry/material_registry.h"
 #include "../../common/filehelper.h"
@@ -169,10 +170,17 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V1(const QVector<QString
     row.relevantDimStr    = parts[10].trimmed();
     row.isMeasurementNeeded = (parts[11].trimmed().toLower() == "true");
 //V2
-    auto side = HandlerSideUtils::parse(row.handlerSide);
-    row.leftCount         = side == HandlerSide::Left ? row.quantity : 0;
-    row.rightCount        = side == HandlerSide::Right ? row.quantity : 0;
-    //row.subtypeStr        = "none";
+    HandlerSide side;
+    if (!HandlerSideUtils::tryParse(row.handlerSide, side)) {
+        ctx.addError(ctx.currentLineNumber(),
+                     L("⚠️ Érvénytelen handlerSide érték: '%1'")
+                         .arg(row.handlerSide));
+        side = HandlerSide::None;   // fallback, de már auditált
+    }
+
+    row.leftCount  = (side == HandlerSide::Left)  ? row.quantity : 0;
+    row.rightCount = (side == HandlerSide::Right) ? row.quantity : 0;
+
 
     row.typeCode.clear();
     row.subtypeCode.clear();
@@ -361,10 +369,9 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     }
 
     // 🔍 RelevantDimension konverzió
-    if (row.relevantDimStr.compare("Width", Qt::CaseInsensitive) == 0) {
-        req.relevantDim = RelevantDimension::Width;
-    } else if (row.relevantDimStr.compare("Height", Qt::CaseInsensitive) == 0) {
-        req.relevantDim = RelevantDimension::Height;
+    RelevantDimension dim;
+    if (RelevantDimensionUtils::tryParse(row.relevantDimStr, dim)) {
+        req.relevantDim = dim;
     } else {
         QString msg = L("⚠️ Érvénytelen relevantDim érték: '%1'").arg(row.relevantDimStr);
         ctx.addError(ctx.currentLineNumber(), msg);
@@ -532,7 +539,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << req.rightCount << ";"
             << "\"" << req.requiredColor.code() << "\";"
             << material->barcode << ";"
-            << (req.relevantDim == RelevantDimension::Width ? "Width" : "Height") << ";"
+            << RelevantDimensionUtils::toString(req.relevantDim) << ";"
             << (req.isMeasurementNeeded ? "true" : "false") << ";"
             << dueStr << ";"
             << typeCode << ";"

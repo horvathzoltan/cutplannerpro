@@ -4,10 +4,11 @@
 #include <QStringList>
 #include <QUuid>
 #include "model/cutting/plan/request.h"
+#include "product_bom_audit_service.h"
 
 struct LengthAuditResult {
-    bool hasError = false;
-    QStringList messages;
+    BomAuditEntries entries;
+    bool hasValidDimensions = true;
 };
 
 class AuditLengthRules {

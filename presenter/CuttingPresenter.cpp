@@ -1391,60 +1391,108 @@ void CuttingPresenter::ExportPaintPlan(){
     PaintReporter::exportText(txt);
 }
 
-void CuttingPresenter::Audit()
-{
-    zTrace();
-}
+// QStringList CuttingPresenter::BOM_audit()
+// {
+//     QStringList out;
+//     out << "=== PRODUCT BOM AUDIT ===";
 
-void CuttingPresenter::BOM_audit()
-{
-    zInfo("=== PRODUCT BOM AUDIT ===");
+//     const auto all = CuttingPlanRequestRegistry::instance().readAll();
+//     ProductBomAuditResult result = ProductBomAuditService::run(all);
 
-    const auto all = CuttingPlanRequestRegistry::instance().readAll();
-    auto result = ProductBomAuditService::run(all);
+//     // 🔹 1) Csoportosítás tételszám szerint
+//     QHash<QString, QVector<BomAuditEntry>> perRef;
+//     for (const auto& e : result.entries.readAll()) {
+//         perRef[e.ref].append(e);
+//     }
 
-    // 🔹 Audit üzenetek kiírása
-    for (const auto& m : result.messages) {
-        QString line = QString(">> [%1] %2")
-        .arg(m.ref)
-            .arg(m.text);
-        zInfo(line);
-    }
+//     // 🔹 2) Szekciók kiírása
+//     for (auto it = perRef.begin(); it != perRef.end(); ++it)
+//     {
+//         const QString ref = it.key();
+//         const auto& entries = it.value();
 
-    // 🔹 Summary kiírása
-    zInfo("=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===");
+//         Cutting::Plan::Request *req = CuttingPlanRequestRegistry::instance().getFirstRequest(ref);
 
-    for (auto it = result.summary.perCustomer.begin();
-         it != result.summary.perCustomer.end(); ++it)
-    {
-        const QString& customer = it.key();
-        const CountPerType& s = it.value();
+//         // Megrendelő neve (HEAD auditból jön)
+//         QString customer = req?req->ownerName:"<ismeretlen>";
+//         out << QString("=== [%1] – %2 ===").arg(ref, customer);
 
-        QString qualitySummary =
-            QString("jó=%1, hibás=%2").arg(s.good).arg(s.bad);
+//         // 🔹 3) Sorok ✔️ / ❌ ikonokkal
+//         for (const auto& e : entries)
+//         {
+//             QString icon = e.passed ? "✅" : "❌";
 
-        QString icon;
-        if (s.total > 0 && s.bad == 0) icon = "✅";
-        else if (s.bad > 0)            icon = "❌";
-        else                           icon = "•";
+//             QString line = QString("%1 (%2) %3 | expected: %4 | actual: %5")
+//                                .arg(icon)
+//                                .arg(e.category)
+//                                .arg(e.testName)
+//                                .arg(e.expected)
+//                                .arg(e.actual);
 
-        QString badList;
-        if (!s.badRefs.isEmpty())
-            badList = QString(" (%1)").arg(s.badRefs.join(", "));
+//             if (!e.details.isEmpty())
+//                 line += QString(" | %1").arg(e.details);
 
-        QString line = QString("   %1 %2 | %3%4")
-                           .arg(icon)
-                           .arg(customer)
-                           .arg(qualitySummary)
-                           .arg(badList);
+//             out << line;
+//         }
 
-        zInfo(line);
-    }
+//         // 🔹 4) Mini összegzés a tételszámhoz
+//         bool refHasError = result.entries.hasError_ByRef(ref);
+//         QString finalIcon = refHasError ? "❌" : "✅";
+//         out << QString("=== [%1] RESULT: %2 ===").arg(ref, finalIcon);
+//         out << "";
 
-    zInfo("=== PRODUCT BOM AUDIT VÉGE ===");
-}
+//     }
+
+//     // 🔹 5) Összesítés megrendelőnként
+//     out << "=== ÖSSZESÍTÉS MEGRENDELŐNKÉNT ===";
+
+//     for (auto it = result.summary.perCustomer.begin();
+//          it != result.summary.perCustomer.end(); ++it)
+//     {
+//         const QString& customer = it.key();
+//         const CountPerType& s = it.value();
+
+//         // ikon a teljes megrendelőre
+//         QString icon;
+//         if (s.total() > 0 && s.bad() == 0)      icon = "✅";
+//         else if (s.total() > 0 && s.good() == 0) icon = "❌";
+//         else                                     icon = "•";
+
+//         // minden tételszám listázása pipával/X-el
+//         QStringList refLines;
+//         for (const QString& ref : s.goodRefs())
+//             refLines << QString("✅ %1").arg(ref);
+//         for (const QString& ref : s.badRefs())
+//             refLines << QString("❌ %1").arg(ref);
+
+//         QString refsJoined = refLines.join(", ");
+
+//         // szöveg: ha mind jó, vagy mind hibás, ne írjunk felesleges 0-kat
+//         QString summaryText;
+//         if (s.total() > 0 && s.bad() == 0) {
+//             summaryText = QString("minden tételszám jó (%1)").arg(refsJoined);
+//         } else if (s.total() > 0 && s.good() == 0) {
+//             summaryText = QString("minden tételszám hibás (%1)").arg(refsJoined);
+//         } else {
+//             summaryText = QString("jó=%1, hibás=%2 | %3")
+//                               .arg(s.good())
+//                               .arg(s.bad())
+//                               .arg(refsJoined);
+//         }
+
+//         QString line = QString("   %1 %2 | %3")
+//                            .arg(icon)
+//                            .arg(customer)
+//                            .arg(summaryText);
+
+//         out << line;
+//     }
 
 
+//     out << "=== PRODUCT BOM AUDIT VÉGE ===";
+
+//     return out;
+// }
 
 
 /*relocation*/

@@ -1,8 +1,13 @@
 #pragma once
 
+#include "piecebuilder_toldas.h"
+
 #include <QHash>
 #include <QVector>
-#include "cuttypes.h"
+#include <materials/registry/material_registry.h>
+#include <model/cutting/piece/piecewithmaterial.h>
+#include <model/cutting/plan/request.h>
+#include <model/inventorysnapshot.h>
 
 namespace Cutting {
 namespace Optimizer {
@@ -12,7 +17,8 @@ class PieceBuilder
 public:
     static inline
         QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>>
-        buildPiecesByMaterial(const QVector<Cutting::Plan::Request>& requests)
+        buildPiecesByMaterial(const QVector<Cutting::Plan::Request>& requests,
+                          const InventorySnapshot& inventorySnapshot)
     {
         QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> out;
 
@@ -21,24 +27,57 @@ public:
             int leftRemaining  = req.leftCount;
             int rightRemaining = req.rightCount;
 
+            // for (int i = 0; i < req.quantity; ++i) {
+            //     Cutting::Piece::PieceInfo info;
+            //     info.length_mm = req.requiredLength;
+            //     info.requestId = req.requestId;
+            //     info.isCompleted = false;
+
+            //     // darab-sorszámozás
+            //     if (req.quantity > 1) {
+            //         info.externalReference = QString("%1 %2/%3")
+            //         .arg(req.externalReference)
+            //             .arg(i + 1)
+            //             .arg(req.quantity);
+            //     } else {
+            //         info.externalReference = req.externalReference;
+            //     }
+
+            //     // side kiosztása
+            //     HandlerSide side = HandlerSide::None;
+            //     if (leftRemaining > 0) {
+            //         side = HandlerSide::Left;
+            //         leftRemaining--;
+            //     } else if (rightRemaining > 0) {
+            //         side = HandlerSide::Right;
+            //         rightRemaining--;
+            //     }
+
+            //     // PieceWithMaterial
+            //     Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
+            //     pwm.side = side;
+            //     //pwm.subtype = req.subtype;
+
+            //     pwm.productTypeId = req.productTypeId;
+            //     pwm.productSubtypeId = req.productSubtypeId;
+            //     pwm.attributes = req.attributes;
+
+            //     out[req.materialId].append(pwm);
+            // }
             for (int i = 0; i < req.quantity; ++i) {
 
-                Cutting::Piece::PieceInfo info;
-                info.length_mm = req.requiredLength;
-                info.requestId = req.requestId;
-                info.isCompleted = false;
+                auto pieces = PieceBuilderToldas::buildPiecesForRequest(req, inventorySnapshot);
 
-                // darab-sorszámozás
+                QString externalRef;
                 if (req.quantity > 1) {
-                    info.externalReference = QString("%1 %2/%3")
+                    externalRef = QString("%1 %2/%3")
                     .arg(req.externalReference)
                         .arg(i + 1)
                         .arg(req.quantity);
                 } else {
-                    info.externalReference = req.externalReference;
+                    externalRef = req.externalReference;
                 }
 
-                // side kiosztása
                 HandlerSide side = HandlerSide::None;
                 if (leftRemaining > 0) {
                     side = HandlerSide::Left;
@@ -48,22 +87,27 @@ public:
                     rightRemaining--;
                 }
 
-                // PieceWithMaterial
-                Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
-                pwm.side = side;
-                //pwm.subtype = req.subtype;
+                for (auto& p : pieces) {
 
-                pwm.productTypeId = req.productTypeId;
-                pwm.productSubtypeId = req.productSubtypeId;
-                pwm.attributes = req.attributes;
+                    p.info.externalReference = externalRef;
+                    p.side = side;
 
-                out[req.materialId].append(pwm);
+                    p.productTypeId = req.productTypeId;
+                    p.productSubtypeId = req.productSubtypeId;
+                    p.attributes = req.attributes;
+
+                    out[req.materialId].append(p);
+                }
             }
+
         }
 
         return out;
     }
-};
+
+
+
+}; //end of class
 
 } // namespace Optimizer
 } // namespace Cutting

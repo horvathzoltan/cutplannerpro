@@ -1,12 +1,13 @@
 #pragma once
 
 #include "../../../model/cutting/plan/request.h"
+#include "model/cutting/plan/handlerside.h"
 #include "view/dialog/dialogmode.h"
 #include <QDialog>
 #include <QLabel>
 #include <QToolButton>
 #include <QUuid>
-#include "series_matrix_view.h"
+//#include "series_matrix_view.h"
 
 
 namespace Ui {
@@ -59,6 +60,7 @@ private:
     bool validateInputs();
     //SeriesMatrixView* _matrix = nullptr;
     bool _suppressPreview = false;
+    bool _suppressLengthSuggestion = false;
 
     // ⭐ Tételszám UI elemek (egy layouton)
     QLabel* lblReferenceBig = nullptr;
@@ -195,6 +197,7 @@ private slots:
     void on_btn_Reset_clicked();
     void onProductTypeChanged(bool checked);
     void on_btnEditReference_clicked(bool checked);
+    void onMaterialComboChanged(int index);
 
 signals:
     void seriesContextChanged(const QString& owner,

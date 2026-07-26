@@ -21,21 +21,7 @@ struct PieceInfo
     QUuid requestId;               // 🔗 Eredeti igény azonosító
     bool isCompleted = false;         // ✅ Elkészült-e a darab
 
-
-    QString externalReference;   // ⭐ darab-szintű tételszám (pl. 1444.1/5)
-
-    // bool isValid() const {
-    //     return length_mm > 0 && !requestId.isNull();
-    // }
-
-    // QString displayText() const {
-    //     return QString("%1 • %2 • %3 mm")
-
-
-    //         .arg(ownerName.isEmpty() ? "(?)" : ownerName)
-    //         .arg(externalReference.isEmpty() ? "-" : externalReference)
-    //         .arg(length_mm);
-    // }
+    QString externalReference;   // ⭐ darab-szintű tételszám (pl. 1444.1/5) 
 };
 
 } // endof namespace Piece

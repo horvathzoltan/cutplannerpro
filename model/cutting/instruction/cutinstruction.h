@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/plan/handlerside.h"
 #include "model/cutting/plan/request.h"
 #include "model/cutting/plan/source.h"
 #include <QString>

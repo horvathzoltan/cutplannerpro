@@ -1,6 +1,7 @@
 #include "addinputdialog.h"
 
 #include "../../../model/cutting/plan/request.h"
+#include "common/logger.h"
 #include "model/cutting/plan/audit/naphalo_profile_postfix.h"
 #include "product/material_role_utils.h"
 #include "ui_addinputdialog.h"
@@ -12,6 +13,7 @@
 #include <QFile>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <calculation/lengthcalculator.h>
 #include <common/eventlogger.h>
 #include <materials/model/material_master.h>
 #include <model/registries/cuttingplanrequestregistry.h>
@@ -128,8 +130,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     populateMaterialCombo();
 
     populateSurfaceCombo();
-    //connect(ui->edit_Color, &QLineEdit::textChanged, this, &AddInputDialog::updateColorPreview);
-    connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged), this, &AddInputDialog::updateColorPreview);
+    connect(ui->edit_Color, &QLineEdit::textChanged, this, &AddInputDialog::updateColorPreview);
+    //connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged), this, &AddInputDialog::updateColorPreview);
 //    connect(ui->editLength, &QLineEdit::textChanged, this, &AddInputDialog::updateColorPreview);
     connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged), this, &AddInputDialog::updateColorPreview);
 
@@ -190,8 +192,12 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
             _editMode = EditMode::ItemEdit;
             applyReferenceState(ReferenceState::FullRequest);
+            _suppressLengthSuggestion = false;   // biztos ami biztos
             ui->comboMaterial->setCurrentIndex(idx);
-            ui->editLength->clear();
+
+            // automatikus ajánlás
+            //onMaterialComboChanged(idx);
+
             ui->editLength->setFocus();
         } else{
             zInfo("nextMat nem található a comboban ");
@@ -315,6 +321,9 @@ AddInputDialog::AddInputDialog(QWidget *parent,
                 _colorDebounceTimer->start();    // ❗ csak timer, NINCS azonnali BOM
             });
 
+    connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged),
+            this, &AddInputDialog::onMaterialComboChanged);
+
 
     // ⭐ Induló inicializálás
     QTimer::singleShot(0, this, [this, mode, initial]() {
@@ -323,6 +332,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
             current_requestId = initial->requestId;
 
+            //_suppressPreview = true;
+            _suppressLengthSuggestion = true;
             applyRequestToWidgets(*initial);
 
             setHeadEditable(true);
@@ -338,6 +349,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             ui->chk_Repeat->setChecked(s_lastRepeat);
         }
         _suppressPreview = false;
+        _suppressLengthSuggestion = false;
+
         updateColorPreview();
         updateAttributePanel();
 
@@ -1171,9 +1184,13 @@ void AddInputDialog::applySideFromRequest(const Cutting::Plan::Request& req)
 
 void AddInputDialog::applyMaterialFromRequest(const Cutting::Plan::Request& req)
 {
+    _suppressLengthSuggestion = true;
+
     int idx = ui->comboMaterial->findData(req.materialId);
     if (idx >= 0)
         ui->comboMaterial->setCurrentIndex(idx);
+
+    _suppressLengthSuggestion = false;  // 🔥 visszakapcsoljuk
 }
 
 void AddInputDialog::applyLengthFromRequest(const Cutting::Plan::Request& req)
@@ -1883,4 +1900,50 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
 }
 
 
+void AddInputDialog::onMaterialComboChanged(int index)
+{
+    Q_UNUSED(index);
+
+    zTrace();
+
+    // Ha suppress alatt vagyunk → NEM ajánlunk
+    if (_suppressLengthSuggestion)
+        return;
+
+    // 1) Material ID
+    QUuid matId = selectedMaterialId();
+    const MaterialMaster* m = MaterialRegistry::instance().findById(matId);
+    if (!m)
+        return;
+
+
+    // 2) Role meghatározása
+    Cutting::Plan::Request req = getModel();
+    MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+    //QString roleName = MaterialRoleUtils::toString(role);
+
+    // 3) HEAD adatok
+    QString typeCode = currentProductTypeCode();
+    QString subtypeCode = currentProductSubtypeCode();
+    QMap<QString, QString> attrs = req.attributes;
+
+    double width  = req.fullWidth_mm;
+    double height = req.fullHeight_mm;
+
+    //auto n = MaterialRoleUtils::normalizePrefix(role.barcodePrefix);
+    // 4) Kalkuláció
+    auto val = LengthCalculator::calculate(
+        typeCode,
+        subtypeCode,
+        attrs,
+        role.barcodePrefix,
+        width,
+        height,
+        CalcMode::GyartasiMeret);
+
+    // 5) UI frissítés
+    if (val.has_value()) {
+        ui->editLength->setText(QString::number(*val, 'f', 0));
+    }
+}
 

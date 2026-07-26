@@ -3,11 +3,12 @@
 #include <QVector>
 #include <QStringList>
 #include "model/cutting/plan/request.h"
+#include "product_bom_audit_service.h"
 
 struct HeaderAuditResult {
-    bool hasError = false;
-    QStringList messages;
-    bool hasValidDimensions = true;   // fontos!
+    bool hasValidDimensions = true;   // ez tényleg kell
+
+    BomAuditEntries entries;   // 🔥 ÚJ
 };
 
 class AuditHeaderRules {

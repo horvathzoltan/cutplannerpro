@@ -38,6 +38,9 @@
 #include <view/dialog/materialfinder/materialfinderdialog.h>
 
 #include "view/dialog/input/series_matrix_view.h"
+#include "view/dialog/textviewdialog.h"
+
+#include <model/cutting/plan/audit/product_bom_audit_service.h>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -322,9 +325,6 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_Painter, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Painter_clicked);
-
-    connect(ui->btn_Audit, &QPushButton::clicked,
-            this, &MainWindow::handle_btn_Audit_clicked);
 
     connect(ui->btn_BOMaudit, &QPushButton::clicked,
             this, &MainWindow::handle_btn_BOMaudit_clicked);
@@ -1269,12 +1269,13 @@ void MainWindow::handle_btn_Painter_clicked(){
         presenter->ExportPaintPlan();
 }
 
-void MainWindow::handle_btn_Audit_clicked(){
-    presenter->Audit();
-}
-
 void MainWindow::handle_btn_BOMaudit_clicked(){
-    presenter->BOM_audit();
+    QStringList audit = ProductBomAuditService::BOM_audit();
+
+    TextViewDialog dlg(this);
+    dlg.setWindowTitle("PRODUCT BOM AUDIT");
+    dlg.setText(audit.join("\n"));
+    dlg.exec();
 }
 
 void MainWindow::handle_btn_ReviewForm_clicked(){
