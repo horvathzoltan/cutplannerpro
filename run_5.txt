@@ -1,222 +1,240 @@
-Zoltán, itt a teljes, részletes, pontonként végrehajtható implementációs
-terv, amely végigvezet a toldás‑metaadat, toldás‑finomítás,
-PieceBuilder‑integráció, és a vágási terv/címke megjelenítés teljes
-beépítésén.
+Zoltán, akkor jöjjön **a teljes, részletes, lépésről‑lépésre végrehajtható terv** a *PostCutToldasEngine* modulhoz — pontos, architekturálisan tiszta, és a végén egy **patching‑tervvel**, hogy tudd, hova kell majd beilleszteni a kódot.
 
-Ez nem kód — ez lépésről lépésre végrehajtható patch‑terv, pontos
-sorrenddel, minden érintett modul megjelölésével.
-Ahol további részleteket szeretnél, ott Guided Linkeket tettem, hogy
-azonnal tudjunk mélyebbre menni.
+A tervet úgy építem fel, hogy:
 
-------------------------------------------------------------------------
+- **először** megértsük a célokat és a követelményeket,
+- **utána** megtervezzük az adatáramlást,
+- **utána** megtervezzük a modul működését,
+- **utána** megtervezzük a riportot,
+- **végül** megkapod a *patching‑tervet*, amely pontosan megmondja, melyik fájlba, melyik sor után kell majd beilleszteni a kódot.
 
-I. Toldás metaadat bevezetése (SpliceInfo)
+---
 
-1. Új struct létrehozása
+# 🟩 1. CÉLOK — mit kell tudnia a PostCutToldasEngine‑nek?
 
-Fájl: model/cutting/piece/spliceinfo.h
+1. **Az optimize futása után** megkapja:
+   - a FAILED darabok listáját (`_discardedPieces`)
+   - a vágás során keletkezett hullókat (`_planned_leftovers`)
+   - a teljes InventorySnapshotot (stock + reusable leftovers)
 
-    struct SpliceInfo {
-        enum class PartType { Main, Addon };
+2. **Csak NP‑BAR (súly) anyagokra** fut.
 
-        QUuid groupId;       // requestId vagy külön UUID
-        PartType type;       // Main / Addon
-        int partIndex;       // 1 vagy 2
-        int totalParts = 2;  // fix 2, később bővíthető
-    };
+3. **Minden FAILED súlyra** megpróbál toldást végezni:
+   - stock + hulló
+   - hulló + hulló
+   - stock + stock
+   (→ **kizárólag 2 darabos toldás**, ahogy kérted)
 
-------------------------------------------------------------------------
+4. A toldás **nem kerül vissza a vágási engine-be**,
+   hanem egy **külön riport** készül belőle.
 
-2. PieceWithMaterial bővítése
+5. A toldás **felhasználhatja a vágás során keletkezett hullókat**.
 
-Fájl: model/cutting/piece/piecewithmaterial.h
+6. A toldás **nem módosítja a CutPlan-eket**,
+   nem módosítja a leftover registryt,
+   nem módosítja a RodLoopEngine-t.
 
-Új mező:
+7. A toldás **nem fut bele végtelen ciklusba**,
+   mert csak a FAILED darabokat dolgozza fel.
 
-    std::optional<SpliceInfo> splice;
+---
 
-Getterek:
+# 🟩 2. ADATÁRAMLÁS — honnan hova mennek az adatok?
 
-    bool isSplice() const { return splice.has_value(); }
-    bool isSpliceMain() const { return splice && splice->type == SpliceInfo::PartType::Main; }
-    bool isSpliceAddon() const { return splice && splice->type == SpliceInfo::PartType::Addon; }
-    int spliceIndex() const { return splice ? splice->partIndex : 0; }
-    int spliceGroup() const { return splice ? splice->groupId : QUuid(); }
-    int spliceTotal() const { return splice ? splice->totalParts : 0; }
+### Inputok:
 
-------------------------------------------------------------------------
+- `OptimizerModel::_discardedPieces`
+  → gépenkénti FAILED darabok
 
-II. Toldás finomítások beépítése
+- `OptimizerModel::_planned_leftovers`
+  → vágás során keletkezett hullók
 
-3. Hulló tolerancia (10 cm)
+- `OptimizerModel::_inventorySnapshot`
+  → stock + reusable leftovers
 
-Fájl: piecebuilder_toldas.h
+### Outputok:
 
-    const int HULLO_TOLERANCE_MM = 100;
+- `PostCutToldasReport`
+  → egy új struktúra, amely tartalmazza:
+    - requestId
+    - eredeti igényelt hossz
+    - toldási darabok (2 db)
+    - toldás típusa (stock+hulló, hulló+hulló, stock+stock)
+    - felhasznált leftover entryId-k
+    - failReason, ha toldás sem sikerült
 
-Hulló + hulló és stock + hulló esetén:
+- TXT/PDF riport:
+  ```
+  📦 Toldási utasítások (súlyok)
+    • Request 54 – Zárósúly Ø22x3000mm
+        – eredeti igény: 3060 mm
+        – toldás: 3000 mm + 60 mm hulló
+        – toldható: igen
+        – felhasznált hullók:
+            • leftoverId=...
+  ```
 
-    if (combined >= need - HULLO_TOLERANCE_MM) {
-        // elfogadjuk, nem kell nagyobb darabot vágni
-    }
+---
 
-------------------------------------------------------------------------
+# 🟩 3. MODUL FELÉPÍTÉSE — PostCutToldasEngine
 
-4. Rúd tolerancia (2 cm)
+A modul 4 fő lépésből áll:
 
-    const int ROD_TOLERANCE_MM = 20;
-    int effectiveNeed = need - ROD_TOLERANCE_MM;
+---
 
-Minden toldási összehasonlítás innentől:
+## 🔹 3.1. LÉPÉS — FAILED darabok szűrése NP‑BAR anyagra
 
-    if (l1.availableLength_mm + l2.availableLength_mm >= effectiveNeed)
+```
+for dp in discardedPieces:
+    if dp.materialId NP-BAR:
+        process(dp)
+```
 
-------------------------------------------------------------------------
+---
 
-III. Toldás metaadat kitöltése a PieceBuilderToldas-ban
+## 🔹 3.2. LÉPÉS — eredeti request visszakeresése
 
-5. Fő darab metaadat
+A FAILED darabban benne van:
 
-    SpliceInfo sp;
-    sp.groupId = req.requestId;
-    sp.type = SpliceInfo::PartType::Main;
-    sp.partIndex = 1;
+- `dp.requestId`
+- `dp.materialId`
+- `dp.failReason`
 
-    p.splice = sp;
+A requestet vissza kell keresni:
 
-6. Toldó darab metaadat
+```
+req = findRequestById(dp.requestId)
+```
 
-    SpliceInfo sp;
-    sp.groupId = req.requestId;
-    sp.type = SpliceInfo::PartType::Addon;
-    sp.partIndex = 2;
+---
 
-    p.splice = sp;
+## 🔹 3.3. LÉPÉS — toldás megkísérlése
 
-------------------------------------------------------------------------
+A toldás logika ugyanaz, mint a PieceBuilderToldas-ban, de:
 
-IV. PieceBuilder integráció
+### ✔ új inputokkal:
 
-7. buildPiecesByMaterial aláírás módosítása
+- `req.requiredLength`
+- `stockLength_mm`
+- `inv.reusableInventory`
+- `_planned_leftovers`  ← ÚJ!
 
-    buildPiecesByMaterial(const QVector<Request>& requests,
-                          const InventorySnapshot& inventorySnapshot)
+### ✔ új kombinációkkal:
 
-8. OptimizerModel::optimize() módosítása
+- stock + leftover
+- leftover + leftover
+- stock + stock
 
-    auto piecesByMaterial =
-        PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
+### ✔ kizárólag 2 darabos toldás
 
-------------------------------------------------------------------------
+### ✔ ha sikerül → toldási darabok listája
 
-9. Darab-sorszámozás visszaépítése
+### ✔ ha nem sikerül → failReason: „Toldás sem lehetséges”
 
-A PieceBuilder-ben:
+---
 
-    QString externalRef;
-    if (req.quantity > 1) {
-        externalRef = QString("%1 %2/%3")
-            .arg(req.externalReference)
-            .arg(i + 1)
-            .arg(req.quantity);
-    } else {
-        externalRef = req.externalReference;
-    }
+## 🔹 3.4. LÉPÉS — riport összeállítása
 
-Majd:
+Minden toldott darabhoz:
 
-    p.info.externalReference = externalRef;
+- requestId
+- eredeti igény
+- toldási darabok hossza
+- toldás típusa
+- felhasznált leftover entryId-k
+- failReason (ha nem sikerült)
 
-------------------------------------------------------------------------
+---
 
-10. Side kiosztás megtartása
+# 🟩 4. RIPORT — hogyan jelenik meg?
 
-    HandlerSide side = HandlerSide::None;
-    if (leftRemaining > 0) { side = HandlerSide::Left; leftRemaining--; }
-    else if (rightRemaining > 0) { side = HandlerSide::Right; rightRemaining--; }
+### Példa:
 
-    p.side = side;
+```
+📦 Toldási utasítások (súlyok)
+──────────────────────────────────
+• Request 54 – Zárósúly Ø22x3000mm
+    – eredeti igény: 3060 mm
+    – toldás: 3000 mm + 60 mm hulló
+    – toldható: igen
+    – felhasznált hullók:
+        • leftoverId=abc123 (60 mm)
+──────────────────────────────────
+• Request 55 – Zárósúly Ø22x3000mm
+    – eredeti igény: 3500 mm
+    – toldás: nem lehetséges
+    – ok: nincs elegendő hulló
+──────────────────────────────────
+```
 
-------------------------------------------------------------------------
+Ez egy külön TXT/PDF fájl:
 
-V. Vágási terv megjelenítés toldással
+```
+<baseName>_ToldasInstructions.txt
+```
 
-11. CuttingPlanView módosítása
+---
 
-Ha:
+# 🟩 5. PATCHING‑TERV — pontos helyek, pontos fájlok
 
-    piece.isSplice()
+Ez még **nem a patch**, csak a patching‑terv, ahogy kérted.
 
-akkor külön blokkot jelenítünk meg:
+---
 
-    TOLDOTT SÚLY (3925 mm)
-      • fő darab: 3000 mm
-      • toldó darab: 925 mm
+## 🔹 5.1. ÚJ FÁJL: `postcuttoldasengine.h`
 
-------------------------------------------------------------------------
+Tartalmazza:
 
-VI. Címkegenerátor módosítása
+- `PostCutToldasEngine` osztály
+- `PostCutToldasReport` struktúra
 
-12. Címkére toldás jelölése
+---
 
-    if (piece.isSplice()) {
-        print("TOLDOTT SÚLY");
-        print(QString("%1/%2").arg(piece.spliceIndex()).arg(piece.spliceTotal()));
-    }
+## 🔹 5.2. ÚJ FÁJL: `postcuttoldasengine.cpp`
 
-------------------------------------------------------------------------
+Tartalmazza:
 
-VII. Audit és leftover lifecycle kompatibilitás
+- `run(const OptimizerModel&)`
+- toldás logika
+- riport generálás
 
-13. Toldott darabok auditálása
+---
 
-Az audit modulban:
+## 🔹 5.3. MÓDOSÍTÁS: `optimizermodel.h`
 
--   ha piece.isSpliceMain() → fő darab
--   ha piece.isSpliceAddon() → toldó darab
+Hozzáadni:
 
-14. Toldott darabok leftover kezelése
+```
+const QMap<QUuid, DiscardedPiece>& getDiscardedPieces() const;
+const QVector<ResultModel>& getPlannedLeftovers() const;
+const InventorySnapshot& getInventorySnapshot() const;
+```
 
-Semmit nem kell módosítani:
-a leftover lifecycle automatikusan kezeli a darabokat.
+---
 
-------------------------------------------------------------------------
+## 🔹 5.4. MÓDOSÍTÁS: `cuttingpresenter.cpp`
 
-VIII. Tesztelési terv
+Az optimize után:
 
-15. Teszt esetek
+```
+auto toldasReport = PostCutToldasEngine::run(model);
+exportToldasReport(toldasReport);
+```
 
-✔ NP-BAR toldás stock + stock
+---
 
-✔ NP-BAR toldás hulló + hulló
+## 🔹 5.5. ÚJ FÁJL: `toldasinstructionutils.h/.cpp`
 
-✔ NP-BAR toldás stock + hulló
+A TXT/PDF riport formázása.
 
-✔ hulló tolerancia (10 cm)
+---
 
-✔ rúd tolerancia (2 cm)
+# 🟩 6. A következő lépés
 
-✔ darab-sorszámozás
+Most, hogy a terv kész:
 
-✔ side kiosztás
+👉 **megcsinálom a teljes, kézzel beilleszthető patch-et**, minden fájlra, minden helyre, pontos kóddal.
 
-✔ címke megjelenítés
+Ha készen állsz:
 
-✔ vágási terv megjelenítés
-
-✔ leftover lifecycle
-
-✔ audit sorok
-
-------------------------------------------------------------------------
-
-IX. Következő lépések
-
-Ha szeretnéd, megcsinálom:
-
--   a teljes PieceBuilderToldas patch-et
--   a PieceWithMaterial splice mező patch-et
--   a vágási terv toldás-megjelenítés patch-et
--   a címkegenerátor toldás patch-et
-
-Csak válaszd ki, melyikkel folytassuk.
+**kérem a teljes PostCutToldasEngine patch-et**
