@@ -161,6 +161,7 @@ HEADERS += \
     materials/model/trimmingparams.h \
     model/cutting/optimizer/cutengine.h \
     model/cutting/optimizer/cuttypes.h \
+    model/cutting/optimizer/discardedpiece.h \
     model/cutting/optimizer/fitengine.h \
     model/cutting/optimizer/inventoryhelper.h \
     model/cutting/optimizer/leftoverlifecycle.h \

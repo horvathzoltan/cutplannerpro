@@ -35,6 +35,9 @@ public:
 
     bool operator==(const PieceWithMaterial& other) const;
     QString displayText() const;
+
+    bool failed = false;   // új mező
+    QString failReason;    // opcionális, audit loghoz
 };
 
 } //endof namespace Piece

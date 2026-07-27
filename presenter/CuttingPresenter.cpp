@@ -347,7 +347,7 @@ QVector<Cutting::Result::ResultModel> CuttingPresenter::getLeftoverResults()
 //         view->refresh_LeftoversTable(); // paraméter nélkül, csak vizuális frissítés
 //     }
 
-//     // 📤 Export: optimalizációs tervek mentése CSV és TXT formátumban
+//     // 📤 Export: optimalizációs tervek fmentése CSV és TXT formátumban
 //     OptimizationExporter::exportPlansToCSV(plans);
 //     OptimizationExporter::exportPlansAsWorkSheetTXT(plans);
 
@@ -1073,6 +1073,29 @@ void CuttingPresenter::GenerateCutInstructions()
     for (auto& mc : _machineCutsList)
         CuttingInstructionUtils::postProcessMachineCuts(mc);
 
+    // 🟦 MachineReport feltöltése (actualPieces)
+    for (auto& mc : _machineCutsList) {
+        model.setMachineActualPieces(
+            mc.machineHeader.machineId,
+            mc.cutInstructions.size()
+            );
+    }
+
+    // ⚠️ GÉPENKÉNTI EXPECTED vs ACTUAL RIPORT
+    for (const auto& mc : _machineCutsList) {
+        const auto& rep = model.getMachineReport()[mc.machineHeader.machineId];
+
+        if (rep.actualPieces < rep.expectedPieces) {
+            zEvent(QString(
+                       "⚠️ A %1 géphez %2 darab tartozna, de csak %3 vágható."
+                       )
+                       .arg(rep.machineName)
+                       .arg(rep.expectedPieces)
+                       .arg(rep.actualPieces));
+        }
+    }
+
+
     // UI frissítés
     if (view){
         view->renderCuttingInstructions(_machineCutsList);
@@ -1117,8 +1140,21 @@ void CuttingPresenter::ExportCutInstructions()
         QTextStream out(&f);
         out.setEncoding(QStringConverter::Utf8);
 
+        // gépenkénti riport lekérése a for előtt
+        const auto& machineReportMap = model.getMachineReport();
+        const auto& discardedMap = model.getDiscardedPieces();
+
         for (const auto& mc : _machineCutsList) {
-            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, baseName, printedLineWidth) << "\n\n";
+            const auto& rep = machineReportMap.value(mc.machineHeader.machineId);
+
+            // géphez tartozó FAILED darabok kigyűjtése
+            QVector<DiscardedPiece> failedList;
+            for (const auto& dp : discardedMap) {
+                if (dp.machineId == rep.machineId)
+                    failedList.append(dp);
+            }
+
+            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, rep, failedList, baseName, printedLineWidth) << "\n\n";
         }
 
         zEvent(QString("📄 CutInstructions exportálva: %1").arg(path));

@@ -27,7 +27,6 @@ public:
         TargetHeuristic heuristic)
     {
         PendingStats out;
-
         int bestMetric = -1;
 
         for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it)

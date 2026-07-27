@@ -1,5 +1,6 @@
 #include "request.h"
 #include <QRegularExpression>
+#include <materials/registry/material_registry.h>
 
 namespace Cutting {
 namespace Plan {
@@ -46,7 +47,7 @@ QString Request::toString() const {
 
     // 🧾 Külső hivatkozás
     if (!externalReference.isEmpty())
-        parts << QString("Azonosító: \"%1\"").arg(externalReference);
+        parts << QString("Tételszám: \"%1\"").arg(externalReference);
 
     // 👤 Megrendelő neve
     if (!ownerName.isEmpty())
@@ -56,7 +57,10 @@ QString Request::toString() const {
     parts << QString("%1 mm × %2 db").arg(requiredLength).arg(quantity);
 
     // 🔗 Anyag UUID (mindig legyen benne)
-    parts << QString("Anyag ID: %1").arg(materialId.toString());
+    auto* mat = MaterialRegistry::instance().findById(materialId);
+    if(mat){
+        parts << QString("Anyag: %1").arg(mat->toReportLabel());
+    }
 
     parts << QString("Határidő: %1").arg(dueDate.toString("yyyy.MM.dd"));
 

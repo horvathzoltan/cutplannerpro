@@ -34,7 +34,7 @@ public:
                                : "parent=—"));
         }
 
-        zInfo("📘 SNAPSHOT — vége");
+        // zInfo("📘 SNAPSHOT — vége");
     }
 };
 

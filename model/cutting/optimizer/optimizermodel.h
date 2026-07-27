@@ -15,6 +15,8 @@
 #include "../../inventorysnapshot.h"
 #include "cuttypes.h"
 #include "fitengine.h"
+#include "model/cutting/instruction/cutinstruction.h"
+#include "discardedpiece.h"
 #include "selectedrod.h"
 
 
@@ -130,6 +132,31 @@ public:
 
     void setUseReusableLeftovers(bool enabled) { _useReusableLeftovers = enabled; }
 
+    const QMap<QUuid, MachineReport>& getMachineReport() const {
+        return _machineReport;
+    }
+
+    void setMachineActualPieces(const QUuid& machineId, int actual) {
+        auto it = _machineReport.find(machineId);
+        if (it != _machineReport.end()) {
+            it->actualPieces = actual;
+        }
+    }
+    // --- DiscardedPiece hozzáadása kívülről ---
+    void addDiscardedPiece(const DiscardedPiece& dp) {
+        // pieceId kulcs alapján deduplikálunk
+        if (_discardedPieces.contains(dp.pieceId))
+            return;
+
+        _discardedPieces.insert(dp.pieceId, dp);
+    }
+
+    // --- gépenkénti eldobott darabok lekérése ---
+    const QMap<QUuid /*pieceId*/, DiscardedPiece>& getDiscardedPieces() const {
+        return _discardedPieces;
+    }
+
+
 private:
 
     bool _useReusableLeftovers = true;
@@ -159,6 +186,10 @@ private:
     int rodCounter  = 0;   // csak RodId kiosztás
 
     //QSet<QString> _usedLeftoverBarcodes; // ♻️ már felhasznált hullók nyilvántartása
+
+    QMap<QUuid, MachineReport> _machineReport;
+
+    QMap<QUuid /*pieceId*/, DiscardedPiece> _discardedPieces;
 
     struct RodLineage {
         QString rodId;

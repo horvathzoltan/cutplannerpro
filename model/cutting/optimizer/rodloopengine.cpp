@@ -1,4 +1,5 @@
 #include "rodloopengine.h"
+#include "common/eventlogger.h"
 #include "optimizermodel.h"
 #include "fitengine.h"
 #include "../../../service/cutting/optimizer/optimizerutils.h"
@@ -61,9 +62,65 @@ RodStepResult RodLoopEngine::step(
     _aff_results.append(fr.pieceCount);
 
     if (fr.combo.isEmpty()){
+        zInfo("   ✖ Nincs több vágható darab — rúd lezárása előtt FAILED‑check");
+
+        // ❗ Nem vágható darab felismerése
+        if (!groupVec.isEmpty()) {
+            auto &p = groupVec.first();
+
+            // Fizikai szükséglet (egyszerűsített modell: darabhossz + kerf)
+            int needed = p.info.length_mm + static_cast<int>(kerf_mm);
+
+            if (needed > remainingLength) {
+
+                // Itt feltételezzük, hogy PieceWithMaterial-ben van:
+                //   bool failed;
+                //   QString failReason;
+                p.failed = true;
+
+                // --- géphez kötött eldobott darab mentése ---
+                DiscardedPiece dp;
+                dp.requestId  = p.info.requestId;     // ← PieceInfo-ból jön!
+                dp.materialId = p.materialId;
+                dp.machineId  = machine.id;           // ← IdentifiableEntity::id
+                dp.failReason = p.failReason;
+                dp.pieceId    = p.info.pieceId;   // ← ez a kulcs!
+
+                model.addDiscardedPiece(dp);
+
+                p.failReason = QString(
+                                   "Nem vágható: requested=%1, rod=%2, dpLimit=%3, needed=%4")
+                                   .arg(p.info.length_mm)
+                                   .arg(rod.length)
+                                   .arg(dpLimit)
+                                   .arg(needed);
+
+                zWarning("❌ FAILED PIECE — " + p.failReason);
+
+                auto* mat = MaterialRegistry::instance().findById(p.materialId);
+                QString matName = mat?mat->toDisplay():"?";
+                // ❌ FAILED PIECE — UI riport
+                zEvent(QString("❌ FAILED PIECE — %1 mm darab nem vágható a %2 mm rúdra "
+                               "(dpLimit=%3, needed=%4, material=%5)")
+                           .arg(p.info.length_mm)
+                           .arg(rod.length)
+                           .arg(dpLimit)
+                           .arg(p.info.length_mm + kerf_mm)
+                           .arg(matName));
+
+                // Pendingből eltávolítjuk
+                groupVec.removeFirst();
+
+                // Nem zárjuk le a rudat, hanem új anyagcsoportot engedünk
+                return RodStepResult::StartNewRod;
+            }
+        }
+
+        // Ha nem minősült FAILED‑nek, marad az eddigi viselkedés:
         zInfo("   ✖ Nincs több vágható darab — rúd lezárása");
         return RodStepResult::StopRod;
     }
+
 
     zInfo(QString("   ✔ Combo sikeres — %1 darab kiválasztva, used=%2 mm")
               .arg(fr.pieceCount)

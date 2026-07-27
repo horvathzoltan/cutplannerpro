@@ -18,6 +18,7 @@
 #include <model/storageaudit/storageauditrow.h>
 #include <service/storageaudit/storageauditservice.h>
 #include <common/identifierutils.h>
+#include "model/cutting/optimizer/discardedpiece.h"
 #include "product/subtype_utils.h"
 #include "settings/settingsmanager.h"
 
@@ -181,6 +182,8 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
 
 // A CutInstructions (MachineCuts) IGEN, gépenkénti
 inline QString formatMachineCutsEvent(const MachineCuts& mc,
+                                      const MachineReport& rep,
+                                      const QVector<DiscardedPiece>& failedList,
                                       const QString& planIdStr,
                                       const int printedLW)
 {
@@ -202,6 +205,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
     int outputCount = mc.cutInstructions.size();
     int diff = outputCount - inputCount;
+
 
     // --- fejlécek ---
     lines << "📄 Vágási utasítások (gépenkénti)";
@@ -229,11 +233,41 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
     // --- input/output ---
     lines << "📥 Gyártási input:";
-    lines << QString("  • Kért darabszám: %1 db").arg(inputCount);
+    lines << QString("  • Kért darabszám: %1 db").arg(rep.requestedPieces_Local());
     lines << QString("  • Kért tételszámok: %1").arg(compressed);
+
     lines << "📤 Gyártási output:";
-    lines << QString("  • Levágott darabok: %1 db").arg(outputCount);
-    lines << QString("  • Eltérés: %1 db").arg(diff);
+    lines << QString("  • Levágott darabok: %1 db").arg(rep.actualPieces);
+
+    if (rep.failedPieces_Local > 0) {
+        lines << QString("  • Nem teljesíthető: %1 db").arg(rep.failedPieces_Local);
+
+        lines << "  • Nem teljesült darabok:";
+
+        for (const auto& dp : failedList) {
+            if (dp.machineId == rep.machineId) {
+
+                auto *req = CuttingPlanRequestRegistry::instance().findById(dp.requestId);
+                if(req){
+                    auto *mat = MaterialRegistry::instance().findById(req->materialId);
+
+                    QString mtxt = mat?mat->name + " [" + mat->barcode+"]":"?";
+
+                    lines << QString("      Megrendelés: %1. %2")
+                                 .arg(req->externalReference)
+                                 .arg(req->ownerName);
+                    lines << QString("          Anyag: %1, Méret: %2 mm")
+                                 .arg(mtxt)
+                                 .arg(req->requiredLength);
+                } else {
+                    lines << "Nem található vágási kérés";
+                }
+            }
+        }
+
+        lines << QString("  • ⚠️ Eltérés: %1 db").arg(rep.failedPieces_Local);
+    }
+
     lines << "──────────────────────────────────";
 
     // --- előkészítés ---

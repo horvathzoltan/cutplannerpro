@@ -82,3 +82,15 @@ struct MachineCuts{
     QMap<QString, double> leftover_mm;
     QMap<QString, QString> leftoverBarcode;
 };
+
+struct MachineReport {
+    QUuid machineId;
+    QString machineName;
+
+    int expectedPieces = 0;   // CutPlan-ben szereplő darabok száma gépenként.
+    int actualPieces   = 0;   // valóban levágott darabok száma gépenként
+    int failedPieces_Local = 0; // gépenkénti eldobott darabok száma
+public:
+    int requestedPieces_Local() const { return actualPieces + failedPieces_Local;}
+};
+

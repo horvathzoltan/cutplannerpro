@@ -6,6 +6,7 @@
 #include <QUuid>
 
 #include "../../stockentry.h"
+#include "model/cutting/piece/piecewithmaterial.h"
 #include "selectedrod.h"
 
 namespace Cutting {
@@ -20,6 +21,13 @@ public:
         QVector<StockEntry>& stockInventory,
         const QSet<QUuid>& groupIds,
         int& rodCounter);
+
+    static std::optional<SelectedRod> pickStockRod2(
+        QVector<StockEntry>& stockInventory,
+        const QSet<QUuid>& groupIds,
+        int& rodCounter,
+        int requestedLength_mm,
+        double kerf_mm);
 };
 
 } // namespace Optimizer
