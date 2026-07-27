@@ -126,7 +126,7 @@ std::optional<double> compensation(const QMap<QString, QString>& attributes,
                 return -4;
             }
             else if (meghajtas == "kurblis") {
-                return 5;
+                return -5;
             }
             else {
                 zInfo("Ismeretlen attr value: "+meghajtas);

@@ -134,7 +134,7 @@ std::optional<double> compensation(
                 return +4;
             }
             else if (meghajtas == "kurblis") {
-                return -3;
+                return 0;
             }
             else {
                 zInfo("Ismeretlen attr value: "+meghajtas);

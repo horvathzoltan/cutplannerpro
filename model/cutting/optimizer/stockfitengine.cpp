@@ -44,7 +44,7 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
     const QSet<QUuid>& groupIds,
     int& rodCounter)
 {
-    zInfo("🔍 STOCK RÚD KERESÉSE — keresés indítása");
+    //zInfo("🔍 STOCK RÚD KERESÉSE — keresés indítása");
     int skipWrongGroup = 0;
     int skipZeroQty = 0;
     int total = stockInventory.size();
@@ -54,12 +54,12 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
         StockEntry& stock = stockInventory[i];
 
         if (!groupIds.contains(stock.materialId)) {
-            zInfo(QString("   ✖ Elutasítva: STOCK[%1] — rossz anyagcsoport").arg(i));
+            //zInfo(QString("   ✖ Elutasítva: STOCK[%1] — rossz anyagcsoport").arg(i));
             skipWrongGroup++;
             continue;
         }
         if (stock.quantity <= 0) {
-            zInfo(QString("   ✖ Elutasítva: STOCK[%1] — nincs készlet (qty=0)").arg(i));
+            //zInfo(QString("   ✖ Elutasítva: STOCK[%1] — nincs készlet (qty=0)").arg(i));
             skipZeroQty++;
             continue;
         }

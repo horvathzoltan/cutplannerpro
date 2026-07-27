@@ -1,3 +1,9 @@
+audit:
+ - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
+
+optimalizáció:
+ - megakad a zárósúlynál az optimalizáció
+
 toldás:
  - ha hullót használunk toldásra, és és a kért méretnél 10 centivel rövidebbre jön ki, akkor azt elfogadjuk jónak, nem kell emiatt a 10 cm miatt egy nagyobb darabot elvágni
 

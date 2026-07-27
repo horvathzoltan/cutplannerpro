@@ -39,20 +39,20 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         zInfo("pieces: (empty)");
     }
 
-    if(mergedView.size()>0){
-        zInfo("reuseables:");
-        for (const auto& e : mergedView) {
-            const MaterialMaster* mat2 = MaterialRegistry::instance().findById(e.materialId);
-            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 source=%5")
-                      .arg(mat2?mat2->toDisplay():e.materialId.toString())
-                      .arg(e.barcode)
-                      .arg(e.availableLength_mm)
-                      .arg(e.materialBarcode())
-                      .arg(e.sourceAsString()));
-        }
-    } else{
-        zInfo("reuseables: (empty)");
-    }
+//    if(mergedView.size()>0){
+//        zInfo("reuseables:");
+//        for (const auto& e : mergedView) {
+//            const MaterialMaster* mat2 = MaterialRegistry::instance().findById(e.materialId);
+//            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 source=%5")
+//                      .arg(mat2?mat2->toDisplay():e.materialId.toString())
+//                      .arg(e.barcode)
+//                      .arg(e.availableLength_mm)
+//                      .arg(e.materialBarcode())
+//                      .arg(e.sourceAsString()));
+//        }
+//    } else{
+//        zInfo("reuseables: (empty)");
+//    }
 
     std::optional<ReusableCandidate> best;
     int bestScore = std::numeric_limits<int>::min();
@@ -94,24 +94,24 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
 
-        zInfo(QString("🔎 Vizsgálat: leftover[%1] — hossz=%2 mm").arg(i).arg(stock.availableLength_mm));
+        //zInfo(QString("🔎 Vizsgálat: leftover[%1] — hossz=%2 mm").arg(i).arg(stock.availableLength_mm));
 
         // if (stock.used) {
         //     zInfo("   ✖ Elutasítva — már felhasznált leftover");
         //     continue;
         // }
         if (!groupedMaterialIds.contains(stock.materialId)) {
-            zInfo("   ✖ Elutasítva — rossz anyagcsoport");
+            //zInfo("   ✖ Elutasítva — rossz anyagcsoport");
             continue;
         }
         if (usedLeftoverEntryIds.contains(stock.entryId)) {
-            zInfo("   ✖ Elutasítva — már tiltott leftover");
+            //zInfo("   ✖ Elutasítva — már tiltott leftover");
             continue;
         }
 
         if (stock.availableLength_mm < sp.goodLeftOver_Min_mm) {
-            zInfo(QString("   ✖ Elutasítva — leftover túl rövid a biztonságos vágáshoz (min=%1 mm)")
-                      .arg( sp.goodLeftOver_Min_mm));
+            //zInfo(QString("   ✖ Elutasítva — leftover túl rövid a biztonságos vágáshoz (min=%1 mm)")
+            //          .arg( sp.goodLeftOver_Min_mm));
             continue;
         }
 
@@ -120,13 +120,13 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                                : 0;*/
 
         if (minSingleFit > 0 && stock.availableLength_mm < minSingleFit) {
-            zInfo(QString("   ✖ Elutasítva — leftover nem tud befogadni egyetlen darabot sem (minSingleFit=%1 mm)")
-                      .arg(minSingleFit));
+            //zInfo(QString("   ✖ Elutasítva — leftover nem tud befogadni egyetlen darabot sem (minSingleFit=%1 mm)")
+            //          .arg(minSingleFit));
             continue;
         }
 
         if (stock.availableLength_mm < minUsefulLimit) {
-            zInfo("   ✖ Elutasítva — leftover túl rövid bármely pending darabhoz");
+            //zInfo("   ✖ Elutasítva — leftover túl rövid bármely pending darabhoz");
             continue;
         }
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja

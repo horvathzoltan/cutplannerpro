@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes
+"54";"Vertex, Miskolc";3325;2340;3195;;1;1;0;"RAL 8016";NP-T;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;3220;;1;1;0;"RAL 8016";NP-TF;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;3102;;1;1;0;"RAL 8016";NP-CZ;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;2237;;1;1;0;"RAL 8016";NP-CL;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;2237;;1;1;0;"RAL 8016";NP-CLB;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;2237;;1;1;0;"RAL 8016";NP-CLT;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;3110;;1;1;0;"RAL 8016";NP-ROLL70-7000;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
+"54";"Vertex, Miskolc";3325;2340;3060;;1;1;0;"RAL 8016";NP-BAR22-3000;Width;false;2026-07-27;NP;CIP;meghajtas=motoros
