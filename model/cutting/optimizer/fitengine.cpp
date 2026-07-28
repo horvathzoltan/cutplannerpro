@@ -335,6 +335,31 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
     fr.greedy_picks       = greedy.size();
     fr.elapsed_us         = timer.nsecsElapsed() / 1000;
 
+
+    // ❗ PATCH: ha nincs combo, de a darabok fizikailag felférnének stockra → NEM FAILED
+    if (fr.combo.isEmpty()) {
+
+        int maxPiece = 0;
+        for (const auto& p : available)
+            maxPiece = std::max(maxPiece, p.info.length_mm);
+
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(available[0].materialId);
+        int stockLen = mat ? mat->stockLength_mm : INT_MAX;
+
+        if (maxPiece <= stockLen) {
+            // csak erre a rúdra nem fért fel → új rúd kell
+            fr.strategy = FitResult::Strategy::Greedy;
+            fr.combo.clear();
+            fr.pieceCount = 0;
+            fr.used = 0;
+            fr.waste = lengthLimit;
+            return fr;
+        }
+
+        // valódi FAILED: darab > stockLength
+        return fr;
+    }
+
     zInfo(QString("🎯 FitEngine találat — GREEDY (picks=%1, used=%2, waste=%3, sorted=%4)")
               .arg(fr.pieceCount)
               .arg(fr.used)

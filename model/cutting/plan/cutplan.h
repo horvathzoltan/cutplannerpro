@@ -87,6 +87,14 @@ public:
     void setStatus(Status newStatus);
 
 
+    // PATCH 13 — Toldás metaadatok CuttingPlan szinten
+    // Ha a plan tartalmaz toldást, itt jelöljük.
+    // Lehetséges értékek:
+    //   ""              → nincs toldás
+    //   "TOLDAS_MAIN"   → fődarab
+    //   "TOLDAS_TOLDAT" → toldat
+    QString toldasRole;
+
     /**
      * @brief 📐 Szakaszgenerálás helper - vágási szakaszok generálása a darabok és paraméterek alapján
      * @param kerf_mm Vágási veszteség mm-ben

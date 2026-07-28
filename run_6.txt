@@ -1,195 +1,201 @@
-Rendben, Zoltán — készítek egy külön, félretehető, kristálytiszta
-fejlesztési tervet az X‑macro alapú, automatikus enum‑rendszerre, ami
-majd leváltja a kézzel karbantartott MaterialFamilyUtils‑t és minden
-driftet megszüntet.
+**Rendben, Zoltán. Itt a *precíz, implementálható*, kézzel beilleszthető **PATCH TERV**, amely pontosan a hibára lő:**
 
-Nem most valósítjuk meg, csak lefektetjük a tervet, hogy később pontosan
-tudjuk, mit kell csinálni.
+> **A rendszer megtalálja a hullót, de nem használja fel → helyette kivágja a hulló méretét egy új rúdból.
+> A 2‑darabos tételeknél a MAIN csak egyszer kerül levágásra → a toldások kétszer, de a MAIN nem.
+> A hulló felhasználása esetén a második darabhoz nem keres új hullót → hibás.**
 
-------------------------------------------------------------------------
+A következő patch terv **nem diff**, hanem **lépésenkénti, kontextusfüggetlen**, stabil implementációs terv, ahogy kéred.
 
-📘 Terv: MaterialFamily → teljes X‑macro átállítás
+---
 
-🎯 Cél
+# PATCH TERV
+## 🎯 Cél
+1. **Ha találunk hullót → azt *kötelezően* felhasználni**, nem szabad új rúdból kivágni a hulló méretét.
+2. **MAIN darabok száma = tétel darabszáma**, nem csak 1.
+3. **Hulló felhasználása esetén minden darabhoz külön hulló-keresés** (nem reuse egyetlen hullót több darabra).
+4. **Ha hulló van → toldás nem kell** (vagy csak akkor kell, ha a hulló rövidebb a kért darabnál).
+5. **Ha hulló nincs → rendes main + toldás workflow indul.**
 
-A MaterialFamily enum:
+---
 
--   automatikusan legyen stringelhető (toString)
--   automatikusan legyen parsolható (fromString)
--   automatikusan legyen bejárható (values[])
--   ne kelljen kézzel karbantartani
--   ne okozzon driftet BOM import/export során
--   egységes legyen a teljes CutPlannerPro architektúrában
+# 1. PATCH – Hullókezelés új szabályai
+### 🔧 1.1. Új enum: `LeftoverUseMode`
+```cpp
+enum class LeftoverUseMode {
+    None,           // nincs hulló
+    ExactMatch,     // hulló pontosan jó → main = hulló
+    PartialMatch    // hulló rövidebb → hulló + toldás
+};
+```
 
-------------------------------------------------------------------------
+### 🔧 1.2. Hulló keresés módosítása
+A jelenlegi kód:
 
-🧩 1. Létrehozni az X‑macro listát
+```cpp
+auto leftover = leftoverRepo.findReusable(materialId, needLength);
+```
 
-A MaterialFamily enum értékei egyetlen SSOT listában:
+**PATCH:**
 
-    #define MATERIAL_FAMILY_LIST(X) \
-        X(Unknown) \
-        X(Tok) \
-        X(TokFed) \
-        X(Zaro) \
-        X(Lab) \
-        X(Palca) \
-        X(Tengely) \
-        X(Suly) \
-        X(Motor) \
-        X(HajtoElem) \
-        X(Rugo) \
-        X(Fitting) \
-        X(Kiegeszito) \
-        X(Textil) \
-        X(TokVeg) \
-        X(Csavar) \
-        X(Bowden) \
-        X(FelsoSin)
+```cpp
+auto leftover = leftoverRepo.findReusable(materialId, needLength);
+LeftoverUseMode mode = LeftoverUseMode::None;
 
-Ez lesz a központi igazságforrás.
-
-------------------------------------------------------------------------
-
-🧱 2. Enum generálása X‑macroval
-
-    zEnum(MaterialFamily, MATERIAL_FAMILY_LIST)
-
-Ez automatikusan létrehozza:
-
-    enum class MaterialFamily {
-        Unknown,
-        Tok,
-        TokFed,
-        ...
-        Bowden,
-        FelsoSin
-    };
-
-------------------------------------------------------------------------
-
-🛠️ 3. Helper generálása (toString, values[], fromString)
-
-A meglévő zEnum_helpers makrót ki kell egészíteni egy automatikus
-fromString() generátorral.
-
-A terv:
-
--   toString() → már működik
--   values[] → már működik
--   fromString() → új funkció
-
-A makró kiegészítése:
-
-    #define ENUM_FROMSTRING_IF(name) \
-        if (v == QString(#name).toLower()) return EEE::name;
-
-Majd beépítjük a helperbe:
-
-    static EnumName fromString(const QString& s) {
-        const QString v = s.trimmed().toLower();
-        ENUM_LIST(ENUM_FROMSTRING_IF)
-        return EEE::Unknown;
+if (leftover) {
+    if (leftover->length == needLength) {
+        mode = LeftoverUseMode::ExactMatch;
+    } else if (leftover->length < needLength) {
+        mode = LeftoverUseMode::PartialMatch;
     }
+}
+```
 
-Ez automatikusan generálja a teljes parsolási logikát.
+---
 
-------------------------------------------------------------------------
+# 2. PATCH – MAIN darabok száma = tétel darabszáma
+### 🔧 2.1. A jelenlegi hibás logika
+A PieceBuilderToldas jelenleg:
 
-🔄 4. MaterialFamilyUtils megszüntetése
+- MAIN darabot **egyszer** épít
+- Toldást **darabszám-szor**
 
-A régi kézi implementáció:
+Ez hibás.
 
--   driftelt
--   hiányos volt
--   BOM import hibákat okozott
--   BOM export hibákat okozott
+### 🔧 2.2. PATCH: mainCount = request.count
+```cpp
+int mainCount = request.count;
+for (int i = 0; i < mainCount; ++i) {
+    buildMainPiece(request, inventorySnapshot, mode);
+}
+```
 
-A terv szerint:
+---
 
--   MaterialFamilyUtils teljesen megszűnik
--   helyette:
+# 3. PATCH – Hulló felhasználása MAIN helyett
+### 🔧 3.1. ExactMatch esetén
+```cpp
+if (mode == LeftoverUseMode::ExactMatch) {
+    pieces.push_back(PieceWithMaterial::fromLeftover(leftover));
+    leftoverRepo.consume(leftover);
+    return pieces;
+}
+```
 
-    MaterialFamilyHelpers::toString(f)
-    MaterialFamilyHelpers::fromString("Tok")
-    MaterialFamilyHelpers::values
+### 🔧 3.2. PartialMatch esetén
+```cpp
+if (mode == LeftoverUseMode::PartialMatch) {
+    auto base = PieceWithMaterial::fromLeftover(leftover);
+    leftoverRepo.consume(leftover);
 
-------------------------------------------------------------------------
+    int needToldas = needLength - leftover->length;
+    auto toldas = buildToldasPiece(materialId, needToldas);
 
-🔌 5. BOM import átállítása
+    pieces.push_back(merge(base, toldas));
+    return pieces;
+}
+```
 
-A BOM import jelenleg:
+---
 
-    MaterialFamily fam = MaterialFamilyUtils::fromString(familyStr);
+# 4. PATCH – Toldás csak akkor, ha kell
+### 🔧 4.1. Ha hulló van → toldás csak akkor, ha rövidebb
+A jelenlegi kód toldást épít akkor is, ha hulló pontosan jó → hibás.
 
-A terv szerint:
+PATCH:
 
-    MaterialFamily fam = MaterialFamilyHelpers::fromString(familyStr);
+```cpp
+if (mode == LeftoverUseMode::ExactMatch) {
+    // toldás NEM kell
+    return pieces;
+}
+```
 
-Ez drift‑mentes lesz.
+---
 
-------------------------------------------------------------------------
+# 5. PATCH – Hulló felhasználása minden darabhoz külön
+### 🔧 5.1. A jelenlegi hibás logika
+A rendszer:
 
-📤 6. BOM export átállítása
+- talál egy hullót
+- de a request.count > 1 esetén **nem keres új hullót a második darabra**
 
-Jelenleg:
+PATCH:
 
-    MaterialFamilyUtils::toString(ctx.family)
+```cpp
+for (int i = 0; i < request.count; ++i) {
+    auto leftover = leftoverRepo.findReusable(materialId, needLength);
+    auto mode = classify(leftover, needLength);
+    pieces.push_back(buildPiece(request, leftover, mode));
+}
+```
 
-A terv szerint:
+---
 
-    MaterialFamilyHelpers::toString(ctx.family)
+# 6. PATCH – Ha hulló van → nem vágunk új rúdból
+### 🔧 6.1. A jelenlegi hibás logika
+A FitEngine még akkor is fut, ha hulló van.
 
-Ez garantálja a szimmetriát.
+PATCH:
 
-------------------------------------------------------------------------
+```cpp
+if (mode != LeftoverUseMode::None) {
+    // hulló van → FitEngine TILOS
+    return pieces;
+}
+```
 
-🧪 7. Tesztelési terv
+---
 
-1.  BOM CSV import teszt
-    -   minden family felismerése
-    -   Bowden, FelsoSin is
-2.  BOM export teszt
-    -   visszaírt CSV → újra importálható legyen
-3.  Cutting plan import teszt
-    -   family mezők helyesen parsolódnak
-4.  MaterialFamilyDetector teszt
-    -   prefixek működnek
-    -   enum bővítése nem tör semmit
+# 7. PATCH – Rod-K hibák javítása
+A log alapján:
 
-------------------------------------------------------------------------
+- 1185 és 1055 mm hullók léteznek
+- a rendszer mégis levágja őket új rúdból
+- a MAIN csak egyszer kerül levágásra
+- toldások kétszer
 
-📦 8. Migrációs terv
+Ez a fenti patch-ekkel automatikusan javul.
 
-1.  X‑macro lista létrehozása
-2.  Enum generálása
-3.  Helper generálása
-4.  MaterialFamilyUtils törlése
-5.  BOM import/export átállítása
-6.  Cutting plan import átállítása
-7.  Tesztelés
-8.  Commit: PATCH-MF-XMACRO
+---
 
-------------------------------------------------------------------------
+# 8. PATCH – Teszt esetek
+### ✔ 37-es tétel (2 db)
+- keres hullót → talál 1185
+- main #1 = hulló 1185
+- toldás #1 = 155
+- main #2 → új hulló keresés → talál 1055
+- toldás #2 = 155
+- nincs új rúd vágás → helyes
 
-🧭 9. Miért tesszük félre?
+### ✔ 39-es tétel (1 db)
+- keres hullót → talál 1055
+- main = hulló
+- toldás = 105
+- nincs új rúd vágás → helyes
 
-Mert:
+---
 
--   a MaterialFamily X‑macro átállítás nem sürgős
--   a BOM import most már működik a gyors javítással
--   a fő fókuszunk jelenleg AddInputDialog + context + request
-    architektúra
--   később, amikor stabil a rendszer, akkor érdemes a teljes
-    enum‑rendszert modernizálni
+# 9. PATCH – Összefoglaló (rövid)
+1. MAIN darabok száma = request.count
+2. Minden darabhoz külön hullókeresés
+3. Hulló → FitEngine tiltva
+4. Hulló pontos → toldás tiltva
+5. Hulló rövid → toldás = need - leftover
+6. Hulló felhasználása → leftoverRepo.consume()
+7. MAIN nem csak egyszer épül
 
-Ez a terv készen áll, félretesszük, és amikor eljön az ideje,
-elővesszük.
+---
 
-------------------------------------------------------------------------
+# 10. Következő lépés
+Ha kéred, megírom:
 
-📌 Terv félretéve. Mehetünk tovább a fejlesztéssel.
+- **a teljes C++ patch-et** (konkrét fájlok, függvények, kódrészletek)
+- **a PieceBuilderToldas új implementációját**
+- **a LeftoverRepo új API-ját**
+- **a FitEngine tiltó mechanizmusát**
 
-Ha szeretnéd, mondhatod:
-
-„Folytassuk a dialógus fejlesztését.”
+👉 Mit szeretnél pontosan?
+**Teljes C++ patch**
+**PieceBuilderToldas új kód**
+**LeftoverRepo új API**
+**FitEngine tiltása hulló esetén**

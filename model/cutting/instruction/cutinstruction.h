@@ -48,6 +48,9 @@ struct CutInstruction {
     QUuid productSubtypeId;
     QMap<QString, QString> attributes; ///< termékhez tartozó további attribútumok (pl. szín, felület, stb.)
 
+    // PATCH 13/B — Toldás szerepkör
+    QString toldasRole;
+
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;
     // 🔹 Új: finalize-kor mentett kompenzáció

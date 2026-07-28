@@ -25,6 +25,79 @@ CutResult CutEngine::cutSingle(
     cr.used = 0;
     cr.waste = 0;
 
+    // PATCH: ToldasEngine fődarab kezelése (keepWhole)
+    // Ha a darab egy teljes rúd (ToldasEngine fődarab), akkor nem vágjuk.
+    // Nem generálunk CutPlan-t, nem tesszük rúdra, csak jelezzük, hogy nincs vágás.
+
+    // PATCH 9/B — ToldasEngine fődarab kezelése (keepWhole)
+    // Ha a darab egy teljes rúd (ToldasEngine fődarab), akkor nem vágjuk,
+    // de a CuttingPlan-be be kell kerülnie mint "kész darab".
+
+    if (piece.info.keepWhole) {
+
+        zInfo(QString("⚠ CUT SINGLE — keepWhole=true, darabot nem vágjuk (piece=%1 mm)")
+                  .arg(piece.info.length_mm));
+
+        // 1) CutPlan létrehozása vágás nélkül
+        Cutting::Plan::CutPlan p;
+        p.planNumber = planCounter++;
+        p.piecesWithMaterial = { piece };     // csak a fődarab
+        // PATCH 13 — fődarab szerepkör átvezetése
+        p.toldasRole = piece.info.toldasRole;
+
+        p.materialId = piece.materialId;
+        p.rodId = "toldas";                          // nincs rúd hozzárendelve
+        p.source = Cutting::Plan::Source::Stock; // vagy Reusable, ha akarod jelölni
+        p.planId = QUuid::createUuid();
+        p.status = Cutting::Plan::Status::NotStarted;
+        p.machineId = machine.id;
+        p.machineName = machine.name;
+        p.machineKerf = kerf_mm;
+
+        // NINCS vágás → üres szegmenslista
+        p._segments.clear();
+        p._segments.SetTotalLength_mm(piece.info.length_mm);
+
+        // ParentInfo öröklése, ha van
+        if (rod._parent.has_value()) {
+            p.setParent(*rod._parent);
+        } else {
+            p.setParent(Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt });
+        }
+
+        p.sourceBarcode = rod.barcode;
+        p.optimizationId = currentOpId;
+
+        // 2) ResultModel létrehozása vágás nélkül
+        Cutting::Result::ResultModel result;
+        result.cutPlanId = p.planId;
+        result.materialId = piece.materialId;
+        result.length = piece.info.length_mm;
+        result.cuts = {};                      // nincs vágás
+        result.waste = 0;                      // nincs hulladék
+        result.source = rod.isReusable
+                            ? Cutting::Result::ResultSource::FromReusable
+                            : Cutting::Result::ResultSource::FromStock;
+        result.optimizationId = rod.isReusable ? std::nullopt : std::make_optional(currentOpId);
+        result.reusableBarcode = "";
+        result.isFinalWaste = false;
+        result._parent = p.parent();
+        result.sourceBarcode = p.sourceBarcode;
+
+        // 3) CutResult kitöltése
+        cr.status = CutResultStatus::Ok;
+        cr.planId = p.planId;
+        cr.used = 0;                           // nem használtunk rúd-hosszt
+        cr.waste = 0;
+        cr.plan = p;
+        cr.result = result;
+        cr.usedPieceIds = { piece.info.pieceId };
+        cr.leftoverBarcode = "";
+
+        return cr;
+    }
+
+
     //int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss_1(1, kerf_mm);
     auto info = OptimizerUtils::computePhysicalCut({ piece }, kerf_mm, remainingLength);
 
@@ -57,6 +130,9 @@ CutResult CutEngine::cutSingle(
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
     p.piecesWithMaterial = { piece };
+    // PATCH 13 — toldat szerepkör átvezetése
+    p.toldasRole = piece.info.toldasRole;
+
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;
     p.source = rod.isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;
@@ -174,6 +250,21 @@ CutResult CutEngine::cutCombo(
     Cutting::Plan::CutPlan p;
     p.planNumber = planCounter++;
     p.piecesWithMaterial = combo;
+    // PATCH 13 — combo esetén toldás metaadat meghatározása
+    // Ha bármely darab toldat, akkor a plan toldat.
+    // Ha bármely darab fődarab, akkor a plan fődarab.
+    // Ha vegyes, akkor toldat (a szerelés így is tudja kezelni).
+    p.toldasRole = "";
+    for (const auto& pc : combo) {
+        if (pc.info.toldasRole == "TOLDAS_MAIN") {
+            p.toldasRole = "TOLDAS_MAIN";
+            break;
+        }
+        if (pc.info.toldasRole == "TOLDAS_TOLDAT") {
+            p.toldasRole = "TOLDAS_TOLDAT";
+        }
+    }
+
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;
     p.source = rod.isReusable ? Cutting::Plan::Source::Reusable : Cutting::Plan::Source::Stock;

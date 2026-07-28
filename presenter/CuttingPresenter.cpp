@@ -1059,6 +1059,8 @@ void CuttingPresenter::GenerateCutInstructions()
             ci.productTypeId = pwm.productTypeId;
             ci.productSubtypeId = pwm.productSubtypeId;
             ci.attributes = pwm.attributes;
+            // PATCH 13/B — toldás szerepkör átvezetése a gépi utasításba
+            ci.toldasRole = pwm.info.toldasRole;
 
             // if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
             //     if (!reusedLeftovers.contains(plan.leftoverBarcode))

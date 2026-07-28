@@ -125,10 +125,17 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
 
-        if (stock.availableLength_mm < minUsefulLimit) {
-            //zInfo("   ✖ Elutasítva — leftover túl rövid bármely pending darabhoz");
+        int needed = smallestPending + static_cast<int>(kerf_mm);
+
+        // ❗ Kritikus szűrés: a leftover rúdra fizikailag felférjen legalább a legkisebb darab
+        if (stock.availableLength_mm < needed) {
+            zInfo(QString("♻️ Leftover kiszűrve — túl rövid (rod=%1, needed=%2, barcode=%3)")
+                      .arg(stock.availableLength_mm)
+                      .arg(needed)
+                      .arg(stock.barcode));
             continue;
         }
+
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
         const auto single = OptimizerUtils::findSingleExactFit(
             relevantPieces, stock.availableLength_mm, 0.0);

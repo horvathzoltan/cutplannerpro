@@ -387,12 +387,29 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
         prevSizeStr = sizeStr;
 
-        QString icon = ci.isManualCut ? "📏" : "✂️";
+//        QString icon = ci.isManualCut ? "📏" : "✂️";
+        // PATCH 13/B — Toldás szerepkör ikon
+        QString icon;
+        if (ci.toldasRole == "TOLDAS_MAIN") {
+            // fődarab → nem vágjuk
+            icon = "■";     // vagy "🔧", vagy akár " " (üres)
+        } else {
+            // toldat vagy normál darab → vágás
+            icon = ci.isManualCut ? "📏" : "✂️";
+        }
+
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabel = req
                                  ? QString("%1. %2").arg(ci.externalReference).arg(req->ownerName)
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
+
+        // PATCH 13/B — szerepkör megjelenítése
+        if (!ci.toldasRole.isEmpty()) {
+            pieceLabel += QString(" [%1]").arg(ci.toldasRole == "TOLDAS_MAIN"
+                                                   ? "MAIN"
+                                                   : "TOLDAT");
+        }
 
         QString multiplier = "";
         if (isRepeated && firstOfBlock)
@@ -766,12 +783,19 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString ext = ci.externalReference + ".";
 
+        if (!ci.toldasRole.isEmpty()) {
+            ext += QString(" [%1]").arg(ci.toldasRole == "TOLDAS_MAIN"
+                                            ? "MAIN"
+                                            : "TOLDAT");
+        }
+
         // 🔥💧☁️⏳ prioritás ikon
         QString prio = req ? priorityIconFor(req->dueDate) : "🌞";
 
         // 🐸🐱🦭… csoportikon
         QString baseRef = ci.externalReference.split(' ').first();
         QString group = groupIcons.value(baseRef, "🐞");
+
 
         // zInfo(QStringLiteral("prio(%1) -> %2").arg(req->dueDate.toString()).arg(prio));
         // zInfo(QStringLiteral("group(%1)-> %2").arg(ci.externalReference).arg(group));

@@ -108,7 +108,13 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
         parentTxt = _parent->toString();
     }
 
-    return QString("🪚 CutPlan #%1 → %2, Rod=%3, gép=%4, kerf=%5 mm\nParent=%8\n%6\nhulladék=%7 mm")
+    // PATCH 13 — Toldás szerepkör megjelenítése a logban
+    QString toldasTxt;
+    if (!toldasRole.isEmpty()) {
+        toldasTxt = QString(" [ROLE=%1]").arg(toldasRole);
+    }
+
+    return QString("🪚 CutPlan #%1%9 → %2, Rod=%3, gép=%4, kerf=%5 mm\nParent=%8\n%6\nhulladék=%7 mm")
         .arg(planNumber)
         .arg(sourceLabel)
         .arg(rodId)
@@ -116,8 +122,8 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
         .arg(QString::number(_segments.kerfInfo().length, 'f', 1))
         .arg(pieceList.join(", "))
         .arg(_segments.waste_mm())
-        .arg(parentTxt);
-
+        .arg(parentTxt)
+        .arg(toldasTxt);
 }
 
 

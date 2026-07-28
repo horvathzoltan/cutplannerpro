@@ -1,240 +1,257 @@
-Zoltán, akkor jöjjön **a teljes, részletes, lépésről‑lépésre végrehajtható terv** a *PostCutToldasEngine* modulhoz — pontos, architekturálisan tiszta, és a végén egy **patching‑tervvel**, hogy tudd, hova kell majd beilleszteni a kódot.
+A teljes, **összefüggő**, **implementálható**, **kézzel beilleszthető**, **diff‑mentes**, **lépésenkénti** patch‑tervet adom — olyat, ami **közvetlenül** a CutPlannerPro jelenlegi hibáját javítja:
 
-A tervet úgy építem fel, hogy:
-
-- **először** megértsük a célokat és a követelményeket,
-- **utána** megtervezzük az adatáramlást,
-- **utána** megtervezzük a modul működését,
-- **utána** megtervezzük a riportot,
-- **végül** megkapod a *patching‑tervet*, amely pontosan megmondja, melyik fájlba, melyik sor után kell majd beilleszteni a kódot.
-
----
-
-# 🟩 1. CÉLOK — mit kell tudnia a PostCutToldasEngine‑nek?
-
-1. **Az optimize futása után** megkapja:
-   - a FAILED darabok listáját (`_discardedPieces`)
-   - a vágás során keletkezett hullókat (`_planned_leftovers`)
-   - a teljes InventorySnapshotot (stock + reusable leftovers)
-
-2. **Csak NP‑BAR (súly) anyagokra** fut.
-
-3. **Minden FAILED súlyra** megpróbál toldást végezni:
-   - stock + hulló
-   - hulló + hulló
-   - stock + stock
-   (→ **kizárólag 2 darabos toldás**, ahogy kérted)
-
-4. A toldás **nem kerül vissza a vágási engine-be**,
-   hanem egy **külön riport** készül belőle.
-
-5. A toldás **felhasználhatja a vágás során keletkezett hullókat**.
-
-6. A toldás **nem módosítja a CutPlan-eket**,
-   nem módosítja a leftover registryt,
-   nem módosítja a RodLoopEngine-t.
-
-7. A toldás **nem fut bele végtelen ciklusba**,
-   mert csak a FAILED darabokat dolgozza fel.
+> **HIBÁK, amiket most javítunk:**
+> 1) **Hullót megtaláljuk, de nem használjuk fel → helyette kivágjuk ugyanazt a méretet stockból.**
+> 2) **Többdarabos tételnél (pl. 37 → 2 db) a main csak egyszer kerül levágásra, a toldatok kétszer → hibás.**
+> 3) **Ha egy tételhez több darab kell, és hullót találunk, akkor minden darabhoz külön hullót kell keresni → nem ugyanazt a hullót kétszer.**
+> 4) **Ha hullót találunk, akkor a main darabot nem szabad kivágni — a hulló maga a main.**
+> 5) **Ha hullót találunk, a toldásokat is a hullóhoz kell igazítani, nem a stockból levágott mainhez.**
 
 ---
 
-# 🟩 2. ADATÁRAMLÁS — honnan hova mennek az adatok?
+# **PATCH TERV — TELJES, EGYBEN**
 
-### Inputok:
-
-- `OptimizerModel::_discardedPieces`
-  → gépenkénti FAILED darabok
-
-- `OptimizerModel::_planned_leftovers`
-  → vágás során keletkezett hullók
-
-- `OptimizerModel::_inventorySnapshot`
-  → stock + reusable leftovers
-
-### Outputok:
-
-- `PostCutToldasReport`
-  → egy új struktúra, amely tartalmazza:
-    - requestId
-    - eredeti igényelt hossz
-    - toldási darabok (2 db)
-    - toldás típusa (stock+hulló, hulló+hulló, stock+stock)
-    - felhasznált leftover entryId-k
-    - failReason, ha toldás sem sikerült
-
-- TXT/PDF riport:
-  ```
-  📦 Toldási utasítások (súlyok)
-    • Request 54 – Zárósúly Ø22x3000mm
-        – eredeti igény: 3060 mm
-        – toldás: 3000 mm + 60 mm hulló
-        – toldható: igen
-        – felhasznált hullók:
-            • leftoverId=...
-  ```
-
----
-
-# 🟩 3. MODUL FELÉPÍTÉSE — PostCutToldasEngine
-
-A modul 4 fő lépésből áll:
-
----
-
-## 🔹 3.1. LÉPÉS — FAILED darabok szűrése NP‑BAR anyagra
+## 🧩 **1. PATCH: Hullókezelés új szabályai**
+### **1.1. A hulló nem csak “találat”, hanem *main darab***
+Ha `LeftoverEngine::findReusableLeftover()` talál egy hullót:
 
 ```
-for dp in discardedPieces:
-    if dp.materialId NP-BAR:
-        process(dp)
+if (leftoverFound) {
+    piece.mainSource = Leftover;
+    piece.mainLength = leftoverFound.length;
+    piece.mainBarcode = leftoverFound.barcode;
+    piece.useStock = false;
+}
+```
+
+**Következmény:**
+– Nem vágunk ki main darabot stockból.
+– A hulló maga a main.
+
+---
+
+### **1.2. Hulló felhasználása után a hullót *el kell venni* az inventory-ból**
+Most: megtaláljuk → de nem vesszük ki → újra felhasználható → hibás.
+
+Patch:
+
+```
+InventorySnapshot::consumeLeftover(leftoverFound.id);
 ```
 
 ---
 
-## 🔹 3.2. LÉPÉS — eredeti request visszakeresése
+### **1.3. Több darabos tételnél minden darabhoz külön hullót kell keresni**
+Most: egy hullót talál → mindkét darabhoz ugyanazt használja → hibás.
 
-A FAILED darabban benne van:
-
-- `dp.requestId`
-- `dp.materialId`
-- `dp.failReason`
-
-A requestet vissza kell keresni:
+Patch:
 
 ```
-req = findRequestById(dp.requestId)
-```
-
----
-
-## 🔹 3.3. LÉPÉS — toldás megkísérlése
-
-A toldás logika ugyanaz, mint a PieceBuilderToldas-ban, de:
-
-### ✔ új inputokkal:
-
-- `req.requiredLength`
-- `stockLength_mm`
-- `inv.reusableInventory`
-- `_planned_leftovers`  ← ÚJ!
-
-### ✔ új kombinációkkal:
-
-- stock + leftover
-- leftover + leftover
-- stock + stock
-
-### ✔ kizárólag 2 darabos toldás
-
-### ✔ ha sikerül → toldási darabok listája
-
-### ✔ ha nem sikerül → failReason: „Toldás sem lehetséges”
-
----
-
-## 🔹 3.4. LÉPÉS — riport összeállítása
-
-Minden toldott darabhoz:
-
-- requestId
-- eredeti igény
-- toldási darabok hossza
-- toldás típusa
-- felhasznált leftover entryId-k
-- failReason (ha nem sikerült)
-
----
-
-# 🟩 4. RIPORT — hogyan jelenik meg?
-
-### Példa:
-
-```
-📦 Toldási utasítások (súlyok)
-──────────────────────────────────
-• Request 54 – Zárósúly Ø22x3000mm
-    – eredeti igény: 3060 mm
-    – toldás: 3000 mm + 60 mm hulló
-    – toldható: igen
-    – felhasznált hullók:
-        • leftoverId=abc123 (60 mm)
-──────────────────────────────────
-• Request 55 – Zárósúly Ø22x3000mm
-    – eredeti igény: 3500 mm
-    – toldás: nem lehetséges
-    – ok: nincs elegendő hulló
-──────────────────────────────────
-```
-
-Ez egy külön TXT/PDF fájl:
-
-```
-<baseName>_ToldasInstructions.txt
+for each requestedPiece:
+    leftover = findReusableLeftover(piece.needLength)
+    if leftover:
+        assign leftover
+        consume leftover
+    else:
+        cut main from stock
 ```
 
 ---
 
-# 🟩 5. PATCHING‑TERV — pontos helyek, pontos fájlok
+## 🧩 **2. PATCH: Toldás logika javítása**
 
-Ez még **nem a patch**, csak a patching‑terv, ahogy kérted.
+### **2.1. Toldás mindig a main darabhoz igazodik**
+Most: ha hullót találunk, a toldást mégis a stockból levágott mainhez igazítja → hibás.
 
----
-
-## 🔹 5.1. ÚJ FÁJL: `postcuttoldasengine.h`
-
-Tartalmazza:
-
-- `PostCutToldasEngine` osztály
-- `PostCutToldasReport` struktúra
-
----
-
-## 🔹 5.2. ÚJ FÁJL: `postcuttoldasengine.cpp`
-
-Tartalmazza:
-
-- `run(const OptimizerModel&)`
-- toldás logika
-- riport generálás
-
----
-
-## 🔹 5.3. MÓDOSÍTÁS: `optimizermodel.h`
-
-Hozzáadni:
+Patch:
 
 ```
-const QMap<QUuid, DiscardedPiece>& getDiscardedPieces() const;
-const QVector<ResultModel>& getPlannedLeftovers() const;
-const InventorySnapshot& getInventorySnapshot() const;
+toldasEngine.buildPiecesForRequest(request, mainLength = piece.mainLength);
 ```
 
 ---
 
-## 🔹 5.4. MÓDOSÍTÁS: `cuttingpresenter.cpp`
-
-Az optimize után:
-
+### **2.2. Ha hulló a main, toldást is hullóhoz kell illeszteni**
 ```
-auto toldasReport = PostCutToldasEngine::run(model);
-exportToldasReport(toldasReport);
+if (piece.mainSource == Leftover) {
+    toldasEngine.useLeftoverAsMain(piece.mainLength);
+}
 ```
 
 ---
 
-## 🔹 5.5. ÚJ FÁJL: `toldasinstructionutils.h/.cpp`
+## 🧩 **3. PATCH: Main darabok száma = kért darabszám**
+Most:
+– 37-es tétel → 2 db
+→ main csak 1× vágódik → hibás.
 
-A TXT/PDF riport formázása.
+Patch:
+
+```
+for i in 1..request.count:
+    build main + toldas separately
+```
 
 ---
 
-# 🟩 6. A következő lépés
+## 🧩 **4. PATCH: Ha hullót találunk, nem vágunk ki “main méretű” darabot stockból**
+Most:
+– Hulló 1185 mm
+→ mégis kivágja a 1185 mm-t stockból → hibás.
 
-Most, hogy a terv kész:
+Patch:
 
-👉 **megcsinálom a teljes, kézzel beilleszthető patch-et**, minden fájlra, minden helyre, pontos kóddal.
+```
+if (leftoverFound)
+    skipStockCutForMain = true;
+```
 
-Ha készen állsz:
+---
 
-**kérem a teljes PostCutToldasEngine patch-et**
+## 🧩 **5. PATCH: A hulló méretét nem szabad “main darabként” újra vágni**
+Ez a konkrét hibád:
+
+### **Mi történt?**
+A logban:
+
+```
+NP-BAR22-3000;1185;Manual
+NP-BAR22-3000;1055;Manual
+```
+
+→ Ezek hullók.
+
+De a rendszer:
+
+```
+Rod-K → 1185 mm (main)
+Rod-K → 1055 mm (main)
+```
+
+→ Ezeket **újra levágta**, nem a hullót használta.
+
+### **PATCH:**
+```
+if leftoverFound:
+    piece.mainLength = leftoverFound.length
+    piece.mainBarcode = leftoverFound.barcode
+    piece.isCut = false
+```
+
+---
+
+# **🧩 6. PATCH: InventorySnapshot::findReusableLeftover() javítása**
+
+### **6.1. A jelenlegi hiba oka**
+A függvény megtalálja a hullót, de:
+
+- nem jelzi a PieceBuilder felé, hogy “ez már kész darab”
+- nem jelzi a ToldasEngine felé, hogy “ne vágj main-t”
+- nem veszi ki a hullót az inventoryból
+
+### **PATCH: új visszatérési struktúra**
+
+```
+struct LeftoverResult {
+    bool found;
+    int length;
+    QString barcode;
+    QString leftoverId;
+    bool consumeImmediately;
+}
+```
+
+---
+
+# **🧩 7. PATCH: PieceBuilderToldas::buildPiecesForRequest() módosítása**
+
+### **7.1. Ha hulló a main → toldás csak akkor kell, ha a request toldható**
+```
+if (mainSource == Leftover) {
+    if (!toldasEngine.canToldas(mainLength, needLength)) {
+        return { mainOnly };
+    }
+}
+```
+
+---
+
+# **🧩 8. PATCH: CutPlan generálás javítása**
+
+### **8.1. A hulló nem kerülhet “Rod-K” alá**
+Most:
+Hulló → Rod-K → mintha stockból vágtuk volna.
+
+Patch:
+
+```
+if (piece.mainSource == Leftover)
+    plan.addPieceWithoutCut(piece);
+```
+
+---
+
+# **🧩 9. PATCH: UI javítás**
+
+### **9.1. A hulló jelölése a listában**
+Most: ■ jel helyesen megjelenik, de a label nem kapja meg.
+
+Patch:
+
+```
+if (piece.mainSource == Leftover)
+    uiLabel.setIcon("■");
+```
+
+---
+
+# **🧩 10. PATCH: A teljes folyamat sorrendje**
+
+```
+1. request.count → darabok száma
+2. minden darabhoz:
+    2.1. leftover keresés
+    2.2. ha leftover → main = leftover
+    2.3. leftover fogyasztása
+    2.4. toldás generálása a leftoverhez
+    2.5. ha nincs leftover → main vágása stockból
+    2.6. toldás generálása a mainhez
+3. plan összeállítása
+4. UI jelölések frissítése
+```
+
+---
+
+# **🧩 11. PATCH: A hibák okai és a javítás hatása**
+
+### **Miért volt hibás?**
+- A hullókezelés csak “találat” volt, nem “felhasználás”.
+- A main darabok száma nem a kért darabszámot követte.
+- A toldás a rossz mainhez igazodott.
+- A hulló nem került kivételre → újra felhasználható volt → duplikált darabok.
+
+### **Mit javít a patch?**
+- A hulló valóban felhasználásra kerül.
+- A main darabok száma helyes lesz.
+- A toldás mindig a megfelelő mainhez igazodik.
+- A hulló nem kerül újra felhasználásra.
+- Nem vágunk ki felesleges darabokat stockból.
+- A UI helyesen jelöli a hullókat.
+
+---
+
+# **🧩 12. Következő lépés — PATCH #1 generálása**
+
+Ha szeretnéd, generálom a **kézzel beilleszthető**, **kontextusfüggetlen**, **diff‑mentes**, **C++ patch kódot**:
+
+👉 **Kérem a PATCH #1 kódot**
+
+Vagy:
+
+👉 **Kérem a teljes implementációt**
+
+Vagy:
+
+👉 **Menjünk tovább a ToldasEngine patchelésével**
+
+Zoltán, mondd melyik modult patcheljük először.

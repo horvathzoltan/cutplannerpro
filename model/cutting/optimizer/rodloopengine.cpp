@@ -73,39 +73,40 @@ RodStepResult RodLoopEngine::step(
 
             if (needed > remainingLength) {
 
-                // Itt feltételezzük, hogy PieceWithMaterial-ben van:
-                //   bool failed;
-                //   QString failReason;
-                p.failed = true;
+                // Hibaszöveg előállítása
+                QString reason = QString(
+                                     "Nem vágható: requested=%1, rod=%2, dpLimit=%3, needed=%4")
+                                     .arg(p.info.length_mm)
+                                     .arg(rod.length)
+                                     .arg(dpLimit)
+                                     .arg(needed);
+
+                // PieceWithMaterial jelölése
+                p.failed     = true;
+                p.failReason = reason;
 
                 // --- géphez kötött eldobott darab mentése ---
                 DiscardedPiece dp;
                 dp.requestId  = p.info.requestId;     // ← PieceInfo-ból jön!
                 dp.materialId = p.materialId;
                 dp.machineId  = machine.id;           // ← IdentifiableEntity::id
-                dp.failReason = p.failReason;
-                dp.pieceId    = p.info.pieceId;   // ← ez a kulcs!
+                dp.failReason = reason;               // ← konzisztens hibaszöveg
+                dp.pieceId    = p.info.pieceId;       // ← ez a kulcs!
 
                 model.addDiscardedPiece(dp);
 
-                p.failReason = QString(
-                                   "Nem vágható: requested=%1, rod=%2, dpLimit=%3, needed=%4")
-                                   .arg(p.info.length_mm)
-                                   .arg(rod.length)
-                                   .arg(dpLimit)
-                                   .arg(needed);
-
-                zWarning("❌ FAILED PIECE — " + p.failReason);
+                zWarning("❌ FAILED PIECE — " + reason);
 
                 auto* mat = MaterialRegistry::instance().findById(p.materialId);
-                QString matName = mat?mat->toDisplay():"?";
+                QString matName = mat ? mat->toDisplay() : "?";
+
                 // ❌ FAILED PIECE — UI riport
                 zEvent(QString("❌ FAILED PIECE — %1 mm darab nem vágható a %2 mm rúdra "
                                "(dpLimit=%3, needed=%4, material=%5)")
                            .arg(p.info.length_mm)
                            .arg(rod.length)
                            .arg(dpLimit)
-                           .arg(p.info.length_mm + kerf_mm)
+                           .arg(needed)          // ← ugyanaz a needed, mint reason-ben
                            .arg(matName));
 
                 // Pendingből eltávolítjuk
@@ -115,6 +116,7 @@ RodStepResult RodLoopEngine::step(
                 return RodStepResult::StartNewRod;
             }
         }
+
 
         // Ha nem minősült FAILED‑nek, marad az eddigi viselkedés:
         zInfo("   ✖ Nincs több vágható darab — rúd lezárása");
@@ -187,6 +189,18 @@ RodStepResult RodLoopEngine::step(
                 rod, machine, currentOpId, rodId, kerf_mm, groupVec);
 
             if (cr3.status == CutResultStatus::Overfill) {
+
+                // ❗ PATCH: ha a darab fizikailag felfér stockra → új rúd kell, nem StopRod
+                const MaterialMaster* mat = MaterialRegistry::instance().findById(piece.materialId);
+                int stockLen = mat ? mat->stockLength_mm : INT_MAX;
+                int needed = piece.info.length_mm + static_cast<int>(kerf_mm);
+
+                if (needed <= stockLen) {
+                    zInfo("⏭ SINGLE-FALLBACK — darab felfér stockra, új rúd indítása");
+                    return RodStepResult::StartNewRod;
+                }
+
+                // valódi FAILED
                 return RodStepResult::StopRod;
             }
 

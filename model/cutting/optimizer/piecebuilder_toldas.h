@@ -1,3 +1,4 @@
+// FILE: model/cutting/optimizer/piecebuildertoldas.h
 #pragma once
 #include "common/logger.h"
 #include "model/cutting/plan/request.h"
@@ -5,8 +6,10 @@
 #include "materials/registry/material_registry.h"
 
 #include <model/cutting/piece/piecewithmaterial.h>
-
 #include <model/inventorysnapshot.h>
+
+// NEW: ToldasEngine include
+#include "model/cutting/optimizer/toldas_engine.h"
 
 namespace Cutting {
 namespace Optimizer {
@@ -20,6 +23,16 @@ public:
     {
         QVector<Cutting::Piece::PieceWithMaterial> result;
 
+        // 0) Először megpróbáljuk a ToldasEngine-t
+        {
+            bool handled = false;
+            ToldasEngine::computeToldasPieces(req, inv, result, handled);
+            if (handled) {
+                // A ToldasEngine megoldotta (toldással vagy egy darabbal)
+                return result;
+            }
+        }
+
         // 1) role meghatározása
         const MaterialMaster* mm =
             MaterialRegistry::instance().findById(req.materialId);
@@ -32,8 +45,7 @@ public:
 
         QString roleName = role.barcodePrefix;
 
-
-        // 2) csak NP-BAR (súly) toldás
+        // 2) Nem NP-BAR esetén marad a régi, egyszerű viselkedés
         if (roleName != "NP-BAR") {
             Cutting::Piece::PieceInfo info;
             info.length_mm = req.requiredLength;
@@ -44,94 +56,31 @@ public:
             return result;
         }
 
-        // 3) súly toldás
+        // 3) NP-BAR esetén, ha a ToldasEngine nem talált megoldást,
+        //    visszaesünk a régi logikára (hulló + hulló, stock + hulló, stock + stock),
+        //    vagy hibát dobunk, ha vághatatlan.
         int need = req.requiredLength;
         int stock = mm->stockLength_mm; // pl. 3000 mm
 
-        // 3/a sima darab
-        if (need <= stock) {
-            Cutting::Piece::PieceInfo info;
-            info.length_mm = need;
-            info.requestId = req.requestId;
-            info.externalReference = req.externalReference;
+        // 3) NP-BAR esetén, ha a ToldasEngine nem talált megoldást,
+        //    NEM esünk vissza a régi toldás logikára.
+        //    A régi hulló+hulló, stock+hulló, stock+stock kombinációk
+        //    nem kompatibilisek a szerelési workflow-val.
+        //
+        //    Ezért NP-BAR esetben explicit hibát dobunk,
+        //    ha a ToldasEngine sem tudott megoldást adni.
 
-            result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
-            return result;
-        }
+        auto *mat = MaterialRegistry::instance().findById(req.materialId);
+        QString matName = mat?mat->toDisplay():"?";
 
-        // 3/b hullók lekérdezése
-        QVector<LeftoverStockEntry> leftovers;
-        for (const auto& l : inv.reusableInventory) {
-            if (l.materialId == req.materialId)
-                leftovers.append(l);
-        }
+        zError(QString("ToldasEngine: NP-BAR igény nem toldható: need=%1, materialId=%2")
+                   .arg(req.requiredLength)
+                   .arg(matName));
 
-        // 3/c hulló + hulló
-        for (const auto& l1 : leftovers)
-            for (const auto& l2 : leftovers)
-                if (l1.entryId != l2.entryId &&
-                    l1.availableLength_mm + l2.availableLength_mm >= need)
-                {
-                    Cutting::Piece::PieceInfo info1;
-                    info1.length_mm = l1.availableLength_mm;
-                    info1.requestId = req.requestId;
-                    info1.externalReference = req.externalReference;
-
-                    result.append(Cutting::Piece::PieceWithMaterial(info1, req.materialId));
-
-                    Cutting::Piece::PieceInfo info2;
-                    info2.length_mm = need - l1.availableLength_mm;
-                    info2.requestId = req.requestId;
-                    info2.externalReference = req.externalReference;
-
-                    result.append(Cutting::Piece::PieceWithMaterial(info2, req.materialId));
-
-                    return result;
-                }
-
-        // 3/d stock + hulló
-        for (const auto& l : leftovers)
-            if (stock + l.availableLength_mm >= need)
-            {
-                Cutting::Piece::PieceInfo info1;
-                info1.length_mm = stock;
-                info1.requestId = req.requestId;
-                info1.externalReference = req.externalReference;
-
-                result.append(Cutting::Piece::PieceWithMaterial(info1, req.materialId));
-
-                Cutting::Piece::PieceInfo info2;
-                info2.length_mm = need - stock;
-                info2.requestId = req.requestId;
-                info2.externalReference = req.externalReference;
-
-                result.append(Cutting::Piece::PieceWithMaterial(info2, req.materialId));
-
-                return result;
-            }
-
-        // 3/e stock + stock
-        if (stock * 2 >= need) {
-
-            Cutting::Piece::PieceInfo info1;
-            info1.length_mm = stock;
-            info1.requestId = req.requestId;
-            info1.externalReference = req.externalReference;
-
-            result.append(Cutting::Piece::PieceWithMaterial(info1, req.materialId));
-
-            Cutting::Piece::PieceInfo info2;
-            info2.length_mm = need - stock;
-            info2.requestId = req.requestId;
-            info2.externalReference = req.externalReference;
-
-            result.append(Cutting::Piece::PieceWithMaterial(info2, req.materialId));
-
-            return result;
-        }
+        return result;   // üres lista → a felső réteg kezeli a hibát
 
 
-        // 3/f nem toldható
+        // 3/f nem toldható / nem vágható súly
         zError(QString("Súly nem toldható: need=%1, stock=%2")
                    .arg(need).arg(stock));
 
@@ -139,5 +88,5 @@ public:
     }
 };
 
-} // Optimizer
-} // Cutting
+} // namespace Optimizer
+} // namespace Cutting

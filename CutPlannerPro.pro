@@ -177,6 +177,7 @@ HEADERS += \
     model/cutting/optimizer/stockfitengine.h \
     model/cutting/optimizer/targetheuristic.h \
     model/cutting/optimizer/telemetryhelper.h \
+    model/cutting/optimizer/toldas_engine.h \
     model/cutting/plan/audit/audit_header_rules.h \
     model/cutting/plan/audit/audit_length_rules.h \
     model/cutting/plan/audit/naphalo_audit_types.h \
