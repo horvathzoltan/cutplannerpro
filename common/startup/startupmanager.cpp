@@ -336,11 +336,13 @@ StartupStatus StartupManager::initCuttingRequestRegistry() {
 
     case CuttingPlanLoadResult::FileMissing:
         EventLogger::instance().zEvent("❌ vágási terv fájl nem található");
-        return StartupStatus::failure("❌ A beállított vágási terv fájl nem található.");
+        //return StartupStatus::failure("❌ A beállított vágási terv fájl nem található.");
+        return StartupStatus::success();
 
     case CuttingPlanLoadResult::LoadError:
         EventLogger::instance().zEvent("❌ vágási terv fájl nem olvasható");
-        return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket — fájl hibás vagy olvashatatlan.");
+        //return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket — fájl hibás vagy olvashatatlan.");
+        return StartupStatus::success();
 
     case CuttingPlanLoadResult::Success:
         break;

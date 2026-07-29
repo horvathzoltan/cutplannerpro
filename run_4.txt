@@ -1,3 +1,7 @@
+calculation:
+ - napháló - motoros: más a levonás, ha kapcsolós a motor, vagy ha rádiós.
+ 3 mm-el nagyobb a motoros tengely
+
 audit:
  - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
 
