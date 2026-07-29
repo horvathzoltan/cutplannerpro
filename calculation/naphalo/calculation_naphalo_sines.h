@@ -26,7 +26,7 @@ inline double calcZaro(double width){
 }
 
 inline double calcTengely_Motoros(double width){
-    return width - 45;
+    return width - 45;//kapcsolos: 42
 }
 
 inline double calcTengely_Kurblis(double width){
