@@ -36,88 +36,90 @@ public:
             int leftRemaining  = req.leftCount;
             int rightRemaining = req.rightCount;
 
-             for (int i = 0; i < req.quantity; ++i) {
-                 Cutting::Piece::PieceInfo info;
-                 info.length_mm = req.requiredLength;
-                 info.requestId = req.requestId;
-                 info.isCompleted = false;
+            bool toldas = false;
+            if(!toldas){
+                for (int i = 0; i < req.quantity; ++i) {
+                    Cutting::Piece::PieceInfo info;
+                    info.length_mm = req.requiredLength;
+                    info.requestId = req.requestId;
+                    info.isCompleted = false;
 
-                 // darab-sorszámozás
-                 if (req.quantity > 1) {
-                     info.externalReference = QString("%1 %2/%3")
-                     .arg(req.externalReference)
-                         .arg(i + 1)
-                         .arg(req.quantity);
-                 } else {
-                     info.externalReference = req.externalReference;
+                    // darab-sorszámozás
+                    if (req.quantity > 1) {
+                        info.externalReference = QString("%1 %2/%3")
+                        .arg(req.externalReference)
+                            .arg(i + 1)
+                            .arg(req.quantity);
+                    } else {
+                        info.externalReference = req.externalReference;
+                    }
+
+                    // side kiosztása
+                    HandlerSide side = HandlerSide::None;
+                    if (leftRemaining > 0) {
+                        side = HandlerSide::Left;
+                        leftRemaining--;
+                    } else if (rightRemaining > 0) {
+                        side = HandlerSide::Right;
+                        rightRemaining--;
+                    }
+
+                    zInfo(L("[buildPiecesByMaterial] extref: %1, side: %2")
+                          .arg(info.externalReference)
+                          .arg(HandlerSideUtils::toDisplayText(side)));
+
+                    // PieceWithMaterial
+                    Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
+                    pwm.side = side;
+                    //pwm.subtype = req.subtype;
+
+                    pwm.productTypeId = req.productTypeId;
+                    pwm.productSubtypeId = req.productSubtypeId;
+                    pwm.attributes = req.attributes;
+
+                    out[req.materialId].append(pwm);
                  }
 
-                 // side kiosztása
-                 HandlerSide side = HandlerSide::None;
-                 if (leftRemaining > 0) {
-                     side = HandlerSide::Left;
-                     leftRemaining--;
-                 } else if (rightRemaining > 0) {
-                     side = HandlerSide::Right;
-                     rightRemaining--;
-                 }
+            }
+            else
+            {
+               for (int i = 0; i < req.quantity; ++i) {
 
-                 zInfo(L("[buildPiecesByMaterial] extref: %1, side: %2")
-                       .arg(info.externalReference)
-                       .arg(HandlerSideUtils::toDisplayText(side)));
+                   auto pieces = PieceBuilderToldas::buildPiecesForRequest(req, inventorySnapshot);
 
-                 // PieceWithMaterial
-                 Cutting::Piece::PieceWithMaterial pwm(info, req.materialId);
-                 pwm.side = side;
-                 //pwm.subtype = req.subtype;
+                   QString externalRef;
+                   if (req.quantity > 1) {
+                       externalRef = QString("%1 %2/%3")
+                       .arg(req.externalReference)
+                           .arg(i + 1)
+                           .arg(req.quantity);
+                   } else {
+                       externalRef = req.externalReference;
+                   }
 
-                 pwm.productTypeId = req.productTypeId;
-                 pwm.productSubtypeId = req.productSubtypeId;
-                 pwm.attributes = req.attributes;
+                   HandlerSide side = HandlerSide::None;
+                   if (leftRemaining > 0) {
+                       side = HandlerSide::Left;
+                       leftRemaining--;
+                   } else if (rightRemaining > 0) {
+                       side = HandlerSide::Right;
+                       rightRemaining--;
+                   }
 
-                 out[req.materialId].append(pwm);
-             }
+                   for (auto& p : pieces) {
 
+                       p.info.externalReference = externalRef;
+                       p.side = side;
 
-           // for (int i = 0; i < req.quantity; ++i) {
+                       p.productTypeId = req.productTypeId;
+                       p.productSubtypeId = req.productSubtypeId;
+                       p.attributes = req.attributes;
 
-           //     auto pieces = PieceBuilderToldas::buildPiecesForRequest(req, inventorySnapshot);
+                       out[req.materialId].append(p);
+                   }
+               }
 
-           //     QString externalRef;
-           //     if (req.quantity > 1) {
-           //         externalRef = QString("%1 %2/%3")
-           //         .arg(req.externalReference)
-           //             .arg(i + 1)
-           //             .arg(req.quantity);
-           //     } else {
-           //         externalRef = req.externalReference;
-           //     }
-
-           //     HandlerSide side = HandlerSide::None;
-           //     if (leftRemaining > 0) {
-           //         side = HandlerSide::Left;
-           //         leftRemaining--;
-           //     } else if (rightRemaining > 0) {
-           //         side = HandlerSide::Right;
-           //         rightRemaining--;
-           //     }
-
-           //     for (auto& p : pieces) {
-
-           //         p.info.externalReference = externalRef;
-           //         p.side = side;
-
-           //         p.productTypeId = req.productTypeId;
-           //         p.productSubtypeId = req.productSubtypeId;
-           //         p.attributes = req.attributes;
-
-           //         out[req.materialId].append(p);
-           //     }
-           // }
-
-
-
-
+            }
         }
         return out;
     }

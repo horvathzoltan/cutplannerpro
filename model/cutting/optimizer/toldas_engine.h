@@ -133,15 +133,28 @@ public:
         }
 
 
-        // 6/b STOCK fődarab jelölt — csak akkor, ha leftover nem adott jó fődarabot
-        // és a stock hossz is megfelelő toldatot eredményez.
+        // 6/b STOCK fődarab jelölt — engedjük a kicsit hosszabb stock rudat is (max +100 mm)
         {
             int mainLen = stock;
-            if (mainLen > 0 && mainLen <= need) {
+
+            if (mainLen > 0) {
 
                 int deficit = need - mainLen;
 
-                if (deficit >= minToldas_mm && deficit <= maxToldas_mm) {
+                // Ha hosszabb a fődarab, de max 100 mm-rel → elfogadjuk
+                if (deficit <= 0 && -deficit <= 100) {
+                    MainCandidate c;
+                    c.fromStock = true;
+                    c.length_mm = mainLen;
+                    mainCandidates.append(c);
+                }
+
+                // Ha rövidebb → toldható tartományban kell lennie
+                if (deficit > 0 &&
+                    deficit >= minToldas_mm &&
+                    deficit <= maxToldas_mm &&
+                    deficit <= mainLen / 2)
+                {
                     MainCandidate c;
                     c.fromStock = true;
                     c.length_mm = mainLen;
@@ -149,6 +162,7 @@ public:
                 }
             }
         }
+
 
         // PATCH 6 — ha nincs egyetlen megfelelő fődarab jelölt sem,
         // akkor a régi fallback logika fogja kezelni később.

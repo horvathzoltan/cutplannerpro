@@ -332,6 +332,7 @@ CutResult OptimizerModel::commitCutResult(
             groupVec.end());
     }
 
+
     // PATCH 11 — leftover fogyasztás auditálása
     // Ha a darab leftoverből jött, akkor a leftover készletből el kell távolítani.
     // A PieceInfo tartalmazza a leftoverEntryId-t.
@@ -636,6 +637,7 @@ RodInitResult OptimizerModel::initRodForMaterial(
 
     // 2️⃣ reusable keresés
     std::optional<ReusableCandidate> candidate;
+
 
     if (_useReusableLeftovers) {
         candidate =

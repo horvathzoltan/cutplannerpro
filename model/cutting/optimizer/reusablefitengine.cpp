@@ -39,20 +39,36 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         zInfo("pieces: (empty)");
     }
 
-//    if(mergedView.size()>0){
-//        zInfo("reuseables:");
-//        for (const auto& e : mergedView) {
-//            const MaterialMaster* mat2 = MaterialRegistry::instance().findById(e.materialId);
-//            zInfo(QString("   •material=%1 barcode=%2 len=%3 materialBarcode=%4 source=%5")
-//                      .arg(mat2?mat2->toDisplay():e.materialId.toString())
-//                      .arg(e.barcode)
-//                      .arg(e.availableLength_mm)
-//                      .arg(e.materialBarcode())
-//                      .arg(e.sourceAsString()));
-//        }
-//    } else{
-//        zInfo("reuseables: (empty)");
-//    }
+    // PATCH — ToldasEngine által generált darabok kezelése
+    // Ha bármely darab toldásos (TOLDAS_MAIN vagy TOLDAS_TOLDAT),
+    // akkor a hulló-optimalizálást SKIP-eljük.
+    // A toldás logikáját a ToldasEngine + FitEngine + CutEngine kezeli,
+    // nem a ReusableFitEngine.
+
+    bool hasToldas = false;
+    for (const auto& p : pieces) {
+        if (p.info.toldasRole == "TOLDAS_MAIN" ||
+            p.info.toldasRole == "TOLDAS_TOLDAT") {
+            hasToldas = true;
+            break;
+        }
+    }
+
+    // // PATCH T2 — ToldasEngine fődarab leftover tiltása
+    // for (const auto& p : pieces) {
+    //     if (p.info.keepWhole && p.info.leftoverEntryId.has_value()) {
+    //         zInfo(QString("♻️ ToldasEngine fődarab leftover tiltása — entryId=%1")
+    //                   .arg(p.info.leftoverEntryId->toString()));
+    //         usedLeftoverEntryIds.insert(p.info.leftoverEntryId.value());
+    //     }
+    // }
+
+
+    if (hasToldas) {
+        zInfo("♻️ HULLÓ KERESÉS SKIP — toldásos darabok, a ToldasEngine döntött.");
+        return std::nullopt;
+    }
+
 
     std::optional<ReusableCandidate> best;
     int bestScore = std::numeric_limits<int>::min();
