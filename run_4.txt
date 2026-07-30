@@ -1,6 +1,15 @@
 calculation:
  - napháló - motoros: más a levonás, ha kapcsolós a motor, vagy ha rádiós.
- 3 mm-el nagyobb a motoros tengely
+ - 3 mm-el nagyobb a motoros tengely
+ - vastagabb tengely -> szett kiválasztás, vékonyabb -> másik szett
+ - szett kiválasztás: napháló típus szerint kell szett, típuson belül pedig
+ - 78-as tengelynél 2500 mm-nél töb banyagot nem lehet beletenni mert a tengely elfoglalja a helyet
+ - 78-as szett zipes csak egy színben van - fehér
+ - ha a megfelelő szín nincs stockon, akkor fallback arra ami épp van
+ - motort kell ajánlani, 5 m2 felett 20Nm motor kell
+
+material:
+ - vasanyag vágó: 75 mm - nél kisebbet nem lehet vágni csőtengelyből mert a kisebb hullónak nincs rögzítése
 
 audit:
  - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
