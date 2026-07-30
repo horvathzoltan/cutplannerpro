@@ -55,7 +55,7 @@ inline void validateLineage(
 
     // 5) Ciklusdetektálás
     if (parent.planId().value() == plan.planId) {
-        zError(QString("❌ Lineage ERROR — plan references itself! planId=%1")
+        zInfo(QString("❌ Lineage ERROR — plan references itself! planId=%1")
                    .arg(plan.planId.toString()));
         return;
     }

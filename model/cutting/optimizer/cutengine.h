@@ -29,4 +29,17 @@ public:
         int dpLimit,
         int& planCounter);
 
+    static CutResult cutWhole(
+        const Cutting::Piece::PieceWithMaterial& piece,
+        const CuttingMachine& machine,
+        int currentOpId,
+        int& planCounter);
+
+    // static CutResult cutWhole(
+    //     const Cutting::Piece::PieceWithMaterial &piece,
+    //     const SelectedRod &rod,
+    //     const CuttingMachine &machine,
+    //     int currentOpId,
+    //     int rodId,
+    //     int &planCounter);
 };

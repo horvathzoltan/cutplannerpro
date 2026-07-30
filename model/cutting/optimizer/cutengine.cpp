@@ -25,77 +25,6 @@ CutResult CutEngine::cutSingle(
     cr.used = 0;
     cr.waste = 0;
 
-    // PATCH: ToldasEngine fődarab kezelése (keepWhole)
-    // Ha a darab egy teljes rúd (ToldasEngine fődarab), akkor nem vágjuk.
-    // Nem generálunk CutPlan-t, nem tesszük rúdra, csak jelezzük, hogy nincs vágás.
-
-    // PATCH 9/B — ToldasEngine fődarab kezelése (keepWhole)
-    // Ha a darab egy teljes rúd (ToldasEngine fődarab), akkor nem vágjuk,
-    // de a CuttingPlan-be be kell kerülnie mint "kész darab".
-
-    // PATCH T1 — ToldasEngine fődarab: a teljes leftover rudat egyben átvesszük, nem vágjuk
-    // if (piece.info.keepWhole) {
-
-    //     zInfo(QString("⚠ CUT SINGLE — keepWhole=true → teljes leftover rúd egyben felhasználva (len=%1 mm)")
-    //               .arg(piece.info.length_mm));
-
-    //     Cutting::Plan::CutPlan p;
-    //     p.planNumber = planCounter++;
-    //     p.piecesWithMaterial = { piece };
-    //     p.toldasRole = piece.info.toldasRole;
-    //     p.materialId = piece.materialId;
-
-    //     // A fődarab leftoverből jön → jelöljük Reusable-ként
-    //     p.source = Cutting::Plan::Source::Reusable;
-    //     p.rodId = rod.rodId;
-
-    //     //p.rodId = QString("leftover_%1").arg(piece.info.leftoverEntryId.toString());
-    //     p.planId = QUuid::createUuid();
-    //     p.status = Cutting::Plan::Status::NotStarted;
-    //     p.machineId = machine.id;
-    //     p.machineName = machine.name;
-    //     p.machineKerf = kerf_mm;
-
-    //     // Nincs vágás
-    //     p._segments.clear();
-    //     p._segments.SetTotalLength_mm(piece.info.length_mm);
-
-    //     // ParentInfo öröklése
-    //     if (rod._parent.has_value())
-    //         p.setParent(*rod._parent);
-    //     else
-    //         p.setParent(Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt });
-
-    //     p.sourceBarcode = rod.barcode;
-    //     p.optimizationId = currentOpId;
-
-    //     // ResultModel — nincs vágás, nincs hulladék
-    //     Cutting::Result::ResultModel result;
-    //     result.cutPlanId = p.planId;
-    //     result.materialId = piece.materialId;
-    //     result.length = piece.info.length_mm;
-    //     result.cuts = {};
-    //     result.waste = 0;
-    //     result.source = Cutting::Result::ResultSource::FromReusable;
-    //     result.optimizationId = std::nullopt;
-    //     result.reusableBarcode = rod.barcode;
-    //     result.isFinalWaste = false;
-    //     result._parent = p.parent();
-    //     result.sourceBarcode = p.sourceBarcode;
-
-    //     cr.status = CutResultStatus::Ok;
-    //     cr.planId = p.planId;
-    //     cr.used = 0;
-    //     cr.waste = 0;
-    //     cr.plan = p;
-    //     cr.result = result;
-    //     cr.usedPieceIds = { piece.info.pieceId };
-    //     cr.leftoverBarcode = rod.barcode;
-
-    //     return cr;
-    // }
-
-
 
     //int used = piece.info.length_mm + OptimizerUtils::roundKerfLoss_1(1, kerf_mm);
     auto info = OptimizerUtils::computePhysicalCut({ piece }, kerf_mm, remainingLength);
@@ -130,7 +59,7 @@ CutResult CutEngine::cutSingle(
     p.planNumber = planCounter++;
     p.piecesWithMaterial = { piece };
     // PATCH 13 — toldat szerepkör átvezetése
-    p.toldasRole = piece.info.toldasRole;
+    //p.toldasRole = piece.info.toldasRole;
 
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;
@@ -141,10 +70,8 @@ CutResult CutEngine::cutSingle(
     p.machineName = machine.name;
     p.machineKerf = kerf_mm;
 
-    //int physicalLength = remainingLength;
-
-
-    int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
+    int physicalLength = remainingLength;
+    //int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
     p._segments.generateSegments({piece}, kerf_mm, physicalLength);
     p._segments.SetTotalLength_mm(physicalLength);
 
@@ -323,5 +250,152 @@ CutResult CutEngine::cutCombo(
     return cr;
 }
 
+
+CutResult CutEngine::cutWhole(
+    const Cutting::Piece::PieceWithMaterial& piece,
+    const CuttingMachine& machine,
+    int currentOpId,
+    int& planCounter)
+{
+    zInfo(QString("🔍 CUT WHOLE — piece=%1 mm")
+              .arg(piece.info.length_mm));
+
+    CutResult cr;
+    cr.status = CutResultStatus::Ok;
+    cr.planId = QUuid();
+    cr.used = piece.info.length_mm;
+    cr.waste = 0;
+
+    // --- CutPlan létrehozása ---
+    Cutting::Plan::CutPlan p;
+    p.planNumber = planCounter++;
+    p.piecesWithMaterial = { piece };
+
+    p.materialId = piece.materialId;
+    p.source = Cutting::Plan::Source::Stock;   // whole-cut → nem rúd
+    p.rodId = "";                              // NINCS rúd
+    p.sourceBarcode = "";                      // NINCS rúd barcode
+
+    p.planId = QUuid::createUuid();
+    p.status = Cutting::Plan::Status::NotStarted;
+    p.machineId = machine.id;
+    p.machineName = machine.name;
+    p.machineKerf = 0;                         // whole-cut → nincs kerf
+
+    // --- Szegmens generálás ---
+    int physicalLength = piece.info.length_mm;
+    p._segments.generateSegments({ piece }, 0.0, physicalLength);
+    p._segments.SetTotalLength_mm(physicalLength);
+
+    // --- ParentInfo ---
+    p.setParent(Cutting::Plan::ParentInfo{ "", std::nullopt });
+
+    // --- ResultModel ---
+    Cutting::Result::ResultModel result;
+    result.cutPlanId = p.planId;
+    result.materialId = p.materialId;
+    result.length = physicalLength;
+    result.cuts = { piece };
+    result.waste = 0;
+    result.source = Cutting::Result::ResultSource::FromStock;
+    result.optimizationId = std::make_optional(currentOpId);
+
+    result.reusableBarcode = "";
+    result.isFinalWaste = false;
+    result._parent = p.parent();
+    result.sourceBarcode = "";
+
+    // --- CutResult ---
+    cr.planId = p.planId;
+    cr.plan = p;
+    cr.result = result;
+    cr.usedPieceIds = { piece.info.pieceId };
+    cr.leftoverBarcode = "";
+
+    zInfo(QString("🎯 CUT WHOLE — OK (len=%1)")
+              .arg(piece.info.length_mm));
+
+    return cr;
+}
+
+// CutResult CutEngine::cutWhole(
+//     const Cutting::Piece::PieceWithMaterial& piece,
+//     const SelectedRod& rod,
+//     const CuttingMachine& machine,
+//     int currentOpId,
+//     int rodId,
+//     int& planCounter)
+// {
+//     zInfo(QString("🔍 CUT WHOLE — piece=%1 mm, rodId=%2")
+//               .arg(piece.info.length_mm)
+//               .arg(rod.rodId));
+
+//     CutResult cr;
+//     cr.status = CutResultStatus::Ok;
+//     cr.planId = QUuid();
+//     cr.used = piece.info.length_mm;   // nincs kerf
+//     cr.waste = 0;                     // nincs waste
+
+//     // CutPlan létrehozása
+//     Cutting::Plan::CutPlan p;
+//     p.planNumber = planCounter++;
+//     p.piecesWithMaterial = { piece };
+//     p.materialId = rod.materialId;
+//     p.rodId = rod.rodId;
+//     p.source = rod.isReusable ? Cutting::Plan::Source::Reusable
+//                               : Cutting::Plan::Source::Stock;
+//     p.planId = QUuid::createUuid();
+//     p.status = Cutting::Plan::Status::NotStarted;
+//     p.machineId = machine.id;
+//     p.machineName = machine.name;
+//     p.machineKerf = 0;               // nincs vágás → nincs kerf
+
+//     // NINCS szegmensgenerálás
+//     // PATCH — whole-piece szegmens generálása
+//     p._segments.clear();
+
+//     // Egyetlen szegmens: maga a darab
+//     // PATCH — whole-piece szegmens generálása
+//     p._segments.generateSegments({ piece }, 0.0, piece.info.length_mm);
+//     p._segments.SetTotalLength_mm(piece.info.length_mm);
+
+//     p.sourceBarcode = rod.barcode;
+//     p.optimizationId = currentOpId;
+
+//     if (rod._parent.has_value()) {
+//         p.setParent(*rod._parent);
+//     } else {
+//         p.setParent(Cutting::Plan::ParentInfo{ rod.barcode, std::nullopt });
+//     }
+
+//     // ResultModel
+//     Cutting::Result::ResultModel result;
+//     result.cutPlanId = p.planId;
+//     result.materialId = rod.materialId;
+//     result.length = piece.info.length_mm;
+//     result.cuts = { piece };
+//     result.waste = 0;
+//     result.source = rod.isReusable
+//                         ? Cutting::Result::ResultSource::FromReusable
+//                         : Cutting::Result::ResultSource::FromStock;
+//     result.optimizationId = rod.isReusable ? std::nullopt
+//                                            : std::make_optional(currentOpId);
+//     result.reusableBarcode = "";//std::nullopt;
+//     result.isFinalWaste = false;
+//     result._parent = p.parent();
+//     result.sourceBarcode = p.sourceBarcode;
+
+//     cr.planId = p.planId;
+//     cr.plan = p;
+//     cr.result = result;
+//     cr.usedPieceIds = { piece.info.pieceId };
+//     cr.leftoverBarcode = "";//std::nullopt;
+
+//     zInfo(QString("🎯 CUT WHOLE — OK (len=%1, rodId=%2)")
+//               .arg(piece.info.length_mm)
+//               .arg(rod.rodId));
+
+//     return cr;
+// }
 
 //QVector<Cutting::Piece::PieceWithMaterial> &groupVec);

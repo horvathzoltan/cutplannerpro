@@ -261,7 +261,7 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row,
 void MaterialRepository::exportCsv(const QString& path) {
     QFile f(path);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        zError(QString("❌ exportCsv: Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
+        zInfo(QString("❌ exportCsv: Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
         return;
     }
 

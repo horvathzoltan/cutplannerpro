@@ -36,7 +36,8 @@ public:
             int leftRemaining  = req.leftCount;
             int rightRemaining = req.rightCount;
 
-            bool toldas = false;
+            bool toldas = true;
+
             if(!toldas){
                 for (int i = 0; i < req.quantity; ++i) {
                     Cutting::Piece::PieceInfo info;
@@ -114,6 +115,13 @@ public:
                        p.productTypeId = req.productTypeId;
                        p.productSubtypeId = req.productSubtypeId;
                        p.attributes = req.attributes;
+
+
+                       zInfo(QString("PieceBuilder: APPENDING piece len=%1 role=%2 extRef=%3 side=%4")
+                                 .arg(p.info.length_mm)
+                                 .arg(p.info.toldasRole)
+                                 .arg(p.info.externalReference)
+                                 .arg(HandlerSideUtils::toDisplayText(side)));
 
                        out[req.materialId].append(p);
                    }

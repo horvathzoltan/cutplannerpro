@@ -74,6 +74,57 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial =
         PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
 
+    zInfo("OptimizerModel: piecesByMaterial summary:");
+    for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+        auto *mat = MaterialRegistry::instance().findById(it.key());
+        QString matName = mat ? mat->barcode : "?";
+
+        zInfo(QString("  → material=%1 count=%2")
+                  .arg(matName)
+                  .arg(it.value().size()));
+
+        for (const auto& p : it.value()) {
+            zInfo(QString("     • piece len=%1 role=%2 extRef=%3")
+                      .arg(p.info.length_mm)
+                      .arg(p.info.toldasRole)
+                      .arg(p.info.externalReference));
+        }
+    }
+
+    // PATCH — TOLDAS_MAIN darabok whole-cutolása (rod-loop előtt)
+    {
+        for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+
+            auto& vec = it.value();
+            QVector<int> removeIdx;
+
+            for (int i = 0; i < vec.size(); ++i) {
+                const auto& p = vec[i];
+
+                if (p.info.toldasRole == "TOLDAS_MAIN") {
+
+                    auto ma = MachineUtils::pickMachineForMaterial(p.materialId);
+                    // Whole-cut plan generálása rúd nélkül
+                    auto crWhole = CutEngine::cutWhole(
+                        p,
+                        *ma,
+                        currentOpId,
+                        planCounter);
+
+                    _result_plans.append(crWhole.plan);
+
+                    // MAIN darab eltávolítása a pending listából
+                    removeIdx.append(i);
+                }
+            }
+
+            // indexek törlése visszafelé
+            std::sort(removeIdx.begin(), removeIdx.end(), std::greater<int>());
+            for (int idx : removeIdx)
+                vec.removeAt(idx);
+        }
+    }
+
     int rodId = 0;
     static int counter = 0;
 
@@ -109,13 +160,54 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             zInfo("✖ Nincs több darab ehhez az anyagcsoporthoz — továbblépés");
             continue;
         }
+
+
         zInfo(QString("✔ Aktuális anyagcsoport pending: %1 db").arg(groupVec.size()));
+
 
         // 2/b. Gép kiválasztása
         std::optional<CuttingMachine> machineOpt =
             MachineSelectHelper::pickAndLog(targetMaterialId); // adhatna pointert, tisztább lenne mint az opt
         if (!machineOpt) { groupVec.removeFirst(); continue; }
         const CuttingMachine machine = *machineOpt;
+
+        // //PATCH — TOLDAS_MAIN darabok egyben kiadása (nem vágandó darabok)
+        // {
+        //     QVector<int> indexesToRemove;
+
+        //     for (int i = 0; i < groupVec.size(); ++i) {
+        //         const auto& p = groupVec[i];
+
+        //         if (p.info.toldasRole == "TOLDAS_MAIN") {
+
+        //             SelectedRod wholeRod;
+        //             wholeRod.materialId = targetMaterialId;
+        //             wholeRod.length = p.info.length_mm;      // a darab hossza
+        //             wholeRod.isReusable = false;
+        //             wholeRod.barcode = "WHOLE_"+QString::number(i);
+        //             wholeRod.rodId = "WHOLE_"+QString::number(i);
+        //             wholeRod.entryId = std::nullopt;
+        //             wholeRod.origin = RodOrigin::Stock;
+        //             wholeRod._parent = std::nullopt;
+
+        //             auto crWhole = CutEngine::cutWhole(
+        //                 p,
+        //                 wholeRod,
+        //                 machine,
+        //                 currentOpId,
+        //                 rodId,
+        //                 planCounter);
+
+        //             _result_plans.append(crWhole.plan);
+        //             indexesToRemove.append(i);
+
+        //         }
+        //     }
+
+        //     // MAIN darabok eltávolítása a pending listából
+        //     for (int idx : indexesToRemove)
+        //         groupVec.removeAt(idx);
+        // }
 
         auto init = initRodForMaterial(
             targetMaterialId,
@@ -148,6 +240,33 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
             zInfo("ROD LOOP: #" + QString::number(rodloopcounter));
+
+            // // PATCH — TOLDAS_MAIN darabok egyben kiadása (nem vágandó)
+            // {
+            //     QVector<int> indexesToRemove;
+
+            //     for (int i = 0; i < groupVec.size(); ++i) {
+            //         const auto& p = groupVec[i];
+
+            //         if (p.info.toldasRole == "TOLDAS_MAIN") {
+
+            //             auto crWhole = CutEngine::cutWhole(
+            //                 p,
+            //                 rod,
+            //                 machine,
+            //                 currentOpId,
+            //                 rodId,
+            //                 planCounter);
+
+            //             _result_plans.append(crWhole.plan);
+            //             indexesToRemove.append(i);
+            //         }
+            //     }
+
+            //     // MAIN darabok eltávolítása a pending listából
+            //     for (int idx : indexesToRemove)
+            //         groupVec.removeAt(idx);
+            // }
 
             RodStepResult stepResult = RodLoopEngine::step(
                 groupVec,
@@ -663,6 +782,8 @@ RodInitResult OptimizerModel::initRodForMaterial(
     {
         const auto& best = *candidate;
 
+        _usedLeftoverEntryIds.insert(best.stock.entryId);
+
         rod.materialId = best.stock.materialId;
         rod.length     = best.stock.availableLength_mm;
         rod.isReusable = true;
@@ -670,39 +791,60 @@ RodInitResult OptimizerModel::initRodForMaterial(
         rod.entryId    = best.stock.entryId;
         rod._parent    = best.stock._parent;
 
-        // ❗ PATCH #1 — fizikai hossz ellenőrzése
-        int needed = groupVec.first().info.length_mm + static_cast<int>(kerf_mm);
-        if (rod.length < needed) {
-            zInfo(QString("♻️ PATCH — leftover túl rövid (rod=%1, needed=%2), fallback stock")
-                      .arg(rod.length)
-                      .arg(needed));
-            rodSelected = false;
-            // → korai fallback
-            goto STOCK_FALLBACK;
-        }
+        // // ❗ PATCH #1 — fizikai hossz ellenőrzése
+        // int needed = groupVec.first().info.length_mm + static_cast<int>(kerf_mm);
+        // if (rod.length < needed) {
+        //     zInfo(QString("♻️ PATCH — leftover túl rövid (rod=%1, needed=%2), fallback stock")
+        //               .arg(rod.length)
+        //               .arg(needed));
+        //     rodSelected = false;
+        //     // → korai fallback
+        //     goto STOCK_FALLBACK;
+        // }
 
         const MaterialMaster* material =
             MaterialRegistry::instance().findById(rod.materialId);
         MaterialTrimmingParams tp = material
-                                        ? material->trimmingParams(rod.isReusable)
-                                        : MaterialTrimmingParams::getDefault();
+                                         ? material->trimmingParams(rod.isReusable)
+                                         : MaterialTrimmingParams::getDefault();
+
+        dpLimit = rod.length
+                  - tp.frontTrim_mm
+                  - tp.backTrim_mm
+                  - tp.minLeftOver_mm;
 
         // ❗ PATCH #2 — dpLimit ellenőrzése
-        dpLimit = rod.length - tp.frontTrim_mm - tp.minLeftOver_mm;
-        if (dpLimit < groupVec.first().info.length_mm) {
-            zInfo("♻️ PATCH — dpLimit túl kicsi leftover rúdhoz, fallback stock");
-            rodSelected = false;
-            goto STOCK_FALLBACK;
-        }
+        //dpLimit = rod.length - tp.frontTrim_mm - tp.minLeftOver_mm;
+        // if (dpLimit < groupVec.first().info.length_mm) {
+        //     zInfo("♻️ PATCH — dpLimit túl kicsi leftover rúdhoz, fallback stock");
+        //     rodSelected = false;
+        //     goto STOCK_FALLBACK;
+        // }
 
         // rodId mapping
         if (leftoverRodMap.contains(best.stock.entryId)) {
             auto lineage = leftoverRodMap.value(best.stock.entryId);
             rod.rodId    = lineage.rodId;
+
             rod._parent  = lineage.parent;
+
+            zInfo(QString("REUSE ROD FROM LEFTOVER: rodId=%1, stock=%2")
+                      .arg(rod.rodId)
+                      .arg(best.stock.barcode));
         } else {
             rod.rodId = IdentifierUtils::makeRodId(++rodCounter);
+
+            zInfo(QString("🆔 NEW ROD ID: %1 (source=leftover, material=%2, length=%3)")
+                      .arg(rod.rodId)
+                      .arg(material ? material->toDisplay() : rod.materialId.toString())
+                      .arg(rod.length));
+
             leftoverRodMap.insert(best.stock.entryId, RodLineage{ rod.rodId, rod._parent });
+
+            zInfo(QString("MAP-INSERT (on select): %1 → %2 (parent=%3)")
+                      .arg(best.stock.barcode)
+                      .arg(rod.rodId)
+                      .arg(rod._parent ? rod._parent->toString() : "—"));
         }
 
         // ❗ PATCH #3 — leftover törlése csak ha tényleg használjuk
@@ -725,6 +867,24 @@ RodInitResult OptimizerModel::initRodForMaterial(
         remainingLength = rod.length;
         rodSelected = true;
 
+        // ⚠️ ANYAGCSERE RIPORT — leftover használata
+        {
+            const MaterialMaster* origMat =
+                MaterialRegistry::instance().findById(targetMaterialId);
+            const MaterialMaster* chosenMat =
+                MaterialRegistry::instance().findById(rod.materialId);
+
+            if (origMat && chosenMat) {
+                zEvent(QString(
+                           "⚠️ Anyagvariáns váltás — a(z) %1 helyett leftover szál került felhasználásra "
+                           "(barcode=%2, length=%3 mm)"
+                           )
+                           .arg(origMat->barcode)
+                           .arg(rod.barcode)
+                           .arg(rod.length));
+            }
+        }
+
         zInfo(QString("SELECTED REUSABLE ROD: rodId=%1, barcode=%2, length=%3")
                   .arg(rod.rodId)
                   .arg(rod.barcode)
@@ -732,7 +892,7 @@ RodInitResult OptimizerModel::initRodForMaterial(
     }
 
 // 4️⃣ stock fallback
-STOCK_FALLBACK:
+//STOCK_FALLBACK:
     if (!rodSelected)
     {
         zInfo("♻️ No reusable leftover fits — falling back to stock.");
@@ -766,6 +926,16 @@ STOCK_FALLBACK:
                       - tp.minLeftOver_mm;
 
             rodSelected = true;
+
+            zInfo(QString("🟦 ROD SELECTED (v2) — rodId=%1, barcode=%2, length=%3, reusable=%4")
+                      .arg(rod.rodId)
+                      .arg(rod.barcode)
+                      .arg(rod.length)
+                      .arg(rod.isReusable));
+
+            zInfo(QString("🟦 ROD INITIAL LIMITS (v2) — remaining=%1, dpLimit=%2")
+                      .arg(remainingLength)
+                      .arg(dpLimit));
         }
 
         if (!rodSelected) {
@@ -776,6 +946,22 @@ STOCK_FALLBACK:
                     rodCounter);
 
             if (stockRod.has_value()) {
+                // ⚠️ ANYAGCSERE RIPORT — UI-ba
+                const MaterialMaster* origMat =
+                    MaterialRegistry::instance().findById(targetMaterialId);
+                const MaterialMaster* chosenMat =
+                    MaterialRegistry::instance().findById(stockRod->materialId);
+
+                if (origMat && chosenMat) {
+                    zEvent(QString(
+                               "⚠️ Anyagvariáns váltás — a csoportban a(z) %1 helyett "
+                               "a(z) %2 szál lett kiválasztva (length=%3 mm)"
+                               )
+                               .arg(origMat->barcode)
+                               .arg(chosenMat->barcode)
+                               .arg(chosenMat->stockLength_mm));
+                }
+
                 rod = *stockRod;
                 rod._parent = std::nullopt;
 
@@ -794,6 +980,21 @@ STOCK_FALLBACK:
                           - tp.minLeftOver_mm;
 
                 rodSelected = true;
+
+                zInfo(QString("🟦 ROD SELECTED (fallback) — rodId=%1, barcode=%2, length=%3, reusable=%4, entryId=%5")
+                          .arg(rod.rodId)
+                          .arg(rod.barcode)
+                          .arg(rod.length)
+                          .arg(rod.isReusable)
+                          .arg(rod.entryId.has_value() ? rod.entryId->toString() : "—"));
+
+                zInfo(QString("🟦 ROD INITIAL LIMITS — remaining=%1, dpLimit=%2")
+                          .arg(remainingLength)
+                          .arg(dpLimit));
+            }
+            else
+            {
+                zInfo("❌ No suitable stock rod found.");
             }
         }
     }

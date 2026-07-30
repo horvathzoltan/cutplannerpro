@@ -8,6 +8,8 @@
 #include "model/inventorysnapshot.h"
 #include "common/logger.h"
 
+#include <model/registries/leftoverstockregistry.h>
+
 namespace Cutting {
 namespace Optimizer {
 
@@ -149,40 +151,196 @@ public:
                     mainCandidates.append(c);
                 }
 
-                // Ha rövidebb → toldható tartományban kell lennie
-                if (deficit > 0 &&
-                    deficit >= minToldas_mm &&
-                    deficit <= maxToldas_mm &&
-                    deficit <= mainLen / 2)
+                // PATCH #STOCK_TOLDAS_OVERRIDE — Engedjük a nagy toldatot, ha nincs leftover fődarab
+                // Ha nincs leftover fődarab jelölt, akkor a stock fődarab + nagy toldat is engedett.
+                // Ez kell a 3835 mm-es súlyhoz (3000 + 835 mm).
+
+                bool noLeftoverMain = !foundBestMain;   // ha nincs leftover fődarab
+
+                // 6/b STOCK fődarab jelölt — egyszerű, determinisztikus logika
                 {
-                    MainCandidate c;
-                    c.fromStock = true;
-                    c.length_mm = mainLen;
-                    mainCandidates.append(c);
+                    int mainLen = stock;
+
+                    if (mainLen > 0) {
+
+                        int deficit = need - mainLen;
+
+                        bool noLeftoverMain = !foundBestMain;
+
+                        // 6/b/1 — Ha nincs leftover fődarab → a stock fődarab automatikusan jelölt
+                        if (noLeftoverMain) {
+                            MainCandidate c;
+                            c.fromStock = true;
+                            c.length_mm = mainLen;
+                            mainCandidates.append(c);
+                        }
+
+                        // 6/b/2 — Ha van leftover fődarab → csak a normál korlátok szerint engedjük
+                        if (!noLeftoverMain) {
+
+                            // fődarab hosszabb, de max 100 mm-rel → elfogadjuk
+                            if (deficit <= 0 && -deficit <= 100) {
+                                MainCandidate c;
+                                c.fromStock = true;
+                                c.length_mm = mainLen;
+                                mainCandidates.append(c);
+                            }
+
+                            // toldható tartomány (100–400 mm + fele szabály)
+                            if (deficit > 0 &&
+                                deficit >= minToldas_mm &&
+                                deficit <= maxToldas_mm &&
+                                deficit <= mainLen / 2)
+                            {
+                                MainCandidate c;
+                                c.fromStock = true;
+                                c.length_mm = mainLen;
+                                mainCandidates.append(c);
+                            }
+                        }
+                    }
                 }
+
+
+
+                // // Ha rövidebb → toldható tartományban kell lennie
+                // if (deficit > 0 &&
+                //     deficit >= minToldas_mm &&
+                //     deficit <= maxToldas_mm &&
+                //     deficit <= mainLen / 2)
+                // {
+                //     MainCandidate c;
+                //     c.fromStock = true;
+                //     c.length_mm = mainLen;
+                //     mainCandidates.append(c);
+                // }
             }
         }
 
+        // SPECIAL CASE: nem vágható NP-BAR súly (need > stock)
+        // Ilyenkor a ToldasEngine alapfeladata, hogy megoldja a súlyt:
+        //   - fődarab: stock rúd (mm->stockLength_mm),
+        //   - toldat: need - stock, akár nagyobb, mint a "normál" 100–400 mm tartomány,
+        //   - egyetlen szerelési korlát: a toldat nem lehet nagyobb, mint a fődarab fele.
+        //
+        // Ha nincs leftover-alapú fődarab jelölt (mainCandidates üres),
+        // de a need > stock, akkor itt kényszerítjük a stock+large-toldat megoldást.
+        //if (mainCandidates.isEmpty() && stock > 0 && need > stock) {
+        if (!foundBestMain && stock > 0 && need > stock) {
 
-        // PATCH 6 — ha nincs egyetlen megfelelő fődarab jelölt sem,
-        // akkor a régi fallback logika fogja kezelni később.
+            const int mainLen   = stock;
+            const int toldasLen = need - mainLen;
 
+            // Toldatnak pozitívnak kell lennie, és nem lehet nagyobb, mint a fődarab fele
+            if (toldasLen > 0 && toldasLen <= mainLen / 2) {
+
+                bool foundToldas     = false;
+                bool toldasFromStock = false;
+                LeftoverStockEntry toldasLeftover;
+
+                // Toldat forrás keresése (először leftover, aztán stock),
+                // ugyanazzal a waste-minimalizáló logikával, mint a 7/d-ben,
+                // csak itt NEM korlátozzuk 100–400 mm közé.
+                QVector<LeftoverStockEntry> sortedToldasLeftovers = leftovers;
+
+                std::sort(sortedToldasLeftovers.begin(),
+                          sortedToldasLeftovers.end(),
+                          [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
+                              // toldat legyen minél kisebb → előnyben a rövidebb leftover
+                              return a.availableLength_mm < b.availableLength_mm;
+                          });
+
+                int bestWaste = std::numeric_limits<int>::max();
+
+                for (const auto& l : sortedToldasLeftovers) {
+
+                    // Csak olyan leftover jöhet szóba, amely elég hosszú a toldathoz
+                    if (l.availableLength_mm < toldasLen)
+                        continue;
+
+                    int waste = l.availableLength_mm - toldasLen;
+
+                    if (waste < bestWaste) {
+                        bestWaste       = waste;
+                        foundToldas     = true;
+                        toldasFromStock = false;
+                        toldasLeftover  = l;
+                    }
+                }
+
+                // Ha nincs leftover toldat, próbáljuk stockból
+                if (!foundToldas && stock >= toldasLen) {
+                    foundToldas     = true;
+                    toldasFromStock = true;
+                }
+
+                if (foundToldas) {
+                    // Fődarab: stock rúd
+                    Cutting::Piece::PieceInfo mainInfo;
+                    mainInfo.length_mm = mainLen;
+                    mainInfo.requestId = req.requestId;
+                    mainInfo.keepWhole = false; // stockból vágjuk
+
+                    if (!req.externalReference.isEmpty())
+                        mainInfo.externalReference = req.externalReference + " [TOLDAS_MAIN]";
+                    else
+                        mainInfo.externalReference = "[TOLDAS_MAIN]";
+
+                    mainInfo.toldasRole = "TOLDAS_MAIN";
+
+                    outPieces.append(Cutting::Piece::PieceWithMaterial(mainInfo, req.materialId));
+
+                    // Toldat
+                    Cutting::Piece::PieceInfo toldasInfo;
+                    toldasInfo.length_mm = toldasLen;
+                    toldasInfo.requestId = req.requestId;
+
+                    if (!req.externalReference.isEmpty())
+                        toldasInfo.externalReference = req.externalReference + " [TOLDAS_TOLDAT]";
+                    else
+                        toldasInfo.externalReference = "[TOLDAS_TOLDAT]";
+
+                    toldasInfo.toldasRole = "TOLDAS_TOLDAT";
+
+                    if (!toldasFromStock)
+                        toldasInfo.leftoverEntryId = toldasLeftover.entryId;
+
+                    outPieces.append(Cutting::Piece::PieceWithMaterial(toldasInfo, req.materialId));
+
+                    zInfo(QString("ToldasEngine: SPECIAL non-cuttable NP-BAR → stock MAIN + large TOLDAT, need=%1, main=%2, toldat=%3")
+                              .arg(need)
+                              .arg(mainLen)
+                              .arg(toldasLen));
+
+                    for (const auto& p : outPieces) {
+                        auto l = LeftoverStockRegistry::instance().findById(*p.info.leftoverEntryId);
+                        QString ltxt = l.has_value() ? (l->barcode) : "?";
+
+                        zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
+                                  .arg(p.info.length_mm)
+                                  .arg(p.info.toldasRole)
+                                  .arg(ltxt));
+                    }
+
+                    outHandled = true;
+                    return;
+                }
+            }
+        }
 
         // 7) Toldás keresése
         for (const auto& main : mainCandidates) {
 
             const int mainLen = main.length_mm;
+            const int deficit  = need - mainLen;
 
             // 7/a Nem lehet nagyobb a fődarab, mint a kért méret
             if (mainLen > need) {
-                // PATCH #4 — fődarab túl hosszú eset
                 // Súlynál nem lehet hosszabb a fődarab, mert a záró dugó nem fér be.
                 // Ezért ezt a jelöltet elvetjük.
-
                 continue;
             }
 
-            const int deficit = need - mainLen;
 
             // 7/b Ha deficit <= 0, akkor a fődarab önmagában elég vagy kicsit rövidebb
             if (deficit <= 0) {
@@ -194,6 +352,20 @@ public:
                     info.externalReference = req.externalReference;
 
                     outPieces.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
+
+                    zInfo(QString("ToldasEngine: RETURNING %1 pieces, handled=%2")
+                              .arg(outPieces.size())
+                              .arg(outHandled));
+                    for (const auto& p : outPieces) {
+                        auto l = LeftoverStockRegistry::instance().findById(*p.info.leftoverEntryId);
+                        QString ltxt = l.has_value()?(l->barcode):"?";
+
+
+                        zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
+                                  .arg(p.info.length_mm)
+                                  .arg(p.info.toldasRole)
+                                  .arg(ltxt));
+                    }
                     outHandled = true;
                     return;
                 }
@@ -206,7 +378,7 @@ public:
             const int toldasLen = deficit;
 
             // Toldat hossz korlátok
-            // PATCH #3 — toldat méretkorlátok finomítása
+
             // Ha a fődarab kicsit rövidebb (max 10 cm), akkor toldat nem kell.
             // Ha a deficit > 40 cm, akkor nem toldható.
 
@@ -233,15 +405,16 @@ public:
             bool foundToldas = false;
             bool toldasFromStock = false;
             LeftoverStockEntry toldasLeftover;
+
             QVector<LeftoverStockEntry> sortedToldasLeftovers = leftovers;
 
-            // std::sort működik QVector-rel, mert begin()/end() STL kompatibilis iterátorokat ad.
             std::sort(sortedToldasLeftovers.begin(),
                       sortedToldasLeftovers.end(),
                       [](const LeftoverStockEntry& a, const LeftoverStockEntry& b) {
                           // toldat legyen minél kisebb → előnyben a rövidebb leftover
                           return a.availableLength_mm < b.availableLength_mm;
                       });
+
             // 7/d/1 leftover toldat jelöltek
             // PATCH 7 — toldat optimalizálás (waste minimalizálás + minél kisebb leftover toldat)
             //
@@ -267,27 +440,19 @@ public:
                 if (l.availableLength_mm < toldasLen)
                     continue;
 
-                // Waste = leftover teljes hossza - toldasLen
                 int waste = l.availableLength_mm - toldasLen;
 
-                // A legkisebb waste-et keressük → ez adja a legjobb toldatot
                 if (waste < bestWaste) {
-                    bestWaste = waste;
-                    foundToldas = true;
+                    bestWaste       = waste;
+                    foundToldas     = true;
                     toldasFromStock = false;
-                    toldasLeftover = l;
+                    toldasLeftover  = l;
                 }
             }
 
             // Ha nincs leftover toldat, próbáljuk stockból
             if (!foundToldas && stock >= toldasLen) {
-                foundToldas = true;
-                toldasFromStock = true;
-            }
-
-            // 7/d/2 ha nincs leftover toldat, próbáljuk stockból
-            if (!foundToldas && stock >= toldasLen) {
-                foundToldas = true;
+                foundToldas     = true;
                 toldasFromStock = true;
             }
 
@@ -297,24 +462,19 @@ public:
             }
 
             // 7/e Megvan a fődarab + toldat kombináció
-            // Fődarab: mainLen (nem vágjuk)
-            // 7/e Megvan a fődarab + toldat kombináció
-            // Fődarab: mainLen (nem vágjuk)
-            // PATCH 9/a: fődarab jelölése az externalReference-ben
+
+            // Fődarab
             Cutting::Piece::PieceInfo mainInfo;
             mainInfo.length_mm = mainLen;
             mainInfo.requestId = req.requestId;
 
-            // PATCH 2 — leftover fődarab NEM VÁGANDÓ
             if (!main.fromStock) {
-                mainInfo.keepWhole = true;                 // ← NEM VÁGJUK
-                mainInfo.leftoverEntryId = main.leftover.entryId;  // ← jelöljük, hogy leftoverből jön
+                mainInfo.keepWhole       = true;
+                mainInfo.leftoverEntryId = main.leftover.entryId;
             } else {
-                mainInfo.keepWhole = false;                // stock esetén továbbra is vágjuk
+                mainInfo.keepWhole = false;
             }
 
-            // Ha van externalReference, egészítsük ki egy jelöléssel.
-            // Így a címkézés / cutting plan később felismerheti, hogy ez a fődarab.
             if (!req.externalReference.isEmpty())
                 mainInfo.externalReference = req.externalReference + " [TOLDAS_MAIN]";
             else
@@ -324,11 +484,10 @@ public:
 
             outPieces.append(Cutting::Piece::PieceWithMaterial(mainInfo, req.materialId));
 
-            // Toldat: toldasLen (ezt vágjuk)
-            // PATCH 9/b: toldat jelölése az externalReference-ben
+            // Toldat
             Cutting::Piece::PieceInfo toldasInfo;
-            toldasInfo.length_mm = toldasLen;
-            toldasInfo.requestId = req.requestId;
+            toldasInfo.length_mm   = toldasLen;
+            toldasInfo.requestId   = req.requestId;
 
             if (!req.externalReference.isEmpty())
                 toldasInfo.externalReference = req.externalReference + " [TOLDAS_TOLDAT]";
@@ -337,26 +496,36 @@ public:
 
             toldasInfo.toldasRole = "TOLDAS_TOLDAT";
 
-            // PATCH 11/B — leftover eredet jelölése
             if (!toldasFromStock)
                 toldasInfo.leftoverEntryId = toldasLeftover.entryId;
 
             outPieces.append(Cutting::Piece::PieceWithMaterial(toldasInfo, req.materialId));
+
+
+            zInfo(QString("ToldasEngine: RETURNING %1 pieces, handled=%2")
+                      .arg(outPieces.size())
+                      .arg(outHandled));
+            for (const auto& p : outPieces) {
+                auto l = LeftoverStockRegistry::instance().findById(*p.info.leftoverEntryId);
+                QString ltxt = l.has_value()?(l->barcode):"?";
+
+                zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
+                          .arg(p.info.length_mm)
+                          .arg(p.info.toldasRole)
+                          .arg(ltxt));
+            }
 
             outHandled = true;
             return;
         }
 
         // 8) Ha idáig jutottunk, nem találtunk megfelelő toldást vagy elfogadható egy darabot
-        // A normál vágási engine próbálkozhat tovább, vagy hibát dobhat.
-        // PATCH #1: QUuid konverzió QString-re, mert arg() nem támogatja a QUuid típust
         QString reqIdStr = req.requestId.toString();
 
         zInfo(QString("ToldasEngine: nem találtunk megfelelő toldást a requestId=%1, need=%2, stock=%3")
-                  .arg(reqIdStr)   // PATCH: konvertált QString-et adunk át
+                  .arg(reqIdStr)
                   .arg(need)
                   .arg(stock));
-
     }
 };
 

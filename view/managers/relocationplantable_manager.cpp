@@ -327,7 +327,7 @@ void RelocationPlanTableManager::finalizeRow(const QUuid& rowId) {
                   .arg(rowId.toString()).arg(instr.materialId.toString()).arg(instr.sourcesTotalMovedQuantity()));
     } else {
         // Részletes hibalog: mi próbálkozott, mi volt a várt állapot, mi hiányzott
-        zError(QStringLiteral("finalizeRow: service failed to finalize row %1 material=%2 plannedRemaining=%3 available=%4 totalPlaced=%5")
+        zInfo(QStringLiteral("finalizeRow: service failed to finalize row %1 material=%2 plannedRemaining=%3 available=%4 totalPlaced=%5")
                    .arg(rowId.toString())
                    .arg(instr.materialId.toString())
                    .arg(instr.plannedRemaining())

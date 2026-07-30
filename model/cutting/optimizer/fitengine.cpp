@@ -24,6 +24,14 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
 
     const int n = available.size();
 
+    // for (const auto& p : available) {
+    //     if (p.info.toldasRole.contains("TOLDAS")) {
+    //         zInfo(QString("FIT: Toldas piece detected in FitEngine! len=%1 role=%2")
+    //                    .arg(p.info.length_mm)
+    //                    .arg(p.info.toldasRole));
+    //     }
+    // }
+
     // 0) Ha nincs darab
     if (n == 0) {
         fr.strategy   = FitResult::Strategy::Greedy; // vagy bármi, de jelöljük

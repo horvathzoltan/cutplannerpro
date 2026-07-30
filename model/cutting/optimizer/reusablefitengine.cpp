@@ -45,14 +45,14 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     // A toldás logikáját a ToldasEngine + FitEngine + CutEngine kezeli,
     // nem a ReusableFitEngine.
 
-    bool hasToldas = false;
-    for (const auto& p : pieces) {
-        if (p.info.toldasRole == "TOLDAS_MAIN" ||
-            p.info.toldasRole == "TOLDAS_TOLDAT") {
-            hasToldas = true;
-            break;
-        }
-    }
+    // bool hasToldas = false;
+    // for (const auto& p : pieces) {
+    //     if (p.info.toldasRole == "TOLDAS_MAIN" ||
+    //         p.info.toldasRole == "TOLDAS_TOLDAT") {
+    //         hasToldas = true;
+    //         break;
+    //     }
+    // }
 
     // // PATCH T2 — ToldasEngine fődarab leftover tiltása
     // for (const auto& p : pieces) {
@@ -64,10 +64,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     // }
 
 
-    if (hasToldas) {
-        zInfo("♻️ HULLÓ KERESÉS SKIP — toldásos darabok, a ToldasEngine döntött.");
-        return std::nullopt;
-    }
+    // if (hasToldas) {
+    //     zInfo("♻️ HULLÓ KERESÉS SKIP — toldásos darabok, a ToldasEngine döntött.");
+    //     return std::nullopt;
+    // }
 
 
     std::optional<ReusableCandidate> best;
@@ -141,16 +141,20 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
             continue;
         }
 
-        int needed = smallestPending + static_cast<int>(kerf_mm);
-
-        // ❗ Kritikus szűrés: a leftover rúdra fizikailag felférjen legalább a legkisebb darab
-        if (stock.availableLength_mm < needed) {
-            zInfo(QString("♻️ Leftover kiszűrve — túl rövid (rod=%1, needed=%2, barcode=%3)")
-                      .arg(stock.availableLength_mm)
-                      .arg(needed)
-                      .arg(stock.barcode));
+        if (stock.availableLength_mm < minUsefulLimit) {
             continue;
         }
+
+        // int needed = smallestPending + static_cast<int>(kerf_mm);
+
+        // // ❗ Kritikus szűrés: a leftover rúdra fizikailag felférjen legalább a legkisebb darab
+        // if (stock.availableLength_mm < needed) {
+        //     zInfo(QString("♻️ Leftover kiszűrve — túl rövid (rod=%1, needed=%2, barcode=%3)")
+        //               .arg(stock.availableLength_mm)
+        //               .arg(needed)
+        //               .arg(stock.barcode));
+        //     continue;
+        // }
 
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
         const auto single = OptimizerUtils::findSingleExactFit(
