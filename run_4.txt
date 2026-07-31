@@ -1,3 +1,12 @@
+toldás
+ - mivel a main hulló és annak a hosszát néhány centi rágagyással mérjük,
+ hogy amikor felhasználásra kerül, biztosan kiadja a méretet, illetve
+ - szálanyag esetén a gyártó inkább többet had egy centivel, mint kevesebbet, ugye ha
+neki 3000 mm-t kell szállításkor garantálni, inkább többet ad, mint kevesebbet
+
+ezek miatt mivel a main mindenképpen nagyobb, így az a biztos ha a toldatot kisebbre vesszük pl , 2-3 cm-el.
+
+
 calculation:
  - napháló - motoros: más a levonás, ha kapcsolós a motor, vagy ha rádiós.
  - 3 mm-el nagyobb a motoros tengely
@@ -10,6 +19,10 @@ calculation:
 
 material:
  - vasanyag vágó: 75 mm - nél kisebbet nem lehet vágni csőtengelyből mert a kisebb hullónak nincs rögzítése
+
+
+hulló:
+    - 700 mm-es tengelybe még belemegy a motor, ez a terméknél 81.5 cm alatt csak kapcsolós
 
 audit:
  - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
