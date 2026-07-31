@@ -74,54 +74,117 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial =
         PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
 
+    // zInfo("OptimizerModel: piecesByMaterial summary:");
+    // for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+    //     auto *mat = MaterialRegistry::instance().findById(it.key());
+    //     QString matName = mat ? mat->barcode : "?";
+
+    //     zInfo(QString("  → material=%1 count=%2")
+    //               .arg(matName)
+    //               .arg(it.value().size()));
+
+    //     for (const auto& p : it.value()) {
+    //         zInfo(QString("     • piece len=%1 role=%2 extRef=%3")
+    //                   .arg(p.info.length_mm)
+    //                   .arg(p.info.toldasRole)
+    //                   .arg(p.info.externalReference));
+    //     }
+    // }
+
+    // // PATCH — TOLDAS_MAIN darabok whole-cutolása (rod-loop előtt)
+    // {
+    //     for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+
+    //         auto& vec = it.value();
+    //         QVector<int> removeIdx;
+
+    //         for (int i = 0; i < vec.size(); ++i) {
+    //             const auto& p = vec[i];
+
+    //             if (p.info.toldasRole == "TOLDAS_MAIN") {
+
+    //                 auto ma = MachineUtils::pickMachineForMaterial(p.materialId);
+    //                 // Whole-cut plan generálása rúd nélkül
+    //                 auto crWhole = CutEngine::cutWhole(
+    //                     p,
+    //                     *ma,
+    //                     currentOpId,
+    //                     planCounter);
+
+    //                 _result_plans.append(crWhole.plan);
+
+    //                 // MAIN darab eltávolítása a pending listából
+    //                 removeIdx.append(i);
+    //             }
+    //         }
+
+    //         // indexek törlése visszafelé
+    //         std::sort(removeIdx.begin(), removeIdx.end(), std::greater<int>());
+    //         for (int idx : removeIdx)
+    //             vec.removeAt(idx);
+    //     }
+    // }
+
+    // --- piecesByMaterial summary (optimalizált log) ---
     zInfo("OptimizerModel: piecesByMaterial summary:");
+
     for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+
         auto *mat = MaterialRegistry::instance().findById(it.key());
         QString matName = mat ? mat->barcode : "?";
 
+        const auto& vec = it.value();
+
         zInfo(QString("  → material=%1 count=%2")
                   .arg(matName)
-                  .arg(it.value().size()));
+                  .arg(vec.size()));
 
-        for (const auto& p : it.value()) {
-            zInfo(QString("     • piece len=%1 role=%2 extRef=%3")
+        for (const auto& p : vec) {
+
+            QString src = p.info.leftoverEntryId.has_value()
+            ? "leftover"
+            : "stock";
+
+            zInfo(QString("     • len=%1 role=%2 src=%3 extRef=%4")
                       .arg(p.info.length_mm)
                       .arg(p.info.toldasRole)
+                      .arg(src)
                       .arg(p.info.externalReference));
         }
     }
 
-    // PATCH — TOLDAS_MAIN darabok whole-cutolása (rod-loop előtt)
+
+    // --- TOLDAS_MAIN darabok whole-cutolása (optimalizált blokk) ---
     {
         for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
 
             auto& vec = it.value();
-            QVector<int> removeIdx;
 
-            for (int i = 0; i < vec.size(); ++i) {
-                const auto& p = vec[i];
+            // gép kiválasztása egyszer anyagonként
+            auto ma = MachineUtils::pickMachineForMaterial(it.key());
 
-                if (p.info.toldasRole == "TOLDAS_MAIN") {
+            vec.erase(std::remove_if(vec.begin(), vec.end(),
+                                     [&](const auto& p){
 
-                    auto ma = MachineUtils::pickMachineForMaterial(p.materialId);
-                    // Whole-cut plan generálása rúd nélkül
-                    auto crWhole = CutEngine::cutWhole(
-                        p,
-                        *ma,
-                        currentOpId,
-                        planCounter);
+                                         if (p.info.toldasRole != "TOLDAS_MAIN")
+                                             return false;
 
-                    _result_plans.append(crWhole.plan);
+                                         // Whole-cut plan generálása rúd nélkül
+                                         auto crWhole = CutEngine::cutWhole(
+                                             p,
+                                             *ma,
+                                             currentOpId,
+                                             planCounter);
 
-                    // MAIN darab eltávolítása a pending listából
-                    removeIdx.append(i);
-                }
-            }
+                                         _result_plans.append(crWhole.plan);
 
-            // indexek törlése visszafelé
-            std::sort(removeIdx.begin(), removeIdx.end(), std::greater<int>());
-            for (int idx : removeIdx)
-                vec.removeAt(idx);
+                                         zInfo(QString("Whole-cut TOLDAS_MAIN: len=%1 extRef=%2")
+                                                   .arg(p.info.length_mm)
+                                                   .arg(p.info.externalReference));
+
+                                         return true; // töröljük a pending listából
+                                     }),
+                      vec.end());
         }
     }
 
@@ -171,44 +234,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         if (!machineOpt) { groupVec.removeFirst(); continue; }
         const CuttingMachine machine = *machineOpt;
 
-        // //PATCH — TOLDAS_MAIN darabok egyben kiadása (nem vágandó darabok)
-        // {
-        //     QVector<int> indexesToRemove;
-
-        //     for (int i = 0; i < groupVec.size(); ++i) {
-        //         const auto& p = groupVec[i];
-
-        //         if (p.info.toldasRole == "TOLDAS_MAIN") {
-
-        //             SelectedRod wholeRod;
-        //             wholeRod.materialId = targetMaterialId;
-        //             wholeRod.length = p.info.length_mm;      // a darab hossza
-        //             wholeRod.isReusable = false;
-        //             wholeRod.barcode = "WHOLE_"+QString::number(i);
-        //             wholeRod.rodId = "WHOLE_"+QString::number(i);
-        //             wholeRod.entryId = std::nullopt;
-        //             wholeRod.origin = RodOrigin::Stock;
-        //             wholeRod._parent = std::nullopt;
-
-        //             auto crWhole = CutEngine::cutWhole(
-        //                 p,
-        //                 wholeRod,
-        //                 machine,
-        //                 currentOpId,
-        //                 rodId,
-        //                 planCounter);
-
-        //             _result_plans.append(crWhole.plan);
-        //             indexesToRemove.append(i);
-
-        //         }
-        //     }
-
-        //     // MAIN darabok eltávolítása a pending listából
-        //     for (int idx : indexesToRemove)
-        //         groupVec.removeAt(idx);
-        // }
-
         auto init = initRodForMaterial(
             targetMaterialId,
             globalSnapshot,
@@ -240,33 +265,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         // 2/d. Rod‑loop stop feltételekkel
         while (true) {
             zInfo("ROD LOOP: #" + QString::number(rodloopcounter));
-
-            // // PATCH — TOLDAS_MAIN darabok egyben kiadása (nem vágandó)
-            // {
-            //     QVector<int> indexesToRemove;
-
-            //     for (int i = 0; i < groupVec.size(); ++i) {
-            //         const auto& p = groupVec[i];
-
-            //         if (p.info.toldasRole == "TOLDAS_MAIN") {
-
-            //             auto crWhole = CutEngine::cutWhole(
-            //                 p,
-            //                 rod,
-            //                 machine,
-            //                 currentOpId,
-            //                 rodId,
-            //                 planCounter);
-
-            //             _result_plans.append(crWhole.plan);
-            //             indexesToRemove.append(i);
-            //         }
-            //     }
-
-            //     // MAIN darabok eltávolítása a pending listából
-            //     for (int idx : indexesToRemove)
-            //         groupVec.removeAt(idx);
-            // }
 
             RodStepResult stepResult = RodLoopEngine::step(
                 groupVec,

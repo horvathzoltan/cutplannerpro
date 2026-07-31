@@ -34,6 +34,14 @@ inline constexpr auto UseReusableLeftovers = "use_reusable_leftovers";
 inline constexpr auto MaterialFinderRange = "material_finder_range_mm";
 
 inline constexpr auto LeftoverAgeThresholdDays = "leftover_age_threshold_days";
+
+const QString ToldasSafetyMargin = "toldas.safety_margin_mm";
+const QString ToldasMainShortfall = "toldas.max_main_shortfall_mm";
+const QString ToldasMin = "toldas.min_mm";   // rejtett
+const QString ToldasMax = "toldas.max_mm";   // rejtett
+
+const QString MaxMainOverlengthMM = "toldas.maxMainOverlength_mm";   // rejtett
+
 }
 
 enum class TestMode {
@@ -112,7 +120,18 @@ public:
     int nextManualLeftoverCounter();
     void commitManualLeftoverCounter(int c);
 
+    int safetyMargin() const;
+    int maxMainShortfall() const;
+    int toldasMin() const;
+    int toldasMax() const;
+    void setSafetyMargin(int mm);
+    void setMaxMainShortfall(int mm);
+    void setToldasMin(int mm);
+    void setToldasMax(int mm);
     //void setManualLeftoverCounter(int value);
+    int maxMainOverlength() const;
+    void setMaxMainOverlength(int mm);
+
 
     void save();
     void load(int argc, char* argv[]);
@@ -131,6 +150,7 @@ public:
 public:
     QVariant value(const QString& key, const QVariant& def = {}) const;
     void setValue(const QString& key, const QVariant& value);
+
 
 private:
     SettingsManager();

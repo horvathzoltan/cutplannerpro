@@ -165,9 +165,13 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
                    .arg(needed)
                    .arg(QString::number(needed * rodLength_m, 'f', 2));
         out << QString("      – gép stockján: %1 szál").arg(available);
-        out << QString("      – bevinni: %1 szál (%2 m)")
-                   .arg(bringIn)
-                   .arg(QString::number(bringIn * rodLength_m, 'f', 2));
+
+        if (bringIn > 0) {
+            out << QString("      – bevinni: %1 szál (%2 m)  %3")
+                       .arg(bringIn)
+                       .arg(QString::number(bringIn * rodLength_m, 'f', 2))
+                       .arg(QString("□ ").repeated(bringIn).trimmed());
+        }
     }
 
     // 5) Összesítő
@@ -330,7 +334,31 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
                                      : ci.rodId;
 
         int seen = rodSeenCount[rodIdOrBarcode]++;
-        QString rodMarker = (seen == 0) ? " ●" : " ○";
+        int total = rodTotalCount.value(rodIdOrBarcode, 1);
+
+        //QString rodMarker = (seen == 0) ? " ●" : " ○";
+        QString rodMarker;
+
+        // WHOLE-CUT (TOLDAS_MAIN) → a rudat egyben visszük
+        if (ci.toldasRole == "TOLDAS_MAIN") {
+            rodMarker = " ■";
+        }
+        // egyetlen vágás (első = utolsó)
+        else if (total == 1) {
+            rodMarker = " ▲";
+        }
+        // első vágás
+        else if (seen == 0) {
+            rodMarker = " ●";
+        }
+        // utolsó vágás
+        else if (seen + 1 == total) {
+            rodMarker = " △";
+        }
+        // köztes vágás
+        else {
+            rodMarker = " ○";
+        }
 
         QString baseRodLabel = QString("%1 %2").arg(rodIdOrBarcode).arg(rodMarker);
 
@@ -392,12 +420,17 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         QString icon;
         if (ci.toldasRole == "TOLDAS_MAIN") {
             // fődarab → nem vágjuk
-            icon = "■";     // vagy "🔧", vagy akár " " (üres)
+            icon = "";//"■";     // vagy "🔧", vagy akár " " (üres)
         } else {
             // toldat vagy normál darab → vágás
             icon = ci.isManualCut ? "📏" : "✂️";
         }
 
+        // Toldás ikon (mind MAIN, mind TOLDAT esetén)
+        QString toldasIcon = "";
+        if (ci.toldasRole == "TOLDAS_MAIN" || ci.toldasRole == "TOLDAS_TOLDAT") {
+            toldasIcon = "🧩";   // toldás jelölése
+        }
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
         QString pieceLabel = req
@@ -417,7 +450,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
         row.colStepRod     = step + " " + rodLabel;
         row.colMaterial    = materialLabel;
-        row.colIconSizeCap = icon + " " + sizeFull + " " + sepAfterSize;
+        row.colIconSizeCap = icon + toldasIcon+" " + sizeFull + " " + sepAfterSize;
         row.colPiece       = pieceLabel;
         row.colMult        = multiplier;
         row.capStr = capStr;

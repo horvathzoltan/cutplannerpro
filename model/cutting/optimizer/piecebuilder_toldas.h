@@ -128,9 +128,9 @@ public:
         // auto *mat = MaterialRegistry::instance().findById(req.materialId);
         // QString matName = mat ? mat->toDisplay() : "?";
 
-        zWarning(QString("ToldasEngine: NP-BAR igény nem toldható: need=%1, materialId=%2 → FALLBACK: sima darab")
-                     .arg(req.requiredLength)
-                     .arg(matName));
+        // zWarning(QString("ToldasEngine: NP-BAR igény nem toldható: need=%1, materialId=%2 → FALLBACK: sima darab")
+        //              .arg(req.requiredLength)
+        //              .arg(matName));
 
         // Fallback: sima darab
         Cutting::Piece::PieceInfo info;

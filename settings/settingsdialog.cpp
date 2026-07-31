@@ -31,7 +31,8 @@ void SettingsDialog::buildTabs()
         { SettingCategory::General,        "Általános" },
         { SettingCategory::Cutting,        "Vágás" },
         { SettingCategory::MaterialFinder, "Anyagkereső" },
-        { SettingCategory::Advanced,       "Haladó" }
+        { SettingCategory::Advanced,       "Haladó" },
+        { SettingCategory::Toldas,         "Toldás" }
     };
 
     for (auto it = tabNames.begin(); it != tabNames.end(); ++it) {

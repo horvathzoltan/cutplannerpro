@@ -255,3 +255,45 @@ int SettingsManager::leftoverAgeThresholdDays() const {
 void SettingsManager::setLeftoverAgeThresholdDays(int days) {
     persist(SettingsKeys::LeftoverAgeThresholdDays, QString::number(days));
 }
+
+// Toldás
+
+int SettingsManager::safetyMargin() const {
+    return value(SettingsKeys::ToldasSafetyMargin, 25).toInt();
+}
+
+int SettingsManager::maxMainShortfall() const {
+    return value(SettingsKeys::ToldasMainShortfall, 100).toInt();
+}
+
+int SettingsManager::toldasMin() const {
+    return value(SettingsKeys::ToldasMin, 100).toInt();
+}
+
+int SettingsManager::toldasMax() const {
+    return value(SettingsKeys::ToldasMax, 400).toInt();
+}
+
+void SettingsManager::setSafetyMargin(int mm) {
+    setValue(SettingsKeys::ToldasSafetyMargin, mm);
+}
+
+void SettingsManager::setMaxMainShortfall(int mm) {
+    setValue(SettingsKeys::ToldasMainShortfall, mm);
+}
+
+void SettingsManager::setToldasMin(int mm) {
+    setValue(SettingsKeys::ToldasMin, mm);
+}
+
+void SettingsManager::setToldasMax(int mm) {
+    setValue(SettingsKeys::ToldasMax, mm);
+}
+
+int SettingsManager::maxMainOverlength() const {
+    return value(SettingsKeys::MaxMainOverlengthMM, 100).toInt();
+}
+
+void SettingsManager::setMaxMainOverlength(int mm) {
+    setValue(SettingsKeys::MaxMainOverlengthMM, mm);
+}

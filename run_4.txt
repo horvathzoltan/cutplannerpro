@@ -1,4 +1,4 @@
-toldás
+toldás FIXED
  - mivel a main hulló és annak a hosszát néhány centi rágagyással mérjük,
  hogy amikor felhasználásra kerül, biztosan kiadja a méretet, illetve
  - szálanyag esetén a gyártó inkább többet had egy centivel, mint kevesebbet, ugye ha

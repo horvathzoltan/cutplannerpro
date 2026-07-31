@@ -17,7 +17,8 @@ enum class SettingCategory {
     General,
     Cutting,
     MaterialFinder,
-    Advanced
+    Advanced,
+    Toldas
 };
 
 struct SettingMeta {

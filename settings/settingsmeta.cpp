@@ -11,6 +11,28 @@ const QVector<SettingMeta> SettingsMeta = {
     "ByCount",
     { "ByCount", "ByTotalLength" }
 },
+    { "toldas.safety_margin_mm",
+        "Toldat ráhagyás [mm]",
+        SettingType::Int,
+        SettingCategory::Toldas,
+        25,
+        {}
+    },
+
+    { "toldas.max_main_shortfall_mm",
+        "Fődarab max. rövidségi tolerancia [mm]",
+        SettingType::Int,
+        SettingCategory::Toldas,
+        100,
+        {}
+    },
+    { "toldas.max_main_overlength_mm",
+        "Fődarab max. túlhossz tolerancia [mm]",
+        SettingType::Int,
+        SettingCategory::Toldas,
+        100,
+        {}
+    },
 
     // MaterialFinder
     { SettingsKeys::MaterialFinderRange,
@@ -63,5 +85,8 @@ const QVector<SettingMeta> SettingsMeta = {
         {},
     {}   // enumValues üres
 }
+
+
 };
+
 
