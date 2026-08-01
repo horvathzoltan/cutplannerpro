@@ -147,7 +147,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             zInfo(QString("     • len=%1 role=%2 src=%3 extRef=%4")
                       .arg(p.info.length_mm)
-                      .arg(p.info.toldasRole)
+                      .arg(ToldasRoleUtils::toString(p.info.toldasRole))
                       .arg(src)
                       .arg(p.info.externalReference));
         }
@@ -166,7 +166,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             vec.erase(std::remove_if(vec.begin(), vec.end(),
                                      [&](const auto& p){
 
-                                         if (p.info.toldasRole != "TOLDAS_MAIN")
+                                         if (p.info.toldasRole != ToldasRole::Main)
                                              return false;
 
                                          // Whole-cut plan generálása rúd nélkül
@@ -224,9 +224,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             continue;
         }
 
-
         zInfo(QString("✔ Aktuális anyagcsoport pending: %1 db").arg(groupVec.size()));
-
 
         // 2/b. Gép kiválasztása
         std::optional<CuttingMachine> machineOpt =
@@ -339,12 +337,31 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
         }
     }
 
-
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
-    for (auto& plan : _result_plans) {
-        auto* m = MaterialRegistry::instance().findById(plan.materialId);
+    // for (Plan::CutPlan &plan : _result_plans) {
+    //     auto *m = MaterialRegistry::instance().findById(plan.materialId);
+    //     MaterialTrimmingParams tp = m ? m->trimmingParams(plan.isReusable())
+    //                                   : MaterialTrimmingParams::getDefault();
+    //     SegmentPostProcess::applyFrontTrimToPlan(plan, tp);
+    // }
+    // 3️⃣ Szegmens-szintű front trim utómunka — csak vágott rudakra
+    for (Plan::CutPlan &plan : _result_plans) {
+
+        // ha minden darab whole-cut, akkor ez a rúd technikailag nincs vágva → skip
+        const bool allWhole =
+            std::all_of(plan.piecesWithMaterial.begin(),
+                        plan.piecesWithMaterial.end(),
+                        [](const Cutting::Piece::PieceWithMaterial &pw) {
+                            return pw.info.keepWhole;
+                        });
+
+        if (allWhole)
+            continue;
+
+        auto *m = MaterialRegistry::instance().findById(plan.materialId);
         MaterialTrimmingParams tp = m ? m->trimmingParams(plan.isReusable())
                                       : MaterialTrimmingParams::getDefault();
+
         SegmentPostProcess::applyFrontTrimToPlan(plan, tp);
     }
 

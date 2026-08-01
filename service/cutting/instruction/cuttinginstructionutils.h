@@ -32,6 +32,10 @@ enum class SortStrategy {
     None
 };
 
+struct MachineCutsEvent_Result {
+    QString planTxt;                          // a diagram szövege
+    QVector<const CutInstruction*> orderedCuts; // a rendezett darabok
+};
 
 inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = SortStrategy::BySizeDesc) {
 
@@ -184,32 +188,14 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
     return out.join("\n");
 }
 
-// A CutInstructions (MachineCuts) IGEN, gépenkénti
-inline QString formatMachineCutsEvent(const MachineCuts& mc,
+inline QString buildMachineCutsHeader(const MachineCuts& mc,
                                       const MachineReport& rep,
                                       const QVector<DiscardedPiece>& failedList,
-                                      const QString& planIdStr,
-                                      const int printedLW)
+                                      const QString& planIdStr)
 {
     QStringList lines;
 
     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
-
-    int inputCount = 0;
-    QStringList refs;
-    for (const auto& ci : mc.cutInstructions) {
-        auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-        if (req) {
-            inputCount += 1;
-            refs.append(ci.externalReference);
-        }
-    }
-
-    QString compressed = TextHelper::compressRanges_String(refs);
-
-    int outputCount = mc.cutInstructions.size();
-    int diff = outputCount - inputCount;
-
 
     // --- fejlécek ---
     lines << "📄 Vágási utasítások (gépenkénti)";
@@ -217,6 +203,8 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     lines << QString("📅 Dátum: %1").arg(dateStr);
     lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
     lines << "──────────────────────────────────";
+
+    // --- anyagfelhasználás ---
     lines << buildMaterialStockReportForMachine_AUDIT(mc);
     lines << "──────────────────────────────────";
 
@@ -236,6 +224,12 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     }
 
     // --- input/output ---
+    QStringList refs;
+    for (const auto& ci : mc.cutInstructions)
+        refs.append(ci.externalReference);
+
+    QString compressed = TextHelper::compressRanges_String(refs);
+
     lines << "📥 Gyártási input:";
     lines << QString("  • Kért darabszám: %1 db").arg(rep.requestedPieces_Local());
     lines << QString("  • Kért tételszámok: %1").arg(compressed);
@@ -245,7 +239,6 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
     if (rep.failedPieces_Local > 0) {
         lines << QString("  • Nem teljesíthető: %1 db").arg(rep.failedPieces_Local);
-
         lines << "  • Nem teljesült darabok:";
 
         for (const auto& dp : failedList) {
@@ -273,6 +266,21 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
     }
 
     lines << "──────────────────────────────────";
+
+    return lines.join("\n");
+}
+
+// A CutInstructions (MachineCuts) IGEN, gépenkénti
+inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
+                                      const MachineReport& rep,
+                                      const QVector<DiscardedPiece>& failedList,
+                                      const QString& planIdStr,
+                                      const int printedLW)
+{
+    QStringList lines;
+    QVector<const CutInstruction*> orderedCuts;
+
+    lines << buildMachineCutsHeader(mc, rep, failedList, planIdStr);
 
     // --- előkészítés ---
     QString prevRod;
@@ -324,6 +332,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
     // --- MODEL FELTÖLTÉSE ---
     for (const auto& ci : mc.cutInstructions) {
+        orderedCuts.append(&ci);
 
         MachineCutsEvent_Row row;
 
@@ -340,7 +349,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
         QString rodMarker;
 
         // WHOLE-CUT (TOLDAS_MAIN) → a rudat egyben visszük
-        if (ci.toldasRole == "TOLDAS_MAIN") {
+        if (ci.keepWhole) {
             rodMarker = " ■";
         }
         // egyetlen vágás (első = utolsó)
@@ -418,7 +427,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 //        QString icon = ci.isManualCut ? "📏" : "✂️";
         // PATCH 13/B — Toldás szerepkör ikon
         QString icon;
-        if (ci.toldasRole == "TOLDAS_MAIN") {
+        if (ci.toldasRole == ToldasRole::Main) {
             // fődarab → nem vágjuk
             icon = "";//"■";     // vagy "🔧", vagy akár " " (üres)
         } else {
@@ -428,7 +437,7 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
 
         // Toldás ikon (mind MAIN, mind TOLDAT esetén)
         QString toldasIcon = "";
-        if (ci.toldasRole == "TOLDAS_MAIN" || ci.toldasRole == "TOLDAS_TOLDAT") {
+        if (ci.toldasRole == ToldasRole::Main || ci.toldasRole == ToldasRole::Toldat) {
             toldasIcon = "🧩";   // toldás jelölése
         }
 
@@ -438,10 +447,8 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
                                  : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
 
         // PATCH 13/B — szerepkör megjelenítése
-        if (!ci.toldasRole.isEmpty()) {
-            pieceLabel += QString(" [%1]").arg(ci.toldasRole == "TOLDAS_MAIN"
-                                                   ? "MAIN"
-                                                   : "TOLDAT");
+        if (ci.toldasRole == ToldasRole::Main || ci.toldasRole == ToldasRole::Toldat) {
+            pieceLabel += QString(" [%1]").arg(ToldasRoleUtils::toString(ci.toldasRole));
         }
 
         QString multiplier = "";
@@ -570,7 +577,10 @@ inline QString formatMachineCutsEvent(const MachineCuts& mc,
             prevRow = &r;   // ⭐ frissítjük az előző sort
     }
 
-    return lines.join("\n");
+    MachineCutsEvent_Result r;
+    r.planTxt = lines.join("\n");
+    r.orderedCuts = orderedCuts;
+    return r;
 }
 
 
@@ -675,76 +685,249 @@ inline QMap<QString, QString> computeGroupIconsForRequests(const QVector<Cutting
     return out;
 }
 
-inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& mc)
+// inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& mc)
+// {
+//     QVector<LabelModel> out;
+//     QSet<QString> rodSeen;
+//     QVector<Cutting::Plan::Request> reqs;
+
+//     for (const auto& ci : mc.cutInstructions) {
+//         Cutting::Plan::Request *req =
+//             CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+//         if(req)
+//             reqs.append(*req);
+//     }
+
+//     QMap<QString, QString> groupIcons = computeGroupIconsForRequests(reqs);
+
+//     for(auto& g : groupIcons.keys()){
+//         zInfo(L("Group icon: %1 → %2").arg(g).arg(groupIcons[g]));
+//     }
+
+//     for (const CutInstruction &ci : mc.cutInstructions) {
+
+//         // 1) Rúd címke
+//         if (!rodSeen.contains(ci.rodId)) {
+//             rodSeen.insert(ci.rodId);
+
+//             QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
+//                                          ? ci.barcode
+//                                          : ci.rodId;
+
+//             LabelModel rod;
+//             rod.parts.append({rodIdOrBarcode, false, false, 0, Qt::AlignCenter,
+//                               false, false, false});
+
+//             const MaterialMaster *mat =
+//                 MaterialRegistry::instance().findById(ci.materialId);
+
+//             if (mat) {
+//                 rod.parts.append({
+//                     mat->toDisplay(),                   // toReportLabel(),
+//                     false,                              // trimmable
+//                     false,                              // jumpable
+//                     1,                                  // targetRow → alsó sor
+//                     Qt::AlignCenter, false, true, false // 🔥 small = true
+//                 });
+//             }
+
+//             // rod.groupIcon = "🌞";
+//             // rod.priorityIcon = "🌞";
+//             //  1) leftover keresése
+//             QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
+//                                  ? ci.barcode
+//                                  : ci.rodId;
+
+//             if (mc.leftover_mm.contains(rodKey)) {
+//                 double leftover = mc.leftover_mm[rodKey];
+//                 QString leftoverBc = mc.leftoverBarcode.value(rodKey);
+
+//                 rod.parts.append(
+//                     {QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
+//                      false, false, 0, Qt::AlignRight, false, false, false});
+
+//                 rod.barcode = leftoverBc;
+//             }
+
+//             out.append(rod);
+
+//             // 🔥 leftover felvételi címke generálása
+//             if (!rod.barcode.isEmpty() && rod.barcode.toLower() != "selejt") {
+
+//                 // double leftover = mc.leftover_mm.value(rodKey);
+//                 double leftover = mc.leftover_mm[rodKey];
+
+//                 // 🔥 megelőző negyed-dm határ
+//                 int trimmedLeftover = int(leftover / 25) * 25;
+
+//                 QString leftoverBc = rod.barcode;
+
+//                 // Code128 tartalom
+//                 QString code128 = QString("%1|%2|%3")
+//                                       .arg(leftoverBc)
+//                                       .arg(trimmedLeftover)
+//                                       .arg(mat->barcode);
+
+//                 LabelModel lo;
+//                 lo.priorityIcon = ""; //"♻️";          // opcionális
+//                 lo.groupIcon = "";    // nincs csoport
+//                 lo.barcode = code128; // 🔥 ez lesz a vonalkód
+
+//                 // Sorok
+
+//                 lo.parts.append({mat->barcode, false, false, 0, Qt::AlignCenter,
+//                                  false, false, false});
+
+//                 lo.parts.append({leftoverBc, false, false, 1, Qt::AlignCenter, false,
+//                                  false, false});
+
+//                 lo.parts.append({QString("%1 mm").arg(trimmedLeftover), false, false,
+//                                  2, Qt::AlignCenter, false, false, false});
+
+//                 // lo.parts.append({
+//                 //     code128,
+//                 //     false, false,
+//                 //     2,
+//                 //     Qt::AlignCenter,
+//                 //     true, false, false   // small
+//                 // });
+
+//                 out.append(lo);
+//             }
+//         }
+
+//         // 2) Darab címke
+//         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+//         QString ext = ci.externalReference + ".";
+
+//         if (ci.toldasRole == ToldasRole::Main ||
+//             ci.toldasRole == ToldasRole::Toldat) {
+//             ext += QString(" [%1]").arg(ToldasRoleUtils::toString(ci.toldasRole));
+//         }
+
+//         // 🔥💧☁️⏳ prioritás ikon
+//         QString prio = req ? priorityIconFor(req->dueDate) : "🌞";
+
+//         // 🐸🐱🦭… csoportikon
+//         QString baseRef = ci.externalReference.split(' ').first();
+//         QString group = groupIcons.value(baseRef, "🐞");
+
+//         // zInfo(QStringLiteral("prio(%1) ->
+//         // %2").arg(req->dueDate.toString()).arg(prio));
+//         // zInfo(QStringLiteral("group(%1)->
+//         // %2").arg(ci.externalReference).arg(group));
+
+//         QString owner =
+//             req ? req->ownerName : ci.requestId.toString(QUuid::WithoutBraces);
+//         QString sizeStr =
+//             QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
+
+//         LabelModel lm;
+//         lm.priorityIcon = prio;
+//         lm.groupIcon = group;
+//         lm.barcode = ci.externalReference;
+
+//         // lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
+//         // lm.parts.append({ prio + group + " " + ext + " ", false, false, 0,
+//         // Qt::AlignLeft });
+//         lm.parts.append(
+//             {ext + " ", false, false, 0, Qt::AlignLeft, false, false, false});
+//         lm.parts.append(
+//             {owner, true, true, 1, Qt::AlignCenter, false, true, false});
+
+//         // QString a = "";
+//         // if(ci.subtype != Subtype::None){
+//         //     a+= SubtypeUtils::toDisplayText(ci.subtype);
+//         // }
+//         QString a;
+//         a = SubtypeUtils::toProductVariantDisplayText(
+//             ci.productTypeId, ci.productSubtypeId, ci.attributes);
+
+//         // auto* b =
+//         // ProductSubtypeRegistry::instance().findById(ci.productSubtypeId); a =
+//         // b?b->name:"";
+
+//         if (ci.side != HandlerSide::None) {
+//             if (!a.isEmpty())
+//                 a += ", ";
+//             a += HandlerSideUtils::toDisplayText(ci.side);
+//             ;
+//         }
+
+//         if (!a.isEmpty()) {
+//             lm.parts.append({a, false, false, 2, Qt::AlignLeft, true, false, true});
+//         }
+//         lm.parts.append({" | " + sizeStr, false, false, 0, Qt::AlignRight, false,
+//                          false, false});
+//         out.append(lm);
+//     }
+
+//     return out;
+// }
+
+inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCutsLeftoverInfo& leftoverInfo, QVector<const CutInstruction*> orderedCuts)
 {
     QVector<LabelModel> out;
     QSet<QString> rodSeen;
     QVector<Cutting::Plan::Request> reqs;
 
-    for (const auto& ci : mc.cutInstructions) {
-        Cutting::Plan::Request *req =
-            CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-        if(req)
+    //
+    // REQUEST-ek összegyűjtése (csoportikonokhoz)
+    //
+    for (const auto* ci : orderedCuts) {
+        Cutting::Plan::Request* req =
+            CuttingPlanRequestRegistry::instance().findById(ci->requestId);
+        if (req)
             reqs.append(*req);
     }
 
     QMap<QString, QString> groupIcons = computeGroupIconsForRequests(reqs);
 
-    for(auto& g : groupIcons.keys()){
-        zInfo(L("Group icon: %1 → %2").arg(g).arg(groupIcons[g]));
-    }
+    // for(auto& g : groupIcons.keys()){
+    //     zInfo(L("Group icon: %1 → %2").arg(g).arg(groupIcons[g]));
+    // }
 
-    for (const auto& ci : mc.cutInstructions) {
+    for (const auto* ci : orderedCuts) {
 
         // 1) Rúd címke
-        if (!rodSeen.contains(ci.rodId)) {
-            rodSeen.insert(ci.rodId);
+        if (!rodSeen.contains(ci->rodId)) {
+            rodSeen.insert(ci->rodId);
 
-            QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
-                                         ? ci.barcode
-                                         : ci.rodId;
+            QString rodIdOrBarcode = (ci->source == Cutting::Plan::Source::Reusable)
+                                         ? ci->barcode
+                                         : ci->rodId;
 
             LabelModel rod;
-            rod.parts.append({
-                rodIdOrBarcode,
-                false, false,
-                0,
-                Qt::AlignCenter,
-                false, false, false
-            });
+            rod.parts.append({rodIdOrBarcode, false, false, 0, Qt::AlignCenter,
+                              false, false, false});
 
-            const MaterialMaster* mat =
-                MaterialRegistry::instance().findById(ci.materialId);
+            const MaterialMaster *mat =
+                MaterialRegistry::instance().findById(ci->materialId);
 
-            if(mat){
+            if (mat) {
                 rod.parts.append({
-                    mat->toDisplay(), //toReportLabel(),
-                    false,      // trimmable
-                    false,      // jumpable
-                    1,          // targetRow → alsó sor
-                    Qt::AlignCenter,
-                    false , true, false       // 🔥 small = true
+                    mat->toDisplay(),                   // toReportLabel(),
+                    false,                              // trimmable
+                    false,                              // jumpable
+                    1,                                  // targetRow → alsó sor
+                    Qt::AlignCenter, false, true, false // 🔥 small = true
                 });
             }
 
-            //rod.groupIcon = "🌞";
-            //rod.priorityIcon = "🌞";
-            // 1) leftover keresése
-            QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
-                                 ? ci.barcode
-                                 : ci.rodId;
+            // rod.groupIcon = "🌞";
+            // rod.priorityIcon = "🌞";
+            //  1) leftover keresése
+            QString rodKey = (ci->source == Cutting::Plan::Source::Reusable)
+                                 ? ci->barcode
+                                 : ci->rodId;
 
-            if (mc.leftover_mm.contains(rodKey)) {
-                double leftover = mc.leftover_mm[rodKey];
-                QString leftoverBc = mc.leftoverBarcode.value(rodKey);
+            if (leftoverInfo.leftover_mm.contains(rodKey)) {
+                double leftover = leftoverInfo.leftover_mm[rodKey];
+                QString leftoverBc = leftoverInfo.leftoverBarcode.value(rodKey);
 
-                rod.parts.append({
-                    QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
-                    false, false,
-                    0,
-                    Qt::AlignRight,
-                    false, false, false
-                });
+                rod.parts.append(
+                    {QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
+                     false, false, 0, Qt::AlignRight, false, false, false});
 
                 rod.barcode = leftoverBc;
             }
@@ -752,14 +935,13 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
             out.append(rod);
 
             // 🔥 leftover felvételi címke generálása
-            if (!rod.barcode.isEmpty() && rod.barcode.toLower()!="selejt") {
+            if (!rod.barcode.isEmpty() && rod.barcode.toLower() != "selejt") {
 
-                //double leftover = mc.leftover_mm.value(rodKey);
-                double leftover = mc.leftover_mm[rodKey];
+                // double leftover = mc.leftover_mm.value(rodKey);
+                double leftover = leftoverInfo.leftover_mm[rodKey];
 
                 // 🔥 megelőző negyed-dm határ
                 int trimmedLeftover = int(leftover / 25) * 25;
-
 
                 QString leftoverBc = rod.barcode;
 
@@ -770,35 +952,20 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
                                       .arg(mat->barcode);
 
                 LabelModel lo;
-                lo.priorityIcon = "";//"♻️";          // opcionális
-                lo.groupIcon = "";               // nincs csoport
-                lo.barcode = code128;            // 🔥 ez lesz a vonalkód
+                lo.priorityIcon = ""; //"♻️";          // opcionális
+                lo.groupIcon = "";    // nincs csoport
+                lo.barcode = code128; // 🔥 ez lesz a vonalkód
 
                 // Sorok
 
-                lo.parts.append({
-                    mat->barcode,
-                    false, false,
-                    0,
-                    Qt::AlignCenter,
-                    false, false, false
-                });
+                lo.parts.append({mat->barcode, false, false, 0, Qt::AlignCenter,
+                                 false, false, false});
 
-                lo.parts.append({
-                    leftoverBc,
-                    false, false,
-                    1,
-                    Qt::AlignCenter,
-                    false, false, false
-                });
+                lo.parts.append({leftoverBc, false, false, 1, Qt::AlignCenter, false,
+                                 false, false});
 
-                lo.parts.append({
-                    QString("%1 mm").arg(trimmedLeftover),
-                    false, false,
-                    2,
-                    Qt::AlignCenter,
-                    false, false, false
-                });
+                lo.parts.append({QString("%1 mm").arg(trimmedLeftover), false, false,
+                                 2, Qt::AlignCenter, false, false, false});
 
                 // lo.parts.append({
                 //     code128,
@@ -813,67 +980,73 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& 
         }
 
         // 2) Darab címke
-        auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-        QString ext = ci.externalReference + ".";
+        auto req = CuttingPlanRequestRegistry::instance().findById(ci->requestId);
+        QString ext = ci->externalReference + ".";
 
-        if (!ci.toldasRole.isEmpty()) {
-            ext += QString(" [%1]").arg(ci.toldasRole == "TOLDAS_MAIN"
-                                            ? "MAIN"
-                                            : "TOLDAT");
+        if (ci->toldasRole == ToldasRole::Main ||
+            ci->toldasRole == ToldasRole::Toldat) {
+            ext += QString(" [%1]").arg(ToldasRoleUtils::toString(ci->toldasRole));
         }
 
         // 🔥💧☁️⏳ prioritás ikon
         QString prio = req ? priorityIconFor(req->dueDate) : "🌞";
 
         // 🐸🐱🦭… csoportikon
-        QString baseRef = ci.externalReference.split(' ').first();
+        QString baseRef = ci->externalReference.split(' ').first();
         QString group = groupIcons.value(baseRef, "🐞");
 
+        // zInfo(QStringLiteral("prio(%1) ->
+        // %2").arg(req->dueDate.toString()).arg(prio));
+        // zInfo(QStringLiteral("group(%1)->
+        // %2").arg(ci.externalReference).arg(group));
 
-        // zInfo(QStringLiteral("prio(%1) -> %2").arg(req->dueDate.toString()).arg(prio));
-        // zInfo(QStringLiteral("group(%1)-> %2").arg(ci.externalReference).arg(group));
-
-        QString owner = req ? req->ownerName
-                            : ci.requestId.toString(QUuid::WithoutBraces);
-        QString sizeStr = QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
+        QString owner =
+            req ? req->ownerName : ci->requestId.toString(QUuid::WithoutBraces);
+        QString sizeStr =
+            QString("%1 mm").arg(QString::number(ci->cutSize_mm, 'f', 0));
 
         LabelModel lm;
         lm.priorityIcon = prio;
         lm.groupIcon = group;
-        lm.barcode = ci.externalReference;
+        lm.barcode = ci->externalReference;
 
-        //lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
-        //lm.parts.append({ prio + group + " " + ext + " ", false, false, 0, Qt::AlignLeft });
-        lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft, false, false, false });
-        lm.parts.append({ owner,     true,  true,  1, Qt::AlignCenter, false, true, false });
+        // lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
+        // lm.parts.append({ prio + group + " " + ext + " ", false, false, 0,
+        // Qt::AlignLeft });
+        lm.parts.append(
+            {ext + " ", false, false, 0, Qt::AlignLeft, false, false, false});
+        lm.parts.append(
+            {owner, true, true, 1, Qt::AlignCenter, false, true, false});
 
         // QString a = "";
         // if(ci.subtype != Subtype::None){
         //     a+= SubtypeUtils::toDisplayText(ci.subtype);
         // }
         QString a;
-        a = SubtypeUtils::toProductVariantDisplayText(ci.productTypeId,
-                                                      ci.productSubtypeId,
-                                                      ci.attributes);
+        a = SubtypeUtils::toProductVariantDisplayText(
+            ci->productTypeId, ci->productSubtypeId, ci->attributes);
 
-        // auto* b = ProductSubtypeRegistry::instance().findById(ci.productSubtypeId);
-        // a = b?b->name:"";
+        // auto* b =
+        // ProductSubtypeRegistry::instance().findById(ci.productSubtypeId); a =
+        // b?b->name:"";
 
-        if(ci.side != HandlerSide::None) {
-            if(!a.isEmpty()) a += ", ";
-            a += HandlerSideUtils::toDisplayText(ci.side);;
+        if (ci->side != HandlerSide::None) {
+            if (!a.isEmpty())
+                a += ", ";
+            a += HandlerSideUtils::toDisplayText(ci->side);
+            ;
         }
 
-        if(!a.isEmpty()){
-            lm.parts.append({ a,   false, false, 2, Qt::AlignLeft, true, false, true });
+        if (!a.isEmpty()) {
+            lm.parts.append({a, false, false, 2, Qt::AlignLeft, true, false, true});
         }
-        lm.parts.append({ " | "+sizeStr,   false, false, 0, Qt::AlignRight, false, false, false });
+        lm.parts.append({" | " + sizeStr, false, false, 0, Qt::AlignRight, false,
+                         false, false});
         out.append(lm);
     }
 
     return out;
 }
-
 
 
 inline void trimLabelToWidth(LabelModel& lm, int maxWidth)
@@ -2201,6 +2374,247 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
 
     painter.setPen(oldPen);
 }
+
+inline MachineCutsEvent_Result formatMachineCutsEvent_2(const MachineCuts& mc,
+                                        const MachineReport& rep,
+                                        const QVector<DiscardedPiece>& failedList,
+                                        const QString& planIdStr,
+                                        const int printedLW)
+{
+    QStringList out;
+    QVector<const CutInstruction*> orderedCuts;
+
+    out << buildMachineCutsHeader(mc, rep, failedList, planIdStr);
+    out << "";   // üres sor
+
+    //
+    // ANYAG → RÚD → DARABOK csoportosítás
+    //
+    QMap<QUuid, QMap<QString, QVector<const CutInstruction*>>> materialMap;
+
+    for (const auto& ci : mc.cutInstructions) {
+
+        QUuid matId = ci.materialId;
+
+        QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
+                             ? ci.barcode
+                             : ci.rodId;
+
+        materialMap[matId][rodKey].append(&ci);
+    }
+
+    bool firstMaterial = true;
+
+    //
+    // ANYAGCSOPORTOK KIÍRÁSA
+    //
+    for (auto matIt = materialMap.begin(); matIt != materialMap.end(); ++matIt) {
+
+        QUuid matId = matIt.key();
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+
+        if (!firstMaterial)
+            out << "";
+        firstMaterial = false;
+
+        out << QString(printedLW, u'═');
+
+        if (mat)
+            out << QString("%1").arg(mat->toReportLabel());
+        else
+            out << QString("Anyag: %1").arg(matId.toString(QUuid::WithoutBraces));
+
+        out << QString(printedLW, u'═');
+        out << "";
+
+        //
+        // RÚDONKÉNTI DIAGRAMOK
+        //
+        const auto& rods = matIt.value();
+
+        for (auto rodIt = rods.begin(); rodIt != rods.end(); ++rodIt) {
+
+            const QString rodKey = rodIt.key();
+            const auto& list     = rodIt.value();
+
+            //
+            // HULLÓ FELIRAT A RÚD FEJLÉCÉBEN → A RÚD VÉGÉHEZ IGAZÍTVA
+            //
+            double leftoverLen = mc.leftoverInfo.leftover_mm.value(rodKey, 0.0);
+
+            QString rodHeader = QString("Rod %1").arg(rodKey);
+
+            if (leftoverLen > 0.0) {
+                QString hulloTxt = QString("hulló %1 mm").arg(leftoverLen);
+
+                // A rúd fejlécét a printedLW szélességhez igazítjuk
+                int pad = printedLW - rodHeader.length() - hulloTxt.length();
+                if (pad < 1) pad = 1;
+
+                rodHeader += QString(pad, ' ') + hulloTxt;
+            }
+
+            // A fejlécet kiírjuk
+            out << rodHeader;
+
+            //
+            // SZEGMENSEK ELŐKÉSZÍTÉSE
+            //
+            QVector<double> segLens;
+            QVector<QString> labels;
+
+            for (const auto* ci : list) {
+                segLens.append(ci->cutSize_mm);
+                labels.append(QString("%1. %2 mm □")
+                                  .arg(ci->externalReference)
+                                  .arg(ci->cutSize_mm));
+                orderedCuts.append(ci);
+            }
+
+            // hulló szegmens → csak a csíkban, NEM a darabsorban
+            if (leftoverLen > 0.0) {
+                segLens.append(leftoverLen);
+                labels.append(QString("hulló %1 mm").arg(leftoverLen));
+                //orderedCuts.append(ci);
+            }
+
+            if (segLens.isEmpty()) {
+                out << "";
+                continue;
+            }
+
+            //
+            // ARÁNYOS + MINIMÁLIS SZÉLESSÉGEK
+            //
+            double totalLen = 0.0;
+            for (double l : segLens)
+                totalLen += l;
+
+            const int n = segLens.size();
+            QVector<int> proportionalWidth(n);
+            QVector<int> minWidth(n);
+            QVector<int> width(n);
+
+            for (int i = 0; i < n; ++i) {
+                int pw = int((segLens[i] / totalLen) * printedLW);
+                if (pw < 3) pw = 3;
+
+                int mw = labels[i].length() + 3;
+
+                proportionalWidth[i] = pw;
+                minWidth[i]          = mw;
+                width[i]             = qMax(pw, mw);
+            }
+
+            //
+            // OVERFLOW → A NAGY SZEGMENSEKBŐL VESZÜNK EL
+            //
+            int sumWidth = 0;
+            for (int w : width)
+                sumWidth += w;
+
+            if (sumWidth > printedLW) {
+                int overflow = sumWidth - printedLW;
+
+                QVector<int> idx(n);
+                for (int i = 0; i < n; ++i) idx[i] = i;
+
+                std::sort(idx.begin(), idx.end(), [&](int a, int b){
+                    return width[a] > width[b];
+                });
+
+                for (int k = 0; k < n && overflow > 0; ++k) {
+                    int i = idx[k];
+                    int canReduce = width[i] - minWidth[i];
+                    if (canReduce <= 0)
+                        continue;
+                    int reduce = qMin(canReduce, overflow);
+                    width[i]  -= reduce;
+                    overflow  -= reduce;
+                }
+            }
+
+            // --- NORMALIZÁLÁS: ha sumWidth < printedLW, osszuk szét a hiányzó helyet ---
+            sumWidth = 0;
+            for (int w : width)
+                sumWidth += w;
+
+            if (sumWidth < printedLW) {
+                int deficit = printedLW - sumWidth;
+
+                QVector<int> idx2(n);
+                for (int i = 0; i < n; ++i) idx2[i] = i;
+
+                std::sort(idx2.begin(), idx2.end(), [&](int a, int b){
+                    return width[a] > width[b];
+                });
+
+                int k = 0;
+                while (deficit > 0) {
+                    width[idx2[k]] += 1;
+                    deficit -= 1;
+
+                    k++;
+                    if (k >= n)
+                        k = 0;   // körkörös kiosztás
+                }
+            }
+
+
+            //
+            // CSÍK + FELIRATOK
+            //
+            QString barLine;
+            QString labelLine;
+
+            for (int i = 0; i < n; ++i) {
+                int w = width[i];
+
+                bool isHullo = labels[i].startsWith("hulló");
+
+                // munkadarab → normál csík
+                if (!isHullo) {
+                    barLine += QString(w - 1, u'─');
+                    barLine += u'┆';
+                }
+                // hulló → szaggatott csík
+                else {
+                    barLine += QString(w - 1, u'·');   // pontozott
+                    barLine += u'┆';
+                }
+
+
+                QString padded = labels[i].leftJustified(w, ' ');
+                labelLine += padded;
+            }
+
+            //out << barLine;
+            out << barLine.leftJustified(printedLW, ' ');
+
+
+            // DARABSOR → hulló NEM kerül ide
+            QStringList filteredLabels;
+            for (int i = 0; i < labels.size(); ++i) {
+                if (!labels[i].startsWith("hulló"))
+                    filteredLabels << labels[i].leftJustified(width[i], ' ');
+            }
+            //out << filteredLabels.join("");
+            out << filteredLabels.join("").leftJustified(printedLW, ' ');
+
+
+            out << "";
+        }
+    }
+
+    MachineCutsEvent_Result r;
+    r.planTxt = out.join("\n");
+    r.orderedCuts = orderedCuts;
+    return r;
+}
+
+
+
+
 
 } // end namespace CuttingInstructionUtils
 

@@ -1017,8 +1017,8 @@ void CuttingPresenter::GenerateCutInstructions()
                              ? plan.sourceBarcode
                              : plan.rodId;
 
-        it->leftover_mm[rodKey] = plan._segments.waste_mm();
-        it->leftoverBarcode[rodKey] = plan._segments.leftoverBarcode();
+        it->leftoverInfo.leftover_mm[rodKey] = plan._segments.waste_mm();
+        it->leftoverInfo.leftoverBarcode[rodKey] = plan._segments.leftoverBarcode();
         // utolsó piece index
         //int lastPieceIdx = -1;
         // for (int j = plan._segments.size() - 1; j >= 0; --j){
@@ -1061,6 +1061,7 @@ void CuttingPresenter::GenerateCutInstructions()
             ci.attributes = pwm.attributes;
             // PATCH 13/B — toldás szerepkör átvezetése a gépi utasításba
             ci.toldasRole = pwm.info.toldasRole;
+            ci.keepWhole = pwm.info.keepWhole;
 
             // if (i == lastPieceIdx && ci.lengthAfter_mm > 0)
             //     if (!reusedLeftovers.contains(plan.leftoverBarcode))
@@ -1129,6 +1130,7 @@ void CuttingPresenter::ExportCutInstructions()
     QDir().mkpath(dir);
 
     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+    QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2;
 
     // --- 1) CutInstructions.txt ---
     {
@@ -1156,102 +1158,143 @@ void CuttingPresenter::ExportCutInstructions()
                     failedList.append(dp);
             }
 
-            out << CuttingInstructionUtils::formatMachineCutsEvent(mc, rep, failedList, baseName, printedLineWidth) << "\n\n";
+            auto m = CuttingInstructionUtils::formatMachineCutsEvent(mc, rep, failedList, baseName, printedLineWidth);
+            orderedCuts2.insert(mc.machineHeader.machineId, m.orderedCuts);
+
+            out << m.planTxt << "\n\n";
         }
 
         zEvent(QString("📄 CutInstructions exportálva: %1").arg(path));
     }
 
-    // --- 2) LabelTable ---
-    // {
-    //     QString path = dir + "/" + baseName + "_CutInstructions_Labels.txt";
-    //     QFile f(path);
-    //     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    //         zEvent("❌ Nem sikerült megnyitni a LabelTable fájlt.");
-    //         return;
-    //     }
-
-    //     QTextStream out(&f);
-    //     out.setEncoding(QStringConverter::Utf8);
-
-    //     out << QString("🏷️ Címketáblák (gépenként)");
-    //     out << QString("CutPlan: %1\n").arg(baseName);
-    //     out << QString("📅 Dátum: %1\n\n").arg(dateStr);
-
-    //     bool firstPage = true;
-
-    //     for (const auto& mc : _machineCutsList) {
-    //         if (!firstPage)
-    //             out << "\n\n";
-
-    //         firstPage = false;
-
-
-    //         out << QString("🪚 Gép: %1\n").arg(mc.machineHeader.machineName);
-
-    //         auto labels = CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-    //         //out << CuttingInstructionUtils::formatLabelTable4(labels, printedLineWidth, 2, printedPageHeight);
-    //         //out << CuttingInstructionUtils::formatLabelStackPaged(labels, printedLineWidth, 2, printedPageHeight);
-    //         out << CuttingInstructionUtils::formatLabelColumnFlow(labels, printedLineWidth, printedPageHeight, 2, 4);
-    //         //out << "\n\n";
-    //     }
-
-    //     zEvent(QString("🏷️ LabelTable exportálva: %1").arg(path));
-    // }
-
     // --- 3) LabelTable PDF ---
-
     {
         QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
 
-        QPdfWriter writer(path);
-        writer.setPageSize(QPageSize(QPageSize::A4));
-        writer.setResolution(300);
+        ExportCutInstructions_Labels(path, orderedCuts2);
+    }
+}
 
-        QPainter painter(&writer);
-        if (!painter.isActive()) {
-            zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+void CuttingPresenter::ExportCutInstructions_2()
+{
+
+    if (_machineCutsList.isEmpty()) {
+        if (view)
+            view->ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+        return;
+    }
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    if (baseName.isEmpty()) {
+        zEvent("❌ Nincs Cutting Plan fájlnév — export nem lehetséges.");
+        return;
+    }
+
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2;
+    // --- 1) CutInstructions_Rod.txt ---
+    {
+        QString path = dir + "/" + baseName + "_CutInstructions_Rod.txt";
+        QFile f(path);
+        if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            zEvent("❌ Nem sikerült megnyitni a CutInstructions_Rod fájlt.");
             return;
         }
 
-        QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+        QTextStream out(&f);
+        out.setEncoding(QStringConverter::Utf8);
 
-        const int cols = 2;
-        const qreal cellHeight = 300.0; // nagy, jól olvasható címke
+        // gépenkénti riport lekérése a for előtt
+        const auto& machineReportMap = model.getMachineReport();
+        const auto& discardedMap = model.getDiscardedPieces();
 
-        // MONOSPACED FONT – kötelező a TXT‑s spacinghez
-        QFont font("Noto Sans Mono", 11);//Noto Sans Mono
-        //QFont font("Courier New", 11);
-        painter.setFont(font);
+        for (const auto& mc : _machineCutsList) {
+            const auto& rep = machineReportMap.value(mc.machineHeader.machineId);
 
-        bool firstPage = true;
+            // géphez tartozó FAILED darabok kigyűjtése
+            QVector<DiscardedPiece> failedList;
+            for (const auto& dp : discardedMap) {
+                if (dp.machineId == rep.machineId)
+                    failedList.append(dp);
+            }
 
-        for (const auto& mc : _machineCutsList)
-        {
-            if (!firstPage)
-                writer.newPage();   // új lap csak a második géptől
+            auto m = CuttingInstructionUtils::formatMachineCutsEvent_2(mc, rep, failedList, baseName, printedLineWidth);
+            orderedCuts2.insert(mc.machineHeader.machineId, m.orderedCuts);
 
-            firstPage = false;
-
-            QVector<LabelModel> labels =
-                CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-
-            CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
-                labels,
-                painter,
-                writer,
-                pageRect,
-                cols,
-                cellHeight
-                );
+            out << m.planTxt << "\n\n";
         }
 
-        painter.end();
-        zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
+        zEvent(QString("📄 CutInstructions_Rod exportálva: %1").arg(path));
     }
 
+
+    // --- 3) LabelTable PDF ---
+    {
+        QString path = dir + "/" + baseName + "_CutInstructions_Labels_Rod.pdf";
+
+        ExportCutInstructions_Labels(path, orderedCuts2);
+    }
 }
 
+void CuttingPresenter::ExportCutInstructions_Labels(const QString& path, QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2)
+{
+    //QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
+
+    QPdfWriter writer(path);
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setResolution(300);
+
+    QPainter painter(&writer);
+    if (!painter.isActive()) {
+        zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+        return;
+    }
+
+    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+
+    const int cols = 2;
+    const qreal cellHeight = 300.0; // nagy, jól olvasható címke
+
+    // MONOSPACED FONT – kötelező a TXT‑s spacinghez
+    QFont font("Noto Sans Mono", 11);//Noto Sans Mono
+    //QFont font("Courier New", 11);
+    painter.setFont(font);
+
+    bool firstPage = true;
+
+    for (const auto& mc : _machineCutsList)
+    {
+        if (!firstPage)
+            writer.newPage();   // új lap csak a második géptől
+
+        firstPage = false;
+
+        // QVector<LabelModel> labels =
+        //     CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
+        QVector<LabelModel> labels =
+            CuttingInstructionUtils::collectLabelModelsFromMachineCuts_2(mc.leftoverInfo, orderedCuts2.value(mc.machineHeader.machineId));
+
+
+        CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
+            labels,
+            painter,
+            writer,
+            pageRect,
+            cols,
+            cellHeight
+            );
+    }
+
+    painter.end();
+    zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
+}
 
 void CuttingPresenter::ExportLeftoverIntakeForm()
 {

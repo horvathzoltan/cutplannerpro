@@ -323,6 +323,9 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_ExportCutInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction_clicked);
 
+    connect(ui->btn_ExportCutInstruction_2, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_ExportCutInstruction2_clicked);
+
     connect(ui->btn_Painter, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Painter_clicked);
 
@@ -1263,6 +1266,10 @@ void MainWindow::handle_btn_GenerateCuttingPlan_clicked() {
 
 void MainWindow::handle_btn_ExportCutInstruction_clicked() {
     presenter->ExportCutInstructions();
+}
+
+void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
+    presenter->ExportCutInstructions_2();
 }
 
 void MainWindow::handle_btn_Painter_clicked(){

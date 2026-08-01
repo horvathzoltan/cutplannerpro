@@ -27,7 +27,7 @@ hulló:
 audit:
  - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
 
-optimalizáció:
+optimalizáció: FIXED
  - megakad a zárósúlynál az optimalizáció
 
 toldás:

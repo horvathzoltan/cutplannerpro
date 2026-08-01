@@ -102,6 +102,7 @@ private slots:
     void handle_btn_OptRad_clicked(bool checked);
 
     void handle_btn_ExportCutInstruction_clicked();
+    void handle_btn_ExportCutInstruction2_clicked();
 
     void handle_btn_Painter_clicked();
     void handle_btn_BOMaudit_clicked();

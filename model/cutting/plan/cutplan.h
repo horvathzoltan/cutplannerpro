@@ -60,12 +60,7 @@ public:
     QString machineName;   // csak UI/audit
     double machineKerf = 0.0; // audit fixálás
 
-
-
-
     int optimizationId; // 🔢 Az optimalizációs futás azonosítója (kötelező)
-
-
 
     Segments _segments;
 
@@ -93,7 +88,7 @@ public:
     //   ""              → nincs toldás
     //   "TOLDAS_MAIN"   → fődarab
     //   "TOLDAS_TOLDAT" → toldat
-    QString toldasRole;
+    ToldasRole toldasRole;
 
     /**
      * @brief 📐 Szakaszgenerálás helper - vágási szakaszok generálása a darabok és paraméterek alapján

@@ -39,7 +39,7 @@ public:
 
                 zInfo(QString("  → PB piece: len=%1, role=%2, leftover=%3")
                           .arg(p.info.length_mm)
-                          .arg(p.info.toldasRole)
+                          .arg(ToldasRoleUtils::toString(p.info.toldasRole))
                           .arg(ltxt));
             }
 
@@ -137,7 +137,7 @@ public:
         info.length_mm = req.requiredLength;
         info.requestId = req.requestId;
         info.externalReference = req.externalReference;
-        info.toldasRole = "";   // fontos: nem toldott darab
+        info.toldasRole = ToldasRole::None;   // fontos: nem toldott darab
 
         result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
         return result;

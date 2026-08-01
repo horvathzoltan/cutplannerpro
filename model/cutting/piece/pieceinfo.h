@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/optimizer/toldasrole.h"
 #include <QString>
 #include <QUuid>
 
@@ -23,20 +24,9 @@ struct PieceInfo
 
     QString externalReference;   // ⭐ darab-szintű tételszám (pl. 1444.1/5)
 
-    // PATCH — ToldasEngine fődarab jelölése
-    // Ha true, akkor a CutEngine nem vágja meg a darabot.
-    bool keepWhole = false;
-
-    // PATCH 11/A — leftover eredet jelölése
-    // Ha a darab leftoverből jött, itt tároljuk a leftover entryId-ját.
     std::optional<QUuid> leftoverEntryId;
-    // PATCH 12 — Toldas szerepkör jelölése
-    // Lehetséges értékek:
-    //   ""              → nem toldás
-    //   "TOLDAS_MAIN"   → fődarab
-    //   "TOLDAS_TOLDAT" → toldat
-    QString toldasRole;
-
+    ToldasRole toldasRole;
+    bool keepWhole = false;
 };
 
 } // endof namespace Piece

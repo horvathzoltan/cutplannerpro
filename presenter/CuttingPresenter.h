@@ -99,6 +99,8 @@ public:
     void ExportCutPlanSummary();
     void GenerateCutInstructions();
     void ExportCutInstructions();
+    void ExportCutInstructions_2();
+    void ExportCutInstructions_Labels(const QString& path, QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2);
 
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);

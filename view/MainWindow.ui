@@ -578,6 +578,13 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="btn_ExportCutInstruction_2">
+              <property name="text">
+               <string>Export RodDiagram</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>

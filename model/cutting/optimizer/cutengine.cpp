@@ -182,16 +182,18 @@ CutResult CutEngine::cutCombo(
     // Ha bármely darab toldat, akkor a plan toldat.
     // Ha bármely darab fődarab, akkor a plan fődarab.
     // Ha vegyes, akkor toldat (a szerelés így is tudja kezelni).
-    p.toldasRole = "";
+    p.toldasRole = ToldasRole::None;
+
     for (const auto& pc : combo) {
-        if (pc.info.toldasRole == "TOLDAS_MAIN") {
-            p.toldasRole = "TOLDAS_MAIN";
+        if (pc.info.toldasRole == ToldasRole::Main) {
+            p.toldasRole = ToldasRole::Main;
             break;
         }
-        if (pc.info.toldasRole == "TOLDAS_TOLDAT") {
-            p.toldasRole = "TOLDAS_TOLDAT";
+        if (pc.info.toldasRole == ToldasRole::Toldat) {
+            p.toldasRole = ToldasRole::Toldat;
         }
     }
+
 
     p.materialId = rod.materialId;
     p.rodId = rod.rodId;

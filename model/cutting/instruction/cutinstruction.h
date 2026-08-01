@@ -1,5 +1,6 @@
 #pragma once
 
+#include "model/cutting/optimizer/toldasrole.h"
 #include "model/cutting/plan/handlerside.h"
 #include "model/cutting/plan/request.h"
 #include "model/cutting/plan/source.h"
@@ -49,7 +50,8 @@ struct CutInstruction {
     QMap<QString, QString> attributes; ///< termékhez tartozó további attribútumok (pl. szín, felület, stb.)
 
     // PATCH 13/B — Toldás szerepkör
-    QString toldasRole;
+    ToldasRole toldasRole;
+    bool keepWhole;
 
     // 🔹 Új: tényleges darab azonosító
     int pieceCounter = 0;
@@ -77,13 +79,18 @@ struct MachineHeader {
     std::optional<double> stellerCompensation_mm;
 };
 
+struct MachineCutsLeftoverInfo {
+    QMap<QString, double> leftover_mm;
+    QMap<QString, QString> leftoverBarcode;
+};
 
 struct MachineCuts{
     MachineHeader machineHeader;
     QVector<CutInstruction> cutInstructions;
 
-    QMap<QString, double> leftover_mm;
-    QMap<QString, QString> leftoverBarcode;
+    // QMap<QString, double> leftover_mm;
+    // QMap<QString, QString> leftoverBarcode;
+    MachineCutsLeftoverInfo leftoverInfo;
 };
 
 struct MachineReport {

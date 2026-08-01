@@ -117,7 +117,7 @@ public:
         else
             mainInfo.externalReference = "[TOLDAS_MAIN]";
 
-        mainInfo.toldasRole = "TOLDAS_MAIN";
+        mainInfo.toldasRole = ToldasRole::Main;
 
         outPieces.append(Cutting::Piece::PieceWithMaterial(mainInfo, req.materialId));
 
@@ -131,7 +131,7 @@ public:
         else
             toldasInfo.externalReference = "[TOLDAS_TOLDAT]";
 
-        toldasInfo.toldasRole = "TOLDAS_TOLDAT";
+        toldasInfo.toldasRole = ToldasRole::Toldat;
 
         if (!toldasFromStock)
             toldasInfo.leftoverEntryId = toldasLeftover.entryId;
@@ -527,7 +527,7 @@ public:
 
                         zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
                                   .arg(p.info.length_mm)
-                                  .arg(p.info.toldasRole)
+                                  .arg(ToldasRoleUtils::toString(p.info.toldasRole))
                                   .arg(ltxt));
                     }
                     outHandled = true;
@@ -685,7 +685,7 @@ public:
             else
                 mainInfo.externalReference = "[TOLDAS_MAIN]";
 
-            mainInfo.toldasRole = "TOLDAS_MAIN";
+            mainInfo.toldasRole = ToldasRole::Main;
 
             outPieces.append(Cutting::Piece::PieceWithMaterial(mainInfo, req.materialId));
 
@@ -699,7 +699,7 @@ public:
             else
                 toldasInfo.externalReference = "[TOLDAS_TOLDAT]";
 
-            toldasInfo.toldasRole = "TOLDAS_TOLDAT";
+            toldasInfo.toldasRole = ToldasRole::Toldat;
 
             if (!toldasFromStock)
                 toldasInfo.leftoverEntryId = toldasLeftover.entryId;
@@ -716,7 +716,7 @@ public:
 
                 zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
                           .arg(p.info.length_mm)
-                          .arg(p.info.toldasRole)
+                          .arg(ToldasRoleUtils::toString(p.info.toldasRole))
                           .arg(ltxt));
             }
 
