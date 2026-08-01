@@ -14,6 +14,7 @@ public:
         int colorPenalty = 0;
 
         int axisPref = 0;
+        int motorPref = 0;
         int stockPref = 0;
 
         int total() const {

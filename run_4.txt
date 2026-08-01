@@ -24,7 +24,7 @@ material:
 hulló:
     - 700 mm-es tengelybe még belemegy a motor, ez a terméknél 81.5 cm alatt csak kapcsolós
 
-audit:
+audit: FIXED
  - láb, lábbetét, lábtakaró egy méret kell hogy legyen!
 
 optimalizáció: FIXED

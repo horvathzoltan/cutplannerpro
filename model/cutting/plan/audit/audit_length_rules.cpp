@@ -164,6 +164,66 @@ LengthAuditResult AuditLengthRules::check(
             r.hasValidDimensions = false;
     }
 
+    // --- 5) Láb / lábtakaró / lábbetét részletes ellenőrzés ---
+
+    // Csak akkor vizsgálunk, ha van legalább CL vagy CLT vagy CLB
+    bool labRulesValid = true;
+
+    // 1) CL és CLT: pontosan egyenlőnek kell lenniük (ha mindkettő szerepel)
+    if (labCL > 0 && labCLT > 0) {
+        bool cl_clt_equal = (labCL == labCLT);
+
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "LENGTH",
+            "láb (CL) és lábtakaró (CLT) egyenlő hosszú",
+            cl_clt_equal,
+            QString("CL=%1, CLT=%2").arg(labCL).arg(labCLT),
+            cl_clt_equal ? "OK" : "nem egyenlő"
+            );
+
+        if (!cl_clt_equal)
+            labRulesValid = false;
+    }
+
+    // 2) CLB: nem lehet nagyobb, mint CL
+    if (labCL > 0 && labCLB > 0) {
+        bool clb_not_bigger = (labCLB <= labCL);
+
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "LENGTH",
+            "lábbetét (CLB) nem lehet nagyobb mint a láb (CL)",
+            clb_not_bigger,
+            QString("CL=%1").arg(labCL),
+            QString("CLB=%1").arg(labCLB)
+            );
+
+        if (!clb_not_bigger)
+            labRulesValid = false;
+    }
+
+    // 3) CLB: nem lehet 2 mm-nél jobban kisebb
+    if (labCL > 0 && labCLB > 0) {
+        bool clb_not_too_small = (labCLB >= labCL - 2);
+
+        r.entries.add(
+            first.externalReference.trimmed(),
+            "LENGTH",
+            "lábbetét (CLB) max. 2 mm-rel lehet kisebb mint a láb (CL)",
+            clb_not_too_small,
+            QString("CL=%1").arg(labCL),
+            QString("CLB=%1").arg(labCLB)
+            );
+
+        if (!clb_not_too_small)
+            labRulesValid = false;
+    }
+
+    // Ha bármelyik láb-szabály sérül → méret érvénytelen
+    if (!labRulesValid)
+        r.hasValidDimensions = false;
+
     return r;
 }
 

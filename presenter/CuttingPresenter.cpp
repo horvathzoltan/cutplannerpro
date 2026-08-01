@@ -1103,7 +1103,6 @@ void CuttingPresenter::GenerateCutInstructions()
     if (view){
         view->renderCuttingInstructions(_machineCutsList);
         view->switchToInstructionsPlanTab();   // ⬅️ EZT ADJUK HOZZÁ
-
     }
 }
 
