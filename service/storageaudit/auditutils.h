@@ -287,6 +287,41 @@ inline void assignContextsToRows(QVector<StorageAuditRow>* auditRows,
               .arg(auditRows->size()));
 }
 
+/*PickingPlan*/
 
+/**
+ * @brief PickingMap generálása a vágási tervek alapján.
+ *
+ * Feladata:
+ * - Csak a stock forrású terveket veszi figyelembe.
+ * - Minden stock CutPlan egy rúdnak számít → növeli a materialId-hoz tartozó darabszámot.
+ * - A leftover (Reusable) forrású terveket kihagyja, mert azok példány szinten,
+ *   külön audit sorban jelennek meg, és nem aggregálódnak materialId szerint.
+ *
+ * Eredmény:
+ * - QMap<materialId, darabszám>, amelyet az AuditContextBuilder::buildFromRows
+ *   használ a stock sorok totalExpected értékének kiszámításához.
+ *
+ * @param plans Az optimalizációs tervek listája.
+ * @return QMap<QUuid,int> materialId → elvárt darabszám.
+ */
+
+inline QMap<QUuid, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan>& plans) {
+    QMap<QUuid, int> pickingMap;
+
+    for (const auto& plan : plans) {
+        if(plan.isReusable())
+            continue; // csak a stockból vágott anyagok számítanak
+
+        pickingMap[plan.materialId] += 1; // minden CutPlan egy rúd
+        /*auto groupIds = GroupUtils::groupMembers(plan.materialId);
+        for (const auto& gid : groupIds) {
+            pickingMap[gid] += 1;
+        }*/
+
+    }
+
+    return pickingMap;
+}
 
 } // namespace AuditUtils

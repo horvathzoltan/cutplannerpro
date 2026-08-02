@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableStorageAudit->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableRelocationOrder->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
-    presenter = new CuttingPresenter(this, this);
+    _cuttingPresenter = new CuttingPresenter(this, this);
     stockPresenter = new StockPresenter(this, this);
 
     connect(stockPresenter, &StockPresenter::highlightLeftover,
@@ -93,17 +93,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(stockPresenter, &StockPresenter::showNotFoundMessage,
             this, &MainWindow::onShowNotFoundMessage);
 
+    paintPresenter = new PaintPresenter(this, this);
+    _storageAuditPresenter = new StorageAuditPresenter(this, this);
 
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
     stockTableManager = std::make_unique<StockTableManager>(ui->tableStock, this);
     leftoverTableManager = std::make_unique<LeftoverTableManager>(ui->tableLeftovers, this);
     resultsTableManager = std::make_unique<ResultsTableManager>(ui->tableResults, this);
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
-    relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, presenter, this);
+    relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, _cuttingPresenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
 
-    leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
-
+    _leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
+    _kittingPresenter = new KittingPresenter(this, this);
 
     // 🔦 Sorvezető delegate bekötése
     _highlightDelegate = new HighlightDelegate(ui->tableCuttingInstruction);
@@ -126,10 +128,10 @@ MainWindow::MainWindow(QWidget *parent)
     //             ui->tableCuttingInstruction->viewport()->update();
     //         });
 
-    InputTableConnector::Connect(this, inputTableManager.get(), presenter);
-    StockTableConnector::Connect(this, stockTableManager.get(), presenter);
-    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), presenter);
-    StorageAuditTableConnector::Connect(this, storageAuditTableManager.get(), presenter);
+    InputTableConnector::Connect(this, inputTableManager.get(), _cuttingPresenter);
+    StockTableConnector::Connect(this, stockTableManager.get(), _cuttingPresenter);
+    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), _cuttingPresenter);
+    StorageAuditTableConnector::Connect(this, storageAuditTableManager.get(), _storageAuditPresenter);
     ButtonConnector_Connect();//::Connect(ui, this);
 
     ui->tableResults->setAlternatingRowColors(true);
@@ -174,7 +176,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableInput->setColumnHidden(5, true);   // Tolerance
     ui->tableInput->setColumnHidden(10, true);  // Measurement
 
-    connect(presenter->auditStateManager(), &AuditStateManager::auditStateChanged,
+    connect(_storageAuditPresenter->auditStateManager(), &AuditStateManager::auditStateChanged,
             this, [this](AuditStateManager::AuditOutdatedReason reason) {
                 switch (reason) {
                 case AuditStateManager::AuditOutdatedReason::None:
@@ -227,7 +229,7 @@ MainWindow::MainWindow(QWidget *parent)
                 SettingsManager::instance().setUseReusableLeftovers(checked);
             });
 
-    _seriesMatrixView = new SeriesMatrixView(this, presenter);
+    _seriesMatrixView = new SeriesMatrixView(this, _cuttingPresenter);
     _seriesMatrixView->hide();   // nem automatikusan jelenik meg
     connect(_seriesMatrixView, &SeriesMatrixView::matrixClosed,
             this, &MainWindow::onSeriesMatrixClosed);
@@ -325,6 +327,10 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_ExportCutInstruction_2, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction2_clicked);
+
+    connect(ui->btn_GenerateKittingInstruction, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_GenerateKittingPlan_clicked);
+
 
     connect(ui->btn_Painter, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Painter_clicked);
@@ -466,7 +472,7 @@ void MainWindow::ShowWarningDialog(const QString& msg) {
 void MainWindow::handle_btn_NewRequest_clicked()
 {
     //Q_ASSERT(false); // itt megáll a debugger
-    presenter->createNew_CuttingPlanRequests();
+    _cuttingPresenter->createNew_CuttingPlanRequests();
 }
 
 void MainWindow::handle_btn_RelocationPlanFinalize_clicked()
@@ -489,7 +495,7 @@ void MainWindow::handle_btn_RelocationPlanFinalize_clicked()
     // 🔹 EventLogger bejegyzés
     if (finalizedCount > 0) {
         zEvent(QStringLiteral("Totál finalize lefutott: %1 sor lezárva").arg(finalizedCount));
-        presenter->auditStateManager()->setOutdated(AuditStateManager::AuditOutdatedReason::RelocationFinalized);
+        _storageAuditPresenter->auditStateManager()->setOutdated(AuditStateManager::AuditOutdatedReason::RelocationFinalized);
     } else {
         zEvent("Totál finalize lefutott: nem volt lezárható sor");
     }
@@ -500,8 +506,8 @@ void MainWindow::handle_btn_RelocationPlanFinalize_clicked()
 void MainWindow::refreshSummaryRows()
 {
     // Lekérjük az aktuális cutPlan + audit snapshotot
-    auto cutPlans = presenter->getPlansRef();
-    auto auditRows = presenter->getLastAuditRows();
+    auto cutPlans = _cuttingPresenter->getPlansRef();
+    auto auditRows = _storageAuditPresenter->lastAuditRows();
 
     // Új tervet építünk
     auto newPlan = RelocationPlanner::buildPlan(cutPlans, auditRows);
@@ -533,7 +539,7 @@ void MainWindow::handle_btn_OpenRequest_clicked()
         return;
 
     // 2️⃣ Beolvasás
-    if (!presenter->loadCuttingPlanFromFile(filePath)) {
+    if (!_cuttingPresenter->loadCuttingPlanFromFile(filePath)) {
         QMessageBox::warning(this, tr("Hiba"), tr("Nem sikerült betölteni a vágási tervet."));
         return;
     }
@@ -550,7 +556,7 @@ void MainWindow::handle_btn_OpenRequest_clicked()
 
 void MainWindow::handle_btn_ClearRequest_clicked()
 {
-    presenter->removeAll_CuttingPlanRequests();
+    _cuttingPresenter->removeAll_CuttingPlanRequests();
 }
 
 /*cuttingplanrequests*/
@@ -589,7 +595,7 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
         //zInfo("MainWindow getModel start");
         Cutting::Plan::Request request = dialog.getModel();
         //zInfo("MainWindow getModel end");
-        presenter->add_CuttingPlanRequest(request);
+        _cuttingPresenter->add_CuttingPlanRequest(request);
 
         // ⭐ filledCells cache frissítése
         _seriesMatrixView->addFilledCell(request.externalReference, request.materialId);
@@ -615,7 +621,7 @@ void MainWindow::handle_btn_AddStockEntry_clicked()
     entry.createdAt = QDateTime::currentDateTime();
     entry.lastSeenAt = entry.createdAt;
 
-    presenter->add_StockEntry(entry);
+    _cuttingPresenter->add_StockEntry(entry);
 }
 
 /*leftover stock*/
@@ -637,7 +643,7 @@ void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
         request.createdAt = QDateTime::currentDateTime();
         request.lastSeenAt = request.createdAt;
 
-        presenter->add_LeftoverStockEntry(request);
+        _cuttingPresenter->add_LeftoverStockEntry(request);
 
         if(!dialog.shouldRepeat())
             break;
@@ -651,7 +657,7 @@ void MainWindow::handle_btn_LeftoverDisposal_clicked()
 
 void MainWindow::handle_btn_Optimize_clicked() {
     // 🧠 Modell frissítése
-    presenter->syncModelWithRegistries();
+    _cuttingPresenter->syncModelWithRegistries();
 
     // 🎛️ CuttingStrategy kiválasztása a radio gombok alapján
     Cutting::Optimizer::TargetHeuristic h = Cutting::Optimizer::TargetHeuristic::ByCount;
@@ -660,12 +666,12 @@ void MainWindow::handle_btn_Optimize_clicked() {
     }
 
     // 🚀 Optimalizálás elindítása
-    presenter->runOptimization(h);
+    _cuttingPresenter->runOptimization(h);
 }
 
 
 void MainWindow::handle_btn_ExportCutPlanSummary_clicked() {
-    presenter->ExportCutPlanSummary();
+    _cuttingPresenter->ExportCutPlanSummary();
 }
 
 void MainWindow::handle_btn_OptRad_clicked(bool checked)
@@ -770,7 +776,7 @@ void MainWindow::update_ResultsTable(const QVector<Cutting::Plan::CutPlan>& plan
 
 void MainWindow::handle_btn_StorageAudit_clicked()
 {
-    presenter->runStorageAudit();             // 🧠 Audit elindítása
+    _storageAuditPresenter->runStorageAudit();             // 🧠 Audit elindítása
 }
 
 void MainWindow::update_StorageAuditTable(const QVector<StorageAuditRow>& rows) {
@@ -791,8 +797,8 @@ void MainWindow::updateRow_StorageAuditTable(const StorageAuditRow& row) {
 void MainWindow::handle_btn_Relocate_clicked()
 {
     // 1️⃣ Adatok összegyűjtése
-    auto cutPlans = presenter->getPlansRef();
-    auto auditRows = presenter->getLastAuditRows();
+    auto cutPlans = _cuttingPresenter->getPlansRef();
+    auto auditRows = _storageAuditPresenter->lastAuditRows();
 
     // 2️⃣ Relocation terv generálása
     auto relocationPlan = RelocationPlanner::buildPlan(cutPlans, auditRows);
@@ -1141,7 +1147,7 @@ void MainWindow::onCompensationChanged(const QUuid& machineId, double newVal) {
     //     }
     // }
     // renderCuttingInstructions();
-    presenter->UpdateCompensation(machineId, newVal);
+    _cuttingPresenter->UpdateCompensation(machineId, newVal);
 
 }
 
@@ -1261,19 +1267,24 @@ void MainWindow::renderCuttingInstructions(const QVector<MachineCuts>& machineCu
 // }
 
 void MainWindow::handle_btn_GenerateCuttingPlan_clicked() {
-    presenter->GenerateCutInstructions();
+    _cuttingPresenter->GenerateCutInstructions();
+}
+
+void MainWindow::handle_btn_GenerateKittingPlan_clicked() {
+    _kittingPresenter->GenerateKittingInstructions();
+    _kittingPresenter->ExportKittingInstructions();
 }
 
 void MainWindow::handle_btn_ExportCutInstruction_clicked() {
-    presenter->ExportCutInstructions();
+    _cuttingPresenter->ExportCutInstructions();
 }
 
 void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
-    presenter->ExportCutInstructions_2();
+    _cuttingPresenter->ExportCutInstructions_2();
 }
 
 void MainWindow::handle_btn_Painter_clicked(){
-        presenter->ExportPaintPlan();
+        paintPresenter->ExportPaintPlan();
 }
 
 void MainWindow::handle_btn_BOMaudit_clicked(){
@@ -1286,11 +1297,11 @@ void MainWindow::handle_btn_BOMaudit_clicked(){
 }
 
 void MainWindow::handle_btn_ReviewForm_clicked(){
-    leftoverPresenter->ExportReviewFormPdf();
+    _leftoverPresenter->ExportReviewFormPdf();
 }
 
 void MainWindow::handle_btn_Review_clicked(){
-    leftoverPresenter->Review();
+    _leftoverPresenter->Review();
 }
 
 void MainWindow::switchToCuttingPlanTab()
@@ -1305,13 +1316,13 @@ void MainWindow::switchToInstructionsPlanTab()
 
 void MainWindow::handle_btn_CloneRequest_clicked()
 {
-    presenter->cloneRequestDialog();
+    _cuttingPresenter->cloneRequestDialog();
 }
 
 void MainWindow::handle_btn_ExportLeftoverForm_clicked()
 {
     //presenter->ExportLeftoverIntakeForm();
-    presenter->ExportLeftoverIntakeForm_Pdf();
+    _leftoverPresenter->ExportLeftoverIntakeForm_Pdf();
 }
 
 void MainWindow::handle_act_MaterialFinder_clicked()

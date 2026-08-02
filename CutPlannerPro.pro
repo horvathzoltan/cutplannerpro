@@ -15,6 +15,8 @@ message( "TARGET = "$$TARGI )
 
 SOURCES += \
     calculation/lengthcalculator.cpp \
+    kitting/kittingengine.cpp \
+    kitting/presenter/kittingpresenter.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -27,10 +29,12 @@ SOURCES += \
     model/storageaudit/auditcontext.cpp \
     paint/paint_calculator.cpp \
     paint/paint_reporter.cpp \
+    paint/presenter/paintpresenter.cpp \
     paint/registry/powder_consumption_registry.cpp \
     paint/repository/powder_consumption_repository.cpp \
     presenter/leftoverpresenter.cpp \
     presenter/stockpresenter.cpp \
+    presenter/storageauditpresenter.cpp \
     product/registry/bom_registry.cpp \
     product/registry/material_role_registry.cpp \
     product/registry/product_subtype_registry.cpp \
@@ -155,6 +159,11 @@ HEADERS += \
     common/sysinfohelper.h \
     common/testlabelmaker.h \
     common/texthelper.h \
+    kitting/kittingengine.h \
+    kitting/model/kittinginstruction.h \
+    kitting/naphalo/kitting_naphalo.h \
+    kitting/naphalo/kitting_naphalo_cipzaras.h \
+    kitting/presenter/kittingpresenter.h \
     materials/model/material_family.h \
     materials/model/material_family_utils.h \
     materials/model/scoringparams.h \
@@ -205,10 +214,12 @@ HEADERS += \
     paint/paint_calculator.h \
     paint/paint_plan.h \
     paint/paint_reporter.h \
+    paint/presenter/paintpresenter.h \
     paint/registry/powder_consumption_registry.h \
     paint/repository/powder_consumption_repository.h \
     presenter/leftoverpresenter.h \
     presenter/stockpresenter.h \
+    presenter/storageauditpresenter.h \
     product/material_role_utils.h \
     product/model/bom_entry.h \
     product/model/material_role.h \

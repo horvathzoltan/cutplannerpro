@@ -336,7 +336,14 @@
             <item>
              <widget class="QPushButton" name="btn_GenerateCutInstruction">
               <property name="text">
-               <string>Generate CutInstruction</string>
+               <string>Generate Cutting List</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_GenerateKittingInstruction">
+              <property name="text">
+               <string>Generate Kitting List</string>
               </property>
              </widget>
             </item>

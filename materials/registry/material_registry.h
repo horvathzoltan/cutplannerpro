@@ -35,4 +35,5 @@ public:
     // }
 
     QVector<QUuid> generateBom(QUuid typeId, QUuid subtypeId) const;
+    const QVector<QUuid> findAllByFamily(MaterialFamily family) const;
 };

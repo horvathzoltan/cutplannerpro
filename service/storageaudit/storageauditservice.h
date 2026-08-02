@@ -24,4 +24,6 @@ public:
     static QVector<StorageAuditRow> generateAuditRows_All();
     //static AuditMode _mode;
     static MachineStorageAudit auditMachineStorage(const CuttingMachine& machine);
+
+    void runStorageAudit();
 };

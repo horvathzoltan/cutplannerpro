@@ -66,4 +66,13 @@ SávrolóKonzol1;SR-KONZOL_1;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;B
 SávrolóKonzol2;SR-KONZOL_2;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;BP.182.RAL9016,SideBracket with Lock for 47mm Rail;;Unknown
 MinitokosPálcaVégdugó_SR;MT-PVD-SR;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;BP.235.RAL9016,EndCap for 16mm BottomRail;;Fitting
 MinitokosPálcaVégdugó_ROL;MT-PVD-ROL;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;BP.873.RAL9016,EndCap;;Fitting
-NagyTokosPofa;NP-TP;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;BP.107.RAL9016,EndCap L&R for BP103;;TokVeg
+NagyTokosPofa-Jobbos;SR-P-R;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;BP.107.RAL9016,EndCap L&R for BP103;;TokVeg
+NagyTokosPofa-Balos;SR-P-L;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;BP.107.RAL9016,EndCap L&R for BP103;;TokVeg
+CipzárosPofa-Jobbos;NP-CP-R;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+CipzárosPofa-Balos;NP-CP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+SinesPofa-Jobbos;NP-SP-R;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+SinesPofa-Balos;NP-SP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+BowdenesPofa-Jobbos;NP-BP-R;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+BowdenesPofa-Balos;NP-BP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+BowdenesPofa-Balos;NP-BP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
+Opel csavar Ø4x10;NP-CS1;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;Csavar

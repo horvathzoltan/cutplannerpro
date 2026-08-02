@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <kitting/presenter/kittingpresenter.h>
 #include "managers/inputtable_manager.h"
 #include "managers/leftovertable_manager.h"
 #include "managers/resultstable_manager.h"
@@ -11,8 +12,10 @@
 #include "managers/cuttinginstructiontable_manager.h"
 #include "managers/relocationplantable_manager.h"
 #include "managers/storageaudittable_manager.h"
+#include "paint/presenter/paintpresenter.h"
 #include "presenter/stockpresenter.h"
 #include "presenter/leftoverpresenter.h"
+#include "presenter/storageauditpresenter.h"
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
 
@@ -75,6 +78,8 @@ public:
     StockPresenter* getStockPresenter() const { return stockPresenter; }
     StockTableManager* getStockTableManager() const { return stockTableManager.get(); }
 
+    CuttingPresenter* cuttingPresenter(){return _cuttingPresenter;}
+    StorageAuditPresenter* storageAuditPresenter(){return _storageAuditPresenter;}
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -98,6 +103,7 @@ private slots:
     void handle_btn_Relocate_clicked();
 
     void handle_btn_GenerateCuttingPlan_clicked();
+    void handle_btn_GenerateKittingPlan_clicked();
 
     void handle_btn_OptRad_clicked(bool checked);
 
@@ -124,9 +130,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    CuttingPresenter* presenter = nullptr;
+    CuttingPresenter* _cuttingPresenter = nullptr;
     StockPresenter* stockPresenter = nullptr;
-    LeftoverPresenter* leftoverPresenter = nullptr;
+    LeftoverPresenter* _leftoverPresenter = nullptr;
+    PaintPresenter* paintPresenter = nullptr;
+    StorageAuditPresenter* _storageAuditPresenter = nullptr;
+    KittingPresenter* _kittingPresenter = nullptr;
 
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
@@ -145,7 +154,6 @@ private:
     std::unique_ptr<RelocationPlanTableManager> relocationPlanTableManager = nullptr;
 
     std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
-
 
     QAction* _actSeriesMatrix = nullptr;
 

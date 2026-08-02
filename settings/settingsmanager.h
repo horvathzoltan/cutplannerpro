@@ -132,6 +132,8 @@ public:
     int maxMainOverlength() const;
     void setMaxMainOverlength(int mm);
 
+    static constexpr int printedLineWidth = 75;
+    static constexpr int printedPageHeight = 60;
 
     void save();
     void load(int argc, char* argv[]);

@@ -74,57 +74,6 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     QHash<QUuid, QVector<Cutting::Piece::PieceWithMaterial>> piecesByMaterial =
         PieceBuilder::buildPiecesByMaterial(_requests, _inventorySnapshot);
 
-    // zInfo("OptimizerModel: piecesByMaterial summary:");
-    // for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
-    //     auto *mat = MaterialRegistry::instance().findById(it.key());
-    //     QString matName = mat ? mat->barcode : "?";
-
-    //     zInfo(QString("  → material=%1 count=%2")
-    //               .arg(matName)
-    //               .arg(it.value().size()));
-
-    //     for (const auto& p : it.value()) {
-    //         zInfo(QString("     • piece len=%1 role=%2 extRef=%3")
-    //                   .arg(p.info.length_mm)
-    //                   .arg(p.info.toldasRole)
-    //                   .arg(p.info.externalReference));
-    //     }
-    // }
-
-    // // PATCH — TOLDAS_MAIN darabok whole-cutolása (rod-loop előtt)
-    // {
-    //     for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
-
-    //         auto& vec = it.value();
-    //         QVector<int> removeIdx;
-
-    //         for (int i = 0; i < vec.size(); ++i) {
-    //             const auto& p = vec[i];
-
-    //             if (p.info.toldasRole == "TOLDAS_MAIN") {
-
-    //                 auto ma = MachineUtils::pickMachineForMaterial(p.materialId);
-    //                 // Whole-cut plan generálása rúd nélkül
-    //                 auto crWhole = CutEngine::cutWhole(
-    //                     p,
-    //                     *ma,
-    //                     currentOpId,
-    //                     planCounter);
-
-    //                 _result_plans.append(crWhole.plan);
-
-    //                 // MAIN darab eltávolítása a pending listából
-    //                 removeIdx.append(i);
-    //             }
-    //         }
-
-    //         // indexek törlése visszafelé
-    //         std::sort(removeIdx.begin(), removeIdx.end(), std::greater<int>());
-    //         for (int idx : removeIdx)
-    //             vec.removeAt(idx);
-    //     }
-    // }
-
     // --- piecesByMaterial summary (optimalizált log) ---
     zInfo("OptimizerModel: piecesByMaterial summary:");
 

@@ -4,10 +4,9 @@
 #include <model/cutting/instruction/cutinstruction.h>
 #include <view/dialog/input/clonerequestdialog.h>
 #include "../model/cutting/optimizer/optimizermodel.h"
-#include "../service/storageaudit/auditstatemanager.h"
 #include "../model/archivedwasteentry.h"
 #include "../model/relocation/relocationinstruction.h"
-#include "../model/storageaudit/storageauditrow.h"
+//#include "../model/storageaudit/storageauditrow.h"
 
 /*
 Értelmezi és kezeli a felhasználói interakciókat
@@ -81,20 +80,16 @@ public:
 
     void syncModelWithRegistries();
     bool loadCuttingPlanFromFile(const QString &path);
-    void runStorageAudit();
 
     QVector<RelocationInstruction> generateRelocationPlan(
         const QVector<Cutting::Plan::CutPlan>& cutPlans,
         const QVector<StorageAuditRow>& auditRows);
 
-    const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
+    //const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
 
-    void update_StorageAuditActualQuantity(const QUuid &rowId, int actualQuantity);
 
-    AuditStateManager* auditStateManager() { return &_auditStateManager;}
+    //AuditStateManager* auditStateManager() { return &_auditStateManager;}
 
-    void update_LeftoverAuditActualQuantity(const QUuid &rowId, int quantity);
-    void update_StorageAuditCheckbox(const QUuid &rowId, bool checked);
 
     void ExportCutPlanSummary();
     void GenerateCutInstructions();
@@ -105,15 +100,13 @@ public:
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);
 
-    static constexpr int printedLineWidth = 75;
-    static constexpr int printedPageHeight = 60;
+    // static constexpr int printedLineWidth = 75;
+    // static constexpr int printedPageHeight = 60;
 
-    void ExportLeftoverIntakeForm();
-    void ExportLeftoverIntakeForm_Pdf();
-    void ExportPaintPlan();
 
     //QStringList BOM_audit();
     void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
+    Cutting::Optimizer::OptimizerModel* optimizerModel() { return &_optimizerModel; }
 
 private:
     void applyPatch(Cutting::Plan::Request& target,
@@ -121,18 +114,16 @@ private:
                     const CuttingRequestPatch& patch);
 
 private:
-    MainWindow* view;
-    Cutting::Optimizer::OptimizerModel model;
-    QVector<StorageAuditRow> lastAuditRows;
+    MainWindow* _view;
+    Cutting::Optimizer::OptimizerModel _optimizerModel;
     QVector<MachineCuts> _machineCutsList;
 
     bool isModelSynced = false;
     QMap<QUuid, int> generatePickingMapFromPlans(const QVector<Cutting::Plan::CutPlan> &plans);
     //void logPlans();
-    AuditStateManager _auditStateManager;
+    //AuditStateManager _auditStateManager;
 
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
-    void updateRow(const QUuid &rowId, std::function<void (StorageAuditRow &)> updater);
 };
 

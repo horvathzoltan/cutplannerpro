@@ -25,6 +25,14 @@ const MaterialMaster* MaterialRegistry::findByBarcode(const QString& barcode) co
     return nullptr;
 }
 
+const QVector<QUuid> MaterialRegistry::findAllByFamily(MaterialFamily family) const {
+    QVector<QUuid> out;
+    for (const auto& m : _data)
+        if (m.family == family)
+            out<<m.id;
+    return out;
+}
+
 bool MaterialRegistry::isBarcodeUnique(const QString& barcode) const {
     for (const auto& m : _data)
         if (m.barcode == barcode)

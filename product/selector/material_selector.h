@@ -19,7 +19,7 @@ public:
 
         int total() const {
             return colorExact + colorNat + colorLightness + colorPenalty +
-                   axisPref + stockPref;
+                   axisPref +motorPref + stockPref;
         }
     };
 

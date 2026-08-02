@@ -14,7 +14,7 @@ namespace StorageAuditTableConnector {
 inline static void Connect (
     MainWindow* w,
     StorageAuditTableManager* manager,
-    CuttingPresenter* presenter)
+    StorageAuditPresenter* presenter)
 {
     // 📊 Audit érték változás
     w->connect(manager,

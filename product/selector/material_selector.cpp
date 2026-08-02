@@ -158,13 +158,13 @@ QVector<QUuid> MaterialSelector::rankMaterials(
                     // 5 m² felett → 20Nm motor preferált
                     if (torque >= 20)
                         bd.motorPref += 300;
-                    else
-                        bd.motorPref += 100;
+                    // else
+                    //     bd.motorPref += 100;
                 }
                 else {
                     // 5 m² alatt → 10Nm motor preferált
                     if (torque < 20)
-                        bd.motorPref += 150;
+                        bd.motorPref += 300;
                 }
             }
         }
@@ -239,6 +239,7 @@ QVector<QUuid> MaterialSelector::rankMaterials(
     //         << ", light=" << c.breakdown.colorLightness
     //         << ", penalty=" << c.breakdown.colorPenalty
     //         << ", axis=" << c.breakdown.axisPref
+    //         << ", motor=" << c.breakdown.motorPref
     //         << ", stock=" << c.breakdown.stockPref
     //         << "]"
     //         << "  barcode=" << m->barcode

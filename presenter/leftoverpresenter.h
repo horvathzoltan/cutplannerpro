@@ -14,6 +14,9 @@ public:
     //void ReviewFormPdf();
     void ExportReviewFormPdf();   // ⬅ ÚJ
 
+    void ExportLeftoverIntakeForm_Pdf();
+    void ExportLeftoverIntakeForm();
+
 private:
     void processAuditCode(const QString& auditCode);
 
