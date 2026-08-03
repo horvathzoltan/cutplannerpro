@@ -41,6 +41,9 @@ public:
     // A szerepkörön belüli sorszám (mint a pieceCounter)
     int roleCounter = 0;
 
+    double quantity = 1.0;        // darab vagy méter
+    QString unit = "db";          // vagy "mm", "m"
+
     // Későbbi státuszokhoz (Pending, Completed, Missing)
     enum class Status {
         Pending,
@@ -56,7 +59,9 @@ public:
         const Cutting::Plan::Request& req,
         const Cutting::Piece::PieceWithMaterial& pwm,
         const MaterialMaster* mat,
-        const QString& logicalRole)
+        const QString& logicalRole,
+        double quantity = 1.0,
+        const QString& unit = "db")
     {
         KittingInstruction ki;
         ki.requestId    = req.requestId;
@@ -72,6 +77,8 @@ public:
         ki.role.family           = mat ? mat->family : MaterialFamily::Unknown;
         ki.role.barcodePrefix    = logicalRole;   // pl. "NP-MOT", "NP-POFA", stb.
 
+        ki.quantity = quantity;
+        ki.unit     = unit;
         return ki;
     }
 };

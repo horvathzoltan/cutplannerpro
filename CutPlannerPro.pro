@@ -162,7 +162,9 @@ HEADERS += \
     kitting/kittingengine.h \
     kitting/model/kittinginstruction.h \
     kitting/naphalo/kitting_naphalo.h \
+    kitting/naphalo/kitting_naphalo_bowdenes.h \
     kitting/naphalo/kitting_naphalo_cipzaras.h \
+    kitting/naphalo/kitting_naphalo_sines.h \
     kitting/presenter/kittingpresenter.h \
     materials/model/material_family.h \
     materials/model/material_family_utils.h \

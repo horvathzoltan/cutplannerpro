@@ -29,4 +29,13 @@ private:
     Cutting::Optimizer::OptimizerModel* _optimizer;
 
     QVector<KittingInstruction> _instructions;   // <-- csak ez kell
+
+    QMap<QString, QVector<KittingInstruction> > groupByExternalRef(const QVector<KittingInstruction> &list);
+    //QMap<QString, int> countByMaterial(const QVector<KittingInstruction> &items);
+
+    struct MaterialSummary {
+        double quantity;
+        QString unit;
+    };
+    QMap<QString, KittingPresenter::MaterialSummary> countByMaterial(const QVector<KittingInstruction> &items);
 };

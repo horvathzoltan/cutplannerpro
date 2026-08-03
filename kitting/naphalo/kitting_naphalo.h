@@ -3,6 +3,7 @@
 
 #include "kitting/model/kittinginstruction.h"
 #include "kitting/naphalo/kitting_naphalo_cipzaras.h"
+#include "kitting/naphalo/kitting_naphalo_sines.h"
 
 #include <model/cutting/plan/cutplan.h>
 #include <model/cutting/plan/request.h>
@@ -26,7 +27,7 @@ inline QVector<KittingInstruction> expand(
         return Cipzaras::expand(req,pwm, plan);
     }
     else if(subtype->code == "SIN"){
-        //return Sines::expand(req,pwm, plan);
+        return Sines::expand(req,pwm, plan);
     }
     else if(subtype->code == "BOW"){
         //return Bowdenes::expand(req,pwm, plan);

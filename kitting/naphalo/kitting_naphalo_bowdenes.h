@@ -14,7 +14,29 @@
 
 namespace Kitting{
 namespace Naphalo{
-namespace Cipzaras{// KITTING_NAPHALO_CIPZARAS_H
+namespace Bowdenes{// KITTING_NAPHALO_BOWDENES_H
+
+inline QVector<KittingInstruction> expandBowden(
+    const Cutting::Plan::Request& req,
+    const Cutting::Piece::PieceWithMaterial& pwm,
+    const Cutting::Plan::CutPlan& plan)
+{
+    QVector<KittingInstruction> out;
+
+    auto bowden = MaterialRegistry::instance().findByBarcode("NP-B-50m");
+    if (bowden){
+        double hossz_mm = 2*(req.fullHeight_mm+150);
+        out << KittingInstruction::makeKitItem(req, pwm, bowden, "NP-BOW", hossz_mm, "mm");
+    }
+
+    auto bowdenfeszito = MaterialRegistry::instance().findByBarcode("NP-BOW-F");
+    if(bowdenfeszito){
+        out << KittingInstruction::makeKitItem(req, pwm, bowdenfeszito, "NP-BOW");
+        out << KittingInstruction::makeKitItem(req, pwm, bowdenfeszito, "NP-BOW");
+    }
+
+    return out;
+}
 
 inline QVector<KittingInstruction> expandTok(
     const Cutting::Plan::Request& req,
@@ -23,18 +45,18 @@ inline QVector<KittingInstruction> expandTok(
 {
     QVector<KittingInstruction> out;
 
-    auto pofa_R = MaterialRegistry::instance().findByBarcode("NP-CP-R");
-    if(pofa_R){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, "NP-CP");
+    auto pofa_R = MaterialRegistry::instance().findByBarcode("NP-BP-R");
+    if(!pofa_R){
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, "NP-BP");
     }
 
-    auto pofa_L = MaterialRegistry::instance().findByBarcode("NP-CP-L");
+    auto pofa_L = MaterialRegistry::instance().findByBarcode("NP-BP-L");
     if(pofa_L){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, "NP-CP");
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, "NP-BP");
     }
 
-    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS3");
-    if(csavar){
+    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS5");
+    if(!csavar){
         out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
         out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
         out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
@@ -121,26 +143,10 @@ inline QVector<KittingInstruction> expandZaro(
 {
     QVector<KittingInstruction> out;
 
-    auto zaro = MaterialRegistry::instance().findByBarcode("NP-CZ-D");
+    auto zaro = MaterialRegistry::instance().findByBarcode("NP-BZ-D");
     if(zaro){
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-    }
-
-    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS4");
-    if(csavar) {
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-    }
-
-    auto kefe = MaterialRegistry::instance().findByBarcode("NP-CZ-K");
-    if(kefe){
-        double hossz_mm = pwm.info.length_mm-20;   // vagy pwm.info.requiredLength
-        out << KittingInstruction::makeKitItem(req, pwm, kefe, "NP-CZ", hossz_mm, "mm");
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-BZ");
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-BZ");
     }
 
     return out;
@@ -171,6 +177,7 @@ inline QVector<KittingInstruction> expand(
     // --- TOK → pofa + csavar + tokfedél ---
     if (role.barcodePrefix == "NP-T") {
         out << expandTok(req,pwm,plan);
+        out << expandBowden(req,pwm,plan);
     }
 
     if (role.barcodePrefix == "NP-TF") {
@@ -199,16 +206,10 @@ inline QVector<KittingInstruction> expand(
     }
 
     // --- CIPZÁRAS ZÁRÓ → zárósúly ---
-    if (role.barcodePrefix == "NP-CZ") {
+    if (role.barcodePrefix == "NP-SZ") {
         out << expandZaro(req,pwm,plan);
     }
 
-    // --- LAB → labbetét ---
-    if (role.barcodePrefix == "NP-CL") {
-        // const MaterialMaster* labBetet =
-        //     MaterialRegistry::instance().findByBarcodePrefix("NP-LABB");
-        // out << makeKitItem(req, pwm, labBetet, "NP-LABB");
-    }
 
     return out;
 }

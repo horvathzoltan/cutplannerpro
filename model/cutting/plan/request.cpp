@@ -68,6 +68,30 @@ QString Request::toString() const {
     return parts.join(" | ");
 }
 
+
+QString Request::toString2() const {
+    QStringList parts;
+
+    // 🧾 Külső hivatkozás
+    if (!externalReference.isEmpty())
+        parts << QString("Tételszám: %1").arg(externalReference);
+
+    if (quantity>1)
+        parts << QString("%1 db").arg(quantity);
+
+    // 👤 Megrendelő neve
+    if (!ownerName.isEmpty())
+        parts << QString("%1").arg(ownerName);
+
+    // 📏 Hossz és mennyiség
+    parts << QString("%1 × %2 mm").arg(fullWidth_mm).arg(fullHeight_mm);
+
+    parts << QString("%1").arg(dueDate.toString("yyyy.MM.dd"));
+
+    // 💡 Végső összefűzés
+    return parts.join(", ");
+}
+
 QString Request::displayText()
 {
     return QString("%1 • %2 • %3 mm")

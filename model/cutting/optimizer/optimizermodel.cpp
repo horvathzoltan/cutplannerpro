@@ -127,6 +127,30 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
                                          _result_plans.append(crWhole.plan);
 
+                                         if (p.info.leftoverEntryId.has_value()) {
+                                             QUuid loId = *p.info.leftoverEntryId;
+
+                                             // globalSnapshot-ból törlés
+                                             globalSnapshot.erase(
+                                                 std::remove_if(globalSnapshot.begin(), globalSnapshot.end(),
+                                                                [&](const LeftoverStockEntry& e){
+                                                                    return e.entryId == loId;
+                                                                }),
+                                                 globalSnapshot.end());
+
+                                             // _inventorySnapshot.reusableInventory-ből törlés
+                                             _inventorySnapshot.reusableInventory.erase(
+                                                 std::remove_if(_inventorySnapshot.reusableInventory.begin(),
+                                                                _inventorySnapshot.reusableInventory.end(),
+                                                                [&](const LeftoverStockEntry& e){
+                                                                    return e.entryId == loId;
+                                                                }),
+                                                 _inventorySnapshot.reusableInventory.end());
+
+                                             // opcionálisan: tiltás az _usedLeftoverEntryIds-ben
+                                             _usedLeftoverEntryIds.insert(loId);
+                                         }
+
                                          zInfo(QString("Whole-cut TOLDAS_MAIN: len=%1 extRef=%2")
                                                    .arg(p.info.length_mm)
                                                    .arg(p.info.externalReference));

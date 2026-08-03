@@ -14,7 +14,7 @@
 
 namespace Kitting{
 namespace Naphalo{
-namespace Cipzaras{// KITTING_NAPHALO_CIPZARAS_H
+namespace Sines{// KITTING_NAPHALO_SINES_H
 
 inline QVector<KittingInstruction> expandTok(
     const Cutting::Plan::Request& req,
@@ -23,17 +23,17 @@ inline QVector<KittingInstruction> expandTok(
 {
     QVector<KittingInstruction> out;
 
-    auto pofa_R = MaterialRegistry::instance().findByBarcode("NP-CP-R");
+    auto pofa_R = MaterialRegistry::instance().findByBarcode("NP-SP-R");
     if(pofa_R){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, "NP-CP");
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, "NP-SP");
     }
 
-    auto pofa_L = MaterialRegistry::instance().findByBarcode("NP-CP-L");
+    auto pofa_L = MaterialRegistry::instance().findByBarcode("NP-SP-L");
     if(pofa_L){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, "NP-CP");
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, "NP-SP");
     }
 
-    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS3");
+    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS5");
     if(csavar){
         out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
         out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
@@ -121,26 +121,10 @@ inline QVector<KittingInstruction> expandZaro(
 {
     QVector<KittingInstruction> out;
 
-    auto zaro = MaterialRegistry::instance().findByBarcode("NP-CZ-D");
+    auto zaro = MaterialRegistry::instance().findByBarcode("NP-SZ-D");
     if(zaro){
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-    }
-
-    auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS4");
-    if(csavar) {
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-    }
-
-    auto kefe = MaterialRegistry::instance().findByBarcode("NP-CZ-K");
-    if(kefe){
-        double hossz_mm = pwm.info.length_mm-20;   // vagy pwm.info.requiredLength
-        out << KittingInstruction::makeKitItem(req, pwm, kefe, "NP-CZ", hossz_mm, "mm");
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-SZ");
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-SZ");
     }
 
     return out;
@@ -199,12 +183,12 @@ inline QVector<KittingInstruction> expand(
     }
 
     // --- CIPZÁRAS ZÁRÓ → zárósúly ---
-    if (role.barcodePrefix == "NP-CZ") {
+    if (role.barcodePrefix == "NP-SZ") {
         out << expandZaro(req,pwm,plan);
     }
 
     // --- LAB → labbetét ---
-    if (role.barcodePrefix == "NP-CL") {
+    if (role.barcodePrefix == "NP-SL") {
         // const MaterialMaster* labBetet =
         //     MaterialRegistry::instance().findByBarcodePrefix("NP-LABB");
         // out << makeKitItem(req, pwm, labBetet, "NP-LABB");

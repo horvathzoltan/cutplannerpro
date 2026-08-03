@@ -116,6 +116,7 @@ struct Request {
         return parts.join("; ");
     }
 
+    QString toString2() const;
 };
 } //endof namespace Plan
 } //endof namespace Cutting
