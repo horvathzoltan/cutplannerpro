@@ -4,30 +4,30 @@ Csőtengely Ø70x6000mm;NP-ROLL70-6000;6000;70;;Round;CM1;Steel;;SM;Length;None;
 Csőtengely Ø70x7000mm;NP-ROLL70-7000;7000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø78x6000mm;NP-ROLL78-6000;6000;78;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø78x7000mm;NP-ROLL78-7000;7000;78;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
-Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;SM;Length;None;0;10;400;1000;2500;;;Suly
-Zárósúly Ø12x4000mm;NP-BAR12-4000;4000;12;;Round;CM1;Steel;;SM;Length;None;0;10;400;1000;2500;;;Suly
-Zárósúly Ø22x3000mm;NP-BAR22-3000;3000;22;;Round;CM1;Steel;;SM;Length;None;0;10;400;1000;2500;;;Suly
-Zárósúly Ø22x4000mm;NP-BAR22-4000;4000;22;;Round;CM1;Steel;;SM;Length;None;0;10;400;1000;2500;80170055;;Suly
-NaphálóTok;NP-T-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170156;;Tok
-NaphálóTokFedél;NP-TF-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170156;;TokFed
-CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170038;;Zaro
-SinesZáró;NP-SZ-9010-6;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170160;;Zaro
+Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly
+Zárósúly Ø12x4000mm;NP-BAR12-4000;4000;12;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly
+Zárósúly Ø22x3000mm;NP-BAR22-3000;3000;22;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly
+Zárósúly Ø22x4000mm;NP-BAR22-4000;4000;22;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;80170055;;Suly
+NaphálóTok;NP-T-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;870;1500;2500;80170156;;Tok
+NaphálóTokFedél;NP-TF-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;895;1500;2500;80170156;;TokFed
+CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170038;;Zaro
+SinesZáró;NP-SZ-9010-6;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro
 SinesZáró;NP-SZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170107;;Zaro
 CipzárosLáb;NP-CL-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170202;;Lab
 Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170030;;Lab
 SinesLáb;NP-SL-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab
-NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170157;;Tok
-NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170157;;TokFed
-CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170051;;Zaro
-SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
-SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;300;1000;1800;80170109;;Zaro
+NaphálóTok;NP-T-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;870;1500;2500;80170157;;Tok
+NaphálóTokFedél;NP-TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;895;1500;2500;80170157;;TokFed
+CipzárosZáró;NP-CZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;757;1500;2500;80170051;;Zaro
+SinesZáró;NP-SZ-7016-6;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;757;1500;2500;80170109;;Zaro
+SinesZáró;NP-SZ-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;757;1500;2500;80170109;;Zaro
 CipzárosLáb;NP-CL-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170051;;Lab
 Lábtakaró;NP-CLT-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170049;;Lab
 SinesLáb;NP-SL-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170165;;Lab
-NaphálóTok;NP-T;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;Tok
-NaphálóTokFedél;NP-TF;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170426;;TokFed
-CipzárosZáró;NP-CZ;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170425;;Zaro
-SinesZáró;NP-SZ;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;300;1000;1800;80170427;;Zaro
+NaphálóTok;NP-T;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;870;1500;2500;80170426;;Tok
+NaphálóTokFedél;NP-TF;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;895;1500;2500;80170426;;TokFed
+CipzárosZáró;NP-CZ;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro
+SinesZáró;NP-SZ;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170427;;Zaro
 CipzárosLáb;NP-CL;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab
 Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab
 SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab
@@ -75,4 +75,8 @@ SinesPofa-Balos;NP-SP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;
 BowdenesPofa-Jobbos;NP-BP-R;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
 BowdenesPofa-Balos;NP-BP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
 BowdenesPofa-Balos;NP-BP-L;0;;;Custom;Aluminium;Unknown;;SM;Piece;None;0;0;0;0;0;;;TokVeg
-Opel csavar Ø4x10;NP-CS1;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;Csavar
+Opel csavar Ø4x13;NP-CS1;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;Napháló tokfedél csavar;Csavar
+Lemezcsavar SF KH Ø3.5x16;NP-CS2;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;Cipzáros napháló talp csavar;Csavar
+Lemezcsavar SF KH Ø3.5x31;NP-CS2;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;Cipzáros napháló pofa csavar;Csavar
+Csőtengely dugó Ø70;NP-ROLL70-D;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;;Napháló csőtengely dugó Ø70;Fitting
+Csőtengely dugó Ø78;NP-ROLL78-D;0;;;Custom;Plastic;Unknown;;SM;Piece;None;0;0;0;0;0;;Napháló csőtengely dugó Ø78;Fitting

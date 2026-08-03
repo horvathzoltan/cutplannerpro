@@ -1,3 +1,11 @@
+toldás:
+ - rsm-749 hulló fel lesz használva mainként, de aztán fel lesz szeletelve ugyanaz a rúd.
+ valami miatt amikor elhasználjuk mint main, mintha bentmaradna abban a halmazban, amiből választjuk a darabokat
+
+
+cimke:
+ - selejt hullóra ne kerüljön cimke
+
 toldás FIXED
  - mivel a main hulló és annak a hosszát néhány centi rágagyással mérjük,
  hogy amikor felhasználásra kerül, biztosan kiadja a méretet, illetve
@@ -12,12 +20,12 @@ calculation:
  - 3 mm-el nagyobb a motoros tengely
  - vastagabb tengely -> szett kiválasztás, vékonyabb -> másik szett
  - szett kiválasztás: napháló típus szerint kell szett, típuson belül pedig
- - 78-as tengelynél 2500 mm-nél töb banyagot nem lehet beletenni mert a tengely elfoglalja a helyet
+ - 78-as tengelynél 2500 mm-nél töb anyagot nem lehet beletenni mert a tengely elfoglalja a helyet
  - 78-as szett zipes csak egy színben van - fehér
  - ha a megfelelő szín nincs stockon, akkor fallback arra ami épp van
  - motort kell ajánlani, 5 m2 felett 20Nm motor kell
 
-material:
+material: FIXED
  - vasanyag vágó: 75 mm - nél kisebbet nem lehet vágni csőtengelyből mert a kisebb hullónak nincs rögzítése
 
 
