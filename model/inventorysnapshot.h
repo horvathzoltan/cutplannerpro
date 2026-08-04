@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QVector>
-#include "stockentry.h"
+#include "stock/model/stockentry.h"
 #include "leftoverstockentry.h"
 
 /**

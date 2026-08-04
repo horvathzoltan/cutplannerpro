@@ -12,7 +12,7 @@
 #include "materials/registry/material_registry.h"
 #include "model/leftover/leftoverstatusutils.h"
 #include "model/leftover/leftoverutils.h"
-#include "model/storage/storageutils.h"
+#include "storage/utils/storageutils.h"
 #include "view/tableutils/leftoverstyleutils.h"
 #include <view/dialog/waste/scrapbybarcodedialog.h>
 

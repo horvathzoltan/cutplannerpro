@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "service/relocation/relocationplanner.h"
 #include "settings/settingsdialog.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
@@ -14,23 +15,23 @@
 #include <QShortcut>
 
 //#include "cutanalyticspanel.h"
-#include "../model/stockentry.h"
+#include "stock/model/stockentry.h"
 #include "../model/cutting/plan/request.h"
 
 #include "../common/filenamehelper.h"
 #include "settings/settingsmanager.h"
 #include "tableutils/leftovertable_connector.h"
 #include "tableutils/inputtable_connector.h"
-#include "tableutils/stocktable_connector.h"
+#include "stock/view/stocktable_connector.h"
 #include "../common/qteventutil.h"
 
-#include "dialog/stock/addstockdialog.h"
+
 #include "dialog/input/addinputdialog.h"
 
 #include "../model/relocation/relocationinstruction.h"
 #include "eventloghelpers.h"
 
-#include "../service/relocation/relocationplanner.h"
+//#include "../service/relocation/relocationplanner.h"
 
 #include "../common/eventlogger.h"
 #include "view/MainWindowUIBuilder.h"

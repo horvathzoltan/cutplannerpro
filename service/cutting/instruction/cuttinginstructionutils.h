@@ -13,14 +13,16 @@
 #include <materials/registry/material_registry.h>
 #include <model/registries/cuttingmachineregistry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
-#include <model/registries/stockregistry.h>
+#include "stock/registry/stockregistry.h"
 #include <model/cutting/cuttingmachine.h>
 #include <model/storageaudit/storageauditrow.h>
 #include <service/storageaudit/storageauditservice.h>
 #include <common/identifierutils.h>
 #include "model/cutting/optimizer/discardedpiece.h"
-#include "product/subtype_utils.h"
+#include "product/utils/subtype_utils.h"
 #include "settings/settingsmanager.h"
+
+#include <model/registries/leftoverstockregistry.h>
 
 
 namespace CuttingInstructionUtils {

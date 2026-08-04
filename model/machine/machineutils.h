@@ -9,7 +9,7 @@
 #include "../registries/cuttingmachineregistry.h"
 #include "materials/registry/material_registry.h"
 #include "model/leftoverstockentry.h"
-#include "model/storage/storageutils.h"
+#include "storage/utils/storageutils.h"
 //#include "common/eventlogger.h"
 
 namespace MachineUtils {

@@ -3,7 +3,7 @@
 #include "../model/movementdata.h"
 
 #include "materials/registry/material_registry.h"
-#include "../model/registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "../model/registries/storageregistry.h"
 
 

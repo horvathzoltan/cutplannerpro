@@ -8,8 +8,7 @@
 #include "../../common/filenamehelper.h"
 #include "../../common/csvimporter.h"
 //#include "settings/settingsmanager.h"
-#include "../registries/storageregistry.h"
-#include "../../common/logger.h"
+#include <model/registries/storageregistry.h>
 
 bool StockRepository::loadFromCSV(StockRegistry& registry) {
     auto& helper = FileNameHelper::instance();

@@ -33,7 +33,7 @@ SOURCES += \
     paint/registry/powder_consumption_registry.cpp \
     paint/repository/powder_consumption_repository.cpp \
     presenter/leftoverpresenter.cpp \
-    presenter/stockpresenter.cpp \
+    stock/presenter/stockpresenter.cpp \
     presenter/storageauditpresenter.cpp \
     product/registry/bom_registry.cpp \
     product/registry/material_role_registry.cpp \
@@ -99,7 +99,7 @@ SOURCES += \
     model/registries/leftoverstockregistry.cpp \
     materials/registry/material_group_registry.cpp \
     materials/registry/material_registry.cpp \
-    model/registries/stockregistry.cpp \
+    stock/registry/stockregistry.cpp \
     model/registries/storageregistry.cpp \
     model/relocation/relocationsourceentry.h \
     model/repositories/cuttingmachinerepository.cpp \
@@ -107,9 +107,9 @@ SOURCES += \
     model/repositories/leftoverstockrepository.cpp \
     materials/repository/material_group_repository.cpp \
     materials/repository/material_repository.cpp \
-    model/repositories/stockrepository.cpp \
+    stock/repository/stockrepository.cpp \
     model/repositories/storagerepository.cpp \
-    model/stockentry.cpp \
+    stock/model/stockentry.cpp \
     model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
     service/cutting/optimizer/exporter.cpp \
@@ -127,20 +127,23 @@ SOURCES += \
     view/dialog/waste/addwastedialog.cpp \
     view/dialog/movement/movementdialog.cpp \
     view/dialog/relocation/relocationquantitydialog.cpp \
-    view/dialog/stock/addstockdialog.cpp \
-    view/dialog/stock/editcommentdialog.cpp \
-    view/dialog/stock/editquantitydialog.cpp \
-    view/dialog/stock/editstoragedialog.cpp \
+    stock/view/dialog/addstockdialog.cpp \
+    stock/view/dialog/editcommentdialog.cpp \
+    stock/view/dialog/editquantitydialog.cpp \
+    stock/view/dialog/editstoragedialog.cpp \
     view/managers/cuttinginstructiontable_manager.cpp \
     view/managers/inputtable_manager.cpp \
     view/managers/leftovertable_manager.cpp \
     view/managers/relocationplantable_manager.cpp \
     view/managers/resultstable_manager.cpp \
-    view/managers/stocktable_manager.cpp \
+    stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
     view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
+    product/utils/material_role_utils.h \
+    product/utils/subtype_utils.h \
+    stock/model/stockentry.h \
     calculation/calcmode.h \
     calculation/lengthcalculator.h \
     calculation/naphalo/calculation_naphalo_bowdenes.h \
@@ -210,7 +213,7 @@ HEADERS += \
     materials/utils/material_group_utils.h \
     materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
-    model/storage/storageutils.h \
+    storage/utils/storageutils.h \
     model/storageaudit/audit_enums.h \
     paint/model/powder_consumption_model.h \
     paint/paint_calculator.h \
@@ -220,9 +223,8 @@ HEADERS += \
     paint/registry/powder_consumption_registry.h \
     paint/repository/powder_consumption_repository.h \
     presenter/leftoverpresenter.h \
-    presenter/stockpresenter.h \
+    stock/presenter/stockpresenter.h \
     presenter/storageauditpresenter.h \
-    product/material_role_utils.h \
     product/model/bom_entry.h \
     product/model/material_role.h \
     product/model/product_subtype.h \
@@ -237,7 +239,6 @@ HEADERS += \
     product/repository/product_subtype_repository.h \
     product/repository/product_type_repository.h \
     product/selector/material_selector.h \
-    product/subtype_utils.h \
     service/buildnumber.h \
     service/cutting/instruction/cuttinginstructionutils.h \
     service/cutting/instruction/labelmodel.h \
@@ -343,7 +344,7 @@ HEADERS += \
     service/cutting/result/leftoversourceutils.h \
     service/cutting/result/resultutils.h \
     service/cutting/segment/segmentutils.h \
-    service/movementlogger.h \
+    stock/service/movementlogger.h \
     settings/settingsmanager.h \
     common/startup/startupmanager.h \
     common/stringify.h \
@@ -353,8 +354,8 @@ HEADERS += \
     view/tableutils/leftovertable_connector.h \
     view/tableutils/leftovertable_rowstyler.h \
     view/tableutils/resulttable_rowstyler.h \
-    view/tableutils/stocktable_connector.h \
-    view/tableutils/stocktable_rowstyler.h \
+    stock/view/stocktable_connector.h \
+    stock/view/stocktable_rowstyler.h \
     view/tablerowstyler/tablestyleutils.h \
     view/tableutils/tableutils.h \
     model/archivedwasteentry.h \
@@ -366,22 +367,21 @@ HEADERS += \
     model/registries/leftoverstockregistry.h \
     materials/registry/material_group_registry.h \
     materials/registry/material_registry.h \
-    model/registries/stockregistry.h \
+    stock/registry/stockregistry.h \
     model/registries/storageregistry.h \
     model/repositories/cuttingrequestrepository.h \
     model/repositories/leftoverstockrepository.h \
     materials/repository/material_group_repository.h \
     materials/repository/material_repository.h \
-    model/repositories/stockrepository.h \
+    stock/repository/stockrepository.h \
     model/repositories/storagerepository.h \
-    model/stockentry.h \
     model/storageentry.h \
     model/storagetype.h \
     presenter/CuttingPresenter.h \
-    service/movementlogmodel.h \
+    stock/service/movementlogmodel.h \
     service/relocation/relocationplanner.h \
     service/relocation/relocationservice.h \
-    service/stockmovementservice.h \
+    stock/service/stockmovementservice.h \
     service/storageaudit/auditutils.h \
     service/storageaudit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
@@ -403,15 +403,15 @@ HEADERS += \
     view/dialog/waste/addwastedialog.h \
     view/dialog/movement/movementdialog.h \
     view/dialog/relocation/relocationquantitydialog.h \
-    view/dialog/stock/addstockdialog.h \
-    view/dialog/stock/editcommentdialog.h \
-    view/dialog/stock/editquantitydialog.h \
-    view/dialog/stock/editstoragedialog.h \
+    stock/view/dialog/addstockdialog.h \
+    stock/view/dialog/editcommentdialog.h \
+    stock/view/dialog/editquantitydialog.h \
+    stock/view/dialog/editstoragedialog.h \
     view/managers/inputtable_manager.h \
     view/managers/leftovertable_manager.h \
     view/managers/relocationplantable_manager.h \
     view/managers/resultstable_manager.h \
-    view/managers/stocktable_manager.h \
+    stock/view/stocktable_manager.h \
     view/managers/storageaudittable_manager.h \
     view/tablehelpers/relocationquantityhelpers.h \
     view/tablehelpers/tablerowpopulator.h \
@@ -431,10 +431,10 @@ FORMS += \
     view/dialog/waste/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
     view/dialog/relocation/relocationquantitydialog.ui \
-    view/dialog/stock/addstockdialog.ui \
-    view/dialog/stock/editcommentdialog.ui \
-    view/dialog/stock/editquantitydialog.ui \
-    view/dialog/stock/editstoragedialog.ui \
+    stock/view/dialog/addstockdialog.ui \
+    stock/view/dialog/editcommentdialog.ui \
+    stock/view/dialog/editquantitydialog.ui \
+    stock/view/dialog/editstoragedialog.ui \
     view/dialog/waste/leftoverreviewdialog.ui \
     view/dialog/waste/scrapbybarcodedialog.ui
 

@@ -4,12 +4,8 @@
 #include <QWidget>
 
 #include <model/leftoverstockentry.h>
-//#include <QUuid>
-
-#include "../tableutils/RowTracker.h"
-
-#include "../../model/stockentry.h"
-//#include "model/materialmaster.h"
+#include "stock/model/stockentry.h"
+#include "view/tableutils/RowTracker.h"
 
 
 class StockTableManager: public QObject {  // 🔧 QObject öröklés! {

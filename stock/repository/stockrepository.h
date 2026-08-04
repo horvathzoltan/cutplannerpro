@@ -2,8 +2,8 @@
 
 #include <QString>
 #include <QVector>
-#include "../stockentry.h"
-#include "../registries/stockregistry.h"
+#include "stock/model/stockentry.h"
+#include "stock/registry/stockregistry.h"
 #include "../../common/csvimporter.h"
 //#include "model/cutresult.h"
 //#include "model/reusablestockentry.h"

@@ -2,7 +2,7 @@
 
 #include "../MainWindow.h"
 #include "../dialog/waste/addwastedialog.h"
-#include "../dialog/stock/editstoragedialog.h"
+#include "stock/view/dialog/editstoragedialog.h"
 #include "../../model/registries/leftoverstockregistry.h"
 #include "../../presenter/CuttingPresenter.h"
 #include "common/eventlogger.h"

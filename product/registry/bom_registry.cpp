@@ -1,7 +1,7 @@
 #include "bom_registry.h"
 
 #include "material_role_registry.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 
 #include <QHash>
 

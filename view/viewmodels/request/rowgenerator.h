@@ -5,7 +5,7 @@
 #include "materials/view/material_cell_generator.h"
 #include "../../columnindexes/inputtable_columns.h"
 #include "../tablerowviewmodel.h"
-#include "product/subtype_utils.h"
+#include "product/utils/subtype_utils.h"
 
 #include <QPushButton>
 namespace Request::ViewModel::RowGenerator {

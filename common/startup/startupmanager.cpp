@@ -7,10 +7,10 @@
 //#include "model/stockentry.h"
 
 #include "materials/repository/material_group_repository.h"
-#include "../../model/registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "../../model/repositories/cuttingrequestrepository.h"
 #include "../../model/repositories/leftoverstockrepository.h"
-#include "../../model/repositories/stockrepository.h"
+#include "stock/repository/stockrepository.h"
 #include "../../model/repositories/storagerepository.h"
 
 #include <QSet>

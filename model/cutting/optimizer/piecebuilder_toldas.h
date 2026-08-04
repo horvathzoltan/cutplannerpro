@@ -2,15 +2,16 @@
 #pragma once
 #include "common/logger.h"
 #include "model/cutting/plan/request.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 #include "materials/registry/material_registry.h"
+#include "toldas_engine.h"
 
 #include <model/cutting/piece/piecewithmaterial.h>
 #include <model/inventorysnapshot.h>
 #include <model/registries/leftoverstockregistry.h>
 
 // NEW: ToldasEngine include
-#include "model/cutting/optimizer/toldas_engine.h"
+
 
 namespace Cutting {
 namespace Optimizer {

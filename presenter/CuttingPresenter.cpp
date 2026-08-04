@@ -13,7 +13,7 @@
 #include "../service/cutting/result/archivedwasteutils.h"
 #include "../model/registries/cuttingplanrequestregistry.h"
 #include "../model/registries/leftoverstockregistry.h"
-#include "../model/registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "../service/cutting/optimizer/exporter.h"
 #include "../common/filenamehelper.h"
 #include "settings/settingsmanager.h"

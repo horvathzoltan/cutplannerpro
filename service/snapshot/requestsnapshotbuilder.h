@@ -2,7 +2,7 @@
 
 #include "../../model/registries/cuttingplanrequestregistry.h"
 #include "../../model/cutting/plan/request.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 #include <materials/registry/material_registry.h>
 #include <calculation/lengthcalculator.h>
 #include <product/registry/product_subtype_registry.h>

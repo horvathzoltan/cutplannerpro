@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QVector>
 #include "../../model/cutting/cuttingmachine.h"
-#include "../../model/stockentry.h"
+#include "stock/model/stockentry.h"
 //#include "model/storageaudit/storageauditentry.h"
 #include "../../model/storageaudit/storageauditrow.h"
 

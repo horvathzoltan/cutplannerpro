@@ -3,8 +3,9 @@
 #include <QDebug>
 
 #include "../../common/filenamehelper.h"
-#include "../repositories/stockrepository.h"
+
 #include "../../common/scopedperthreadlock.h" // a korábban beillesztett általános wrapper
+#include "stock/repository/stockrepository.h"
 
 StockRegistry& StockRegistry::instance() {
     static StockRegistry reg;

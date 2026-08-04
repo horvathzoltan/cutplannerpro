@@ -3,7 +3,7 @@
 #include <QUuid>
 #include <QString>
 
-#include "registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 
 struct MovementData_Log {
     // Honnan mozgatjuk

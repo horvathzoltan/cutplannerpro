@@ -1,5 +1,5 @@
 #include "kittingengine.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 //#include "materials/registry/material_registry.h"
 //#include "product/registry/bom_registry.h"
 //#include "product/registry/material_role_registry.h"

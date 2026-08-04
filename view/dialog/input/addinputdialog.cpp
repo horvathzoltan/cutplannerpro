@@ -3,7 +3,7 @@
 #include "../../../model/cutting/plan/request.h"
 #include "common/logger.h"
 #include "model/cutting/plan/audit/naphalo_profile_postfix.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 #include "ui_addinputdialog.h"
 #include "materials/registry/material_registry.h"
 #include "view/common/layouts/qflowlayout.h"

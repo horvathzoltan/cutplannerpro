@@ -15,7 +15,7 @@
 
 #include "materials/registry/material_registry.h"
 
-#include "../../service/stockmovementservice.h"
+#include "stock/service/stockmovementservice.h"
 
 bool RelocationPlanTableManager::_isVerbose = false;
 

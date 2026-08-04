@@ -1,10 +1,10 @@
 #include "stockpresenter.h"
-#include "../model/registries/leftoverstockregistry.h"
-#include "../model/registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "common/eventlogger.h"
 
 #include <materials/registry/material_registry.h>
 
+#include <model/registries/leftoverstockregistry.h>
 #include <model/registries/storageregistry.h>
 #include <view/MainWindow.h>
 

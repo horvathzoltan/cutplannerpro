@@ -1,5 +1,5 @@
 #include "kittingpresenter.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 #include "view/MainWindow.h"
 
 #include "common/eventlogger.h"

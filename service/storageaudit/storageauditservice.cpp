@@ -1,7 +1,7 @@
 #include "storageauditservice.h"
 #include "../../model/registries/cuttingmachineregistry.h"
 #include "../../model/registries/storageregistry.h"
-#include "../../model/registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "../../common/logger.h"
 #include "../../model/storageaudit/storageauditrow.h"
 

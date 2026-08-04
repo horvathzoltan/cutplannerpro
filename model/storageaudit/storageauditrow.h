@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../stockentry.h"
+
 #include <QString>
 #include <QUuid>
-#include "../registries/leftoverstockregistry.h"
-#include "../registries/stockregistry.h"
+#include "stock/registry/stockregistry.h"
 #include "audit_enums.h"
 #include "auditcontext.h"
 #include "auditstatus.h"
+#include "stock/model/stockentry.h"
 //#include "view/cellhelpers/auditstatustext.h"
 //#include "model/storageaudit/auditstatus_text.h"
 

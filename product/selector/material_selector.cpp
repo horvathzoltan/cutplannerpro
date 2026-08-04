@@ -2,7 +2,7 @@
 #include "materials/registry/material_registry.h"
 #include "materials/model/material_family_utils.h"
 
-#include <model/registries/stockregistry.h>
+#include "stock/registry/stockregistry.h"
 
 #include <product/registry/product_type_registry.h>
 

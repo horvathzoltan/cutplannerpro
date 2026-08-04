@@ -1,8 +1,8 @@
 #pragma once
 
+#include "stock/model/stockentry.h"
 #include <QDialog>
 #include <QUuid>
-#include "../../../model/stockentry.h"
 
 namespace Ui {
 class AddStockDialog;

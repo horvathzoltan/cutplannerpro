@@ -4,7 +4,7 @@
 #include "model/cutting/plan/request.h"
 #include "model/cutting/piece/piecewithmaterial.h"
 #include "materials/registry/material_registry.h"
-#include "product/material_role_utils.h"
+#include "product/utils/material_role_utils.h"
 #include "model/inventorysnapshot.h"
 #include "common/logger.h"
 

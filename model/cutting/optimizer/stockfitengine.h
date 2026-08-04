@@ -5,7 +5,7 @@
 #include <QVector>
 #include <QUuid>
 
-#include "../../stockentry.h"
+#include "stock/model/stockentry.h"
 #include "model/cutting/piece/piecewithmaterial.h"
 #include "selectedrod.h"
 

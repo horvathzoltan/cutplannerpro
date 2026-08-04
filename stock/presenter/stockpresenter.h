@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include "model/stockentry.h"
+#include "stock/model/stockentry.h"
 
 class MainWindow;
 
