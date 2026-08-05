@@ -70,9 +70,13 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
     }
 
     // 🎯 Pontos egy darabos illeszkedés – külön jutalom
-    if (leftoverLength == 0 && pieceCount == 1) {
+    if (leftoverLength <= sp.scrap_mm && pieceCount == 1) {
         score += 200;
     }
+
+//    if(leftoverLength <= sp.scrap_mm){
+//        score +=700;
+//    }
 
     // 😊 Jó leftover tartomány – „jó érzésű” maradék
     if (leftoverLength >= sp.goodLeftOver_Min_mm &&
@@ -80,9 +84,9 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
         score += 300;
     }
 
-    // 😬 Selejt leftover – erősebb büntetés
+    // 😬 Selejt leftover
     if (leftoverLength > 0 && leftoverLength < sp.scrap_mm) {
-        score -= 300; // visszaállítva az eredeti szigorra
+        score += 700;
     }
 
     // 🧱 Túl nagy leftover – dinamikus büntetés

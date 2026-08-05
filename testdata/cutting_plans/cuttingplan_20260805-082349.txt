@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes
+"130";"Braun, Győr";2400;2070;2370;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;2395;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;2277;;1;0;1;"RAL 9010";NP-CZ-9010;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;1967;;1;0;1;"RAL 9010";NP-CL-9010;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;1967;;1;0;1;"RAL 9010";NP-CLT-9010;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;1967;;1;0;1;"RAL 9010";NP-CLB;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;2285;;1;0;1;"RAL 9010";NP-ROLL70-6000;Width;false;2026-08-17;NP;CIP;meghajtas=motoros
+"130";"Braun, Győr";2400;2070;2235;;1;0;1;"RAL 9010";NP-BAR22-3000;Width;false;2026-08-17;NP;CIP;meghajtas=motoros

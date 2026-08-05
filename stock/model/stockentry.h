@@ -5,7 +5,7 @@
 #include <QString>
 #include <QUuid>
 #include "materials/model/material_master.h"
-#include "../CutPlannerPro/model/storageentry.h"
+#include "model/storageentry.h"
 
 struct StockEntry {
     QUuid entryId = QUuid::createUuid(); // 🔑 automatikus UUID generálás
