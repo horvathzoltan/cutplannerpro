@@ -258,6 +258,7 @@ inline QString buildMachineCutsHeader(const MachineCuts& mc,
                     lines << QString("          Anyag: %1, Méret: %2 mm")
                                  .arg(mtxt)
                                  .arg(req->requiredLength);
+                    lines << QString("          Részletek: %1").arg(dp.failReason);
                 } else {
                     lines << "Nem található vágási kérés";
                 }
@@ -2466,10 +2467,17 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_2(const MachineCuts& mc,
             QVector<QString> labels;
 
             for (const auto* ci : list) {
+
+                QString toldasIcon = "";
+                if (ci->toldasRole == ToldasRole::Main || ci->toldasRole == ToldasRole::Toldat) {
+                    toldasIcon = " 🧩";   // toldás jelölése
+                }
+
                 segLens.append(ci->cutSize_mm);
-                labels.append(QString("%1. %2 mm □")
+                labels.append(QString("%1. %2 mm □ %3")
                                   .arg(ci->externalReference)
-                                  .arg(ci->cutSize_mm));
+                                  .arg(ci->cutSize_mm)
+                                  .arg(toldasIcon));
                 orderedCuts.append(ci);
             }
 

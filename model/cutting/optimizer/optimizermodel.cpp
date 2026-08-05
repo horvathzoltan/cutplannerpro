@@ -123,7 +123,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                                              p,
                                              *ma,
                                              currentOpId,
-                                             planCounter);
+                                             planCounter,
+                                             ++rodCounter);
 
                                          _result_plans.append(crWhole.plan);
 
@@ -211,13 +212,46 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             groupVec,
             machine.kerf_mm);
 
+        // if (!init.ok) {
+        //     auto* mat = MaterialRegistry::instance().findById(targetMaterialId);
+        //     QString targetMaterialName = mat?mat->toDisplay():"?";
+        //     zWarning(QString("❌ NO ROD AVAILABLE: materialId=%1, pendingPieces=%2")
+        //                .arg(targetMaterialName)
+        //                .arg(groupVec.size()));
+        //     break;
+        // }
         if (!init.ok) {
             auto* mat = MaterialRegistry::instance().findById(targetMaterialId);
-            QString targetMaterialName = mat?mat->toDisplay():"?";
-            zWarning(QString("❌ NO ROD AVAILABLE: materialId=%1, pendingPieces=%2")
-                       .arg(targetMaterialName)
-                       .arg(groupVec.size()));
-            break;
+            QString targetMaterialName = mat ? mat->toDisplay() : "?";
+
+            zWarning(QString("❌ NO ROD AVAILABLE — material=%1, pendingPieces=%2")
+                         .arg(targetMaterialName)
+                         .arg(groupVec.size()));
+
+            // 🔥 PATCH — minden darabot FAILED-re jelölünk
+            for (auto &p : groupVec) {
+
+                p.failed = true;
+                p.failReason = QString("Nincs megfelelő rúd a vágáshoz");
+
+                // gép ID nem ismert → 0 vagy egy default gép
+                DiscardedPiece dp;
+                dp.requestId  = p.info.requestId;
+                dp.materialId = p.materialId;
+                dp.machineId  = machine.id;
+                dp.failReason = p.failReason;
+                dp.pieceId    = p.info.pieceId;
+
+                addDiscardedPiece(dp);
+
+                zWarning("❌ FAILED PIECE — " + dp.failReason);
+            }
+
+            // töröljük a pendingből
+            groupVec.clear();
+
+            // folytatjuk a következő anyagcsoporttal
+            continue;
         }
 
         SelectedRod rod = init.rod;
@@ -251,6 +285,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 1);
 
             if (stepResult == RodStepResult::ContinueSameRod) {
+                // ❗ PATCH: fizikai ellenőrzés — ha remainingLength == rod.length → új rúd kell
+                // if (remainingLength == rod.length) {
+                //     zWarning("⛔ PATCH — fizikai képtelenség: a rúd teljes hosszú, mégis ContinueSameRod jött → új rúd indítása");
+                //     break; // új rúd
+                // }
+
                 // semmi rod újrainicializálás
                 // semmi új rúd keresés
                 // csak folytatjuk a rod-loopot a friss remainingLength/dpLimit értékekkel
@@ -299,15 +339,22 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     }
     _localLeftovers.clear();
 
-    // FAILED darabok logolása
+    // // FAILED darabok logolása
+    // int failedCount = 0;
+    // for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
+    //     for (const auto& p : it.value()) {
+    //         if (p.failed) {
+    //             failedCount++;
+    //             zWarning("❌ VÁGÁSI HIBA — " + p.failReason);
+    //         }
+    //     }
+    // }
+
+    // 🔥 PATCH — FAILED darabok logolása kizárólag a DiscardedPiece alapján
     int failedCount = 0;
-    for (auto it = piecesByMaterial.begin(); it != piecesByMaterial.end(); ++it) {
-        for (const auto& p : it.value()) {
-            if (p.failed) {
-                failedCount++;
-                zWarning("❌ VÁGÁSI HIBA — " + p.failReason);
-            }
-        }
+    for (const auto& dp : _discardedPieces.values()) {
+        failedCount++;
+        zWarning("❌ VÁGÁSI HIBA — " + dp.failReason);
     }
 
     // 3️⃣ Szegmens-szintű front trim utómunka (csak stock rudakra)
@@ -346,25 +393,13 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
     for (const auto& p : _result_plans)
         pieceCount += p.piecesWithMaterial.size();
 
-    int totalRequested = _requests.size();   // összes igényelt darab (Request szinten)
-    int totalCut       = pieceCount;         // ténylegesen levágott darabok
-    int totalFailed    = failedCount;        // FAILED darabok száma
-
-    if (totalFailed > 0) {
-        zEvent(QString("⚠️ Figyelem: %1 darab kérve, %2 darab levágva, "
-                       "%3 darab nem teljesíthető.")
-                   .arg(totalRequested)
-                   .arg(totalCut)
-                   .arg(totalFailed));
-    }
-
     // ⚠️ REQUEST vs CUT eltérés riportálása
     {
         int totalRequested = _requests.size();   // összes igényelt darab
         int totalCut       = pieceCount;         // ténylegesen levágott darabok
         int totalFailed    = failedCount;        // FAILED darabok száma
 
-        if (totalFailed > 0) {
+        if (totalRequested > totalCut) {
             zEvent(QString("⚠️ Figyelem: %1 darab kérve, %2 darab levágva, %3 darab nem teljesíthető.")
                        .arg(totalRequested)
                        .arg(totalCut)

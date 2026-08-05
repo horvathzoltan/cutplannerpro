@@ -258,7 +258,8 @@ CutResult CutEngine::cutWhole(
     const Cutting::Piece::PieceWithMaterial& piece,
     const CuttingMachine& machine,
     int currentOpId,
-    int& planCounter)
+    int& planCounter,
+    int& rodCounter)
 {
     zInfo(QString("🔍 CUT WHOLE — piece=%1 mm")
               .arg(piece.info.length_mm));
@@ -275,7 +276,7 @@ CutResult CutEngine::cutWhole(
     p.piecesWithMaterial = { piece };
 
     p.materialId = piece.materialId;
-    p.rodId = "";   // whole-cut → nincs rúd
+    p.rodId = IdentifierUtils::makeRodId(++rodCounter);   // whole-cut → nincs rúd
     p.planId = QUuid::createUuid();
     p.status = Cutting::Plan::Status::NotStarted;
     p.machineId = machine.id;

@@ -33,7 +33,8 @@ public:
         const Cutting::Piece::PieceWithMaterial& piece,
         const CuttingMachine& machine,
         int currentOpId,
-        int& planCounter);
+        int& planCounter,
+        int& rodCounter);
 
     // static CutResult cutWhole(
     //     const Cutting::Piece::PieceWithMaterial &piece,

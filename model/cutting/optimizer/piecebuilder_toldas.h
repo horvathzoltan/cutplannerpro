@@ -140,6 +140,16 @@ public:
         info.externalReference = req.externalReference;
         info.toldasRole = ToldasRole::None;   // fontos: nem toldott darab
 
+        // result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
+        // return result;
+
+        // NEW: próbáljuk vékony súlyból helyettesíteni
+        // QVector<Cutting::Piece::PieceWithMaterial> thinPieces;
+        // if (ToldasEngine::computeReplacementFromThinBars(req, inv, thinPieces)) {
+        //     return thinPieces;
+        // }
+
+        // Ha ez sem sikerül → valódi fallback: sima darab
         result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
         return result;
 

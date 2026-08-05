@@ -187,6 +187,32 @@ public:
         const int need = req.requiredLength;
         const int stock = mm->stockLength_mm;
 
+        // --- VALÓDI STOCK-ELLENŐRZÉS VASTAG SÚLYRA ---
+        bool hasThickStock = false;
+        bool hasThickLeftover = false;
+
+        // teljes rudak (stock)
+        for (const auto& s : inv.profileInventory) {
+            if (s.materialId == req.materialId) {
+                hasThickStock = true;
+                break;
+            }
+        }
+
+        // leftover rudak
+        for (const auto& l : inv.reusableInventory) {
+            if (l.materialId == req.materialId) {
+                hasThickLeftover = true;
+                break;
+            }
+        }
+
+        // ❗ Ha nincs vastag súly se stockban, se leftoverben → NEM kezeljük toldással
+        if (!hasThickStock && !hasThickLeftover) {
+            zInfo(QString("ToldasEngine: nincs vastag súly készlet → vékony súly fallback"));
+            return;   // handled = false → PieceBuilderToldas fallback vékony súlyra
+        }
+
         // 4) Leftoverek gyűjtése adott materialId-re
         QVector<LeftoverStockEntry> leftovers;
         for (const auto& l : inv.reusableInventory) {
@@ -365,6 +391,7 @@ public:
                     MainCandidate c;
                     c.fromStock = true;
                     c.length_mm = mainLen;
+
                     mainCandidates.append(c);
                 }
             }
@@ -732,6 +759,237 @@ public:
                   .arg(need)
                   .arg(stock));
     }
+
+
+    static bool computeReplacementFromThinBars(
+        const Cutting::Plan::Request& req,
+        const InventorySnapshot& inv,
+        QVector<Cutting::Piece::PieceWithMaterial>& outPieces)
+    {
+        outPieces.clear();
+
+        const int need = req.requiredLength;
+
+        // 1) Vékony súly anyag lekérése
+        const MaterialMaster* thinMat =
+            MaterialRegistry::instance().findByBarcode("NP-BAR12-4000");
+        if (!thinMat)
+            return false;
+
+        const QUuid thinId   = thinMat->id;
+        const int   stockLen = thinMat->stockLength_mm;
+
+        // Toldás paraméterek
+        auto& sm = SettingsManager::instance();
+        const int minToldas_mm = sm.toldasMin();
+        const int maxToldas_mm = sm.toldasMax();
+
+        // 2) Vékony leftoverek gyűjtése
+        QVector<LeftoverStockEntry> thinLeftovers;
+        for (const auto& l : inv.reusableInventory) {
+            if (l.materialId == thinId)
+                thinLeftovers.append(l);
+        }
+
+        // --- 3) Egy darabos helyettesítés: STOCK ---
+        if (stockLen >= need) {
+            Cutting::Piece::PieceInfo info;
+            info.length_mm        = need;
+            info.requestId        = req.requestId;
+            info.externalReference = req.externalReference + " [REPLACE_THIN]";
+            info.toldasRole       = ToldasRole::None;
+            info.keepWhole        = false;
+
+            outPieces.append(Cutting::Piece::PieceWithMaterial(info, thinId));
+            return true;
+        }
+
+        // --- 4) Egy darabos helyettesítés: LEFTOVER ---
+        {
+            int bestWaste = std::numeric_limits<int>::max();
+            std::optional<LeftoverStockEntry> best;
+
+            for (const auto& l : thinLeftovers) {
+                if (l.availableLength_mm < need)
+                    continue;
+
+                int waste = l.availableLength_mm - need;
+                if (waste < bestWaste) {
+                    bestWaste = waste;
+                    best      = l;
+                }
+            }
+
+            if (best.has_value()) {
+                const auto& lo = best.value();
+
+                Cutting::Piece::PieceInfo info;
+                info.length_mm        = need;
+                info.requestId        = req.requestId;
+                info.externalReference = req.externalReference + " [REPLACE_THIN]";
+                info.toldasRole       = ToldasRole::None;
+                info.keepWhole        = true;
+                info.leftoverEntryId  = lo.entryId;
+
+                outPieces.append(Cutting::Piece::PieceWithMaterial(info, thinId));
+                return true;
+            }
+        }
+
+        // --- 5) Két darabos helyettesítés (toldás) ---
+        struct ThinMainCandidate {
+            enum class Source { Stock, Leftover } source;
+            int length_mm;
+            LeftoverStockEntry leftover; // csak akkor releváns, ha leftover
+        };
+
+        QVector<ThinMainCandidate> mains;
+
+        // 5/a STOCK fődarab jelölt
+        if (stockLen > 0 && stockLen < need) {
+            ThinMainCandidate c;
+            c.source    = ThinMainCandidate::Source::Stock;
+            c.length_mm = stockLen;
+            mains.append(c);
+        }
+
+        // 5/b LEFTOVER fődarab jelöltek
+        for (const auto& l : thinLeftovers) {
+            if (l.availableLength_mm <= 0 || l.availableLength_mm >= need)
+                continue;
+
+            ThinMainCandidate c;
+            c.source    = ThinMainCandidate::Source::Leftover;
+            c.length_mm = l.availableLength_mm;
+            c.leftover  = l;
+            mains.append(c);
+        }
+
+        // 6) Fődarab + toldat kombináció keresése
+        bool foundCombo = false;
+        ThinMainCandidate bestMain;
+        LeftoverStockEntry bestToldasLeftover;
+        bool toldasFromStock = false;
+        int bestTotalWaste   = std::numeric_limits<int>::max();
+
+        for (const auto& main : mains) {
+
+            const int mainLen = main.length_mm;
+            int toldasLen     = need - mainLen;
+            if (toldasLen <= 0)
+                continue;
+
+            // Toldat korlátok
+            if (toldasLen < minToldas_mm || toldasLen > maxToldas_mm)
+                continue;
+            if (toldasLen > mainLen / 2)
+                continue;
+
+            // Toldat forrás keresése
+            int bestWaste = std::numeric_limits<int>::max();
+            std::optional<LeftoverStockEntry> bestLo;
+
+            for (const auto& l : thinLeftovers) {
+
+                // Nem használjuk ugyanazt leftoveret fődarabnak és toldatnak
+                if (main.source == ThinMainCandidate::Source::Leftover &&
+                    l.entryId == main.leftover.entryId)
+                    continue;
+
+                if (l.availableLength_mm < toldasLen)
+                    continue;
+
+                int waste = l.availableLength_mm - toldasLen;
+                if (waste < bestWaste) {
+                    bestWaste = waste;
+                    bestLo    = l;
+                }
+            }
+
+            bool localFoundToldas     = false;
+            bool localToldasFromStock = false;
+            LeftoverStockEntry localToldasLeftover;
+
+            if (bestLo.has_value()) {
+                localFoundToldas     = true;
+                localToldasFromStock = false;
+                localToldasLeftover  = bestLo.value();
+            } else if (stockLen >= toldasLen) {
+                localFoundToldas     = true;
+                localToldasFromStock = true;
+            }
+
+            if (!localFoundToldas)
+                continue;
+
+            int mainWaste =
+                (main.source == ThinMainCandidate::Source::Stock)
+                    ? std::max(0, stockLen - mainLen)
+                    : std::max(0, main.leftover.availableLength_mm - mainLen);
+
+            int toldasWaste =
+                localToldasFromStock
+                    ? std::max(0, stockLen - toldasLen)
+                    : std::max(0, localToldasLeftover.availableLength_mm - toldasLen);
+
+            int totalWaste = mainWaste + toldasWaste;
+
+            if (totalWaste < bestTotalWaste) {
+                bestTotalWaste     = totalWaste;
+                bestMain           = main;
+                bestToldasLeftover = localToldasLeftover;
+                toldasFromStock    = localToldasFromStock;
+                foundCombo         = true;
+            }
+        }
+
+        if (!foundCombo)
+            return false;
+
+        // 7) Végleges darabok felépítése
+        const int mainLen   = bestMain.length_mm;
+        const int toldasLen = need - mainLen;
+
+        // FŐDARAB
+        Cutting::Piece::PieceInfo mainInfo;
+        mainInfo.length_mm  = mainLen;
+        mainInfo.requestId  = req.requestId;
+        mainInfo.toldasRole = ToldasRole::Main;
+
+        if (!req.externalReference.isEmpty())
+            mainInfo.externalReference = req.externalReference + " [REPLACE_THIN_MAIN]";
+        else
+            mainInfo.externalReference = "[REPLACE_THIN_MAIN]";
+
+        if (bestMain.source == ThinMainCandidate::Source::Leftover) {
+            mainInfo.keepWhole       = true;
+            mainInfo.leftoverEntryId = bestMain.leftover.entryId;
+        } else {
+            mainInfo.keepWhole = false;
+        }
+
+        // TOLDAT
+        Cutting::Piece::PieceInfo toldasInfo;
+        toldasInfo.length_mm  = toldasLen;
+        toldasInfo.requestId  = req.requestId;
+        toldasInfo.toldasRole = ToldasRole::Toldat;
+
+        if (!req.externalReference.isEmpty())
+            toldasInfo.externalReference = req.externalReference + " [REPLACE_THIN_TOLDAT]";
+        else
+            toldasInfo.externalReference = "[REPLACE_THIN_TOLDAT]";
+
+        if (!toldasFromStock)
+            toldasInfo.leftoverEntryId = bestToldasLeftover.entryId;
+
+        outPieces.append(Cutting::Piece::PieceWithMaterial(mainInfo, thinId));
+        outPieces.append(Cutting::Piece::PieceWithMaterial(toldasInfo, thinId));
+
+        return true;
+    }
+
+
+
 };
 
 } // namespace Optimizer
