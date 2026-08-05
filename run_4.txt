@@ -1,3 +1,40 @@
+addinputdialog:
+ - ha végigment a bomon, jelezze már valami, hogy kész a tétel adatbevitel
+ - dátum: a default az legyen üres, mert megtévesztő ha nem üres
+ - ahogy a színre emlékezik, a dátumra is emlékezzen
+ - workflow: a next material az mehet le az ok mellé, és a next tétel is
+
+
+optimizer:
+
+[2026-08-05T10:01:55.157] ⏳ Optimize(1) run started (heuristic=ByCount)
+[2026-08-05T10:01:55.222] ⚠️ Anyagvariáns váltás — a(z) NP-TF-7016 helyett leftover szál került felhasználásra (barcode=RSM-704, length=2950 mm)
+[2026-08-05T10:01:55.265] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-751, length=2195 mm)
+[2026-08-05T10:01:55.268] ❌ FAILED PIECE — 2464 mm darab nem vágható a 2195 mm rúdra (needed=2466, stock=2195, material=Csőtengely Ø70x6000mm [NP-ROLL70-6000])
+[2026-08-05T10:01:55.301] ⚠️ Anyagvariáns váltás — a(z) NP-T-7016 helyett leftover szál került felhasználásra (barcode=RSM-712, length=3075 mm)
+[2026-08-05T10:01:55.325] ⚠️ Anyagvariáns váltás — a(z) NP-TF-7016 helyett leftover szál került felhasználásra (barcode=RSM-341, length=2400 mm)
+[2026-08-05T10:01:55.353] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-733, length=3016 mm)
+[2026-08-05T10:01:55.381] ⚠️ Anyagvariáns váltás — a(z) NP-CLB helyett leftover szál került felhasználásra (barcode=RSM-389, length=1550 mm)
+[2026-08-05T10:01:55.404] ⚠️ Anyagvariáns váltás — a(z) NP-CZ-7016 helyett leftover szál került felhasználásra (barcode=RSM-703, length=3075 mm)
+[2026-08-05T10:01:55.440] ⚠️ Anyagvariáns váltás — a(z) NP-CL-7016 helyett leftover szál került felhasználásra (barcode=RSM-141, length=1570 mm)
+[2026-08-05T10:01:55.442] ❌ FAILED PIECE — 2497 mm darab nem vágható a 1570 mm rúdra (needed=2500, stock=1570, material=CipzárosLáb [NP-CL-7016])
+[2026-08-05T10:01:55.566] ⚠️ Anyagvariáns váltás — a(z) NP-T-7016 helyett leftover szál került felhasználásra (barcode=RSM-338, length=2450 mm)
+[2026-08-05T10:01:55.601] ⚠️ Anyagvariáns váltás — a(z) NP-BAR22-3000 helyett leftover szál került felhasználásra (barcode=RST-A-696, length=1400 mm)
+[2026-08-05T10:01:55.628] ⚠️ Anyagvariáns váltás — a(z) NP-CLT-7016 helyett leftover szál került felhasználásra (barcode=RSM-142, length=1570 mm)
+[2026-08-05T10:01:55.630] ❌ FAILED PIECE — 2497 mm darab nem vágható a 1570 mm rúdra (needed=2500, stock=1570, material=Lábtakaró [NP-CLT-7016])
+[2026-08-05T10:01:55.649] ⚠️ Anyagvariáns váltás — a(z) NP-TF-7016 helyett leftover szál került felhasználásra (barcode=RSM-713, length=3050 mm)
+[2026-08-05T10:01:55.675] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-738, length=3016 mm)
+[2026-08-05T10:01:55.780] ⚠️ Anyagvariáns váltás — a(z) NP-CL-7016 helyett leftover szál került felhasználásra (barcode=RSM-332, length=1625 mm)
+[2026-08-05T10:01:55.803] ⚠️ Anyagvariáns váltás — a(z) NP-T-7016 helyett leftover szál került felhasználásra (barcode=RSM-254, length=2500 mm)
+[2026-08-05T10:01:55.804] ❌ FAILED PIECE — 2515 mm darab nem vágható a 2500 mm rúdra (needed=2518, stock=2500, material=NaphálóTok [NP-T-7016])
+[2026-08-05T10:01:55.863] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-734, length=3161 mm)
+[2026-08-05T10:01:55.886] ⚠️ Anyagvariáns váltás — a(z) NP-CL-7016 helyett leftover szál került felhasználásra (barcode=RSM-716, length=4150 mm)
+[2026-08-05T10:01:55.912] ⚠️ Anyagvariáns váltás — a(z) NP-T-7016 helyett leftover szál került felhasználásra (barcode=RSM-741, length=3050 mm)
+[2026-08-05T10:01:55.951] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-547, length=2610 mm)
+[2026-08-05T10:01:56.053] ⚠️ Anyagvariáns váltás — a(z) NP-ROLL70-6000 helyett leftover szál került felhasználásra (barcode=RSM-735, length=2695 mm)
+[2026-08-05T10:01:56.280] ⚠️ Anyagvariáns váltás — a(z) NP-BAR12-4000 helyett leftover szál került felhasználásra (barcode=RSM-572, length=1190 mm)
+[2026-08-05T10:01:56.365] ⚠️ Anyagvariáns váltás — a(z) NP-SL-7016 helyett leftover szál került felhasználásra (barcode=RST-A-697, length=3425 mm)
+[2026-08-05T10:01:56.409] 🟢 OPTIMALIZÁCIÓ KÉSZ — idő=1249 ms, rudak=47, darabok=61
 
 ---
 

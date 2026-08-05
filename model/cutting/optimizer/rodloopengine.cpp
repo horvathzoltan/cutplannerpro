@@ -75,108 +75,109 @@ RodStepResult RodLoopEngine::step(
                 int needed = p.info.length_mm + static_cast<int>(kerf_mm);
                 int stockLength = rod.length;   // teljes rúd hossza
                 // 1) Valódi fizikai lehetetlenség: soha nem fér fel
-                if (needed > stockLength) {
+//                if (needed > stockLength)
+//                {
 
-                    p.failed = true;
+//                    p.failed = true;
 
-                    DiscardedPiece dp;
-                    dp.requestId  = p.info.requestId;
-                    dp.materialId = p.materialId;
-                    dp.machineId  = machine.id;
-                    dp.failReason = QString("Nem vágható: darab hosszabb mint a teljes rúd (needed=%1, stock=%2)")
-                                        .arg(needed)
-                                        .arg(stockLength);
-                    dp.pieceId    = p.info.pieceId;
+//                    DiscardedPiece dp;
+//                    dp.requestId  = p.info.requestId;
+//                    dp.materialId = p.materialId;
+//                    dp.machineId  = machine.id;
+//                    dp.failReason = QString("Nem vágható: darab hosszabb mint a teljes rúd (needed=%1, stock=%2)")
+//                                        .arg(needed)
+//                                        .arg(stockLength);
+//                    dp.pieceId    = p.info.pieceId;
 
-                    model.addDiscardedPiece(dp);
+//                    model.addDiscardedPiece(dp);
 
-                    zWarning("❌ FAILED PIECE — " + dp.failReason);
+//                    zWarning("❌ FAILED PIECE — " + dp.failReason);
 
-                    auto* mat = MaterialRegistry::instance().findById(p.materialId);
-                    QString matName = mat ? mat->toDisplay() : "?";
+//                    auto* mat = MaterialRegistry::instance().findById(p.materialId);
+//                    QString matName = mat ? mat->toDisplay() : "?";
 
-                    zEvent(QString("❌ FAILED PIECE — %1 mm darab nem vágható a %2 mm rúdra "
-                                   "(needed=%3, stock=%4, material=%5)")
-                               .arg(p.info.length_mm)
-                               .arg(stockLength)
-                               .arg(needed)
-                               .arg(stockLength)
-                               .arg(matName));
+//                    zEvent(QString("❌ FAILED PIECE:%6 — %1 mm darab nem vágható a %2 mm rúdra "
+//                                   "(needed=%3, stock=%4, material=%5)")
+//                               .arg(p.info.length_mm)
+//                               .arg(stockLength)
+//                               .arg(needed)
+//                               .arg(mat->stockLength_mm)
+//                               .arg(matName).arg(rod.rodId));
 
-                    groupVec.removeFirst();
-                    return RodStepResult::StartNewRod;
-                }
+//                    groupVec.removeFirst();
+//                    return RodStepResult::StartNewRod;
+//                }
 
-                // bool physFail = (needed > remainingLength);
-                // bool dpFail   = (p.info.length_mm > dpLimit);
+                 bool physFail = (needed > remainingLength);
+                 bool dpFail   = (p.info.length_mm > dpLimit);
 
-                // const MaterialMaster* mat2 = MaterialRegistry::instance().findById(p.materialId);
-                // int stockLen = mat2 ? mat2->stockLength_mm : INT_MAX;
-                // bool fitsStock = (p.info.length_mm + static_cast<int>(kerf_mm)) <= stockLen;
+                 const MaterialMaster* mat2 = MaterialRegistry::instance().findById(p.materialId);
+                 int stockLen = mat2 ? mat2->stockLength_mm : INT_MAX;
+                 bool fitsStock = (p.info.length_mm + static_cast<int>(kerf_mm)) <= stockLen;
 
-                // QStringList reasons;
+                 QStringList reasons;
 
-                // if (dpFail) {
-                //     reasons << QString("DP-limit túllépés: darab=%1 mm, dpLimit=%2 mm")
-                //                    .arg(p.info.length_mm)
-                //                    .arg(dpLimit);
-                // }
+                 if (dpFail) {
+                     reasons << QString("DP-limit túllépés: darab=%1 mm, dpLimit=%2 mm")
+                                    .arg(p.info.length_mm)
+                                    .arg(dpLimit);
+                 }
 
-                // if (physFail) {
-                //     reasons << QString("Fizikai túlvágás: darab=%1 mm + kerf=%2 mm > remaining=%3 mm")
-                //                    .arg(p.info.length_mm)
-                //                    .arg(static_cast<int>(kerf_mm))
-                //                    .arg(remainingLength);
-                // }
+                 if (physFail) {
+                     reasons << QString("Fizikai túlvágás: darab=%1 mm + kerf=%2 mm > remaining=%3 mm")
+                                    .arg(p.info.length_mm)
+                                    .arg(static_cast<int>(kerf_mm))
+                                    .arg(remainingLength);
+                 }
 
-                // if (reasons.isEmpty()) {
-                //     reasons << "Ismeretlen okból nem vágható ezen a rúdon";
-                // }
+                 if (reasons.isEmpty()) {
+                     reasons << "Ismeretlen okból nem vágható ezen a rúdon";
+                 }
 
-                // QString reason = reasons.join(" + ");
+                 QString reason = reasons.join(" + ");
 
-                // // ❗❗❗ STOCK-FALLBACK — NEM FAILED, csak új rúd kell
-                // if (fitsStock) {
+                 // ❗❗❗ STOCK-FALLBACK — NEM FAILED, csak új rúd kell
+                 if (fitsStock) {
 
-                //     reason += " (A darab STOCK rúdra vágható.)";
+                     reason += " (A darab STOCK rúdra vágható.)";
 
-                //     // NEM jelöljük failed-nek
-                //     // NEM mentjük DiscardedPiece-be
-                //     // NEM távolítjuk el a groupVec-ből
+                     // NEM jelöljük failed-nek
+                     // NEM mentjük DiscardedPiece-be
+                     // NEM távolítjuk el a groupVec-ből
 
-                //     zEvent("⏩ Átmozgatva új rúdra: " + reason);
+                     zEvent("⏩ Átmozgatva új rúdra: " + reason);
 
-                //     // DP-limit és remainingLength reset az új rúdhoz
-                //     dpLimit = stockLen;
-                //     remainingLength = stockLen;
+                     // DP-limit és remainingLength reset az új rúdhoz
+                     dpLimit = stockLen;
+                     remainingLength = stockLen;
 
-                //     // Új rúd indítása → a darab a következő rúdra kerül
-                //     return RodStepResult::StartNewRod;
-                // }
+                     // Új rúd indítása → a darab a következő rúdra kerül
+                     return RodStepResult::StartNewRod;
+                 }
 
-                // // ❌ VALÓDI FAILED — stock rúdra sem fér fel
-                // reason += " (A darab STOCK rúdra sem vágható.)";
+                 // ❌ VALÓDI FAILED — stock rúdra sem fér fel
+                 reason += " (A darab STOCK rúdra sem vágható.)";
 
-                // p.failed     = true;
-                // p.failReason = reason;
-                //                // + QString(" [rodLength=%1, remaining=%2, stockLen=%3]")
-                //                //       .arg(rod.length)
-                //                //       .arg(remainingLength)
-                //                //       .arg(stockLen);
+                 p.failed     = true;
+                 p.failReason = reason;
+                                // + QString(" [rodLength=%1, remaining=%2, stockLen=%3]")
+                                //       .arg(rod.length)
+                                //       .arg(remainingLength)
+                                //       .arg(stockLen);
 
-                // DiscardedPiece dp;
-                // dp.requestId  = p.info.requestId;
-                // dp.materialId = p.materialId;
-                // dp.machineId  = machine.id;
-                // dp.failReason = p.failReason;
-                // dp.pieceId    = p.info.pieceId;
+                 DiscardedPiece dp;
+                 dp.requestId  = p.info.requestId;
+                 dp.materialId = p.materialId;
+                 dp.machineId  = machine.id;
+                 dp.failReason = p.failReason;
+                 dp.pieceId    = p.info.pieceId;
 
-                // model.addDiscardedPiece(dp);
+                 model.addDiscardedPiece(dp);
 
-                // zEvent("❌ FAILED PIECE — " + p.failReason);
+                 zEvent("❌ FAILED PIECE — " + p.failReason);
 
-                // // Valódi FAILED → töröljük a pendingből
-                // groupVec.removeFirst();
+                 // Valódi FAILED → töröljük a pendingből
+                 groupVec.removeFirst();
 
                 return RodStepResult::StartNewRod;
             }
