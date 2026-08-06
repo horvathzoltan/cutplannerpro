@@ -2457,7 +2457,7 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_2(const MachineCuts& mc,
             //
             double leftoverLen = mc.leftoverInfo.leftover_mm.value(rodKey, 0.0);
 
-            QString rodHeader = QString("Rod %1").arg(rodKey);
+            QString rodHeader = rodKey;//QString("Rod %1").arg(rodKey);
 
             if (leftoverLen > 0.0) {
                 QString hulloTxt = QString("hulló %1 mm").arg(leftoverLen);
