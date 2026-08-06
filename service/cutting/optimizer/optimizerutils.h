@@ -58,11 +58,18 @@ inline PhysicalCutInfo computePhysicalCut(
 inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScoringParams sp) {
     int score = 0;
 
+    // --- Domináns prioritások ---
+    score += pieceCount * 100000;   // 1) több darab → mindig jobb
+    score -= waste * 100;           // 2) kevesebb hulló → mindig jobb
+    score -= leftoverLength;        // 3) rövidebb leftover → mindig jobb
+
+    // --- Finomhangoló bónuszok (megtartjuk a régieket) ---
+
     // 🎯 Alap: darabszám preferálása
-    score += pieceCount * 100;
+    //score += pieceCount * 100;
 
     // 🧹 Hulladék levonása
-    score -= waste;
+    //score -= waste;
 
     // 🥇 Teljes elfogyasztás – pszichológiai bónusz
     if (waste == 0) {
@@ -73,10 +80,6 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
     if (leftoverLength <= sp.scrap_mm && pieceCount == 1) {
         score += 200;
     }
-
-//    if(leftoverLength <= sp.scrap_mm){
-//        score +=700;
-//    }
 
     // 😊 Jó leftover tartomány – „jó érzésű” maradék
     if (leftoverLength >= sp.goodLeftOver_Min_mm &&

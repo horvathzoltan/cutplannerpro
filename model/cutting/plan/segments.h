@@ -94,17 +94,18 @@ public:
 
     //void setLeftoverBarcode(const QString& bc){ _leftoverBarcode = bc; }
 
-    void generateSegments(const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
-                          double kerf_mm, int totalLength_mm){
+    void generateSegments_1(const QVector<Cutting::Piece::PieceWithMaterial>& cuts,
+                          double kerf_mm, int totalLength_mm, double scrap_mm, double waste){
         auto seg1 = Cutting::Segment::SegmentUtils::generateSegments(
             cuts, kerf_mm, totalLength_mm);
 
         setSegments(seg1);
         SetTotalLength_mm(totalLength_mm);
 
+
         // ♻️ leftover barcode generálás
-        double w = waste_mm();
-        if (w >= 300) {
+        //double waste = waste_mm();
+        if (waste >= scrap_mm) {
             int id = SettingsManager::instance().nextLeftoverCounter();
             auto barcode = IdentifierUtils::makeLeftoverId(id);
             //setLeftoverBarcode(barcode);

@@ -5,7 +5,7 @@ addinputdialog:
  - workflow: a next material az mehet le az ok mellé, és a next tétel is
 
 
-optimizer:
+optimizer: FIXED
 
 [2026-08-05T10:01:55.157] ⏳ Optimize(1) run started (heuristic=ByCount)
 [2026-08-05T10:01:55.222] ⚠️ Anyagvariáns váltás — a(z) NP-TF-7016 helyett leftover szál került felhasználásra (barcode=RSM-704, length=2950 mm)

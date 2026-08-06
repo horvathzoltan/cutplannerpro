@@ -110,6 +110,19 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     for (int i = 0; i < mergedView.size(); ++i) {
         const auto& stock = mergedView[i];
 
+        // a legkisebb pending darab + kerf alapján
+        int needed = smallestPending > 0
+                         ? smallestPending + static_cast<int>(kerf_mm)
+                         : 0;
+
+        if (needed > 0 && stock.availableLength_mm < needed) {
+            zInfo(QString("⛔ PATCH#1 — leftover kizárva: needed=%1, rodLen=%2, barcode=%3")
+                      .arg(needed)
+                      .arg(stock.availableLength_mm)
+                      .arg(stock.barcode));
+            continue;
+        }
+
         //zInfo(QString("🔎 Vizsgálat: leftover[%1] — hossz=%2 mm").arg(i).arg(stock.availableLength_mm));
 
         // if (stock.used) {

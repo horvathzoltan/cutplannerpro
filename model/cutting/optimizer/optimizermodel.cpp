@@ -244,7 +244,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
                 addDiscardedPiece(dp);
 
-                zWarning("❌ FAILED PIECE — " + dp.failReason);
+                zWarning("❌ FAILED PIECE_2 — " + dp.failReason);
             }
 
             // töröljük a pendingből
@@ -268,10 +268,11 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
         int rodloopcounter = 0;
         // 2/d. Rod‑loop stop feltételekkel
-        while (true) {
+        while (true)
+        {
             zInfo("ROD LOOP: #" + QString::number(rodloopcounter));
 
-            RodStepResult stepResult = RodLoopEngine::step(
+            RodLoopEngine::RodStepResultModel stepResult = RodLoopEngine::step(
                 groupVec,
                 remainingLength,
                 dpLimit,
@@ -284,7 +285,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 1);
 
-            if (stepResult == RodStepResult::ContinueSameRod) {
+            if (stepResult.rodStepResult == RodLoopEngine::RodStepResult::ContinueSameRod) {
                 // ❗ PATCH: fizikai ellenőrzés — ha remainingLength == rod.length → új rúd kell
                 // if (remainingLength == rod.length) {
                 //     zWarning("⛔ PATCH — fizikai képtelenség: a rúd teljes hosszú, mégis ContinueSameRod jött → új rúd indítása");
@@ -298,12 +299,20 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 continue;
             }
 
-            if (stepResult == RodStepResult::StartNewRod) {
+            if (stepResult.rodStepResult == RodLoopEngine::RodStepResult::StartNewRod) {
                 // ugyanaz, mint a régi `continue` a külső while-ra:
                 break;
             }
 
-            if (stepResult == RodStepResult::StopRod) {
+            if (stepResult.rodStepResult == RodLoopEngine::RodStepResult::StartNewStockRod) {
+                int matId = SettingsManager::instance().nextMaterialCounter();
+                QString barcode = IdentifierUtils::makeMaterialId(matId);
+
+                rod = selectStockRod(stepResult.materialId, rod.rodId, barcode);   // ← csak stock
+                continue;  // új rúd-loop
+            }
+
+            if (stepResult.rodStepResult == RodLoopEngine::RodStepResult::StopRod) {
                 break;
             }
         }// rod-loop vége
@@ -920,7 +929,29 @@ RodInitResult OptimizerModel::initRodForMaterial(
     {
         zInfo("♻️ No reusable leftover fits — falling back to stock.");
 
+        // --- PATCH #2: fizikai ellenőrzés stock fallback előtt ---
+        int needed = groupVec.isEmpty()
+                         ? 0
+                         : groupVec.first().info.length_mm + static_cast<int>(kerf_mm);
+
+        const MaterialMaster* matStock =
+            MaterialRegistry::instance().findById(targetMaterialId);
+
+        int stockLen = matStock ? matStock->stockLength_mm : 0;
+
+        if (needed > stockLen) {
+            zWarning(QString("⛔ PATCH#2 — darab nem fér fel stock rúdra sem: needed=%1, stockLen=%2")
+                         .arg(needed)
+                         .arg(stockLen));
+
+            // Nem indítunk új rudat → visszatérünk FAIL-lel
+            out.ok = false;
+            return out;
+        }
+        // --- PATCH END ---
+
         QSet<QUuid> groupIds = GroupUtils::groupMembers(targetMaterialId);
+
 
         std::optional<SelectedRod> stockRod2 =
             StockFitEngine::pickStockRod2(
@@ -1037,6 +1068,35 @@ RodInitResult OptimizerModel::initRodForMaterial(
     return out;
 }
 
+SelectedRod OptimizerModel::selectStockRod(QUuid materialId, const QString& rodid, const QString& rodBarcode)
+{
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(materialId);
+    if (!mat) {
+        QString msg = QString("❗ selectStockRod — ismeretlen materialId=%1").arg(materialId.toString());
+        zWarning(msg);
+        return SelectedRod(); // üres rúd, de ez ritka
+    }
+
+    SelectedRod rod;
+    rod.materialId = materialId;
+    rod.length     = mat->stockLength_mm;
+    rod.isReusable = false;
+    rod.origin     = RodOrigin::Stock;
+
+    // A stock rúd barcode-ja → ez kerül a cutinstructionsbe
+    rod.barcode    = rodBarcode;   // külső címke
+    rod.rodId      = rodid;          // belső identitás
+
+    rod.entryId    = std::nullopt;   // leftover only
+    rod._parent    = std::nullopt;   // leftover only
+
+    zInfo(QString("📦 STOCK RÚD VÁLASZTVA — material=%1, barcode=%2, length=%3")
+              .arg(mat->name)
+              .arg(rod.barcode)
+              .arg(rod.length));
+
+    return rod;
+}
 
 } //end namespace Optimizer
 } //end namespace Cutting

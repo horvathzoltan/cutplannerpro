@@ -157,6 +157,8 @@ public:
     }
 
 
+    SelectedRod selectLeftoverRod_PhysicalCheck(const Cutting::Piece::PieceWithMaterial &piece, double kerf_mm);
+    SelectedRod selectStockRod(QUuid materialId, const QString& rodid, const QString& rodBarcode);
 private:
 
     bool _useReusableLeftovers = true;

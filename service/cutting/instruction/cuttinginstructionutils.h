@@ -345,6 +345,8 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
                                      ? ci.barcode
                                      : ci.rodId;
 
+        // QString rodIdOrBarcode =  ci.rodId;
+
         int seen = rodSeenCount[rodIdOrBarcode]++;
         int total = rodTotalCount.value(rodIdOrBarcode, 1);
 
@@ -920,6 +922,8 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCuts
             // rod.groupIcon = "🌞";
             // rod.priorityIcon = "🌞";
             //  1) leftover keresése
+
+
             QString rodKey = (ci->source == Cutting::Plan::Source::Reusable)
                                  ? ci->barcode
                                  : ci->rodId;
@@ -928,17 +932,23 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCuts
                 double leftover = leftoverInfo.leftover_mm[rodKey];
                 QString leftoverBc = leftoverInfo.leftoverBarcode.value(rodKey);
 
+
                 rod.parts.append(
-                    {QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
+                    {QString(" | ➨ %2: %1 mm").arg(leftover).arg(leftoverBc),
                      false, false, 0, Qt::AlignRight, false, false, false});
 
+
                 rod.barcode = leftoverBc;
+
+
             }
 
             out.append(rod);
 
+
             // 🔥 leftover felvételi címke generálása
-            if (!rod.barcode.isEmpty() && rod.barcode.toLower() != "selejt") {
+            bool isHasznos = !rod.barcode.isEmpty() && rod.barcode.toLower() != "selejt";
+            if (isHasznos) {
 
                 // double leftover = mc.leftover_mm.value(rodKey);
                 double leftover = leftoverInfo.leftover_mm[rodKey];
@@ -961,14 +971,16 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCuts
 
                 // Sorok
 
-                lo.parts.append({mat->barcode, false, false, 0, Qt::AlignCenter,
+                lo.parts.append({mat->barcode, false, false,
+                                 1, Qt::AlignCenter,
                                  false, false, false});
 
-                lo.parts.append({leftoverBc, false, false, 1, Qt::AlignCenter, false,
+                lo.parts.append({leftoverBc, false, false,
+                                 0, Qt::AlignCenter, false,
                                  false, false});
 
-                lo.parts.append({QString("%1 mm").arg(trimmedLeftover), false, false,
-                                 2, Qt::AlignCenter, false, false, false});
+                lo.parts.append({QString(" | %1 mm").arg(trimmedLeftover), false, false,
+                                 0, Qt::AlignRight, false, false, false});
 
                 // lo.parts.append({
                 //     code128,

@@ -74,7 +74,8 @@ CutResult CutEngine::cutSingle(
 
     int physicalLength = remainingLength;
     //int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
-    p._segments.generateSegments({piece}, kerf_mm, physicalLength);
+    auto mat = MaterialRegistry::instance().findById(rod.materialId);
+    p._segments.generateSegments_1({piece}, kerf_mm, physicalLength, mat?mat->scrap_mm:0.0, waste);
     p._segments.SetTotalLength_mm(physicalLength);
 
     // if(rod.barcode=="1")
@@ -206,7 +207,9 @@ CutResult CutEngine::cutCombo(
 
     //int physicalLength = remainingLength;
     int physicalLength = (rod.origin == RodOrigin::Continuation) ? dpLimit : remainingLength;
-    p._segments.generateSegments(combo, kerf_mm, physicalLength);
+
+    auto mat = MaterialRegistry::instance().findById(rod.materialId);
+    p._segments.generateSegments_1(combo, kerf_mm, physicalLength, mat?mat->scrap_mm:0.0, waste);
     p._segments.SetTotalLength_mm(physicalLength);
 
     p.sourceBarcode = rod.barcode;
@@ -319,7 +322,8 @@ CutResult CutEngine::cutWhole(
 
     // --- Szegmens generálás ---
     int physicalLength = piece.info.length_mm;
-    p._segments.generateSegments({ piece }, 0.0, physicalLength);
+    auto mat = MaterialRegistry::instance().findById(piece.materialId);
+    p._segments.generateSegments_1({ piece }, 0.0, physicalLength, mat?mat->scrap_mm:0.0, 0.0);
     p._segments.SetTotalLength_mm(physicalLength);
 
     // --- ParentInfo ---

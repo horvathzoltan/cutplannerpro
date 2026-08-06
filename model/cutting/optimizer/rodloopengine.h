@@ -10,15 +10,22 @@ namespace Optimizer {
 
 class OptimizerModel; // forward
 
-enum class RodStepResult {
-    ContinueSameRod,   // belső while következő iteráció
-    StartNewRod,       // külső while új rúd
-    StopRod            // finalizeRod + kilépés a rod-loopból
-};
-
 class RodLoopEngine {
 public:
-    static RodStepResult step(
+
+    enum class RodStepResult {
+        ContinueSameRod,   // belső while következő iteráció
+        StartNewRod,       // külső while új rúd
+        StartNewStockRod,  // külső while új stock rúd
+        StopRod            // finalizeRod + kilépés a rod-loopból
+    };
+
+    struct RodStepResultModel {
+        RodStepResult rodStepResult;
+        QUuid materialId; // mi az anyag amit valójában a materiialgroup szerint tudunk vágniu
+    };
+
+    static RodStepResultModel step(
         QVector<Cutting::Piece::PieceWithMaterial>& groupVec,
         int& remainingLength,
         int& dpLimit,
