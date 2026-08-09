@@ -26,7 +26,7 @@ void StorageAuditPresenter::runStorageAudit() {
     auto m = cp->optimizerModel();
 
     if (!m->getResult_PlansRef().isEmpty()) {
-        QVector<Cutting::Plan::CutPlan>& plans = m->getResult_PlansRef();
+        const QVector<Cutting::Plan::CutPlan>& plans = m->getResult_PlansRef();
         AuditUtils::injectPlansIntoAuditRows(plans, &lastAuditRows);
 
         QMap<QUuid, int> pickingMap = AuditUtils::generatePickingMapFromPlans(plans);

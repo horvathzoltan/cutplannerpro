@@ -554,7 +554,7 @@ public:
 
                         zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
                                   .arg(p.info.length_mm)
-                                  .arg(ToldasRoleUtils::toString(p.info.toldasRole))
+                                  .arg(ToldasRoleUtils::toDisplayText(p.info.toldasRole))
                                   .arg(ltxt));
                     }
                     outHandled = true;
@@ -743,7 +743,7 @@ public:
 
                 zInfo(QString("  → piece: len=%1, role=%2, leftover=%3")
                           .arg(p.info.length_mm)
-                          .arg(ToldasRoleUtils::toString(p.info.toldasRole))
+                          .arg(ToldasRoleUtils::toDisplayText(p.info.toldasRole))
                           .arg(ltxt));
             }
 

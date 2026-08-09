@@ -204,3 +204,40 @@ QString FileNameHelper::getMaterialRoleCsvFile() const {
 QString FileNameHelper::getPowderConsumptionCsvFile() const {
     return QDir(_projectPath).filePath("powder_consumption.csv");
 }
+
+QString FileNameHelper::getOptimizationSnapshotFolder() const {
+    return QDir(_projectPath).filePath("optimization_snapshots");
+}
+
+QString FileNameHelper::getNew_OptimizationSnapshotFileName() const {
+    return QStringLiteral("optimization_snapshot_%1.csv").arg(generateTimestamp());
+}
+
+QString FileNameHelper::getNew_OptimizationSnapshotFileName(const QString& cuttingPlanBaseName) const {
+    return QStringLiteral("%1.snapshot_%2.csv")
+    .arg(cuttingPlanBaseName)
+        .arg(generateTimestamp());
+}
+
+QString FileNameHelper::getOptimizationSnapshotFilePath(const QString& fn) const {
+    return combinePath(getOptimizationSnapshotFolder(), fn);
+}
+
+QString FileNameHelper::findLatestSnapshotForCuttingPlan(const QString& cuttingPlanBaseName) const
+{
+    QString folder = getOptimizationSnapshotFolder();
+    QDir dir(folder);
+
+    QStringList candidates;
+    for (const QString& file : dir.entryList(QStringList() << "*.csv", QDir::Files)) {
+        if (file.startsWith(cuttingPlanBaseName + ".snapshot_"))
+            candidates << file;
+    }
+
+    if (candidates.isEmpty())
+        return QString();
+
+    candidates.sort();
+    return dir.filePath(candidates.last());
+}
+

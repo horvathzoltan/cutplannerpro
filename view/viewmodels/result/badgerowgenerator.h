@@ -92,12 +92,10 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                                    .arg(s.length_mm())
                                    //.arg(s.isWaste() ? QString::number(s.length_mm()) : "—")
                                    .arg(parentText)
-                                   .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
-                                        : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
-                                                                                         : "Optimization")
+                                   .arg(Cutting::Plan::SourceUtils::toDisplayText(plan.source))
                                    .arg(plan.optimizationId)
                                    .arg(plan.machineName)
-                                   .arg(Cutting::Plan::statusText(plan.status))
+                                   .arg(Cutting::Plan::StatusUtils::toDisplayText(plan.status))
                                    ;
         if (s.isPiece()) {
             badgeTooltip = QString("Tételszám: %1.\n\n").arg(s.externalReference) + badgeTooltip;

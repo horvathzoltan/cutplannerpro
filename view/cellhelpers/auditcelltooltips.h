@@ -70,7 +70,7 @@ inline QString forSegment(const Cutting::Segment::SegmentModel& s,
                                                                           : "OPT";
     lines << QString("Forrás: %1").arg(sourceText);
     lines << QString("Gép: %1").arg(plan.machineName);
-    lines << QString("Státusz: %1").arg(Cutting::Plan::statusText(plan.status));
+    lines << QString("Státusz: %1").arg(Cutting::Plan::StatusUtils::toDisplayText(plan.status));
 
     // if (s.isWaste()) {
     //     lines << QString("Hulló azonosító: %1").arg(s.barcode().isEmpty() ? "—" : s.barcode());

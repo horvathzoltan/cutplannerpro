@@ -119,7 +119,7 @@ public:
 
                        zInfo(QString("PieceBuilder: APPENDING piece len=%1 role=%2 extRef=%3 side=%4")
                                  .arg(p.info.length_mm)
-                                 .arg(ToldasRoleUtils::toString(p.info.toldasRole))
+                                 .arg(ToldasRoleUtils::toDisplayText(p.info.toldasRole))
                                  .arg(p.info.externalReference)
                                  .arg(HandlerSideUtils::toDisplayText(side)));
 

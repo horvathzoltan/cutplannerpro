@@ -110,7 +110,7 @@ QString CutPlan::toLogEntry(const CuttingMachine& machine) const
 
 
     QString toldasTxt = toldasRole!=ToldasRole::None
-                            ? QString(" [ROLE=%1]").arg(ToldasRoleUtils::toString(toldasRole))
+                            ? QString(" [ROLE=%1]").arg(ToldasRoleUtils::toDisplayText(toldasRole))
                             : "";
 
     return QString("🪚 CutPlan #%1%9 → %2, Rod=%3, gép=%4, kerf=%5 mm\nParent=%8\n%6\nhulladék=%7 mm")

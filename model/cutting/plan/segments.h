@@ -114,6 +114,12 @@ public:
             _leftoverBarcode = "selejt";
         }
     }
+
+    void restoreLeftoverBarcode(const QString& bc)
+    {
+        _leftoverBarcode = bc;
+    }
+
 };
 
 } // endof namespace Plan

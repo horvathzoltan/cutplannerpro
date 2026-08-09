@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
@@ -313,6 +313,12 @@
          <layout class="QVBoxLayout" name="midLayout">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLineEdit" name="lineEdit_prioElemek"/>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_prioSorting"/>
+            </item>
             <item>
              <spacer name="horizontalSpacer_2">
               <property name="orientation">

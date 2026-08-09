@@ -33,6 +33,23 @@ public:
         : QString("%1 (stock)").arg(_barcode);
     }
 
+
+    QString toCsv() const
+    {
+        QString pid = _planId.has_value() ? _planId->toString() : "";
+        return QString("%1;%2").arg(_barcode, pid);
+    }
+
+    static ParentInfo fromCsv(const QString& barcode, const QString& planIdStr)
+    {
+        std::optional<QUuid> pid;
+        if (!planIdStr.isEmpty())
+            pid = QUuid(planIdStr);
+
+        return ParentInfo(barcode, pid);
+    }
+
+
 };
 
 } //namespace Plan

@@ -43,6 +43,7 @@
 
 #include <model/cutting/plan/audit/product_bom_audit_service.h>
 
+#include <cutting/export/cutinstructionservice.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -83,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableRelocationOrder->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     _cuttingPresenter = new CuttingPresenter(this, this);
+    // 🔄 Ha volt cutting plan betöltve a startup során, töltsük be a hozzá tartozó snapshotot
+
     stockPresenter = new StockPresenter(this, this);
 
     connect(stockPresenter, &StockPresenter::highlightLeftover,
@@ -140,9 +143,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableResults->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // 📥 betöltött adatok megjelenítése
-    inputTableManager->refresh_TableFromRegistry();         // Feltölti a tableInput-ot
-    stockTableManager->refresh_TableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
-    leftoverTableManager->refresh_TableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
+    //inputTableManager->refresh_TableFromRegistry();         // Feltölti a tableInput-ot
+    //stockTableManager->refresh_TableFromRegistry();  // Frissíti a tableStock a StockRepository alapján
+    //leftoverTableManager->refresh_TableFromRegistry();  // Feltölti a maradékokat tesztadatokkal
 
     //inputFileName
     QString currentFileName = SettingsManager::instance().cuttingPlanFileName();
@@ -172,6 +175,9 @@ MainWindow::MainWindow(QWidget *parent)
     QtEventUtil::post(this, [this]() {
         restoreGeometry(SettingsManager::instance().windowGeometry());
         ui->mainSplitter->restoreState(SettingsManager::instance().mainSplitterState());
+
+        _cuttingPresenter->refreshAllViews(CuttingPresenter::Refresh::Flags::RequestOnly);              // request alapú frissítés
+        _cuttingPresenter->loadLatestSnapshotForCurrentPlan();
     });
 
     ui->tableInput->setColumnHidden(5, true);   // Tolerance
@@ -253,6 +259,13 @@ MainWindow::MainWindow(QWidget *parent)
                 ui->midBox->setCurrentWidget(ui->tab_4);
                 leftoverTableManager->highlight(id);
             });
+
+
+    ui->comboBox_prioSorting->clear();
+    ui->comboBox_prioSorting->addItem("Méret szerint (desc)", QVariant::fromValue(SortMode::BySize));
+    ui->comboBox_prioSorting->addItem("Anyag szerint", QVariant::fromValue(SortMode::ByMaterial));
+    ui->comboBox_prioSorting->addItem("Workflow sorrend", QVariant::fromValue(SortMode::ByWorkflow));
+
 
     translate();
     zEventINFO("✅ MainWindow inited");
@@ -544,14 +557,15 @@ void MainWindow::handle_btn_OpenRequest_clicked()
         QMessageBox::warning(this, tr("Hiba"), tr("Nem sikerült betölteni a vágási tervet."));
         return;
     }
+    _cuttingPresenter->refreshAllViews(CuttingPresenter::Refresh::Flags::RequestOnly);              // request alapú frissítés
 
     // 3️⃣ Fájlnév mentése a settingsbe
     QString fileName = QFileInfo(filePath).fileName();
     SettingsManager::instance().setCuttingPlanFileName(fileName);
     setInputFileLabel(fileName, filePath);
 
-    // 4️⃣ Táblázat frissítése
-    inputTableManager->refresh_TableFromRegistry(); // Feltölti a tableInput-ot a CuttingPlanRequestRegistry alapján
+    // 5️⃣ Snapshot betöltése (ha van)
+    _cuttingPresenter->loadLatestSnapshotForCurrentPlan();
 }
 
 
@@ -672,7 +686,14 @@ void MainWindow::handle_btn_Optimize_clicked() {
 
 
 void MainWindow::handle_btn_ExportCutPlanSummary_clicked() {
-    _cuttingPresenter->ExportCutPlanSummary();
+    bool ok = CutInstructionService::ExportCutPlanSummary(*_cuttingPresenter->optimizerModel());
+
+    if (!ok)
+        ShowWarningDialog(
+            "Nincs optimalizációs eredmény.\n"
+            "A Summary export nem hajtható végre."
+            );
+    return;
 }
 
 void MainWindow::handle_btn_OptRad_clicked(bool checked)
@@ -731,9 +752,6 @@ void MainWindow::removeRow_StockTable(const QUuid& id)
     stockTableManager->removeRowById(id);
 }
 
-void MainWindow::refresh_StockTable(){
-    stockTableManager->refresh_TableFromRegistry();
-}
 
 // leftovers table
 void MainWindow::addRow_LeftoversTable(const LeftoverStockEntry& v)
@@ -752,9 +770,7 @@ void MainWindow::removeRow_LeftoversTable(const QUuid& id)
 }
 
 
-void MainWindow::refresh_LeftoversTable(){
-    leftoverTableManager->refresh_TableFromRegistry();
-}
+
 
 
 // restults table
@@ -1152,10 +1168,7 @@ void MainWindow::onCompensationChanged(const QUuid& machineId, double newVal) {
 
 }
 
-void MainWindow::refresh_InputTableFromRegistry()
-{
-    inputTableManager->refresh_TableFromRegistry();
-}
+
 
 bool MainWindow::isChkUseLeftoversChecked()
 {
@@ -1268,7 +1281,10 @@ void MainWindow::renderCuttingInstructions(const QVector<MachineCuts>& machineCu
 // }
 
 void MainWindow::handle_btn_GenerateCuttingPlan_clicked() {
-    _cuttingPresenter->GenerateCutInstructions();
+    QVector<QString> prioRefs = getPriorityReferences();
+    SortMode sortMode = selectedSortMode();
+
+    _cuttingPresenter->GenerateCutInstructions(sortMode, prioRefs);
 }
 
 void MainWindow::handle_btn_GenerateKittingPlan_clicked() {
@@ -1277,11 +1293,26 @@ void MainWindow::handle_btn_GenerateKittingPlan_clicked() {
 }
 
 void MainWindow::handle_btn_ExportCutInstruction_clicked() {
-    _cuttingPresenter->ExportCutInstructions();
+    bool ok = CutInstructionService::ExportCutInstructions(
+        _cuttingPresenter->machineCutsList(),
+        *_cuttingPresenter->optimizerModel(),
+        CutInstructionService::ExportMode::Standard);
+
+    if(!ok){
+        ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+    }
 }
 
 void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
-    _cuttingPresenter->ExportCutInstructions_2();
+    //_cuttingPresenter->ExportCutInstructions_2();
+    bool ok = CutInstructionService::ExportCutInstructions(
+        _cuttingPresenter->machineCutsList(),
+        *_cuttingPresenter->optimizerModel(),
+        CutInstructionService::ExportMode::RodDiagram);
+
+    if(!ok){
+        ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+    }
 }
 
 void MainWindow::handle_btn_Painter_clicked(){
@@ -1394,4 +1425,35 @@ void MainWindow::buildStorageTree()
     ui->treeStorage->expandAll();
 }
 
+void MainWindow::refresh_InputTable()
+{
+    inputTableManager->refresh_TableFromRegistry();
+}
+void MainWindow::refresh_StockTable(){
+    stockTableManager->refresh_TableFromRegistry();
+}
+void MainWindow::refresh_LeftoversTable(){
+    leftoverTableManager->refresh_TableFromRegistry();
 
+}
+
+SortMode MainWindow::selectedSortMode() const
+{
+    QVariant v = ui->comboBox_prioSorting->currentData();
+    if (v.isValid())
+        return v.value<SortMode>();
+
+    return SortMode::BySize;   // default
+}
+
+
+QVector<QString> MainWindow::getPriorityReferences() const
+{
+    QString txt = ui->lineEdit_prioElemek->text();
+    QVector<QString> out;
+
+    for (QString part : txt.split(',', Qt::SkipEmptyParts)) {
+        out.append(part.trimmed());
+    }
+    return out;
+}

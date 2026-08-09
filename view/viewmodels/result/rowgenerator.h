@@ -46,9 +46,7 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
                              .arg(plan.rodId)
                              .arg(plan.sourceBarcode.isEmpty() ? "—" : plan.sourceBarcode)
                              .arg(parentText)
-                             .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock"
-                                  : plan.source == Cutting::Plan::Source::Reusable ? "Reusable"
-                                                                                   : "Optimization")
+                             .arg(Cutting::Plan::SourceUtils::toDisplayText(plan.source))
                              .arg(plan.optimizationId);
 
     vm.cells[ResultsTableColumns::RodId] =

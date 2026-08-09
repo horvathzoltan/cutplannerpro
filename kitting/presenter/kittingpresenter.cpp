@@ -20,7 +20,7 @@ void KittingPresenter::GenerateKittingInstructions()
     auto cp = _view->cuttingPresenter();
     auto opmod = cp->optimizerModel();
 
-    QVector<Cutting::Plan::CutPlan> &cutPlans = opmod->getResult_PlansRef();
+    const QVector<Cutting::Plan::CutPlan> &cutPlans = opmod->getResult_PlansRef();
     if (cutPlans.isEmpty()) {
         _view->ShowWarningDialog("Nincs optimalizációs eredmény.\nElőbb futtasd az Optimize műveletet.");
         return;

@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <kitting/presenter/kittingpresenter.h>
@@ -18,6 +17,7 @@
 #include "presenter/storageauditpresenter.h"
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
+#include "cutting/export/sortmode.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -70,7 +70,7 @@ public:
     void switchToCuttingPlanTab();
     void switchToInstructionsPlanTab();
 
-    void refresh_InputTableFromRegistry();
+    void refresh_InputTable();
 
     bool isChkUseLeftoversChecked();
 
@@ -187,5 +187,6 @@ private:
     void ActionConnector_connect(ActionConnectorModel& a);
     void mainToolbarBuilder(ActionConnectorModel& m1);
     void buildStorageTree();
+    SortMode selectedSortMode() const;
+    QVector<QString> getPriorityReferences() const;
 };
-#endif // MAINWINDOW_H

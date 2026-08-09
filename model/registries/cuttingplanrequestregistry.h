@@ -48,4 +48,5 @@ public:
     Cutting::Plan::Request *getLastRequest(const QString &ref);
     QString getFirstReference();
     QVector<Cutting::Plan::Request> findByExternalReference(const QString& ref) const;
+    const Cutting::Plan::Request *findByExtRefAndMaterial(const QString &extRef, const QUuid &materialId) const;
 };

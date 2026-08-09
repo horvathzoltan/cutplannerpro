@@ -17,7 +17,7 @@ enum class CuttingPlanLoadResult {
 class CuttingRequestRepository {
 public:
     /// Betölti a vágási tervet a beállításokból lekért fájlból
-    static CuttingPlanLoadResult tryLoadFromSettings(CuttingPlanRequestRegistry& registry);
+    static CuttingPlanLoadResult tryLoadFromSettings(CuttingPlanRequestRegistry& registry, const QString& fn);
 
     /// Betölti a vágási igényeket a megadott fájlból
     static bool loadFromFile(CuttingPlanRequestRegistry& registry, const QString& filePath);

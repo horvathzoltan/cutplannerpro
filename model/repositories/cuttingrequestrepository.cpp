@@ -18,8 +18,8 @@
 // vágási terv nélkül tudunk létezni - mi hozzuk létre őket és ez nem törzsadat
 
 CuttingPlanLoadResult CuttingRequestRepository::tryLoadFromSettings(
-    CuttingPlanRequestRegistry &registry) {
-    QString fn = SettingsManager::instance().cuttingPlanFileName();
+    CuttingPlanRequestRegistry &registry, const QString& fn) {
+    //QString fn = SettingsManager::instance().cuttingPlanFileName();
 
     if (fn.isEmpty())
         return CuttingPlanLoadResult::NoFileConfigured;

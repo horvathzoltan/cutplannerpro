@@ -15,6 +15,9 @@ message( "TARGET = "$$TARGI )
 
 SOURCES += \
     calculation/lengthcalculator.cpp \
+    cutting/export/cutinstructionservice.cpp \
+    cutting/snapshot/cuttingsnapshotdeserializer.cpp \
+    cutting/snapshot/cuttingsnapshotserializer.cpp \
     kitting/kittingengine.cpp \
     kitting/presenter/kittingpresenter.cpp \
     model/cutting/optimizer/cutengine.cpp \
@@ -141,6 +144,11 @@ SOURCES += \
     view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
+    cutting/export/cutinstructionservice.h \
+    cutting/export/sortmode.h \
+    cutting/snapshot/CuttingSnapshotFormat.h \
+    cutting/snapshot/cuttingsnapshotdeserializer.h \
+    cutting/snapshot/cuttingsnapshotserializer.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
     stock/model/stockentry.h \

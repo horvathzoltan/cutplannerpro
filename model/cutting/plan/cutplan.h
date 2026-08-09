@@ -127,7 +127,7 @@ private:
 
 public:
     void setParent(const ParentInfo& parent) {
-        zInfo("⚠️ CutPlan::setParent WRITE: " + parent.barcode());
+        //zInfo("⚠️ CutPlan::setParent WRITE: " + parent.barcode());
         _parent = parent;
     }
 

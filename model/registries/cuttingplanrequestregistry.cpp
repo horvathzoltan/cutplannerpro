@@ -4,6 +4,7 @@
 #include "settings/settingsmanager.h"
 #include "../repositories/cuttingrequestrepository.h"
 #include <QDebug>
+#include <materials/registry/material_registry.h>
 
 CuttingPlanRequestRegistry& CuttingPlanRequestRegistry::instance() {
     // 🧵 Singleton implementáció: egyetlen példány az egész programban
@@ -136,3 +137,20 @@ QVector<Cutting::Plan::Request> CuttingPlanRequestRegistry::findByExternalRefere
 
     return result;
 }
+
+const Cutting::Plan::Request* CuttingPlanRequestRegistry::findByExtRefAndMaterial(
+    const QString& extRef,
+    const QUuid& materialId) const
+{
+    // auto* mat = MaterialRegistry::instance().findById(materialId);
+    // if (!mat) return nullptr;
+
+    //QString barcode = mat->barcode;
+
+    for (const Cutting::Plan::Request &r : _data)
+        if (r.externalReference == extRef && r.materialId == materialId)
+            return &r;
+
+    return nullptr;
+}
+

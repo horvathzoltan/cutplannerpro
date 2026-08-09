@@ -7,6 +7,9 @@
 
 #include <model/registries/storageregistry.h>
 
+#include <cutting/snapshot/cuttingsnapshotdeserializer.h>
+#include <cutting/snapshot/cuttingsnapshotserializer.h>
+
 #include "cutengine.h"
 #include "cuttypes.h"
 #include "optimizermodel.h"
@@ -38,7 +41,7 @@ namespace Optimizer {
 
 OptimizerModel::OptimizerModel(QObject *parent) : QObject(parent) {}
 
-QVector<Cutting::Plan::CutPlan>& OptimizerModel::getResult_PlansRef() {
+const QVector<Cutting::Plan::CutPlan>& OptimizerModel::getResult_PlansRef() const {
     return _result_plans;
 }
 
@@ -96,7 +99,7 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
             zInfo(QString("     • len=%1 role=%2 src=%3 extRef=%4")
                       .arg(p.info.length_mm)
-                      .arg(ToldasRoleUtils::toString(p.info.toldasRole))
+                      .arg(ToldasRoleUtils::toDisplayText(p.info.toldasRole))
                       .arg(src)
                       .arg(p.info.externalReference));
         }
@@ -1097,6 +1100,45 @@ SelectedRod OptimizerModel::selectStockRod(QUuid materialId, const QString& rodi
 
     return rod;
 }
+
+
+void OptimizerModel::saveSnapshot(const QString& filePath)
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&f);
+
+    CuttingSnapshotSerializer::writeSnapshot(out, _result_plans);
+}
+
+//////////////////////////////////////
+/// \brief OptimizerModel::loadSnapshot
+/// \param filePath
+/// \return
+///
+bool OptimizerModel::loadSnapshot(const QString& filePath)
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
+
+    QTextStream in(&f);
+
+    auto plans = CuttingSnapshotDeserializer::loadSnapshot(in);
+
+    if (plans.isEmpty()){
+        _result_plans.clear();
+        return true;
+    }
+
+    _result_plans = plans;
+
+    //emit snapshotLoaded();
+    return true;
+}
+
 
 } //end namespace Optimizer
 } //end namespace Cutting

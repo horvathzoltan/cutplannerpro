@@ -453,7 +453,7 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 
         // PATCH 13/B — szerepkör megjelenítése
         if (ci.toldasRole == ToldasRole::Main || ci.toldasRole == ToldasRole::Toldat) {
-            pieceLabel += QString(" [%1]").arg(ToldasRoleUtils::toString(ci.toldasRole));
+            pieceLabel += QString(" [%1]").arg(ToldasRoleUtils::toDisplayText(ci.toldasRole));
         }
 
         QString multiplier = "";
@@ -1000,7 +1000,7 @@ inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCuts
 
         if (ci->toldasRole == ToldasRole::Main ||
             ci->toldasRole == ToldasRole::Toldat) {
-            ext += QString(" [%1]").arg(ToldasRoleUtils::toString(ci->toldasRole));
+            ext += QString(" [%1]").arg(ToldasRoleUtils::toDisplayText(ci->toldasRole));
         }
 
         // 🔥💧☁️⏳ prioritás ikon

@@ -33,6 +33,8 @@
 
 #include <paint/repository/powder_consumption_repository.h>
 
+#include <settings/settingsmanager.h>
+
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
@@ -90,7 +92,6 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus powderStatus = initPowderConsumptionRegistry();
     if (!powderStatus.isSuccess())
         return powderStatus;
-
 
     StartupStatus finalStatus = StartupStatus::success();
     finalStatus.addWarnings(ralColorStatus.warnings());
@@ -325,7 +326,8 @@ StartupStatus StartupManager::initReusableStockRegistry() {
 }
 
 StartupStatus StartupManager::initCuttingRequestRegistry() {
-    auto result = CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry::instance());
+    QString planFileName = SettingsManager::instance().cuttingPlanFileName();
+    auto result = CuttingRequestRepository::tryLoadFromSettings(CuttingPlanRequestRegistry::instance(), planFileName);
     //if (!loaded)
     //    return StartupStatus::failure("❌ Nem sikerült betölteni a vágási igényeket a beállított vágási terv fájlból.");
 

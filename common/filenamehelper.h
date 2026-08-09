@@ -45,6 +45,13 @@ public:
     QString getCuttingPlanFolder() const;
     QString getCuttingPlanFilePath(const QString fn) const;
 
+    // optimizer snapshot
+    QString getNew_OptimizationSnapshotFileName() const;
+    QString getNew_OptimizationSnapshotFileName(const QString &cuttingPlanBaseName) const;
+    QString getOptimizationSnapshotFolder() const;
+    QString getOptimizationSnapshotFilePath(const QString& fn) const;
+    QString findLatestSnapshotForCuttingPlan(const QString &cuttingPlanBaseName) const;
+
     //QString getCuttingCsvFile() const; // ✂️ ÚJ
 
     // maradékék stock fájlnév

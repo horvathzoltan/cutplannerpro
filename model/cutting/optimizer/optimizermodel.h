@@ -67,7 +67,7 @@ public:
  *
  * Röviden: ez a "nagy kép", a teljes vágási folyamat terve rudanként.
  */
-    QVector<Cutting::Plan::CutPlan> &getResult_PlansRef();
+    const QVector<Cutting::Plan::CutPlan> &getResult_PlansRef() const;
 
 /**
  * @brief A vágások után keletkezett hulló darabok listáját adja vissza.
@@ -159,6 +159,8 @@ public:
 
     SelectedRod selectLeftoverRod_PhysicalCheck(const Cutting::Piece::PieceWithMaterial &piece, double kerf_mm);
     SelectedRod selectStockRod(QUuid materialId, const QString& rodid, const QString& rodBarcode);
+    bool loadSnapshot(const QString &filePath);
+    void saveSnapshot(const QString &filePath);
 private:
 
     bool _useReusableLeftovers = true;

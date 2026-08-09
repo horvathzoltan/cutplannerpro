@@ -6,7 +6,7 @@
 #include "../model/cutting/optimizer/optimizermodel.h"
 #include "../model/archivedwasteentry.h"
 #include "../model/relocation/relocationinstruction.h"
-//#include "../model/storageaudit/storageauditrow.h"
+#include "cutting/export/sortmode.h"
 
 /*
 Értelmezi és kezeli a felhasználói interakciókat
@@ -72,7 +72,7 @@ public:
     void runOptimization(Cutting::Optimizer::TargetHeuristic h);
 
     // Eredmények lekérése
-    QVector<Cutting::Plan::CutPlan>& getPlansRef();
+    const QVector<Cutting::Plan::CutPlan>& getPlansRef() const;
     QVector<Cutting::Result::ResultModel> getLeftoverResults();
     void finalizePlans();
     void scrapShortLeftovers();
@@ -85,17 +85,19 @@ public:
         const QVector<Cutting::Plan::CutPlan>& cutPlans,
         const QVector<StorageAuditRow>& auditRows);
 
+    const QVector<MachineCuts> machineCutsList() const {return _machineCutsList;}
     //const QVector<StorageAuditRow>& getLastAuditRows() const { return lastAuditRows;}
 
 
     //AuditStateManager* auditStateManager() { return &_auditStateManager;}
 
 
-    void ExportCutPlanSummary();
-    void GenerateCutInstructions();
-    void ExportCutInstructions();
-    void ExportCutInstructions_2();
-    void ExportCutInstructions_Labels(const QString& path, QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2);
+    //void ExportCutPlanSummary();
+    void GenerateCutInstructions(SortMode mode,
+                                 const QVector<QString>& prioRefs);
+    // void ExportCutInstructions();
+    // void ExportCutInstructions_2();
+    // void ExportCutInstructions_Labels(const QString& path, QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2);
 
     //QVector<QString> resolveTargetStorages(const QUuid &rootStorageId);
     void UpdateCompensation(const QUuid &machineId, double newVal);
@@ -106,8 +108,40 @@ public:
 
     //QStringList BOM_audit();
     void update_AllRequestsWithSameReference(const Cutting::Plan::Request &updated);
-    Cutting::Optimizer::OptimizerModel* optimizerModel() { return &_optimizerModel; }
+    const Cutting::Optimizer::OptimizerModel* optimizerModel() const { return &_optimizerModel; }
 
+    void loadLatestSnapshotForCurrentPlan();
+    void saveOptimizationSnapshot();
+
+    class Refresh {
+    public:
+        enum class Flags : uint32_t {
+            None            = 0,
+            InputTable      = 1 << 0,
+            StockTable      = 1 << 1,
+            LeftoversTable  = 1 << 2,
+            ResultsTable    = 1 << 3,
+            SwitchToTab     = 1 << 4,
+
+            RequestOnly     = InputTable | StockTable | LeftoversTable,
+            SnapshotOnly    = ResultsTable | SwitchToTab,
+            All             = RequestOnly | SnapshotOnly
+        };
+
+        // ⭐ Ezek NEM tagfüggvények, hanem friend-ek → nem kapnak implicit this-t
+        friend inline Flags operator|(Flags a, Flags b) {
+            return static_cast<Flags>(
+                static_cast<uint32_t>(a) | static_cast<uint32_t>(b)
+                );
+        }
+
+        friend inline bool hasFlag(Flags flags, Flags flag) {
+            return (static_cast<uint32_t>(flags) & static_cast<uint32_t>(flag)) != 0;
+        }
+    };
+
+
+    void refreshAllViews(Refresh::Flags flags);
 private:
     void applyPatch(Cutting::Plan::Request& target,
                     const Cutting::Plan::Request& updated,

@@ -20,6 +20,9 @@ public:
  * @brief Egy szakasz a vágási tervben (darab, kerf, hulladék)
  */
 
+
+    SegmentModel() = default;
+
     enum class Type {
         Piece,   // ✂️ Kért darab
         Kerf,    // ⚙️ Vágási veszteség
@@ -72,6 +75,20 @@ public:
         if(type == SegmentModel::Type::Kerf)  return "K";
         if(type == SegmentModel::Type::Technical)  return "T";
         return "?";
+    }
+
+    static Type segmentTypeFromPrefix(const QString& prefix)
+    {
+        if (prefix.compare("P", Qt::CaseInsensitive) == 0)
+            return Type::Piece;
+
+        if (prefix.compare("K", Qt::CaseInsensitive) == 0)
+            return Type::Kerf;
+
+        if (prefix.compare("T", Qt::CaseInsensitive) == 0)
+            return Type::Technical;
+
+        return Type::Technical; // fallback
     }
 
     /**

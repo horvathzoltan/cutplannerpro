@@ -24,9 +24,9 @@ struct OptimizationLogger {
             zInfo(QString("   • rodId=%1").arg(plan.rodId));
             zInfo(QString("   • materialName=%1").arg(plan.materialName()));
             zInfo(QString("   • totalKerfLength=%1 mm").arg(plan._segments.kerfInfo().length));
-            zInfo(QString("   • status=%1").arg(statusText(plan.status)));
+            zInfo(QString("   • status=%1").arg(Cutting::Plan::StatusUtils::toDisplayText(plan.status)));
             zInfo(QString("   • Source: %1, sourceBarcode=%2")
-                      .arg(plan.source == Cutting::Plan::Source::Stock ? "Stock" : "Reusable")
+                      .arg(Cutting::Plan::SourceUtils::toDisplayText(plan.source))
                       .arg(plan.sourceBarcode));
 
             // PATCH 9 — ParentInfo audit‑minőségű kiírása
