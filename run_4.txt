@@ -1,9 +1,28 @@
-festési terv:
+snaphot:
+ - betöltéskor a hullók: ha valami nincs meg, mit tegyünk? helyettesítjük, vagy hibaüzenet, vagy figyelmeztetés?
+request:
+ - tételszám kereső. olyan mint a beolvasás, megkeresi azt a fájlt, amiben megvan a tételszám
+és beolvassa, vagy ha többben is szerepel, akkor listát ad
+
+b-terv: mindgí listzát ad, akkor is ha egyelemű, mutat egy preview-et, megrendelés szintűt,
+ és csak a kiválasztottat olvassa be az Ok gombra
+
+cutting:
+ - a vágást lehetne finalizálni:
+ez leszedné stockról azokat a rudakat, amiket felhasznált stockról
+felvenné a hullókat amiket kiszámolt - de honnan tudjuk mit dobtunk el - azt nem kéne felvenni
+törölné a felhasznált hullókat - de honnan tudja, miket nem találtunk meg, és mit használtunk el helyettesítjük
+
+tárhely audit lista:
+ - egy adott tárhely fókusszal kellene auditálni, stockot is és leftovert is
+ - kellene funkció - szemelés gomb? pl ha egy képen több vonalkódot is látunk, mindet be kéne szemelni
+
+festési terv: FIXED
  - (Ehhez a színhez nem kell csavar) - de miért????
  - RAL 7037 FSTR -> FSTR az felület, nem szín - de mégis itt van megadva,
  mert a felületet is a festés alakítja ki
 
-addinputdialog:
+addinputdialog: FIXED
  - ha végigment a bomon, jelezze már valami, hogy kész a tétel adatbevitel
  - dátum: a default az legyen üres, mert megtévesztő ha nem üres
  - ahogy a színre emlékezik, a dátumra is emlékezzen

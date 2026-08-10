@@ -245,8 +245,8 @@ HeaderAuditResult AuditHeaderRules::check(const QVector<Cutting::Plan::Request>&
             "HEAD",
             "surface consistent",
             req.surface == first.surface,
-            SurfaceTypeUtils::toString(first.surface),
-            SurfaceTypeUtils::toString(req.surface)
+            SurfaceTypeUtils::toDisplayText(first.surface),
+            SurfaceTypeUtils::toDisplayText(req.surface)
             );
 
 

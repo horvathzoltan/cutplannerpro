@@ -262,10 +262,27 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     ui->comboBox_prioSorting->clear();
-    ui->comboBox_prioSorting->addItem("Méret szerint (desc)", QVariant::fromValue(SortMode::BySize));
-    ui->comboBox_prioSorting->addItem("Anyag szerint", QVariant::fromValue(SortMode::ByMaterial));
-    ui->comboBox_prioSorting->addItem("Workflow sorrend", QVariant::fromValue(SortMode::ByWorkflow));
+    ui->comboBox_prioSorting->addItem(
+        SortModeUtils::toDisplay(SortMode::BySize), QVariant::fromValue(SortMode::BySize));
+    ui->comboBox_prioSorting->addItem(
+        SortModeUtils::toDisplay(SortMode::ByMaterial), QVariant::fromValue(SortMode::ByMaterial));
+    ui->comboBox_prioSorting->addItem(
+        SortModeUtils::toDisplay(SortMode::ByWorkflow), QVariant::fromValue(SortMode::ByWorkflow));
 
+    SortMode saved = SettingsManager::instance().prioSortMode();
+    int idx = ui->comboBox_prioSorting->findData(QVariant::fromValue(saved));
+    if (idx >= 0)
+        ui->comboBox_prioSorting->setCurrentIndex(idx);
+
+    connect(ui->comboBox_prioSorting,
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
+            [&](int index){
+                QVariant v = ui->comboBox_prioSorting->itemData(index);
+                if (v.isValid()) {
+                    SortMode mode = v.value<SortMode>();
+                    SettingsManager::instance().setPrioSortMode(mode);
+                }
+            });
 
     translate();
     zEventINFO("✅ MainWindow inited");
@@ -462,6 +479,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     // ⭐ Mátrix ablak bezárása
     if (_seriesMatrixView && _seriesMatrixView->isVisible())
         _seriesMatrixView->close();
+
 
     // ✅ Bezárás engedélyezése
     event->accept();

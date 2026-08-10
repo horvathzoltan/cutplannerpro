@@ -297,3 +297,19 @@ int SettingsManager::maxMainOverlength() const {
 void SettingsManager::setMaxMainOverlength(int mm) {
     setValue(SettingsKeys::MaxMainOverlengthMM, mm);
 }
+
+SortMode SettingsManager::prioSortMode() const
+{
+    QString csv = _settings.value(SettingsKeys::PrioSortMode,
+                                  SortModeUtils::toCsv(SortMode::BySize)).toString();
+
+    SortMode mode = SortModeUtils::fromCsv(csv);
+    return mode;
+}
+
+void SettingsManager::setPrioSortMode(SortMode mode)
+{
+    QString csv = SortModeUtils::toCsv(mode);
+
+    _settings.setValue(SettingsKeys::PrioSortMode, csv);
+}

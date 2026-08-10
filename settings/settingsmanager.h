@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../model/cutting/optimizer/targetheuristic.h"
+#include "cutting/export/sortmode.h"
 #include <QSettings>
 
 namespace SettingsKeys {
@@ -42,6 +43,7 @@ const QString ToldasMax = "toldas.max_mm";   // rejtett
 
 const QString MaxMainOverlengthMM = "toldas.maxMainOverlength_mm";   // rejtett
 
+const QString PrioSortMode = "prio_sortMode";
 }
 
 enum class TestMode {
@@ -131,6 +133,10 @@ public:
     //void setManualLeftoverCounter(int value);
     int maxMainOverlength() const;
     void setMaxMainOverlength(int mm);
+
+    SortMode prioSortMode() const;
+    void setPrioSortMode(SortMode mode);
+
 
     static constexpr int printedLineWidth = 75;
     static constexpr int printedPageHeight = 60;

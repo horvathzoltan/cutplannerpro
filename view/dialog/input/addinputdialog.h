@@ -26,7 +26,6 @@ enum class EditMode {
     ItemEdit    // ITEM szerkesztés
 };
 
-
 class AddInputDialog : public QDialog
 {
     Q_OBJECT

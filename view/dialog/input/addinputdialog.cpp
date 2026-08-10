@@ -325,6 +325,35 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             this, &AddInputDialog::onMaterialComboChanged);
 
 
+
+    connect(ui->editOwner, &QLineEdit::textChanged, this, [this](const QString& newOwner){
+
+        QString ref = ui->editReference->text().trimmed();
+        if (ref.isEmpty())
+            return;
+
+        // HEAD mezők a registry-ből
+        HeadFields head = headFromRegistry(ref);
+
+        // Ha a user átírta az owner-t → új HEAD → dátumot ki kell ütni
+        if (newOwner.trimmed() != head.owner.trimmed()) {
+            //ui->editDueDate->setDate(QDate());          // üres
+            //ui->editDueDate->setSpecialValueText("(nincs)");
+            //ui->editDueDate->clear();
+            QDate today = QDate::currentDate();
+
+            ui->editDueDate->setMinimumDate(today);
+            ui->editDueDate->setMaximumDate(today.addYears(1));   // tág határ
+            ui->editDueDate->setSpecialValueText("(nincs)");
+            ui->editDueDate->setDate(today);                        // üres állapot
+
+            return;
+        }
+
+        // Ha visszaírta ugyanazt → HEAD visszatöltése
+        ui->editDueDate->setDate(head.due);
+    });
+
     // ⭐ Induló inicializálás
     QTimer::singleShot(0, this, [this, mode, initial]() {
 
@@ -355,6 +384,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         updateAttributePanel();
 
     });
+
 
     //groupboxAttributes_hide();
 }
@@ -392,7 +422,7 @@ void AddInputDialog::groupboxAttributes_show(){
 
 void AddInputDialog::refreshBom()
 {
-    zInfo("refreshBom() called");
+    //zInfo("refreshBom() called");
 
     {
         QUuid id = _bomModel.lastSuggestedMaterial;
@@ -510,8 +540,70 @@ void AddInputDialog::refreshBom()
     //     }
     // }
 
+    // ⭐ BOM befejezés jelzése
+    bool bomDone = (_bomModel.addedMaterials.size() == _bomModel.bomList.size());
+
+    if (bomDone) {
+        ui->btnNextMaterial->setEnabled(false);
+        ui->btnNextMaterial->setText("✔ Kész");
+        ui->btnNextMaterial->setStyleSheet(
+            "background-color: #4CAF50; color: white; font-weight: bold;"
+            );
+        ui->btnNextMaterial->setToolTip("Minden ajánlott anyag rögzítve");
+    } else {
+        ui->btnNextMaterial->setEnabled(true);
+        ui->btnNextMaterial->setText("↓ Köv. anyag");
+        ui->btnNextMaterial->setStyleSheet("");
+        ui->btnNextMaterial->setToolTip("Következő ajánlott anyag");
+    }
+
 }
 
+// void AddInputDialog::initializeDialog()
+// {
+//     QString ref = ui->editReference->text().trimmed();
+
+//     // Repeat BOM workflow → ugyanazon tételszámon folytatunk
+//     if (ref.isEmpty() && s_lastRepeat && !s_lastExternalRef.isEmpty()) {
+//         ref = s_lastExternalRef;
+//         ui->editReference->setText(ref);
+//     }
+
+//     // Ha nincs tételszám → beíró mód
+//     if (ref.isEmpty()) {
+//         enterReferenceEditMode();
+//         return;
+//     }
+
+//     // ⭐ PATCH: ha új tételszám, de ugyanahhoz az ügyfélhez → HEAD mezők maradjanak
+//     HeadFields prevHead = headFromRegistry(s_lastExternalRef);
+//     HeadFields currHead = headFromRegistry(ref);
+
+//     bool isNextReferenceSameCustomer =
+//         !s_lastExternalRef.isEmpty() &&
+//         ref == computeNextReference() &&
+//         !prevHead.owner.isEmpty() &&
+//         currHead.owner.isEmpty();   // új HEAD, de ugyanahhoz az ügyfélhez
+
+//     if (isNextReferenceSameCustomer) {
+//         // HEAD mezők visszatöltése az előző tételszámból
+//         ui->editOwner->setText(prevHead.owner);
+//         ui->editDueDate->setDate(prevHead.due);
+//         ui->edit_Color->setText(prevHead.color);
+
+//         int ix = ui->comboBox_Surface->findData(prevHead.surfaceCode);
+//         if (ix >= 0)
+//             ui->comboBox_Surface->setCurrentIndex(ix);
+
+//         setSelectedProductTypeId(prevHead.typeId);
+//         setSelectedProductSubtypeId(prevHead.subtypeId);
+//     }
+
+//     // Normál load
+//     loadReference(ref);
+
+//     emit seriesContextChanged(ui->editOwner->text().trimmed(), ref);
+// }
 
 void AddInputDialog::initializeDialog()
 {
@@ -577,7 +669,10 @@ QString AddInputDialog::computeNextReference()
 void AddInputDialog::resetUiForNewReference()
 {
     ui->editOwner->clear();
-    ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    //ui->editDueDate->setDate(QDate::currentDate().addDays(1));
+    ui->editDueDate->setDate(QDate());          // üres
+    ui->editDueDate->setSpecialValueText("");   // ne írjon ki semmit
+
     ui->edit_Color->clear();
     ui->comboBox_Surface->setCurrentIndex(-1);
     ui->editLength->clear();
@@ -1310,14 +1405,24 @@ void AddInputDialog::setProductSubtypeEditable(bool editable)
     }
 }
 
-void AddInputDialog::populateSurfaceCombo() {
+void AddInputDialog::populateSurfaceCombo()
+{
     ui->comboBox_Surface->clear();
-    ui->comboBox_Surface->addItem("Smooth", "SM");
-    ui->comboBox_Surface->addItem("Fine Structure", "FS");
-    ui->comboBox_Surface->addItem("Coarse Structure", "CS");
-    ui->comboBox_Surface->addItem("Matt", "MT");
-    ui->comboBox_Surface->addItem("Glossy", "GL");
-    ui->comboBox_Surface->addItem("Satin", "ST");
+
+    const QList<SurfaceType> all = {
+        SurfaceType::Smooth,
+        SurfaceType::FineStructure,
+        SurfaceType::CoarseStructure,
+        SurfaceType::Matt,
+        SurfaceType::Glossy,
+        SurfaceType::Satin
+    };
+
+    for (SurfaceType st : all) {
+        QString display = SurfaceTypeUtils::toDisplayText(st);
+        QString code    = SurfaceTypeUtils::toCode(st);
+        ui->comboBox_Surface->addItem(display, code);
+    }
 }
 
 
@@ -1349,7 +1454,20 @@ void AddInputDialog::updateColorPreview()
 
     // 3) Szín értelmezése
     QString raw = ui->edit_Color->text().trimmed();
-    NamedColor nc = NamedColor::fromUserInput(raw);
+
+    // 1) Szín + felület szétválasztása
+    auto [colorPart, surfacePart] = SurfaceTypeUtils::extractSurface(raw);
+
+    // 2) Szín értelmezése
+    NamedColor nc = NamedColor::fromUserInput(colorPart);
+
+    // 3) Felület beállítása, ha van
+    if (surfacePart != SurfaceType::Unknown) {
+        auto code = SurfaceTypeUtils::toCode(surfacePart);
+        int ix = ui->comboBox_Surface->findData(code);
+        if (ix >= 0)
+            ui->comboBox_Surface->setCurrentIndex(ix);
+    }
 
     QUuid matId = selectedMaterialId();
     const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
@@ -1457,7 +1575,7 @@ void AddInputDialog::loadReference(const QString& ref)
 
     }else {
         // ⭐ ÚJ TÉTELSZÁM → ajánlott határidő: mai nap
-        ui->editDueDate->setDate(QDate::currentDate());//.addDays(1)
+        //ui->editDueDate->setDate(QDate::currentDate());//.addDays(1)
     }
 
     initializeBomModel(ref);
