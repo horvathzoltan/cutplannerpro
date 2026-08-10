@@ -8,6 +8,7 @@ Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;SM;Length;None;0
 Zárósúly Ø12x4000mm;NP-BAR12-4000;4000;12;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly
 Zárósúly Ø22x3000mm;NP-BAR22-3000;3000;22;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly
 Zárósúly Ø22x4000mm;NP-BAR22-4000;4000;22;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;80170055;;Suly
+Zárósúly Ø20x6000mm;NP-BAR20-6000;6150;20;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;80170055;;Suly
 NaphálóTok;NP-T-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;870;1500;2500;80170156;;Tok
 NaphálóTokFedél;NP-TF-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;895;1500;2500;80170156;;TokFed
 CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170038;;Zaro
@@ -34,8 +35,8 @@ SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;
 CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab
 CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Lab
 Bowden;NP-B-50m;50000;;;Custom;CM2;Steel;;SM;Piece;None;0;0;0;0;0;;;Bowden
-NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
-NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;;;Motor
+NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45S-10/26;;Motor
+NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45R-20;;Motor
 CsuklósHajtókar;NP-HK;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;HajtoElem
 Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1000;;;Tengely
 Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1000;;;Tengely

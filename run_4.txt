@@ -1,9 +1,15 @@
+festési terv:
+ - (Ehhez a színhez nem kell csavar) - de miért????
+ - RAL 7037 FSTR -> FSTR az felület, nem szín - de mégis itt van megadva,
+ mert a felületet is a festés alakítja ki
+
 addinputdialog:
  - ha végigment a bomon, jelezze már valami, hogy kész a tétel adatbevitel
  - dátum: a default az legyen üres, mert megtévesztő ha nem üres
  - ahogy a színre emlékezik, a dátumra is emlékezzen
  - workflow: a next material az mehet le az ok mellé, és a next tétel is
-
+ - ha beírom a színt, nem rendereli ki a mintát, csak ha rögzítem az adatokat
+ - a dátumot nem jegyzi meg, ha a következő tételszámra megyek a gombbal
 
 optimizer: FIXED
 
