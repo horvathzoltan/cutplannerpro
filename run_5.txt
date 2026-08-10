@@ -1,0 +1,168 @@
+Zoltán, ez **nagyon jó irány**, és most már látszik, hogy a vonalkódos workflow **nem csak egy extra funkció**, hanem *össze tudja kötni az egész rendszert*:
+
+- leftover fotók → vonalkódok automatikus felismerése
+- tételszám státuszok → vonalkódos állapotváltás
+- request keresés → vonalkód alapján automatikus megnyitás
+- hulló felvétel → vonalkód alapján automatikus rögzítés
+
+Ez már egy **egységes vonalkód‑vezérelt gyártási rendszer**.
+
+És igen: **meg tudjuk csinálni**, és nem kell hozzá OpenCV.
+
+---
+
+# ⭐ Snapshot: hullók betöltése
+
+Amikor a program indul, beolvassa a leftovereket (hullókat).
+Ha valami hiányzik:
+
+### Opciók:
+- **Figyelmeztetés**
+  → „A leftover #12345 nem található, ellenőrizd a raktárt.”
+
+- **Helyettesítés**
+  → ha van hasonló méretű leftover, automatikusan ajánlhatjuk.
+
+- **Hibaüzenet**
+  → ha kritikus, pl. vágási tervhez kell.
+
+A legjobb: **figyelmeztetés + ajánlás**, nem blokkoljuk a workflow‑t.
+
+---
+
+# ⭐ Request: tételszám kereső
+
+Pontosan úgy működhet, ahogy mondod:
+
+### 1) Tételszám keresés több fájlban
+A program végignézi a request‑fájlokat:
+
+- ha 1 találat → preview → OK → betölt
+- ha több találat → listát ad → preview → kiválasztás → betölt
+
+### 2) Mindig listát ad
+Ez még jobb UX:
+
+- a user látja a megrendelés preview‑t
+- látja a státuszt
+- látja a darabokat
+- látja a hullókat
+- látja a BOM‑ot
+
+Ez a „gyártási dashboard”.
+
+---
+
+# ⭐ Státusz a tételszámok mellé
+
+Ez nagyon fontos.
+
+### Példák:
+- **Új**
+- **Vágás alatt**
+- **Kész**
+- **Címkézve**
+- **Hulló rögzítve**
+- **Kiszállítva**
+
+A státuszváltást **vonalkódhoz kötjük**.
+
+---
+
+# ⭐ Vonalkód a vágási terven
+
+Amikor generáljuk a vágási tervet:
+
+- a fejlécen → tételszám vonalkód
+- az elején → „vágás indítása” vonalkód
+- a végén → „vágás kész” vonalkód
+
+A dolgozó:
+
+- rábök a telefon kamerájával → kész
+- a rendszer automatikusan állapotot vált
+
+Ez ipari standard.
+
+---
+
+# ⭐ A nagy kérdés:
+## „Lehetne‑e olyan vonalkód funkció, ami kitalálja, mit akarunk?”
+
+Igen.
+Ez a **smart barcode dispatcher**.
+
+### A logika:
+
+1. A user beolvas egy vonalkódot.
+2. A rendszer megnézi, milyen típusú:
+   - leftover barcode
+   - tételszám barcode
+   - vágási terv barcode
+   - státusz barcode
+   - anyag barcode
+3. A rendszer automatikusan eldönti, mit kell tenni.
+
+### Példák:
+
+#### 📦 Ha leftover vonalkód:
+- megnyitja a leftover dialogot
+- kitölti a mezőket
+- rögzíti a hullót
+- bezárja
+
+#### 📄 Ha tételszám vonalkód:
+- megnyitja a request preview‑t
+- mutatja a státuszt
+- a user OK → betölt
+
+#### 🔧 Ha „vágás indítása” vonalkód:
+- státusz = „Vágás alatt”
+
+#### ✔ Ha „vágás kész” vonalkód:
+- státusz = „Kész”
+- leftoverek automatikus felvétele (ha akarjuk)
+
+Ez egy **egységes vonalkód‑vezérelt workflow**.
+
+---
+
+# ⭐ Hogyan működik technikailag?
+
+### 1) Vonalkód dispatcher
+Egyetlen belépési pont:
+
+```cpp
+void handleBarcode(const QString& code);
+```
+
+### 2) A dispatcher felismeri a típust:
+
+- prefix alapján
+- hossz alapján
+- regex alapján
+- ZXing metaadat alapján
+
+### 3) A dispatcher meghívja a megfelelő akciót:
+
+- `openLeftoverDialog(code)`
+- `openRequestPreview(code)`
+- `updateStatus(code)`
+- `openMaterialDialog(code)`
+
+### 4) A dialog automatikusan kitöltődik
+### 5) A user csak rányom az OK‑ra
+
+Ez a jövő.
+
+---
+
+# ⭐ Következő lépés
+
+Három irány:
+
+- Vonalkód dispatcher tervezése
+- Tételszám státusz rendszer
+- Leftover fotó feldolgozás
+
+Mondd, melyikbe menjünk bele először.
