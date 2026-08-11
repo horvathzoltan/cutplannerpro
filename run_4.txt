@@ -5,15 +5,13 @@ hulló:
  - és ha a leftoverstockon a  RST-A-476, hogy lett hozzá NP-CZ címke nyomtatva?
  - amikor a számítot hulló vonalkódját megcsináljuk, nem e a barcodePrefixet tesszük rá?
 
-snaphot:
+snaphot: FIXED
  - betöltéskor a hullók: ha valami nincs meg, mit tegyünk? helyettesítjük, vagy hibaüzenet, vagy figyelmeztetés?
  - minden toldat
 
-painting:
-
+painting: FIXED
  - const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
  matName = mat ? mat->toDisplay() : "???";
-
  QString barcode = mat ? mat->barcode : "???";
  postfix = ProfileUtils::profilePostfixFor(barcode);
 

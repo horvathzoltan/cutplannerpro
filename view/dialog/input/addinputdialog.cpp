@@ -790,9 +790,11 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.dueDate = ui->editDueDate->date();
 
-    QString colorName = ui->edit_Color->text().trimmed();
-    //req.color = colorName;
-    req.requiredColor = NamedColor::fromUserInput(colorName);
+    QString raw_colorName = ui->edit_Color->text().trimmed();
+
+    auto [colorPart, surfacePart] = SurfaceTypeUtils::extractSurface(raw_colorName);
+
+    req.requiredColor = NamedColor::fromUserInput(colorPart);
 
     QVariant surfaceCode = ui->comboBox_Surface->currentData();
     if (surfaceCode.isValid())

@@ -2,6 +2,7 @@
 #include "paint_reporter.h"
 #include "common/eventlogger.h"
 #include "model/cutting/plan/audit/naphalo_profile_postfix.h"
+#include "product/utils/material_role_utils.h"
 
 #include <materials/registry/material_registry.h>
 
@@ -39,6 +40,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
 
         out << "";
         out<< QString("SZÍN: %1").arg(colorGroup.color.toString());
+        out<< QString("FELÜLET: %1").arg(SurfaceTypeUtils::toDisplayText(colorGroup.surface));
         out<< "──────────────────────────────────";
 
         // Anyagok ábécé sorrendben
@@ -69,7 +71,9 @@ QString PaintReporter::toText(const PaintPlan& plan)
                 matName = mat ? mat->toDisplay() : "???";
 
                 QString barcode = mat ? mat->barcode : "???";
-                postfix = ProfileUtils::profilePostfixFor(barcode);
+
+                auto role = MaterialRoleUtils::normalizePrefix(barcode);
+                postfix = ProfileUtils::profilePostfixFor(role);
             }
 
             out<<QString("   Anyag: %1").arg(matName);

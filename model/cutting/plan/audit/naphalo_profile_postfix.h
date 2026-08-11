@@ -5,22 +5,25 @@
 
 namespace ProfileUtils
 {
-    static inline QString profilePostfixFor(const QString& barcode)
+    static inline QString profilePostfixFor(const QString& role)
     {
+        if(role.isEmpty())
+            return "";
+
         // TOK
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-T"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-T"))
             return "20 cm";
 
         // TOKFEDÉL
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-TF"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-TF"))
             return "18 cm";
 
         // CIPZÁROS LÁB
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CL"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CL"))
             return "27 cm"; // láb + takaró = 18+9
 
         // SÍNES LÁB
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-SL"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-SL"))
             return "13 cm";
 
         // CIPZÁROS LÁBBETÉT
@@ -29,19 +32,19 @@ namespace ProfileUtils
         //    return "17 cm (betét)";
 
         // CIPZÁROS ZÁRÓ
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CZ"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CZ"))
             return "13 cm";
 
         // SÍNES ZÁRÓ
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-SZ"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-SZ"))
             return "11 cm";
 
         // POFA
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-POF"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-POF"))
             return "10×10 cm";
 
         // TOKFEDÉL CSAVAR
-        if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CSAV"))
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CSAV"))
             return "Ø10 mm";
 
         // Egyéb anyagokhoz nincs postfix

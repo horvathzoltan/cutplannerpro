@@ -129,6 +129,7 @@ QString NamedColor::normalizeRalExtended(const QString& raw) {
 QColor NamedColor::color() const { return m_color; }
 QString NamedColor::name() const { return m_name; }
 QString NamedColor::code() const { return m_code; }
+RalSystem NamedColor::system() const { return m_system; }
 
 // NamedColor NamedColor::fromRal(const QString& ralCode)
 // {

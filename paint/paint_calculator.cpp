@@ -36,15 +36,6 @@ PaintPlan PaintCalculator::buildPlan()
         // --- A CSOPORT ÖSSZES REQUESTJÉNEK FELDOLGOZÁSA ---
         for (const auto& req : list)
         {
-            QString colorCode = req.requiredColor.code();
-            if (colorCode.isEmpty())
-                colorCode = QStringLiteral("Nincs szín megadva");
-
-            auto& colorGroup = plan.byColor[colorCode];
-            colorGroup.color = req.requiredColor;
-            colorGroup.pofaFestheto = false;
-            colorGroup.csavarFestheto = false;
-            // Anyag lekérése
             const MaterialMaster* mat = MaterialRegistry::instance().findById(req.materialId);
 
             // 0) Ha nincs anyag → kihagyjuk
@@ -57,17 +48,54 @@ PaintPlan PaintCalculator::buildPlan()
 
             // 2) Ha a request színe és felülete megegyezik az anyag saját színével → kihagyjuk
             bool sameColor = (req.requiredColor.code() == mat->color.code());
-            //bool sameSurface = (req.surface == mat->surface);
+            bool sameSurface = (req.surface == mat->surface || req.surface == SurfaceType::Unknown);
 
             // if(req.requiredColor.code().contains("9010")){
             //     zInfo("FEHÉR");
             //     }
 
-            // if (sameColor && sameSurface)
-            //     continue;
+            if (sameColor && sameSurface)
+                 continue;
 
-            if (sameColor)
+            //if (sameColor)
+            //    continue;
+
+            QString colorCode;
+
+            NamedColor nc;
+            SurfaceType sf = SurfaceType::Unknown;
+            if(req.requiredColor.system() != RalSystem::Unknown){
+                colorCode = req.requiredColor.code();
+                nc = req.requiredColor;
+            } else{
+                auto [colorPart, surfacePart] = SurfaceTypeUtils::extractSurface(req.requiredColor.code());
+                nc = NamedColor::fromUserInput(colorPart);
+                colorCode = nc.code();
+                sf = surfacePart;
+            }
+
+            if(req.surface != SurfaceType::Unknown){
+                sf = req.surface;
+            }
+
+            if (colorCode.isEmpty()){
+                zInfo("Nincs szín megadva");
                 continue;
+            }
+
+            if (sf == SurfaceType::Unknown){
+                zInfo("Nincs felület megadva"); // ettől még lehet festeni!
+            }
+
+            QString groupCode = (sf != SurfaceType::Unknown)
+                ?colorCode +"_"+ SurfaceTypeUtils::toCode(sf):
+                colorCode;
+
+            auto& colorGroup = plan.byColor[groupCode];
+            colorGroup.color = nc;
+            colorGroup.surface = sf;
+            colorGroup.pofaFestheto = false;
+            colorGroup.csavarFestheto = false;
 
             QString barcode = mat->barcode;
 

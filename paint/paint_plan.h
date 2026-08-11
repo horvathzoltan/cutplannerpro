@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/color/namedcolor.h"
+#include "common/surface/surfacetype.h"
 #include <QHash>
 #include <QUuid>
 
@@ -21,6 +22,7 @@ struct PaintColorGroup {
     NamedColor color;
     QHash<QUuid, PaintMaterialSummary> materials; // key: materialId
 
+    SurfaceType surface;
     // --- TÍPUSONKÉNTI POFA ---
     int cipzarosPofa = 0;
     int sinesPofa = 0;

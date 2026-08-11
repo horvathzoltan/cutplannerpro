@@ -55,7 +55,7 @@ struct Request {
 
     // 🎨 Anyag színe - ebben a színben kéri a megrendelő a terméket (RAL vagy HEX kód)
     NamedColor requiredColor;
-    SurfaceType surface;
+    SurfaceType surface = SurfaceType::Unknown; ///< Felület típusa (matt, fényes, stb.)
     //QString color;
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
@@ -71,9 +71,6 @@ struct Request {
         return attributes.value(key);
     }
 
-    QString getAttributes(){
-
-    }
     /**
      * @brief Ellenőrzi, hogy az igény érvényes-e.
      *

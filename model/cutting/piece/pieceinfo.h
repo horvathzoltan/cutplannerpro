@@ -25,7 +25,7 @@ struct PieceInfo
     QString externalReference;   // ⭐ darab-szintű tételszám (pl. 1444.1/5)
 
     std::optional<QUuid> leftoverEntryId;
-    ToldasRole toldasRole;
+    ToldasRole toldasRole = ToldasRole::None; // 🔧 Toldás szerepkör (Main, Toldat, None)
     bool keepWhole = false;
 };
 

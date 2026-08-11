@@ -13,9 +13,12 @@ namespace ToldasRoleUtils{
 
 inline QString toDisplayText(ToldasRole r){
     switch(r){
-    case ToldasRole::None:   return "Nincs toldás";
-    case ToldasRole::Main:   return "Fődarab";
-    case ToldasRole::Toldat: return "Toldat";
+    case ToldasRole::None:
+        return "Nincs toldás";
+    case ToldasRole::Main:
+        return "Fődarab";
+    case ToldasRole::Toldat:
+        return "Toldat";
     }
     return "Ismeretlen";
 }
