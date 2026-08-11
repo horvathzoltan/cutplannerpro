@@ -1,5 +1,24 @@
+hulló:
+ - natúr szálon:
+ - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
+ - a vonalkódon NP-CZ szerepel - és valóban natúr szálon van, de hogy került oda?
+ - és ha a leftoverstockon a  RST-A-476, hogy lett hozzá NP-CZ címke nyomtatva?
+ - amikor a számítot hulló vonalkódját megcsináljuk, nem e a barcodePrefixet tesszük rá?
+
 snaphot:
  - betöltéskor a hullók: ha valami nincs meg, mit tegyünk? helyettesítjük, vagy hibaüzenet, vagy figyelmeztetés?
+ - minden toldat
+
+painting:
+
+ - const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+ matName = mat ? mat->toDisplay() : "???";
+
+ QString barcode = mat ? mat->barcode : "???";
+ postfix = ProfileUtils::profilePostfixFor(barcode);
+
+
+
 
 request:
  - tételszám kereső. olyan mint a beolvasás, megkeresi azt a fájlt, amiben megvan a tételszám

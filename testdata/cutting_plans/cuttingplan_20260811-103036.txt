@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes
+"158";"ÁrnyékGuru, Győr";2450;2530;2420;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"158";"ÁrnyékGuru, Győr";2450;2530;2445;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"158";"ÁrnyékGuru, Győr";2450;2530;2335;;1;0;1;"RAL 7016";NP-ROLL70-6000;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"158";"ÁrnyékGuru, Győr";2450;2530;2285;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"159";"ÁrnyékGuru, Győr";2450;2530;2420;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"159";"ÁrnyékGuru, Győr";2450;2530;2445;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"159";"ÁrnyékGuru, Győr";2450;2530;2335;;1;1;0;"RAL 7016";NP-ROLL70-6000;Width;false;2026-08-24;NP;CIP;meghajtas=motoros
+"159";"ÁrnyékGuru, Győr";2450;2530;2285;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-08-24;NP;CIP;meghajtas=motoros

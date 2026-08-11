@@ -443,7 +443,7 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         // Toldás ikon (mind MAIN, mind TOLDAT esetén)
         QString toldasIcon = "";
         if (ci.toldasRole == ToldasRole::Main || ci.toldasRole == ToldasRole::Toldat) {
-            toldasIcon = "🧩";   // toldás jelölése
+            toldasIcon = "*";   // toldás jelölése
         }
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
