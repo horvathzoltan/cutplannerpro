@@ -1,3 +1,6 @@
+request
+ - surface nincsen mentve a repoban, és nincsen beolvasva sem
+
 hulló:
  - natúr szálon:
  - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
