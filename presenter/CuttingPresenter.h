@@ -142,6 +142,17 @@ public:
 
 
     void refreshAllViews(Refresh::Flags flags);
+    QHash<QUuid, QVector<QUuid>> collectUsedLeftoversFromPlans();
+    bool isOptimizationAuditRequired(const QVector<QUuid> &usedIds);
+
+    struct OptimizationLeftoverAuditStats {
+        int missing = 0;   // notFoundCount > 0
+        int stale = 0;     // lastSeenAt túl régi
+        int fresh = 0;     // minden rendben
+    };
+
+    QHash<QUuid, OptimizationLeftoverAuditStats> collectOptimizationLeftoverStats(
+        const QHash<QUuid, QVector<QUuid> > &perMachine);
 private:
     void applyPatch(Cutting::Plan::Request& target,
                     const Cutting::Plan::Request& updated,

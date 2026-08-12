@@ -3,7 +3,7 @@
 #include <QTableWidget>
 #include <QWidget>
 
-#include <model/leftoverstockentry.h>
+#include "leftover/model/leftoverstockentry.h"
 #include "stock/model/stockentry.h"
 #include "view/tableutils/RowTracker.h"
 

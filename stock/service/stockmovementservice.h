@@ -1,9 +1,10 @@
 #include "common/logger.h"
+#include "model/movementdata.h"
 #include "presenter/CuttingPresenter.h"
 #include "materials/registry/material_registry.h"
 #include "stock/registry/stockregistry.h"
-#include "model/registries/storageregistry.h"
-#include "stock/service/movementlogger.h"     // MovementLogger::log
+#include "stock/service/movementlogger.h"
+#include "storage/registry/storageregistry.h"
 //#include "model/movementlogmodel.h"    // MovementLogModel
 
 class StockMovementService {

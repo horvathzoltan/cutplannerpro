@@ -313,3 +313,11 @@ void SettingsManager::setPrioSortMode(SortMode mode)
 
     _settings.setValue(SettingsKeys::PrioSortMode, csv);
 }
+
+int SettingsManager::optimizationLeftoverAuditHours() const {
+    return _settings.value(SettingsKeys::OptimizationLeftoverAuditHours, 4).toInt();
+}
+
+void SettingsManager::setOptimizationLeftoverAuditHours(int days) {
+    persist(SettingsKeys::OptimizationLeftoverAuditHours, QString::number(days));
+}

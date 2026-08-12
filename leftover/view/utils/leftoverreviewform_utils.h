@@ -4,7 +4,7 @@
 #include <QPdfWriter>
 #include <QRectF>
 #include <QVector>
-#include <model/leftoverstockentry.h>
+#include "leftover/model/leftoverstockentry.h"
 
 namespace LeftoverReviewFormUtils {
 

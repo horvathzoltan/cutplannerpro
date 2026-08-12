@@ -8,7 +8,7 @@
 #include "model/inventorysnapshot.h"
 #include "common/logger.h"
 
-#include <model/registries/leftoverstockregistry.h>
+#include "leftover/registry/leftoverstockregistry.h"
 
 #include <settings/settingsmanager.h>
 

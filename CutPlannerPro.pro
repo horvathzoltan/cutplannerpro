@@ -20,6 +20,8 @@ SOURCES += \
     cutting/snapshot/cuttingsnapshotserializer.cpp \
     kitting/kittingengine.cpp \
     kitting/presenter/kittingpresenter.cpp \
+    leftover/audit/leftoveraudit.cpp \
+    leftover/view/dialog/leftoverauditdialog.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -35,7 +37,7 @@ SOURCES += \
     paint/presenter/paintpresenter.cpp \
     paint/registry/powder_consumption_registry.cpp \
     paint/repository/powder_consumption_repository.cpp \
-    presenter/leftoverpresenter.cpp \
+    leftover/presenter/leftoverpresenter.cpp \
     stock/presenter/stockpresenter.cpp \
     presenter/storageauditpresenter.cpp \
     product/registry/bom_registry.cpp \
@@ -78,8 +80,8 @@ SOURCES += \
     view/dialog/materialfinder/materialfinderdialog.cpp \
     view/dialog/materialsearch/materialsearchdialog.cpp \
     view/dialog/textviewdialog.cpp \
-    view/dialog/waste/leftoverreviewdialog.cpp \
-    view/dialog/waste/scrapbybarcodedialog.cpp \
+    leftover/view/dialog/leftoverreviewdialog.cpp \
+    leftover/view/dialog/scrapbybarcodedialog.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -93,27 +95,27 @@ SOURCES += \
     model/cutting/plan/request.cpp \
     model/cutting/result/resultmodel.cpp \
     model/identifiableentity.cpp \
-    model/leftoverstockentry.cpp \
+    leftover/model/leftoverstockentry.cpp \
     materials/model/material_type.cpp \
     model/picking/pickingcomparisonresult.cpp \
     model/picking/pickingitem.cpp \
     model/registries/cuttingmachineregistry.cpp \
     model/registries/cuttingplanrequestregistry.cpp \
-    model/registries/leftoverstockregistry.cpp \
+    leftover/registry/leftoverstockregistry.cpp \
     materials/registry/material_group_registry.cpp \
     materials/registry/material_registry.cpp \
     stock/registry/stockregistry.cpp \
-    model/registries/storageregistry.cpp \
+    storage/registry/storageregistry.cpp \
     model/relocation/relocationsourceentry.h \
     model/repositories/cuttingmachinerepository.cpp \
     model/repositories/cuttingrequestrepository.cpp \
-    model/repositories/leftoverstockrepository.cpp \
+    leftover/repository/leftoverstockrepository.cpp \
     materials/repository/material_group_repository.cpp \
     materials/repository/material_repository.cpp \
     stock/repository/stockrepository.cpp \
-    model/repositories/storagerepository.cpp \
+    storage/repository/storagerepository.cpp \
     stock/model/stockentry.cpp \
-    model/storagetype.cpp \
+    storage/model/storagetype.cpp \
     presenter/CuttingPresenter.cpp \
     service/cutting/optimizer/exporter.cpp \
     service/cutting/plan/autosavemanager.cpp \
@@ -122,12 +124,12 @@ SOURCES += \
     service/cutting/segment/segmentutils.cpp \
     service/relocation/relocationplanner.cpp \
     service/relocation/relocationservice.cpp \
-    service/storageaudit/leftoverauditservice.cpp \
+    leftover/audit/leftoverauditservice.cpp \
     service/storageaudit/storageauditservice.cpp \
     view/MainWindow.cpp \
     view/cutanalyticspanel.cpp \
     view/dialog/input/addinputdialog.cpp \
-    view/dialog/waste/addwastedialog.cpp \
+    leftover/view/dialog/addwastedialog.cpp \
     view/dialog/movement/movementdialog.cpp \
     view/dialog/relocation/relocationquantitydialog.cpp \
     stock/view/dialog/addstockdialog.cpp \
@@ -136,12 +138,12 @@ SOURCES += \
     stock/view/dialog/editstoragedialog.cpp \
     view/managers/cuttinginstructiontable_manager.cpp \
     view/managers/inputtable_manager.cpp \
-    view/managers/leftovertable_manager.cpp \
+    leftover/view/managers/leftovertable_manager.cpp \
     view/managers/relocationplantable_manager.cpp \
     view/managers/resultstable_manager.cpp \
     stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
-    view/utils/leftoverreviewform_utils.cpp
+    leftover/view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
     cutting/export/cutinstructionservice.h \
@@ -149,6 +151,8 @@ HEADERS += \
     cutting/snapshot/CuttingSnapshotFormat.h \
     cutting/snapshot/cuttingsnapshotdeserializer.h \
     cutting/snapshot/cuttingsnapshotserializer.h \
+    leftover/audit/leftoveraudit.h \
+    leftover/view/dialog/leftoverauditdialog.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
     stock/model/stockentry.h \
@@ -212,9 +216,9 @@ HEADERS += \
     model/cutting/plan/segments.h \
     model/cutting/plan/tolerance.h \
     model/inventorysnapshot.h \
-    model/leftover/leftoverstatus.h \
-    model/leftover/leftoverstatusutils.h \
-    model/leftover/leftoverutils.h \
+    leftover/leftoverstatus.h \
+    leftover/leftoverstatusutils.h \
+    leftover/leftoverutils.h \
     model/machine/machineutils.h \
     materials/model/cutting_mode.h \
     materials/utils/material_utils.h \
@@ -230,7 +234,7 @@ HEADERS += \
     paint/presenter/paintpresenter.h \
     paint/registry/powder_consumption_registry.h \
     paint/repository/powder_consumption_repository.h \
-    presenter/leftoverpresenter.h \
+    leftover/presenter/leftoverpresenter.h \
     stock/presenter/stockpresenter.h \
     presenter/storageauditpresenter.h \
     product/model/bom_entry.h \
@@ -304,15 +308,15 @@ HEADERS += \
     view/dialog/materialfinder/materialfinderdialog.h \
     view/dialog/materialsearch/materialsearchdialog.h \
     view/dialog/textviewdialog.h \
-    view/dialog/waste/leftoverreviewdialog.h \
-    view/dialog/waste/scrapbybarcodedialog.h \
+    leftover/view/dialog/leftoverreviewdialog.h \
+    leftover/view/dialog/scrapbybarcodedialog.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
     view/tableutils/auditgroupsynchronizer.h \
     view/tableutils/colorutils.h \
     view/tableutils/highlightdelegate.h \
-    view/tableutils/leftoverstyleutils.h \
+    leftover/view/utils/leftoverstyleutils.h \
     view/tableutils/rowid.h \
     view/tableutils/storageaudittable_connector.h \
     view/tableutils/storageaudittable_rowstyler.h \
@@ -359,8 +363,8 @@ HEADERS += \
     view/tableutils/colorlogicutils.h \
     view/tableutils/inputtable_connector.h \
     view/tableutils/inputtable_rowstyler.h \
-    view/tableutils/leftovertable_connector.h \
-    view/tableutils/leftovertable_rowstyler.h \
+    leftover/view/utils/leftovertable_connector.h \
+    leftover/view/utils/leftovertable_rowstyler.h \
     view/tableutils/resulttable_rowstyler.h \
     stock/view/stocktable_connector.h \
     stock/view/stocktable_rowstyler.h \
@@ -369,35 +373,35 @@ HEADERS += \
     model/archivedwasteentry.h \
     model/crosssectionshape.h \
     model/identifiableentity.h \
-    model/leftoverstockentry.h \
+    leftover/model/leftoverstockentry.h \
     model/movementdata.h \
     model/registries/cuttingplanrequestregistry.h \
-    model/registries/leftoverstockregistry.h \
+    leftover/registry/leftoverstockregistry.h \
     materials/registry/material_group_registry.h \
     materials/registry/material_registry.h \
     stock/registry/stockregistry.h \
-    model/registries/storageregistry.h \
+    storage/registry/storageregistry.h \
     model/repositories/cuttingrequestrepository.h \
-    model/repositories/leftoverstockrepository.h \
+    leftover/repository/leftoverstockrepository.h \
     materials/repository/material_group_repository.h \
     materials/repository/material_repository.h \
     stock/repository/stockrepository.h \
-    model/repositories/storagerepository.h \
-    model/storageentry.h \
-    model/storagetype.h \
+    storage/repository/storagerepository.h \
+    storage/model/storageentry.h \
+    storage/model/storagetype.h \
     presenter/CuttingPresenter.h \
     stock/service/movementlogmodel.h \
     service/relocation/relocationplanner.h \
     service/relocation/relocationservice.h \
     stock/service/stockmovementservice.h \
     service/storageaudit/auditutils.h \
-    service/storageaudit/leftoverauditservice.h \
+    leftover/audit/leftoverauditservice.h \
     service/storageaudit/storageauditservice.h \
     view/MainWindow.h \
     view/columnindexes/tablecuttinginstruction_columns.h \
     view/eventloghelpers.h \
     view/managers/cuttinginstructiontable_manager.h \
-    view/utils/leftoverreviewform_utils.h \
+    leftover/view/utils/leftoverreviewform_utils.h \
     view/viewmodels/audit/cellgenerator.h \
     view/viewmodels/audit/rowgenerator.h \
     view/viewmodels/cutting/rowgenerator.h \
@@ -408,7 +412,7 @@ HEADERS += \
     view/columnidexes/relocationplantable_columns.h \
     view/cutanalyticspanel.h \
     view/dialog/input/addinputdialog.h \
-    view/dialog/waste/addwastedialog.h \
+    leftover/view/dialog/addwastedialog.h \
     view/dialog/movement/movementdialog.h \
     view/dialog/relocation/relocationquantitydialog.h \
     stock/view/dialog/addstockdialog.h \
@@ -416,7 +420,7 @@ HEADERS += \
     stock/view/dialog/editquantitydialog.h \
     stock/view/dialog/editstoragedialog.h \
     view/managers/inputtable_manager.h \
-    view/managers/leftovertable_manager.h \
+    leftover/view/managers/leftovertable_manager.h \
     view/managers/relocationplantable_manager.h \
     view/managers/resultstable_manager.h \
     stock/view/stocktable_manager.h \
@@ -430,21 +434,22 @@ HEADERS += \
     view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
+    leftover/view/dialog/leftoverauditdialog.ui \
     settings/settingsdialog.ui \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \
     view/dialog/input/clonerequestdialog.ui \
     view/dialog/materialfinder/MaterialFinderDialog.ui \
     view/dialog/textviewdialog.ui \
-    view/dialog/waste/addwastedialog.ui \
+    leftover/view/dialog/addwastedialog.ui \
     view/dialog/movement/movementdialog.ui \
     view/dialog/relocation/relocationquantitydialog.ui \
     stock/view/dialog/addstockdialog.ui \
     stock/view/dialog/editcommentdialog.ui \
     stock/view/dialog/editquantitydialog.ui \
     stock/view/dialog/editstoragedialog.ui \
-    view/dialog/waste/leftoverreviewdialog.ui \
-    view/dialog/waste/scrapbybarcodedialog.ui
+    leftover/view/dialog/leftoverreviewdialog.ui \
+    leftover/view/dialog/scrapbybarcodedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

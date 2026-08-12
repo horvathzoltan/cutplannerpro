@@ -1,7 +1,7 @@
 #pragma once
 #include "model/cutting/plan/cutplan.h"
 #include "model/cutting/result/resultmodel.h"
-#include "model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 #include <QUuid>
 
 enum class CutResultStatus {

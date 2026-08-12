@@ -2,7 +2,7 @@
 
 #include <QDialog>
 #include <QUuid>
-#include "../../../model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 
 namespace Ui {
 class AddWasteDialog;

@@ -5,7 +5,7 @@
 #include "cuttypes.h"
 #include "optimizermodel.h"
 #include "../piece/piecewithmaterial.h"
-#include "../../leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 
 class ReusableFitEngine {
 public:

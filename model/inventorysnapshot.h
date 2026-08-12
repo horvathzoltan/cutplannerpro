@@ -2,7 +2,7 @@
 
 #include <QVector>
 #include "stock/model/stockentry.h"
-#include "leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 
 /**
  * @brief A készlet pillanatképe (snapshot), amin az optimalizáció dolgozik.

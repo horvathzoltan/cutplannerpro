@@ -193,9 +193,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_Audit">
+             <widget class="QPushButton" name="btn_OptLeftoverAudit">
               <property name="text">
-               <string>Audit</string>
+               <string>Leftover Audit</string>
               </property>
              </widget>
             </item>
@@ -801,6 +801,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_StorageAndMaterialReview">
+              <property name="text">
+               <string>Storage &amp;&amp; Material Review</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btn_ReviewForm">

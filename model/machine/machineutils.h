@@ -8,7 +8,7 @@
 #include "../cutting/cuttingmachine.h"
 #include "../registries/cuttingmachineregistry.h"
 #include "materials/registry/material_registry.h"
-#include "model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 #include "storage/utils/storageutils.h"
 //#include "common/eventlogger.h"
 

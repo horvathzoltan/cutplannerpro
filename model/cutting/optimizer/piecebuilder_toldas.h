@@ -8,7 +8,7 @@
 
 #include <model/cutting/piece/piecewithmaterial.h>
 #include <model/inventorysnapshot.h>
-#include <model/registries/leftoverstockregistry.h>
+#include "leftover/registry/leftoverstockregistry.h"
 
 // NEW: ToldasEngine include
 

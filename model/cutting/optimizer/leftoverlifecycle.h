@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 #include "model/cutting/plan/cutplan.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
 #include "selectedrod.h"

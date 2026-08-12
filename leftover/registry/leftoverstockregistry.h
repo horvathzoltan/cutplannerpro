@@ -2,7 +2,7 @@
 
 #include <QVector>
 #include <QUuid>
-#include "../leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 
 class LeftoverStockRegistry {
 private:

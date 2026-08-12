@@ -1,12 +1,11 @@
 #pragma once
 
+#include <QMap>
+
 #include "../../common/logger.h"
 #include "../../model/cutting/plan/cutplan.h"
 #include "../../model/relocation/relocationinstruction.h"
-
-#include <QMap>
-
-#include "../../model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 
 namespace RelocationPlanner {
 

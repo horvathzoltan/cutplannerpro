@@ -1,8 +1,8 @@
 #pragma once
+#include "view/tableutils/colorlogicutils.h"
 #include <QTableWidget>
 #include <QColor>
 #include <QDateTime>
-#include "colorlogicutils.h"
 
 namespace LeftoverStyleUtils {
 

@@ -7,8 +7,8 @@
 
 #include "materials/model/material_master.h"
 //#include "model/cutting/result/cutresult.h"
-#include "cutting/result/leftoversource.h"
-#include "model/leftover/leftoverstatus.h"
+#include "model/cutting/result/leftoversource.h"
+#include "leftover/leftoverstatus.h"
 #include <QDebug>
 
 #include <model/cutting/plan/parentinfo.h>

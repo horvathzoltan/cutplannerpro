@@ -1,8 +1,8 @@
 // movementlogger.h
 #pragma once
 
-#include "movementlogmodel.h"
 #include "common/filenamehelper.h"
+#include "movementlogmodel.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDate>

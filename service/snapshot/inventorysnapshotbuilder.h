@@ -2,7 +2,7 @@
 
 #include "../../model/inventorysnapshot.h"
 //#include "../../model/registries/cuttingplanrequestregistry.h"
-#include "../../model/registries/leftoverstockregistry.h"
+#include "leftover/registry/leftoverstockregistry.h"
 #include "stock/registry/stockregistry.h"
 
 //#include "../../model/cutting/plan/request.h"

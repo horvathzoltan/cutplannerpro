@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QString>
-#include "identifiableentity.h"
+#include "model/identifiableentity.h"
 #include "storagetype.h"
 
 

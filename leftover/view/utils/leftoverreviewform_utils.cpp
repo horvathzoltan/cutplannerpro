@@ -1,6 +1,6 @@
 #include "leftoverreviewform_utils.h"
 #include <QFontMetrics>
-#include <model/registries/storageregistry.h>
+#include "storage/registry/storageregistry.h"
 #include "common/barcodepainter.h"   // ahol a BarcodePainter namespace van
 
 namespace LeftoverReviewFormUtils {

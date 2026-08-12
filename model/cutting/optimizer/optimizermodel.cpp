@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
-#include <model/registries/storageregistry.h>
+#include "storage/registry/storageregistry.h"
 
 #include <cutting/snapshot/cuttingsnapshotdeserializer.h>
 #include <cutting/snapshot/cuttingsnapshotserializer.h>

@@ -5,7 +5,7 @@
 #include <view/tableutils/RowTracker.h>
 //#include "model/cutresult.h"
 //#include "../tableutils/rowid.h"
-#include "../../model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 
 /// ♻️ Hullók (maradékok) táblájának kezelése  (vágás utáni maradékanyagok)
 class LeftoverTableManager : public QObject {  // 🔧 QObject öröklés!

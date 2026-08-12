@@ -4,8 +4,8 @@
 
 #include <materials/registry/material_registry.h>
 
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/storageregistry.h>
+#include "leftover/registry//leftoverstockregistry.h"
+#include "storage/registry/storageregistry.h"
 #include <view/MainWindow.h>
 
 StockPresenter::StockPresenter(MainWindow* view, QObject* parent)

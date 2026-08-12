@@ -1,7 +1,7 @@
 #pragma once
 
 #include "materials/view/material_row_styler.h"
-#include "../../model/leftoverstockentry.h"
+#include "leftover/model/leftoverstockentry.h"
 #include "../managers/leftovertable_manager.h"
 #include "view/tableutils/colorlogicutils.h"
 #include <model/registries/cuttingmachineregistry.h>

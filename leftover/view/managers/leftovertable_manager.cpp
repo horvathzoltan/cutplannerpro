@@ -1,20 +1,19 @@
-#include "leftovertable_manager.h"
-#include "../tableutils/tableutils.h"
-#include "common/eventlogger.h"
 //#include "materials/utils/material_utils.h"
 //#include "model/material/materialgroup_utils.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
-#include "../tableutils/leftovertable_rowstyler.h"
-#include "../../model/registries/leftoverstockregistry.h"
-#include "../../model/registries/storageregistry.h"
+#include "leftover/view/utils/leftovertable_rowstyler.h"
+#include "common/eventlogger.h"
+#include "leftover/registry/leftoverstockregistry.h"
+#include "storage/registry/storageregistry.h"
 #include "materials/registry/material_registry.h"
-#include "model/leftover/leftoverstatusutils.h"
-#include "model/leftover/leftoverutils.h"
+#include "leftover/leftoverstatusutils.h"
+#include "leftover/leftoverutils.h"
 #include "storage/utils/storageutils.h"
-#include "view/tableutils/leftoverstyleutils.h"
-#include <view/dialog/waste/scrapbybarcodedialog.h>
+#include "leftover/view/utils/leftoverstyleutils.h"
+#include "view/tableutils/tableutils.h"
+#include "leftover/view/dialog/scrapbybarcodedialog.h"
 
 LeftoverTableManager::LeftoverTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), table(table), parent(parent)

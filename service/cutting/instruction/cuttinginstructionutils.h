@@ -22,7 +22,7 @@
 #include "product/utils/subtype_utils.h"
 #include "settings/settingsmanager.h"
 
-#include <model/registries/leftoverstockregistry.h>
+#include "leftover/registry/leftoverstockregistry.h"
 
 
 namespace CuttingInstructionUtils {

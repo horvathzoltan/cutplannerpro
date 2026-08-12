@@ -4,7 +4,7 @@
 #include <QUuid>
 #include <QMap>
 //#include <optional>
-#include "../storageentry.h"
+#include "storage/model/storageentry.h"
 
 class StorageRegistry {
 private:

@@ -2,10 +2,10 @@
 
 #include <QVector>
 #include <materials/registry/material_registry.h>
-#include <model/leftoverstockentry.h>
+#include "leftover/model/leftoverstockentry.h"
 #include "../../../common/logger.h"
 //#include "model/registries/materialregistry.h"
-#include "model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 
 namespace Cutting {
 namespace Optimizer {

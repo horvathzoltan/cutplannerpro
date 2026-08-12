@@ -5,7 +5,7 @@
 #include "../../common/filenamehelper.h"
 #include "../registries/cuttingmachineregistry.h"
 #include <QDebug>
-#include "../registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 
 // --- Stage 1: Convert ---
 

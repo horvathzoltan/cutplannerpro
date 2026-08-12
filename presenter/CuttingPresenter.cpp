@@ -12,7 +12,7 @@
 #include "../model/storageaudit/storageauditentry.h"
 #include "../service/cutting/result/archivedwasteutils.h"
 #include "../model/registries/cuttingplanrequestregistry.h"
-#include "../model/registries/leftoverstockregistry.h"
+#include "leftover/registry/leftoverstockregistry.h"
 #include "stock/registry/stockregistry.h"
 #include "../service/cutting/optimizer/exporter.h"
 #include "../common/filenamehelper.h"
@@ -22,7 +22,6 @@
 #include "../service/cutting/optimizer/optimizationlogger.h"
 #include "../service/cutting/optimizer/optimizationrunner.h"
 #include "../service/cutting/optimizer/optimizationviewupdater.h"
-#include "../service/snapshot/inventorysnapshotbuilder.h"
 #include "../service/snapshot/requestsnapshotbuilder.h"
 #include "materials/utils/material_group_utils.h"
 #include "service/cutting/instruction/cuttinginstructionutils.h"
@@ -30,6 +29,8 @@
 #include <service/cutting/summary/cutplansummarybuilder.h>
 
 #include <cutting/export/cutinstructionservice.h>
+
+#include <service/snapshot/inventorysnapshotbuilder.h>
 //#include <model/registries/cuttingmachineregistry.h>
 //#include <model/repositories/cuttingrequestrepository.h>
 //#include <model/cutting/plan/audit/naphalo_audit_types.h>
@@ -1050,3 +1051,101 @@ void CuttingPresenter::refreshAllViews(Refresh::Flags flags)
 //     zInfo(oklog.arg(QDir::toNativeSeparators(path)));
 //     zEvent(oklog.arg(QDir::toNativeSeparators(path)));
 // }
+
+
+QHash<QUuid, QVector<QUuid>> CuttingPresenter::collectUsedLeftoversFromPlans()
+{
+    const auto& cutPlans = _optimizerModel.getResult_PlansRef();
+
+    QHash<QUuid, QSet<QUuid>> tmp;   // duplikációk kiszűrése gépenként
+
+    for (const auto& plan : cutPlans) {
+
+        // Csak reusable hulló érdekes
+        if (plan.source == Cutting::Plan::Source::Reusable &&
+            !plan.sourceBarcode.isEmpty())
+        {
+            auto entryOpt =
+                LeftoverStockRegistry::instance().findByBarcode(plan.sourceBarcode);
+
+            if (entryOpt) {
+                QUuid machineId = plan.machineId;
+                tmp[machineId].insert(entryOpt->entryId);
+            }
+        }
+    }
+
+    // QSet → QVector konverzió
+    QHash<QUuid, QVector<QUuid>> result;
+    for (auto it = tmp.begin(); it != tmp.end(); ++it) {
+        result[it.key()] = it.value().values().toVector();
+    }
+
+    return result;
+}
+
+bool CuttingPresenter::isOptimizationAuditRequired(const QVector<QUuid>& usedIds)
+{
+    int hours = SettingsManager::instance().optimizationLeftoverAuditHours();
+    QDateTime now = QDateTime::currentDateTime();
+
+    for (const auto& id : usedIds) {
+
+        auto entryOpt = LeftoverStockRegistry::instance().findById(id);
+        if (!entryOpt)
+            return true; // eltűnt → audit kell
+
+        const auto& e = *entryOpt;
+
+        bool tooOld = e.lastSeenAt < now.addSecs(-hours * 3600);
+        bool lost   = e.notFoundCount > 0;
+
+        if (tooOld || lost)
+            return true;
+    }
+
+    return false; // minden friss → nem kell audit
+}
+
+QHash<QUuid, CuttingPresenter::OptimizationLeftoverAuditStats>
+CuttingPresenter::collectOptimizationLeftoverStats(
+    const QHash<QUuid, QVector<QUuid>>& perMachine)
+{
+    QHash<QUuid, OptimizationLeftoverAuditStats> stats;
+
+    int hours = SettingsManager::instance().optimizationLeftoverAuditHours();
+    QDateTime now = QDateTime::currentDateTime();
+
+    for (auto it = perMachine.begin(); it != perMachine.end(); ++it) {
+
+        QUuid machineId = it.key();
+        const QVector<QUuid>& ids = it.value();
+
+        OptimizationLeftoverAuditStats s;
+
+        for (const auto& id : ids) {
+
+            auto entryOpt = LeftoverStockRegistry::instance().findById(id);
+            if (!entryOpt) {
+                s.missing++;
+                continue;
+            }
+
+            const auto& e = *entryOpt;
+
+            bool isMissing = (e.notFoundCount > 0);
+            bool isStale   = (e.lastSeenAt < now.addSecs(-hours * 3600));
+
+            if (isMissing)
+                s.missing++;
+            else if (isStale)
+                s.stale++;
+            else
+                s.fresh++;
+        }
+
+        stats[machineId] = s;
+    }
+
+    return stats;
+}

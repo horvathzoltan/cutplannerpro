@@ -9,9 +9,9 @@
 #include "materials/repository/material_group_repository.h"
 #include "stock/registry/stockregistry.h"
 #include "../../model/repositories/cuttingrequestrepository.h"
-#include "../../model/repositories/leftoverstockrepository.h"
+#include "leftover/repository/leftoverstockrepository.h"
 #include "stock/repository/stockrepository.h"
-#include "../../model/repositories/storagerepository.h"
+#include "storage/repository/storagerepository.h"
 
 #include <QSet>
 

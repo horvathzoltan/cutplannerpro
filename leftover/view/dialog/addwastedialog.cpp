@@ -7,8 +7,8 @@
 #include <QMessageBox>
 #include <common/identifierutils.h>
 #include "settings/settingsmanager.h"
-#include <model/registries/leftoverstockregistry.h>
-#include <model/registries/storageregistry.h>
+#include "leftover/registry/leftoverstockregistry.h"
+#include "storage/registry/storageregistry.h"
 
 QUuid AddWasteDialog::s_lastMaterialId;
 int   AddWasteDialog::s_lastLength = 0;

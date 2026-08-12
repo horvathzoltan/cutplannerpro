@@ -4,7 +4,7 @@
 
 #include "materials/registry/material_registry.h"
 #include "stock/registry/stockregistry.h"
-#include "../model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 
 
 namespace MovementDataHelper {

@@ -3,7 +3,7 @@
 #include "model/cutting/result/resultmodel.h"
 #include "service/cutting/optimizer/optimizerutils.h"
 
-#include <model/registries/leftoverstockregistry.h>
+#include "leftover/registry//leftoverstockregistry.h"
 
 CutResult CutEngine::cutSingle(
     const Cutting::Piece::PieceWithMaterial& piece,

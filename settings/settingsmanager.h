@@ -36,14 +36,15 @@ inline constexpr auto MaterialFinderRange = "material_finder_range_mm";
 
 inline constexpr auto LeftoverAgeThresholdDays = "leftover_age_threshold_days";
 
-const QString ToldasSafetyMargin = "toldas.safety_margin_mm";
-const QString ToldasMainShortfall = "toldas.max_main_shortfall_mm";
-const QString ToldasMin = "toldas.min_mm";   // rejtett
-const QString ToldasMax = "toldas.max_mm";   // rejtett
+inline constexpr auto ToldasSafetyMargin = "toldas.safety_margin_mm";
+inline constexpr auto ToldasMainShortfall = "toldas.max_main_shortfall_mm";
+inline constexpr auto ToldasMin = "toldas.min_mm";   // rejtett
+inline constexpr auto ToldasMax = "toldas.max_mm";   // rejtett
 
-const QString MaxMainOverlengthMM = "toldas.maxMainOverlength_mm";   // rejtett
+inline constexpr auto MaxMainOverlengthMM = "toldas.maxMainOverlength_mm";   // rejtett
 
-const QString PrioSortMode = "prio_sortMode";
+inline constexpr auto PrioSortMode = "prio_sortMode";
+inline constexpr auto OptimizationLeftoverAuditHours = "optimization_leftover_audit_hours";
 }
 
 enum class TestMode {
@@ -107,6 +108,9 @@ public:
 
     int leftoverAgeThresholdDays() const;
     void setLeftoverAgeThresholdDays(int days);
+
+    int optimizationLeftoverAuditHours() const;
+    void setOptimizationLeftoverAuditHours(int days);
 
     int lastActiveTab() const;
     void setLastActiveTab(int ix);

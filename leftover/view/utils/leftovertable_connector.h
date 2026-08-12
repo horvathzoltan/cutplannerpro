@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../MainWindow.h"
-#include "../dialog/waste/addwastedialog.h"
+#include "view/MainWindow.h"
+#include "leftover/view/dialog/addwastedialog.h"
 #include "stock/view/dialog/editstoragedialog.h"
-#include "../../model/registries/leftoverstockregistry.h"
-#include "../../presenter/CuttingPresenter.h"
+#include "leftover/registry/leftoverstockregistry.h"
+#include "presenter/CuttingPresenter.h"
 #include "common/eventlogger.h"
 
 namespace LeftoverTableConnector {

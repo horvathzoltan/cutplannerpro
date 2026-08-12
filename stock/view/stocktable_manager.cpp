@@ -8,11 +8,11 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include "stock/registry/stockregistry.h"
-#include "../../model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 #include "storage/utils/storageutils.h"
-#include "view/tableutils/leftoverstyleutils.h"
+#include "leftover/view/utils/leftoverstyleutils.h"
 #include "view/tableutils/tableutils.h"
-#include <model/registries/leftoverstockregistry.h>
+#include "leftover/registry/leftoverstockregistry.h"
 
 StockTableManager::StockTableManager(QTableWidget* table, QWidget* parent)
     : QObject(parent), _table(table), _parent(parent)

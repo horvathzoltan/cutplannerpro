@@ -9,14 +9,14 @@
 #include "../plan/cutplan.h"
 #include "../result/resultmodel.h"
 #include "../plan/request.h"
-#include "../../leftoverstockentry.h"
 //#include "../../stockentry.h"
 #include "../cuttingmachine.h"
-#include "../../inventorysnapshot.h"
-#include "cuttypes.h"
 #include "fitengine.h"
+#include "leftover/model/leftoverstockentry.h"
 #include "model/cutting/instruction/cutinstruction.h"
 #include "discardedpiece.h"
+#include "model/cutting/optimizer/cuttypes.h"
+#include "model/inventorysnapshot.h"
 #include "selectedrod.h"
 
 

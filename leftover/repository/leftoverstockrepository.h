@@ -2,8 +2,8 @@
 
 #include <QVector>
 #include <QUuid>
-#include "../leftoverstockentry.h"
-#include "../registries/leftoverstockregistry.h"
+#include "leftover/model/leftoverstockentry.h"
+#include "leftover/registry/leftoverstockregistry.h"
 #include "../../common/csvimporter.h"
 
 class LeftoverStockRepository {

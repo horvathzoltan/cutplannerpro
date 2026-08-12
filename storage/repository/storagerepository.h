@@ -2,8 +2,8 @@
 
 #include <QString>
 #include <QVector>
-#include "../storageentry.h"
-#include "../registries/storageregistry.h"
+#include "storage/model/storageentry.h"
+#include "storage/registry/storageregistry.h"
 
 class StorageRepository {
 public:

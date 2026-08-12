@@ -3,7 +3,7 @@
 #include <QMainWindow>
 #include <kitting/presenter/kittingpresenter.h>
 #include "managers/inputtable_manager.h"
-#include "managers/leftovertable_manager.h"
+#include "leftover/view/managers/leftovertable_manager.h"
 #include "managers/resultstable_manager.h"
 #include "stock/view/stocktable_manager.h"
 #include "../model/storageaudit/storageauditentry.h"
@@ -13,7 +13,7 @@
 #include "managers/storageaudittable_manager.h"
 #include "paint/presenter/paintpresenter.h"
 #include "stock/presenter/stockpresenter.h"
-#include "presenter/leftoverpresenter.h"
+#include "leftover/presenter/leftoverpresenter.h"
 #include "presenter/storageauditpresenter.h"
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
@@ -125,7 +125,12 @@ private slots:
 
     void onSeriesMatrixClosed();
 
+    // Review Formok
     void handle_btn_ReviewForm_clicked();
+    void handle_btn_StorageAndMaterialReview_clicked();
+    void handle_btn_OptLeftoverAudit_clicked();
+
+    // Review funkció - visszaolvasás
     void handle_btn_Review_clicked();
 
 private:

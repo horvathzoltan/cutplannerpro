@@ -1,11 +1,7 @@
-
 #include "materials/registry/material_registry.h"
-
 #include "materials/utils/material_group_utils.h"
-
 #include "stockentry.h"
-
-#include <model/registries/storageregistry.h>
+#include "storage/registry/storageregistry.h"
 
 const MaterialMaster* StockEntry::master() const {
     if (materialId.isNull())

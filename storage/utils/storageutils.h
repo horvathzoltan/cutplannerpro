@@ -1,5 +1,5 @@
 #pragma once
-#include "model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 #include <QString>
 #include <QStringList>
 #include <QUuid>

@@ -1,6 +1,6 @@
 #include "storagerepository.h"
-#include "../storagetype.h"
-#include "../registries/storageregistry.h"
+#include "storage/model/storagetype.h"
+#include "storage/registry/storageregistry.h"
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>

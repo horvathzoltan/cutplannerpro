@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "leftover/view/dialog/leftoverauditdialog.h"
 #include "service/relocation/relocationplanner.h"
 #include "settings/settingsdialog.h"
 #include "tableutils/highlightdelegate.h"
@@ -20,7 +21,7 @@
 
 #include "../common/filenamehelper.h"
 #include "settings/settingsmanager.h"
-#include "tableutils/leftovertable_connector.h"
+#include "leftover/view/utils/leftovertable_connector.h"
 #include "tableutils/inputtable_connector.h"
 #include "stock/view/stocktable_connector.h"
 #include "../common/qteventutil.h"
@@ -44,6 +45,8 @@
 #include <model/cutting/plan/audit/product_bom_audit_service.h>
 
 #include <cutting/export/cutinstructionservice.h>
+
+#include <model/registries/cuttingmachineregistry.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -371,6 +374,12 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_ReviewForm, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ReviewForm_clicked);
+
+    connect(ui->btn_StorageAndMaterialReview, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_StorageAndMaterialReview_clicked);
+
+    connect(ui->btn_OptLeftoverAudit, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_OptLeftoverAudit_clicked);
 
     connect(ui->btn_Review, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Review_clicked);
@@ -1349,6 +1358,74 @@ void MainWindow::handle_btn_BOMaudit_clicked(){
 void MainWindow::handle_btn_ReviewForm_clicked(){
     _leftoverPresenter->ExportReviewFormPdf();
 }
+
+void MainWindow::handle_btn_StorageAndMaterialReview_clicked()
+{
+    LeftoverAuditDialog dlg(this);
+
+    if (dlg.exec() == QDialog::Accepted) {
+
+        QUuid storageId = dlg.selectedStorage();
+        QVector<QUuid> materials = dlg.selectedMaterials();
+
+        if (!storageId.isNull() && !materials.isEmpty()) {
+            _leftoverPresenter->ExportStorageAuditPdf(storageId, materials);
+        } else {
+            QMessageBox::warning(this,
+                                 "Hiányzó adatok",
+                                 "Tárhely és anyagtípus kiválasztása szükséges az audit indításához.");
+        }
+    }
+}
+
+void MainWindow::handle_btn_OptLeftoverAudit_clicked()
+{
+    auto perMachine = _cuttingPresenter->collectUsedLeftoversFromPlans();
+
+    auto stats = _cuttingPresenter->collectOptimizationLeftoverStats(perMachine);
+
+    bool needAudit = false;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        const auto& s = it.value();
+        if (s.missing > 0 || s.stale > 0) {
+            needAudit = true;
+            break;
+        }
+    }
+
+    if (!needAudit) {
+        QMessageBox::information(this,
+                                 "Optimalization Leftover Audit",
+                                 "✅ Minden leftover friss.\nA vágás indítható.");
+        return;
+    }
+
+    // Audit szükséges → részletes statisztika megjelenítése
+    QString msg;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        QUuid machineId = it.key();
+        const auto& s = it.value();
+
+        auto mach = CuttingMachineRegistry::instance().findById(machineId);
+        QString machName = mach ? mach->name : "Ismeretlen gép";
+
+        msg += QString("Gép: %1\n")
+                   .arg(machName);
+        msg += QString("  ❌ Eltűnt: %1\n").arg(s.missing);
+        msg += QString("  🕒 Lejárt: %1\n").arg(s.stale);
+        msg += QString("  ✅ Friss: %1\n\n").arg(s.fresh);
+    }
+
+    QMessageBox::warning(this,
+                         "Optimalization Leftover Audit",
+                         msg);
+
+    // audit szükséges → PDF generálás
+    _leftoverPresenter->ExportOptimizationLeftoverAuditPdf(perMachine);
+}
+
 
 void MainWindow::handle_btn_Review_clicked(){
     _leftoverPresenter->Review();

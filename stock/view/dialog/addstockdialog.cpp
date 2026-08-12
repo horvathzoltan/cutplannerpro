@@ -1,6 +1,6 @@
 #include <QMessageBox>
 
-#include "../../../model/registries/storageregistry.h"
+#include "storage/registry/storageregistry.h"
 
 #include "addstockdialog.h"
 #include "ui_addstockdialog.h"

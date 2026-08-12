@@ -3,10 +3,10 @@
 #include "../MainWindow.h"
 //#include "view/dialog/addwastedialog.h"
 //#include "view/dialog/stock/editstoragedialog.h"
-#include "stock/registry/stockregistry.h"
-#include "../../model/registries/cuttingplanrequestregistry.h"
-#include "../../model/registries/leftoverstockregistry.h"
-#include "../dialog/input/addinputdialog.h"
+// #include "stock/registry/stockregistry.h"
+// #include "../../model/registries/cuttingplanrequestregistry.h"
+// #include "leftover/registry/leftoverstockregistry.h"
+// #include "../dialog/input/addinputdialog.h"
 #include "../../presenter/CuttingPresenter.h"
 
 namespace StorageAuditTableConnector {
