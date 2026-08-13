@@ -2,6 +2,7 @@ request
  - surface nincsen mentve a repoban, és nincsen beolvasva sem
 
 hulló:
+ - itt a megoldás az lesz, hogy a módosításokat naplózni fogjuk, hogy nyoma legyen annak, amikor átírjuk az aanyagot
  - natúr szálon:
  - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
  - a vonalkódon NP-CZ szerepel - és valóban natúr szálon van, de hogy került oda?
