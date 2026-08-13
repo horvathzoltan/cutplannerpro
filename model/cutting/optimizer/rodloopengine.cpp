@@ -6,6 +6,8 @@
 #include "../../../common/logger.h"
 #include "cuttypes.h"
 
+#include <materials/registry/material_group_registry.h>
+
 namespace Cutting {
 namespace Optimizer {
 
@@ -42,8 +44,39 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
     MaterialScoringParams sp = mat ? mat->scoringParams()
                                    : MaterialScoringParams::getDefault();
 
+
+    // --- ANYAGCSOPORT SZŰRÉS A PENDING DARABOKRA ---
+    const MaterialGroup* grp =
+        MaterialGroupRegistry::instance().findByMaterialId(rod.materialId);
+
+    QSet<QUuid> groupMembers;
+
+    if (grp) {
+        groupMembers = QSet<QUuid>(grp->materialIds.begin(), grp->materialIds.end());
+    } else {
+        groupMembers.insert(rod.materialId);
+    }
+
+    // pending darabok szűrése
+    QVector<Cutting::Piece::PieceWithMaterial> filteredGroupVec;
+    filteredGroupVec.reserve(groupVec.size());
+
+    for (const auto& p : groupVec) {
+        if (groupMembers.contains(p.materialId)) {
+            filteredGroupVec.append(p);
+        }
+    }
+
+    if (filteredGroupVec.isEmpty()) {
+        zWarning("RodLoopEngine: nincs a csoportba tartozó darab → rúd lezárása");
+        return {RodStepResult::StopRod, rod.materialId};
+    }
+
+    // FitEngine::FitResult fr =
+    //     FitEngine::findBestFit(groupVec, dpLimit, kerf_mm, sp);
+
     FitEngine::FitResult fr =
-        FitEngine::findBestFit(groupVec, dpLimit, kerf_mm, sp);
+        FitEngine::findBestFit(filteredGroupVec, dpLimit, kerf_mm, sp);
 
     zInfo(QString("🔎 FitEngine hívás — dpLimit=%1 mm, pending=%2")
               .arg(dpLimit)

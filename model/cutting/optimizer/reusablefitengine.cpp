@@ -77,6 +77,21 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
     // ha nem csoporttag, akkor egy önmagát tartalmazó csoportot adunk viassza
     QSet<QUuid> groupedMaterialIds = GroupUtils::groupMembers(materialId);
 
+    // --- ANYAGCSOPORT SZŰRÉS A PENDING DARABOKRA ---
+    QVector<Cutting::Piece::PieceWithMaterial> filteredPieces;
+    filteredPieces.reserve(pieces.size());
+
+    for (const auto& p : pieces) {
+        if (groupedMaterialIds.contains(p.materialId)) {
+            filteredPieces.append(p);
+        }
+    }
+
+    if (filteredPieces.isEmpty()) {
+        zWarning("ReusableFitEngine: nincs a csoportba tartozó darab → reusable skip");
+        return std::nullopt;
+    }
+
     QVector<int> _aff_limits;
     QVector<int> _aff_results;
 
@@ -172,6 +187,31 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         // PRIORITÁS: egy darab, ami pontosan elfogyasztja
         const auto single = OptimizerUtils::findSingleExactFit(
             relevantPieces, stock.availableLength_mm, 0.0);
+
+        // --- ANYAGCSOPORT VÉDELEM A SINGLE-FIT ESETÉRE ---
+        if (single.has_value() &&
+            !groupedMaterialIds.contains(single->materialId))
+        {
+            zWarning("ReusableFitEngine: single-fit rossz anyagcsoportból → tiltva");
+            // nem használjuk a single-fit-et
+        } else if (single.has_value()) {
+            // csak akkor engedjük tovább, ha jó csoportból jön
+            auto info = OptimizerUtils::computePhysicalCut({ *single }, 0.0, stock.availableLength_mm);
+            double used  = info.used;
+            double waste = stock.availableLength_mm - used;
+
+            if (waste == 0) {
+                return ReusableCandidate{
+                    i,
+                    stock,
+                    QVector<Cutting::Piece::PieceWithMaterial>{ *single },
+                    static_cast<int>(waste),
+                    ReusableCandidate::Source::GlobalSnapshot
+                };
+            }
+        }
+
+
         if (single.has_value()) {
             // Fizikai kerf modell
             auto info = OptimizerUtils::computePhysicalCut({ *single }, 0.0, stock.availableLength_mm);
@@ -192,8 +232,12 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
         }
 
         // Egyébként: keresd a legjobb részhalmazt
+        // FitEngine::FitResult fit =
+        //     FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm, sp);
+
         FitEngine::FitResult fit =
-            FitEngine::findBestFit(relevantPieces, stock.availableLength_mm, kerf_mm, sp);
+            FitEngine::findBestFit(filteredPieces, stock.availableLength_mm, kerf_mm, sp);
+
 
         model._fitTelemetry.accumulate(fit);
 
@@ -250,6 +294,15 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                               : ReusableCandidate::Source::LocalPool;
             best = cand;
         }
+
+        // --- ANYAGCSOPORT VÉDELEM A LEGJOBB JELÖLTRE ---
+        if (best.has_value() &&
+            !groupedMaterialIds.contains(best->stock.materialId))
+        {
+            zWarning("ReusableFitEngine: best-candidate rossz anyagcsoportból → tiltva");
+            best.reset();
+        }
+
 
         zInfo(QString("    scoring: pieces=%1 waste=%2 leftover=%3 → score=%4, bestScore=%5")
                   .arg(fit.combo.size())

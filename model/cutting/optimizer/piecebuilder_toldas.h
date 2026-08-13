@@ -44,6 +44,33 @@ public:
                           .arg(ltxt));
             }
 
+            // --- ANYAGCSOPORT SZŰRÉS A TOLDASENGINE EREDMÉNYÉRE ---
+            const MaterialGroup* grpPB =
+                MaterialGroupRegistry::instance().findByMaterialId(req.materialId);
+
+            QSet<QUuid> groupMembersPB;
+
+            if (grpPB) {
+                groupMembersPB = QSet<QUuid>(grpPB->materialIds.begin(), grpPB->materialIds.end());
+            } else {
+                groupMembersPB.insert(req.materialId);
+            }
+
+            // --- ToldasEngine által visszaadott darabok VALIDÁLÁSA ---
+            bool invalidGroupFound = false;
+
+            for (const auto& p : result) {
+                if (!groupMembersPB.contains(p.materialId)) {
+                    invalidGroupFound = true;
+                    break;
+                }
+            }
+
+            if (invalidGroupFound) {
+                zWarning("PieceBuilderToldas: ToldasEngine rossz anyagcsoportból adott darabot → elvetjük");
+                result.clear();
+                handled = false;
+            }
 
             if (handled) {
                 // A ToldasEngine megoldotta (toldással vagy egy darabbal)

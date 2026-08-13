@@ -692,6 +692,20 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="btn_RunOutMaterials">
+                  <property name="text">
+                   <string>Fogyóban</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_StorageAudit_2">
+                  <property name="text">
+                   <string>Audit</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Orientation::Horizontal</enum>

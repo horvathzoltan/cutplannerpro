@@ -138,6 +138,7 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
     const QSet<QUuid>& groupIds,
     int& rodCounter)
 {
+
     //zInfo("🔍 STOCK RÚD KERESÉSE — keresés indítása");
     int skipWrongGroup = 0;
     int skipZeroQty = 0;
@@ -286,6 +287,13 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod2(
               });
 
     Candidate best = candidates.first();
+
+    // --- ANYAGCSOPORT VÉDELEM A LEGJOBB STOCK JELÖLTRE ---
+    if (!groupIds.contains(best.entry->materialId)) {
+        zWarning("StockFitEngine: best-candidate rossz anyagcsoportból → tiltva");
+        return std::nullopt;
+    }
+
 
     best.entry->quantity--;
 
