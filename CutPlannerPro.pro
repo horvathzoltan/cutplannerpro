@@ -434,7 +434,6 @@ HEADERS += \
     view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
-    leftover/view/dialog/leftoverauditdialog.ui \
     settings/settingsdialog.ui \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \

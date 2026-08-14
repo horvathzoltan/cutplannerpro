@@ -1361,21 +1361,21 @@ void MainWindow::handle_btn_ReviewForm_clicked(){
 
 void MainWindow::handle_btn_StorageAndMaterialReview_clicked()
 {
-    LeftoverAuditDialog dlg(this);
+//    LeftoverAuditDialog dlg(this);
 
-    if (dlg.exec() == QDialog::Accepted) {
+//    if (dlg.exec() == QDialog::Accepted) {
 
-        QUuid storageId = dlg.selectedStorage();
-        QVector<QUuid> materials = dlg.selectedMaterials();
+//        QUuid storageId = dlg.selectedStorage();
+//        QVector<QUuid> materials = dlg.selectedMaterials();
 
-        if (!storageId.isNull() && !materials.isEmpty()) {
-            _leftoverPresenter->ExportStorageAuditPdf(storageId, materials);
-        } else {
-            QMessageBox::warning(this,
-                                 "Hiányzó adatok",
-                                 "Tárhely és anyagtípus kiválasztása szükséges az audit indításához.");
-        }
-    }
+//        if (!storageId.isNull() && !materials.isEmpty()) {
+//            _leftoverPresenter->ExportStorageAuditPdf(storageId, materials);
+//        } else {
+//            QMessageBox::warning(this,
+//                                 "Hiányzó adatok",
+//                                 "Tárhely és anyagtípus kiválasztása szükséges az audit indításához.");
+//        }
+//    }
 }
 
 void MainWindow::handle_btn_OptLeftoverAudit_clicked()
