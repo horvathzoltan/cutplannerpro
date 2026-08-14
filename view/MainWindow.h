@@ -75,7 +75,7 @@ public:
     bool isChkUseLeftoversChecked();
 
     SeriesMatrixView* seriesMatrixView() const { return _seriesMatrixView; }
-    StockPresenter* getStockPresenter() const { return stockPresenter; }
+    StockPresenter* getStockPresenter() const { return _stockPresenter; }
     StockTableManager* getStockTableManager() const { return stockTableManager.get(); }
 
     CuttingPresenter* cuttingPresenter(){return _cuttingPresenter;}
@@ -129,6 +129,8 @@ private slots:
     void handle_btn_ReviewForm_clicked();
     void handle_btn_StorageAndMaterialReview_clicked();
     void handle_btn_OptLeftoverAudit_clicked();
+    void handle_btn_RunOutMaterials_clicked();
+    void handle_btn_StorageAudit_2_clicked();
 
     // Review funkció - visszaolvasás
     void handle_btn_Review_clicked();
@@ -136,9 +138,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     CuttingPresenter* _cuttingPresenter = nullptr;
-    StockPresenter* stockPresenter = nullptr;
+    StockPresenter* _stockPresenter = nullptr;
     LeftoverPresenter* _leftoverPresenter = nullptr;
-    PaintPresenter* paintPresenter = nullptr;
+    PaintPresenter* _paintPresenter = nullptr;
     StorageAuditPresenter* _storageAuditPresenter = nullptr;
     KittingPresenter* _kittingPresenter = nullptr;
 

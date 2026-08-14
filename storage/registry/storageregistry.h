@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QUuid>
 #include <QMap>
+#include <QSet>
 //#include <optional>
 #include "storage/model/storageentry.h"
 
@@ -11,6 +12,7 @@ private:
     StorageRegistry() = default;
     QVector<StorageEntry> _data;
     QMap<QUuid, QString> _uniqueNameCache;
+    QSet<QString> _usedLogisticCodes;
 
     void collectChildrenRecursive(const QUuid& parentId, QStringList& out) const;
     bool isUniqueCandidate(const QString& candidate, const QUuid& selfId, int depth) const;
@@ -40,6 +42,10 @@ public:
     QVector<StorageEntry> getRecursive(const QUuid &rootId) const;
     void collectChildrenRecursive(const QUuid &parentId, QVector<StorageEntry> &out) const;
     bool isDescendantOf(const QUuid &childId, const QUuid &ancestorId) const;
-    QString uniqueHumanName(const QUuid &id);
+    QString uniqueHumanName(const QUuid &id) const;
     //bool isUnique(const QString &name);
+    QStringList collectBarcodeSegments(const StorageEntry *s) const;
+    QString shortenSegment(const QString &segment) const;
+    QString generateLogisticBarcode(const StorageEntry *s);
+    QString shortenFurther(const QString &code) const;
 };

@@ -1,15 +1,15 @@
 // FILE: model/cutting/optimizer/toldasengine.h
 #pragma once
 
+#include "materials/model/material_group.h"
 #include "model/cutting/plan/request.h"
 #include "model/cutting/piece/piecewithmaterial.h"
 #include "materials/registry/material_registry.h"
+#include "materials/registry/material_group_registry.h"
 #include "product/utils/material_role_utils.h"
 #include "model/inventorysnapshot.h"
 #include "common/logger.h"
-
 #include "leftover/registry/leftoverstockregistry.h"
-
 #include <settings/settingsmanager.h>
 
 namespace Cutting {
@@ -164,6 +164,19 @@ public:
             return;
         }
 
+        // --- ANYAGCSOPORT SZŰRÉS BEKAPCSOLÁSA ---
+        const MaterialGroup* grp =
+            MaterialGroupRegistry::instance().findByMaterialId(req.materialId);
+
+        QSet<QUuid> groupMembers;
+
+        if (grp) {
+            groupMembers = QSet<QUuid>(grp->materialIds.begin(), grp->materialIds.end());
+        } else {
+            // ha nincs csoport → csak önmagát tartalmazza
+            groupMembers.insert(req.materialId);
+        }
+
         // 2) Role meghatározása
         MaterialRole role =
             MaterialRoleUtils::makeRole(req, mm);
@@ -214,10 +227,18 @@ public:
         }
 
         // 4) Leftoverek gyűjtése adott materialId-re
+        // QVector<LeftoverStockEntry> leftovers;
+        // for (const auto& l : inv.reusableInventory) {
+        //     if (l.materialId == req.materialId)
+        //         leftovers.append(l);
+        // }
+
+        // 4) Leftoverek gyűjtése ANYAGCSOPORT szerint
         QVector<LeftoverStockEntry> leftovers;
         for (const auto& l : inv.reusableInventory) {
-            if (l.materialId == req.materialId)
+            if (groupMembers.contains(l.materialId)) {
                 leftovers.append(l);
+            }
         }
 
         struct MainCandidate {
@@ -257,6 +278,9 @@ public:
         bool foundBestMain = false;
 
         for (const auto& l : leftovers) {
+
+            // if (!groupMembers.contains(l.materialId))
+            //     continue;
 
             int mainLen = l.availableLength_mm;
 
@@ -675,6 +699,13 @@ public:
                 excludeId = main.leftover.entryId;
 
             auto bestLeftover = findBestToldasLeftover(leftovers, toldasLen, excludeId);
+
+            if (bestLeftover.has_value() &&
+                !groupMembers.contains(bestLeftover->materialId))
+            {
+                // rossz csoport → tiltjuk
+                bestLeftover.reset();
+            }
 
             if (bestLeftover.has_value()) {
                 foundToldas     = true;

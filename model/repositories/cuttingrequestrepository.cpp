@@ -92,6 +92,10 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
     case CSVVersion::V5_Attributes:
         return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V5, true);
 
+    case CSVVersion::V6_Surface:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V6, true);
+
+
     default:
         ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
         return {};
@@ -335,6 +339,45 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V5(const QVector<QString
     return row;
 }
 
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V6(const QVector<QString>& parts,
+                                                           CsvReader::FileContext& ctx)
+{
+    if (parts.size() < 18) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V5)"));
+        return std::nullopt;
+    }
+
+    CuttingRequestRow row;
+    row.externalReference = parts[0].trimmed();
+    row.ownerName         = parts[1].trimmed();
+    row.fullWidth_mm      = parts[2].trimmed().toInt();
+    row.fullHeight_mm     = parts[3].trimmed().toInt();
+    row.requiredLength    = parts[4].trimmed().toInt();
+    row.toleranceStr      = parts[5].trimmed();
+    row.quantity          = parts[6].trimmed().toInt();
+
+    row.leftCount         = parts[7].trimmed().toInt();
+    row.rightCount        = parts[8].trimmed().toInt();
+
+    row.requiredColorName = parts[9].trimmed();
+    row.barcode           = parts[10].trimmed();
+    row.relevantDimStr    = parts[11].trimmed();
+    row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+
+    QString dueStr = parts[13].trimmed();
+    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+    row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+    row.typeCode    = parts[14].trimmed();
+    row.subtypeCode = parts[15].trimmed();
+
+    row.attributesStr = parts[16].trimmed();
+    row.surfaceStr    = parts[17].trimmed();   // <-- ÚJ MEZŐ
+    return row;
+}
+
+
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
@@ -437,6 +480,15 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
     req.productSubtypeId = subtype?subtype->id:QUuid();
 
     req.attributes = parseAttributes(row.attributesStr);
+
+    // 🔍 SurfaceType konverzió
+    if (!row.surfaceStr.isEmpty()) {
+        SurfaceType surf = SurfaceTypeUtils::fromRawCode(row.surfaceStr);
+        req.surface = surf;
+    } else {
+        req.surface = SurfaceType::Unknown;
+    }
+
     return req;
 }
 
@@ -487,6 +539,16 @@ CuttingRequestRepository::convertRowToCuttingRequest_V5(const QVector<QString>& 
     return buildCuttingRequestFromRow(rowOpt.value(), ctx);
 }
 
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V6(const QVector<QString>& parts,
+                                                        CsvReader::FileContext& ctx)
+{
+    const auto rowOpt = convertRowToCuttingRequestRow_V6(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
+
 bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& registry, const QString& filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -504,7 +566,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     //out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate\n";
 
     // új fejléc (V4):
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface\n";
 
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
@@ -544,7 +606,8 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << dueStr << ";"
             << typeCode << ";"
             << subtypeCode << ";"
-            << attrStr
+            << attrStr << ";"
+            << SurfaceTypeUtils::toCode(req.surface)   // <-- FS, SM, CS, MT, GL, ST
             << "\n";
 
     }

@@ -89,18 +89,18 @@ MainWindow::MainWindow(QWidget *parent)
     _cuttingPresenter = new CuttingPresenter(this, this);
     // 🔄 Ha volt cutting plan betöltve a startup során, töltsük be a hozzá tartozó snapshotot
 
-    stockPresenter = new StockPresenter(this, this);
+    _stockPresenter = new StockPresenter(this, this);
 
-    connect(stockPresenter, &StockPresenter::highlightLeftover,
+    connect(_stockPresenter, &StockPresenter::highlightLeftover,
             this, &MainWindow::onHighlightLeftover);
 
-    connect(stockPresenter, &StockPresenter::highlightStock,
+    connect(_stockPresenter, &StockPresenter::highlightStock,
             this, &MainWindow::onHighlightStock);
 
-    connect(stockPresenter, &StockPresenter::showNotFoundMessage,
+    connect(_stockPresenter, &StockPresenter::showNotFoundMessage,
             this, &MainWindow::onShowNotFoundMessage);
 
-    paintPresenter = new PaintPresenter(this, this);
+    _paintPresenter = new PaintPresenter(this, this);
     _storageAuditPresenter = new StorageAuditPresenter(this, this);
 
     inputTableManager = std::make_unique<InputTableManager>(ui->tableInput, this);
@@ -254,7 +254,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (!item) return;
 
         QUuid storageId = item->data(0, Qt::UserRole).toUuid();
-        stockPresenter->filterStockByStorage(storageId);
+        _stockPresenter->filterStockByStorage(storageId);
     });
 
     connect(stockTableManager.get(), &StockTableManager::leftoverNavigateRequested,
@@ -383,6 +383,12 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_Review, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Review_clicked);
+
+    connect(ui->btn_RunOutMaterials, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_RunOutMaterials_clicked);
+
+    connect(ui->btn_StorageAudit_2, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_StorageAudit_2_clicked);
 
 }
 
@@ -1343,7 +1349,7 @@ void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
 }
 
 void MainWindow::handle_btn_Painter_clicked(){
-        paintPresenter->ExportPaintPlan();
+        _paintPresenter->ExportPaintPlan();
 }
 
 void MainWindow::handle_btn_BOMaudit_clicked(){
@@ -1377,6 +1383,96 @@ void MainWindow::handle_btn_StorageAndMaterialReview_clicked()
 //        }
 //    }
 }
+
+void MainWindow::handle_btn_RunOutMaterials_clicked()
+{
+    QString report = _stockPresenter->ReportRunOutMaterials();
+
+    // 1️⃣ Alapfájlnév a vágási tervből
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    // 2️⃣ Könyvtár: ugyanaz, mint a festési tervnél → _reports
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    // 3️⃣ Időbélyeg
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm");
+
+    // 4️⃣ Fájlnév összeállítása
+    QString path = QString("%1/runout_materials_%2.txt").arg(dir, dateStr);
+
+    // 5️⃣ Fájlba írás
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        zEvent("❌ Nem sikerült megnyitni a RunOutMaterials fájlt.");
+        return;
+    }
+
+    QTextStream out(&f);
+    out.setEncoding(QStringConverter::Utf8);
+
+    out << QString("📄 Kifutó anyagok riport\n");
+    out << QString("📅 Dátum: %1\n").arg(dateStr);
+    out << "──────────────────────────────────\n\n";
+
+    out << report;
+
+    zEvent(QString("📦 RunOutMaterials exportálva: %1").arg(path));
+
+    // 6️⃣ Megjelenítés TextViewDialog-ban
+    TextViewDialog dlg(this);
+    dlg.setWindowTitle("Kifutó anyagok riport");
+    dlg.setText(report);
+    dlg.exec();
+}
+
+void MainWindow::handle_btn_StorageAudit_2_clicked()
+{
+    QString report = _stockPresenter->ReportStorageAudit();
+
+    // 1️⃣ Alapfájlnév a vágási tervből
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    // 2️⃣ Könyvtár: ugyanaz, mint a festési tervnél → _reports
+    QString dir = fi.absolutePath() + "/_reports";
+    QDir().mkpath(dir);
+
+    // 3️⃣ Időbélyeg
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_HH-mm");
+
+    // 4️⃣ Fájlnév összeállítása
+    QString path = QString("%1/storage_audit_%2.txt").arg(dir, dateStr);
+
+    // 5️⃣ Fájlba írás
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        zEvent("❌ Nem sikerült megnyitni a StorageAudit fájlt.");
+        return;
+    }
+
+    QTextStream out(&f);
+    out.setEncoding(QStringConverter::Utf8);
+
+    out << QString("📄 Raktári audit riport\n");
+    out << QString("CutPlan: %1\n").arg(baseName);
+    out << QString("📅 Dátum: %1\n").arg(dateStr);
+    out << "──────────────────────────────────\n\n";
+
+    out << report;
+
+    zEvent(QString("📦 StorageAudit exportálva: %1").arg(path));
+
+    // 6️⃣ Megjelenítés TextViewDialog-ban
+    TextViewDialog dlg(this);
+    dlg.setWindowTitle("Raktári audit riport");
+    dlg.setText(report);
+    dlg.exec();
+}
+
 
 void MainWindow::handle_btn_OptLeftoverAudit_clicked()
 {
@@ -1462,7 +1558,7 @@ void MainWindow::handle_act_MaterialFinder_clicked()
     MaterialFinderInput input = dlg.getInput();
 
     // UI → Presenter
-    stockPresenter->findMaterial(input.materialId, input.minLen, input.maxLen);
+    _stockPresenter->findMaterial(input.materialId, input.minLen, input.maxLen);
 }
 
 void MainWindow::handle_act_Settings_clicked(){

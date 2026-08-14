@@ -15,6 +15,9 @@ public:
     //void materialChosen(const StockEntry& entry);
     void filterStockByStorage(const QUuid &storageId);
     QSet<QUuid> collectSubtreeStorageIds(const QUuid &rootId);
+
+    QString ReportRunOutMaterials();
+    QString ReportStorageAudit();
 signals:
     void highlightLeftover(const QUuid& entryId);
     void highlightStock(const QUuid& entryId);

@@ -1,5 +1,6 @@
 #pragma once
 #include "storage/registry/storageregistry.h"
+#include <QRegularExpression>
 #include <QString>
 #include <QStringList>
 #include <QUuid>
@@ -56,5 +57,10 @@ inline bool isDescendantOf(const QUuid& child, const QUuid& root) {
 
     return false;
 }
+
+
+
+
+
 
 }

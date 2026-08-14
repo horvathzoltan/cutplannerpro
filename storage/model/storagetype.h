@@ -6,6 +6,7 @@ class StorageType {
 public:
     enum class Type {
         Warehouse,
+        Rack,
         Shelf,
         Box,
         Pallet,
@@ -22,6 +23,16 @@ public:
 
     bool operator==(const StorageType& other) const; // Egyenlőség
 
+
+    bool isLocation() const
+    {
+        if(value == Type::Rack) return true;
+        if(value == Type::Shelf) return true;
+        if(value == Type::Box) return true;
+        if(value == Type::Pallet) return true;
+
+        return false;
+    }
     // Opcionális UI helper
     // QColor uiColor() const;
 };

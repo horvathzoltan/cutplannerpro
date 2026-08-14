@@ -1,7 +1,11 @@
-request
+"ok" dialog
+ - kell egy emojira alapuló png ikonnal egy dialog, ami jelzi a sikeres műveletet
+
+request FIXED
  - surface nincsen mentve a repoban, és nincsen beolvasva sem
 
 hulló:
+ - itt a megoldás az lesz, hogy a módosításokat naplózni fogjuk, hogy nyoma legyen annak, amikor átírjuk az aanyagot
  - natúr szálon:
  - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
  - a vonalkódon NP-CZ szerepel - és valóban natúr szálon van, de hogy került oda?
@@ -38,7 +42,8 @@ tárhely audit lista:
  - egy adott tárhely fókusszal kellene auditálni, stockot is és leftovert is
  - kellene funkció - szemelés gomb? pl ha egy képen több vonalkódot is látunk, mindet be kéne szemelni
 
-tárhelyek, tárhely elnevezések, tárhely címkék
+tárhelyek:
+ - tárhely elnevezések, tárhely címkék
 
 festési terv: FIXED
  - (Ehhez a színhez nem kell csavar) - de miért????
