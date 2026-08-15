@@ -159,7 +159,7 @@ QString StockPresenter::ReportRunOutMaterials()
             const StorageEntry* st = loc.first;
             int qty = loc.second;
 
-            QString logistic = StorageRegistry::instance().generateLogisticBarcode(st);
+            QString logistic = StorageRegistry::instance().logisticBarcode(st->id);
 
             lines << QString("   - %1  (%2) : %3 db")
                          .arg(st->barcode)
@@ -233,7 +233,8 @@ QString StockPresenter::ReportStorageAudit()
         if (!isRakathely && entries.isEmpty())
             continue;
 
-        QString logistic = StorageRegistry::instance().generateLogisticBarcode(&st);
+        QString logistic = StorageRegistry::instance().logisticBarcode(st.id);
+
         QString path = StorageRegistry::instance().uniqueHumanName(st.id);
 
         out << QString("📦 Storage: %1").arg(st.barcode);

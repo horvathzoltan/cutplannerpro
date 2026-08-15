@@ -1,6 +1,13 @@
 #include "storageregistry.h"
+#include "common/logger.h"
+#include "common/stringsimilarity_helper.h"
 
 #include <QRegularExpression>
+
+StorageRegistry::StorageRegistry()
+{
+    initializeSemanticRules();   // ⭐ új
+}
 
 StorageRegistry& StorageRegistry::instance() {
     static StorageRegistry reg;
@@ -9,12 +16,45 @@ StorageRegistry& StorageRegistry::instance() {
 
 void StorageRegistry::setData(const QVector<StorageEntry>& data) {
     _data = data;
-    _uniqueNameCache.clear();   // ⭐ invalidate cache
+
+    // teljes reset
+    _uniqueNameCache.clear();
+    _logisticBarcodes.clear();
+    _semanticFixes.clear();
+    _logisticInitialized = false;
+
+    // FALLBACK ellenőrzése
+    const StorageEntry* fb = findByBarcode("FALLBACK");
+    if (!fb) {
+        zError("❌ A FALLBACK tároló hiányzik a storage.csv-ből!");
+        abort();
+    }
+    _fallbackId = fb->id;
+
+    // szemantikai validáció + logisztikai címkék generálása
+    initializeLogisticBarcodes();
+
+    // ⭐ Logisztikai címkék listázása induláskor
+    const auto& allStorages = StorageRegistry::instance().readAll();
+    zInfo("=== Storage logisztikai címkék: ===");
+    for (const auto& s : allStorages) {
+        QString logCode = StorageRegistry::instance().logisticBarcode(s.id);
+        zInfo(
+            QString("%5 Storage: %1 | Barcode: %2 | Logistic: %3")
+                .arg(s.name)
+                .arg(s.barcode)
+                .arg(logCode).arg(s.type.icon())
+            );
+    }
+    zInfo("=== === ===");
 }
 
 void StorageRegistry::clearAll() {
     _data.clear();
-    _uniqueNameCache.clear();   // ⭐ invalidate cache
+    _uniqueNameCache.clear();
+    _logisticBarcodes.clear();
+    _semanticFixes.clear();
+    _logisticInitialized = false;
 }
 
 const StorageEntry* StorageRegistry::findById(const QUuid& id) const {
@@ -139,214 +179,814 @@ QString StorageRegistry::buildCandidate(const StorageEntry* s, int depth) const
     return parts.join(" / ");
 }
 
+/*logisztikai barcode generálás*/
 
-QStringList StorageRegistry::collectBarcodeSegments(const StorageEntry* s) const
+QStringList StorageRegistry::splitBarcode(const QString& barcode) const
 {
-    QStringList segments;
+    if (barcode.contains('_'))
+        return barcode.split('_', Qt::SkipEmptyParts);
 
-    const StorageEntry* cur = s;
-    while (cur) {
+    return { barcode };
+}
 
-        QString typeName;
-        switch (cur->type.value) {
-        case StorageType::Type::Warehouse: typeName = "warehouse"; break;
-        case StorageType::Type::Rack:      typeName = "rack"; break;
-        case StorageType::Type::Shelf:     typeName = "shelf"; break;
-        case StorageType::Type::Box:       typeName = "box"; break;
-        case StorageType::Type::Pallet:    typeName = "pallet"; break;
-        default:                           typeName = "other"; break;
+QStringList StorageRegistry::reduceTags(const QStringList& parentTags,
+                                        const QStringList& childTags) const
+{
+    if (childTags.size() >= parentTags.size()) {
+        bool match = true;
+        for (int i = 0; i < parentTags.size(); ++i) {
+            if (childTags[i] != parentTags[i]) {
+                match = false;
+                break;
+            }
         }
 
-        QString name = cur->name.trimmed();
-        if (name.isEmpty())
-            name = cur->barcode;   // ⭐ fallback: barcode mindig egyedi
-
-        QString seg = typeName + "_" + name;
-
-        segments.prepend(seg);
-        cur = findById(cur->parentId);
+        if (match) {
+            return childTags.mid(parentTags.size());
+        }
     }
 
-    return segments;
+    return childTags;
 }
 
 
-QString StorageRegistry::shortenSegment(const QString& segment) const
+QStringList StorageRegistry::normalizeTags(const QStringList& tags) const
 {
-    QString s = segment.trimmed().toLower();
+    QStringList out;
+    QSet<QString> seen;
 
-    // 1) prefix + suffix szétbontása
-    QStringList parts = s.split('_', Qt::SkipEmptyParts);
-    QString type = parts.value(0);
-    QString name = parts.value(1);
-
-    // 2) type → prefix
-    QString prefix;
-
-    if (type == "warehouse") prefix = "w";
-    else if (type == "rack") prefix = "r";
-    else if (type == "shelf") prefix = "p";     // polc
-    else if (type == "box") prefix = "b";
-    else if (type == "pallet") prefix = "pl";
-    else if (type == "other") prefix = "o";
-    else prefix = type.left(1);
-
-    // 3) name → suffix (régi logika alkalmazva)
-    QString suffix;
-
-    // 20J → 20j
-    QRegularExpression reWarehouse("^([0-9]+[a-z]?)$");
-    auto w = reWarehouse.match(name);
-    if (w.hasMatch())
-        suffix = w.captured(1).toLower();
-
-    // Vasudvar → vas
-    else if (name.contains("vas"))
-        suffix = "vas";
-
-    // ÚjCsarnok → ucs
-    else if (name.contains("csarnok"))
-        suffix = "ucs";
-
-    // Roletta → rol
-    else if (name.contains("roletta"))
-        suffix = "rol";
-
-    // Virtuális → virt
-    else if (name.contains("virtu"))
-        suffix = "virt";
-
-    // Jobb állvány → j
-    else if (name.contains("állvány") && name.contains("jobb"))
-        suffix = "j";
-
-    // Bal állvány → b
-    else if (name.contains("állvány") && name.contains("bal"))
-        suffix = "b";
-
-    // Első_1 → 1
-    else {
-        QRegularExpression reRack("^első[_ ]?(\\d+)$");
-        auto r1 = reRack.match(name);
-        if (r1.hasMatch())
-            suffix = r1.captured(1);
+    for (const QString& t : tags) {
+        if (!seen.contains(t)) {
+            out.append(t);
+            seen.insert(t);
+        }
     }
-
-    // Hátsó_2 → 2
-    if (suffix.isEmpty()) {
-        QRegularExpression reRack2("^hátsó[_ ]?(\\d+)$");
-        auto r2 = reRack2.match(name);
-        if (r2.hasMatch())
-            suffix = r2.captured(1);
-    }
-
-    // Polc 3 → 3
-    if (suffix.isEmpty()) {
-        QRegularExpression rePolc("^polc[_ ]?(\\d+)$");
-        auto p = rePolc.match(name);
-        if (p.hasMatch())
-            suffix = p.captured(1);
-    }
-
-    // Hulló J → hj
-    if (suffix.isEmpty()) {
-        if (name.contains("hulló") && name.contains("j"))
-            suffix = "hj";
-        else if (name.contains("hulló") && name.contains("b"))
-            suffix = "hb";
-    }
-
-    // fallback
-    if (suffix.isEmpty())
-        suffix = name.left(3);
-
-    // 4) prefix + suffix összeépítése
-    return prefix + suffix;
+    return out;
 }
 
-QString StorageRegistry::shortenFurther(const QString& code) const
+QStringList StorageRegistry::reduceChild(const QStringList& parent,
+                                         const QStringList& child) const
 {
-    QStringList parts = code.split('-', Qt::SkipEmptyParts);
-
-    // 1) Ha van hosszú szegmens → azt rövidítjük
-    for (int i = 0; i < parts.size(); ++i) {
-        QString& p = parts[i];
-
-        // ha 4+ karakter → rövidítjük 3-ra
-        if (p.length() > 3) {
-            p = p.left(3);
-            return parts.join("-");
-        }
+    if (fuzzyPrefixMatch(parent, child)) {
+        return child.mid(parent.size());
     }
 
-    // 2) Ha minden szegmens 3 vagy kevesebb → rövidítjük 2-re
-    for (int i = 0; i < parts.size(); ++i) {
-        QString& p = parts[i];
-
-        if (p.length() > 2) {
-            p = p.left(2);
-            return parts.join("-");
-        }
-    }
-
-    // 3) Ha minden szegmens 2 vagy kevesebb → rövidítjük 1-re
-    for (int i = 0; i < parts.size(); ++i) {
-        QString& p = parts[i];
-
-        if (p.length() > 1) {
-            p = p.left(1);
-            return parts.join("-");
-        }
-    }
-
-    // 4) Ha már minden szegmens 1 karakter → utolsó fallback
-    // hozzáadunk egy számlálót (deterministic suffix)
-    return code + "x";
+    return child;
 }
 
-// QString StorageRegistry::generateLogisticBarcode(const StorageEntry* s)
-// {
-//     QStringList segments = collectBarcodeSegments(s);
 
-//     QStringList shortParts;
-//     for (const QString& seg : segments)
-//         shortParts << shortenSegment(seg);
+bool StorageRegistry::fuzzyPrefixMatch(const QStringList& parent, const QStringList& child) const
+{
+    if (child.size() <= parent.size())
+        return false;
 
-//     QString candidate = shortParts.join("-");
+    for (int i = 0; i < parent.size(); ++i) {
 
-//     // ütközésmentesítés
-//     while (_usedLogisticCodes.contains(candidate)) {
-//         candidate = shortenFurther(candidate);
-//     }
+        QString p = parent[i];
+        QString c = child[i];
 
-//     _usedLogisticCodes.insert(candidate);
-//     return candidate;
-// }
+        // pontos egyezés
+        if (p == c)
+            continue;
+
+        // fuzzy egyezés: egyik tartalmazza a másikat
+        if (c.contains(p) || p.contains(c))
+            continue;
+
+        return false;
+    }
+
+    return true;
+}
 
 QString StorageRegistry::generateLogisticBarcode(const StorageEntry* s)
 {
-    // 1) összegyűjtjük a path barcode-okat
-    QStringList barcodes;
+    if (_logisticInitialized) {
+        qWarning() << "❌ generateLogisticBarcode() tiltott inicializálás után!";
+        return QString();
+    }
+
+    // 1) path barcode-ok (root → leaf)
+    QList<const StorageEntry*> path;
     const StorageEntry* cur = s;
     while (cur) {
-        barcodes.prepend(cur->barcode);
+        path.prepend(cur);
         cur = findById(cur->parentId);
     }
 
-    // 2) leaf barcode
-    QString leaf = barcodes.last();
+    // 2) taglisták összeépítése redundancia nélkül
+    QStringList finalTags;
 
-    // 3) parent barcode-ok eldobása
-    QString result = leaf;
-    for (int i = 0; i < barcodes.size() - 1; ++i) {
-        const QString& parent = barcodes[i];
-        result.replace(parent, "");
+    QStringList parentTags;
+
+    for (const StorageEntry* node : path) {
+
+        QStringList childTags = splitBarcode(node->barcode);
+
+        // prefix redundancia eltávolítása
+        QStringList reduced = reduceChild(parentTags, childTags);
+
+        // globális redundancia eltávolítása
+        reduced = normalizeTags(reduced);
+
+        finalTags += reduced;
+
+        parentTags = childTags;
     }
 
-    // 4) normalizálás: elválasztók eltávolítása
-    result.replace("__", "_");
-    result.replace("_", "");
-    result = result.trimmed();
-
-    return result;
+    // 3) végső logisztikai címke
+    return finalTags.join("-");
 }
+
+void StorageRegistry::initializeLogisticBarcodes()
+{
+    if (_logisticInitialized) {
+        qWarning() << "❌ generateLogisticBarcode() hívás tiltott: a logisztikai címkék már inicializálva vannak!";
+    }
+
+    // ⭐ 1) Storage audit (elírások, hasonlóságok, különbségek)
+    for (const auto& s : _data) {
+        validateBarcode(&s);
+    }
+
+    for (const auto& s : _data) {
+        QString code = generateLogisticBarcode(&s);
+        _logisticBarcodes.insert(s.id, code);
+    }
+
+    _logisticInitialized = true;
+}
+
+QString StorageRegistry::logisticBarcode(const QUuid& id) const
+{
+    if (!_logisticInitialized) {
+        qWarning() << "❌ logisticBarcode() hívás tiltott: a logisztikai címkék még nincsenek inicializálva!";
+        return QString();
+    }
+
+    return _logisticBarcodes.value(id);
+}
+
+bool StorageRegistry::isLeafTag(const QString& tag) const
+{
+    // Polcok: P1, P2, P3...
+    QRegularExpression polc("^P\\d+$");
+    if (polc.match(tag).hasMatch())
+        return true;
+
+    // Doboz / raklap / egyéb leaf kódok
+    // Például: E1_P3 → leaf
+    QRegularExpression leaf("^[A-Z]+\\d+_P\\d+$");
+    if (leaf.match(tag).hasMatch())
+        return true;
+
+    // Ha a storage type leaf → a barcode utolsó tagja leaf
+    // (Ez a legpontosabb)
+    return false;
+}
+
+void StorageRegistry::validateTagDifferences(const StorageEntry* s,
+                                             const QStringList& tags) const
+{
+    for (int i = 0; i < tags.size(); ++i) {
+        for (int j = i + 1; j < tags.size(); ++j) {
+
+            QString a = tags[i];
+            QString b = tags[j];
+
+            TagCategory ca = categorizeTag(a);
+            TagCategory cb = categorizeTag(b);
+
+            // WarehouseSide ↔ RackSide → nem összehasonlítható
+            if ((ca == TagCategory::WarehouseSide && cb == TagCategory::RackSide) ||
+                (ca == TagCategory::RackSide && cb == TagCategory::WarehouseSide))
+                continue;
+
+            // WarehouseSide ↔ RackPosition → nem összehasonlítható
+            if ((ca == TagCategory::WarehouseSide && cb == TagCategory::RackPosition) ||
+                (ca == TagCategory::RackPosition && cb == TagCategory::WarehouseSide))
+                continue;
+
+            // RackSide ↔ RackPosition → nem összehasonlítható
+            if ((ca == TagCategory::RackSide && cb == TagCategory::RackPosition) ||
+                (ca == TagCategory::RackPosition && cb == TagCategory::RackSide))
+                continue;
+
+            // Parent-child tiltás
+            if (ca == TagCategory::Parent || cb == TagCategory::Parent)
+                continue;
+
+            // Csak azonos kategóriák hasonlíthatók
+            if (ca != cb)
+                continue;
+
+            // Leaf tagok → nem gyanús
+            if (ca == TagCategory::Leaf)
+                continue;
+
+            // Pozíció tagok → nem gyanús
+            if (ca == TagCategory::Position)
+                continue;
+
+            // Oldal tagok → nem gyanús
+            if (ca == TagCategory::Side)
+                continue;
+
+            // TÚL KÜLÖNBÖZŐ → gyanús
+            if (StringSimilarity::fuzzyDifferent(a, b)) {
+                qWarning() << "⚠️ Gyanúsan különböző storage tag:"
+                           << s->name
+                           << "| " << a << "<->" << b;
+            }
+        }
+    }
+}
+
+
+
+void StorageRegistry::validateSimilarTags(const StorageEntry* s,
+                                          const QStringList& tags) const
+{
+    for (int i = 0; i < tags.size(); ++i) {
+        for (int j = i + 1; j < tags.size(); ++j) {
+
+            QString a = tags[i];
+            QString b = tags[j];
+
+            TagCategory ca = categorizeTag(a);
+            TagCategory cb = categorizeTag(b);
+
+            // WarehouseSide ↔ RackSide → nem összehasonlítható
+            if ((ca == TagCategory::WarehouseSide && cb == TagCategory::RackSide) ||
+                (ca == TagCategory::RackSide && cb == TagCategory::WarehouseSide))
+                continue;
+
+            // WarehouseSide ↔ RackPosition → nem összehasonlítható
+            if ((ca == TagCategory::WarehouseSide && cb == TagCategory::RackPosition) ||
+                (ca == TagCategory::RackPosition && cb == TagCategory::WarehouseSide))
+                continue;
+
+            // RackSide ↔ RackPosition → nem összehasonlítható
+            if ((ca == TagCategory::RackSide && cb == TagCategory::RackPosition) ||
+                (ca == TagCategory::RackPosition && cb == TagCategory::RackSide))
+                continue;
+
+
+            // Parent-child tiltás
+            if (ca == TagCategory::Parent || cb == TagCategory::Parent)
+                continue;
+
+            // Csak azonos kategóriák hasonlíthatók
+            if (ca != cb)
+                continue;
+
+            // Leaf tagok → nem gyanús
+            if (ca == TagCategory::Leaf)
+                continue;
+
+            // Pozíció tagok → nem gyanús
+            if (ca == TagCategory::Position)
+                continue;
+
+            // Oldal tagok → nem gyanús
+            if (ca == TagCategory::Side)
+                continue;
+
+            // túl hasonló → gyanús
+            if (StringSimilarity::tooSimilar(a, b)) {
+                qWarning() << "⚠️ Gyanúsan hasonló storage tagok:"
+                           << s->name
+                           << "| Barcode:" << s->barcode
+                           << "| Tag1:" << a
+                           << "| Tag2:" << b;
+            }
+        }
+    }
+}
+
+
+void StorageRegistry::validateRepeatedTags(const StorageEntry* s,
+                                           const QStringList& tags) const
+{
+    QHash<QString, int> counts;
+    for (const QString& t : tags)
+        counts[t]++;
+
+    for (auto it = counts.constBegin(); it != counts.constEnd(); ++it) {
+
+        const QString& tag = it.key();
+        int count = it.value();
+
+        // csak rövid tagokra figyelmeztetünk (pl. B, J, R, E1, H1)
+        if (tag.size() <= 3 && count > 1) {
+            qWarning() << "⚠️ Ismétlődő rövid storage tag:"
+                       << s->name
+                       << "| Barcode:" << s->barcode
+                       << "| Tag:" << tag
+                       << "| Count:" << count
+                       << "| Megjegyzés: lehet, hogy a kód nem elég egyértelmű.";
+        }
+    }
+}
+
+
+void StorageRegistry::validateBarcode(const StorageEntry* s) const
+{
+    QStringList tags = splitBarcode(s->barcode);
+
+    validateSemantic(s);          // ⭐ új szemantikai validáció
+
+    validateRepeatedTags(s, tags);
+    validateSimilarTags(s, tags);
+    validateTagDifferences(s, tags);   // ⭐ új
+}
+
+StorageRegistry::TagCategory StorageRegistry::categorizeTag(const QString& tag) const
+{
+    // 1) Raktár oldaliság (Warehouse side)
+    if (tag == "R" || tag == "L")
+        return TagCategory::WarehouseSide;
+
+    // 2) Rack oldaliság (Rack side)
+    QRegularExpression rackSide("^(RR|RL|LR|LL)$");
+    if (rackSide.match(tag).hasMatch())
+        return TagCategory::RackSide;
+
+    // 3) Rack pozíció (Rack position)
+    QRegularExpression rackPos("^[RL]\\d+$");
+    if (rackPos.match(tag).hasMatch())
+        return TagCategory::RackPosition;
+
+    // 4) Parent tag: hosszú, betű-szám keverék, nem leaf
+    if (tag.size() > 3 && !tag.contains('_'))
+        return TagCategory::Parent;
+
+    // 5) Leaf tag: P1, P2, P3...
+    QRegularExpression leaf("^P\\d+$");
+    if (leaf.match(tag).hasMatch())
+        return TagCategory::Leaf;
+
+    // 6) Pozíció tag: E1, E2, H1, H2
+    QRegularExpression pos("^[EH]\\d+$");
+    if (pos.match(tag).hasMatch())
+        return TagCategory::Position;
+
+    // 7) Régi oldal tagok (RJ, RB, J, B)
+    QRegularExpression side("^(J|B|RJ|RB)$");
+    if (side.match(tag).hasMatch())
+        return TagCategory::Side;
+
+    // 8) Azonosító tag: S1, A2, stb.
+    QRegularExpression id("^[A-Z]\\d+$");
+    if (id.match(tag).hasMatch())
+        return TagCategory::Identifier;
+
+    return TagCategory::Other;
+}
+
+
+void StorageRegistry::initializeSemanticRules()
+{
+    _semanticRules = {
+
+        // Warehouse – egyedi, prefix + hierarchia
+        { "WarehouseShort", QRegularExpression("^[A-Z]{2,5}$"),
+         { StorageType::Type::Warehouse } },
+
+        { "WarehouseCode", QRegularExpression("^[A-Z]{2,5}\\d{0,3}$"),
+         { StorageType::Type::Warehouse } },
+
+        { "WarehouseHier", QRegularExpression("^[A-Z0-9]{2,5}(_[A-Z0-9]+)*$"),
+         { StorageType::Type::Warehouse } },
+
+        // initializeSemanticRules()
+        { "ZoneBasic", QRegularExpression("^[A-Z0-9]{2,20}_(IN|OUT)_(R|L)$"),
+         { StorageType::Type::Zone } },
+
+        { "FloorZone", QRegularExpression("^[A-Z0-9]{2,20}(_(IN|OUT|R|L|F\\d+|B\\d+))*$"),
+         { StorageType::Type::Floor } },
+
+        // Rack
+        // { "RackSide", QRegularExpression("^(J|B|RJ|RB)$"),
+        //  { StorageType::Type::Rack } },
+
+        // { "RackSideId", QRegularExpression("^(J|B|RJ|RB)_[A-Z]\\d+$"),
+        //  { StorageType::Type::Rack } },
+
+        // { "RackFull", QRegularExpression("^[A-Z0-9]{2,20}_(R|L)_(RR|RL|R\\d+)?$"),
+        //  { StorageType::Type::Rack } },
+
+        // { "RackFull", QRegularExpression("^[A-Z0-9]{2,20}(_(R|L))?_(RR|RL|LR|LL|R\\d+|L\\d+)$"),
+        //  { StorageType::Type::Rack } },
+        { "RackFull", QRegularExpression("^[A-Z0-9]{2,20}(_[A-Z0-9]+)*_(RR|RL|LR|LL|R\\d+|L\\d+)$"),
+         { StorageType::Type::Rack } },
+
+
+
+        // Crate
+        { "CrateShort", QRegularExpression("^C\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Crate } },
+
+        { "CrateLong", QRegularExpression("^(CRATE|CAGE|KAL)\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Crate } },
+
+        // Shelf
+        { "ShelfP",   QRegularExpression("^P\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Shelf } },
+
+        { "ShelfS",   QRegularExpression("^S\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Shelf } },
+
+        { "ShelfPos", QRegularExpression("^[EH]\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Shelf } },
+
+        // Box
+        { "Box", QRegularExpression("^B\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Box } },
+
+        { "BoxLong", QRegularExpression("^BOX\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Box } },
+
+        // Pallet
+        { "Pallet", QRegularExpression("^PL\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Pallet } },
+
+        { "PalletLong", QRegularExpression("^PAL\\d+([-_][A-Z0-9]+)?$"),
+         { StorageType::Type::Pallet } }
+    };
+}
+
+
+// void StorageRegistry::validateSemantic(const StorageEntry* s) const
+// {
+//     const QString& bc = s->barcode;
+//     StorageType::Type t = s->type.value;
+
+//     bool matched = false;
+
+//     for (const auto& rule : _semanticRules) {
+//         if (!rule.allowedTypes.contains(t))
+//             continue;
+
+//         if (rule.pattern.match(bc).hasMatch()) {
+//             matched = true;
+//             break;
+//         }
+//     }
+
+//     if (matched)
+//         return; // minden rendben
+
+//     // --- JAVÍTÁS PRÓBÁLÁSA ---
+//     QString fix;
+
+//     switch (t) {
+//     case StorageType::Type::Warehouse: fix = suggestWarehouseFix(bc); break;
+//     case StorageType::Type::Rack:      fix = suggestRackFix(bc); break;
+//     case StorageType::Type::Shelf:     fix = suggestShelfFix(bc); break;
+//     case StorageType::Type::Floor:     fix = suggestFloorFix(bc); break;
+//     case StorageType::Type::Zone:      fix = suggestZoneFix(bc); break;
+//     case StorageType::Type::Crate:     fix = suggestCrateFix(bc); break;
+//     default:                           fix = QString(); break;
+//     }
+
+//     // --- HA A JAVÍTÁS == EREDETI ---
+//     if (fix == bc) {
+//         // ellenőrizzük, hogy a javítás regexp szerint jó-e
+//         for (const auto& rule : _semanticRules) {
+//             if (rule.allowedTypes.contains(t) &&
+//                 rule.pattern.match(fix).hasMatch()) {
+//                 return; // valójában jó → ne dobj hibát
+//             }
+//         }
+//     }
+
+//     // --- JAVÍTÁS EGYEDISÉG ELLENŐRZÉSE ---
+//     if (!fix.isEmpty()) {
+
+//         // 1) ha a javítás regexp szerint jó
+//         bool fixMatches = false;
+//         for (const auto& rule : _semanticRules) {
+//             if (rule.allowedTypes.contains(t) &&
+//                 rule.pattern.match(fix).hasMatch()) {
+//                 fixMatches = true;
+//                 break;
+//             }
+//         }
+
+//         if (fixMatches) {
+
+//             // 2) ha a javítás nem egyedi → egyedivé tesszük
+//             QString uniqueFix = makeFixUnique(fix, s->id);
+
+//             // 3) eltároljuk, hogy később se ütközzön
+//             _semanticFixes.insert(uniqueFix);
+
+//             // 4) ha a javítás == eredeti és egyedi → OK
+//             if (uniqueFix == bc)
+//                 return;
+
+//             // 5) különben hibát jelzünk
+//             qWarning() << "⚠️ Szemantikai hiba: a barcode nem felel meg a storage típus szabályainak:"
+//                        << s->name
+//                        << "| Barcode:" << bc
+//                        << "| Type:" << s->type.toString()
+//                        << "| Javasolt javítás:" << uniqueFix;
+//             return;
+//         }
+//     }
+
+
+//     // --- VALÓDI HIBA ---
+//     if (!fix.isEmpty()) {
+//         qWarning() << "⚠️ Szemantikai hiba: a barcode nem felel meg a storage típus szabályainak:"
+//                    << s->name
+//                    << "| Barcode:" << bc
+//                    << "| Type:" << s->type.toString()
+//                    << "| Javasolt javítás:" << fix;
+//     } else {
+//         qWarning() << "⚠️ Szemantikai hiba: a barcode nem felel meg a storage típus szabályainak:"
+//                    << s->name
+//                    << "| Barcode:" << bc
+//                    << "| Type:" << s->type.toString()
+//                    << "| Javaslat nem generálható.";
+//     }
+// }
+
+void StorageRegistry::validateSemantic(const StorageEntry* s) const
+{
+    // FALLBACK → speciális tároló, nem validáljuk
+    if (s->barcode == "FALLBACK")
+        return;
+
+    const QString& bc = s->barcode;
+    StorageType::Type t = s->type.value;
+
+    bool matched = false;
+
+    // --- 1) REGEXP ELLENŐRZÉS ---
+    for (const auto& rule : _semanticRules) {
+        if (!rule.allowedTypes.contains(t))
+            continue;
+
+        if (rule.pattern.match(bc).hasMatch()) {
+            matched = true;
+            break;
+        }
+    }
+
+    if (matched) {
+        // A barcode regexp szerint jó → de még ellenőrizni kell az egyediséget!
+        if (isFixUnique(bc, s->id))
+            return;
+
+        // Ha nem egyedi → egyedivé tesszük
+        QString uniqueFix = makeFixUnique(bc, s->id);
+        _semanticFixes.insert(uniqueFix);
+
+        qWarning() << "⚠️ Szemantikai hiba: a barcode nem egyedi!"
+                   << s->name
+                   << "| Barcode:" << bc
+                   << "| Type:" << s->type.toString()
+                   << "| Egyedi javítás:" << uniqueFix;
+        return;
+    }
+
+    // --- 2) JAVÍTÁS PRÓBÁLÁSA ---
+    QString fix;
+
+    switch (t) {
+    case StorageType::Type::Warehouse: fix = suggestWarehouseFix(bc); break;
+    case StorageType::Type::Rack:      fix = suggestRackFix(bc); break;
+    case StorageType::Type::Shelf:     fix = suggestShelfFix(bc); break;
+    case StorageType::Type::Floor:     fix = suggestFloorFix(bc); break;
+    case StorageType::Type::Zone:      fix = suggestZoneFix(bc); break;
+    case StorageType::Type::Crate:     fix = suggestCrateFix(bc); break;
+    default:                           fix = QString(); break;
+    }
+
+    // --- 3) JAVÍTÁS REGEXP ELLENŐRZÉSE ---
+    bool fixMatches = false;
+    if (!fix.isEmpty()) {
+        for (const auto& rule : _semanticRules) {
+            if (rule.allowedTypes.contains(t) &&
+                rule.pattern.match(fix).hasMatch()) {
+                fixMatches = true;
+                break;
+            }
+        }
+    }
+
+    if (!fixMatches) {
+        // A javítás regexp szerint sem jó → hibát dobunk
+        qWarning() << "⚠️ Szemantikai hiba: a barcode nem felel meg a storage típus szabályainak:"
+                   << s->name
+                   << "| Barcode:" << bc
+                   << "| Type:" << s->type.toString()
+                   << "| Javaslat nem generálható.";
+        return;
+    }
+
+    // --- 4) JAVÍTÁS EGYEDISÉG ELLENŐRZÉSE ---
+    QString uniqueFix = makeFixUnique(fix, s->id);
+    _semanticFixes.insert(uniqueFix);
+
+    // --- 5) HA A JAVÍTÁS == EREDETI ÉS EGYEDI → OK ---
+    if (uniqueFix == bc)
+        return;
+
+    // --- 6) JAVÍTÁS ≠ EREDETI → HIBA ---
+    qWarning() << "⚠️ Szemantikai hiba: a barcode nem felel meg a storage típus szabályainak:"
+               << s->name
+               << "| Barcode:" << bc
+               << "| Type:" << s->type.toString()
+               << "| Javasolt javítás:" << uniqueFix;
+}
+
+
+QString StorageRegistry::suggestWarehouseFix(const QString& bc) const
+{
+    QStringList parts = bc.split('_');
+    QString prefix = parts[0];
+    QStringList out;
+    out << prefix;
+
+    bool firstB = true;
+
+    for (int i = 1; i < parts.size(); ++i) {
+        QString p = parts[i];
+
+        if (p == "K") out << "OUT";        // Külső
+        else if (p == "B") {
+            if (firstB) out << "IN";       // Belső
+            else out << "L";               // Bal
+            firstB = false;
+        }
+        else if (p == "J") out << "R";     // Jobb
+        else if (p.startsWith("E")) out << "F" + p.mid(1);  // Első → F
+        else if (p.startsWith("H")) out << "B" + p.mid(1);  // Hátsó → B
+        else out << p;
+    }
+
+    return out.join("_");
+}
+
+
+QString StorageRegistry::suggestRackFix(const QString& bc) const
+{
+    if (bc.contains("_R") || bc.contains("RJ"))
+        return "R";
+
+    if (bc.contains("_L") || bc.contains("RB"))
+        return "L";
+
+    return "R"; // fallback
+}
+
+
+QString StorageRegistry::suggestShelfFix(const QString& bc) const
+{
+    QRegularExpression num("(\\d+)$");
+    auto m = num.match(bc);
+    if (m.hasMatch()) {
+        return "P" + m.captured(1);
+    }
+    return "P1";
+}
+
+QString StorageRegistry::suggestFloorFix(const QString& bc) const
+{
+    // 1) Warehouse-szemantika újrafelhasználása
+    QString wh = suggestWarehouseFix(bc);
+
+    // 2) Ha már jó Floor formátum → nem kell javítani
+    QRegularExpression good("^[A-Z0-9]{2,5}(_(IN|OUT|R|L|F\\d+|B\\d+))*$");
+    if (good.match(wh).hasMatch())
+        return wh;
+
+    // 3) fallback: prefix + IN_R
+    QString prefix = bc.split('_').first();
+    return prefix + "_IN_R";
+}
+
+
+QString StorageRegistry::suggestCrateFix(const QString& bc) const
+{
+    // Ha már jó (C12, CRATE5, CAGE3, KAL01)
+    QRegularExpression good("^(C\\d+|(CRATE|CAGE|KAL)\\d+)$");
+    if (good.match(bc).hasMatch())
+        return bc;
+
+    // Ha szám van benne → konvertálható
+    QRegularExpression num("(\\d+)$");
+    auto m = num.match(bc);
+    if (m.hasMatch()) {
+        return "C" + m.captured(1);   // alapértelmezett crate kód
+    }
+
+    // fallback
+    return "C1";
+}
+
+QString StorageRegistry::suggestZoneFix(const QString& bc) const
+{
+    QString wh = suggestWarehouseFix(bc);
+
+    // Várjuk: PREFIX_IN_R vagy PREFIX_OUT_L
+    QRegularExpression zone("^[A-Z0-9]{2,5}_(IN|OUT)_(R|L)$");
+    if (zone.match(wh).hasMatch())
+        return wh;
+
+    // Ha túl részletes (pl. VAS_IN_R_F1), akkor csak az első 3 tagot tartjuk meg
+    QStringList parts = wh.split('_');
+    if (parts.size() >= 3) {
+        return parts[0] + "_" + parts[1] + "_" + parts[2];
+    }
+
+    // fallback: prefix + IN_R
+    QString prefix = bc.split('_').first();
+    return prefix + "_IN_R";
+}
+
+bool StorageRegistry::isBarcodeUnique(const QString& bc, const QUuid& selfId) const
+{
+    for (const auto& s : _data) {
+        if (s.barcode == bc && s.id != selfId)
+            return false;
+    }
+    return true;
+}
+
+bool StorageRegistry::isFixUnique(const QString& bc, const QUuid& selfId) const
+{
+    // 1) meglévő barcode-ok
+    for (const auto& s : _data) {
+        if (s.barcode == bc && s.id != selfId)
+            return false;
+    }
+
+    // 2) korábban generált javítások
+    if (_semanticFixes.contains(bc))
+        return false;
+
+    return true;
+}
+
+QString StorageRegistry::makeFixUnique(const QString& bc, const QUuid& selfId) const
+{
+    if (isFixUnique(bc, selfId))
+        return bc;
+
+    int counter = 1;
+    while (true) {
+        QString candidate = bc + "_" + QString::number(counter);
+        if (isFixUnique(candidate, selfId))
+            return candidate;
+        counter++;
+    }
+}
+
+// QString StorageRegistry::suggestSemanticFix(const StorageEntry* s) const
+// {
+//     const QString& bc = s->barcode;
+//     StorageType::Type t = s->type.value;
+
+//     // Shelf → P\d+, S\d+, E\d+, H\d+
+//     if (t == StorageType::Type::Shelf) {
+//         // Ha a végén szám van → konvertálható
+//         QRegularExpression num("(\\d+)$");
+//         auto m = num.match(bc);
+//         if (m.hasMatch()) {
+//             QString n = m.captured(1);
+//             return "P" + n;   // alapértelmezett polc
+//         }
+//         return "P1"; // fallback
+//     }
+
+//     // Rack → J, B, RJ, RB, vagy ezek + _ID
+//     if (t == StorageType::Type::Rack) {
+//         if (bc.contains("R"))
+//             return "RJ";
+//         if (bc.contains("L"))
+//             return "RB";
+//         return "RJ"; // fallback
+//     }
+
+//     // Warehouse → nagybetű + szám
+//     // if (t == StorageType::Type::Warehouse) {
+//     //     // ha már majdnem jó
+//     //     QRegularExpression wh("^[A-Z]{2,5}\\d{0,3}$");
+//     //     if (wh.match(bc).hasMatch())
+//     //         return bc; // már jó, csak a szabály szűk
+
+//     //     // fallback: generáljunk egy warehouse kódot
+//     //     return bc.left(3).toUpper();
+//     // }
+
+//     if (t == StorageType::Type::Warehouse) {
+//         return bc;   // a teljes kód helyes, csak a szabály volt szűk
+//     }
+
+//     return QString(); // nincs javaslat
+// }
+

@@ -131,7 +131,8 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::Fil
         QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
         ctx.addError(ctx.currentLineNumber(), msg);
 
-        return std::nullopt;
+        storage = StorageRegistry::instance().fallbackStorage();
+        //return std::nullopt;
     }
 
     StockEntry entry;

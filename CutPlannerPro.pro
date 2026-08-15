@@ -146,6 +146,7 @@ SOURCES += \
     leftover/view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
+    common/stringsimilarity_helper.h \
     cutting/export/cutinstructionservice.h \
     cutting/export/sortmode.h \
     cutting/snapshot/CuttingSnapshotFormat.h \

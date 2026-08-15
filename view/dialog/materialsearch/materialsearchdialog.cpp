@@ -1,4 +1,5 @@
 #include "materialsearchdialog.h"
+#include "common/stringsimilarity_helper.h"
 #include "materials/registry/material_registry.h"
 #include "view/common/layouts/qflowlayout.h"
 #include "view/dialog/materialfinder/materialdelegate.h"
@@ -228,30 +229,6 @@ void MaterialSearchDialog::buildColorButtons()
 }
 
 
-
-static int levenshtein(const QString& s1, const QString& s2)
-{
-    const int n = s1.size();
-    const int m = s2.size();
-    if (n == 0) return m;
-    if (m == 0) return n;
-
-    QVector<int> prev(m + 1), curr(m + 1);
-
-    for (int j = 0; j <= m; ++j)
-        prev[j] = j;
-
-    for (int i = 1; i <= n; ++i) {
-        curr[0] = i;
-        for (int j = 1; j <= m; ++j) {
-            int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
-            curr[j] = std::min({ prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost });
-        }
-        prev = curr;
-    }
-    return curr[m];
-}
-
 // ⭐ SZŰRÉS (prefix + substring)
 void MaterialSearchDialog::applyFilter(const QString& text)
 {
@@ -366,30 +343,16 @@ void MaterialSearchDialog::applyFilter(const QString& text)
         if (selectedCode != "Nincs" && m.color.code() != selectedCode)
             continue;
 
-
         QString name = m.name.toLower();
         QString bc   = m.barcode.toLower();
         QString ext  = m.externalCode.toLower();
 
-        bool isExact =
-            (name == t) ||
-            (bc == t) ||
-            (ext == t);
+        QStringList fields = { name, bc, ext };
 
-        bool isPrefix =
-            name.startsWith(t) ||
-            bc.startsWith(t) ||
-            ext.startsWith(t);
-
-        bool isSubstring =
-            name.contains(t) ||
-            bc.contains(t) ||
-            ext.contains(t);
-
-        int d1 = levenshtein(name, t);
-        int d2 = levenshtein(bc, t);
-        int d3 = levenshtein(ext, t);
-        bool isFuzzy = (d1 <= 1 || d2 <= 1 || d3 <= 1);
+        bool isExact      = StringSimilarity::anyExact(fields, t);
+        bool isPrefix     = StringSimilarity::anyPrefix(fields, t);
+        bool isSubstring  = StringSimilarity::anySubstring(fields, t);
+        bool isFuzzy      = StringSimilarity::anyFuzzy(fields, t);
 
         if (isExact)
             exactMatches.append(m);

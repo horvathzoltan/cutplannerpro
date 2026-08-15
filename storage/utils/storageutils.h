@@ -58,6 +58,9 @@ inline bool isDescendantOf(const QUuid& child, const QUuid& root) {
     return false;
 }
 
+inline bool isLeaf(const QUuid& id) {
+    return StorageRegistry::instance().findByParentId(id).isEmpty();
+}
 
 
 

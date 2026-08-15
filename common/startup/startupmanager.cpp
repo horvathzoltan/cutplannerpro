@@ -549,3 +549,5 @@ StartupStatus StartupManager::initPowderConsumptionRegistry()
     EventLogger::instance().zEvent(StatusHelper::getMessage(true, "festési normák init"));
     return StartupStatus::success();
 }
+
+

@@ -7,9 +7,13 @@ QString StorageType::toString() const {
     switch (value) {
     case Type::Warehouse: return "Warehouse";
     case Type::Shelf:     return "Shelf";
+    case Type::Rack:      return "Rack";
     case Type::Box:       return "Box";
     case Type::Pallet:    return "Pallet";
     case Type::Other:     return "Other";
+    case Type::Zone:     return "Zone";
+    case Type::Floor:     return "Floor";
+    case Type::Crate:     return "Crate";
     case Type::Unknown:   return "Unknown";
     }
     return "Unknown";
@@ -18,10 +22,18 @@ QString StorageType::toString() const {
 StorageType StorageType::fromString(const QString& str) {
     const QString lowered = str.toLower().trimmed();
     if (lowered == "warehouse") return StorageType(Type::Warehouse);
+    if (lowered == "rack")     return StorageType(Type::Rack);
+
     if (lowered == "shelf")     return StorageType(Type::Shelf);
     if (lowered == "box")       return StorageType(Type::Box);
     if (lowered == "pallet")    return StorageType(Type::Pallet);
+    if (lowered == "crate")     return StorageType(Type::Crate);
+
+    if (lowered == "zone")     return StorageType(Type::Zone);
+    if (lowered == "floor")     return StorageType(Type::Floor);
+
     if (lowered == "other")     return StorageType(Type::Other);
+
     return StorageType(Type::Unknown);
 }
 

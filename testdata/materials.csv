@@ -2,6 +2,7 @@ name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;cuttingMod
 Csőtengely Ø70x5000mm;NP-ROLL70-5000;5000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø70x6000mm;NP-ROLL70-6000;6000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø70x7000mm;NP-ROLL70-7000;7000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
+Csőtengely Ø78x5000mm;NP-ROLL78-5000;5000;78;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø78x6000mm;NP-ROLL78-6000;6000;78;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø78x7000mm;NP-ROLL78-7000;7000;78;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Zárósúly Ø12x3000mm;NP-BAR12-3000;3000;12;;Round;CM1;Steel;;SM;Length;None;0;0;653;1000;2500;;;Suly

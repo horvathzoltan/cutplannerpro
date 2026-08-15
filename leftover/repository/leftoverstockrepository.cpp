@@ -191,7 +191,7 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
     entry.optimizationId     = row.optimizationId;
     //entry.storageId = storage->id;
 
-    // ⭐ Storage NEM kötelező
+    // ⭐ Storage NEM kötelező, de fallback szükséges
     if (!row.storageBarcode.isEmpty()) {
         const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
         if (storage)
@@ -199,13 +199,15 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
         else {
             // ismeretlen storage → engedjük meg, csak logoljuk
             ctx.addError(ctx.currentLineNumber(),
-                         L("⚠️ Ismeretlen tároló barcode '%1' – üres storageId lesz")
+                         L("⚠️ Ismeretlen tároló barcode '%1'")
                              .arg(row.storageBarcode));
-            entry.storageId = QUuid();
+            const auto* fb = StorageRegistry::instance().fallbackStorage();
+            entry.storageId = fb ? fb->id : QUuid();
         }
     } else {
-        // nincs storage → üres ID
-        entry.storageId = QUuid();
+        // üres storageBarcode → fallback
+        const auto* fb = StorageRegistry::instance().fallbackStorage();
+        entry.storageId = fb ? fb->id : QUuid();
     }
 
     // createdAt

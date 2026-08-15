@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
                                  status.warnings().join("\n"));
     }
 
+
     // --test maki
     if (SettingsManager::instance().isTestMode()) {
         auto testProfile = SettingsManager::instance().testProfile();

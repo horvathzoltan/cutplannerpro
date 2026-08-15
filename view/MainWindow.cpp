@@ -2,6 +2,7 @@
 #include "leftover/view/dialog/leftoverauditdialog.h"
 #include "service/relocation/relocationplanner.h"
 #include "settings/settingsdialog.h"
+#include "storage/utils/storageutils.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
 #include "ui_MainWindow.h"
@@ -1596,15 +1597,35 @@ void MainWindow::buildStorageTree()
     const auto& storages = StorageRegistry::instance().readAll();
     QHash<QUuid, QTreeWidgetItem*> nodes;
 
-    // Node-ok létrehozása
     for (const auto& s : storages) {
+
+        QString logistic = StorageRegistry::instance().logisticBarcode(s.id);
+        bool isLeaf = StorageUtils::isLeaf(s.id);
+
+        QString icon = s.type.icon();   // 🏬 / 🗃️ / 🗄️ / 📦
+        QString text = QString("%1 %2 (%3)")
+                           .arg(icon)
+                           .arg(s.name)
+                           .arg(logistic);
+
+        // levélelem → zöld levél + vékony betű
+        if (isLeaf) {
+            text = QString("🌿 %1").arg(text);
+        }
+
         auto* item = new QTreeWidgetItem();
-        item->setText(0, s.name);
         item->setData(0, Qt::UserRole, s.id);
+        item->setText(0, text);
+
+        // ⭐ FONT BEÁLLÍTÁS (HTML helyett)
+        QFont f = item->font(0);
+        f.setBold(!isLeaf);   // csomópont félkövér, levél vékony
+        item->setFont(0, f);
+
         nodes[s.id] = item;
     }
 
-    // Hierarchia felépítése parentId alapján
+    // hierarchia
     for (const auto& s : storages) {
         if (s.parentId.isNull()) {
             ui->treeStorage->addTopLevelItem(nodes[s.id]);
@@ -1615,6 +1636,8 @@ void MainWindow::buildStorageTree()
 
     ui->treeStorage->expandAll();
 }
+
+
 
 void MainWindow::refresh_InputTable()
 {
