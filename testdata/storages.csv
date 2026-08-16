@@ -1,6 +1,6 @@
 uuid;name;type;parent_id;barcode;comment
-d472c9e2-f382-4b6e-b412-22de88dd9ab0;DebreceniTelephely;Warehouse;;DE;"Debreceni telephely"
-d472c9e2-f382-4b6e-b412-22de88dd9ab1;HétvezérUtcaiTelephely;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab0;HETV;"Debrecen, Hétvezér utcai telephely"
+d472c9e2-f382-4b6e-b412-22de88dd9ab0;DebreceniTelephely;Site;;DE;"Debreceni telephely"
+d472c9e2-f382-4b6e-b412-22de88dd9ab1;HétvezérUtcaiTelephely;Site;d472c9e2-f382-4b6e-b412-22de88dd9ab0;HETV;"Debrecen, Hétvezér utcai telephely"
 d472c9e2-f382-4b6e-b412-22de88dd9ab3;Raktár 1;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH01;"1-es raktár"
 d472c9e2-f382-4b6e-b412-22de88dd9ab5;Raktár 4;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH04;"4-es raktár"
 d472c9e2-f382-4b6e-b412-22de88dd9ab6;ÚjCsarnok;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH03;"Zsolti melletti raktár"

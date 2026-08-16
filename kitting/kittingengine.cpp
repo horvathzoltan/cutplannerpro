@@ -27,11 +27,15 @@ QVector<KittingInstruction> KittingEngine::expand(
     if (type->code == "NP")
         return Kitting::Naphalo::expand(req, pwm, plan);
 
+    /*
     if (type->code == "SR")
-        //return Kitting::Savrolo::expand(req, pwm, plan);
+        return Kitting::Savrolo::expand(req, pwm, plan);
+*/
 
+    /*
     if (type->code == "ROL")
-        //return Kitting::Roletta::expand(req, pwm, plan);
+        return Kitting::Roletta::expand(req, pwm, plan);
+*/
 
     return {};
 }

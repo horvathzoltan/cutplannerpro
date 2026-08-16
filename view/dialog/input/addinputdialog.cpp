@@ -183,13 +183,13 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             return;
         }
 
+        auto mat = MaterialRegistry::instance().findById(nextMat);
+
+        QString matName = mat?mat->toReportLabel():"?";
+        zInfo("nextMat:" + matName);
+
         int idx = ui->comboMaterial->findData(nextMat);
         if (idx >= 0){
-            auto mat = MaterialRegistry::instance().findById(nextMat);
-
-            QString matName = mat?mat->toReportLabel():"?";
-            zInfo("nextMat:" + matName);
-
             _editMode = EditMode::ItemEdit;
             applyReferenceState(ReferenceState::FullRequest);
             _suppressLengthSuggestion = false;   // biztos ami biztos
@@ -200,8 +200,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
             ui->editLength->setFocus();
         } else{
-            zInfo("nextMat nem található a comboban ");
-
+            zInfo(L("nextMat nem található a comboban: %1").arg(matName));
         }
     });
 
@@ -490,6 +489,24 @@ void AddInputDialog::refreshBom()
     // 1) BOM ajánlás beállítása
     _bomModel.bomList = recommended;
 
+    // ⭐ Második kör: szűrés — csak a vágási anyagok kerülnek a vágási workflow BOM-jába
+    QVector<QUuid> cuttableBom;
+    for (auto id : _bomModel.bomList) {
+        const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+        if (!m) continue;
+
+        if (m->cuttingMode == CuttingMode::Length) {
+            cuttableBom << id;
+        } else {
+            zInfo(QString("  KIT item present in BOM (kept for kitting, skipped for cutting): %1 [%2]")
+                      .arg(m->name)
+                      .arg(m->barcode));
+        }
+    }
+
+    // ⭐ A vágási workflow BOM-ja csak a CUT anyagokat tartalmazza
+    _bomModel.bomList = cuttableBom;
+
     // 2) lastSuggestedMaterial szinkronizálása az új BOM-hoz
 
     // ranked-first fallback
@@ -523,10 +540,22 @@ void AddInputDialog::refreshBom()
     zInfo("=== Recommended BOM order ===");
     for (auto id : _bomModel.bomList) {
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
-        if (m)
-            zInfo(QString("  %1  [%2]").arg(m->name).arg(m->barcode));
+        if (!m) continue;
+
+        QString mode;
+        switch (m->cuttingMode) {
+        case CuttingMode::Length: mode = "CUT"; break;
+        case CuttingMode::Piece:  mode = "KIT"; break;
+        default:                  mode = "N/A"; break;
+        }
+
+        zInfo(QString("  %1  [%2]  (%3)")
+                  .arg(m->name)
+                  .arg(m->barcode)
+                  .arg(mode));
     }
     zInfo("=== END Recommended BOM ===");
+
 
     // 3) ComboMaterial szinkronizálása a lastSuggestedMaterial-hez
     // if (!_bomModel.lastSuggestedMaterial.isNull()) {
@@ -712,7 +741,12 @@ void AddInputDialog::populateMaterialCombo() {
         if (m.cuttingMode != CuttingMode::Length)
             continue;
 
-        ui->comboMaterial->addItem(m.toDisplay(), m.id);
+        QString label = m.toDisplay();
+        if (m.cuttingMode != CuttingMode::Length)
+            label += "  (KIT)";
+
+        ui->comboMaterial->addItem(label, m.id);
+
     }
 }
 
@@ -1725,9 +1759,116 @@ QString AddInputDialog::computeNextItemNumber()
 }
 
 
+// QUuid AddInputDialog::computeNextMaterialForCurrentRef()
+// {
+//     zInfo("computeNextMaterialForCurrentRef() called");
+//     {
+//         QUuid id = _bomModel.lastSuggestedMaterial;
+//         if (id.isNull()) {
+//             zInfo("  lastSuggestedMaterial BEFORE: NULL");
+//         } else {
+//             const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//             if (m)
+//                 zInfo(QString("  lastSuggestedMaterial BEFORE: %1 [%2]")
+//                           .arg(m->name)
+//                           .arg(m->barcode));
+//             else
+//                 zInfo(QString("  lastSuggestedMaterial BEFORE: UNKNOWN GUID %1")
+//                           .arg(id.toString()));
+//         }
+//     }
+
+//     zInfo("  addedMaterials size: " + QString::number(_bomModel.addedMaterials.size()));
+
+//     zInfo("  BOM list in computeNextMaterial:");
+//     for (auto id : _bomModel.bomList) {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//         if (m)
+//             zInfo(QString("    %1 [%2]").arg(m->name).arg(m->barcode));
+//     }
+
+//     // 0) Ha nincs BOM → nincs ajánlás
+//     if (_bomModel.bomList.isEmpty())
+//         return QUuid();
+
+//     // 1) Ha nincs lastSuggestedMaterial → keressük meg az első olyan BOM elemet,
+//     //    ami még nincs addedMaterials-ben
+//     if (_bomModel.lastSuggestedMaterial.isNull()) {
+//         for (const auto& id : _bomModel.bomList) {
+//             if (!_bomModel.addedMaterials.contains(id)) {
+//                 _bomModel.lastSuggestedMaterial = id;
+//                 zInfo("  FIRST pick (no lastSuggestedMaterial): " + id.toString());
+//                 return id;
+//             }
+//         }
+//         zInfo("  No candidate found (all added)");
+//         return QUuid(); // minden hozzá van adva
+//     }
+
+//     // ⭐ ÚJ LOGIKA: ha a lastSuggestedMaterial még nincs addedMaterials-ben,
+//     // akkor EZ az aktuális jelölt → NEM szabad átugrani
+//     if (!_bomModel.addedMaterials.contains(_bomModel.lastSuggestedMaterial)) {
+
+//         auto * mat = MaterialRegistry::instance().findById(_bomModel.lastSuggestedMaterial);
+//         QString matName = mat?mat->toReportLabel():"?";
+//         zInfo("  USING current lastSuggestedMaterial (not yet added): " + matName);
+//         return _bomModel.lastSuggestedMaterial;
+//     }
+
+//     // 2) Ha van lastSuggestedMaterial ÉS már hozzá lett adva →
+//     // keressük meg a BOM-ban, és lépjünk tovább
+//     int idx = _bomModel.bomList.indexOf(_bomModel.lastSuggestedMaterial);
+//     zInfo("  indexOf(lastSuggestedMaterial) in BOM: " + QString::number(idx));
+
+//     int start = (idx >= 0 ? idx + 1 : 0);
+
+//     //3) Körbejárás ID-alapon
+//     for (int i = 0; i < _bomModel.bomList.size(); ++i) {
+//         int pos = (start + i) % _bomModel.bomList.size();
+//         QUuid candidate = _bomModel.bomList[pos];
+
+//         // if (!_bomModel.addedMaterials.contains(candidate)) {
+//         //     _bomModel.lastSuggestedMaterial = candidate;
+//         //     return candidate;
+//         // }
+//         if (_bomModel.addedMaterials.contains(candidate))
+//             continue;
+
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(candidate);
+//         if (!m) {
+//             zInfo("  SKIP: UNKNOWN MATERIAL ID: " + candidate.toString());
+//             continue;
+//         }
+
+//         // ⭐ Ha KIT anyag → átugorjuk + logoljuk
+//         if (m->cuttingMode != CuttingMode::Length) {
+//             zInfo(QString("  SKIP KIT item (non-cuttable): %1 [%2]")
+//                       .arg(m->name)
+//                       .arg(m->barcode));
+//             continue;
+//         }
+
+//         // ⭐ Ha CUT anyag → ez a következő
+//         zInfo(QString("  NEXT cuttable material: %1 [%2]")
+//                   .arg(m->name)
+//                   .arg(m->barcode));
+
+//         _bomModel.lastSuggestedMaterial = candidate;
+//         return candidate;
+
+//     }
+
+
+
+//     // 4) Ha minden hozzá van adva → nincs ajánlás
+//     return QUuid();
+// }
+
 QUuid AddInputDialog::computeNextMaterialForCurrentRef()
 {
     zInfo("computeNextMaterialForCurrentRef() called");
+
+    // Log lastSuggestedMaterial
     {
         QUuid id = _bomModel.lastSuggestedMaterial;
         if (id.isNull()) {
@@ -1746,6 +1887,7 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
 
     zInfo("  addedMaterials size: " + QString::number(_bomModel.addedMaterials.size()));
 
+    // Log BOM
     zInfo("  BOM list in computeNextMaterial:");
     for (auto id : _bomModel.bomList) {
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
@@ -1757,49 +1899,84 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
     if (_bomModel.bomList.isEmpty())
         return QUuid();
 
-    // 1) Ha nincs lastSuggestedMaterial → keressük meg az első olyan BOM elemet,
-    //    ami még nincs addedMaterials-ben
+    // 1) Ha nincs lastSuggestedMaterial → keressük meg az első szabad BOM elemet
     if (_bomModel.lastSuggestedMaterial.isNull()) {
         for (const auto& id : _bomModel.bomList) {
+
+            const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+            if (!m) continue;
+
+            // ⭐ KIT anyag → átugrás
+            if (m->cuttingMode != CuttingMode::Length) {
+                zInfo(QString("  SKIP KIT item (non-cuttable): %1 [%2]")
+                          .arg(m->name)
+                          .arg(m->barcode));
+                continue;
+            }
+
             if (!_bomModel.addedMaterials.contains(id)) {
                 _bomModel.lastSuggestedMaterial = id;
-                zInfo("  FIRST pick (no lastSuggestedMaterial): " + id.toString());
+                zInfo("  FIRST pick (cuttable): " + id.toString());
                 return id;
             }
         }
-        zInfo("  No candidate found (all added)");
-        return QUuid(); // minden hozzá van adva
+
+        zInfo("  No cuttable candidate found (all added or KIT)");
+        return QUuid();
     }
 
-    // ⭐ ÚJ LOGIKA: ha a lastSuggestedMaterial még nincs addedMaterials-ben,
-    // akkor EZ az aktuális jelölt → NEM szabad átugrani
+    // 2) Ha van lastSuggestedMaterial ÉS még nincs hozzáadva → visszaadjuk, ha CUT
     if (!_bomModel.addedMaterials.contains(_bomModel.lastSuggestedMaterial)) {
 
-        auto * mat = MaterialRegistry::instance().findById(_bomModel.lastSuggestedMaterial);
-        QString matName = mat?mat->toReportLabel():"?";
-        zInfo("  USING current lastSuggestedMaterial (not yet added): " + matName);
-        return _bomModel.lastSuggestedMaterial;
-    }
+        const MaterialMaster* m = MaterialRegistry::instance().findById(_bomModel.lastSuggestedMaterial);
+        if (m && m->cuttingMode == CuttingMode::Length) {
+            zInfo("  USING current lastSuggestedMaterial (cuttable)");
+            return _bomModel.lastSuggestedMaterial;
+        }
 
-    // 2) Ha van lastSuggestedMaterial ÉS már hozzá lett adva →
-    // keressük meg a BOM-ban, és lépjünk tovább
-    int idx = _bomModel.bomList.indexOf(_bomModel.lastSuggestedMaterial);
-    zInfo("  indexOf(lastSuggestedMaterial) in BOM: " + QString::number(idx));
-
-    int start = (idx >= 0 ? idx + 1 : 0);
-
-    // 3) Körbejárás ID-alapon
-    for (int i = 0; i < _bomModel.bomList.size(); ++i) {
-        int pos = (start + i) % _bomModel.bomList.size();
-        QUuid candidate = _bomModel.bomList[pos];
-
-        if (!_bomModel.addedMaterials.contains(candidate)) {
-            _bomModel.lastSuggestedMaterial = candidate;
-            return candidate;
+        // ⭐ KIT anyag → átugrás
+        if (m && m->cuttingMode != CuttingMode::Length) {
+            zInfo(QString("  SKIP KIT item (non-cuttable): %1 [%2]")
+                      .arg(m->name)
+                      .arg(m->barcode));
         }
     }
 
-    // 4) Ha minden hozzá van adva → nincs ajánlás
+    // 3) Ha már hozzá lett adva → keressük a következő CUT anyagot
+    int idx = _bomModel.bomList.indexOf(_bomModel.lastSuggestedMaterial);
+    int start = (idx >= 0 ? idx + 1 : 0);
+
+    for (int i = 0; i < _bomModel.bomList.size(); ++i) {
+
+        int pos = (start + i) % _bomModel.bomList.size();
+        QUuid candidate = _bomModel.bomList[pos];
+
+        const MaterialMaster* m = MaterialRegistry::instance().findById(candidate);
+        if (!m) continue;
+
+        // már hozzáadva → ugrás
+        if (_bomModel.addedMaterials.contains(candidate))
+            continue;
+
+        // ⭐ KIT anyag → átugrás
+        if (m->cuttingMode != CuttingMode::Length) {
+            zInfo(QString("  SKIP KIT item (non-cuttable): %1 [%2]")
+                      .arg(m->name)
+                      .arg(m->barcode));
+            continue;
+        }
+
+        // ⭐ CUT anyag → ez a következő
+        zInfo(QString("  NEXT cuttable material: %1 [%2]")
+                  .arg(m->name)
+                  .arg(m->barcode));
+
+        _bomModel.lastSuggestedMaterial = candidate;
+        return candidate;
+    }
+
+    // 4) Ha nincs több CUT anyag → kész
+    zInfo("  No more cuttable materials → BOM complete.");
     return QUuid();
 }
 

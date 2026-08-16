@@ -5,6 +5,7 @@ StorageType::StorageType(Type t) : value(t) {}
 
 QString StorageType::toString() const {
     switch (value) {
+    case Type::Site: return "Site";
     case Type::Warehouse: return "Warehouse";
     case Type::Shelf:     return "Shelf";
     case Type::Rack:      return "Rack";
@@ -21,6 +22,8 @@ QString StorageType::toString() const {
 
 StorageType StorageType::fromString(const QString& str) {
     const QString lowered = str.toLower().trimmed();
+    if (lowered == "site") return StorageType(Type::Site);
+
     if (lowered == "warehouse") return StorageType(Type::Warehouse);
     if (lowered == "rack")     return StorageType(Type::Rack);
 

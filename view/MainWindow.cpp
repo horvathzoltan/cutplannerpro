@@ -2,6 +2,7 @@
 #include "leftover/view/dialog/leftoverauditdialog.h"
 #include "service/relocation/relocationplanner.h"
 #include "settings/settingsdialog.h"
+#include "storage/storagelabelbatchdialog.h"
 #include "storage/utils/storageutils.h"
 #include "tableutils/highlightdelegate.h"
 #include "tableutils/storageaudittable_connector.h"
@@ -65,7 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
     ActionConnectorModel m1{
         .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
         .actSettings = MainWindowUIBuilder::createSettingsAction(this),
-        .actSeriesMatrix   =   _actSeriesMatrix // 🔹 egyszerű action
+        .actSeriesMatrix   =   _actSeriesMatrix, // 🔹 egyszerű action
+        .actStorageLabelBatch = new QAction("📦 Tömeges címke", this)
+
     };
 
     // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
@@ -114,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
     _kittingPresenter = new KittingPresenter(this, this);
+    _storagePresenter = new StoragePresenter(this, this);
 
     // 🔦 Sorvezető delegate bekötése
     _highlightDelegate = new HighlightDelegate(ui->tableCuttingInstruction);
@@ -391,6 +395,11 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_StorageAudit_2, &QPushButton::clicked,
             this, &MainWindow::handle_btn_StorageAudit_2_clicked);
 
+    connect(ui->btn_StorageLabel, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_StorageLabel_clicked);
+
+
+
 }
 
 void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
@@ -398,6 +407,8 @@ void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
     ui->mainToolBar->addAction(m.actMaterialFinder);
     ui->mainToolBar->addAction(m.actSettings);
     ui->mainToolBar->addAction(m.actSeriesMatrix);   // 🔹 ÚJ
+    ui->mainToolBar->addAction(m.actStorageLabelBatch);
+
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
@@ -449,6 +460,9 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
                     _seriesMatrixView->activateWindow();
                 }
             });
+
+    connect(m.actStorageLabelBatch, &QAction::triggered,
+            this, &MainWindow::handle_act_StorageLabelBatch_clicked);
 
 
 }
@@ -1429,6 +1443,30 @@ void MainWindow::handle_btn_RunOutMaterials_clicked()
     dlg.exec();
 }
 
+
+QUuid MainWindow::currentSelectedStorageId() const
+{
+    QModelIndex idx = ui->treeStorage->currentIndex();
+    if (!idx.isValid())
+        return {};
+
+    auto a =  idx.data(Qt::UserRole);
+    return a.toUuid();
+}
+
+
+void MainWindow::handle_btn_StorageLabel_clicked()
+{
+    auto storageId = currentSelectedStorageId();
+    if (storageId.isNull()) {
+        zEvent("❌ Nincs kiválasztott tárhely.");
+        return;
+    }
+
+    storagePresenter()->exportStorageLabelPdf(storageId);
+}
+
+
 void MainWindow::handle_btn_StorageAudit_2_clicked()
 {
     QString report = _stockPresenter->ReportStorageAudit();
@@ -1565,6 +1603,20 @@ void MainWindow::handle_act_MaterialFinder_clicked()
 void MainWindow::handle_act_Settings_clicked(){
     SettingsDialog dlg(this);
     dlg.exec();
+}
+
+void MainWindow::handle_act_StorageLabelBatch_clicked()
+{
+    StorageLabelBatchDialog dlg(this);
+
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+
+    auto selected = dlg.selectedStorages();
+    if (selected.isEmpty())
+        return;
+
+    _storagePresenter->exportMultipleLabels(selected);
 }
 
 void MainWindow::onHighlightLeftover(const QUuid& id)

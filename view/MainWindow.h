@@ -15,6 +15,7 @@
 #include "stock/presenter/stockpresenter.h"
 #include "leftover/presenter/leftoverpresenter.h"
 #include "presenter/storageauditpresenter.h"
+#include "storage/presenter/storagepresenter.h"
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
 #include "cutting/export/sortmode.h"
@@ -80,6 +81,7 @@ public:
 
     CuttingPresenter* cuttingPresenter(){return _cuttingPresenter;}
     StorageAuditPresenter* storageAuditPresenter(){return _storageAuditPresenter;}
+    StoragePresenter* storagePresenter() { return _storagePresenter; }
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -118,6 +120,7 @@ private slots:
 
     void handle_act_MaterialFinder_clicked();
     void handle_act_Settings_clicked();
+    void handle_act_StorageLabelBatch_clicked();
 
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
@@ -131,6 +134,7 @@ private slots:
     void handle_btn_OptLeftoverAudit_clicked();
     void handle_btn_RunOutMaterials_clicked();
     void handle_btn_StorageAudit_2_clicked();
+    void handle_btn_StorageLabel_clicked();
 
     // Review funkció - visszaolvasás
     void handle_btn_Review_clicked();
@@ -143,6 +147,7 @@ private:
     PaintPresenter* _paintPresenter = nullptr;
     StorageAuditPresenter* _storageAuditPresenter = nullptr;
     KittingPresenter* _kittingPresenter = nullptr;
+    StoragePresenter* _storagePresenter = nullptr;
 
     //CutAnalyticsPanel* analyticsPanel = nullptr;
     HighlightDelegate *_highlightDelegate;
@@ -189,6 +194,8 @@ private:
         QAction* actMaterialFinder = nullptr;
         QAction* actSettings = nullptr;
         QAction* actSeriesMatrix = nullptr;
+        QAction* actStorageLabelBatch = nullptr;
+
     };
 
     void ActionConnector_connect(ActionConnectorModel& a);
@@ -196,4 +203,5 @@ private:
     void buildStorageTree();
     SortMode selectedSortMode() const;
     QVector<QString> getPriorityReferences() const;
+    QUuid currentSelectedStorageId() const;
 };

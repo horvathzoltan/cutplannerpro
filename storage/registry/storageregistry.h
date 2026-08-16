@@ -22,14 +22,30 @@ private:
         Other
     };
 
-
     struct SemanticRule {
         QString name;
         QRegularExpression pattern;
         QVector<StorageType::Type> allowedTypes;
     };
 
-    QVector<SemanticRule> _semanticRules;
+    static inline const QString PREFIX = "[A-Z0-9]{2,20}(_[A-Z0-9]+)*";
+
+    static inline const QMap<StorageType::Type, QString> POSTFIX = {
+        { StorageType::Type::Site,      "$" },
+        { StorageType::Type::Warehouse, "$" },
+
+        // prefix opcionális → az első '_' is legyen opcionális
+        { StorageType::Type::Zone,      "_?(IN|OUT)_(R|L)$" },
+        { StorageType::Type::Floor,     "_?(IN|OUT|R|L|F\\d+|B\\d+)*$" },
+
+        { StorageType::Type::Rack,      "_?(RR|RL|LR|LL|R\\d+|L\\d+)$" },
+
+        // LEAF-ek — prefix és '_' opcionális
+        { StorageType::Type::Shelf,     "_?(P\\d+|S\\d+|E\\d+|H\\d+)(_[A-Z0-9]+)?$" },
+        { StorageType::Type::Box,       "_?(B\\d+|BOX\\d+)(_[A-Z0-9]+)?$" },
+        { StorageType::Type::Pallet,    "_?(PL\\d+|PAL\\d+)(_[A-Z0-9]+)?$" },
+        { StorageType::Type::Crate,     "_?(C\\d+|CRATE\\d+)(_[A-Z0-9]+)?$" }
+    };
 
 
     StorageRegistry();
@@ -55,7 +71,7 @@ private:
     void validateRepeatedTags(const StorageEntry *s, const QStringList &tags) const;
     void validateSimilarTags(const StorageEntry *s, const QStringList &tags) const;
     StorageRegistry::TagCategory categorizeTag(const QString &tag) const;
-    void initializeSemanticRules();
+    //void initializeSemanticRules();
     void validateSemantic(const StorageEntry *s) const;
     //QString suggestSemanticFix(const StorageEntry *s) const;
     QString suggestWarehouseFix(const QString &bc) const;
@@ -67,6 +83,7 @@ private:
     bool isBarcodeUnique(const QString &bc, const QUuid &selfId) const;
     bool isFixUnique(const QString &bc, const QUuid &selfId) const;
     QString makeFixUnique(const QString &bc, const QUuid &selfId) const;
+    QRegularExpression semanticRuleFor(StorageType::Type t) const;
 public:
     static StorageRegistry& instance();
 

@@ -5,6 +5,7 @@
 class StorageType {
 public:
     enum class Type {
+        Site,
         Warehouse,
         Rack,
         Shelf,
@@ -19,6 +20,7 @@ public:
 
     QString icon() const {
         switch (value) {
+        case Type::Site: return "🏢"; // telephely / campus / facility
         case Type::Warehouse: return "📁";
         case Type::Rack:      return "📁";
         case Type::Shelf:     return "🗄️";
@@ -42,17 +44,34 @@ public:
     bool operator==(const StorageType& other) const; // Egyenlőség
 
 
+    bool isNode() const
+    {
+        return value == Type::Site ||
+               value == Type::Warehouse ||
+               value == Type::Zone ||
+               value == Type::Floor ||
+               value == Type::Rack;
+    }
+
+    bool isLeaf() const
+    {
+        return value == Type::Shelf ||
+               value == Type::Box ||
+               value == Type::Pallet ||
+               value == Type::Crate;
+    }
+
     bool isLocation() const
     {
-        if(value == Type::Rack) return true;
-        if(value == Type::Shelf) return true;
-        if(value == Type::Box) return true;
-        if(value == Type::Pallet) return true;
-        if(value == Type::Crate) return true;
-        if(value == Type::Floor) return true;
-
-        return false;
+        return value == Type::Rack ||
+               value == Type::Shelf ||
+               value == Type::Box ||
+               value == Type::Pallet ||
+               value == Type::Crate ||
+               value == Type::Floor;
     }
+
+
     // Opcionális UI helper
     // QColor uiColor() const;
 };

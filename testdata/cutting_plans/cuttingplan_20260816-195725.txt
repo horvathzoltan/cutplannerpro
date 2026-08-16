@@ -1,0 +1,18 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"1111";"Teszt Elek";2000;1000;1995;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1111";"Teszt Elek";2000;1000;1995;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1111";"Teszt Elek";2000;1000;1960;;1;1;0;"RAL 7016";NP-SZ-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1112";"Teszt  Béla";2000;1000;1995;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1112";"Teszt  Béla";2000;1000;1995;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1112";"Teszt  Béla";2000;1000;1960;;1;0;0;"RAL 7016";NP-SZ-7016;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1123";"Teszt  Aladár";2000;1000;1995;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-08-28;NP;BOW;meghajtas=kurblis;Unknown
+"1123";"Teszt  Aladár";2000;1000;1995;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-08-28;NP;BOW;meghajtas=kurblis;Unknown
+"1123";"Teszt  Aladár";2000;1000;1960;;1;0;1;"RAL 7016";NP-SZ-7016;Width;false;2026-08-28;NP;BOW;meghajtas=kurblis;Unknown
+"1234";"Teszt  Elek";2000;1000;1995;;1;0;1;"";NP-T;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1234";"Teszt  Elek";2000;1000;1995;;1;0;1;"";NP-TF;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1234";"Teszt  Elek";2000;1000;1960;;1;0;1;"";NP-SZ;Width;false;2026-08-22;NP;BOW;meghajtas=kurblis;Unknown
+"1235";"Teszt  Elek";2000;1000;1995;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-08-21;NP;BOW;meghajtas=kurblis;SM
+"1235";"Teszt  Elek";2000;1000;1995;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-08-21;NP;BOW;meghajtas=kurblis;SM
+"1235";"Teszt  Elek";2000;1000;1960;;1;0;1;"RAL 7016";NP-SZ-7016;Width;false;2026-08-21;NP;BOW;meghajtas=kurblis;SM
+"1235";"Teszt  Elek";2000;1000;1946;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-08-21;NP;BOW;meghajtas=kurblis;SM
+"1235";"Teszt  Elek";2000;1000;1925;;1;0;1;"RAL 7016";NP-BAR12-4000;Width;false;2026-08-21;NP;BOW;meghajtas=kurblis;SM

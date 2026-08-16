@@ -15,6 +15,7 @@ message( "TARGET = "$$TARGI )
 
 SOURCES += \
     calculation/lengthcalculator.cpp \
+    common/qrcodegen/qrcodegen.cpp \
     cutting/export/cutinstructionservice.cpp \
     cutting/snapshot/cuttingsnapshotdeserializer.cpp \
     cutting/snapshot/cuttingsnapshotserializer.cpp \
@@ -69,6 +70,8 @@ SOURCES += \
     settings/settingsmanager.cpp \
     common/startup/startupmanager.cpp \
     settings/settingsmeta.cpp \
+    storage/presenter/storagepresenter.cpp \
+    storage/storagelabelbatchdialog.cpp \
     tests/testmanager.cpp \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
@@ -147,6 +150,8 @@ SOURCES += \
 
 HEADERS += \
     common/stringsimilarity_helper.h \
+    common/qrcodepainter.h \
+    common/qrcodegen/qrcodegen.hpp \
     cutting/export/cutinstructionservice.h \
     cutting/export/sortmode.h \
     cutting/snapshot/CuttingSnapshotFormat.h \
@@ -226,6 +231,9 @@ HEADERS += \
     materials/utils/material_group_utils.h \
     materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
+    storage/presenter/storagepresenter.h \
+    storage/storagelabelbatchdialog.h \
+    storage/utils/storage_label_utils.h \
     storage/utils/storageutils.h \
     model/storageaudit/audit_enums.h \
     paint/model/powder_consumption_model.h \
@@ -436,6 +444,7 @@ HEADERS += \
 
 FORMS += \
     settings/settingsdialog.ui \
+    storage/storagelabelbatchdialog.ui \
     view/MainWindow.ui \
     view/dialog/input/addinputdialog.ui \
     view/dialog/input/clonerequestdialog.ui \
