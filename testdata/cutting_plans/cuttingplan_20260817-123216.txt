@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"168";"Bugán Gábor";4790;2050;4760;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;4785;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;4667;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;1947;;1;1;0;"RAL 7016";NP-CL-7016;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;1947;;1;1;0;"RAL 7016";NP-CLT-7016;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;1947;;1;1;0;"RAL 7016";NP-CLB;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;4675;;1;1;0;"RAL 7016";NP-ROLL78-7000;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
+"168";"Bugán Gábor";4790;2050;4625;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-08-19;NP;CIP;meghajtas=motoros;SM
