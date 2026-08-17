@@ -1,168 +1,209 @@
-Zoltán, ez **nagyon jó irány**, és most már látszik, hogy a vonalkódos workflow **nem csak egy extra funkció**, hanem *össze tudja kötni az egész rendszert*:
-
-- leftover fotók → vonalkódok automatikus felismerése
-- tételszám státuszok → vonalkódos állapotváltás
-- request keresés → vonalkód alapján automatikus megnyitás
-- hulló felvétel → vonalkód alapján automatikus rögzítés
-
-Ez már egy **egységes vonalkód‑vezérelt gyártási rendszer**.
-
-És igen: **meg tudjuk csinálni**, és nem kell hozzá OpenCV.
+**Zoltán, itt a teljes, végrehajtható, pontonkénti terv — a cutting‑bundle rendszer bevezetésének teljes architektúrája, stabilan, szétesés nélkül.**
+Ez a terv **implementálható**, **auditálható**, és **lépésről lépésre végrehajtható**.
+Nem elmélet, hanem konkrét fejlesztési roadmap.
 
 ---
 
-# ⭐ Snapshot: hullók betöltése
+# **I. FÁZIS — Bundle definíció és Request‑oldali alapok (alapozás)**
 
-Amikor a program indul, beolvassa a leftovereket (hullókat).
-Ha valami hiányzik:
+## **1. BundleDefinition bevezetése a Material törzsben**
+- Új struktúra: `BundleDefinition`
+- Tartalmazza:
+  - bundleMaterialId (UUID)
+  - bundleLength (max komponenshossz)
+  - components[]:
+    - materialId
+    - count
+    - baseLength (opcionális)
+- Példa: LábBundle (tok+láb+takaró+betét)
 
-### Opciók:
-- **Figyelmeztetés**
-  → „A leftover #12345 nem található, ellenőrizd a raktárt.”
-
-- **Helyettesítés**
-  → ha van hasonló méretű leftover, automatikusan ajánlhatjuk.
-
-- **Hibaüzenet**
-  → ha kritikus, pl. vágási tervhez kell.
-
-A legjobb: **figyelmeztetés + ajánlás**, nem blokkoljuk a workflow‑t.
+**Eredmény:** A rendszer tudja, mi az a cutting bundle.
 
 ---
 
-# ⭐ Request: tételszám kereső
+## **2. MaterialMaster bővítése bundle anyagokkal**
+- Felvesszük:
+  - MAT_LEG_BUNDLE
+  - MAT_TOK_BUNDLE (ha kell)
+  - MAT_INSERT_BUNDLE (ha kell)
+- Ezek **virtuális cutting anyagok**, nem fizikai szálak.
 
-Pontosan úgy működhet, ahogy mondod:
-
-### 1) Tételszám keresés több fájlban
-A program végignézi a request‑fájlokat:
-
-- ha 1 találat → preview → OK → betölt
-- ha több találat → listát ad → preview → kiválasztás → betölt
-
-### 2) Mindig listát ad
-Ez még jobb UX:
-
-- a user látja a megrendelés preview‑t
-- látja a státuszt
-- látja a darabokat
-- látja a hullókat
-- látja a BOM‑ot
-
-Ez a „gyártási dashboard”.
+**Eredmény:** A DP tud bundle anyagot fogadni.
 
 ---
 
-# ⭐ Státusz a tételszámok mellé
+## **3. Request struktúra bővítése: `component_quantity`**
+- Új mező: `int component_quantity = 1;`
+- Jelentése:
+  - `quantity` = termék darabszám
+  - `component_quantity` = anyag darabszám per termék
 
-Ez nagyon fontos.
-
-### Példák:
-- **Új**
-- **Vágás alatt**
-- **Kész**
-- **Címkézve**
-- **Hulló rögzítve**
-- **Kiszállítva**
-
-A státuszváltást **vonalkódhoz kötjük**.
+**Eredmény:** A BOM nem keveri össze a két mennyiséget.
 
 ---
 
-# ⭐ Vonalkód a vágási terven
+## **4. BOM → Request generálás módosítása**
+- BOM sorok:
+  - láb: component_quantity = 2
+  - takaró: component_quantity = 2
+  - betét: component_quantity = 2
+- AddInputDialog:
+  - átvezeti a component_quantity‑t a Request‑be.
 
-Amikor generáljuk a vágási tervet:
-
-- a fejlécen → tételszám vonalkód
-- az elején → „vágás indítása” vonalkód
-- a végén → „vágás kész” vonalkód
-
-A dolgozó:
-
-- rábök a telefon kamerájával → kész
-- a rendszer automatikusan állapotot vált
-
-Ez ipari standard.
+**Eredmény:** A BOM továbbra is single anyagokat generál, de már bundle‑kompatibilis.
 
 ---
 
-# ⭐ A nagy kérdés:
-## „Lehetne‑e olyan vonalkód funkció, ami kitalálja, mit akarunk?”
+# **II. FÁZIS — Bundling logika (request redukció)**
 
-Igen.
-Ez a **smart barcode dispatcher**.
+## **5. Bundle‑detektálás a requestek között**
+- Csoportosítás:
+  - productTypeId
+  - productSubtypeId
+  - ownerName
+  - externalReference
+- Ha a csoport megfelel a BundleDefinition‑nek:
+  - ezek a requestek → `isBundled = true`
 
-### A logika:
-
-1. A user beolvas egy vonalkódot.
-2. A rendszer megnézi, milyen típusú:
-   - leftover barcode
-   - tételszám barcode
-   - vágási terv barcode
-   - státusz barcode
-   - anyag barcode
-3. A rendszer automatikusan eldönti, mit kell tenni.
-
-### Példák:
-
-#### 📦 Ha leftover vonalkód:
-- megnyitja a leftover dialogot
-- kitölti a mezőket
-- rögzíti a hullót
-- bezárja
-
-#### 📄 Ha tételszám vonalkód:
-- megnyitja a request preview‑t
-- mutatja a státuszt
-- a user OK → betölt
-
-#### 🔧 Ha „vágás indítása” vonalkód:
-- státusz = „Vágás alatt”
-
-#### ✔ Ha „vágás kész” vonalkód:
-- státusz = „Kész”
-- leftoverek automatikus felvétele (ha akarjuk)
-
-Ez egy **egységes vonalkód‑vezérelt workflow**.
+**Eredmény:** A fizikai requestek „alszanak”.
 
 ---
 
-# ⭐ Hogyan működik technikailag?
+## **6. BundleRequest generálása**
+- Új request:
+  - materialId = bundleMaterialId
+  - requiredLength = bundleLength
+  - quantity = termék quantity
+  - component_quantity = 1
 
-### 1) Vonalkód dispatcher
-Egyetlen belépési pont:
-
-```cpp
-void handleBarcode(const QString& code);
-```
-
-### 2) A dispatcher felismeri a típust:
-
-- prefix alapján
-- hossz alapján
-- regex alapján
-- ZXing metaadat alapján
-
-### 3) A dispatcher meghívja a megfelelő akciót:
-
-- `openLeftoverDialog(code)`
-- `openRequestPreview(code)`
-- `updateStatus(code)`
-- `openMaterialDialog(code)`
-
-### 4) A dialog automatikusan kitöltődik
-### 5) A user csak rányom az OK‑ra
-
-Ez a jövő.
+**Eredmény:** A DP csak bundle‑requestet lát.
 
 ---
 
-# ⭐ Következő lépés
+# **III. FÁZIS — Inventory snapshot (cutting bundle összeállítása)**
 
-Három irány:
+## **7. InventorySnapshot bővítése cutting bundle támogatással**
+- A snapshotban:
+  - stock fizikai szálak (tok, láb, takaró, betét)
+  - leftover bundle szálak (bundleInstance‑szel)
+- Cutting bundle összeállítása:
+  - a bundle komponenseit a stockból kiválasztjuk
+  - létrehozunk egy `CuttingBundleInstance`‑t:
+    - componentLengths
+    - sourceComponents (stock szálak listája)
 
-- Vonalkód dispatcher tervezése
-- Tételszám státusz rendszer
-- Leftover fotó feldolgozás
+**Eredmény:** A DP inputja cutting bundle szál lesz, nem fizikai szál.
 
-Mondd, melyikbe menjünk bele először.
+---
+
+# **IV. FÁZIS — Optimalizáció (DP 1. kör)**
+
+## **8. DP futtatása cutting bundle‑re**
+- Input:
+  - MAT_LEG_BUNDLE
+  - length = 7000
+  - quantity = N
+- Output:
+  - bundle CutPlan-ek
+  - bundle leftover-ek
+
+**Eredmény:** A DP tiszta marad, nem lát heterogén anyagokat.
+
+---
+
+# **V. FÁZIS — Cutting bundle → fizikai szál visszavetítés**
+
+## **9. Rávetítés a fizikai komponensekre**
+- A DP által adott 7000 mm mintát rávetítjük:
+  - láb → OK
+  - takaró → OK
+  - betét → **6000 → túlvágás**
+
+**Eredmény:** A túlvágás detektálható.
+
+---
+
+## **10. Nem teljesült requestek listája**
+- Betét darabok:
+  - `failed = true`
+  - `failReason = "Component too short"`
+- Ezekből új requestek generálódnak:
+  - NP‑CLB
+  - requiredLength = 6000
+  - quantity = flagged darabszám
+
+**Eredmény:** A rendszer nem hagy teljesületlen requestet.
+
+---
+
+# **VI. FÁZIS — Optimalizáció (DP 2. kör)**
+
+## **11. DP futtatása a flagged betétekre**
+- Input:
+  - NP‑CLB
+  - length = 6000
+  - quantity = flagged darabszám
+- Output:
+  - betét CutPlan-ek
+  - betét leftover-ek
+
+**Eredmény:** A betét is teljesül.
+
+---
+
+# **VII. FÁZIS — Végső vágási terv összeállítása**
+
+## **12. CutPlan-ek összevonása**
+- Bundle CutPlan-ek (DP 1. kör)
+- Betét CutPlan-ek (DP 2. kör)
+- Bundle leftover-ek
+- Betét leftover-ek
+
+**Eredmény:** Teljes, hiánytalan vágási terv.
+
+---
+
+# **VIII. FÁZIS — Fizikai vágás**
+
+## **13. Fizikai bundle felépítése**
+- A mapping réteg:
+  - kiválasztja a tok/láb/takaró/betét szálakat
+  - összeállítja a bundle fizikai rúdakat
+
+## **14. Vágás**
+- A gép:
+  - bundle mintát vág
+  - betét mintát vág
+  - leftovereket generál
+
+**Eredmény:** Fizikai vágás bundle‑kompatibilis.
+
+---
+
+# **IX. FÁZIS — Hulló tárolása**
+
+## **15. Bundle leftover tárolása**
+- `materialId = MAT_LEG_BUNDLE`
+- `bundleInstance.leftoverComponentLengths = {...}`
+
+## **16. Betét leftover tárolása**
+- `materialId = NP‑CLB`
+- `length = leftoverLength`
+
+**Eredmény:** A leftover ciklus zárt, DP‑kompatibilis.
+
+---
+
+# **X. FÁZIS — Kész rendszer**
+
+## **17. A következő optimalizáció már cutting bundle + leftover bundle + betét leftover alapján fut**
+
+**Eredmény:**
+A rendszer **nem esik szét**,
+**nem hagy teljesületlen requestet**,
+**nem keveri a csomagolási és cutting világot**,
+és **determinista**.
+
+---
+
+Ha akarod, a következő lépésben megírom a **BundleDefinition + component_quantity + CuttingBundleInstance** C++ patch‑tervet, teljesen diff‑mentesen, kézzel beilleszthető formában.
