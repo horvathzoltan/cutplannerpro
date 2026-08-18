@@ -630,6 +630,23 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
                 }
             }
 
+            // 🔍 4️⃣ Felesleg detektálása
+            for (auto it = cutInfos.begin(); it != cutInfos.end(); ++it) {
+                QUuid reqId = it.key();
+                if (!reqInfos.contains(reqId)) {
+                    anyError = true;
+                    reqError = true;
+
+                    auto *r = CuttingPlanRequestRegistry::instance().findById(reqId);
+                    QString rName = r?r->toString():"???";
+
+                    zWarning(
+                        QString("❌ AUDIT — Extra cut piece found without matching request: reqId=%1")
+                                 .arg(rName));
+                }
+            }
+
+            // 5️⃣ Összegzés
             if (!reqError)
                 zEvent("🟢 AUDIT — All requests fully satisfied (toldás-aware)");
             else
