@@ -1,4 +1,4 @@
-optimizer
+optimizer : FIXED
  - az történt, hogy 2.5 métert 3x vágott le egy 7 méteres stock szálból.
  szerintem amikor egy darab enem fér már fel a szálra, új szálat kezdünk, de nem jó, mert
  vagy nem kezdünk új szálat de a méret visszaugrik 7 méterre, vagy új szálat kezdünk, csak mégis a régire kerül a darab?

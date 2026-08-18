@@ -131,10 +131,10 @@ ReusableFitEngine::findBestReusableFit(const QVector<LeftoverStockEntry>& merged
                          : 0;
 
         if (needed > 0 && stock.availableLength_mm < needed) {
-            zInfo(QString("⛔ PATCH#1 — leftover kizárva: needed=%1, rodLen=%2, barcode=%3")
-                      .arg(needed)
-                      .arg(stock.availableLength_mm)
-                      .arg(stock.barcode));
+            // zInfo(QString("⛔ PATCH#1 — leftover kizárva: needed=%1, rodLen=%2, barcode=%3")
+            //           .arg(needed)
+            //           .arg(stock.availableLength_mm)
+            //           .arg(stock.barcode));
             continue;
         }
 

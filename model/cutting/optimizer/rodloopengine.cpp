@@ -149,6 +149,9 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
                      dpLimit = stockLen;
                      remainingLength = stockLen;
 
+                     zInfo(QString("🔁 ROD SWITCH REQUEST — StartNewStockRod for material=%1, pendingPiece=%2 mm")
+                               .arg(p.materialId.toString())
+                               .arg(p.info.length_mm));
                      // Új rúd indítása → a darab a következő rúdra kerül
                      return {RodStepResult::StartNewStockRod, p.materialId};
                  }
