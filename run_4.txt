@@ -1,3 +1,11 @@
+optimizer
+ - az történt, hogy 2.5 métert 3x vágott le egy 7 méteres stock szálból.
+ szerintem amikor egy darab enem fér már fel a szálra, új szálat kezdünk, de nem jó, mert
+ vagy nem kezdünk új szálat de a méret visszaugrik 7 méterre, vagy új szálat kezdünk, csak mégis a régire kerül a darab?
+ - nincs optimalizáció után sem audit, sem önellenőrzés funkció, ami rámutatna a hibákra
+ - a vágási utasításban van audit a kért és kapott darabokról, de nem olyan kellene
+ - külön kellene venni a szál igényt - és a vágási tervet
+
 "ok" dialog
  - kell egy emojira alapuló png ikonnal egy dialog, ami jelzi a sikeres műveletet
 
