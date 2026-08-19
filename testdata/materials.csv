@@ -1,4 +1,4 @@
-name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;goodLeftOverMax;externalCode;description;family
+csname;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;goodLeftOverMax;externalCode;description;family
 Csőtengely Ø70x5000mm;NP-ROLL70-5000;5000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø70x6000mm;NP-ROLL70-6000;6000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely
 Csőtengely Ø70x7000mm;NP-ROLL70-7000;7000;70;;Round;CM1;Steel;;SM;Length;None;0;75;700;1500;2500;;;Tengely

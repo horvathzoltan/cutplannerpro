@@ -1,0 +1,8 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"489";"SzabóG";75;225;720;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"490";"SzabóG";75;225;690;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"491";"SzabóG";75;225;650;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"492";"SzabóG";75;225;650;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"493";"SzabóG";75;225;690;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"494";"SzabóG";75;225;690;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
+"495";"SzabóG";75;225;790;;1;0;0;"RAL 9016";SR-Z;Width;false;2026-08-19;SR;TN;;SM
