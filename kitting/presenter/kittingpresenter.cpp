@@ -22,7 +22,9 @@ void KittingPresenter::GenerateKittingInstructions()
 
     const QVector<Cutting::Plan::CutPlan> &cutPlans = opmod->getResult_PlansRef();
     if (cutPlans.isEmpty()) {
-        _view->ShowWarningDialog("Nincs optimalizációs eredmény.\nElőbb futtasd az Optimize műveletet.");
+        ValidationResult r;
+        r.errors << "Nincs optimalizációs eredmény.\nElőbb futtasd az Optimize műveletet.";
+        _view->ShowWarningDialog(r);
         return;
     }
 
@@ -122,11 +124,11 @@ KittingPresenter::countByMaterial(const QVector<KittingInstruction>& items)
 void KittingPresenter::ExportKittingInstructions()
 {
     if (_instructions.isEmpty()) {
-        if (_view)
-            _view->ShowWarningDialog(
-                "Nincs legenerált kitting utasítás.\n"
-                "Előbb futtasd a Generate KittingInstructions műveletet."
-                );
+        ValidationResult r;
+        r.errors << "Nincs legenerált kitting utasítás.\n"
+                 << "Előbb futtasd a Generate KittingInstructions műveletet.";
+        if (_view)            
+            _view->ShowWarningDialog(r);
         return;
     }
 

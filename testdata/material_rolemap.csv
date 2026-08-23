@@ -2,9 +2,10 @@ productType;productSubtype;family;barcode
 NP;CIP;Tok;NP-T*
 NP;CIP;TokFed;NP-TF*
 NP;CIP;Zaro;NP-CZ*
-NP;CIP;Lab;NP-CL*
-NP;CIP;Lab;NP-CLB*
-NP;CIP;Lab;NP-CLT*
+NP;CIP;Lab;NP-CL2+CLT2+CLB2*
+#NP;CIP;Lab;NP-CL*
+#NP;CIP;Lab;NP-CLB*
+#NP;CIP;Lab;NP-CLT*
 NP;CIP;Tengely;NP-ROLL70*
 NP;CIP;Tengely;NP-ROLL78*
 NP;CIP;Suly;NP-BAR22*

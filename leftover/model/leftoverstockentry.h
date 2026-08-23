@@ -5,13 +5,11 @@
 #include <QColor>
 #include <QDateTime>
 
+#include "materialbundles/model/bundle_componentlength.h"
 #include "materials/model/material_master.h"
-//#include "model/cutting/result/cutresult.h"
 #include "model/cutting/result/leftoversource.h"
 #include "leftover/leftoverstatus.h"
-#include <QDebug>
-
-#include <model/cutting/plan/parentinfo.h>
+#include "model/cutting/plan/parentinfo.h"
 
 /// 🧩 Újrafelhasználható maradék anyag reprezentációja
 struct LeftoverStockEntry {
@@ -44,6 +42,18 @@ struct LeftoverStockEntry {
 
     /// 🧪 Egyenlőség vizsgálat (opcionális)
     bool operator==(const LeftoverStockEntry& other) const;
+
+    QVector<BundleComponentLength> bundleComponentLengths;
+
+    int getComponentLength(QUuid compMatId) const
+    {
+        for (const auto& c : bundleComponentLengths)
+            if (c.materialId == compMatId)
+                return c.length_mm == -1 ? availableLength_mm : c.length_mm;
+
+        // ha nincs a listában → nem bundle leftover → fallback
+        return availableLength_mm;
+    }
 
     //QString materialName() const;  // 📛 Anyag neve
     //QString reusableBarcode() const; // 🧾 Saját Vonalkód

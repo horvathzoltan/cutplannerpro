@@ -241,3 +241,10 @@ QString FileNameHelper::findLatestSnapshotForCuttingPlan(const QString& cuttingP
     return dir.filePath(candidates.last());
 }
 
+QString FileNameHelper::getBundleCsvFile() const {
+    return QDir(_projectPath).filePath("bundles.csv");
+}
+
+QString FileNameHelper::getBundleComponentsCsvFile() const {
+    return QDir(_projectPath).filePath("bundle_components.csv");
+}

@@ -68,6 +68,7 @@ public:
  * Röviden: ez a "nagy kép", a teljes vágási folyamat terve rudanként.
  */
     const QVector<Cutting::Plan::CutPlan> &getResult_PlansRef() const;
+    QVector<Cutting::Plan::Request> getRequests() const {return _requests;}
 
 /**
  * @brief A vágások után keletkezett hulló darabok listáját adja vissza.
@@ -116,8 +117,25 @@ public:
         _inventorySnapshot = snapshot;
     }
 
-    CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
-    CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece, int &remainingLength, int &dpLimit, const SelectedRod &rod, const CuttingMachine &machine, int currentOpId, int rodId, double kerf_mm, QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    InventorySnapshot inventorySnapshot(){return _inventorySnapshot;}
+
+    CutResult cutCombo_AndCommit(const QVector<Cutting::Piece::PieceWithMaterial> &combo,
+                                 int &remainingLength,
+                                 int &dpLimit,
+                                 const SelectedRod &rod,
+                                 const CuttingMachine &machine,
+                                 int currentOpId, int rodId,
+                                 double kerf_mm,
+                                 QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
+    CutResult cutSingle_AndCommit(const Cutting::Piece::PieceWithMaterial &piece,
+                                  int &remainingLength,
+                                  int &dpLimit,
+                                  const SelectedRod &rod,
+                                  const CuttingMachine &machine,
+                                  int currentOpId,
+                                  int rodId,
+                                  double kerf_mm,
+                                  QVector<Cutting::Piece::PieceWithMaterial> &groupVec);
 
     FitEngine::FitEngineTelemetry _fitTelemetry;
 
@@ -206,7 +224,13 @@ private:
 private:
     QVector<LeftoverStockEntry> _localLeftovers;  // csak az aktuális optimize futás idejére
 
-    CutResult commitCutResult(CutResult &cr, int &remainingLength, int &dpLimit, const SelectedRod &rod, int currentOpId, QVector<Cutting::Piece::PieceWithMaterial> &groupVec, double kerf_mm);
+    CutResult commitCutResult(CutResult &cr,
+                              int &remainingLength,
+                              int &dpLimit,
+                              const SelectedRod &rod,
+                              int currentOpId,
+                              QVector<Cutting::Piece::PieceWithMaterial> &groupVec,
+                              double kerf_mm);
 };
 
 

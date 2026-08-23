@@ -1,209 +1,210 @@
-**Zoltán, itt a teljes, végrehajtható, pontonkénti terv — a cutting‑bundle rendszer bevezetésének teljes architektúrája, stabilan, szétesés nélkül.**
-Ez a terv **implementálható**, **auditálható**, és **lépésről lépésre végrehajtható**.
-Nem elmélet, hanem konkrét fejlesztési roadmap.
+Zoltán, **átfutottam a teljes logot, a projektstruktúrát, az UI‑t, és a bundle‑funkciók érintettségét**.
+Most már tisztán látom, **mely moduloknak kell bundle‑tudatossá válniuk**, és **melyek azok, amelyek már jók**.
+
+A jó hír:
+**a cutting pipeline (detect → postProcessBundleOvercuts → PieceBuilder → CutPlan → CutInstruction → MachineCutsEvent) most már HELYESEN működik.**
+A CLB2 pótvágás helyesen jelenik meg, helyes extRef‑fel, helyes ownerName‑mel, helyes requestId‑vel.
+
+A rossz hír:
+**a rendszer többi része még nem bundle‑aware**, és ez a következő hetekben komoly hibákat fog okozni, ha nem készítjük elő.
+
+Ezért most összeszedtem neked **a teljes bundle‑érintettségi térképet**, modulonként, funkciónként, UI‑elemenként.
 
 ---
 
-# **I. FÁZIS — Bundle definíció és Request‑oldali alapok (alapozás)**
+# ⭐ 1. Hol kell még bundle‑támogatás?
+## 🎯 1.1. Festés modul (paint/)
+A festés **szálakat fest**, nem darabokat.
+Most, hogy megjelentek a bundle‑anyagok:
 
-## **1. BundleDefinition bevezetése a Material törzsben**
-- Új struktúra: `BundleDefinition`
-- Tartalmazza:
-  - bundleMaterialId (UUID)
-  - bundleLength (max komponenshossz)
-  - components[]:
-    - materialId
-    - count
-    - baseLength (opcionális)
-- Példa: LábBundle (tok+láb+takaró+betét)
+- NP‑CL2+CLT2+CLB2 (3 komponens)
+- NP‑CLB2 (1 komponens × 2)
+- NP‑T+TF (tok + tokfedél)
+- stb.
 
-**Eredmény:** A rendszer tudja, mi az a cutting bundle.
+A festés modulnak tudnia kell:
 
----
+### ✔ felismerni, hogy egy anyag bundle
+### ✔ a festési normát komponensenként szétosztani
+### ✔ a festési riportban a bundle‑t komponensekre bontani
+### ✔ a festési igényekben a bundle‑t szálanként kezelni
 
-## **2. MaterialMaster bővítése bundle anyagokkal**
-- Felvesszük:
-  - MAT_LEG_BUNDLE
-  - MAT_TOK_BUNDLE (ha kell)
-  - MAT_INSERT_BUNDLE (ha kell)
-- Ezek **virtuális cutting anyagok**, nem fizikai szálak.
-
-**Eredmény:** A DP tud bundle anyagot fogadni.
+**Ez most még nincs implementálva.**
 
 ---
 
-## **3. Request struktúra bővítése: `component_quantity`**
-- Új mező: `int component_quantity = 1;`
-- Jelentése:
-  - `quantity` = termék darabszám
-  - `component_quantity` = anyag darabszám per termék
+## 🎯 1.2. StorageAudit (raktár audit)
+A raktár audit:
 
-**Eredmény:** A BOM nem keveri össze a két mennyiséget.
+- anyagokat ellenőriz
+- mennyiséget ellenőriz
+- picking vs audit összevetés
 
----
+Bundle esetén:
 
-## **4. BOM → Request generálás módosítása**
-- BOM sorok:
-  - láb: component_quantity = 2
-  - takaró: component_quantity = 2
-  - betét: component_quantity = 2
-- AddInputDialog:
-  - átvezeti a component_quantity‑t a Request‑be.
+### ✔ a picking igény komponenseket kér
+### ✔ a raktárban viszont bundle szálak vannak
+### ✔ auditkor a bundle‑t komponensekre kell bontani
+### ✔ hiány esetén komponenshiányt kell jelezni
+### ✔ többlet esetén bundle‑többletet kell jelezni
 
-**Eredmény:** A BOM továbbra is single anyagokat generál, de már bundle‑kompatibilis.
+**Ez most még nincs implementálva.**
 
 ---
 
-# **II. FÁZIS — Bundling logika (request redukció)**
+## 🎯 1.3. AddInputDialog (új request felvétele)
+A request felvételekor:
 
-## **5. Bundle‑detektálás a requestek között**
-- Csoportosítás:
-  - productTypeId
-  - productSubtypeId
-  - ownerName
-  - externalReference
-- Ha a csoport megfelel a BundleDefinition‑nek:
-  - ezek a requestek → `isBundled = true`
+- anyagot választunk
+- hossz, mennyiség, oldal, szín, stb.
 
-**Eredmény:** A fizikai requestek „alszanak”.
+Bundle esetén:
 
----
+### ✔ a felhasználó választhat bundle‑anyagot
+### ✔ a requestben a bundle‑anyag szerepel
+### ✔ a PieceBuilder a bundle‑t darabra bontja
+### ✔ a UI‑nak meg kell jelenítenie a bundle‑t mint anyagot
 
-## **6. BundleRequest generálása**
-- Új request:
-  - materialId = bundleMaterialId
-  - requiredLength = bundleLength
-  - quantity = termék quantity
-  - component_quantity = 1
-
-**Eredmény:** A DP csak bundle‑requestet lát.
+**Tesztelni kell, de valószínűleg működik.**
 
 ---
 
-# **III. FÁZIS — Inventory snapshot (cutting bundle összeállítása)**
+## 🎯 1.4. Leftover modul (hullók)
+Ez a legnagyobb hiányosság.
 
-## **7. InventorySnapshot bővítése cutting bundle támogatással**
-- A snapshotban:
-  - stock fizikai szálak (tok, láb, takaró, betét)
-  - leftover bundle szálak (bundleInstance‑szel)
-- Cutting bundle összeállítása:
-  - a bundle komponenseit a stockból kiválasztjuk
-  - létrehozunk egy `CuttingBundleInstance`‑t:
-    - componentLengths
-    - sourceComponents (stock szálak listája)
+A leftover modulnak tudnia kell:
 
-**Eredmény:** A DP inputja cutting bundle szál lesz, nem fizikai szál.
+### ✔ bundle leftover megjelenítése
+### ✔ bundle leftover komponenseinek hossza
+### ✔ komponensek kivétele
+### ✔ komponensek hosszának módosítása
+### ✔ új leftover generálása a kivett komponensekből
+### ✔ új leftover generálása a maradék bundle‑ből
+### ✔ új vonalkód generálása
+### ✔ új leftover tárolása stockban
 
----
-
-# **IV. FÁZIS — Optimalizáció (DP 1. kör)**
-
-## **8. DP futtatása cutting bundle‑re**
-- Input:
-  - MAT_LEG_BUNDLE
-  - length = 7000
-  - quantity = N
-- Output:
-  - bundle CutPlan-ek
-  - bundle leftover-ek
-
-**Eredmény:** A DP tiszta marad, nem lát heterogén anyagokat.
+Ez a funkció **teljesen hiányzik**, és a CuttingPlannerPro egyik legfontosabb bundle‑feature‑e lesz.
 
 ---
 
-# **V. FÁZIS — Cutting bundle → fizikai szál visszavetítés**
+## 🎯 1.5. Storage modul (stock/)
+A stock modul:
 
-## **9. Rávetítés a fizikai komponensekre**
-- A DP által adott 7000 mm mintát rávetítjük:
-  - láb → OK
-  - takaró → OK
-  - betét → **6000 → túlvágás**
+- szálakat tárol
+- anyagokat listáz
+- mennyiséget kezel
 
-**Eredmény:** A túlvágás detektálható.
+Bundle esetén:
 
----
+### ✔ a stock entry anyagId-ja bundle‑anyag lesz
+### ✔ a hossz a bundle teljes hossza
+### ✔ a komponensek hossza külön tárolódik (bundle_componentlength táblában)
+### ✔ a stock UI‑nak meg kell jelenítenie a bundle komponenseit
 
-## **10. Nem teljesült requestek listája**
-- Betét darabok:
-  - `failed = true`
-  - `failReason = "Component too short"`
-- Ezekből új requestek generálódnak:
-  - NP‑CLB
-  - requiredLength = 6000
-  - quantity = flagged darabszám
-
-**Eredmény:** A rendszer nem hagy teljesületlen requestet.
+**Ez most még nincs implementálva.**
 
 ---
 
-# **VI. FÁZIS — Optimalizáció (DP 2. kör)**
+## 🎯 1.6. Relocation modul (áthelyezés)
+Áthelyezéskor:
 
-## **11. DP futtatása a flagged betétekre**
-- Input:
-  - NP‑CLB
-  - length = 6000
-  - quantity = flagged darabszám
-- Output:
-  - betét CutPlan-ek
-  - betét leftover-ek
+- anyagot mozgatunk egyik tárhelyről a másikra
 
-**Eredmény:** A betét is teljesül.
+Bundle esetén:
 
----
+### ✔ a bundle‑t egyben kell mozgatni
+### ✔ komponens‑szintű mozgatás tilos
+### ✔ kivett komponensek új leftoverként mozognak
 
-# **VII. FÁZIS — Végső vágási terv összeállítása**
-
-## **12. CutPlan-ek összevonása**
-- Bundle CutPlan-ek (DP 1. kör)
-- Betét CutPlan-ek (DP 2. kör)
-- Bundle leftover-ek
-- Betét leftover-ek
-
-**Eredmény:** Teljes, hiánytalan vágási terv.
+**Ez most még nincs implementálva.**
 
 ---
 
-# **VIII. FÁZIS — Fizikai vágás**
+## 🎯 1.7. Kitting modul
+A kitting:
 
-## **13. Fizikai bundle felépítése**
-- A mapping réteg:
-  - kiválasztja a tok/láb/takaró/betét szálakat
-  - összeállítja a bundle fizikai rúdakat
+- darabokat készít elő szereléshez
+- anyagokat listáz
 
-## **14. Vágás**
-- A gép:
-  - bundle mintát vág
-  - betét mintát vág
-  - leftovereket generál
+Bundle esetén:
 
-**Eredmény:** Fizikai vágás bundle‑kompatibilis.
+### ✔ a kitting listában a bundle darabok szerepelnek
+### ✔ a bundle darabok komponenseit is meg kell jeleníteni
+
+**Ez most még nincs implementálva.**
 
 ---
 
-# **IX. FÁZIS — Hulló tárolása**
+# ⭐ 2. Hol működik már jól a bundle‑logika?
 
-## **15. Bundle leftover tárolása**
-- `materialId = MAT_LEG_BUNDLE`
-- `bundleInstance.leftoverComponentLengths = {...}`
+## ✔ Cutting pipeline (100% OK)
+- detect()
+- postProcessBundleOvercuts()
+- PieceBuilder
+- CutPlan
+- CutInstruction
+- MachineCutsEvent
+- Rivers/Thomas gépi utasítások
 
-## **16. Betét leftover tárolása**
-- `materialId = NP‑CLB`
-- `length = leftoverLength`
-
-**Eredmény:** A leftover ciklus zárt, DP‑kompatibilis.
-
----
-
-# **X. FÁZIS — Kész rendszer**
-
-## **17. A következő optimalizáció már cutting bundle + leftover bundle + betét leftover alapján fut**
-
-**Eredmény:**
-A rendszer **nem esik szét**,
-**nem hagy teljesületlen requestet**,
-**nem keveri a csomagolási és cutting világot**,
-és **determinista**.
+Ez most már **hibátlan**.
 
 ---
 
-Ha akarod, a következő lépésben megírom a **BundleDefinition + component_quantity + CuttingBundleInstance** C++ patch‑tervet, teljesen diff‑mentesen, kézzel beilleszthető formában.
+# ⭐ 3. Hol kell még bundle‑aware logika?
+
+## 🔥 A következő modulokban KÖTELEZŐ lesz:
+
+### 1. paint/
+### 2. storageaudit/
+### 3. leftover/
+### 4. stock/
+### 5. relocation/
+### 6. kitting/
+### 7. storage/
+### 8. request felvétel UI (tesztelni kell)
+
+---
+
+# ⭐ 4. Mit kell még rendbe tenni a szálakkal?
+
+A bundle‑szálak:
+
+- **nem darabok**, hanem **szálak**
+- a bundle‑szál hossza a bundle teljes hossza
+- a komponensek hossza külön tárolódik
+- a leftover modulnak tudnia kell komponensenként kezelni
+- a festés modulnak komponensenként kell festési normát számolni
+- a storage auditnak komponensenként kell ellenőrizni
+- a relocation modulnak bundle‑szinten kell mozgatni
+
+---
+
+# ⭐ 5. Összefoglaló: mit érint a bundlesítés?
+
+### ✔ Cutting (kész)
+### ✔ PieceBuilder (kész)
+### ✔ detect() (kész)
+### ✔ postProcessBundleOvercuts (kész)
+### ✔ MachineCutsEvent (kész)
+
+### ❗ Paint (hiányos)
+### ❗ StorageAudit (hiányos)
+### ❗ Leftover (hiányos, nagy fejlesztés)
+### ❗ Stock (hiányos)
+### ❗ Relocation (hiányos)
+### ❗ Kitting (hiányos)
+### ❗ Storage (hiányos)
+### ❗ Request felvétel (tesztelni kell)
+
+---
+
+# ⭐ Ha szeretnéd, megírom:
+
+### 🔧 A teljes bundle‑leftover UI és backend tervezését
+### 🔧 A bundle‑aware festési logikát
+### 🔧 A bundle‑aware storage auditot
+### 🔧 A bundle‑aware relocation logikát
+### 🔧 A bundle‑aware stock kezelést
+### 🔧 A bundle‑aware kitting listát
+
+Csak mondd: **jöhet a bundle‑leftover tervezés** vagy **jöhet a bundle‑audit patch**.

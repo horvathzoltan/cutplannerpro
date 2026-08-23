@@ -13,6 +13,8 @@
 #include "../service/cutting/result/archivedwasteutils.h"
 #include "../model/registries/cuttingplanrequestregistry.h"
 #include "leftover/registry/leftoverstockregistry.h"
+#include "service/cutting/plan/cuttingplan_validationservice.h"
+#include "service/snapshot/inventorysnapshot_validator.h"
 #include "stock/registry/stockregistry.h"
 #include "../service/cutting/optimizer/exporter.h"
 #include "../common/filenamehelper.h"
@@ -23,14 +25,13 @@
 #include "../service/cutting/optimizer/optimizationrunner.h"
 #include "../service/cutting/optimizer/optimizationviewupdater.h"
 #include "../service/snapshot/requestsnapshotbuilder.h"
-#include "materials/utils/material_group_utils.h"
+//#include "materials/utils/material_group_utils.h"
 #include "service/cutting/instruction/cuttinginstructionutils.h"
 //#include "service/cutting/summary/cutplansummary.h"
-#include <service/cutting/summary/cutplansummarybuilder.h>
-
-#include <cutting/export/cutinstructionservice.h>
-
-#include <service/snapshot/inventorysnapshotbuilder.h>
+//#include "service/cutting/summary/cutplansummarybuilder.h"
+#include "cutting/export/cutinstructionservice.h"
+#include "service/snapshot/inventorysnapshotbuilder.h"
+#include "model/cutting/optimizer/bundle_overcuttingdetector.h"
 //#include <model/registries/cuttingmachineregistry.h>
 //#include <model/repositories/cuttingrequestrepository.h>
 //#include <model/cutting/plan/audit/naphalo_audit_types.h>
@@ -335,8 +336,57 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
     am->setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
     //lastAuditRows = OptimizationAuditBuilder::build(model);
 
-
     isModelSynced = false;
+
+    auto over = BundleOverCuttingDetector::detect(_optimizerModel);
+
+    // 🔍 bundling előtti állapot logolása
+    BundleOverCuttingDetector::logRequests("🔍 BEFORE postProcess", over.newRequests);
+
+    // ⭐ bundle-aware utófeldolgozás
+    over.newRequests_2 = BundleOverCuttingDetector::postProcessBundleOvercuts(over);
+
+    // 🔍 bundling utáni állapot logolása
+    BundleOverCuttingDetector::logRequests("🔍 AFTER postProcess", over.newRequests_2);
+
+
+    if (over.hasOvercuts) {
+        zWarning("⚠️ Bundle túlvágás detektálva — pótló optimalizálás indul");
+
+        Cutting::Optimizer::OptimizerModel extra;
+        extra.setCuttingRequests(over.newRequests_2);
+
+        auto lengthsPerMaterial =
+            RequestSnapshotBuilder::getLengthsPerMaterial(over.newRequests_2);
+
+        auto expanded =
+            RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
+
+        QMap<QUuid, int> strandsPerMaterial =
+            InventorySnapshotBuilder::greedyStrandPacking(expanded);
+
+        InventorySnapshot extraNeeded =
+            InventorySnapshotBuilder::build2(strandsPerMaterial);
+
+        // 🔁 A fő optimizer által már megfogyasztott snapshot másolata
+        InventorySnapshot finalSnap = _optimizerModel.inventorySnapshot();
+
+        // hozzáadjuk az extra szálakat
+        for (const auto& stock : extraNeeded.profileInventory) {
+            finalSnap.profileInventory.append(stock);
+        }
+
+        extra.setInventorySnapshot(finalSnap);
+
+        extra.optimize(Cutting::Optimizer::TargetHeuristic::ByCount);
+
+        // 🔗 Az extra futás terveit hozzácsapjuk az eredetihez
+        auto extraPlans = extra.getResult_PlansRef();
+        auto& mainPlans =
+            const_cast<QVector<Cutting::Plan::CutPlan>&>(_optimizerModel.getResult_PlansRef());
+        mainPlans.append(extraPlans);
+    }
+
 }
 
 
@@ -386,110 +436,43 @@ void CuttingPresenter::scrapShortLeftovers()
 }
 
 void CuttingPresenter::syncModelWithRegistries() {
-    auto requests  = RequestSnapshotBuilder::build();
-    auto inventory = InventorySnapshotBuilder::build(300);
+    QVector<Cutting::Plan::Request> requests = RequestSnapshotBuilder::build();
 
-    // 🔍 DEBUG: request lista kiírása
-    zInfo("📦 RequestSnapshotBuilder::build():");
-    for (const Cutting::Plan::Request &r : requests) {
-        const MaterialMaster* mat = MaterialRegistry::instance().findById(r.materialId);
+    auto result1 = CuttingPlanValidationService::validate(requests);
+    if (_view)
+        _view->ShowWarningDialog(result1);
+
+    if(result1.hasError()){
+        isModelSynced = false;
+        return;
+    }
+
+    // 4️⃣ Request lista kiírása (debug)
+    zInfo("📦 syncModelWithRegistries requests:");
+    for (const auto &r : requests) {
+        const MaterialMaster *mat =
+            MaterialRegistry::instance().findById(r.materialId);
         zInfo(QString("   •  %1. %2 %3, %4 mm, %5 db ")
                   .arg(r.externalReference)
                   .arg(r.ownerName)
-                  .arg(mat?mat->toDisplay():"(?)")
+                  .arg(mat ? mat->toDisplay() : "(?)")
                   .arg(r.requiredLength)
                   .arg(r.quantity));
     }
-    zInfo(QString("   → összesen %1 db").arg(requests.size()));
 
-    QStringList errors;
-    QStringList warnings;
+    // 5️⃣ Igény → szálak → inventory
+    auto lengthsPerMaterial = RequestSnapshotBuilder::getLengthsPerMaterial(requests);
+    auto expandedlengths = RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
+    QMap<QUuid, int> strandsPerMaterial =
+        InventorySnapshotBuilder::greedyStrandPacking(expandedlengths);
+    InventorySnapshot inventory =
+        InventorySnapshotBuilder::build2(strandsPerMaterial);
 
-    // 1️⃣ Legyen legalább 1 request
-    if (requests.isEmpty()) {
-        errors << "Nincs megadva vágási igény.";
-    }
+    auto result2 = InventorySnapshotValidator::validate(inventory, strandsPerMaterial);
+    if (_view)
+        _view->ShowWarningDialog(result2);
 
-    // 2️⃣ Request anyagok összegyűjtése
-    QSet<QUuid> reqMaterials;
-    QMap<QUuid, int> reqTotalLength;
-
-    for (const auto& r : requests) {
-        reqMaterials.insert(r.materialId);
-        reqTotalLength[r.materialId] += r.requiredLength;
-    }
-
-    // 3️⃣ Stock anyagok összegyűjtése
-    QSet<QUuid> stockMaterials;
-    QMap<QUuid, int> stockTotalLength;
-
-    for (const auto& s : inventory.profileInventory) {
-        stockMaterials.insert(s.materialId);
-
-        const MaterialMaster* mm = s.master();
-        if (mm)
-            stockTotalLength[s.materialId] += mm->stockLength_mm * s.quantity;
-    }
-
-    // 4️⃣ Hiányzó anyagok (nincs a stockban)
-    QSet<QUuid> missingMaterials = reqMaterials - stockMaterials;
-
-    for (const QUuid& matId : missingMaterials) {
-        const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-
-        if (!mat) {
-            errors << QString("Ismeretlen anyag (materialId=%1)").arg(matId.toString());
-            continue;
-        }
-
-        // 5️⃣ Csoporthelyettesítés vizsgálata
-        QSet<QUuid> group = GroupUtils::groupMembers(matId);
-
-        bool hasGroupAlternative = false;
-        for (const QUuid& altId : group) {
-            if (altId == matId) continue;
-            if (stockMaterials.contains(altId)) {
-                const MaterialMaster* alt = MaterialRegistry::instance().findById(altId);
-                warnings << QString("Az anyag (%1) nincs raktáron, de a csoportban van helyettesítő: %2")
-                                .arg(mat->toDisplay())
-                                .arg(alt ? alt->toDisplay() : altId.toString());
-                hasGroupAlternative = true;
-                break;
-            }
-        }
-
-        if (!hasGroupAlternative) {
-            errors << QString("Hiányzó anyag a készletből: %1")
-                          .arg(mat->toDisplay());
-        }
-    }
-
-    // 6️⃣ Mennyiséghiány (összhossz alapján)
-    for (auto it = reqTotalLength.begin(); it != reqTotalLength.end(); ++it) {
-        QUuid matId = it.key();
-        int need = it.value();
-        int have = stockTotalLength.value(matId, 0);
-
-        if (have < need) {
-            const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-            QString name = mat ? mat->toDisplay() : matId.toString();
-
-            warnings << QString("Kevés készlet az anyagból: %1 (kell: %2 mm, van: %3 mm)")
-                            .arg(name)
-                            .arg(need)
-                            .arg(have);
-        }
-    }
-
-    // 7️⃣ Hibák → tiltás
-    if (!errors.isEmpty()) {
-        QString msg = "Az optimalizálás nem indítható:\n\n• " + errors.join("\n• ");
-        if (!warnings.isEmpty())
-            msg += "\n\nFigyelmeztetések:\n• " + warnings.join("\n• ");
-
-        if (_view)
-            _view->ShowWarningDialog(msg);
-
+    if (result2.hasError()) {
         isModelSynced = false;
         return;
     }
@@ -498,22 +481,10 @@ void CuttingPresenter::syncModelWithRegistries() {
     _optimizerModel.setCuttingRequests(requests);
     _optimizerModel.setInventorySnapshot(inventory);
     isModelSynced = true;
-
-    // 9️⃣ Warningok megjelenítése (nem tiltó)
-    if (!warnings.isEmpty() && _view) {
-        QString msg = "Figyelmeztetések:\n\n• " + warnings.join("\n• ");
-        _view->ShowWarningDialog(msg);
-    }
-
 }
 
 bool CuttingPresenter::loadCuttingPlanFromFile(const QString& path) {
     bool loaded = CuttingRequestRepository::loadFromFile(CuttingPlanRequestRegistry::instance(), path);
-
-    // if (_view) {
-    //     _view->inputTableManager()->refresh_TableFromRegistry();
-    // }
-
     return loaded;
 }
 
@@ -524,9 +495,11 @@ void CuttingPresenter::GenerateCutInstructions(SortMode mode,
     const QVector<Cutting::Plan::CutPlan> &cutPlans = _optimizerModel.getResult_PlansRef();
 
     if (cutPlans.isEmpty()) {
+        ValidationResult r;
+        r.errors << "Nincs optimalizációs eredmény.\n"
+                    << "Előbb futtasd az Optimize műveletet.";
         if (_view)
-            _view->ShowWarningDialog("Nincs optimalizációs eredmény.\n"
-                                     "Előbb futtasd az Optimize műveletet.");
+            _view->ShowWarningDialog(r);
         return;
     }
 
@@ -811,246 +784,6 @@ void CuttingPresenter::refreshAllViews(Refresh::Flags flags)
 
 
 
-// void CuttingPresenter::ExportCutInstructions()
-// {
-
-//     if (_machineCutsList.isEmpty()) {
-//         if (_view)
-//             _view->ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
-//         return;
-//     }
-
-//     QString fileName = SettingsManager::instance().cuttingPlanFileName();
-//     QFileInfo fi(fileName);
-//     QString baseName = fi.completeBaseName();
-
-//     if (baseName.isEmpty()) {
-//         zEvent("❌ Nincs Cutting Plan fájlnév — export nem lehetséges.");
-//         return;
-//     }
-
-//     QString dir = fi.absolutePath() + "/_reports";
-//     QDir().mkpath(dir);
-
-//     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
-//     QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2;
-
-//     // --- 1) CutInstructions.txt ---
-//     {
-//         QString path = dir + "/" + baseName + "_CutInstructions.txt";
-//         QFile f(path);
-//         if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-//             zEvent("❌ Nem sikerült megnyitni a CutInstructions fájlt.");
-//             return;
-//         }
-
-//         QTextStream out(&f);
-//         out.setEncoding(QStringConverter::Utf8);
-
-//         // gépenkénti riport lekérése a for előtt
-//         const auto& machineReportMap = _optimizerModel.getMachineReport();
-//         const auto& discardedMap = _optimizerModel.getDiscardedPieces();
-
-//         for (const auto& mc : _machineCutsList) {
-//             const auto& rep = machineReportMap.value(mc.machineHeader.machineId);
-
-//             // géphez tartozó FAILED darabok kigyűjtése
-//             QVector<DiscardedPiece> failedList;
-//             for (const auto& dp : discardedMap) {
-//                 if (dp.machineId == rep.machineId)
-//                     failedList.append(dp);
-//             }
-
-//             auto m = CuttingInstructionUtils::formatMachineCutsEvent(mc, rep, failedList, baseName, SettingsManager::printedLineWidth);
-//             orderedCuts2.insert(mc.machineHeader.machineId, m.orderedCuts);
-
-//             out << m.planTxt << "\n\n";
-//         }
-
-//         zEvent(QString("📄 CutInstructions exportálva: %1").arg(path));
-//     }
-
-//     // --- 3) LabelTable PDF ---
-//     {
-//         QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
-
-//         ExportCutInstructions_Labels(path, orderedCuts2);
-//     }
-// }
-
-// void CuttingPresenter::ExportCutInstructions_2()
-// {
-
-//     if (_machineCutsList.isEmpty()) {
-//         if (_view)
-//             _view->ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
-//         return;
-//     }
-
-//     QString fileName = SettingsManager::instance().cuttingPlanFileName();
-//     QFileInfo fi(fileName);
-//     QString baseName = fi.completeBaseName();
-
-//     if (baseName.isEmpty()) {
-//         zEvent("❌ Nincs Cutting Plan fájlnév — export nem lehetséges.");
-//         return;
-//     }
-
-//     QString dir = fi.absolutePath() + "/_reports";
-//     QDir().mkpath(dir);
-
-//     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
-
-//     QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2;
-//     // --- 1) CutInstructions_Rod.txt ---
-//     {
-//         QString path = dir + "/" + baseName + "_CutInstructions_Rod.txt";
-//         QFile f(path);
-//         if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-//             zEvent("❌ Nem sikerült megnyitni a CutInstructions_Rod fájlt.");
-//             return;
-//         }
-
-//         QTextStream out(&f);
-//         out.setEncoding(QStringConverter::Utf8);
-
-//         // gépenkénti riport lekérése a for előtt
-//         const auto& machineReportMap = _optimizerModel.getMachineReport();
-//         const auto& discardedMap = _optimizerModel.getDiscardedPieces();
-
-//         for (const auto& mc : _machineCutsList) {
-//             const auto& rep = machineReportMap.value(mc.machineHeader.machineId);
-
-//             // géphez tartozó FAILED darabok kigyűjtése
-//             QVector<DiscardedPiece> failedList;
-//             for (const auto& dp : discardedMap) {
-//                 if (dp.machineId == rep.machineId)
-//                     failedList.append(dp);
-//             }
-
-//             auto m = CuttingInstructionUtils::formatMachineCutsEvent_2(mc, rep, failedList, baseName, SettingsManager::printedLineWidth);
-//             orderedCuts2.insert(mc.machineHeader.machineId, m.orderedCuts);
-
-//             out << m.planTxt << "\n\n";
-//         }
-
-//         zEvent(QString("📄 CutInstructions_Rod exportálva: %1").arg(path));
-//     }
-
-
-//     // --- 3) LabelTable PDF ---
-//     {
-//         QString path = dir + "/" + baseName + "_CutInstructions_Labels_Rod.pdf";
-
-//         ExportCutInstructions_Labels(path, orderedCuts2);
-//     }
-// }
-
-// void CuttingPresenter::ExportCutInstructions_Labels(const QString& path, QMap<QUuid, QVector<const CutInstruction*>> orderedCuts2)
-// {
-//     //QString path = dir + "/" + baseName + "_CutInstructions_Labels.pdf";
-
-//     QPdfWriter writer(path);
-//     writer.setPageSize(QPageSize(QPageSize::A4));
-//     writer.setResolution(300);
-
-//     QPainter painter(&writer);
-//     if (!painter.isActive()) {
-//         zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
-//         return;
-//     }
-
-//     QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
-
-//     const int cols = 2;
-//     const qreal cellHeight = 300.0; // nagy, jól olvasható címke
-
-//     // MONOSPACED FONT – kötelező a TXT‑s spacinghez
-//     QFont font("Noto Sans Mono", 11);//Noto Sans Mono
-//     //QFont font("Courier New", 11);
-//     painter.setFont(font);
-
-//     bool firstPage = true;
-
-//     for (const auto& mc : _machineCutsList)
-//     {
-//         if (!firstPage)
-//             writer.newPage();   // új lap csak a második géptől
-
-//         firstPage = false;
-
-//         // QVector<LabelModel> labels =
-//         //     CuttingInstructionUtils::collectLabelModelsFromMachineCuts(mc);
-//         QVector<LabelModel> labels =
-//             CuttingInstructionUtils::collectLabelModelsFromMachineCuts_2(mc.leftoverInfo, orderedCuts2.value(mc.machineHeader.machineId));
-
-
-//         CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
-//             labels,
-//             painter,
-//             writer,
-//             pageRect,
-//             cols,
-//             cellHeight
-//             );
-//     }
-
-//     painter.end();
-//     zEvent(QString("🏷️ LabelTable PDF exportálva: %1").arg(path));
-// }
-
-// void CuttingPresenter::ExportCutPlanSummary() {
-
-//     static const QString errevent = QStringLiteral("❌ Summary export nem hajtható végre. Részletek a logban.");
-//     static const QString oklog = QStringLiteral("✅ Cut Plan Summary exportálva: %1");
-
-//     const auto& plans = _optimizerModel.getResult_PlansRef();
-
-//     // 1️⃣ Guard: nincs optimalizációs eredmény
-//     if (plans.isEmpty()) {
-//         if (_view)
-//             _view->ShowWarningDialog(
-//                 "Nincs optimalizációs eredmény.\n"
-//                 "A Summary export nem hajtható végre."
-//                 );
-//         return;
-//     }
-
-//     const auto& leftovers = _optimizerModel.getResults_Leftovers();
-
-//     QString fileName = SettingsManager::instance().cuttingPlanFileName();
-//     QFileInfo fi(fileName);
-//     QString baseName = fi.completeBaseName();
-
-//     if (baseName.isEmpty()) {
-//         zWarning(errevent);
-//         zEvent("❌ Nincs Cutting Plan fájlnév — a Summary export nem hajtható végre.");
-//         return;
-//     }
-
-//     CutPlanSummary summary = CutPlanSummaryBuilder::build(plans, leftovers, baseName, _optimizerModel._fitTelemetry);
-
-//     QString dir = fi.absolutePath() + "/_reports";
-//     QDir().mkpath(dir);  // ha nincs, létrehozzuk
-//     QString path = dir + "/" + baseName + "_CutPlanSummary.txt";
-
-//     QFile file(path);
-//     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-//         zWarning(errevent);
-//         zEvent(QString("❌ Nem sikerült megnyitni a fájlt írásra: %1").arg(path));
-//         return;
-//     }
-
-
-//     QTextStream out(&file);
-//     out.setEncoding(QStringConverter::Utf8);
-//     out << summary.toText() << "\n";
-
-//     file.close();
-
-//     zInfo(oklog.arg(QDir::toNativeSeparators(path)));
-//     zEvent(oklog.arg(QDir::toNativeSeparators(path)));
-// }
 
 
 QHash<QUuid, QVector<QUuid>> CuttingPresenter::collectUsedLeftoversFromPlans()

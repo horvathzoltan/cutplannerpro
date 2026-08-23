@@ -67,4 +67,6 @@ private:
     StartupStatus initMaterialRoleRegistry();
     StartupStatus initProductAttributeRegistry();
     StartupStatus initPowderConsumptionRegistry();
+    StartupStatus initBundleRegistry();
+
 };

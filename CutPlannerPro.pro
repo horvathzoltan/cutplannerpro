@@ -23,6 +23,9 @@ SOURCES += \
     kitting/presenter/kittingpresenter.cpp \
     leftover/audit/leftoveraudit.cpp \
     leftover/view/dialog/leftoverauditdialog.cpp \
+    materialbundles/model/bundle_definition.cpp \
+    materialbundles/registry/bundle_registry.cpp \
+    materialbundles/repository/bundle_repository.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -152,6 +155,7 @@ HEADERS += \
     common/stringsimilarity_helper.h \
     common/qrcodepainter.h \
     common/qrcodegen/qrcodegen.hpp \
+    common/validation_result.h \
     cutting/export/cutinstructionservice.h \
     cutting/export/sortmode.h \
     cutting/snapshot/CuttingSnapshotFormat.h \
@@ -159,8 +163,16 @@ HEADERS += \
     cutting/snapshot/cuttingsnapshotserializer.h \
     leftover/audit/leftoveraudit.h \
     leftover/view/dialog/leftoverauditdialog.h \
+    materialbundles/model/bundle_componentlength.h \
+    materialbundles/model/bundle_definition.h \
+    materialbundles/registry/bundle_registry.h \
+    materialbundles/repository/bundle_repository.h \
+    materials/model/material_kind.h \
+    model/cutting/optimizer/bundle_overcuttingdetector.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
+    service/cutting/plan/cuttingplan_validationservice.h \
+    service/snapshot/inventorysnapshot_validator.h \
     stock/model/stockentry.h \
     calculation/calcmode.h \
     calculation/lengthcalculator.h \
@@ -475,6 +487,8 @@ DISTFILES += \
     run_7.txt \
     run_Refaktor_terv_fokuszpontok \
     testdata/bom.csv \
+    testdata/bundle_components.csv \
+    testdata/bundles.csv \
     testdata/csvlist.sh \
     testdata/cutting_plans/cutting_plan_1.csv \
     testdata/cutting_plans/cuttingplan_20260622-074056_hibateszt.txt \

@@ -47,7 +47,6 @@ inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity
             item->setForeground(Qt::black);
         }
     }
-
 }
 
 

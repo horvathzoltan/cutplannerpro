@@ -153,6 +153,7 @@ public:
 
     QHash<QUuid, OptimizationLeftoverAuditStats> collectOptimizationLeftoverStats(
         const QHash<QUuid, QVector<QUuid> > &perMachine);
+
 private:
     void applyPatch(Cutting::Plan::Request& target,
                     const Cutting::Plan::Request& updated,
@@ -171,4 +172,6 @@ private:
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
 };
+
+
 

@@ -36,6 +36,7 @@ public:
     QVector<StockEntry> readAll() const;
     void setData(const QVector<StockEntry>& v, bool doPersist = true);
 
+    QMap<QUuid, int> readAllAggregated() const;
 private:
     StockRegistry() = default;
     ~StockRegistry() = default;

@@ -11,11 +11,12 @@ inline void applyMaterialStyle(QTableWidget* table, int row, const MaterialMaste
     QColor backColor = GroupUtils::groupColor(mat->id); // vagy mat->color.toQColor()
     QColor textColor = backColor.lightness() < 128 ? Qt::white : Qt::black;
 
+    if(mat->isBundle())
+        backColor = QColor("#9B59B6");   // soft purple
+
     for (int col = 0; col < table->columnCount(); ++col) {
         if(excols.contains(col))
             continue;
-
-        //TableStyleUtils::ensureStyledItem(table, row, col, bg, fg, Qt::AlignCenter, tooltip);
         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
     }
 }

@@ -36,4 +36,8 @@ public:
 
     QVector<QUuid> generateBom(QUuid typeId, QUuid subtypeId) const;
     const QVector<QUuid> findAllByFamily(MaterialFamily family) const;
+
+    bool isCompound(const QUuid& id) const;
+    //void resolveBundleIds();
+    const MaterialMaster *findByBundleCode(const QString &bundleCode) const;
 };

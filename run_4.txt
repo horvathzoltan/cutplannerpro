@@ -1,3 +1,19 @@
+audit: változik az anyagigény , vagyis az nem, de az anyagigény által leírt és legyártott anyagok adatformátuma combósodik
+addinputdialog - requestek felvétele, elvileg ok, de tesztelni kell
+leftover - új kezelés - új ui: egy bundle megbontása. 
+ - kivehetünk belőle valamit, vagy módosíthatjuk a hosszát, komponenseinek a hosszát
+ - itt lehet egy komponens lista hosszal, átírja, vagy beixeli hogy kivette
+ ezt a helyzetet képezzük le available hossz és szálhossz szinten
+ - -1 available hosszon van a komponens,
+ - 0 ki van véve
+ - vagy saját hosszával szerepel
+ ha anyagokat veszünk ki, a kivett anyagokat bundlesítve kell betenni azzal a hosszal, amit beírt neki
+tehát van olyan, hogy kiveszi, de adott hosszat kap, az új leftover, azaz hulló ami keletkezik, bundle, vagy szál, ha nem
+ lehet bundle-é alakítani, ezzel a hosszal kezül letárolásra, itt kap egy vonalkódot, amit ki kell rá nyomtatni
+ míg az ősön marad a régi
+
+
+
 optimizer : FIXED
  - az történt, hogy 2.5 métert 3x vágott le egy 7 méteres stock szálból.
  szerintem amikor egy darab enem fér már fel a szálra, új szálat kezdünk, de nem jó, mert
