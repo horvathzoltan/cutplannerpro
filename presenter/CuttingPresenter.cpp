@@ -228,45 +228,6 @@ void CuttingPresenter::update_StockEntry(const StockEntry& updated) {
 
 /*waste*/
 
-void CuttingPresenter::add_LeftoverStockEntry(const LeftoverStockEntry& req) {
-    LeftoverStockRegistry::instance().registerEntry(req);
-    if(_view){
-        _view->addRow_LeftoversTable(req);
-    }
-    auto sp = _view->storageAuditPresenter();
-    auto m = sp->auditStateManager();
-
-    m->setOutdated(AuditStateManager::AuditOutdatedReason::LeftoverChanged);
-}
-
-bool CuttingPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
-    bool ok = LeftoverStockRegistry::instance().removeEntry(entryId);
-
-    if(!ok){
-        qWarning() << "❌ Sikertelen törlés: nincs ilyen entryId:" << entryId;
-        return false;
-    }
-
-    if(_view){
-        _view->removeRow_LeftoversTable(entryId);
-    }
-    return true;
-}
-
-void CuttingPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& updated) {
-    bool ok = LeftoverStockRegistry::instance().updateEntry(updated); // 🔁 Frissítés Registry-ben
-
-    if (ok) {
-        if (_view) {
-            _view->updateRow_LeftoversTable(updated);
-        }
-    }
-    else
-    {
-        qWarning() << "❌ Sikertelen frissítés: nincs ilyen entryId:" << updated.entryId;
-        return;
-    }
-}
 
 
 void CuttingPresenter::setCuttingRequests(const QVector<Cutting::Plan::Request>& list) {

@@ -61,9 +61,6 @@ public:
 
     // Úrafelhasználható - hulló anyagok készlete
     void setReusableInventory(const QVector<LeftoverStockEntry> &list);
-    void add_LeftoverStockEntry(const LeftoverStockEntry& entry);
-    bool remove_LeftoverStockEntry(const QUuid &entryId);
-    void update_LeftoverStockEntry(const LeftoverStockEntry &updated);
 
     // Paraméterek
     //void setKerf(int kerf);

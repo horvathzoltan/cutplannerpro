@@ -109,12 +109,19 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     btnEdit->setStyleSheet("QPushButton { border: none; }");
     btnEdit->setProperty(EntryId_Key, entry.entryId);
 
+    QPushButton* btnSplit = new QPushButton("🔪");
+    btnSplit->setToolTip("Bontás");
+    btnSplit->setFixedSize(28, 28);
+    btnSplit->setStyleSheet("QPushButton { border: none; }");
+    btnSplit->setProperty(EntryId_Key, entry.entryId);
+
     // Panelbe helyezés
     auto* actionPanel = new QWidget();
     auto* layout = new QHBoxLayout(actionPanel);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(4);
     layout->addWidget(btnEdit);
+    layout->addWidget(btnSplit);
     layout->addWidget(btnDelete);
 
     table->setCellWidget(rowIx, ColActions, actionPanel);
@@ -131,7 +138,16 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
         emit editRequested(entryId);
     });
 
+    connect(btnSplit, &QPushButton::clicked, this, [btnSplit, this]() {
+        QUuid id = btnSplit->property(EntryId_Key).toUuid();
+        emit splitRequested(id);
+    });
+
     // 🎨 Stílus
+
+    MaterialRowStyler::applyMaterialStyle(table, rowIx, mat,{
+        LeftoverTableManager::ColLastSeenAt
+    });
 
     LeftoverStyleUtils::applyPrefixStyle(table, rowIx,
                                          LeftoverTableManager::ColBarcode,

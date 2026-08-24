@@ -22,6 +22,8 @@ SOURCES += \
     kitting/kittingengine.cpp \
     kitting/presenter/kittingpresenter.cpp \
     leftover/audit/leftoveraudit.cpp \
+    leftover/services/bundlesplitengine.cpp \
+    leftover/view/dialog/bundlesplitdialog.cpp \
     leftover/view/dialog/leftoverauditdialog.cpp \
     materialbundles/model/bundle_definition.cpp \
     materialbundles/registry/bundle_registry.cpp \
@@ -162,6 +164,8 @@ HEADERS += \
     cutting/snapshot/cuttingsnapshotdeserializer.h \
     cutting/snapshot/cuttingsnapshotserializer.h \
     leftover/audit/leftoveraudit.h \
+    leftover/services/bundlesplitengine.h \
+    leftover/view/dialog/bundlesplitdialog.h \
     leftover/view/dialog/leftoverauditdialog.h \
     materialbundles/model/bundle_componentlength.h \
     materialbundles/model/bundle_definition.h \
@@ -455,6 +459,7 @@ HEADERS += \
     view/viewmodels/tablerowviewmodel.h
 
 FORMS += \
+    leftover/view/dialog/bundlesplitdialog.ui \
     settings/settingsdialog.ui \
     storage/storagelabelbatchdialog.ui \
     view/MainWindow.ui \

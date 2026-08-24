@@ -1,5 +1,6 @@
 audit: változik az anyagigény , vagyis az nem, de az anyagigény által leírt és legyártott anyagok adatformátuma combósodik
 addinputdialog - requestek felvétele, elvileg ok, de tesztelni kell
+
 leftover - új kezelés - új ui: egy bundle megbontása. 
  - kivehetünk belőle valamit, vagy módosíthatjuk a hosszát, komponenseinek a hosszát
  - itt lehet egy komponens lista hosszal, átírja, vagy beixeli hogy kivette

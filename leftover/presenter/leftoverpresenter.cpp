@@ -1,6 +1,9 @@
 #include "leftoverpresenter.h"
 #include "common/eventlogger.h"
+#include "view/MainWindow.h"
+
 #include "common/logger.h"
+#include "leftover/services/bundlesplitengine.h"
 #include "service/cutting/instruction/cuttinginstructionutils.h"
 #include "leftover/view/dialog/leftoverreviewdialog.h"
 #include "leftover/view/managers/leftovertable_manager.h"
@@ -14,8 +17,8 @@
 #include <settings/settingsmanager.h>
 #include <leftover/audit/leftoveraudit.h>
 
-LeftoverPresenter::LeftoverPresenter(LeftoverTableManager* mgr)
-    : _mgr(mgr)
+LeftoverPresenter::LeftoverPresenter(MainWindow* view, LeftoverTableManager* mgr)
+    :  _view(view), _mgr(mgr)
 {}
 
 void LeftoverPresenter::Review() {
@@ -398,5 +401,64 @@ void LeftoverPresenter::ExportOptimizationLeftoverAuditPdf(
     }
 }
 
+void LeftoverPresenter::applyBundleSplit(const BundleSplitResult& r)
+{
+    //auto reg = LeftoverStockRegistry::instance();
+    // 1️⃣ eredeti leftover frissítése
+    //reg.updateEntry(r.updatedOriginal);
+    update_LeftoverStockEntry(r.updatedOriginal);
 
+    // 2️⃣ új leftoverek hozzáadása
+    for (const auto& e : r.newLeftovers)
+    {
+        add_LeftoverStockEntry(e);
+    }
+        //reg.registerEntry(e);
+
+    // 3️⃣ UI frissítés
+    //emit leftoverChanged();
+
+}
+
+bool LeftoverPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {
+    bool ok = LeftoverStockRegistry::instance().removeEntry(entryId);
+
+    if(!ok){
+        qWarning() << "❌ Sikertelen törlés: nincs ilyen entryId:" << entryId;
+        return false;
+    }
+
+    if(_view){
+        _view->removeRow_LeftoversTable(entryId);
+    }
+    return true;
+}
+
+void LeftoverPresenter::add_LeftoverStockEntry(const LeftoverStockEntry& req) {
+    LeftoverStockRegistry::instance().registerEntry(req);
+    if(_view){
+        _view->addRow_LeftoversTable(req);
+    }
+    auto sp = _view->storageAuditPresenter();
+    auto m = sp->auditStateManager();
+
+    m->setOutdated(AuditStateManager::AuditOutdatedReason::LeftoverChanged);
+}
+
+
+
+void LeftoverPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& updated) {
+    bool ok = LeftoverStockRegistry::instance().updateEntry(updated); // 🔁 Frissítés Registry-ben
+
+    if (ok) {
+        if (_view) {
+            _view->updateRow_LeftoversTable(updated);
+        }
+    }
+    else
+    {
+        qWarning() << "❌ Sikertelen frissítés: nincs ilyen entryId:" << updated.entryId;
+        return;
+    }
+}
 

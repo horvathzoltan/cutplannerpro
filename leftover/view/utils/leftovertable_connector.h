@@ -1,5 +1,6 @@
 #pragma once
 
+#include "leftover/view/dialog/bundlesplitdialog.h"
 #include "view/MainWindow.h"
 #include "leftover/view/dialog/addwastedialog.h"
 #include "stock/view/dialog/editstoragedialog.h"
@@ -7,11 +8,13 @@
 #include "presenter/CuttingPresenter.h"
 #include "common/eventlogger.h"
 
+#include <leftover/services/bundlesplitengine.h>
+
 namespace LeftoverTableConnector {
 inline static void Connect(
     MainWindow* w,
     LeftoverTableManager* manager,
-    CuttingPresenter* presenter)
+    LeftoverPresenter* presenter)
 {
     // 🗑️ Hulló anyagok törlése
     w->connect(manager,
@@ -65,6 +68,41 @@ inline static void Connect(
                    original.storageId = newStorageId;
                    presenter->update_LeftoverStockEntry(original);
     });
+
+    // 🔪 Hulló bontása (split)
+    w->connect(manager,
+               &LeftoverTableManager::splitRequested,
+               w,
+               [w, presenter](const QUuid& id) {
+
+                   auto opt = LeftoverStockRegistry::instance().findById(id);
+                   if (!opt) return;
+
+                   BundleSplitDialog dlg(w);
+                   dlg.setModel(*opt);
+
+                   if (dlg.exec() != QDialog::Accepted)
+                       return;
+
+                   BundleSplitDialogResult dialogRes = dlg.getResult();
+
+                   zEvent(QString("🔪 Split accepted | leftover=%1 | removed=%2 | remaining=%3")
+                              .arg(id.toString())
+                              .arg(dialogRes.removedComponents.size())
+                              .arg(dialogRes.newComponents.size()));
+
+                   BundleSplitResult engineRes =
+                       BundleSplitEngine::applySplit(*opt, dialogRes.newComponents, dialogRes.removedComponents);
+
+                   //presenter->applyBundleSplit(engineRes);
+                   // IDE JÖN MAJD A TÉNYLEGES BONTÁSI LOGIKA
+
+                   presenter->applyBundleSplit(engineRes);
+                   //presenter->update_LeftoverStockEntry(*opt);
+
+               });
+
+
 }
 }; // end namespace LeftoverTableConnector
 

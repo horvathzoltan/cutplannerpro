@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent)
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, _cuttingPresenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
 
-    _leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
+    _leftoverPresenter = new LeftoverPresenter(this, leftoverTableManager.get());
     _kittingPresenter = new KittingPresenter(this, this);
     _storagePresenter = new StoragePresenter(this, this);
 
@@ -142,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     InputTableConnector::Connect(this, inputTableManager.get(), _cuttingPresenter);
     StockTableConnector::Connect(this, stockTableManager.get(), _cuttingPresenter);
-    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), _cuttingPresenter);
+    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), _leftoverPresenter);
     StorageAuditTableConnector::Connect(this, storageAuditTableManager.get(), _storageAuditPresenter);
     ButtonConnector_Connect();//::Connect(ui, this);
 
@@ -703,7 +703,7 @@ void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
         request.createdAt = QDateTime::currentDateTime();
         request.lastSeenAt = request.createdAt;
 
-        _cuttingPresenter->add_LeftoverStockEntry(request);
+        _leftoverPresenter->add_LeftoverStockEntry(request);
 
         if(!dialog.shouldRepeat())
             break;
