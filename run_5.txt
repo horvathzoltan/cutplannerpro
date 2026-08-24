@@ -200,7 +200,7 @@ A bundle‑szálak:
 
 # ⭐ Ha szeretnéd, megírom:
 
-### 🔧 A teljes bundle‑leftover UI és backend tervezését
+### 🔧 A teljes bundle‑leftover UI és backend tervezését - FIXED
 ### 🔧 A bundle‑aware festési logikát
 ### 🔧 A bundle‑aware storage auditot
 ### 🔧 A bundle‑aware relocation logikát
