@@ -18,9 +18,19 @@ namespace ProfileUtils
         if (MaterialFamilyUtils::matchPrefix(role, "NP-TF"))
             return "18 cm";
 
+        // láb + takaró = 18+9
         // CIPZÁROS LÁB
         if (MaterialFamilyUtils::matchPrefix(role, "NP-CL"))
-            return "27 cm"; // láb + takaró = 18+9
+            return "18 cm";
+
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CLT"))
+            return "9 cm";
+
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CL2+CLT2+CLB2"))
+            return "54 cm";
+
+        if (MaterialFamilyUtils::matchPrefix(role, "NP-CL+CLT"))
+            return "27 cm";
 
         // SÍNES LÁB
         if (MaterialFamilyUtils::matchPrefix(role, "NP-SL"))

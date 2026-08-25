@@ -1,4 +1,5 @@
 #include "paint_calculator.h"
+#include "materialbundles/model/bundle_definition.h"
 
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <materials/registry/material_registry.h>
@@ -6,8 +7,7 @@
 #include <paint/registry/powder_consumption_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
-
-const QUuid PaintCalculator::CL_COMPOSITE_ID = QUuid::fromString("{00000000-0000-0000-0000-00000000CL27}");
+#include <materialbundles/registry/bundle_registry.h>
 
 PaintPlan PaintCalculator::buildPlan()
 {
@@ -99,54 +99,110 @@ PaintPlan PaintCalculator::buildPlan()
 
             QString barcode = mat->barcode;
 
-            bool isCL  = MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*");
-            bool isCLT = MaterialFamilyUtils::matchPrefix(barcode, "NP-CLT*");
+           // // bool isCL  = MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*");
+           // // bool isCLT = MaterialFamilyUtils::matchPrefix(barcode, "NP-CLT*");
 
 
-            // Szorzó (CL/SL → 2)
-            int szorzo = 1;
-            if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*")
-                || MaterialFamilyUtils::matchPrefix(barcode,"NP-SL*")
-                || MaterialFamilyUtils::matchPrefix(barcode, "NP-CLT*"))
-                szorzo = 2;
+           //  // // Szorzó (CL/SL → 2)
+           //  // int szorzo = 1;
+           //  // if (MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*")
+           //  //     || MaterialFamilyUtils::matchPrefix(barcode,"NP-SL*")
+           //  //     || MaterialFamilyUtils::matchPrefix(barcode, "NP-CLT*"))
+           //  //     szorzo = 2;
 
-            // --- REFRAKTORÁLT KOMPOZIT LOGIKA ---
-            QUuid targetMaterialId = req.materialId;
-            bool shouldAddLength   = true;
+           //  // --- REFRAKTORÁLT KOMPOZIT LOGIKA ---
+           //  QUuid targetMaterialId = req.materialId;
+           //  bool shouldAddLength   = true;
 
-            if (isCL || isCLT)
+           //  // if (isCL || isCLT)
+           //  // {
+           //  //      targetMaterialId = CL_COMPOSITE_ID;
+
+           //  //      if (isCLT)
+           //  //          shouldAddLength = false;   // CLT nem növeli a festési hosszt
+           //  //  }
+
+           //  // ANYAG AGGREGÁLÁS (egységes logika)
+           //  PaintMaterialSummary &summary =
+           //      colorGroup.materials[targetMaterialId];
+           //  summary.materialId = targetMaterialId;
+
+           //  // darabszám mindig nő (CLT is tartozik a lábhoz)
+           //  summary.totalPieces += req.quantity;// * szorzo;
+           //  summary.requestIds.append(req.requestId);
+
+           //  // hossz csak CL esetén nő
+           //  if (shouldAddLength)
+           //      summary.totalLength_mm += req.quantity * req.requiredLength;// * szorzo;
+
+
+           //  // --- PORFOGYÁS SZÁMÍTÁSA ---
+           //  double meters = 0.0;
+           //  if (shouldAddLength){
+           //      //meters = (req.requiredLength * szorzo) / 1000.0;
+           //      meters = (req.requiredLength) / 1000.0;
+           //  }
+
+
+           //  auto model = PowderConsumptionRegistry::instance().find(req.productTypeId,
+           //                                                          req.productSubtypeId);
+
+           //  double kgPerMeter = model.kgPerMeterCorrected();
+           //  double kg = meters * kgPerMeter * req.quantity;
+
+           //  summary.powderKg += kg;
+           //  colorGroup.powderKg += kg;
+
+            const BundleDefinition* bundle =
+                BundleRegistry::instance().findByCode(mat->bundleCode);
+
+            if (bundle)
             {
-                targetMaterialId = CL_COMPOSITE_ID;
+                auto comps = BundleRegistry::instance().componentsOf(bundle->code);
 
-                if (isCLT)
-                    shouldAddLength = false;   // CLT nem növeli a festési hosszt
+                auto model = PowderConsumptionRegistry::instance().find(
+                    req.productTypeId, req.productSubtypeId);
+                double kgPerMeter = model.kgPerMeterCorrected();
+
+                for (const auto& bc : comps)
+                {
+                    const MaterialMaster* compMat =
+                        MaterialRegistry::instance().findById(bc.materialId);
+
+                    if(compMat->paintingMode == PaintingMode::None)
+                        continue;
+                    //bool isCLT = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-CLT*");
+
+                    int pieceCount = req.quantity * bc.count;
+                    int length_mm  = req.requiredLength * pieceCount;
+
+                    addComponent(colorGroup,
+                                 compMat,
+                                 pieceCount,
+                                 length_mm,
+                                 kgPerMeter,
+                                 req.requestId);
+                }
+
+                continue;
+            } else{
+                auto model = PowderConsumptionRegistry::instance().find(
+                    req.productTypeId, req.productSubtypeId);
+                double kgPerMeter = model.kgPerMeterCorrected();
+
+                // const MaterialMaster* mat =
+                //     MaterialRegistry::instance().findById(req.materialId);
+
+                int pieceCount = req.quantity;
+                int length_mm  = req.requiredLength * pieceCount;
+
+                addComponent(colorGroup,
+                             mat,
+                             pieceCount,
+                             length_mm,
+                             kgPerMeter,
+                             req.requestId);
             }
-
-            // ANYAG AGGREGÁLÁS (egységes logika)
-            auto& summary = colorGroup.materials[targetMaterialId];
-            summary.materialId = targetMaterialId;
-
-            // darabszám mindig nő (CLT is tartozik a lábhoz)
-            summary.totalPieces += req.quantity * szorzo;
-            summary.requestIds.append(req.requestId);
-
-            // hossz csak CL esetén nő
-            if (shouldAddLength)
-                summary.totalLength_mm += req.quantity * req.requiredLength * szorzo;
-
-            // --- PORFOGYÁS SZÁMÍTÁSA ---
-            double meters = 0.0;
-            if (shouldAddLength)
-                meters = (req.requiredLength * szorzo) / 1000.0;
-
-            auto model = PowderConsumptionRegistry::instance().find(req.productTypeId,
-                                                                    req.productSubtypeId);
-
-            double kgPerMeter = model.kgPerMeterCorrected();
-            double kg = meters * kgPerMeter * req.quantity;
-
-            summary.powderKg += kg;
-            colorGroup.powderKg += kg;
 
 
             // --- POFA / CSAVAR TÍPUS SZERINT ---
@@ -180,7 +236,6 @@ PaintPlan PaintCalculator::buildPlan()
                     }
                 }
 
-
                 // --- POFA PORFOGYÁS SZÁMÍTÁSA ---
 
                 //zInfo(L("tetelszam:")+req.externalReference+", totalPofaDb:"+QString::number(pofaDbForThisRequest));
@@ -208,8 +263,35 @@ PaintPlan PaintCalculator::buildPlan()
                 colorGroup.csavarFestheto = true;
                 colorGroup.csavar +=2*req.quantity;
             }
-        }
+        }// req ciklus vége
     }
 
     return plan;
+}
+
+void PaintCalculator::addComponent(PaintColorGroup& colorGroup,
+                                   const MaterialMaster* mat,
+                                   int pieceCount,
+                                   int length_mm,
+                                   double kgPerMeter,
+                                   const QUuid& requestId)
+{
+    auto& summary = colorGroup.materials[mat->id];
+    summary.materialId = mat->id;
+
+    summary.totalPieces += pieceCount;
+    summary.requestIds.append(requestId);
+
+    bool isCLT = MaterialFamilyUtils::matchPrefix(mat->barcode, "NP-CLT*");
+
+    if (length_mm > 0)
+        summary.totalLength_mm += length_mm;
+
+    if(!isCLT){
+        double meters = length_mm / 1000.0;
+        double kg = meters * kgPerMeter;
+
+        summary.powderKg   += kg;
+        colorGroup.powderKg += kg;
+    }
 }

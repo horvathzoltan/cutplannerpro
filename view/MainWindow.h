@@ -123,6 +123,7 @@ private slots:
     void handle_act_MaterialFinder_clicked();
     void handle_act_Settings_clicked();
     void handle_act_StorageLabelBatch_clicked();
+    void handle_act_LeftoverLabelQueue_clicked();
 
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
@@ -197,6 +198,7 @@ private:
         QAction* actSettings = nullptr;
         QAction* actSeriesMatrix = nullptr;
         QAction* actStorageLabelBatch = nullptr;
+        QAction* actLeftoverLabelQueue = nullptr;
 
     };
 

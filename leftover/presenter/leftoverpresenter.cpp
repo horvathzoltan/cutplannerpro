@@ -1,5 +1,6 @@
 #include "leftoverpresenter.h"
 #include "common/eventlogger.h"
+#include "leftover/label/leftoverlabelgenerator.h"
 #include "view/MainWindow.h"
 
 #include "common/logger.h"
@@ -16,6 +17,7 @@
 #include "leftover/registry/leftoverstockregistry.h"
 #include <settings/settingsmanager.h>
 #include <leftover/audit/leftoveraudit.h>
+#include <leftover/label/leftoverlabelqueue.h>
 
 LeftoverPresenter::LeftoverPresenter(MainWindow* view, LeftoverTableManager* mgr)
     :  _view(view), _mgr(mgr)
@@ -403,21 +405,21 @@ void LeftoverPresenter::ExportOptimizationLeftoverAuditPdf(
 
 void LeftoverPresenter::applyBundleSplit(const BundleSplitResult& r)
 {
-    //auto reg = LeftoverStockRegistry::instance();
     // 1️⃣ eredeti leftover frissítése
-    //reg.updateEntry(r.updatedOriginal);
     update_LeftoverStockEntry(r.updatedOriginal);
 
     // 2️⃣ új leftoverek hozzáadása
     for (const auto& e : r.newLeftovers)
     {
         add_LeftoverStockEntry(e);
+
+        LabelModel lm = LeftoverLabelGenerator::makeBundleLeftoverLabel(
+            e,
+            r.updatedOriginal.barcode
+            );
+
+        LeftoverLabelQueue::instance().append(lm);
     }
-        //reg.registerEntry(e);
-
-    // 3️⃣ UI frissítés
-    //emit leftoverChanged();
-
 }
 
 bool LeftoverPresenter::remove_LeftoverStockEntry(const QUuid& entryId) {

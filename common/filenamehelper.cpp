@@ -248,3 +248,7 @@ QString FileNameHelper::getBundleCsvFile() const {
 QString FileNameHelper::getBundleComponentsCsvFile() const {
     return QDir(_projectPath).filePath("bundle_components.csv");
 }
+
+QString FileNameHelper::getLeftoverLabelQueueCsvFile() const {
+    return QDir(_projectPath).filePath("leftover_labels.csv");
+}

@@ -80,6 +80,7 @@ public:
 
     QString getBundleCsvFile() const;
     QString getBundleComponentsCsvFile() const;
+    QString getLeftoverLabelQueueCsvFile() const;
 
     static QString emojiCacheDir();
 };

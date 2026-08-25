@@ -22,6 +22,7 @@ SOURCES += \
     kitting/kittingengine.cpp \
     kitting/presenter/kittingpresenter.cpp \
     leftover/audit/leftoveraudit.cpp \
+    leftover/label/leftoverlabelqueue.cpp \
     leftover/services/bundlesplitengine.cpp \
     leftover/view/dialog/bundlesplitdialog.cpp \
     leftover/view/dialog/leftoverauditdialog.cpp \
@@ -41,7 +42,6 @@ SOURCES += \
     paint/paint_calculator.cpp \
     paint/paint_reporter.cpp \
     paint/presenter/paintpresenter.cpp \
-    paint/registry/powder_consumption_registry.cpp \
     paint/repository/powder_consumption_repository.cpp \
     leftover/presenter/leftoverpresenter.cpp \
     stock/presenter/stockpresenter.cpp \
@@ -164,6 +164,8 @@ HEADERS += \
     cutting/snapshot/cuttingsnapshotdeserializer.h \
     cutting/snapshot/cuttingsnapshotserializer.h \
     leftover/audit/leftoveraudit.h \
+    leftover/label/leftoverlabelgenerator.h \
+    leftover/label/leftoverlabelqueue.h \
     leftover/services/bundlesplitengine.h \
     leftover/view/dialog/bundlesplitdialog.h \
     leftover/view/dialog/leftoverauditdialog.h \

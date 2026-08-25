@@ -6,6 +6,7 @@
 
 #include <model/cutting/instruction/cutinstruction.h>
 #include "cutting/export/sortmode.h"
+#include "service/cutting/instruction/labelmodel.h"
 
 class CutInstructionService
 {
@@ -57,5 +58,7 @@ public:
                      const QVector<QString>& prioRefs);
 
 
+    static bool ExportLeftoverLabels(const QString& path,
+                                     const QVector<LabelModel>& labels);
 };
 

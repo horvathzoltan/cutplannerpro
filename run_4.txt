@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 teszteléshez egy láb kell,
  - ha több azonos méret van egy tételhez
  - vagy 1 cm-el kisebb, vagy nagyobb
  - a tesztelésre szánt példányt jelöljük a címkén "T"-vel
-=======
+
 leftover címke nyomtatási buffer
  - toolbaron gomb, számolja a címkéket, ha 0, akkor szürke, amúgy zöld, vagy ilyesmi
  - perzisztens appendable csv, amit nyomtatáűskor törlünk
@@ -25,7 +24,6 @@ tehát van olyan, hogy kiveszi, de adott hosszat kap, az új leftover, azaz hull
  lehet bundle-é alakítani, ezzel a hosszal kezül letárolásra, itt kap egy vonalkódot, amit ki kell rá nyomtatni
  míg az ősön marad a régi
 
->>>>>>> d13357bfea99f38b5f9512eca2933be11469dfb3
 
 
 optimizer : FIXED

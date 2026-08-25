@@ -47,8 +47,11 @@
 #include <model/cutting/plan/audit/product_bom_audit_service.h>
 
 #include <cutting/export/cutinstructionservice.h>
+#include <cutting/export/cutinstructionservice.h>
 
 #include <model/registries/cuttingmachineregistry.h>
+
+#include <leftover/label/leftoverlabelqueue.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -58,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     initEventLogWidget();
 
-    _actSeriesMatrix = new QAction(tr("📊 Sorozat mátrix"), this);
+    _actSeriesMatrix = new QAction(tr("📊 Teljességi mátrix"), this);
     _actSeriesMatrix->setShortcut(QKeySequence("Ctrl+M"));
     _actSeriesMatrix->setCheckable(true);
     _actSeriesMatrix->setChecked(false);
@@ -67,8 +70,8 @@ MainWindow::MainWindow(QWidget *parent)
         .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
         .actSettings = MainWindowUIBuilder::createSettingsAction(this),
         .actSeriesMatrix   =   _actSeriesMatrix, // 🔹 egyszerű action
-        .actStorageLabelBatch = new QAction("📦 Tömeges címke", this)
-
+        .actStorageLabelBatch = new QAction("📦 Tárhely címkék", this),
+        .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this)
     };
 
     // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
@@ -406,9 +409,9 @@ void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
 {
     ui->mainToolBar->addAction(m.actMaterialFinder);
     ui->mainToolBar->addAction(m.actSettings);
-    ui->mainToolBar->addAction(m.actSeriesMatrix);   // 🔹 ÚJ
+    ui->mainToolBar->addAction(m.actSeriesMatrix);
     ui->mainToolBar->addAction(m.actStorageLabelBatch);
-
+    ui->mainToolBar->addAction(m.actLeftoverLabelQueue);
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
@@ -464,6 +467,8 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
     connect(m.actStorageLabelBatch, &QAction::triggered,
             this, &MainWindow::handle_act_StorageLabelBatch_clicked);
 
+    connect(m.actLeftoverLabelQueue, &QAction::triggered,
+            this, &MainWindow::handle_act_LeftoverLabelQueue_clicked);
 
 }
 
@@ -1763,3 +1768,46 @@ void MainWindow::ShowWarningDialog(const ValidationResult& result)
 
     return;
 }
+
+void MainWindow::handle_act_LeftoverLabelQueue_clicked()
+{
+    auto items = LeftoverLabelQueue::instance().load();
+    if (items.isEmpty()) {
+        QMessageBox::information(this,
+                                 tr("Hulló címkék"),
+                                 tr("Nincs nyomtatandó hulló címke a queue-ban."));
+        return;
+    }
+
+    QString fileName = SettingsManager::instance().cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString baseName = fi.completeBaseName();
+
+    QString dirPath = fi.absolutePath() + "/_reports";
+    QDir dir(dirPath);
+    dir.mkpath(".");
+
+    QString pdfName =
+        QStringLiteral("%1_leftover_labels_%2.pdf")
+            .arg(baseName)
+            .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss"));
+
+    QString path = dir.filePath(pdfName);
+
+
+    bool ok = CutInstructionService::ExportLeftoverLabels(path, items);
+
+
+    if (!ok) {
+        QMessageBox::warning(this,
+                             tr("Hiba"),
+                             tr("Nem sikerült exportálni a hulló címkéket PDF-be."));
+        return;
+    }
+
+    LeftoverLabelQueue::instance().clear();
+    QMessageBox::information(this,
+                             tr("Hulló címkék"),
+                             tr("Hulló címkék PDF-be exportálva:\n%1").arg(path));
+}
+

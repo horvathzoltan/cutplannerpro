@@ -1,0 +1,165 @@
+Zoltán, itt a pontos, auditálható, lépésenkénti patching terv, amely
+csak azt a validációs logikát vezeti be, amit most definiáltunk:
+tételszám‑szintű láb–takaró–sín–bowden számlálás + hibadetektálás.
+
+A terv nem nyúl bele a már stabil bundle‑robbantásba és az addComponent
+logikába, csak hozzáteszi a validációs réteget.
+
+------------------------------------------------------------------------
+
+⭐ PATCHING TERV (lépésről lépésre, diff‑mentes, kézzel beilleszthető)
+
+1. LÉPÉS — Hozz létre egy számláló modellt
+
+A paint_calculator.h‑ba:
+
+    struct LegCounter {
+        int lab = 0;      // NP-CL*
+        int takaro = 0;   // NP-CLT*
+        int sin = 0;      // NP-SL*
+        int bow = 0;      // NP-BOW*
+    };
+
+Majd a PaintPlan‑ba (ha kell):
+
+    QHash<QString, QStringList> validationErrors;
+
+------------------------------------------------------------------------
+
+2. LÉPÉS — Hozz létre egy tételszám → számláló map‑et
+
+A buildPlan() elejére:
+
+    QHash<QString, LegCounter> legCounters;
+
+------------------------------------------------------------------------
+
+3. LÉPÉS — Lábfajta detektálás (single anyag esetén)
+
+A request feldolgozó ciklusban, közvetlenül a mat->barcode után:
+
+    bool isCL  = MaterialFamilyUtils::matchPrefix(barcode, "NP-CL*");
+    bool isCLT = MaterialFamilyUtils::matchPrefix(barcode, "NP-CLT*");
+    bool isSL  = MaterialFamilyUtils::matchPrefix(barcode, "NP-SL*");
+    bool isBOW = MaterialFamilyUtils::matchPrefix(barcode, "NP-BOW*");
+
+------------------------------------------------------------------------
+
+4. LÉPÉS — SINGLE ANYAG esetén számlálás
+
+A bundle‑ág ELŐTT, még a single ág előtt:
+
+    auto& counter = legCounters[req.externalReference];
+
+    if (isCL)  counter.lab    += req.quantity;
+    if (isCLT) counter.takaro += req.quantity;
+    if (isSL)  counter.sin    += req.quantity;
+    if (isBOW) counter.bow    += req.quantity;
+
+------------------------------------------------------------------------
+
+5. LÉPÉS — BUNDLE esetén számlálás
+
+A bundle‑ágban, a komponensek ciklusában:
+
+    auto& counter = legCounters[req.externalReference];
+
+    bool compCL  = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-CL*");
+    bool compCLT = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-CLT*");
+    bool compSL  = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-SL*");
+    bool compBOW = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-BOW*");
+
+    if (compCL)  counter.lab    += bc.count * req.quantity;
+    if (compCLT) counter.takaro += bc.count * req.quantity;
+    if (compSL)  counter.sin    += bc.count * req.quantity;
+    if (compBOW) counter.bow    += bc.count * req.quantity;
+
+------------------------------------------------------------------------
+
+6. LÉPÉS — Validáció a buildPlan() végén
+
+Közvetlenül a return plan; előtt:
+
+    for (auto it = legCounters.begin(); it != legCounters.end(); ++it)
+    {
+        const QString& tetel = it.key();
+        const LegCounter& c = it.value();
+
+        // CIPZÁROS (NP-CL) validáció
+        if (c.lab > 0)
+        {
+            // 1) takaró darabszám egyezés
+            if (c.lab != c.takaro)
+                plan.validationErrors[tetel].append(
+                    "⚠️ CIPZÁROS: a láb és a lábtakaró darabszáma nem egyezik!");
+
+            // 2) páratlan lábszám
+            if (c.lab % 2 != 0)
+                plan.validationErrors[tetel].append(
+                    "⚠️ CIPZÁROS: páratlan lábszám!");
+        }
+
+        // SÍNES (NP-SL) → nincs takaró, nincs lábpár
+        // BOWDEN (NP-BOW) → nincs láb
+    }
+
+------------------------------------------------------------------------
+
+7. LÉPÉS — Reporter módosítása (ha kell)
+
+A festési riportban:
+
+    if (!colorGroup.validationErrors.isEmpty()) {
+        out << "HIBÁK:\n";
+        for (const auto& err : colorGroup.validationErrors)
+            out << "   " << err << "\n";
+    }
+
+------------------------------------------------------------------------
+
+⭐ 8. LÉPÉS — Tesztelési terv
+
+Teszt 1 — CIPZÁROS single láb, takaró nélkül
+
+-   1× NP‑CL
+-   0× NP‑CLT
+    → két hiba: „darabszám nem egyezik”, „páratlan lábszám”
+
+Teszt 2 — CIPZÁROS single láb + single takaró
+
+-   1× NP‑CL
+-   1× NP‑CLT
+    → OK
+
+Teszt 3 — CIPZÁROS bundle
+
+-   NP‑CL2+CLT2+CLB2
+    → OK (bundle garantálja)
+
+Teszt 4 — SÍNES láb
+
+-   NP‑SL
+    → OK (nincs takaró)
+
+Teszt 5 — BOWDEN
+
+-   NP‑BOW
+    → OK (nincs láb)
+
+------------------------------------------------------------------------
+
+⭐ 9. LÉPÉS — Holnap reggel csak beilleszted a fenti blokkokat
+
+A patching terv:
+
+-   nem érinti a festési logikát
+-   nem érinti a bundle robbantást
+-   nem érinti az addComponent‑et
+-   csak hozzáteszi a validációs réteget
+
+Ez a legstabilabb, legmodulárisabb megoldás.
+
+------------------------------------------------------------------------
+
+Ha szeretnéd, holnapra összerakom a teljes buildPlan() végleges, egyben
+beilleszthető verzióját, a validációval együtt.

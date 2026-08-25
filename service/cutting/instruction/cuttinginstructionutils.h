@@ -589,42 +589,9 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 }
 
 
-
-// struct LabelPart {
-//     QString text;
-
-//     bool trimmable = false;   // rövidíthető
-//     bool jumpable = false;    // kiugorhat új sorba
-//     int targetRow = 0;        // melyik sorba szeretnénk alapból
-//     Qt::Alignment align = Qt::AlignLeft;  // bal/közép/jobb
-// };
-
-
-// struct LabelModel {
-//     QVector<LabelPart> parts;
-//     QString priorityIcon;   // 🔥💧☁️🪨
-//     QString groupIcon;      // 🦌🐸🐱… ABC állatok
-
-//     QString toString() const {
-//         QString out;
-//         for (const auto& p : parts)
-//             out += p.text;
-//         return out;
-//     }
-
-//     int length() const {
-//         int len = 0;
-//         for (const auto& p : parts)
-//             len += p.text.length();
-//         return len;
-//     }
-// };
-
 // PRIORITY‑ICON BUCKETING, PRIORITY ICON SCALE
 // Lean / Kanban / Toyota Production System egyik alapelve:
 // A prioritás vizuális, ikonikus, azonnal felismerhető legyen.
-
-
 
 inline QString priorityIconFor(const QDate& dueDate)
 {
@@ -689,186 +656,6 @@ inline QMap<QString, QString> computeGroupIconsForRequests(const QVector<Cutting
 
     return out;
 }
-
-// inline QVector<LabelModel> collectLabelModelsFromMachineCuts(const MachineCuts& mc)
-// {
-//     QVector<LabelModel> out;
-//     QSet<QString> rodSeen;
-//     QVector<Cutting::Plan::Request> reqs;
-
-//     for (const auto& ci : mc.cutInstructions) {
-//         Cutting::Plan::Request *req =
-//             CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-//         if(req)
-//             reqs.append(*req);
-//     }
-
-//     QMap<QString, QString> groupIcons = computeGroupIconsForRequests(reqs);
-
-//     for(auto& g : groupIcons.keys()){
-//         zInfo(L("Group icon: %1 → %2").arg(g).arg(groupIcons[g]));
-//     }
-
-//     for (const CutInstruction &ci : mc.cutInstructions) {
-
-//         // 1) Rúd címke
-//         if (!rodSeen.contains(ci.rodId)) {
-//             rodSeen.insert(ci.rodId);
-
-//             QString rodIdOrBarcode = (ci.source == Cutting::Plan::Source::Reusable)
-//                                          ? ci.barcode
-//                                          : ci.rodId;
-
-//             LabelModel rod;
-//             rod.parts.append({rodIdOrBarcode, false, false, 0, Qt::AlignCenter,
-//                               false, false, false});
-
-//             const MaterialMaster *mat =
-//                 MaterialRegistry::instance().findById(ci.materialId);
-
-//             if (mat) {
-//                 rod.parts.append({
-//                     mat->toDisplay(),                   // toReportLabel(),
-//                     false,                              // trimmable
-//                     false,                              // jumpable
-//                     1,                                  // targetRow → alsó sor
-//                     Qt::AlignCenter, false, true, false // 🔥 small = true
-//                 });
-//             }
-
-//             // rod.groupIcon = "🌞";
-//             // rod.priorityIcon = "🌞";
-//             //  1) leftover keresése
-//             QString rodKey = (ci.source == Cutting::Plan::Source::Reusable)
-//                                  ? ci.barcode
-//                                  : ci.rodId;
-
-//             if (mc.leftover_mm.contains(rodKey)) {
-//                 double leftover = mc.leftover_mm[rodKey];
-//                 QString leftoverBc = mc.leftoverBarcode.value(rodKey);
-
-//                 rod.parts.append(
-//                     {QString(" | Hulló(%2): %1 mm").arg(leftover).arg(leftoverBc),
-//                      false, false, 0, Qt::AlignRight, false, false, false});
-
-//                 rod.barcode = leftoverBc;
-//             }
-
-//             out.append(rod);
-
-//             // 🔥 leftover felvételi címke generálása
-//             if (!rod.barcode.isEmpty() && rod.barcode.toLower() != "selejt") {
-
-//                 // double leftover = mc.leftover_mm.value(rodKey);
-//                 double leftover = mc.leftover_mm[rodKey];
-
-//                 // 🔥 megelőző negyed-dm határ
-//                 int trimmedLeftover = int(leftover / 25) * 25;
-
-//                 QString leftoverBc = rod.barcode;
-
-//                 // Code128 tartalom
-//                 QString code128 = QString("%1|%2|%3")
-//                                       .arg(leftoverBc)
-//                                       .arg(trimmedLeftover)
-//                                       .arg(mat->barcode);
-
-//                 LabelModel lo;
-//                 lo.priorityIcon = ""; //"♻️";          // opcionális
-//                 lo.groupIcon = "";    // nincs csoport
-//                 lo.barcode = code128; // 🔥 ez lesz a vonalkód
-
-//                 // Sorok
-
-//                 lo.parts.append({mat->barcode, false, false, 0, Qt::AlignCenter,
-//                                  false, false, false});
-
-//                 lo.parts.append({leftoverBc, false, false, 1, Qt::AlignCenter, false,
-//                                  false, false});
-
-//                 lo.parts.append({QString("%1 mm").arg(trimmedLeftover), false, false,
-//                                  2, Qt::AlignCenter, false, false, false});
-
-//                 // lo.parts.append({
-//                 //     code128,
-//                 //     false, false,
-//                 //     2,
-//                 //     Qt::AlignCenter,
-//                 //     true, false, false   // small
-//                 // });
-
-//                 out.append(lo);
-//             }
-//         }
-
-//         // 2) Darab címke
-//         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
-//         QString ext = ci.externalReference + ".";
-
-//         if (ci.toldasRole == ToldasRole::Main ||
-//             ci.toldasRole == ToldasRole::Toldat) {
-//             ext += QString(" [%1]").arg(ToldasRoleUtils::toString(ci.toldasRole));
-//         }
-
-//         // 🔥💧☁️⏳ prioritás ikon
-//         QString prio = req ? priorityIconFor(req->dueDate) : "🌞";
-
-//         // 🐸🐱🦭… csoportikon
-//         QString baseRef = ci.externalReference.split(' ').first();
-//         QString group = groupIcons.value(baseRef, "🐞");
-
-//         // zInfo(QStringLiteral("prio(%1) ->
-//         // %2").arg(req->dueDate.toString()).arg(prio));
-//         // zInfo(QStringLiteral("group(%1)->
-//         // %2").arg(ci.externalReference).arg(group));
-
-//         QString owner =
-//             req ? req->ownerName : ci.requestId.toString(QUuid::WithoutBraces);
-//         QString sizeStr =
-//             QString("%1 mm").arg(QString::number(ci.cutSize_mm, 'f', 0));
-
-//         LabelModel lm;
-//         lm.priorityIcon = prio;
-//         lm.groupIcon = group;
-//         lm.barcode = ci.externalReference;
-
-//         // lm.parts.append({ ext + " ", false, false, 0, Qt::AlignLeft });
-//         // lm.parts.append({ prio + group + " " + ext + " ", false, false, 0,
-//         // Qt::AlignLeft });
-//         lm.parts.append(
-//             {ext + " ", false, false, 0, Qt::AlignLeft, false, false, false});
-//         lm.parts.append(
-//             {owner, true, true, 1, Qt::AlignCenter, false, true, false});
-
-//         // QString a = "";
-//         // if(ci.subtype != Subtype::None){
-//         //     a+= SubtypeUtils::toDisplayText(ci.subtype);
-//         // }
-//         QString a;
-//         a = SubtypeUtils::toProductVariantDisplayText(
-//             ci.productTypeId, ci.productSubtypeId, ci.attributes);
-
-//         // auto* b =
-//         // ProductSubtypeRegistry::instance().findById(ci.productSubtypeId); a =
-//         // b?b->name:"";
-
-//         if (ci.side != HandlerSide::None) {
-//             if (!a.isEmpty())
-//                 a += ", ";
-//             a += HandlerSideUtils::toDisplayText(ci.side);
-//             ;
-//         }
-
-//         if (!a.isEmpty()) {
-//             lm.parts.append({a, false, false, 2, Qt::AlignLeft, true, false, true});
-//         }
-//         lm.parts.append({" | " + sizeStr, false, false, 0, Qt::AlignRight, false,
-//                          false, false});
-//         out.append(lm);
-//     }
-
-//     return out;
-// }
 
 inline QVector<LabelModel> collectLabelModelsFromMachineCuts_2(const MachineCutsLeftoverInfo& leftoverInfo, QVector<const CutInstruction*> orderedCuts)
 {
@@ -1986,6 +1773,7 @@ inline void formatLeftoverIntakeForm_Pdf(
 /**/
 
 
+
 inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
                                       QPainter& painter,
                                       QPdfWriter& writer,
@@ -2190,7 +1978,6 @@ inline void formatLabelColumnFlow_Pdf(const QVector<LabelModel>& labels,
             emojiSize,
             emojiSize
             );
-
         // rajzolás
         if (!topChar.isEmpty())
             painter.drawImage(topTarget, topImg);

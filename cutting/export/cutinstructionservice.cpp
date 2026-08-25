@@ -281,3 +281,39 @@ void CutInstructionService::sort(QVector<MachineCuts>* machineCutsList,
                          });
     }
 }
+
+bool CutInstructionService::ExportLeftoverLabels(const QString& path,
+                                                 const QVector<LabelModel>& labels)
+{
+    QPdfWriter writer(path);
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setResolution(300);
+
+    QPainter painter(&writer);
+    if (!painter.isActive()) {
+        zEvent("❌ Nem sikerült megnyitni a PDF fájlt (leftover labels).");
+        return false;
+    }
+
+    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+
+    const int cols = 2;
+    const qreal cellHeight = 300.0;
+
+    QFont font("Noto Sans Mono", 11);
+    painter.setFont(font);
+
+    CuttingInstructionUtils::formatLabelColumnFlow_Pdf(
+        labels,
+        painter,
+        writer,
+        pageRect,
+        cols,
+        cellHeight
+        );
+
+    painter.end();
+    zEvent(QString("🏷️ Leftover Label PDF exportálva: %1").arg(path));
+
+    return true;
+}

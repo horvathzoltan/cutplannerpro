@@ -1,3 +1,4 @@
+#include "common/logger.h"
 #include "paint_calculator.h"
 #include "paint_reporter.h"
 #include "common/eventlogger.h"
@@ -54,39 +55,47 @@ QString PaintReporter::toText(const PaintPlan& plan)
         {
             const auto& s = colorGroup.materials[matId];
 
-            bool isCompositeCL = (matId == PaintCalculator::CL_COMPOSITE_ID);
+           // bool isCompositeCL = (matId == PaintCalculator::CL_COMPOSITE_ID);
 
             QString matName;
             QString postfix;
             double keruletCm = 0.0;
 
-            if (isCompositeCL)
-            {
-                matName = "CipzárosLáb + Lábtakaró [NP-CL/CLT]";
-                keruletCm = 27.0;
-            }
-            else
-            {
+            // if (isCompositeCL)
+            // {
+            //     matName = "CipzárosLáb + Lábtakaró [NP-CL/CLT]";
+            //     keruletCm = 27.0;
+            // }
+            // else
+            // {
                 const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
                 matName = mat ? mat->toDisplay() : "???";
 
                 QString barcode = mat ? mat->barcode : "???";
 
+                //bool isBundle = barcode.contains('+');
                 auto role = MaterialRoleUtils::normalizePrefix(barcode);
                 postfix = ProfileUtils::profilePostfixFor(role);
-            }
+
+                // if(isBundle){
+                //     zInfo("bundle!!!");
+                // }
+                // postfix = isBundle
+                //               ? QString()
+                //               : ProfileUtils::profilePostfixFor(role);
+           // }
 
             out<<QString("   Anyag: %1").arg(matName);
 
-            if (isCompositeCL)
-            {
-                out << QString("      Teljes hossz: %1 mm (%2 m × %3 cm)")
-                           .arg(s.totalLength_mm)
-                           .arg(s.totalLength_mm / 1000.0, 0, 'f', 2)
-                           .arg(keruletCm);
-            }
-            else
-            {
+            // if (isCompositeCL)
+            // {
+            //     out << QString("      Teljes hossz: %1 mm (%2 m × %3 cm)")
+            //                .arg(s.totalLength_mm)
+            //                .arg(s.totalLength_mm / 1000.0, 0, 'f', 2)
+            //                .arg(keruletCm);
+            // }
+            // else
+            // {
                 if (!postfix.isEmpty()) {
                     out << QString("      Teljes hossz: %1 mm (%2 m × %3)")
                                .arg(s.totalLength_mm)
@@ -97,7 +106,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
                     .arg(s.totalLength_mm)
                         .arg(s.totalLength_mm / 1000.0, 0, 'f', 2);
                 }
-            }
+          //  }
 
             out<<QString("      Porfogyás: %1 kg")
                        .arg(s.powderKg, 0, 'f', 2);
