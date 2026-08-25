@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent)
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, _cuttingPresenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
 
-    _leftoverPresenter = new LeftoverPresenter(leftoverTableManager.get());
+    _leftoverPresenter = new LeftoverPresenter(this, leftoverTableManager.get());
     _kittingPresenter = new KittingPresenter(this, this);
     _storagePresenter = new StoragePresenter(this, this);
 
@@ -142,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     InputTableConnector::Connect(this, inputTableManager.get(), _cuttingPresenter);
     StockTableConnector::Connect(this, stockTableManager.get(), _cuttingPresenter);
-    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), _cuttingPresenter);
+    LeftoverTableConnector::Connect(this, leftoverTableManager.get(), _leftoverPresenter);
     StorageAuditTableConnector::Connect(this, storageAuditTableManager.get(), _storageAuditPresenter);
     ButtonConnector_Connect();//::Connect(ui, this);
 
@@ -520,9 +520,6 @@ void MainWindow::setInputFileLabel(const QString& label, const QString& tooltip)
     ui->inputFileLabel->setToolTip(tooltip);
 }
 
-void MainWindow::ShowWarningDialog(const QString& msg) {
-    QMessageBox::warning(this, "Hiba", msg);
-}
 
 // void MainWindow::updateStats(const QVector<Cutting::Plan::CutPlan>& plans, const QVector<Cutting::Result::ResultModel>& results) {
 //     //analyticsPanel->updateStats(plans, results);
@@ -706,7 +703,7 @@ void MainWindow::handle_btn_AddLeftoverStockEntry_clicked() {
         request.createdAt = QDateTime::currentDateTime();
         request.lastSeenAt = request.createdAt;
 
-        _cuttingPresenter->add_LeftoverStockEntry(request);
+        _leftoverPresenter->add_LeftoverStockEntry(request);
 
         if(!dialog.shouldRepeat())
             break;
@@ -736,11 +733,12 @@ void MainWindow::handle_btn_Optimize_clicked() {
 void MainWindow::handle_btn_ExportCutPlanSummary_clicked() {
     bool ok = CutInstructionService::ExportCutPlanSummary(*_cuttingPresenter->optimizerModel());
 
-    if (!ok)
-        ShowWarningDialog(
-            "Nincs optimalizációs eredmény.\n"
-            "A Summary export nem hajtható végre."
-            );
+    if (!ok){
+        ValidationResult r;
+        r.errors << "Nincs optimalizációs eredmény.\n"
+                 << "A Summary export nem hajtható végre.";
+        ShowWarningDialog(r);
+    }
     return;
 }
 
@@ -1347,7 +1345,10 @@ void MainWindow::handle_btn_ExportCutInstruction_clicked() {
         CutInstructionService::ExportMode::Standard);
 
     if(!ok){
-        ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+        ValidationResult r;
+        r.errors << "Nincs legenerált vágási utasítás.\n"
+                 << "Előbb futtasd a Generate CutInstructions műveletet.";
+        ShowWarningDialog(r);
     }
 }
 
@@ -1359,7 +1360,10 @@ void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
         CutInstructionService::ExportMode::RodDiagram);
 
     if(!ok){
-        ShowWarningDialog("Nincs legenerált vágási utasítás.\nElőbb futtasd a Generate CutInstructions műveletet.");
+        ValidationResult r;
+        r.errors << "Nincs legenerált vágási utasítás.\n"
+                 << "Előbb futtasd a Generate CutInstructions műveletet.";
+        ShowWarningDialog(r);
     }
 }
 
@@ -1722,4 +1726,40 @@ QVector<QString> MainWindow::getPriorityReferences() const
         out.append(part.trimmed());
     }
     return out;
+}
+
+// void MainWindow::ShowWarningDialog(const QString& msg) {
+//     QMessageBox::warning(this, "Hiba", msg);
+// }
+
+void MainWindow::ShowWarningDialog(const ValidationResult& result)
+{
+    QString msg;
+    if (result.hasError()) {
+        msg = "❌ Az optimalizálás nem indítható:\n\n• "
+              + result.errors.join("\n• ");
+    }
+
+    if (result.hasWarning()){
+        if(!msg.isEmpty()) msg+="\n\n";
+        msg += "⚠️ Figyelmeztetés:\n\n• "
+               + result.warnings.join("\n• ");
+    }
+
+    if (result.hasInfo()){
+        if(!msg.isEmpty()) msg+="\n\n";
+        msg += "ℹ️ Információ:\n\n• "
+               + result.informations.join("\n• ");
+    }
+
+    if(msg.isEmpty()) return;
+
+    if(result.hasError())
+        QMessageBox::critical(this, "Hiba", msg);
+    else if(result.hasWarning())
+        QMessageBox::warning(this, "Figyelmeztetés", msg);
+    else
+        QMessageBox::information(this, "Információ", msg);
+
+    return;
 }

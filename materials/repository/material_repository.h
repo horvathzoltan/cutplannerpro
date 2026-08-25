@@ -43,6 +43,9 @@ private:
         QString description;
         QString familyStr;
 
+        QString kindStr;
+        QString bundleCodeStr;
+
         struct ValidatorResponse_level1{
             ValidatorResponse_level1(bool a){
                 ok = a;
@@ -61,6 +64,6 @@ private:
                                                               const MaterialRepository::MaterialRow::ValidatorResponse_level1& v1,
                                                               CsvReader::FileContext& ctx);
 
-    static const int FIELD_COUNT = 20;
+    static const int FIELD_COUNT = 22;
     //static bool validate_level1(const MaterialRow& row, CsvReader::FileContext& ctx);
 };

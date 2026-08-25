@@ -4,6 +4,7 @@
 #include <QSizeF>
 #include "common/surface/surfacetype.h"
 #include "materials/model/material_family.h"
+#include "materials/model/material_kind.h"
 #include "model/identifiableentity.h"
 #include "common/color/namedcolor.h"
 #include "materials/model/material_type.h"
@@ -50,6 +51,21 @@ struct MaterialMaster : public IdentifiableEntity {
     QString description;   // hosszabb szöveges leírás
 
     MaterialFamily family = MaterialFamily::Unknown;
+
+    // Csak akkor értelmes, ha kind == MaterialKind::Compound
+    MaterialKind kind = MaterialKind::Simple;
+    //std::optional<QUuid> bundleId;
+    QString bundleCode;
+
+    bool isBundle() const noexcept
+    {
+        return kind == MaterialKind::Bundle;
+    }
+
+    bool hasBundle() const noexcept
+    {
+        return isBundle() && !bundleCode.isEmpty();
+    }
 
     MaterialScoringParams scoringParams() const {
         return {

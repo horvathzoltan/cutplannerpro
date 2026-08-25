@@ -2,74 +2,7 @@
 #include "logger.h"
 
 #include <QFile>
-
-// Megjegyzés: a parser automatikusan kihagyja az üres sorokat a fájl feldolgozása során.
-/*
-QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
-{
-    QList<QVector<QString>> rows;
-    QVector<QString> fields;
-    QString s;
-    bool inQuote = false;
-
-    while (!st->atEnd()) {
-        QString line = st->readLine();
-
-        // Üres sorok kihagyása
-        if (line.trimmed().isEmpty()) continue;
-
-        // Többsoros idézőzött cellák beolvasása
-        while (inQuote && !st->atEnd()) {
-            line += "\n" + st->readLine();
-        }
-
-        fields.clear();
-        s.clear();
-        inQuote = false;
-
-        for (int i = 0; i < line.size(); ++i) {
-            QChar ch = line[i];
-
-            if (ch == '"') {
-                if (!inQuote) {
-                    inQuote = true;
-                } else {
-                    if (i + 1 < line.size() && line[i + 1] == '"') {
-                        s += '"'; ++i; // Escaped idézőjel: ""
-                    } else {
-                        inQuote = false; // Lezárás
-                    }
-                }
-                continue;
-            }
-
-            if (!inQuote && ch == separator) {
-                fields.append(parseCell(s)); // Cellák feldolgozása
-                s.clear();
-            } else {
-                // Escape karakter kezelése idézőn kívül
-                if (ch == '\\' && i + 1 < line.size()) {
-                    QChar next = line[i + 1];
-                    switch (next.unicode()) {
-                    case 'n': s += '\n'; break;
-                    case 't': s += '\t'; break;
-                    case '\\': s += '\\'; break;
-                    case '"': s += '"'; break;
-                    default: s += ch;
-                    }
-                    ++i;
-                } else {
-                    s += ch;
-                }
-            }
-        }
-
-        fields.append(parseCell(s)); // Utolsó cella hozzáadása
-        rows.append(fields);
-    }
-
-    return rows;
-}*/
+#include <QMap>
 
 QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
 {
@@ -107,6 +40,8 @@ QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separ
         }
 
         // Now partialLine contains a full logical CSV line; parse fields
+
+
         QVector<QString> fields;
         QString cell;
         bool inQuote = false;
@@ -210,7 +145,9 @@ bool FileHelper::isCsvWithOnlyHeader(const QString& filePath) {
     return lineCount == 1; // csak a fejléc
 }
 
-QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
+FileHelper::SeparatorResult FileHelper::detectSeparatorSmart(QTextStream* st) {
+    SeparatorResult result;
+
     QList<QChar> candidates = { ',', ';', '\t', '|' };
 
     QStringList lines;
@@ -221,9 +158,18 @@ QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
         lines.append(line);
     }
 
-    if (lines.size() < 2) return QChar(); // ❌ Nem elég sor
+    if (lines.size() < 2) {
+        result.globalWarnings << "Nincs elég sor";
+        result.hasError = true;
+        result.isSingleColumn = false;
+        return result; // ❌ Nem elég sor
+    }
+
+    result.isSingleColumn = true;
 
     for (const QChar& sep : candidates) {
+        QStringList localWarnings;
+
         QTextStream testStream(lines.join("\n").toUtf8());
         QList<QVector<QString>> rows = FileHelper::parseCSV(&testStream, sep);
 
@@ -233,33 +179,90 @@ QChar FileHelper::detectSeparatorSmart(QTextStream* st) {
         if (rows[0].isEmpty() || rows[1].isEmpty())
             continue;
 
-        int headerFieldCount = std::count_if(rows[0].begin(), rows[0].end(), [](const QString& s) {
-            return !s.trimmed().isEmpty();
-        });
+        // int headerFieldCount = std::count_if(rows[0].begin(), rows[0].end(), [](const QString& s) {
+        //     return !s.trimmed().isEmpty();
+        // });
 
+        // --- HEADER FIELD COUNT: last non-empty header field ---
 
+        auto header = rows[0];
+        int lastNamedIndex = -1;
+        int headerFieldCount = 0;
+        bool hasHole = false;
+
+        for (int i = 0; i < header.size(); ++i) {
+
+            bool named = !header[i].trimmed().isEmpty();
+
+            if (named) {
+                // frissítjük az utolsó nevesített mező indexét
+                lastNamedIndex = i;
+                headerFieldCount = i + 1;   // ← itt számoljuk
+            } else {
+                // ha üres mezőt találunk a nevesített mezők között → lyuk
+                if (i < lastNamedIndex) {
+                    hasHole = true;
+                }
+            }
+        }
+
+        if(hasHole){
+            localWarnings << "❌ A fejléc tartalmaz lyukakat";
+            result.hasError = true;
+        }
+
+        if (lastNamedIndex < 0){
+            localWarnings <<"❌ Nincs egyetlen nevesített mező sem";
+            result.hasError = true;
+        }
+
+        // --- DATA FIELD COUNT ---
         int dataFieldCount = rows[1].size();
 
-        bool ok = headerFieldCount >= 2 &&
-                  dataFieldCount >= 2 &&
-                  dataFieldCount == headerFieldCount;
+        if (dataFieldCount > headerFieldCount){
+            localWarnings << L("⚠️ Extra mezők az adat sor végén (%1 extra).")
+                                 .arg(dataFieldCount - headerFieldCount);
+            result.hasWarning = true;
+        }
 
-        // bool ok = rows.size() >= 2 &&
-        //           rows[0].size() == rows[1].size() &&
-        //           rows[0].size() >= 2; // 🔍 legalább 2 mező legyen
-        if (ok) {
-            //QString msg = QStringLiteral("✅ Szeparátor detektálva:%1 -> mezők:%2").arg(sep).arg(rows[0].size());
-            //zInfo(msg);
-            return sep; // 🎯 Találtunk jó szeparátort
+        bool ok = !hasHole &&
+                  lastNamedIndex >=0 &&
+                  headerFieldCount >= 2 &&
+                  dataFieldCount >= 2 &&
+                  dataFieldCount >= headerFieldCount;
+
+        if(!localWarnings.isEmpty())
+            result.separatorWarnings.insert(sep, localWarnings);
+
+        // ha bármelyik szeparátorral több mező van → nem singleColumn
+        if (headerFieldCount > 1 || dataFieldCount > 1)
+            result.isSingleColumn = false;
+
+        if(ok){
+            //result.hasError = false;
+            result.separator = sep;
+            result.isSingleColumn = false;
+            return result; // 🎯 Találtunk jó szeparátort
         }
     }
 
-    // ÚJ: ha nincs szeparátor, de a fejléc nem üres → 1 oszlopos CSV
-    if (!lines.isEmpty()) {
-        return ','; // default, de mindegy, mert nem lesz szeparátor a sorban
+    if (result.separator.isNull()) {
+        if (result.isSingleColumn) {
+            // valódi egyoszlopos CSV
+            //result.hasError = false;
+            return result;
+        } else {
+            // hibás CSV
+            result.hasError = true;
+            result.globalWarnings << "❌ Nem sikerült szeparátort detektálni.";
+            return result;
+        }
     }
 
-    zWarning("❌ Nem sikerült szeparátort detektálni a fejléc alapján.");
-    return QChar();
+    result.separator = QChar();
+    result.isSingleColumn = false;
+    result.hasError = true;
+    result.globalWarnings << "❌ Nem sikerült szeparátort detektálni a fejléc alapján.";
+    return result;
 
 }

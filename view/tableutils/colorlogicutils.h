@@ -53,6 +53,7 @@ inline QColor colorForAge(const QDateTime& lastSeen)
 }
 
 
+
 // inline QColor resolveBaseColor(const MaterialMaster& mat) {
 //     //if (!mat) return QColor(Qt::lightGray);
 //     return GroupUtils::colorForGroup(mat.id); // vagy MaterialUtils::colorForMaterial(*mat)

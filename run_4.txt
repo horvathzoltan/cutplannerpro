@@ -1,7 +1,31 @@
+<<<<<<< HEAD
 teszteléshez egy láb kell,
  - ha több azonos méret van egy tételhez
  - vagy 1 cm-el kisebb, vagy nagyobb
  - a tesztelésre szánt példányt jelöljük a címkén "T"-vel
+=======
+leftover címke nyomtatási buffer
+ - toolbaron gomb, számolja a címkéket, ha 0, akkor szürke, amúgy zöld, vagy ilyesmi
+ - perzisztens appendable csv, amit nyomtatáűskor törlünk
+ - nyomtatni mindig az user nyomtatójára való kiküldéssel kell
+ - lehetőleg minden legyen pdf, illetve txt esetén a unicode sopkszor nem jó
+
+audit: változik az anyagigény , vagyis az nem, de az anyagigény által leírt és legyártott anyagok adatformátuma combósodik
+addinputdialog - requestek felvétele, elvileg ok, de tesztelni kell
+
+leftover - új kezelés - új ui: egy bundle megbontása. - FIXED
+ - kivehetünk belőle valamit, vagy módosíthatjuk a hosszát, komponenseinek a hosszát
+ - itt lehet egy komponens lista hosszal, átírja, vagy beixeli hogy kivette
+ ezt a helyzetet képezzük le available hossz és szálhossz szinten
+ - -1 available hosszon van a komponens,
+ - 0 ki van véve
+ - vagy saját hosszával szerepel
+ ha anyagokat veszünk ki, a kivett anyagokat bundlesítve kell betenni azzal a hosszal, amit beírt neki
+tehát van olyan, hogy kiveszi, de adott hosszat kap, az új leftover, azaz hulló ami keletkezik, bundle, vagy szál, ha nem
+ lehet bundle-é alakítani, ezzel a hosszal kezül letárolásra, itt kap egy vonalkódot, amit ki kell rá nyomtatni
+ míg az ősön marad a régi
+
+>>>>>>> d13357bfea99f38b5f9512eca2933be11469dfb3
 
 
 optimizer : FIXED

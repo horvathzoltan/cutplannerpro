@@ -12,11 +12,12 @@
 #include <QFile>
 #include <QTextStream>
 #include <QUuid>
-#include <common/filehelper.h>
-#include <common/filenamehelper.h>
-#include <common/csvimporter.h>
-#include <common/color/namedcolor.h>
-#include <materials/model/material_family_utils.h>
+#include "common/filehelper.h"
+#include "common/filenamehelper.h"
+#include "common/csvimporter.h"
+#include "common/color/namedcolor.h"
+#include "materials/model/material_family_utils.h"
+#include "materialbundles/registry/bundle_registry.h"
 #include "materials/model/cutting_mode.h"
 #include "materials/model/painting_mode.h"
 #include "service/cutting/optimizer/optimizerconstants.h"
@@ -79,7 +80,8 @@ bool MaterialRepository::loadFromCSV(MaterialRegistry& registry) {
 
 QVector<MaterialMaster>
 MaterialRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
-    return CsvReader::readAndConvert<MaterialMaster>(ctx, convertRowToMaterial, true);
+    auto a = CsvReader::readAndConvert<MaterialMaster>(ctx, convertRowToMaterial, true);
+    return a;
 }
 
 std::optional<MaterialMaster>
@@ -137,6 +139,9 @@ MaterialRepository::convertRowToMaterialRow(const QVector<QString>& parts, CsvRe
     row.externalCodeStr    = parts[17].trimmed();
     row.description        = parts[18].trimmed();
     row.familyStr          = parts[19].trimmed();
+
+    row.kindStr = parts[20].trimmed();
+    row.bundleCodeStr = parts[21].trimmed();
 
     return row;
 }
@@ -246,13 +251,34 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row,
     // family beolvasása
     m.family = MaterialFamilyUtils::fromString(row.familyStr);
 
-    // // kötelező mező
-    // if (m.family == MaterialFamily::Unknown) {
-    //     ctx.addError(ctx.currentLineNumber(),
-    //                  QString("❌ Érvénytelen vagy hiányzó family mező: '%1'")
-    //                      .arg(row.familyStr));
-    //     return std::nullopt;
-    // }
+    // ⭐ MaterialKind beállítása
+    m.kind = MaterialKindUtils::fromString(row.kindStr);
+
+    // ⭐ Dummy bundle kezelés (amíg nincs BundleRepository / BundleRegistry)
+    if (m.kind == MaterialKind::Bundle) {
+
+        if (row.bundleCodeStr.isEmpty()) {
+            ctx.addError(ctx.currentLineNumber(),
+                         QString("❌ Compound anyag, de üres bundleCode mező"));
+            return std::nullopt;
+        }
+
+        // auto b = BundleRegistry::instance().findByCode(row.bundleCodeStr);
+        // if(b){
+        //     m.bundleId = b->id;
+        //     zInfo(QString("🔗 bundle hozzárendelve: %1 → %2")
+        //               .arg(row.bundleCodeStr)
+        //               .arg(b->id.toString()));
+        // }else{
+        //         zWarning(QString("⚠️ bundleCode nem található: %1").arg(row.bundleCodeStr));
+        // }
+        m.bundleCode = row.bundleCodeStr;
+
+    }
+    else {
+        m.bundleCode.clear();
+    }
+
 
     return m;
 
@@ -269,7 +295,7 @@ void MaterialRepository::exportCsv(const QString& path) {
 
     out << "name;barcode;stockLength;dim1;dim2;shape;machineId;type;color;surface;"
             "cuttingMode;paintingMode;trim;minLeftOver;scrap;goodLeftOverMin;"
-            "goodLeftOverMax;externalCode;description;family\n";
+            "goodLeftOverMax;externalCode;description;family;kind;bundleCode\n";
 
 
     const auto& materials = MaterialRegistry::instance().readAll();
@@ -277,6 +303,14 @@ void MaterialRepository::exportCsv(const QString& path) {
     int written = 0;
 
     for (const auto& m : materials) {
+
+        // QString bundleCode;
+        // bool isBundle = m.hasBundle();
+        // if(isBundle){
+        //     //auto *bundle = BundleRegistry::instance().findById(m.bundleId.value());
+        //     if(bundle) bundleCode = bundle->code;
+        // }
+
         out << m.name << ";"
             << m.barcode << ";"
             << m.stockLength_mm << ";";
@@ -308,7 +342,9 @@ void MaterialRepository::exportCsv(const QString& path) {
             << m.goodLeftOver_Max_mm << ";"
             << m.externalCode << ";"
             << m.description << ";"
-            << MaterialFamilyUtils::toString(m.family)
+            << MaterialFamilyUtils::toString(m.family) << ";"
+            << MaterialKindUtils::toString(m.kind) <<";"
+            << (m.hasBundle()?m.bundleCode:"") << ";"
             << "\n";
 
         written++;

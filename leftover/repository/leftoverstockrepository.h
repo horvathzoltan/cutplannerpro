@@ -13,7 +13,7 @@ public:
 
     static bool saveToCSV(const LeftoverStockRegistry &registry, const QString& filePath);
 private:
-    struct ReusableStockRow {
+    struct LeftoverStockEntry_Row {
         QString materialBarcode;
         int availableLength_mm;
         Cutting::Result::LeftoverSource source;
@@ -25,12 +25,14 @@ private:
         QString lastSeenAtStr;
         QString statusStr;
         int notFoundCount = 0;
+
+        QString bundleComponentLengthsCsv;   // ⭐ ÚJ
     };
 
     /// 🔒 Private parser, visszaad egy lista objektumot
     static QVector<LeftoverStockEntry> loadFromCSV_private(CsvReader::FileContext& ctx);
 
-    static std::optional<ReusableStockRow>convertRowToReusableRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
-    static std::optional<LeftoverStockEntry>buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::FileContext& ctx);
+    static std::optional<LeftoverStockEntry_Row>convertRowToReusableRow(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<LeftoverStockEntry>buildReusableEntryFromRow(const LeftoverStockEntry_Row& row, CsvReader::FileContext& ctx);
     static std::optional<LeftoverStockEntry>convertRowToReusableEntry(const QVector<QString>& parts, CsvReader::FileContext& ctx);
 };

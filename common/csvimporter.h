@@ -7,6 +7,7 @@
 #include <QIODevice>
 #include <QFile>
 #include <QTextStream>
+#include <QMap>
 #include "logger.h"
 #include "filehelper.h"
 
@@ -106,12 +107,20 @@ inline QList<QVector<QString>> read(const QString& filepath, QChar separator = Q
 
     // 🔍 Automatikus szeparátor detektálás, ha nincs megadva
     if (separator.isNull()) {
-     //   zInfo("🔍 Automatikus szeparátor keresés...");
-        separator = FileHelper::detectSeparatorSmart(&in);
-        if (separator.isNull()) {
-    //        zWarning(L("❌ Nem sikerült szeparátort detektálni a fájlban:").arg(filepath));
-            return {};
+
+        //   zInfo("🔍 Automatikus szeparátor keresés...");
+        FileHelper::SeparatorResult result = FileHelper::detectSeparatorSmart(&in);
+        separator = result.separator;
+
+        if (result.hasError || result.hasWarning) {
+            zInfo(L("filename: %1").arg(filepath));
+            zWarning(result.toString());
         }
+        else
+        {
+            zInfo(L("filename: %1, separator: '%2'").arg(filepath).arg(separator));
+        }
+
         file.seek(0); // 🔁 Vissza az elejére, újraolvasáshoz
         in.seek(0);
     }

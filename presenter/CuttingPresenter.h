@@ -61,9 +61,6 @@ public:
 
     // Úrafelhasználható - hulló anyagok készlete
     void setReusableInventory(const QVector<LeftoverStockEntry> &list);
-    void add_LeftoverStockEntry(const LeftoverStockEntry& entry);
-    bool remove_LeftoverStockEntry(const QUuid &entryId);
-    void update_LeftoverStockEntry(const LeftoverStockEntry &updated);
 
     // Paraméterek
     //void setKerf(int kerf);
@@ -153,6 +150,7 @@ public:
 
     QHash<QUuid, OptimizationLeftoverAuditStats> collectOptimizationLeftoverStats(
         const QHash<QUuid, QVector<QUuid> > &perMachine);
+
 private:
     void applyPatch(Cutting::Plan::Request& target,
                     const Cutting::Plan::Request& updated,
@@ -171,4 +169,6 @@ private:
     //static RelocationInstruction makeRelocationInstruction(const QString &materialName, const QUuid &materialId, const QString &barcode, int plannedQuantity, AuditSourceType sourceType, const StorageAuditRow &sourceRow, const QUuid &targetRootId, const QString &targetName, int moveQty);
     void updateConfirmedCount(StorageAuditRow &row, bool wasModifiedBefore);
 };
+
+
 

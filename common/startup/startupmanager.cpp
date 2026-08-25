@@ -35,6 +35,8 @@
 
 #include <settings/settingsmanager.h>
 
+#include <materialbundles/repository/bundle_repository.h>
+
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
@@ -43,6 +45,12 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.isSuccess())
         return materialStatus;
+
+    StartupStatus bundleStatus = initBundleRegistry();
+    if (!bundleStatus.isSuccess())
+        return bundleStatus;
+
+    //MaterialRegistry::instance().resolveBundleIds();
 
     StartupStatus productTypeStatus = initProductTypeRegistry();
     if (!productTypeStatus.isSuccess())
@@ -97,6 +105,7 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(ralColorStatus.warnings());
 
     finalStatus.addWarnings(materialStatus.warnings());
+    finalStatus.addWarnings(bundleStatus.warnings());
 
     finalStatus.addWarnings(productTypeStatus.warnings());
     finalStatus.addWarnings(productSubtypeStatus.warnings());
@@ -550,4 +559,20 @@ StartupStatus StartupManager::initPowderConsumptionRegistry()
     return StartupStatus::success();
 }
 
+StartupStatus StartupManager::initBundleRegistry() {
+    bool loaded = BundleRepository::loadFromCsv(BundleRegistry::instance());
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a bundle definíciókat");
+        return StartupStatus::failure("❌ Nem sikerült betölteni a bundle definíciókat a bundles.csv fájlból.");
+    }
+
+    int count = BundleRegistry::instance().readAll().size();
+    if (count == 0) {
+        EventLogger::instance().zEvent("❌ nincs bundle definíció");
+        return StartupStatus::failure("⚠️ Nem található egyetlen bundle definíció sem.");
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "bundle definíciók init"));
+    return StartupStatus::success();
+}
 

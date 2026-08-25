@@ -3,6 +3,7 @@
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
 #include <QHash>
+#include <materialbundles/registry/bundle_registry.h>
 
 #include <materials/model/material_family_utils.h>
 
@@ -108,3 +109,34 @@ QVector<QUuid> MaterialRegistry::generateBom(
     return ordered;
 }
 
+// Új helper: compound ellenőrzés
+bool MaterialRegistry::isCompound(const QUuid& id) const
+{
+    const auto* mm = findById(id);
+    return mm && mm->isBundle();
+}
+
+const MaterialMaster* MaterialRegistry::findByBundleCode(const QString& bundleCode) const
+{
+    for (const auto& m : _data)
+    {
+        if (m.bundleCode == bundleCode)
+            return &m;
+    }
+    return nullptr;
+}
+
+
+
+// void MaterialRegistry::resolveBundleIds() {
+//     for (auto& m : _data) {
+//         if (m.kind == MaterialKind::Compound && !m.bundleCode.isEmpty()) {
+//             const auto* def = BundleRegistry::instance().findByCode(m.bundleCode);
+//             if (def) {
+//                 m.bundleId = def->id;
+//             } else {
+//                 qWarning() << "⚠️ bundleCode nem található:" << m.bundleCode;
+//             }
+//         }
+//     }
+// }

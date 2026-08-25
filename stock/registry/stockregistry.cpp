@@ -5,7 +5,9 @@
 #include "../../common/filenamehelper.h"
 
 #include "../../common/scopedperthreadlock.h" // a korábban beillesztett általános wrapper
+#include "materialbundles/model/bundle_definition.h"
 #include "stock/repository/stockrepository.h"
+#include "materialbundles/registry/bundle_registry.h"
 
 StockRegistry& StockRegistry::instance() {
     static StockRegistry reg;
@@ -188,3 +190,50 @@ void StockRegistry::setData(const QVector<StockEntry>& v, bool doPersist) {
         persist();
     }
 }
+
+QMap<QUuid, int> StockRegistry::readAllAggregated() const
+{
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+
+    QMap<QUuid, int> aggregated;
+
+    for (const auto& entry : _data) {
+
+        const MaterialMaster* master = entry.master();
+        if (!master) continue;
+
+        // 1) Ha SIMPLE → single szál
+        if (master->kind == MaterialKind::Simple) {
+            aggregated[entry.materialId] += entry.quantity;
+            continue;
+        }
+
+        // 2) Ha BUNDLE → robbantás a BundleRegistry alapján
+        if (master->kind == MaterialKind::Bundle) {
+
+            const BundleDefinition* def =
+                BundleRegistry::instance().findByCode(master->bundleCode);
+
+            if (!def) {
+                zWarning(L("⚠️ Unknown bundleCode in MaterialMaster: %1")
+                             .arg(master->bundleCode));
+
+                continue;
+            }
+
+            for (const auto& comp : def->components) {
+                aggregated[comp.materialId] += (entry.quantity * comp.count);
+            }
+
+            continue;
+        }
+
+        // 3) Ha valami ismeretlen → skip
+        zWarning(L("⚠️ MaterialMaster kind not handled: %1")
+                     .arg(MaterialKindUtils::toString(master->kind)));
+    }
+
+    return aggregated;
+}
+
+

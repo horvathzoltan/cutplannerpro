@@ -35,18 +35,18 @@ void StorageRegistry::setData(const QVector<StorageEntry>& data) {
     initializeLogisticBarcodes();
 
     // ⭐ Logisztikai címkék listázása induláskor
-    const auto& allStorages = StorageRegistry::instance().readAll();
-    zInfo("=== Storage logisztikai címkék: ===");
-    for (const auto& s : allStorages) {
-        QString logCode = StorageRegistry::instance().logisticBarcode(s.id);
-        zInfo(
-            QString("%5 Storage: %1 | Barcode: %2 | Logistic: %3")
-                .arg(s.name)
-                .arg(s.barcode)
-                .arg(logCode).arg(s.type.icon())
-            );
-    }
-    zInfo("=== === ===");
+    // const auto& allStorages = StorageRegistry::instance().readAll();
+    // zInfo("=== Storage logisztikai címkék: ===");
+    // for (const auto& s : allStorages) {
+    //     QString logCode = StorageRegistry::instance().logisticBarcode(s.id);
+    //     zInfo(
+    //         QString("%5 Storage: %1 | Barcode: %2 | Logistic: %3")
+    //             .arg(s.name)
+    //             .arg(s.barcode)
+    //             .arg(logCode).arg(s.type.icon())
+    //         );
+    // }
+    // zInfo("=== === ===");
 }
 
 void StorageRegistry::clearAll() {

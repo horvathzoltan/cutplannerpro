@@ -5,10 +5,10 @@
 #include "../../common/filenamehelper.h"
 #include "../../service/cutting/result/leftoversourceutils.h"
 #include "materials/registry/material_registry.h"
-#include "../../common/filehelper.h"
 #include "../../common/csvimporter.h"
 #include "leftover/leftoverstatusutils.h"
 #include "storage/registry/storageregistry.h"
+#include <materialbundles/registry/bundle_registry.h>
 
 bool LeftoverStockRepository::loadFromCSV(LeftoverStockRegistry& registry) {
     auto& helper = FileNameHelper::instance();
@@ -94,16 +94,16 @@ LeftoverStockRepository::loadFromCSV_private(CsvReader::FileContext& ctx) {
 }
 
 
-std::optional<LeftoverStockRepository::ReusableStockRow>
+std::optional<LeftoverStockRepository::LeftoverStockEntry_Row>
 LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 9) {
+    if (parts.size() < 10) {
         QString msg = L("⚠️ Kevés oszlop");
         ctx.addError(ctx.currentLineNumber(), msg);
 
         return std::nullopt;
     }
 
-    ReusableStockRow row;
+    LeftoverStockEntry_Row row;
     row.materialBarcode = parts[0].trimmed();
 
     bool okLength = false;
@@ -164,11 +164,14 @@ LeftoverStockRepository::convertRowToReusableRow(const QVector<QString>& parts, 
     if (parts.size() > 9)
         row.notFoundCount = parts[9].trimmed().toInt();
 
+    if (parts.size() > 10)
+        row.bundleComponentLengthsCsv = parts[10].trimmed();
+
     return row;
 }
 
 std::optional<LeftoverStockEntry>
-LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, CsvReader::FileContext& ctx) {
+LeftoverStockRepository::buildReusableEntryFromRow(const LeftoverStockEntry_Row& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.materialBarcode);
     if (!mat) {
         QString msg = L("⚠️ Ismeretlen anyag barcode '%1'").arg(row.materialBarcode);
@@ -229,6 +232,35 @@ LeftoverStockRepository::buildReusableEntryFromRow(const ReusableStockRow& row, 
 
     entry.notFoundCount = row.notFoundCount;
 
+    // ⭐ Bundle komponenshosszok beolvasása
+    entry.bundleComponentLengths =
+        BundleComponentLengthUtils::fromCsv(row.bundleComponentLengthsCsv);
+
+    // ⭐ Ha bundle anyag, és nincs lista → generáljuk le
+    const MaterialMaster* master = MaterialRegistry::instance().findById(entry.materialId);
+    if (master && master->kind == MaterialKind::Bundle)
+    {
+        if (entry.bundleComponentLengths.isEmpty())
+        {
+            // generáljuk le a teljes bundle definíciót
+            auto components = BundleRegistry::instance().componentsOf(master->bundleCode);
+
+            for (const auto& comp : components)
+            {
+                // ❗ annyi szál, amennyit a bundle definíció előír
+                for (int i = 0; i < comp.count; ++i)
+                {
+                    entry.bundleComponentLengths.append({
+                        comp.materialId,
+                        -1   // teljes hossz
+                    });
+                }
+            }
+        }
+    }
+
+
+
     // zInfo(QString("LOAD REUSABLE LEFTOVER: entryId=%1, length=%2, material=%3, storage=%4")
     //            .arg(entry.entryId.toString())
     //            .arg(entry.availableLength_mm)
@@ -259,7 +291,7 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry,
 
     // Új fejléc
     out << "materialBarCode;availableLength_mm;source;optimizationId;barcode;storageBarcode;"
-           "createdAt;lastSeenAt;status;notFoundCount\n";
+           "createdAt;lastSeenAt;status;notFoundCount;bundleComponentLengths\n";
 
     for (const auto& entry : registry.readAll()) {
         if (entry.availableLength_mm <= 0 || entry.barcode.trimmed().isEmpty())
@@ -282,6 +314,9 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry,
         QString seenStr    = entry.lastSeenAt.toString(Qt::ISODate);
         QString statusStr  = LeftoverStatusUtils::toString(entry.status).toLower();
 
+        QString bundleCsv =
+            BundleComponentLengthUtils::toCsv(entry.bundleComponentLengths);
+
         out << materialCode << ";"
             << entry.availableLength_mm << ";"
             << sourceStr << ";"
@@ -291,7 +326,8 @@ bool LeftoverStockRepository::saveToCSV(const LeftoverStockRegistry& registry,
             << createdStr << ";"
             << seenStr << ";"
             << statusStr << ";"
-            << entry.notFoundCount << "\n";
+            << entry.notFoundCount << ";"
+            << bundleCsv << "\n";
     }
 
     return true;

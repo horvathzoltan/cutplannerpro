@@ -78,5 +78,8 @@ public:
     QString getMaterialRoleCsvFile() const;
     QString getPowderConsumptionCsvFile() const;
 
+    QString getBundleCsvFile() const;
+    QString getBundleComponentsCsvFile() const;
+
     static QString emojiCacheDir();
 };

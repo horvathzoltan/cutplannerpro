@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include <kitting/presenter/kittingpresenter.h>
+#include "common/validation_result.h"
 #include "managers/inputtable_manager.h"
 #include "leftover/view/managers/leftovertable_manager.h"
 #include "managers/resultstable_manager.h"
@@ -39,7 +40,7 @@ public:
 
     //void updateStats(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &results);
     void setInputFileLabel(const QString &label, const QString &tooltip);
-    void ShowWarningDialog(const QString &msg);
+    //void ShowWarningDialog(const QString &msg);
 
     // input table
     void addRow_InputTable(const Cutting::Plan::Request &v);
@@ -82,6 +83,7 @@ public:
     CuttingPresenter* cuttingPresenter(){return _cuttingPresenter;}
     StorageAuditPresenter* storageAuditPresenter(){return _storageAuditPresenter;}
     StoragePresenter* storagePresenter() { return _storagePresenter; }
+    void ShowWarningDialog(const ValidationResult &result);
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
