@@ -23,3 +23,11 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "232";"Szajkó, Győr";1680;2565;2462;;1;0;1;"RAL 8003";NP-CL2+CLT2+CLB2;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
 "232";"Szajkó, Győr";1680;2565;1565;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
 "232";"Szajkó, Győr";1680;2565;1515;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2915;;1;1;0;"RAL 8017";NP-T-9010;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2940;;1;1;0;"RAL 8017";NP-TF-9010;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2822;;1;1;0;"RAL 8017";NP-CZ-9010;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2867;;1;1;0;"RAL 8017";NP-CL-9010;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2867;;1;1;0;"RAL 8017";NP-CLT-9010;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2867;;1;1;0;"RAL 8017";NP-CLB;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2830;;1;1;0;"RAL 8017";NP-ROLL70-7000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2780;;1;1;0;"RAL 8017";NP-BAR20-6000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM

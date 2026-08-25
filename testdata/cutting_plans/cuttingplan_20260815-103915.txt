@@ -1,1 +1,11 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"223";"Jola, Pécs";3220;1750;3105;;1;1;0;"RAL 8022";NP-ROLL70-5000;Width;false;2026-08-28;NP;CIP;meghajtas=motoros;SM
+"223";"Jola, Pécs";3220;1750;3055;;1;1;0;"RAL 8022";NP-BAR22-3000;Width;false;2026-08-28;NP;CIP;meghajtas=motoros;SM
+"230";"Szajkó, Győr";1355;2565;1240;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"230";"Szajkó, Győr";1355;2565;1190;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"231";"Szajkó, Győr";1305;2565;1190;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"231";"Szajkó, Győr";1305;2565;1140;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"232";"Szajkó, Győr";1680;2565;1565;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"232";"Szajkó, Győr";1680;2565;1515;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2830;;1;1;0;"RAL 8017";NP-ROLL70-7000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
+"209";"Porta Finestra, Miskolc";2945;2970;2780;;1;1;0;"RAL 8017";NP-BAR20-6000;Width;false;2026-08-31;NP;CIP;meghajtas=motoros;SM
