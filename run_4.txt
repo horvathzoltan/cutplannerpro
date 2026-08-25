@@ -1,3 +1,9 @@
+teszteléshez egy láb kell,
+ - ha több azonos méret van egy tételhez
+ - vagy 1 cm-el kisebb, vagy nagyobb
+ - a tesztelésre szánt példányt jelöljük a címkén "T"-vel
+
+
 optimizer : FIXED
  - az történt, hogy 2.5 métert 3x vágott le egy 7 méteres stock szálból.
  szerintem amikor egy darab enem fér már fel a szálra, új szálat kezdünk, de nem jó, mert
