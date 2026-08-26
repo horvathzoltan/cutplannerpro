@@ -1,3 +1,7 @@
+toldás:
+ - rsm-623-at elhasználtuk, mint fődarab, teljes hosszában, majd toldatokat vágtunk belőle
+ nem ézékeltük azt, hogy fődarabként épp az imént fogyott el egy az egyben.
+
 teszteléshez egy láb kell,
  - ha több azonos méret van egy tételhez
  - vagy 1 cm-el kisebb, vagy nagyobb
