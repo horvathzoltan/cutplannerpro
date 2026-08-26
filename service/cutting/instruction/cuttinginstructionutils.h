@@ -351,27 +351,40 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         int total = rodTotalCount.value(rodIdOrBarcode, 1);
 
         //QString rodMarker = (seen == 0) ? " ●" : " ○";
+        // QString rodMarker;
+
+        // // WHOLE-CUT (TOLDAS_MAIN) → a rudat egyben visszük
+        // if (ci.keepWhole) {
+        //     rodMarker = " ■";
+        // }
+        // // egyetlen vágás (első = utolsó)
+        // else if (total == 1) {
+        //     rodMarker = " ▲";
+        // }
+        // // első vágás
+        // else if (seen == 0) {
+        //     rodMarker = " ●";
+        // }
+        // // utolsó vágás
+        // else if (seen + 1 == total) {
+        //     rodMarker = " △";
+        // }
+        // // köztes vágás
+        // else {
+        //     rodMarker = " ○";
+        // }
+
         QString rodMarker;
+
+        int currentIndex = seen + 1;   // hanyadik vágás
+        int totalCuts   = total;       // összes vágás száma
 
         // WHOLE-CUT (TOLDAS_MAIN) → a rudat egyben visszük
         if (ci.keepWhole) {
-            rodMarker = " ■";
+            rodMarker = " 1/1";   // egészben visszük → 1/1
         }
-        // egyetlen vágás (első = utolsó)
-        else if (total == 1) {
-            rodMarker = " ▲";
-        }
-        // első vágás
-        else if (seen == 0) {
-            rodMarker = " ●";
-        }
-        // utolsó vágás
-        else if (seen + 1 == total) {
-            rodMarker = " △";
-        }
-        // köztes vágás
         else {
-            rodMarker = " ○";
+            rodMarker = QString(" %1/%2").arg(currentIndex).arg(totalCuts);
         }
 
         QString baseRodLabel = QString("%1 %2").arg(rodIdOrBarcode).arg(rodMarker);
@@ -486,11 +499,14 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 
     // --- FIX OSZLOPINDEXEK ---
     int colStepRodPos     = 0;
-    int colMaterialPos    = colStepRodPos + wStepRod + 3;
-    int colIconSizeCapPos = colMaterialPos + wMaterial + 3;
-    int colPiecePos       = colIconSizeCapPos + wIconSizeCap + 3;
-    int colMultPos        = colPiecePos + wPiece + 3;
-    int colCheckboxPos = colPiecePos + wPiece + 1;
+    int colMaterialPos    = colStepRodPos + wStepRod + 1;
+    int colIconSizeCapPos = colMaterialPos + wMaterial + 1;
+    int colPiecePos       = colIconSizeCapPos + wIconSizeCap + 1;
+    //int colMultPos        = colPiecePos + wPiece + 1;
+    //int colCheckboxPos = colPiecePos + wPiece + 1;
+    int colMultPos        = printedLW -7;
+    int colCheckboxPos = printedLW - 2;
+
 
     // --- PIECE TRUNCÁLÁSA ---
     int maxPieceLen = printedLW - colPiecePos - 3;

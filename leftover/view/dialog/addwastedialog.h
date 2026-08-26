@@ -65,4 +65,5 @@ private:
     AddWasteDialog::ParsedComposite parseCompositeBarcode(const QString &raw);
     void applyParsedComposite(const ParsedComposite &p);
     void compositeBarcodeHandler(const QString &b);
+    QString nextUniqueLBarcode(const QString &bc);
 };

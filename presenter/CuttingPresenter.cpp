@@ -830,12 +830,19 @@ CuttingPresenter::collectOptimizationLeftoverStats(
             bool isMissing = (e.notFoundCount > 0);
             bool isStale   = (e.lastSeenAt < now.addSecs(-hours * 3600));
 
-            if (isMissing)
+            if (isMissing) {
                 s.missing++;
-            else if (isStale)
+                s.missingIds.append(id);
+            }
+            else if (isStale) {
                 s.stale++;
-            else
+                s.staleIds.append(id);
+            }
+            else {
                 s.fresh++;
+                s.freshIds.append(id);
+            }
+
         }
 
         stats[machineId] = s;

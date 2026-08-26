@@ -139,6 +139,21 @@ void AddWasteDialog::compositeBarcodeHandler(const QString& b){
 
     applyParsedComposite(p);
 
+    //
+    // 🔥 AUTOMATIKUS EGYEDISÉG: L= mező .n generálás
+    //
+    QString bc = ui->editBarcode->text().trimmed();
+
+    // 🔥 Ha L= formátum → egyediség biztosítása
+    if (bc.contains("L=")) {
+
+        // Ha nem egyedi → generáljunk új .n-t
+        if (LeftoverStockRegistry::instance().existsBarcode(bc, current_entryId)) {
+            bc = nextUniqueLBarcode(bc);
+            ui->editBarcode->setText(bc);
+        }
+    }
+
     // 🔥 Tárhely logika
     if (ui->comboStorage->currentIndex() < 0) {
         // nincs tárhely → fókusz oda
@@ -429,6 +444,24 @@ AddWasteDialog::ParsedComposite AddWasteDialog::parseCompositeBarcode(const QStr
     if (raw.isEmpty())
         return out;
 
+    // ÚJ L= formátum (pl. L=2005 vagy L=2005.2)
+    if (raw.startsWith("L=")) {
+
+        QString lValue = raw.mid(2); // "2005" vagy "2005.2"
+        QStringList lParts = lValue.split(".");
+
+        bool ok = false;
+        int mm = lParts[0].toInt(&ok);
+        if (!ok || mm <= 0)
+            return out;
+
+        out.length = mm;
+        out.id = raw.trimmed();
+        out.valid = true;
+        return out;
+    }
+
+    // RÉGI PIPE-OS FORMÁTUM
     QStringList parts = raw.split("|");
     if (parts.size() < 2 || parts.size() > 3)
         return out;
@@ -473,3 +506,70 @@ void AddWasteDialog::applyParsedComposite(const ParsedComposite& p)
     //    → maradjon a barcode mezőn, vagy menjünk a storage-ra
     //ui->editBarcode->setFocus();
 }
+
+
+QString AddWasteDialog::nextUniqueLBarcode(const QString& bc)
+{
+    // bc: "L=2005" vagy "L=2005.2"
+
+    if (!bc.startsWith("L="))
+        return bc;
+
+    QString lValue = bc.mid(2); // "2005" vagy "2005.2"
+    QStringList parts = lValue.split(".");
+
+    QString base;
+    int currentN = 0;
+
+    if (parts.size() == 1) {
+        // L=2005 → nincs sorszám
+        base = parts[0];
+        currentN = 0;
+    }
+    else if (parts.size() == 2) {
+        // L=2005.2 → van sorszám
+        base = parts[0];
+        bool ok = false;
+        currentN = parts[1].toInt(&ok);
+        if (!ok) currentN = 0;
+    }
+    else {
+        // több pont → nem megengedett
+        return bc;
+    }
+
+    // Keressük az összes L=base.* formátumot
+    int maxN = currentN;
+
+    auto all = LeftoverStockRegistry::instance().readAll();
+    for (const auto& e : all) {
+        QString eb = e.barcode.trimmed();
+        if (!eb.startsWith("L="))
+            continue;
+
+        QString ev = eb.mid(2); // "2005" vagy "2005.3"
+        QStringList ep = ev.split(".");
+
+        if (ep.size() == 1) {
+            // L=2005 → n=0
+            if (ep[0] == base && maxN < 0)
+                maxN = 0;
+        }
+        else if (ep.size() == 2) {
+            // L=2005.n
+            if (ep[0] == base) {
+                bool ok = false;
+                int n = ep[1].toInt(&ok);
+                if (ok && n > maxN)
+                    maxN = n;
+            }
+        }
+    }
+
+    // Új egyedi: L=base.(maxN+1)
+    int newN = maxN + 1;
+    return QString("L=%1.%2").arg(base).arg(newN);
+}
+
+
+

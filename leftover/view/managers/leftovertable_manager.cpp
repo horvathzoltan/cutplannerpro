@@ -155,7 +155,7 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
 
     LeftoverStyleUtils::applyAgeStyle(table, rowIx,
                                       LeftoverTableManager::ColLastSeenAt,
-                                      entry.lastSeenAt);
+                                      entry.lastSeenAt, entry.notFoundCount);
 }
 /*
 ColMaterial         = 0
@@ -272,7 +272,7 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
 
             LeftoverStyleUtils::applyAgeStyle(table, rowIx,
                                               LeftoverTableManager::ColLastSeenAt,
-                                              entry.lastSeenAt);
+                                              entry.lastSeenAt, entry.notFoundCount);
             return;
   //      }
 //    }

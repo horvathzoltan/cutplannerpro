@@ -29,9 +29,12 @@ inline void applyPrefixStyle(QTableWidget* table,
 inline void applyAgeStyle(QTableWidget* table,
                           int row,
                           int colLastSeenAt,
-                          const QDateTime& lastSeenAt)
+                          const QDateTime& lastSeenAt, int notFoundCount)
 {
-    QColor ageColor = ColorLogicUtils::colorForAge(lastSeenAt);
+
+    QColor ageColor = notFoundCount>0
+                          ? QColor(255, 160, 160)
+                          :ColorLogicUtils::colorForAge(lastSeenAt);
 
     if (auto* item = table->item(row, colLastSeenAt)) {
         item->setBackground(ageColor);

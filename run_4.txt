@@ -1,4 +1,4 @@
-toldás:
+toldás: - FIXED
  - rsm-623-at elhasználtuk, mint fődarab, teljes hosszában, majd toldatokat vágtunk belőle
  nem ézékeltük azt, hogy fődarabként épp az imént fogyott el egy az egyben.
 
@@ -7,14 +7,21 @@ teszteléshez egy láb kell,
  - vagy 1 cm-el kisebb, vagy nagyobb
  - a tesztelésre szánt példányt jelöljük a címkén "T"-vel
 
-leftover címke nyomtatási buffer
+leftover címke nyomtatási buffer _ FIXED
  - toolbaron gomb, számolja a címkéket, ha 0, akkor szürke, amúgy zöld, vagy ilyesmi
  - perzisztens appendable csv, amit nyomtatáűskor törlünk
  - nyomtatni mindig az user nyomtatójára való kiküldéssel kell
  - lehetőleg minden legyen pdf, illetve txt esetén a unicode sopkszor nem jó
 
-audit: változik az anyagigény , vagyis az nem, de az anyagigény által leírt és legyártott anyagok adatformátuma combósodik
-addinputdialog - requestek felvétele, elvileg ok, de tesztelni kell
+optimization leftover audit - FIXED
+ - ha egy leftover 1 órája még megvolt, nem kell újra auditálni
+
+audit: - TESTED
+ - változik az anyagigény , vagyis az nem, de az anyagigény által
+leírt és legyártott anyagok adatformátuma combósodik
+
+addinputdialog  - TESTED
+ - requestek felvétele, elvileg ok, de tesztelni kell
 
 leftover - új kezelés - új ui: egy bundle megbontása. - FIXED
  - kivehetünk belőle valamit, vagy módosíthatjuk a hosszát, komponenseinek a hosszát
@@ -27,8 +34,6 @@ leftover - új kezelés - új ui: egy bundle megbontása. - FIXED
 tehát van olyan, hogy kiveszi, de adott hosszat kap, az új leftover, azaz hulló ami keletkezik, bundle, vagy szál, ha nem
  lehet bundle-é alakítani, ezzel a hosszal kezül letárolásra, itt kap egy vonalkódot, amit ki kell rá nyomtatni
  míg az ősön marad a régi
-
-
 
 optimizer : FIXED
  - az történt, hogy 2.5 métert 3x vágott le egy 7 méteres stock szálból.

@@ -1545,6 +1545,28 @@ void MainWindow::handle_btn_OptLeftoverAudit_clicked()
         return;
     }
 
+
+    // 🔥 Szűrt leftover lista: csak auditálandók
+    QHash<QUuid, QVector<QUuid>> filtered;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        QUuid machineId = it.key();
+        const auto& s = it.value();
+
+        QVector<QUuid> ids;
+
+        // eltűnt leftoverek
+        for (const auto& id : s.missingIds)
+            ids.append(id);
+
+        // lejárt leftoverek
+        for (const auto& id : s.staleIds)
+            ids.append(id);
+
+        if (!ids.isEmpty())
+            filtered[machineId] = ids;
+    }
+
     // Audit szükséges → részletes statisztika megjelenítése
     QString msg;
 
@@ -1567,7 +1589,7 @@ void MainWindow::handle_btn_OptLeftoverAudit_clicked()
                          msg);
 
     // audit szükséges → PDF generálás
-    _leftoverPresenter->ExportOptimizationLeftoverAuditPdf(perMachine);
+    _leftoverPresenter->ExportOptimizationLeftoverAuditPdf(filtered);
 }
 
 

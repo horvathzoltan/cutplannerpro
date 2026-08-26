@@ -407,6 +407,6 @@ void StockTableManager::addLeftoverRow(const LeftoverStockEntry& e)
 
     LeftoverStyleUtils::applyAgeStyle(_table, row,
                                       StockTableManager::ColLastSeenAt,
-                                      e.lastSeenAt);
+                                      e.lastSeenAt, e.notFoundCount);
 
 }

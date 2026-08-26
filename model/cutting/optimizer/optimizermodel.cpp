@@ -153,6 +153,12 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
                                              // opcionálisan: tiltás az _usedLeftoverEntryIds-ben
                                              _usedLeftoverEntryIds.insert(loId);
+
+                                             // törlés a lokális leftover poolból is
+                                             _localLeftovers.erase(
+                                                 std::remove_if(_localLeftovers.begin(), _localLeftovers.end(),
+                                                                [&](const LeftoverStockEntry& e){ return e.entryId == loId; }),
+                                                 _localLeftovers.end());
                                          }
 
                                          zInfo(QString("Whole-cut TOLDAS_MAIN: len=%1 extRef=%2")

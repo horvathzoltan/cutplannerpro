@@ -146,6 +146,10 @@ public:
         int missing = 0;   // notFoundCount > 0
         int stale = 0;     // lastSeenAt túl régi
         int fresh = 0;     // minden rendben
+
+        QVector<QUuid> missingIds;
+        QVector<QUuid> staleIds;
+        QVector<QUuid> freshIds;
     };
 
     QHash<QUuid, OptimizationLeftoverAuditStats> collectOptimizationLeftoverStats(
