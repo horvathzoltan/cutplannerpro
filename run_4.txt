@@ -1,3 +1,12 @@
+stock:
+ - ami a fában ki van jelölve, az új tételnél az legyen a cél tárhely
+ - logisztikai kóddal lehessen tárhelyet keresni, anyagot elhelyezni
+ - tárhely adatlap: tárhelyre felül a qrcode, alá a tartalmat felsorolni anyag, barcode, checkboxok
+ üres adatlappal lehessen anyagot felvenni:
+  - felvételi lapon qr code, hely megvan
+  - anyagok barcodeja füzetbe
+  - mennyiség
+
 toldás: - FIXED
  - rsm-623-at elhasználtuk, mint fődarab, teljes hosszában, majd toldatokat vágtunk belőle
  nem ézékeltük azt, hogy fődarabként épp az imént fogyott el egy az egyben.

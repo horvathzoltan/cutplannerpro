@@ -107,8 +107,8 @@ Lábtakaró_2Pár;NP-CLT4-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Pa
 CipzárosLábbetét_Pár;NP-CLB2;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab;bundle;BT-CLB2
 
 SinesLáb_5db;NP-SL5;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;BT-SL5
-SinesLáb_5db;NP-SL5-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;BT-SL5-7016
-SinesLáb_5db;NP-SL5-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;BT-SL5-9010
+SinesLáb_5db;NP-SL5-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab;bundle;BT-SL5-7016
+SinesLáb_5db;NP-SL5-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab;bundle;BT-SL5-9010
 
 NaphálóTok+Fedél;NP-T+TF;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;870;1500;2500;80170426;;Tok;bundle;BT-T+TF
 NaphálóTok+Fedél;NP-T+TF-7016;6000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;870;1500;2500;80170426;;Tok;bundle;BT-T+TF-7016
@@ -118,9 +118,9 @@ CipzárosZáró_Pár;NP-CZ2;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;
 CipzárosZáró_Pár;NP-CZ2-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ2-7016
 CipzárosZáró_Pár;NP-CZ2-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ2-9010
 
-SinesZáró_5db;NP-SZ5;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ5
-SinesZáró_5db;NP-SZ5-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ5-7016
-SinesZáró_5db;NP-SZ5-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ5-9010
+SinesZáró_7db;NP-SZ7;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7
+SinesZáró_7db;NP-SZ7-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7-7016
+SinesZáró_7db;NP-SZ7-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7-9010
 
 # vágás
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2
