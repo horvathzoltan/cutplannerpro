@@ -249,6 +249,10 @@ HEADERS += \
     materials/utils/material_group_utils.h \
     materials/model/painting_mode.h \
     model/relocation/relocationauditstatus.h \
+    stock/utils/materialbarcodelistform_utils.h \
+    stock/utils/stockintakeform_utils.h \
+    stock/utils/stocklistform_utils.h \
+    stock/utils/storageqrcodelistform_utils.h \
     storage/presenter/storagepresenter.h \
     storage/storagelabelbatchdialog.h \
     storage/utils/storage_label_utils.h \

@@ -117,4 +117,5 @@ public:
     void validateBarcode(const StorageEntry *s) const;
 
     const StorageEntry* fallbackStorage() const { return findById(_fallbackId); }
+    const StorageEntry *findByLogisticBarcode(const QString &code) const;
 };

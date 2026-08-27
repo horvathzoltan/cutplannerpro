@@ -772,4 +772,16 @@ QString StorageRegistry::makeFixUnique(const QString& bc, const QUuid& selfId) c
     }
 }
 
+const StorageEntry* StorageRegistry::findByLogisticBarcode(const QString& code) const
+{
+    if (!_logisticInitialized)
+        return nullptr;
+
+    for (auto it = _logisticBarcodes.begin(); it != _logisticBarcodes.end(); ++it) {
+        if (it.value().compare(code.trimmed(), Qt::CaseInsensitive) == 0) {
+            return findById(it.key());
+        }
+    }
+    return nullptr;
+}
 

@@ -13,7 +13,7 @@ class AddStockDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddStockDialog(QWidget *parent = nullptr);
+    explicit AddStockDialog(QWidget *parent = nullptr, QUuid preselectedStorageId = QUuid());
     ~AddStockDialog();
 
     QUuid selectedMaterialId() const;

@@ -237,3 +237,17 @@ QMap<QUuid, int> StockRegistry::readAllAggregated() const
 }
 
 
+QVector<StockEntry> StockRegistry::findByStorageId(const QUuid& storageId) const
+{
+    ScopedPerThreadLock locker(static_cast<void*>(&_mutex), /*recursive=*/true);
+
+    QVector<StockEntry> result;
+    result.reserve(_data.size());
+
+    for (const auto& e : _data) {
+        if (e.storageId == storageId)
+            result.append(e);
+    }
+
+    return result;
+}

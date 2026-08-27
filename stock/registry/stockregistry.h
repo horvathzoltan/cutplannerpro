@@ -37,6 +37,7 @@ public:
     void setData(const QVector<StockEntry>& v, bool doPersist = true);
 
     QMap<QUuid, int> readAllAggregated() const;
+    QVector<StockEntry> findByStorageId(const QUuid &storageId) const;
 private:
     StockRegistry() = default;
     ~StockRegistry() = default;

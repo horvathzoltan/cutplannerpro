@@ -13,7 +13,7 @@ QUuid AddStockDialog::s_lastStorageId;
 int   AddStockDialog::s_lastQuantity;
 QString AddStockDialog::s_lastComment;
 
-AddStockDialog::AddStockDialog(QWidget *parent)
+AddStockDialog::AddStockDialog(QWidget *parent, QUuid preselectedStorageId)
     : QDialog(parent)
     , ui(new Ui::AddStockDialog)
     , current_entryId(QUuid::createUuid()) // 🔑 Automatikusan új UUID
@@ -21,6 +21,28 @@ AddStockDialog::AddStockDialog(QWidget *parent)
     ui->setupUi(this);
     populateMaterialCombo();
     populateStorageCombo();
+
+    // 🔥 Ha a MainWindow adott tárhelyet → azt állítjuk be
+    if (!preselectedStorageId.isNull()) {
+        current_storageId = preselectedStorageId;
+
+        // 1) combó beállítása (emberi név)
+        int idx = ui->comboStorage->findData(preselectedStorageId);
+        if (idx >= 0)
+            ui->comboStorage->setCurrentIndex(idx);
+
+        // 2) logisztikai kód mező beállítása (gépi + QR)
+        QString logCode = StorageRegistry::instance().logisticBarcode(preselectedStorageId);
+        ui->editStorageCode->setText(logCode);
+    }
+    else {
+        // 🔄 fallback: lastStorageId
+        if (!s_lastStorageId.isNull()) {
+            int sidx = ui->comboStorage->findData(s_lastStorageId);
+            if (sidx >= 0)
+                ui->comboStorage->setCurrentIndex(sidx);
+        }
+    }
 
     connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
         MaterialSearchDialog dlg(this);
@@ -37,6 +59,37 @@ AddStockDialog::AddStockDialog(QWidget *parent)
             }
         }
     });
+
+    connect(ui->editStorageCode, &QLineEdit::textChanged,
+            this, [this](const QString& code) {
+
+                auto* stor = StorageRegistry::instance().findByLogisticBarcode(code);
+                if (!stor)
+                    return;
+
+                int idx = ui->comboStorage->findData(stor->id);
+                if (idx >= 0)
+                    ui->comboStorage->setCurrentIndex(idx);
+
+                current_storageId = stor->id;
+            });
+
+    connect(ui->comboStorage, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int index) {
+
+                QUuid id = ui->comboStorage->itemData(index).toUuid();
+                if (id.isNull())
+                    return;
+
+                current_storageId = id;
+
+                // 🔥 logisztikai kód mező frissítése (egyirányú!)
+                QString logCode = StorageRegistry::instance().logisticBarcode(id);
+
+                // ⚠️ FONTOS: itt NEM szabad olyan kódot hívni,
+                // ami visszahat a combóra
+                ui->editStorageCode->setText(logCode);
+            });
 
 
     if (!s_lastMaterialId.isNull()) {
@@ -78,10 +131,13 @@ QUuid AddStockDialog::selectedMaterialId() const {
 void AddStockDialog::populateStorageCombo() {
     ui->comboStorage->clear();
     const auto& storages = StorageRegistry::instance().readAll();
+
     for (const auto& s : storages) {
-        ui->comboStorage->addItem(s.name, s.id);
+        QString display = StorageRegistry::instance().uniqueHumanName(s.id);
+        ui->comboStorage->addItem(display, s.id);
     }
 }
+
 
 QUuid AddStockDialog::selectedStorageId() const {
     return ui->comboStorage->currentData().toUuid();

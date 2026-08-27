@@ -84,6 +84,7 @@ public:
     StorageAuditPresenter* storageAuditPresenter(){return _storageAuditPresenter;}
     StoragePresenter* storagePresenter() { return _storagePresenter; }
     void ShowWarningDialog(const ValidationResult &result);
+    void selectTreeNodeByStorageId(const QUuid &id);
 private slots:
     void handle_btn_NewRequest_clicked();
     void handle_btn_AddCuttingPlanRequest_clicked();
@@ -125,6 +126,9 @@ private slots:
     void handle_act_StorageLabelBatch_clicked();
     void handle_act_LeftoverLabelQueue_clicked();
 
+    void handle_actMaterialBarcodeList_clicked();
+    void handle_actStorageQrcodeList_clicked();
+
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
     void onShowNotFoundMessage(const QString& msg);
@@ -138,6 +142,8 @@ private slots:
     void handle_btn_RunOutMaterials_clicked();
     void handle_btn_StorageAudit_2_clicked();
     void handle_btn_StorageLabel_clicked();
+    void handle_btn_stockIntakeForm_clicked();
+    void handle_btn_stockListForm_clicked();
 
     // Review funkció - visszaolvasás
     void handle_btn_Review_clicked();
@@ -199,7 +205,8 @@ private:
         QAction* actSeriesMatrix = nullptr;
         QAction* actStorageLabelBatch = nullptr;
         QAction* actLeftoverLabelQueue = nullptr;
-
+        QAction* actMaterialBarcodeList = nullptr;
+        QAction* actStorageQrcodeList = nullptr;
     };
 
     void ActionConnector_connect(ActionConnectorModel& a);

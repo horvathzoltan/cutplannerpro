@@ -71,7 +71,9 @@ MainWindow::MainWindow(QWidget *parent)
         .actSettings = MainWindowUIBuilder::createSettingsAction(this),
         .actSeriesMatrix   =   _actSeriesMatrix, // 🔹 egyszerű action
         .actStorageLabelBatch = new QAction("📦 Tárhely címkék", this),
-        .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this)
+        .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this),
+        .actMaterialBarcodeList = new QAction("🏷️ Material címkék", this),
+        .actStorageQrcodeList = new QAction("🏷️ Storage címkék", this)
     };
 
     // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
@@ -295,6 +297,21 @@ MainWindow::MainWindow(QWidget *parent)
                 }
             });
 
+
+    connect(ui->editStorageSearch, &QLineEdit::textChanged,
+            this, [this](const QString& text) {
+
+                if (text.trimmed().isEmpty())
+                    return;
+
+                auto* stor = StorageRegistry::instance().findByLogisticBarcode(text);
+                if (!stor)
+                    return;
+
+                selectTreeNodeByStorageId(stor->id);
+            });
+
+
     translate();
     zEventINFO("✅ MainWindow inited");
 }
@@ -402,6 +419,11 @@ void MainWindow::ButtonConnector_Connect()
             this, &MainWindow::handle_btn_StorageLabel_clicked);
 
 
+    connect(ui->btn_stockIntakeForm, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_stockIntakeForm_clicked);
+
+    connect(ui->btn_stockListForm, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_stockListForm_clicked);
 
 }
 
@@ -412,6 +434,8 @@ void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
     ui->mainToolBar->addAction(m.actSeriesMatrix);
     ui->mainToolBar->addAction(m.actStorageLabelBatch);
     ui->mainToolBar->addAction(m.actLeftoverLabelQueue);
+    ui->mainToolBar->addAction(m.actMaterialBarcodeList);
+    ui->mainToolBar->addAction(m.actStorageQrcodeList);
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
@@ -469,6 +493,11 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
 
     connect(m.actLeftoverLabelQueue, &QAction::triggered,
             this, &MainWindow::handle_act_LeftoverLabelQueue_clicked);
+
+    connect(m.actMaterialBarcodeList, &QAction::triggered,
+            this, &MainWindow::handle_actMaterialBarcodeList_clicked);
+    connect(m.actStorageQrcodeList, &QAction::triggered,
+            this, &MainWindow::handle_actStorageQrcodeList_clicked);
 
 }
 
@@ -678,7 +707,13 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
 /*stock*/
 void MainWindow::handle_btn_AddStockEntry_clicked()
 {
-    AddStockDialog dlg(this);
+    QUuid selectedStorageId;
+    if (auto* item = ui->treeStorage->currentItem()) {
+        selectedStorageId = item->data(0, Qt::UserRole).toUuid();
+    }
+
+    AddStockDialog dlg(this, selectedStorageId);
+
     if (dlg.exec() != QDialog::Accepted)
         return;
 
@@ -1475,6 +1510,28 @@ void MainWindow::handle_btn_StorageLabel_clicked()
     storagePresenter()->exportStorageLabelPdf(storageId);
 }
 
+void MainWindow::handle_btn_stockIntakeForm_clicked()
+{
+    auto storageId = currentSelectedStorageId();
+    if (storageId.isNull()) {
+        zEvent("❌ Nincs kiválasztott tárhely.");
+        return;
+    }
+
+    storagePresenter()->exportStockIntakeForm(storageId);
+}
+
+void MainWindow::handle_btn_stockListForm_clicked()
+{
+    auto storageId = currentSelectedStorageId();
+    if (storageId.isNull()) {
+        zEvent("❌ Nincs kiválasztott tárhely.");
+        return;
+    }
+
+    storagePresenter()->exportStockListPdf(storageId);
+}
+
 
 void MainWindow::handle_btn_StorageAudit_2_clicked()
 {
@@ -1833,3 +1890,32 @@ void MainWindow::handle_act_LeftoverLabelQueue_clicked()
                              tr("Hulló címkék PDF-be exportálva:\n%1").arg(path));
 }
 
+void MainWindow::selectTreeNodeByStorageId(const QUuid& id)
+{
+    auto* root = ui->treeStorage->invisibleRootItem();
+    QList<QTreeWidgetItem*> stack;
+    stack.append(root);
+
+    while (!stack.isEmpty()) {
+        auto* item = stack.takeLast();
+
+        QUuid itemId = item->data(0, Qt::UserRole).toUuid();
+        if (itemId == id) {
+            ui->treeStorage->setCurrentItem(item);
+            item->setSelected(true);
+            ui->treeStorage->scrollToItem(item);
+            return;
+        }
+
+        for (int i = 0; i < item->childCount(); ++i)
+            stack.append(item->child(i));
+    }
+}
+
+void MainWindow::handle_actMaterialBarcodeList_clicked(){
+    _storagePresenter->exportMaterialBarcodeList();
+}
+
+void MainWindow::handle_actStorageQrcodeList_clicked(){
+    _storagePresenter->exportStorageBarcodeList();
+}

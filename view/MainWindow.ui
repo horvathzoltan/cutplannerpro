@@ -680,7 +680,7 @@
             <widget class="QWidget" name="verticalLayoutWidget">
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,0,0,0,0,0,1,0,1">
                 <item>
                  <widget class="QPushButton" name="btn_AddStockEntry">
                   <property name="toolTip">
@@ -713,6 +713,20 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="btn_stockIntakeForm">
+                  <property name="text">
+                   <string>Stock Intake Form</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_stockListForm">
+                  <property name="text">
+                   <string>Stock List Form</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Orientation::Horizontal</enum>
@@ -724,6 +738,16 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>Tárhely:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="editStorageSearch"/>
                 </item>
                </layout>
               </item>
