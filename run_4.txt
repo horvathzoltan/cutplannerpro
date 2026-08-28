@@ -1,4 +1,29 @@
+toldás:
+ - a 30 centit nem toldunk szabály az 1.5 métertől éljen, a 30 centi minél kisebb a méret annál nagyobb arányban számítot
+ - ha nincs toldat, azt a fődarabra írni kell, mert külömben nem fogjuk tudni keressük e- vagy épp ennél eltekintettünk a levágástól
+
 stock:
+  - a fűzéshez margót kell hagyni bal szélen
+  - borítólap a jegyzékhez
+
+teszteléshez egy láb kell,
+   - ha több azonos méret van egy tételhez
+   - vagy 1 cm-el kisebb, vagy nagyobb
+   - a tesztelésre szánt példányt jelöljük a címkén "Teszt"-vel
+
+"ok" dialog
+ - kell egy emojira alapuló png ikonnal egy dialog, ami jelzi a sikeres műveletet
+
+hulló:
+ - itt a megoldás az lesz, hogy a módosításokat naplózni fogjuk, hogy nyoma legyen annak, amikor átírjuk az aanyagot
+ - natúr szálon:
+ - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
+ - a vonalkódon NP-CZ szerepel - és valóban natúr szálon van, de hogy került oda?
+ - és ha a leftoverstockon a  RST-A-476, hogy lett hozzá NP-CZ címke nyomtatva?
+ - amikor a számítot hulló vonalkódját megcsináljuk, nem e a barcodePrefixet tesszük rá?
+
+
+stock:- FIXED
  - ami a fában ki van jelölve, az új tételnél az legyen a cél tárhely
  - logisztikai kóddal lehessen tárhelyet keresni, anyagot elhelyezni
  - tárhely adatlap: tárhelyre felül a qrcode, alá a tartalmat felsorolni anyag, barcode, checkboxok
@@ -11,10 +36,6 @@ toldás: - FIXED
  - rsm-623-at elhasználtuk, mint fődarab, teljes hosszában, majd toldatokat vágtunk belőle
  nem ézékeltük azt, hogy fődarabként épp az imént fogyott el egy az egyben.
 
-teszteléshez egy láb kell,
- - ha több azonos méret van egy tételhez
- - vagy 1 cm-el kisebb, vagy nagyobb
- - a tesztelésre szánt példányt jelöljük a címkén "T"-vel
 
 leftover címke nyomtatási buffer _ FIXED
  - toolbaron gomb, számolja a címkéket, ha 0, akkor szürke, amúgy zöld, vagy ilyesmi
@@ -52,19 +73,10 @@ optimizer : FIXED
  - a vágási utasításban van audit a kért és kapott darabokról, de nem olyan kellene
  - külön kellene venni a szál igényt - és a vágási tervet
 
-"ok" dialog
- - kell egy emojira alapuló png ikonnal egy dialog, ami jelzi a sikeres műveletet
+
 
 request FIXED
  - surface nincsen mentve a repoban, és nincsen beolvasva sem
-
-hulló:
- - itt a megoldás az lesz, hogy a módosításokat naplózni fogjuk, hogy nyoma legyen annak, amikor átírjuk az aanyagot
- - natúr szálon:
- - NP-CZ-9010;3875;Manual;;RST-A-476;WH01;2026-07-27T12:35:22;2026-07-27T12:35:22;unknown;0
- - a vonalkódon NP-CZ szerepel - és valóban natúr szálon van, de hogy került oda?
- - és ha a leftoverstockon a  RST-A-476, hogy lett hozzá NP-CZ címke nyomtatva?
- - amikor a számítot hulló vonalkódját megcsináljuk, nem e a barcodePrefixet tesszük rá?
 
 snaphot: FIXED
  - betöltéskor a hullók: ha valami nincs meg, mit tegyünk? helyettesítjük, vagy hibaüzenet, vagy figyelmeztetés?
@@ -75,9 +87,6 @@ painting: FIXED
  matName = mat ? mat->toDisplay() : "???";
  QString barcode = mat ? mat->barcode : "???";
  postfix = ProfileUtils::profilePostfixFor(barcode);
-
-
-
 
 request:
  - tételszám kereső. olyan mint a beolvasás, megkeresi azt a fájlt, amiben megvan a tételszám
