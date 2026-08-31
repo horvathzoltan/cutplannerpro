@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>764</width>
-    <height>624</height>
+    <height>629</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -399,20 +399,20 @@
      </item>
     </layout>
    </item>
-   <item row="22" column="0">
+   <item row="23" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Vágási hossz [mm]</string>
      </property>
     </widget>
    </item>
-   <item row="22" column="1">
+   <item row="23" column="1">
     <widget class="QLineEdit" name="editLength"/>
    </item>
-   <item row="23" column="0" colspan="2">
+   <item row="25" column="0" colspan="2">
     <layout class="QHBoxLayout" name="layout_colorPreview"/>
    </item>
-   <item row="26" column="0">
+   <item row="28" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
@@ -422,7 +422,7 @@
      </property>
     </widget>
    </item>
-   <item row="26" column="1">
+   <item row="28" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <widget class="QPushButton" name="btnNextMaterial">
@@ -473,6 +473,27 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="24" column="0" colspan="2">
+    <widget class="QLabel" name="lblLengthWarning">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="26" column="0" colspan="2">
+    <widget class="QLabel" name="lblBomWarning">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="0" colspan="2">
+    <widget class="QLabel" name="lblMaterialWarning">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

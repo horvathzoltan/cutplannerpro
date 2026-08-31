@@ -69,16 +69,16 @@ inline QVector<KittingInstruction> expandTengely_Motoros(
     // pofa anyag (pl. NP-POFA-CIP)
     auto motors = MaterialRegistry::instance().findAllByFamily(MaterialFamily::Motor);
     if(!motors.isEmpty()){
-        QVector<QUuid> motors_ranked = MaterialSelector::rankMaterials(motors, req);
+        auto motors_ranked = MaterialSelector::rankMaterials(motors, req);
 
         zInfo("=== expandTengely motor ===");
-        for(auto &a:motors_ranked){
+        for(auto &a:motors_ranked.ranked){
             auto motor = MaterialRegistry::instance().findById(a);
             zInfo("motor:"+motor->toReportLabel());
         }
 
-        if(!motors_ranked.isEmpty() ){
-            auto motor = MaterialRegistry::instance().findById(motors_ranked.first());
+        if(!motors_ranked.ranked.isEmpty() ){
+            auto motor = MaterialRegistry::instance().findById(motors_ranked.ranked.first());
 
             if(motor){
                 out << KittingInstruction::makeKitItem(req, pwm, motor, "NP-MOT");

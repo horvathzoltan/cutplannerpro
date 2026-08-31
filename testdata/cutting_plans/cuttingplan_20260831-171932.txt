@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"1122";"Teszt  Elek";1000;2000;970;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"1122";"Teszt  Elek";1000;2000;995;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
+"1122";"Teszt  Elek";1000;2000;877;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM

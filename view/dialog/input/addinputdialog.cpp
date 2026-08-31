@@ -84,6 +84,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
             refreshBom();
             onProductTypeChanged(true);   // megmarad a subtype stack váltás
+
+            ui->lblLengthWarning->hide();
         });
 
     }
@@ -114,6 +116,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
                 refreshBom();
                 updateAttributePanel();
+
+                ui->lblLengthWarning->hide();
             });
 
         }
@@ -202,6 +206,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         } else{
             zInfo(L("nextMat nem található a comboban: %1").arg(matName));
         }
+
     });
 
     // qty változás → handler‑UI váltás
@@ -384,7 +389,27 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     });
 
+    const char* warningStyle =
+        "color: #e53935;"              // Material Design Light Red 600
+        "font-size: 11px;"             // kisebb, szolid
+        "font-weight: normal;"         // nem félkövér
+        "padding: 4px 6px;"
+        "border: 2px solid #e53935;"   // piros keret
+        "border-radius: 4px;"
+ //       "background-color: #fcebea;"  // nagyon halvány piros háttér
+        ;
 
+    ui->lblMaterialWarning->hide();
+    ui->lblLengthWarning->hide();
+    ui->lblBomWarning->hide();
+
+    ui->lblMaterialWarning->setStyleSheet(warningStyle);
+    ui->lblLengthWarning->setStyleSheet(warningStyle);
+    ui->lblBomWarning->setStyleSheet(warningStyle);
+
+    ui->lblMaterialWarning->setText("");
+    ui->lblLengthWarning->setText("");
+    ui->lblBomWarning->setText("");
     //groupboxAttributes_hide();
 }
 
@@ -421,7 +446,7 @@ void AddInputDialog::groupboxAttributes_show(){
 
 void AddInputDialog::refreshBom()
 {
-    //zInfo("refreshBom() called");
+    zTrace();
 
     {
         QUuid id = _bomModel.lastSuggestedMaterial;
@@ -462,7 +487,7 @@ void AddInputDialog::refreshBom()
     // 5) BOM utófeldolgozás (király)
     QMap<MaterialRole, QUuid> bestPerRole;
 
-    for (auto id : ranked) {
+    for (auto id : ranked.ranked) {
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
@@ -475,7 +500,7 @@ void AddInputDialog::refreshBom()
 
 
     QVector<QUuid> recommended;
-    for (auto id : ranked) {
+    for (auto id : ranked.ranked) {
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
@@ -511,7 +536,7 @@ void AddInputDialog::refreshBom()
 
     // ranked-first fallback
     auto pickRankedFirst = [&]() -> QUuid {
-        for (auto id : ranked) {
+        for (auto id : ranked.ranked) {
             if (_bomModel.bomList.contains(id))
                 return id;
         }
@@ -527,7 +552,7 @@ void AddInputDialog::refreshBom()
     }
     else {
         // ha eddig nem volt → ranked első szabad BOM elem
-        for (auto id : ranked) {
+        for (auto id : ranked.ranked) {
             if (_bomModel.bomList.contains(id) &&
                 !_bomModel.addedMaterials.contains(id))
             {
@@ -569,6 +594,7 @@ void AddInputDialog::refreshBom()
     //     }
     // }
 
+
     // ⭐ BOM befejezés jelzése
     bool bomDone = (_bomModel.addedMaterials.size() == _bomModel.bomList.size());
 
@@ -586,7 +612,16 @@ void AddInputDialog::refreshBom()
         ui->btnNextMaterial->setToolTip("Következő ajánlott anyag");
     }
 
+    _lastSelectorResult = ranked;
+    updateBomWarnings();
+
+    // aktuális anyaghoz tartozó material warning frissítése
+    QUuid currentMat = selectedMaterialId();
+    updateMaterialWarnings(currentMat);
 }
+
+
+
 
 // void AddInputDialog::initializeDialog()
 // {
@@ -715,6 +750,9 @@ void AddInputDialog::resetUiForNewReference()
     ui->radioRight->setAutoExclusive(true);
 
     ui->sliderHandler->setValue(0);
+
+    ui->lblLengthWarning->hide();
+
     setHeadEditable(true);
 }
 
@@ -728,6 +766,8 @@ void AddInputDialog::resetUiForNextReference()
     ui->radioRight->setChecked(false);
     ui->radioLeft->setAutoExclusive(true);
     ui->radioRight->setAutoExclusive(true);
+
+    ui->lblLengthWarning->hide();
 
     ui->sliderHandler->setValue(0);
     setHeadEditable(true);
@@ -1130,6 +1170,8 @@ void AddInputDialog::reject() {
 void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
 {
     _suppressPreview = true;
+    ui->lblLengthWarning->hide();
+
     applyFields_Head(req);
     applyFields_Item(req);
 }
@@ -1596,6 +1638,8 @@ void AddInputDialog::loadReference(const QString& ref)
     btnNextRef->show();
     btnNextMaterial->show();
 
+    ui->lblLengthWarning->hide();
+
     auto* last = CuttingPlanRequestRegistry::instance().getLastRequest(ref);
     auto state = getReferenceState(ref);
     applyReferenceState(state);
@@ -1625,6 +1669,9 @@ void AddInputDialog::loadReference(const QString& ref)
     layout()->activate();
     lblReferenceBig->updateGeometry();
     lblReferenceBig->raise();
+
+    updateMaterialWarnings(selectedMaterialId());
+
 }
 
 
@@ -2157,7 +2204,7 @@ void AddInputDialog::updateAttributePanel()
 
 void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
 {
-    zTrace();
+    //zTrace();
 
     // 1) Ha a type/subtype-hoz nincs attribútum → panel rejtve marad
     auto* type = ProductTypeRegistry::instance().findById(r.productTypeId);
@@ -2201,14 +2248,18 @@ void AddInputDialog::onMaterialComboChanged(int index)
 {
     Q_UNUSED(index);
 
-    zTrace();
+    //zTrace();
 
     // Ha suppress alatt vagyunk → NEM ajánlunk
     if (_suppressLengthSuggestion)
         return;
 
+
+
     // 1) Material ID
     QUuid matId = selectedMaterialId();
+    updateMaterialWarnings(matId);
+
     const MaterialMaster* m = MaterialRegistry::instance().findById(matId);
     if (!m)
         return;
@@ -2241,6 +2292,60 @@ void AddInputDialog::onMaterialComboChanged(int index)
     // 5) UI frissítés
     if (val.has_value()) {
         ui->editLength->setText(QString::number(*val, 'f', 0));
+        ui->lblLengthWarning->hide();
+    }
+    else{
+        ui->editLength->clear();
+        ui->lblLengthWarning->setText(
+            QString("⚠️ Nincs gyártási méret képlet ehhez az anyaghoz: %1.")
+                .arg(role.barcodePrefix)
+            );
+        ui->lblLengthWarning->show();
     }
 }
+
+void AddInputDialog::updateBomWarnings()
+{
+    QStringList uiWarnings;
+
+    for (auto id : _lastSelectorResult.bomWarnings.keys()) {
+        if (!_bomModel.bomList.contains(id))
+            continue;
+
+        const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+        QString matName = m ? m->name : "Ismeretlen anyag";
+
+        for (const QString& w : _lastSelectorResult.bomWarnings[id]) {
+            uiWarnings << QString("%1: %2").arg(matName).arg(w);
+        }
+    }
+
+    if (!uiWarnings.isEmpty()) {
+        ui->lblBomWarning->setText(uiWarnings.join("\n"));
+        ui->lblBomWarning->show();
+    } else {
+        ui->lblBomWarning->hide();
+    }
+}
+
+void AddInputDialog::updateMaterialWarnings(const QUuid& id)
+{
+    if (id.isNull()) return;
+
+    QStringList diag;
+
+    if (_lastSelectorResult.materialWarnings.contains(id)) {
+        for (const QString& w : _lastSelectorResult.materialWarnings[id]) {
+            diag << w;
+        }
+    }
+
+    if (!diag.isEmpty()) {
+        ui->lblMaterialWarning->setText(diag.join("\n"));
+        ui->lblMaterialWarning->show();
+    } else {
+        ui->lblMaterialWarning->hide();
+    }
+}
+
 

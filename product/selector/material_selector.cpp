@@ -6,6 +6,8 @@
 
 #include <product/registry/product_type_registry.h>
 
+#include <materialbundles/registry/bundle_registry.h>
+
 struct Candidate {
     QUuid id;
     MaterialSelector::ScoreBreakdown breakdown;
@@ -16,10 +18,12 @@ struct Candidate {
 };
 
 
-QVector<QUuid> MaterialSelector::rankMaterials(
+MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(
     const QVector<QUuid>& bomList,
     const Cutting::Plan::Request& req)
 {
+    MaterialSelectionResult r;
+
     // qDebug() << "=== MaterialSelector INPUT ===";
     // qDebug() << "req.requiredColor.code =" << req.requiredColor.code();
     // qDebug() << "req.requiredColor.lightness =" << req.requiredColor.lightness();
@@ -89,6 +93,7 @@ QVector<QUuid> MaterialSelector::rankMaterials(
                 }
                 else {
                     bd.colorExact -= 80;    // nagyon eltérő → kerülendő
+                    r.materialWarnings[id] << "Jelentős színeltérés";
                 }
             }
         }
@@ -172,21 +177,72 @@ QVector<QUuid> MaterialSelector::rankMaterials(
         // ------------------------------------------------------------
         // ⭐ 2) KÉSZLET PREFERENCIA — minden anyagra
         // ------------------------------------------------------------
-        auto stockEntries = StockRegistry::instance().findByMaterialId(mat->id);
+        // auto stockEntries = StockRegistry::instance().findByMaterialId(mat->id);
 
-        bool inStock = false;
-        for (const auto& se : stockEntries) {
-            if (se.quantity > 0) {
-                inStock = true;
-                break;
+        // bool inStock = false;
+        // for (const auto& se : stockEntries) {
+        //     if (se.quantity > 0) {
+        //         inStock = true;
+        //         break;
+        //     }
+        // }
+
+        // if (inStock)
+        //     bd.stockPref += 200;
+        // else{
+        //     bd.stockPref -= 200;
+        //     r.bomWarnings[id] << "Nincs készleten";
+        // }
+
+        // ------------------------------------------------------------
+        // ⭐ 2) KÉSZLET PREFERENCIA — bundle robbantás + komponens ellenőrzés
+        // ------------------------------------------------------------
+
+        // Stock komponensekre robbantva
+        QMap<QUuid,int> stock = StockRegistry::instance().readAllAggregated();
+
+        // BOM-anyag komponensekre robbantva
+        QMap<QUuid,int> need;
+
+        if (mat->kind == MaterialKind::Simple) {
+            need[mat->id] += 1;
+        }
+        else if (mat->kind == MaterialKind::Bundle) {
+            auto comps = BundleRegistry::instance().componentsOf(mat->bundleCode);
+            for (const auto& c : comps)
+                need[c.materialId] += c.count;
+        }
+
+        // Ellenőrzés
+        bool ok = true;
+
+        for (auto compId : need.keys()) {
+
+            int required = need[compId];
+            int available = stock.value(compId, 0);
+
+            if (available < required) {
+                ok = false;
+
+                const MaterialMaster* cm = MaterialRegistry::instance().findById(compId);
+                QString cname = cm ? cm->name : "ismeretlen";
+
+                r.bomWarnings[id] << QString(
+                                         "%1 hiányzik (need=%2, stock=%3)"
+                                         ).arg(cname)
+                                         .arg(required)
+                                         .arg(available);
             }
         }
 
-        if (inStock)
+        if (ok)
             bd.stockPref += 200;
         else
-            bd.stockPref -= 200;
+            bd.stockPref -= 300;
 
+
+
+        // kiértékelés
 
         Candidate c;
         c.id = id;
@@ -250,14 +306,32 @@ QVector<QUuid> MaterialSelector::rankMaterials(
 
     // }
 
-
-    return result;
+    r.ranked = result;
+    return r;
 }
 
+// QUuid MaterialSelector::selectPreferred(
+//     const QVector<QUuid>& bomList,
+//     const Cutting::Plan::Request& req)
+// {
+//     auto ranked = rankMaterials(bomList, req);
+//     return ranked.ranked.isEmpty() ? QUuid() : ranked.ranked.first();
+// }
 QUuid MaterialSelector::selectPreferred(
     const QVector<QUuid>& bomList,
     const Cutting::Plan::Request& req)
 {
-    auto ranked = rankMaterials(bomList, req);
-    return ranked.isEmpty() ? QUuid() : ranked.first();
+    MaterialSelectionResult res = rankMaterials(bomList, req);
+
+    // 1) ranked sorrendben megyünk
+    for (const QUuid& id : res.ranked) {
+
+        // 2) ha nincs warning → ez a legjobb
+        if (!res.materialWarnings.contains(id))
+            return id;
+    }
+
+    // 3) ha minden warningos → ranked első elem fallback
+    return res.ranked.isEmpty() ? QUuid() : res.ranked.first();
 }
+

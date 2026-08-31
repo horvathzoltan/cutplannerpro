@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QUuid>
+#include <product/selector/material_selector.h>
 //#include "series_matrix_view.h"
 
 
@@ -114,6 +115,7 @@ private:
 
     BOM_Model _bomModel;
     EditMode _editMode;
+    MaterialSelector::MaterialSelectionResult _lastSelectorResult;
 
     bool _savedLeft = false;
     bool _savedRight = false;
@@ -191,6 +193,8 @@ private:
     QString currentProductTypeCode() const;
     QString currentProductSubtypeCode() const;
     void setFullSizeEditable(bool editable);
+    void updateBomWarnings();
+    void updateMaterialWarnings(const QUuid &id);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

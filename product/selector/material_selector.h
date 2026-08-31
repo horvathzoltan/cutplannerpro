@@ -23,13 +23,19 @@ public:
         }
     };
 
+    struct MaterialSelectionResult {
+        QVector<QUuid> ranked;          // eredeti rankMaterials eredmény
+        QMap<QUuid, QStringList> materialWarnings;
+        QMap<QUuid, QStringList> bomWarnings;
+    };
+
     // preferált anyag kiválasztása
     static QUuid selectPreferred(
         const QVector<QUuid>& bomList,
         const Cutting::Plan::Request& req);
 
     // teljes rangsor visszaadása (opcionális)
-    static QVector<QUuid> rankMaterials(
+    static MaterialSelectionResult rankMaterials(
         const QVector<QUuid>& bomList,
         const Cutting::Plan::Request& req);
 };
