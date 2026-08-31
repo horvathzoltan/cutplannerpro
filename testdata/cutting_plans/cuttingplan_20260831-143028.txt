@@ -1,0 +1,30 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"248";"Braun-Árny, Győr";2950;2630;2527;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;Unknown
+
+"251";"MolKomfort, Eger";3820;2380;3815;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+"251";"MolKomfort, Eger";3820;2380;3815;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+"251";"MolKomfort, Eger";3820;2380;3745;;1;1;0;"RAL 7016";NP-SZ-7016;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+"251";"MolKomfort, Eger";3820;2380;2278;;1;1;0;"RAL 7016";NP-SL2-7016;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+"251";"MolKomfort, Eger";3820;2380;3776;;1;1;0;"RAL 7016";NP-ROLL78-7000;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+"251";"MolKomfort, Eger";3820;2380;3700;;1;1;0;"RAL 7016";NP-BAR12-4000;Width;false;2026-09-09;NP;SIN;meghajtas=motoros;Unknown
+
+"254";"Oláh János";2965;2520;2935;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"254";"Oláh János";2965;2520;2960;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"254";"Oláh János";2965;2520;2842;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"254";"Oláh János";2965;2520;2417;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"254";"Oláh János";2965;2520;2854;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"254";"Oláh János";2965;2520;2790;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+
+"255";"Oláh János";2930;2520;2900;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"255";"Oláh János";2930;2520;2925;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"255";"Oláh János";2930;2520;2807;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"255";"Oláh János";2930;2520;2417;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
+"255";"Oláh János";2930;2520;2819;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
+"255";"Oláh János";2930;2520;2755;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
+
+"256";"Oláh János";2940;2520;2910;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"256";"Oláh János";2940;2520;2935;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"256";"Oláh János";2940;2520;2817;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"256";"Oláh János";2940;2520;2417;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"256";"Oláh János";2940;2520;2829;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+"256";"Oláh János";2940;2520;2765;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown

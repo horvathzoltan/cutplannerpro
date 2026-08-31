@@ -26,15 +26,15 @@ inline double calcZaro(double width){
 }
 
 inline double calcTengely_Motoros(double width){
-    return width - 45;//kapcsolos: 42
+    return width - 44;//kapcsolos: 42
 }
 
 inline double calcTengely_Kurblis(double width){
-    return width - 54;
+    return width - 55;
 }
 
 inline double calcZaroSuly(double width){
-    return width - 110;
+    return width - 120;
 }
 
 inline double calcVaszon(double width){
@@ -123,10 +123,10 @@ std::optional<double> compensation(const QMap<QString, QString>& attributes,
         {
             QString meghajtas = attributes.value(meghajtas_key);
             if (meghajtas == "motoros") {
-                return -4;
+                return 0;
             }
             else if (meghajtas == "kurblis") {
-                return -5;
+                return 0;//-5;
             }
             else {
                 zInfo("Ismeretlen attr value: "+meghajtas);
@@ -139,7 +139,7 @@ std::optional<double> compensation(const QMap<QString, QString>& attributes,
 
     // --- SÚLY ---
     if (role == "NP-BAR") {
-        return -10;
+        return 0;//-10;
     }
 
     return std::nullopt;

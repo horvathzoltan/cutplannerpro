@@ -30,7 +30,7 @@ inline double calcLabBetet(double height){
 }
 
 inline double calcTengely_Motoros(double width){
-    return width - 115;
+    return width - 111;//115;
 }
 
 inline double calcTengely_Kurblis(double width){
@@ -38,7 +38,7 @@ inline double calcTengely_Kurblis(double width){
 }
 
 inline double calcZaroSuly(double width){
-    return width - 165;
+    return width - 175;
 }
 
 inline double calcVaszon(double width){
@@ -131,7 +131,7 @@ std::optional<double> compensation(
         {
             QString meghajtas = attributes.value(meghajtas_key);
             if (meghajtas == "motoros") {
-                return +4;
+                return 0;//+4;
             }
             else if (meghajtas == "kurblis") {
                 return 0;
@@ -147,7 +147,7 @@ std::optional<double> compensation(
 
     // --- SÚLY ---
     if (role == "NP-BAR") {
-        return -10;
+        return 0;//-10;
     }
 
     return std::nullopt;
