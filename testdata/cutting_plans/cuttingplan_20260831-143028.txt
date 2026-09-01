@@ -28,3 +28,5 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "256";"Oláh János";2940;2520;2417;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
 "256";"Oláh János";2940;2520;2829;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
 "256";"Oláh János";2940;2520;2765;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
+
+"1111";"Sutyinszki Zsolt";;;2635;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-02;NP;CIP;meghajtas=motoros;Unknown
