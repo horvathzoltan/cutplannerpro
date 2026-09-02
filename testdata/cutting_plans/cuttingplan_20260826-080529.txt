@@ -23,18 +23,21 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "238";"Berecz László";680;2610;2508;;1;0;1;"RAL 9010";NP-SL2-9010;Width;false;2026-08-31;NP;SIN;meghajtas=kurblis;SM
 "238";"Berecz László";680;2610;626;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-08-31;NP;SIN;meghajtas=kurblis;SM
 "238";"Berecz László";680;2610;570;;1;0;1;"RAL 9010";NP-BAR12-4000;Width;false;2026-08-31;NP;SIN;meghajtas=kurblis;SM
+
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1925;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1950;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1832;;1;0;1;"RAL 9010";NP-CZ-9010;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1832;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1840;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "241";"Ro-Konzol/Eke J., Győr";1955;1970;1790;;1;0;1;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
+
 "244";"SzabóAblak";1918;1565;1888;;1;1;0;"RAL 9010";NP-T-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "244";"SzabóAblak";1918;1565;1913;;1;1;0;"RAL 9010";NP-TF-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "244";"SzabóAblak";1918;1565;1795;;1;1;0;"RAL 9010";NP-CZ-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "244";"SzabóAblak";1918;1565;1795;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "244";"SzabóAblak";1918;1565;1803;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "244";"SzabóAblak";1918;1565;1753;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
+
 "245";"SzabóAblak";2010;1570;1980;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "245";"SzabóAblak";2010;1570;2005;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM
 "245";"SzabóAblak";2010;1570;1887;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-09-07;NP;CIP;meghajtas=motoros;SM

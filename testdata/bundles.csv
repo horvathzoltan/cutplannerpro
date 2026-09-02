@@ -19,15 +19,21 @@ BT-CZ2;CipzárosZáró_Pár
 BT-CZ2-7016;CipzárosZáró_Pár
 BT-CZ2-9010;CipzárosZáró_Pár
 
-NP-SZ7;SinesZáró_7db
-NP-SZ7-7016;SinesZáró_7db
-NP-SZ7-9010;SinesZáró_7db
+BT-CZ5;CipzárosZáró_5db
+BT-CZ5-7016;CipzárosZáró_5db
+BT-CZ5-9010;CipzárosZáró_5db
+
+BT-SZ7;SinesZáró_7db
+BT-SZ7-7016;SinesZáró_7db
+BT-SZ7-9010;SinesZáró_7db
 
 BT-T+TF;NaphálóTok+Fedél
 BT-T+TF-7016;NaphálóTok+Fedél
 BT-T+TF-9010;NaphálóTok+Fedél
 
 BT-CLB2;CipzárosLábbetét_Pár
+
+BT-HK20;KurbliCső_20db
 
 CT-CL2+CLT2+CLB2;CipzárosLáb_Combo
 CT-CL2+CLT2+CLB2-7016;CipzárosLáb_Combo

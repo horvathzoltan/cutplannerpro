@@ -38,7 +38,7 @@ CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1
 Bowden;NP-B-50;50000;;;Custom;CM2;Steel;;SM;Piece;None;0;0;0;0;0;;;Bowden;simple;
 NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45S-10/26;;Motor;simple;
 NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45R-20;;Motor;simple;
-CsuklósHajtókar;NP-HK;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;HajtoElem;simple;
+KurbliCső;NP-HK;6000;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;HajtoElem;simple;
 Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1000;;;Tengely;simple;
 Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1000;;;Tengely;simple;
 Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1000;;;Tengely;simple;
@@ -118,9 +118,15 @@ CipzárosZáró_Pár;NP-CZ2;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;
 CipzárosZáró_Pár;NP-CZ2-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ2-7016
 CipzárosZáró_Pár;NP-CZ2-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ2-9010
 
-SinesZáró_7db;NP-SZ7;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7
-SinesZáró_7db;NP-SZ7-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7-7016
-SinesZáró_7db;NP-SZ7-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;NP-SZ7-9010
+CipzárosZáró_5db;NP-CZ5;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ5
+CipzárosZáró_5db;NP-CZ5-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ5-7016
+CipzárosZáró_5db;NP-CZ5-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170425;;Zaro;bundle;BT-CZ5-9010
+
+SinesZáró_7db;NP-SZ7;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;BT-SZ7
+SinesZáró_7db;NP-SZ7-7016;7000;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;BT-SZ7-7016
+SinesZáró_7db;NP-SZ7-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;bundle;BT-SZ7-9010
+
+KurbliCső_20db;NP-HK20;6000;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;HajtoElem;bundle;BT-HK20
 
 # vágás
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2

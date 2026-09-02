@@ -1,3 +1,8 @@
+
+audit:
+ - ha a záró mérete keveredik be a lábhoz, nem vesszük észre, mert nem ellenőrízzük a láb hosszát
+ a termék teljes  magasságához képest
+
 toldás:
  - a 30 centit nem toldunk szabály az 1.5 métertől éljen, a 30 centi minél kisebb a méret annál nagyobb arányban számítot
  - ha nincs toldat, azt a fődarabra írni kell, mert külömben nem fogjuk tudni keressük e- vagy épp ennél eltekintettünk a levágástól
