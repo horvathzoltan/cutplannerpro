@@ -44,4 +44,6 @@ private:
     LeftoverTableManager* _mgr;
 
     void exportAuditPdf(const QVector<LeftoverStockEntry> &list, const QString &title);
+    QVector<LeftoverStockEntry> shuffle(QVector<LeftoverStockEntry>& list, int rowsPerPage);
+    QVector<LeftoverStockEntry> filter(const QVector<LeftoverStockEntry>& list);
 };

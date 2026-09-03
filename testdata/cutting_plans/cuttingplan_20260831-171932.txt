@@ -1,4 +1,7 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
-"1122";"Teszt  Elek";1000;2000;970;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;Unknown
-"1122";"Teszt  Elek";1000;2000;995;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
-"1122";"Teszt  Elek";1000;2000;877;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-09;NP;CIP;meghajtas=motoros;SM
+"269";"Redőny Shop, Bp.";610;2190;580;;2;0;2;"RAL 9010";NP-T-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"269";"Redőny Shop, Bp.";610;2190;605;;2;0;2;"RAL 9010";NP-TF-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"269";"Redőny Shop, Bp.";610;2190;487;;2;0;2;"RAL 9010";NP-CZ-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"269";"Redőny Shop, Bp.";610;2190;2087;;2;0;2;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"269";"Redőny Shop, Bp.";610;2190;499;;2;0;2;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"269";"Redőny Shop, Bp.";610;2190;435;;2;0;2;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown

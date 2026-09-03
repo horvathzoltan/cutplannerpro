@@ -1,0 +1,24 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"270";"Redőny Shop, Bp.";950;2190;920;;3;0;3;"RAL 9010";NP-T-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"270";"Redőny Shop, Bp.";950;2190;945;;3;0;3;"RAL 9010";NP-TF-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"270";"Redőny Shop, Bp.";950;2190;827;;3;0;3;"RAL 9010";NP-CZ-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"270";"Redőny Shop, Bp.";950;2190;2087;;3;0;3;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"270";"Redőny Shop, Bp.";950;2190;839;;3;0;3;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"270";"Redőny Shop, Bp.";950;2190;775;;3;0;3;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;950;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;975;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;857;;1;0;1;"RAL 9010";NP-CZ-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;2087;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;869;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"271";"Redőny Shop, Bp.";980;2190;805;;1;0;1;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"263";"T-Delux";2580;1720;2575;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-11;NP;BOW;meghajtas=kurblis;SM
+"263";"T-Delux";2580;1720;2575;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-11;NP;BOW;meghajtas=kurblis;SM
+"263";"T-Delux";2580;1720;2540;;1;0;1;"RAL 9010";NP-SZ-9010;Width;false;2026-09-11;NP;BOW;meghajtas=kurblis;SM
+"263";"T-Delux";2580;1720;2525;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-11;NP;BOW;meghajtas=kurblis;SM
+"263";"T-Delux";2580;1720;2495;;1;0;1;"RAL 9010";NP-BAR12-4000;Width;false;2026-09-11;NP;BOW;meghajtas=kurblis;SM
+"266";"Fény-Őr, Bp.";2385;1490;2355;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM
+"266";"Fény-Őr, Bp.";2385;1490;2380;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM
+"266";"Fény-Őr, Bp.";2385;1490;2262;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM
+"266";"Fény-Őr, Bp.";2385;1490;1387;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM
+"266";"Fény-Őr, Bp.";2385;1490;2274;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM
+"266";"Fény-Őr, Bp.";2385;1490;2210;;1;1;0;"RAL 9010";NP-BAR22-3000;Width;false;2026-09-10;NP;CIP;meghajtas=motoros;SM

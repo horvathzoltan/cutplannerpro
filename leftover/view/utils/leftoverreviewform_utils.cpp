@@ -118,6 +118,9 @@ void formatReviewFormPdf(QPainter& painter,
         const MaterialMaster* mat = e.master();
         QString matName = mat ? mat->toDisplay() : QStringLiteral("(ismeretlen anyag)");
 
+//        if(matName.length()>33)
+//            matName = matName.left(33)+"…";
+
         const auto* storage = StorageRegistry::instance().findById(e.storageId);
         QString storageName = storage ? storage->name : QStringLiteral("—");
 
@@ -126,11 +129,11 @@ void formatReviewFormPdf(QPainter& painter,
         QString line3 = matName;
         QString line4 = QStringLiteral("Tároló: %1").arg(storageName);
 
-        QStringList lines = { line1, line2, line3, line4 };
+        QList<QString*> lines = { &line1, &line2, &line3, &line4 };
 
-        for (QString& s : lines) {
-            if (s.length() > 30)
-                s = s.left(30) + "…";
+        for (auto* s : lines) {
+            if (s->length() > 30)
+                *s = s->left(30) + "…";
         }
 
         //4 sor szöveg → összmagasság:

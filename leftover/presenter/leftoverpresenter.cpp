@@ -296,22 +296,52 @@ void LeftoverPresenter::ExportReviewFormPdf()
         LeftoverAudit::collectExpired(daysThreshold);
 
     if (list.isEmpty()) {
+        zEvent("ℹ️ Nincsenek leftoverek.");
+        return;
+    }
+
+    QVector<LeftoverStockEntry> list_filtered=filter(list);
+
+    if (list_filtered.isEmpty()) {
         zEvent("ℹ️ Nincs olyan leftover, amely szemlére vár.");
         return;
     }
 
-    // 2) Random kiválasztunk max 10 darabot
-    const int rowsPerPage = 10;
-
-    if (list.size() > rowsPerPage) {
-        std::shuffle(list.begin(), list.end(), *QRandomGenerator::global());
-        list = list.mid(0, rowsPerPage);
-    }
+    QVector<LeftoverStockEntry> list_shuffled = shuffle(list_filtered, 10);
 
     // 3) Egységes PDF export
-    exportAuditPdf(list, "leftover_expired");
+    exportAuditPdf(list_shuffled, "leftover_expired");
 }
 
+QVector<LeftoverStockEntry> LeftoverPresenter::shuffle(QVector<LeftoverStockEntry>& list,
+                                                       int rowsPerPage)
+{
+    if (list.size() <= rowsPerPage)
+        return list;
+
+    std::shuffle(list.begin(), list.end(), *QRandomGenerator::global());
+    return list.mid(0, rowsPerPage);
+}
+
+QVector<LeftoverStockEntry> LeftoverPresenter::filter(const QVector<LeftoverStockEntry>& list)
+{
+    QVector<LeftoverStockEntry> list_filtered;
+        const QDateTime now = QDateTime::currentDateTime();
+
+    for(auto&a:list){
+        if(a.materialType().value == MaterialType::Type::Steel)
+            continue;
+        if(!a.materialBarcode().startsWith("NP-"))
+            continue;
+
+        // csak az 1 óránál régebben látottak
+       if (a.lastSeenAt.secsTo(now) < 3600)
+           continue;
+
+        list_filtered<<a;
+    }
+    return list_filtered;
+}
 
 void LeftoverPresenter::ExportStorageAuditPdf(
     const QUuid& storageId,

@@ -1,3 +1,15 @@
+material címkék:
+ - tudni kéne mik lettek kinyomtatva, és checkbox, csak az újakat
+ - tematikusan kéne csoportosítani, és checkbox melyik csoportot kéri + jelölni van-e változás
+ - termék típus, altípusonként kellene csoportosítani
+
+material kereső:
+ - keresőszavas keresés nem jó nem talál meg semmit
+ - a bundle miatt - és a bom miatt csak a vágási bundlet találja meg
+   itt az kellene, hogy azokat a bundlekat is meg kéne találni amiben a
+   bundle anyaga megvan - tehát "köze van az anyagnak a termékhez"
+ - a material familyt is bele kell venni a keresőbe
+ - a combóban is tematikusan jöhetne fel az anyag
 
 audit:
  - ha a záró mérete keveredik be a lábhoz, nem vesszük észre, mert nem ellenőrízzük a láb hosszát
@@ -9,7 +21,12 @@ toldás:
 
 stock:
   - a fűzéshez margót kell hagyni bal szélen
-  - borítólap a jegyzékhez
+  - nem minden esetben rakja a dialogba a treeben megtalált storaget
+
+stock fogyóban:
+ - nem szálra nézi az anyagot és ami bunleban van felvéve + 1-2 szál bontott, itt a bontottat felhozza fogyóban lévő készletnek
+ - anyagra aggregálva kell nézni a fogytán levő készletet, nem stockonként mert több helyen lehet kevés ami összességében már elegendő lenne
+
 
 teszteléshez egy láb kell,
    - ha több azonos méret van egy tételhez
