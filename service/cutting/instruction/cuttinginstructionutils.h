@@ -423,20 +423,20 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         QString capStr;
 
         if (!isRepeated) {
-            sepAfterSize   = "   ";
-            sepLineConnector = "   ";
+            sepAfterSize   = " ";
+            sepLineConnector = " ";
             capStr         = "";
         } else if (firstOfBlock) {
-            sepAfterSize   = " ╖ ";
-            sepLineConnector = " ║ ";
+            sepAfterSize   = "╖";
+            sepLineConnector = "║";
             capStr         = "╖";
         } else if (repeatCount == count) {
-            sepAfterSize   = " ╜ ";
-            sepLineConnector = " ║ ";
+            sepAfterSize   = "╜";
+            sepLineConnector = "║";
             capStr         = "╜";
         } else {
-            sepAfterSize   = " ║ ";
-            sepLineConnector = " ║ ";
+            sepAfterSize   = "║";
+            sepLineConnector = "║";
             capStr         = "║";
         }
 
@@ -460,9 +460,13 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         }
 
         auto req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+        // if(req == nullptr){
+        //     zInfo("req is null");
+        // }
+
         QString pieceLabel = req
                                  ? QString("%1. %2").arg(ci.externalReference).arg(req->ownerName)
-                                 : QString("req:%1").arg(ci.requestId.toString(QUuid::WithoutBraces));
+                                 : rodIdOrBarcode;
 
         // PATCH 13/B — szerepkör megjelenítése
         if (ci.toldasRole == ToldasRole::Main || ci.toldasRole == ToldasRole::Toldat) {

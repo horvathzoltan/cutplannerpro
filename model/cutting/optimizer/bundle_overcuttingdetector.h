@@ -184,15 +184,31 @@ public:
                             req.materialId = compMatId;
                         }
 
+                        // if (originalReq)
+                        // {
+                        //     // 2️⃣ teljes klónozás
+                        //     req = *originalReq;
+
+                        //     // 🔧 MINDIG ÚJ requestId a pótló requesthez
+                        //     req.requestId = QUuid::createUuid();
+                        //     req.materialId = compMatId;
+                        // }
+                        // else
+                        // {
+                        //     // fallback skeleton
+                        //     req.requestId = QUuid::createUuid();
+                        //     req.materialId = compMatId;
+                        // }
+
                         // 3️⃣ bundle‑komponens specifikus mezők átírása
                         req.requiredLength = pieceLen;
                         req.quantity = comp.count;
 
                         // 4️⃣ extRef öröklése + bundle‑jelölés
-                        req.externalReference =
-                            originalReq && !originalReq->externalReference.isEmpty()
-                                ? originalReq->externalReference
-                                : QString("AUTO-BUNDLE-OVER-%1").arg(bundleCode);
+                        req.externalReference = piece.info.externalReference;
+                            // originalReq && !originalReq->externalReference.isEmpty()
+                            //     ? originalReq->externalReference
+                            //     : QString("AUTO-BUNDLE-OVER-%1").arg(bundleCode);
 
                         // 5️⃣ hozzáadás
                         result.newRequests.append(req);
@@ -265,7 +281,6 @@ public:
     //     return nullptr;
     // }
 
-
     static QVector<Cutting::Plan::Request>
     postProcessBundleOvercuts(const OvercutResult& result)
     {
@@ -275,197 +290,397 @@ public:
 
         QVector<Cutting::Plan::Request> out;
 
-        // 1️⃣ Szál‑szintű igény összegyűjtése (materialId → totalQuantity)
-        QMap<QUuid,int> strandNeed;
+        // --- 0. Csoportosítás extRef szerint ---
+        QMap<QString, QVector<Cutting::Plan::Request>> groups;
         for (const auto& r : result.newRequests)
-            strandNeed[r.materialId] += r.quantity;
+            groups[r.externalReference].append(r);
 
-        // 2️⃣ Bundle definíciók lekérése
+        // --- 1. Bundle definíciók ---
         QList<BundleDefinition> allBundles =
             BundleRegistry::instance().readAll();
 
-        // 3️⃣ Bundle‑építés szál‑szinten
-        QMap<QUuid,int> remaining = strandNeed;
-
-        // 3/A ⭐ Komponens‑bundle felismerés (pl. NP‑CLB × 2 → NP‑CLB2 → BT‑CLB2)
-        for (const auto& bd : allBundles)
+        // --- 2. Minden extRef‑csoportot külön dolgozunk fel ---
+        for (auto it = groups.begin(); it != groups.end(); ++it)
         {
-            // csak 1 komponensből álló bundle
-            if (bd.components.size() != 1)
-                continue;
+            const QString extRef = it.key();
+            const auto& reqs     = it.value();
 
-            const auto& comp = bd.components.first();
+            // strandNeed csak erre az extRef‑re
+            QMap<QUuid,int> remaining;
+            for (const auto& r : reqs)
+                remaining[r.materialId] += r.quantity;
 
-            QUuid compMatId = comp.materialId;
-            int compCount   = comp.count;
-
-            if (!remaining.contains(compMatId))
-                continue;
-
-            int have = remaining[compMatId];
-            if (have < compCount)
-                continue;
-
-            // ⭐ Építhető komponens‑bundle
-            int buildCount = have / compCount;
-
-            for (int i = 0; i < buildCount; ++i)
+            // --- 3/A Komponens‑bundle ---
+            for (const auto& bd : allBundles)
             {
-                // 1️⃣ keresünk egy eredeti requestet mintának
+                if (bd.components.size() != 1)
+                    continue;
+
+                const auto& comp = bd.components.first();
+                QUuid compMatId  = comp.materialId;
+                int compCount    = comp.count;
+
+                if (!remaining.contains(compMatId))
+                    continue;
+
+                int have = remaining[compMatId];
+                if (have < compCount)
+                    continue;
+
+                int buildCount = have / compCount;
+
+                // mintának az extRef‑hez tartozó eredeti request
                 const Cutting::Plan::Request* base = nullptr;
-                for (const auto& r : result.newRequests)
+                for (const auto& r : reqs)
                     if (r.materialId == compMatId)
                     { base = &r; break; }
 
                 if (!base)
                     continue;
 
-                // 2️⃣ klónozzuk az eredeti pótló requestet
-                Cutting::Plan::Request req = *base;
-
-                // 3️⃣ új requestId
-                //req.requestId = QUuid::createUuid();
-
-                // 4️⃣ bundle anyag lekérése
                 const MaterialMaster* bundleMat =
                     MaterialRegistry::instance().findByBundleCode(bd.code);
 
-                if (!bundleMat) {
-                    zWarning(QString("⚠️ Bundle material not found for code %1").arg(bd.code));
+                if (!bundleMat)
                     continue;
+
+                for (int i = 0; i < buildCount; ++i)
+                {
+                    Cutting::Plan::Request req = *base;
+
+                    // --- FIX: eredeti requestId megtartása ---
+                    // req.requestId = QUuid::createUuid();   // törölve
+
+                    req.materialId = bundleMat->id;
+                    req.quantity   = 1;
+
+                    // --- FIX: extRef nem módosul ---
+                    req.externalReference = extRef;
+
+                    out.append(req);
                 }
 
-                // 5️⃣ anyag átírása → NP‑CLB2
-                req.materialId = bundleMat->id;
-
-                // 6️⃣ mennyiség átírása → 1 szál
-                req.quantity = 1;
-
-                // 7️⃣ extRef öröklése + bundle jelölés
-                req.externalReference =
-                    base->externalReference.isEmpty()
-                        ? QString("AUTO-COMPONENT-BUNDLE-%1").arg(bd.code)
-                        : base->externalReference;
-
-                // 8️⃣ hozzáadás
-                out.append(req);
+                remaining[compMatId] -= buildCount * compCount;
             }
 
-
-            remaining[compMatId] -= buildCount * compCount;
-        }
-
-        // 3/B ⭐ Teljes bundle felismerés (pl. NP‑CL2+CLT2+CLB2)
-        for (const auto& bd : allBundles)
-        {
-            if (bd.components.size() <= 1)
-                continue;
-
-            bool ok = true;
-            int buildCount = INT_MAX;
-
-            for (const auto& comp : bd.components)
+            // --- 3/B Teljes bundle ---
+            for (const auto& bd : allBundles)
             {
-                if (!remaining.contains(comp.materialId))
+                if (bd.components.size() <= 1)
+                    continue;
+
+                bool ok = true;
+                int buildCount = INT_MAX;
+
+                for (const auto& comp : bd.components)
                 {
-                    ok = false;
-                    break;
+                    if (!remaining.contains(comp.materialId))
+                    { ok = false; break; }
+
+                    int have = remaining[comp.materialId];
+                    int possible = have / comp.count;
+
+                    if (possible == 0)
+                    { ok = false; break; }
+
+                    buildCount = std::min(buildCount, possible);
                 }
 
-                int have = remaining[comp.materialId];
-                int possible = have / comp.count;
+                if (!ok || buildCount <= 0)
+                    continue;
 
-                if (possible == 0)
-                {
-                    ok = false;
-                    break;
-                }
-
-                buildCount = std::min(buildCount, possible);
-            }
-
-            if (!ok || buildCount <= 0)
-                continue;
-
-            // ⭐ Építhető teljes bundle
-            for (int i = 0; i < buildCount; ++i)
-            {
-                // 1️⃣ keresünk mintának egy eredeti requestet
                 const Cutting::Plan::Request* base = nullptr;
-                for (const auto& r : result.newRequests)
+                for (const auto& r : reqs)
                     if (r.materialId == bd.components.first().materialId)
                     { base = &r; break; }
 
                 if (!base)
                     continue;
 
-                // 2️⃣ klónozzuk az eredeti requestet
-                Cutting::Plan::Request req = *base;
-
-                // 3️⃣ új requestId
-                //req.requestId = QUuid::createUuid();
-
-                // 4️⃣ bundle anyag lekérése
                 const MaterialMaster* bundleMat =
                     MaterialRegistry::instance().findByBundleCode(bd.code);
 
-                if (!bundleMat) {
-                    zWarning(QString("⚠️ Bundle material not found for code %1").arg(bd.code));
+                if (!bundleMat)
                     continue;
+
+                for (int i = 0; i < buildCount; ++i)
+                {
+                    Cutting::Plan::Request req = *base;
+
+                    // --- FIX: eredeti requestId megtartása ---
+                    // req.requestId = QUuid::createUuid();   // törölve
+
+                    req.materialId = bundleMat->id;
+                    req.quantity   = 1;
+
+                    // --- FIX: extRef nem módosul ---
+                    req.externalReference = extRef;
+
+                    out.append(req);
                 }
 
-                // 5️⃣ anyag átírása → teljes bundle anyag
-                req.materialId = bundleMat->id;
-
-                // 6️⃣ mennyiség átírása → 1 szál
-                req.quantity = 1;
-
-                // 7️⃣ extRef öröklése + bundle jelölés
-                req.externalReference =
-                    base->externalReference.isEmpty()
-                        ? QString("AUTO-FULL-BUNDLE-%1").arg(bd.code)
-                        : base->externalReference;
-
-                // 8️⃣ hozzáadás
-                out.append(req);
+                for (const auto& comp : bd.components)
+                    remaining[comp.materialId] -= buildCount * comp.count;
             }
 
+            // --- 4. Maradék szálak ---
+            for (auto rit = remaining.begin(); rit != remaining.end(); ++rit)
+            {
+                QUuid matId = rit.key();
+                int qty     = rit.value();
 
-            // komponensek levonása
-            for (const auto& comp : bd.components)
-                remaining[comp.materialId] -= buildCount * comp.count;
-        }
+                if (qty <= 0)
+                    continue;
 
-        // 4️⃣ Maradék szálak → natúr requestek
-        for (auto it = remaining.begin(); it != remaining.end(); ++it)
-        {
-            QUuid matId = it.key();
-            int qty = it.value();
+                const Cutting::Plan::Request* base = nullptr;
+                for (const auto& r : reqs)
+                    if (r.materialId == matId)
+                    { base = &r; break; }
 
-            if (qty <= 0)
-                continue;
+                Cutting::Plan::Request req;
 
-            Cutting::Plan::Request req;
+                if (base)
+                    req = *base;
 
-            // keresünk mintának egy eredeti requestet
-            const Cutting::Plan::Request* base = nullptr;
-            for (const auto& r : result.newRequests)
-                if (r.materialId == matId)
-                { base = &r; break; }
+                // --- FIX: eredeti requestId megtartása ---
+                // req.requestId = QUuid::createUuid();   // törölve
 
-            if (base)
-                req = *base;
+                req.materialId = matId;
+                req.quantity   = qty;
+                req.externalReference = extRef;
 
-            //req.requestId = QUuid::createUuid();
-            req.materialId = matId;
-            req.quantity = qty;
-            req.externalReference = "AUTO-RAW-STRAND";
-
-            out.append(req);
+                out.append(req);
+            }
         }
 
         return out;
     }
+
+
+    // static QVector<Cutting::Plan::Request>
+    // postProcessBundleOvercuts(const OvercutResult& result)
+    // {
+    //     // Ha nincs túlvágás → eredeti requestek mennek tovább
+    //     if (!result.hasOvercuts)
+    //         return result.newRequests;
+
+    //     QVector<Cutting::Plan::Request> out;
+
+    //     // 1️⃣ Szál‑szintű igény összegyűjtése (materialId → totalQuantity)
+    //     QMap<QUuid,int> strandNeed;
+    //     for (const auto& r : result.newRequests)
+    //         strandNeed[r.materialId] += r.quantity;
+
+    //     // 2️⃣ Bundle definíciók lekérése
+    //     QList<BundleDefinition> allBundles =
+    //         BundleRegistry::instance().readAll();
+
+    //     // 3️⃣ Bundle‑építés szál‑szinten
+    //     QMap<QUuid,int> remaining = strandNeed;
+
+    //     // 3/A ⭐ Komponens‑bundle felismerés (pl. NP‑CLB × 2 → NP‑CLB2 → BT‑CLB2)
+    //     for (const auto& bd : allBundles)
+    //     {
+    //         // csak 1 komponensből álló bundle
+    //         if (bd.components.size() != 1)
+    //             continue;
+
+    //         const auto& comp = bd.components.first();
+
+    //         QUuid compMatId = comp.materialId;
+    //         int compCount   = comp.count;
+
+    //         if (!remaining.contains(compMatId))
+    //             continue;
+
+    //         int have = remaining[compMatId];
+    //         if (have < compCount)
+    //             continue;
+
+    //         // ⭐ Építhető komponens‑bundle
+    //         int buildCount = have / compCount;
+
+    //         for (int i = 0; i < buildCount; ++i)
+    //         {
+    //             // 1️⃣ keresünk egy eredeti requestet mintának
+    //             const Cutting::Plan::Request* base = nullptr;
+    //             for (const auto& r : result.newRequests)
+    //                 if (r.materialId == compMatId)
+    //                 { base = &r; break; }
+
+    //             if (!base)
+    //                 continue;
+
+    //             // 2️⃣ klónozzuk az eredeti pótló requestet
+    //             Cutting::Plan::Request req = *base;
+
+    //             // 3️⃣ új requestId
+    //             req.requestId = QUuid::createUuid();
+
+    //             // 4️⃣ bundle anyag lekérése
+    //             const MaterialMaster* bundleMat =
+    //                 MaterialRegistry::instance().findByBundleCode(bd.code);
+
+    //             if (!bundleMat) {
+    //                 zWarning(QString("⚠️ Bundle material not found for code %1").arg(bd.code));
+    //                 continue;
+    //             }
+
+    //             // 5️⃣ anyag átírása → NP‑CLB2
+    //             req.materialId = bundleMat->id;
+
+    //             // 6️⃣ mennyiség átírása → 1 szál
+    //             req.quantity = 1;
+
+    //             // 7️⃣ extRef öröklése + bundle jelölés
+    //             // req.externalReference =
+    //             //     base->externalReference.isEmpty()
+    //             //         ? QString("AUTO-COMPONENT-BUNDLE-%1").arg(bd.code)
+    //             //         : base->externalReference;
+
+    //             // extRef öröklése + bundle tag hozzáfűzése
+    //             if (base->externalReference.isEmpty()) {
+    //                 req.externalReference = QString("AUTO-%1-BUNDLE-%2")
+    //                 .arg(bd.components.size() == 1 ? "COMPONENT" : "FULL")
+    //                     .arg(bd.code);
+    //             } else {
+    //                 req.externalReference = base->externalReference +
+    //                                         QString("|AUTO-%1-BUNDLE-%2")
+    //                                             .arg(bd.components.size() == 1 ? "COMPONENT" : "FULL")
+    //                                             .arg(bd.code);
+    //             }
+
+    //             // 8️⃣ hozzáadás
+    //             out.append(req);
+    //         }
+
+
+    //         remaining[compMatId] -= buildCount * compCount;
+    //     }
+
+    //     // 3/B ⭐ Teljes bundle felismerés (pl. NP‑CL2+CLT2+CLB2)
+    //     for (const auto& bd : allBundles)
+    //     {
+    //         if (bd.components.size() <= 1)
+    //             continue;
+
+    //         bool ok = true;
+    //         int buildCount = INT_MAX;
+
+    //         for (const auto& comp : bd.components)
+    //         {
+    //             if (!remaining.contains(comp.materialId))
+    //             {
+    //                 ok = false;
+    //                 break;
+    //             }
+
+    //             int have = remaining[comp.materialId];
+    //             int possible = have / comp.count;
+
+    //             if (possible == 0)
+    //             {
+    //                 ok = false;
+    //                 break;
+    //             }
+
+    //             buildCount = std::min(buildCount, possible);
+    //         }
+
+    //         if (!ok || buildCount <= 0)
+    //             continue;
+
+    //         // ⭐ Építhető teljes bundle
+    //         for (int i = 0; i < buildCount; ++i)
+    //         {
+    //             // 1️⃣ keresünk mintának egy eredeti requestet
+    //             const Cutting::Plan::Request* base = nullptr;
+    //             for (const auto& r : result.newRequests)
+    //                 if (r.materialId == bd.components.first().materialId)
+    //                 { base = &r; break; }
+
+    //             if (!base)
+    //                 continue;
+
+    //             // 2️⃣ klónozzuk az eredeti requestet
+    //             Cutting::Plan::Request req = *base;
+
+    //             // 3️⃣ új requestId
+    //             req.requestId = QUuid::createUuid();
+
+    //             // 4️⃣ bundle anyag lekérése
+    //             const MaterialMaster* bundleMat =
+    //                 MaterialRegistry::instance().findByBundleCode(bd.code);
+
+    //             if (!bundleMat) {
+    //                 zWarning(QString("⚠️ Bundle material not found for code %1").arg(bd.code));
+    //                 continue;
+    //             }
+
+    //             // 5️⃣ anyag átírása → teljes bundle anyag
+    //             req.materialId = bundleMat->id;
+
+    //             // 6️⃣ mennyiség átírása → 1 szál
+    //             req.quantity = 1;
+
+    //             // 7️⃣ extRef öröklése + bundle jelölés
+    //             // req.externalReference =
+    //             //     base->externalReference.isEmpty()
+    //             //         ? QString("AUTO-FULL-BUNDLE-%1").arg(bd.code)
+    //             //         : base->externalReference;
+
+    //             // extRef öröklése + bundle tag hozzáfűzése
+    //             if (base->externalReference.isEmpty()) {
+    //                 req.externalReference = QString("AUTO-%1-BUNDLE-%2")
+    //                 .arg(bd.components.size() == 1 ? "COMPONENT" : "FULL")
+    //                     .arg(bd.code);
+    //             } else {
+    //                 req.externalReference = base->externalReference +
+    //                                         QString("|AUTO-%1-BUNDLE-%2")
+    //                                             .arg(bd.components.size() == 1 ? "COMPONENT" : "FULL")
+    //                                             .arg(bd.code);
+    //             }
+
+    //             // 8️⃣ hozzáadás
+    //             out.append(req);
+    //         }
+
+
+    //         // komponensek levonása
+    //         for (const auto& comp : bd.components)
+    //             remaining[comp.materialId] -= buildCount * comp.count;
+    //     }
+
+    //     // 4️⃣ Maradék szálak → natúr requestek
+    //     for (auto it = remaining.begin(); it != remaining.end(); ++it)
+    //     {
+    //         QUuid matId = it.key();
+    //         int qty = it.value();
+
+    //         if (qty <= 0)
+    //             continue;
+
+    //         Cutting::Plan::Request req;
+
+    //         // keresünk mintának egy eredeti requestet
+    //         const Cutting::Plan::Request* base = nullptr;
+    //         for (const auto& r : result.newRequests)
+    //             if (r.materialId == matId)
+    //             { base = &r; break; }
+
+    //         if (base)
+    //             req = *base;
+
+    //         req.requestId = QUuid::createUuid();
+    //         req.materialId = matId;
+    //         req.quantity = qty;
+    //         req.externalReference = "AUTO-RAW-STRAND";
+
+    //         out.append(req);
+    //     }
+
+    //     return out;
+    // }
 
     // static QVector<Cutting::Plan::Request>
     // postProcessBundleOvercuts(const OvercutResult& result)

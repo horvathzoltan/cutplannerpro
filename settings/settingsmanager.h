@@ -142,7 +142,7 @@ public:
     void setPrioSortMode(SortMode mode);
 
 
-    static constexpr int printedLineWidth = 75;
+    static constexpr int printedLineWidth = 80;
     static constexpr int printedPageHeight = 60;
 
     void save();

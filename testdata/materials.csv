@@ -34,7 +34,7 @@ CipzárosLáb;NP-CL;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1
 Lábtakaró;NP-CLT;7000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;simple;
 SinesLáb;NP-SL;6000;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;simple;
 CipzárosLábbetét;NP-CLB;6000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab;simple;
-CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Lab;simple;
+#CipzárosLábbetétR;NP-CLBR;5000;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;;;Lab;simple;
 Bowden;NP-B-50;50000;;;Custom;CM2;Steel;;SM;Piece;None;0;0;0;0;0;;;Bowden;simple;
 NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45S-10/26;;Motor;simple;
 NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45R-20;;Motor;simple;
