@@ -50,7 +50,7 @@ SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;10
 FelsőSín;SR-FSN;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;Unknown;simple;
 SávrolóZáró;SR-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;simple;
 SávrolóPálca;SP-6000;6000;14;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Palca;simple;
-MiniTok;MT;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Unknown;simple;
+MiniTok;MT-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Tok;simple;
 MinitokosZáró;MT-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;simple;
 MinitokosPálca;MT-P;6000;8;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Palca;simple;
 MinitokosLáb;MT-L;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Lab;simple;

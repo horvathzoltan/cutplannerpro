@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"2278";"Kovács M.";720;1600;685;;1;0;1;"";TE-R-23;Width;false;2026-09-10;ROL;ALAP;;Unknown
+"2278";"Kovács M.";720;1600;675;;1;0;1;"";ROL-P;Width;false;2026-09-10;ROL;ALAP;;Unknown
+"2281";"Unimont, Szeged";2000;1600;1970;;1;0;0;"";TE-R-23;Width;false;2026-09-09;ROL;RUG;;SM
+"2281";"Unimont, Szeged";2000;1600;1973;;1;0;0;"";ROL-P;Width;false;2026-09-09;ROL;RUG;;SM
+"2292";"Berecz László";1060;1700;1025;;1;0;1;"";TE-R-23;Width;false;2026-09-17;ROL;ALAP;;SM
+"2292";"Berecz László";1060;1700;1015;;1;0;1;"";ROL-P;Width;false;2026-09-17;ROL;ALAP;;SM

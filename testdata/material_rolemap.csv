@@ -27,14 +27,19 @@ NP;BOW;Tengely;NP-ROLL70*
 NP;BOW;Tengely;NP-ROLL78*
 NP;BOW;Suly;NP-BAR12*
 
-ROL;ALAP;Tengely;TE*
+ROL;ALAP;Tengely;TE-R-23*
 ROL;ALAP;Palca;ROL-P*
 
-ROL;RUG;Tengely;TE*
+ROL;RUG;Tengely;TE-R-23*
 ROL;RUG;Palca;ROL-P*
 
-ROL;TET;Tengely;TE*
+ROL;TET;Tengely;TE-R-23*
 ROL;TET;Palca;ROL-P*
+
+ROL;TSIN;Tok;MT-T*
+ROL;TSIN;Tengely;TE-H-18*
+ROL;TSIN;Zaro;MT-Z*
+ROL;TSIN;Lab;MT-L*
 
 SR;T;Tok;SR-T*
 SR;T;Zaro;SR-Z*
@@ -46,8 +51,8 @@ SR;TN;Zaro;SR-Z*
 SR;TN;Palca;SP*
 SR;TN;Tengely;TE*
 
-SR;MINIT;Tok;MT*
+SR;MINIT;Tok;MT-T*
+SR;MINIT;Tengely;TE-H-18*
 SR;MINIT;Zaro;MT-Z*
 SR;MINIT;Palca;MT-P*
 SR;MINIT;Lab;MT-L*
-SR;MINIT;Tengely;TE*

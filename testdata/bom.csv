@@ -29,6 +29,11 @@ ROL;RUG;Palca;1
 ROL;TET;Tengely;1
 ROL;TET;Palca;1
 
+ROL;TSIN;Tok;1
+ROL;TSIN;Tengely;1
+ROL;TSIN;Zaro;1
+ROL;TSIN;Lab;2
+
 SR;T;Tok;1
 SR;T;Tengely;1
 SR;T;Zaro;1

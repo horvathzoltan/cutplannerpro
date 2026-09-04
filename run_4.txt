@@ -1,3 +1,7 @@
+CutPlan: cuttingplan_20260903-134153:
+ - lábbetét túlvágás nincs detektálva
+ - két lábbetét van, az egyik nem jó méret
+
 material címkék:
  - tudni kéne mik lettek kinyomtatva, és checkbox, csak az újakat
  - tematikusan kéne csoportosítani, és checkbox melyik csoportot kéri + jelölni van-e változás

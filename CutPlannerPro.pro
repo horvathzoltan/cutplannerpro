@@ -494,6 +494,9 @@ DISTFILES += \
     run_3.txt \
     run_4.txt \
     run_5.txt \
+    run_5b.txt \
+    run_5c.txt \
+    run_5d.txt \
     run_6.txt \
     run_7.txt \
     run_Refaktor_terv_fokuszpontok \

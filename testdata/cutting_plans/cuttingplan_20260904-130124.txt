@@ -1,0 +1,28 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"2295";"Rellux Ajka, győr";81;125;815;;1;0;1;"";TE-H-18;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2295";"Rellux Ajka, győr";81;125;805;;1;0;1;"";MT-Z;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2295";"Rellux Ajka, győr";81;125;1250;;1;0;1;"";MT-L;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2295";"Rellux Ajka, győr";81;125;820;;1;0;1;"";MT-T;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2296";"Rellux Ajka, Győr";810;1250;820;;1;0;1;"";MT-T;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2296";"Rellux Ajka, Győr";810;1250;815;;1;0;1;"";TE-H-18;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2296";"Rellux Ajka, Győr";810;1250;805;;1;0;1;"";MT-Z;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"2296";"Rellux Ajka, Győr";810;1250;1250;;1;0;1;"";MT-L;Width;false;2026-09-14;ROL;TSIN;;Unknown
+"643";"Délroll, Szeged";700;540;710;;2;1;1;"";MT-T;Width;false;2026-09-16;ROL;TSIN;;Unknown
+"643";"Délroll, Szeged";700;540;705;;2;1;1;"";TE-H-18;Width;false;2026-09-16;ROL;TSIN;;Unknown
+"643";"Délroll, Szeged";700;540;693;;2;1;1;"";MT-Z;Width;false;2026-09-16;ROL;TSIN;;Unknown
+"643";"Délroll, Szeged";700;540;540;;2;1;1;"";MT-L;Width;false;2026-09-16;ROL;TSIN;;Unknown
+"623";"SzabóÁrnyékolástechnika";1250;320;1260;;1;1;0;"";MT-T;Width;false;2026-09-11;SR;MINIT;;SM
+"623";"SzabóÁrnyékolástechnika";1250;320;1255;;1;1;0;"";TE-H-18;Width;false;2026-09-11;SR;MINIT;;SM
+"623";"SzabóÁrnyékolástechnika";1250;320;1243;;1;1;0;"";MT-Z;Width;false;2026-09-11;SR;MINIT;;SM
+"623";"SzabóÁrnyékolástechnika";1250;320;1243;;1;1;0;"";MT-P;Width;false;2026-09-11;SR;MINIT;;SM
+"623";"SzabóÁrnyékolástechnika";1250;320;320;;1;1;0;"";MT-L;Width;false;2026-09-11;SR;MINIT;;SM
+"626";"T-Deluxe, Tóth Ferenc";850;840;860;;1;1;0;"";MT-T;Width;false;2026-09-11;SR;MINIT;;SM
+"626";"T-Deluxe, Tóth Ferenc";850;840;855;;1;1;0;"";TE-H-18;Width;false;2026-09-11;SR;MINIT;;SM
+"626";"T-Deluxe, Tóth Ferenc";850;840;843;;1;1;0;"";MT-Z;Width;false;2026-09-11;SR;MINIT;;SM
+"626";"T-Deluxe, Tóth Ferenc";850;840;843;;1;1;0;"";MT-P;Width;false;2026-09-11;SR;MINIT;;SM
+"626";"T-Deluxe, Tóth Ferenc";850;840;840;;1;1;0;"";MT-L;Width;false;2026-09-11;SR;MINIT;;SM
+"627";"T-Deluxe, Tóth Ferenc";1130;1150;1140;;1;1;0;"";MT-T;Width;false;2026-09-11;SR;MINIT;;SM
+"627";"T-Deluxe, Tóth Ferenc";1130;1150;1135;;1;1;0;"";TE-H-18;Width;false;2026-09-11;SR;MINIT;;SM
+"627";"T-Deluxe, Tóth Ferenc";1130;1150;1123;;1;1;0;"";MT-Z;Width;false;2026-09-11;SR;MINIT;;SM
+"627";"T-Deluxe, Tóth Ferenc";1130;1150;1123;;1;1;0;"";MT-P;Width;false;2026-09-11;SR;MINIT;;SM
+"627";"T-Deluxe, Tóth Ferenc";1130;1150;1150;;1;1;0;"";MT-L;Width;false;2026-09-11;SR;MINIT;;SM
