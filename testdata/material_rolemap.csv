@@ -3,9 +3,6 @@ NP;CIP;Tok;NP-T*
 NP;CIP;TokFed;NP-TF*
 NP;CIP;Zaro;NP-CZ*
 NP;CIP;Lab;NP-CL2+CLT2+CLB2*
-# NP;CIP;Lab;NP-CL*
-# NP;CIP;Lab;NP-CLB*
-# NP;CIP;Lab;NP-CLT*
 NP;CIP;Tengely;NP-ROLL70*
 NP;CIP;Tengely;NP-ROLL78*
 NP;CIP;Suly;NP-BAR22*
@@ -14,7 +11,6 @@ NP;SIN;Tok;NP-T*
 NP;SIN;TokFed;NP-TF*
 NP;SIN;Zaro;NP-SZ*
 NP;SIN;Lab;NP-SL2*
-# NP;SIN;Lab;NP-SL*
 NP;SIN;Tengely;NP-ROLL70*
 NP;SIN;Tengely;NP-ROLL78*
 NP;SIN;Suly;NP-BAR12*
@@ -39,20 +35,17 @@ ROL;TET;Palca;ROL-P*
 ROL;TSIN;Tok;MT-T*
 ROL;TSIN;Tengely;TE-H-18*
 ROL;TSIN;Zaro;MT-Z*
-ROL;TSIN;Lab;MT-L*
+ROL;TSIN;Lab;MT-L2*
 
 SR;T;Tok;SR-T*
-SR;T;Zaro;SR-Z*
-SR;T;Palca;SR-P*
+SR;T;Zaro;SR-Z+P*
 SR;T;Tengely;TE-H-32*
 
 SR;TN;FelsoSin;SR-FSN*
-SR;TN;Zaro;SR-Z*
-SR;TN;Palca;SR-P*
+SR;TN;Zaro;SR-Z+P*
 SR;TN;Tengely;TE-H-32*
 
 SR;MINIT;Tok;MT-T*
 SR;MINIT;Tengely;TE-H-18*
-SR;MINIT;Zaro;MT-Z*
-SR;MINIT;Palca;MT-P*
-SR;MINIT;Lab;MT-L*
+SR;MINIT;Zaro;MT-Z+P*
+SR;MINIT;Lab;MT-L2*

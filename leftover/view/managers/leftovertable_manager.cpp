@@ -376,6 +376,7 @@ void LeftoverTableManager::openScrapDialog()
             continue;
         }
 
+        //QString trimmedCode = GetBarcodeAlias(code.trimmed());
 
         // 1) Registry keresés
         auto entryOpt = LeftoverStockRegistry::instance().findByBarcode(code.trimmed());

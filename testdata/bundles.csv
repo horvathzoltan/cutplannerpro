@@ -1,39 +1,52 @@
 bundleCode;bundleName
-BT-CL2;CipzárosLáb_Pár
-BT-CL2-7016;CipzárosLáb_Pár
-BT-CL2-9010;CipzárosLáb_Pár
+BNP-CL/2;CipzárosLáb_Pár
+BNP-CL/2-7016;CipzárosLáb_Pár
+BNP-CL/2-9010;CipzárosLáb_Pár
 
-BT-CLT2;Lábtakaró_Pár
-BT-CLT2-7016;Lábtakaró_Pár
-BT-CLT2-9010;Lábtakaró_Pár
+BNP-CLT/2;Lábtakaró_Pár
+BNP-CLT/2-7016;Lábtakaró_Pár
+BNP-CLT/2-9010;Lábtakaró_Pár
 
-BT-CLT4;Lábtakaró_2Pár;7000
-BT-CLT4-7016;Lábtakaró_2Pár
-BT-CLT4-9010;Lábtakaró_2Pár
+BNP-CLT/4;Lábtakaró_2Pár
+BNP-CLT/4-7016;Lábtakaró_2Pár
+BNP-CLT/4-9010;Lábtakaró_2Pár
 
-BT-SL5;SinesLáb_5db
-BT-SL5-7016;SinesLáb_5db
-BT-SL5-9010;SinesLáb_5db
+BNP-SL/5;SinesLáb_5db
+BNP-SL/5-7016;SinesLáb_5db
+BNP-SL/5-9010;SinesLáb_5db
 
-BT-CZ2;CipzárosZáró_Pár
-BT-CZ2-7016;CipzárosZáró_Pár
-BT-CZ2-9010;CipzárosZáró_Pár
+BNP-CZ/2;CipzárosZáró_Pár
+BNP-CZ/2-7016;CipzárosZáró_Pár
+BNP-CZ/2-9010;CipzárosZáró_Pár
 
-BT-CZ5;CipzárosZáró_5db
-BT-CZ5-7016;CipzárosZáró_5db
-BT-CZ5-9010;CipzárosZáró_5db
+BNP-CZ/5;CipzárosZáró_5db
+BNP-CZ/5-7016;CipzárosZáró_5db
+BNP-CZ/5-9010;CipzárosZáró_5db
 
-BT-SZ7;SinesZáró_7db
-BT-SZ7-7016;SinesZáró_7db
-BT-SZ7-9010;SinesZáró_7db
+BNP-SZ/7;SinesZáró_7db
+BNP-SZ/7-7016;SinesZáró_7db
+BNP-SZ/7-9010;SinesZáró_7db
 
-BT-T+TF;NaphálóTok+Fedél
-BT-T+TF-7016;NaphálóTok+Fedél
-BT-T+TF-9010;NaphálóTok+Fedél
+BNP-T+TF;NaphálóTok+Fedél
+BNP-T+TF-7016;NaphálóTok+Fedél
+BNP-T+TF-9010;NaphálóTok+Fedél
 
-BT-CLB2;CipzárosLábbetét_Pár
+BNP-CLB/2;CipzárosLábbetét_Pár
 
-BT-HK20;KurbliCső_20db
+BNP-HK/20;KurbliCső_20db
+
+BSR-T/84;SávrolóTok_84db
+BSR-T/4;SávrolóTok_4db
+
+BMT-Z/5;MinitokosZáró/5db
+BMT-Z/10;MinitokosZáró/10db
+
+BTE-H-18/23;Tengely Ø18 hornyos_23db
+
+BMT-T/10;MiniTok_10db
+
+BMT-P/50;MinitokosPálca/50db
+BMT-P/20;MinitokosPálca/20db
 
 CT-CL2+CLT2+CLB2;CipzárosLáb_Combo
 CT-CL2+CLT2+CLB2-7016;CipzárosLáb_Combo
@@ -42,3 +55,7 @@ CT-CL2+CLT2+CLB2-9010;CipzárosLáb_Combo
 CT-SL2;SinesLáb_Combo
 CT-SL2-7016;SinesLáb_Combo
 CT-SL2-9010;SinesLáb_Combo
+
+CMT-L2;MinitokosLáb_Combo
+CSR-Z+P;SávrolóZáró_Combo
+CMT-Z+P;MiniTokosZáró_Combo
