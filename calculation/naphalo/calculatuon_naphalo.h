@@ -9,6 +9,8 @@
 #include <QMap>
 #include <QString>
 
+// motor: SmartHome Smart 45E-10: tengely 111 helyett 109
+
 namespace Calculation{
 namespace Naphalo{
 
