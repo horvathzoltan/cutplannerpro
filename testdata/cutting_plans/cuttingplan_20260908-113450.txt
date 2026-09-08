@@ -1,0 +1,31 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"2299";"Bányai L.";960;1300;930;;1;0;0;"";TE-R-23;Width;false;2026-09-17;ROL;TET;;SM
+"2299";"Bányai L.";960;1300;933;;1;0;0;"";ROL-P;Width;false;2026-09-17;ROL;TET;;SM
+"2300";"Bányai L.";960;1300;960;;1;0;0;"";TE-R-23;Width;false;2026-09-17;ROL;TET;;SM
+"2300";"Bányai L.";960;1300;1300;;1;0;0;"";ROL-P;Width;false;2026-09-17;ROL;TET;;SM
+"2303";"Homovics Sándor";950;1400;915;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;SM
+"2303";"Homovics Sándor";950;1400;905;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;SM
+"2304";"Homovics Sándor";100;1500;965;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;SM
+"2304";"Homovics Sándor";100;1500;955;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;SM
+"2305";"Homovics Sándor";100;1500;965;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;SM
+"2305";"Homovics Sándor";100;1500;955;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;SM
+"2306";"Homovics Sándor";100;1500;965;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;SM
+"2306";"Homovics Sándor";100;1500;955;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;SM
+"2307";"Homovics Sándor";550;1500;515;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;SM
+"2307";"Homovics Sándor";550;1500;505;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;SM
+"2310";"Szabó Viktor, Bcs";715;1790;680;;1;1;0;"";MT-T;Width;false;2026-09-15;ROL;TSIN;;SM
+"2310";"Szabó Viktor, Bcs";715;1790;675;;1;1;0;"";TE-H-18;Width;false;2026-09-15;ROL;TSIN;;SM
+"2310";"Szabó Viktor, Bcs";715;1790;662;;1;1;0;"";MT-Z;Width;false;2026-09-15;ROL;TSIN;;SM
+"2310";"Szabó Viktor, Bcs";715;1790;1790;;1;1;0;"";MT-L2;Width;false;2026-09-15;ROL;TSIN;;SM
+"2311";"Szabó Viktor, Bcs";745;1580;710;;1;0;1;"";MT-T;Width;false;2026-09-15;ROL;TSIN;;SM
+"2311";"Szabó Viktor, Bcs";745;1580;705;;1;0;1;"";TE-H-18;Width;false;2026-09-15;ROL;TSIN;;SM
+"2311";"Szabó Viktor, Bcs";745;1580;692;;1;0;1;"";MT-Z;Width;false;2026-09-15;ROL;TSIN;;SM
+"2311";"Szabó Viktor, Bcs";745;1580;1580;;1;0;1;"";MT-L2;Width;false;2026-09-15;ROL;TSIN;;SM
+"2312";"Szabó Viktor, Bcs";675;820;640;;1;0;1;"";MT-T;Width;false;2026-09-15;ROL;TSIN;;SM
+"2312";"Szabó Viktor, Bcs";675;820;635;;1;0;1;"";TE-H-18;Width;false;2026-09-15;ROL;TSIN;;SM
+"2312";"Szabó Viktor, Bcs";675;820;622;;1;0;1;"";MT-Z;Width;false;2026-09-15;ROL;TSIN;;SM
+"2312";"Szabó Viktor, Bcs";675;820;820;;1;0;1;"";MT-L2;Width;false;2026-09-15;ROL;TSIN;;SM
+"2313";"Szabó Viktor, Bcs";785;930;750;;1;0;1;"";MT-T;Width;false;2026-09-15;ROL;TSIN;;SM
+"2313";"Szabó Viktor, Bcs";785;930;745;;1;0;1;"";TE-H-18;Width;false;2026-09-15;ROL;TSIN;;SM
+"2313";"Szabó Viktor, Bcs";785;930;732;;1;0;1;"";MT-Z;Width;false;2026-09-15;ROL;TSIN;;SM
+"2313";"Szabó Viktor, Bcs";785;930;930;;1;0;1;"";MT-L2;Width;false;2026-09-15;ROL;TSIN;;SM
