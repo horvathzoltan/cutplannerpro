@@ -1,37 +1,28 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
 "630";"Vestibulum, Bcs";900;2470;877;;2;2;0;"";TE-H-32;Width;false;2026-09-15;SR;T;;Unknown
-"630";"Vestibulum, Bcs";900;2470;880;;2;2;0;"";SR-Z;Width;false;2026-09-15;SR;T;;Unknown
-"630";"Vestibulum, Bcs";900;2470;880;;2;2;0;"";SR-P-3000;Width;false;2026-09-15;SR;T;;SM
+"630";"Vestibulum, Bcs";900;2470;880;;2;2;0;"";SR-Z+P;Width;false;2026-09-15;SR;T;;Unknown
 "630";"Vestibulum, Bcs";900;2470;894;;2;2;0;"";SR-T;Width;false;2026-09-15;SR;T;;SM
 "631";"Vestibulum, Bcs";2350;1640;2344;;1;1;0;"";SR-T;Width;false;2026-09-15;SR;T;;SM
 "631";"Vestibulum, Bcs";2350;1640;2327;;1;1;0;"";TE-H-32;Width;false;2026-09-15;SR;T;;SM
-"631";"Vestibulum, Bcs";2350;1640;2330;;1;1;0;"";SR-Z;Width;false;2026-09-15;SR;T;;SM
-"631";"Vestibulum, Bcs";2350;1640;2330;;1;1;0;"";SR-P-3000;Width;false;2026-09-15;SR;T;;SM
+"631";"Vestibulum, Bcs";2350;1640;2330;;1;1;0;"";SR-Z+P;Width;false;2026-09-15;SR;T;;SM
 "632";"Vestibulum, Bcs";870;1640;864;;1;0;1;"";SR-T;Width;false;2026-09-15;SR;T;;SM
 "632";"Vestibulum, Bcs";870;1640;847;;1;0;1;"";TE-H-32;Width;false;2026-09-15;SR;T;;SM
-"632";"Vestibulum, Bcs";870;1640;850;;1;0;1;"";SR-Z;Width;false;2026-09-15;SR;T;;SM
-"632";"Vestibulum, Bcs";870;1640;850;;1;0;1;"";SR-P-3000;Width;false;2026-09-15;SR;T;;SM
+"632";"Vestibulum, Bcs";870;1640;850;;1;0;1;"";SR-Z+P;Width;false;2026-09-15;SR;T;;SM
 "635";"Rellux Ajka, Győr";1280;1700;1274;;1;1;0;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "635";"Rellux Ajka, Győr";1280;1700;1257;;1;1;0;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"635";"Rellux Ajka, Győr";1280;1700;1260;;1;1;0;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"635";"Rellux Ajka, Győr";1280;1700;1260;;1;1;0;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"635";"Rellux Ajka, Győr";1280;1700;1260;;1;1;0;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM
 "636";"Rellux Ajka, Győr";980;1600;974;;1;0;1;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "636";"Rellux Ajka, Győr";980;1600;957;;1;0;1;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"636";"Rellux Ajka, Győr";980;1600;960;;1;0;1;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"636";"Rellux Ajka, Győr";980;1600;960;;1;0;1;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"636";"Rellux Ajka, Győr";980;1600;960;;1;0;1;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM
 "637";"Rellux Ajka, Győr";2110;1700;2104;;1;1;0;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "637";"Rellux Ajka, Győr";2110;1700;2087;;1;1;0;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"637";"Rellux Ajka, Győr";2110;1700;2090;;1;1;0;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"637";"Rellux Ajka, Győr";2110;1700;2090;;1;1;0;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"637";"Rellux Ajka, Győr";2110;1700;2090;;1;1;0;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM
 "638";"Rellux Ajka, Győr";980;1600;974;;1;1;0;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "638";"Rellux Ajka, Győr";980;1600;957;;1;1;0;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"638";"Rellux Ajka, Győr";980;1600;960;;1;1;0;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"638";"Rellux Ajka, Győr";980;1600;960;;1;1;0;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"638";"Rellux Ajka, Győr";980;1600;960;;1;1;0;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM
 "639";"Rellux Ajka, Győr";1580;1700;1574;;1;0;1;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "639";"Rellux Ajka, Győr";1580;1700;1557;;1;0;1;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"639";"Rellux Ajka, Győr";1580;1700;1560;;1;0;1;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"639";"Rellux Ajka, Győr";1580;1700;1560;;1;0;1;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"639";"Rellux Ajka, Győr";1580;1700;1560;;1;0;1;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM
 "640";"Rellux Ajka, Győr";1600;1700;1594;;1;0;1;"";SR-T;Width;false;2026-09-14;SR;T;;SM
 "640";"Rellux Ajka, Győr";1600;1700;1577;;1;0;1;"";TE-H-32;Width;false;2026-09-14;SR;T;;SM
-"640";"Rellux Ajka, Győr";1600;1700;1580;;1;0;1;"";SR-Z;Width;false;2026-09-14;SR;T;;SM
-"640";"Rellux Ajka, Győr";1600;1700;1580;;1;0;1;"";SR-P-3000;Width;false;2026-09-14;SR;T;;SM
+"640";"Rellux Ajka, Győr";1600;1700;1580;;1;0;1;"";SR-Z+P;Width;false;2026-09-14;SR;T;;SM

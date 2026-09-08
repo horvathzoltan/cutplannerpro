@@ -10,6 +10,8 @@
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
+#include <materials/model/material_family_utils.h>
+
 static void clearLayout(QLayout* layout)
 {
     if (!layout)
@@ -310,21 +312,21 @@ void MaterialSearchDialog::applyFilter(const QString& text)
                 if (!allowedFamilies.contains(m.family))
                     continue;
 
-                // Barcode prefix szűrés
-                bool prefixOk = false;
-                for (const QString& p : allowedPrefixes) {
-                    QString px = p;
-                    if (px.endsWith("*"))
-                        px.chop(1);
+                // // Barcode prefix szűrés
+                // bool prefixOk = false;
+                // for (const QString& p : allowedPrefixes) {
+                //     QString px = p;
+                //     if (px.endsWith("*"))
+                //         px.chop(1);
 
-                    if (m.barcode.startsWith(px)) {
-                        prefixOk = true;
-                        break;
-                    }
-                }
+                //     if (m.barcode.startsWith(px)) {
+                //         prefixOk = true;
+                //         break;
+                //     }
+                // }
 
-                if (!prefixOk)
-                    continue;
+                // if (!prefixOk)
+                //     continue;
             }
 
             auto* item = new QStandardItem();
@@ -340,8 +342,21 @@ void MaterialSearchDialog::applyFilter(const QString& text)
     for (const auto& m : allMaterials) {
 
         QString selectedCode = selectedColorCode();
-        if (selectedCode != "Nincs" && m.color.code() != selectedCode)
-            continue;
+
+        if (selectedCode == "ALL") {
+            // nincs szűrés
+        }
+        else if (selectedCode == "RAW") {
+            // natúr anyagok → nincs színkód
+            if (m.color.isValid())
+                continue;
+        }
+        else {
+            // konkrét színkód
+            if (m.color.code() != selectedCode)
+                continue;
+        }
+
 
         QString name = m.name.toLower();
         QString bc   = m.barcode.toLower();
@@ -367,12 +382,22 @@ void MaterialSearchDialog::applyFilter(const QString& text)
     // 1) Exact match
     if (!exactMatches.isEmpty()) {
         addSeparator("Pontos egyezés");
-        for (const auto& m : exactMatches) {
-            auto* item = new QStandardItem();
-            item->setData(QVariant::fromValue(m), Qt::UserRole);
-            item->setData(m.name, Qt::DisplayRole);
-            model->appendRow(item);
+        QMap<MaterialFamily, QVector<MaterialMaster>> grouped;
+
+        for (const auto& m : exactMatches)
+            grouped[m.family].append(m);
+
+        for (auto it = grouped.begin(); it != grouped.end(); ++it) {
+            addSeparator(QString("Család: %1").arg(MaterialFamilyUtils::toString(it.key())));
+
+            for (const auto& m : it.value()) {
+                auto* item = new QStandardItem();
+                item->setData(QVariant::fromValue(m), Qt::UserRole);
+                item->setData(m.name, Qt::DisplayRole);
+                model->appendRow(item);
+            }
         }
+
     }
 
     // 2) Prefix match
