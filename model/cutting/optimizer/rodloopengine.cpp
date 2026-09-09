@@ -110,7 +110,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
                  bool dpFail   = (p.info.length_mm > dpLimit);
 
                  const MaterialMaster* mat2 = MaterialRegistry::instance().findById(p.materialId);
-                 int stockLen = mat2 ? mat2->stockLength_mm : INT_MAX;
+                 int stockLen = mat2 ? mat2->effectiveLength() : INT_MAX;
                  bool fitsStock = (p.info.length_mm + static_cast<int>(kerf_mm)) <= stockLen;
 
                  QStringList reasons;

@@ -167,9 +167,16 @@ MaterialRepository::MaterialRow::validate_level1(CsvReader::FileContext& ctx) co
     }
 
     // 3) negatív hossz tiltott
+    // 3) negatív hossz tiltott, KIVÉVE bundle dummy érték (-1)
     if (r.len < 0) {
-        ctx.addError(ctx.currentLineNumber(), "⚠️ Negatív hossz nem megengedett");
-        return false;
+        // bundle esetén a -1 csak jelölés, a tényleges hossz irreleváns
+        if (kindStr.compare("bundle", Qt::CaseInsensitive) == 0 && stockLengthStr == "-1") {
+            // opcionálisan normalizálhatjuk 0-ra, hogy a modellben ne legyen negatív
+            r.len = -1;
+        } else {
+            ctx.addError(ctx.currentLineNumber(), "⚠️ Negatív hossz nem megengedett");
+            return false;
+        }
     }
 
     return r;
@@ -184,7 +191,7 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row,
     m.id = QUuid::createUuid();
     m.name = row.name;
     m.barcode = row.barcode;
-    m.stockLength_mm = v1.len;
+    m.setRawStockLength_mm(v1.len);
     m.defaultMachineId = row.machineId;
     m.shape = CrossSectionShape::fromString(row.shapeStr);
     m.type = MaterialType::fromString(row.typeStr);
@@ -274,6 +281,17 @@ MaterialRepository::buildMaterialFromRow(const MaterialRow& row,
         // }
         m.bundleCode = row.bundleCodeStr;
 
+        // ⭐ VALIDÁCIÓ: bundle hossz nem lehet valós fizikai hossz
+        if (m.rawStockLength_mm() > -1) {
+            ctx.addError(ctx.currentLineNumber(),
+                           QString("⚠️ Bundle anyag (%1) stockLength mezője nem lehet valós hossz (%2 mm). "
+                                   "Állítsd -1 értékre.")
+                               .arg(m.barcode)
+                             .arg(m.rawStockLength_mm()));
+
+            // opcionális automatikus javítás:
+            // m.stockLength_mm = -1;
+        }
     }
     else {
         m.bundleCode.clear();
@@ -313,7 +331,7 @@ void MaterialRepository::exportCsv(const QString& path) {
 
         out << m.name << ";"
             << m.barcode << ";"
-            << m.stockLength_mm << ";";
+            << m.rawStockLength_mm() << ";";
 
         if (m.shape.isRound()) {
             out << m.diameter_mm << ";"

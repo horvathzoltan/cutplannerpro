@@ -198,7 +198,7 @@ public:
         const int maxToldas_mm = sm.toldasMax();
         const int maxMainOverlength = sm.maxMainOverlength();
         const int need = req.requiredLength;
-        const int stock = mm->stockLength_mm;
+        const int stock = mm->effectiveLength();
 
         // --- VALÓDI STOCK-ELLENŐRZÉS VASTAG SÚLYRA ---
         bool hasThickStock = false;
@@ -808,7 +808,7 @@ public:
             return false;
 
         const QUuid thinId   = thinMat->id;
-        const int   stockLen = thinMat->stockLength_mm;
+        const int   stockLen = thinMat->effectiveLength();
 
         // Toldás paraméterek
         auto& sm = SettingsManager::instance();

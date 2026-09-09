@@ -53,7 +53,7 @@ public:
                 continue;
             }
 
-            int strandLength = mm->stockLength_mm;
+            int strandLength = mm->effectiveLength();
 
             // csökkenő sorrend
             std::sort(lengths.begin(), lengths.end(), std::greater<int>());

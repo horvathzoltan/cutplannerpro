@@ -15,4 +15,7 @@ struct BundleDefinition {
     QVector<BundleComponent> components;
 
     std::optional<double> computedLength_mm() const;
+
+private:
+    mutable std::optional<double> _cachedLength;
 };

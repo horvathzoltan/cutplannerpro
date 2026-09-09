@@ -34,16 +34,16 @@ inline ValidationResult validate(
 
     // 2️⃣ Request anyagok validálása
     for (const auto& r : requests) {
-        const MaterialMaster* mm = MaterialRegistry::instance().findById(r.materialId);
-        if (!mm) {
+        const MaterialMaster* mat = MaterialRegistry::instance().findById(r.materialId);
+        if (!mat) {
             result.errors << QString("Ismeretlen anyag a vágási igényben: %1")
                                  .arg(r.materialId.toString());
             continue;
         }
 
-        if (mm->stockLength_mm <= 0)
+        if (mat->effectiveLength() <= 0 )
             result.errors << QString("Az anyaghoz nincs érvényes szálhossz megadva: %1")
-                                 .arg(mm->toDisplay());
+                                 .arg(mat->toDisplay());
 
     }
 

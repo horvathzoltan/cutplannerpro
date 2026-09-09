@@ -352,7 +352,7 @@ FitEngine::findBestFit(const QVector<Cutting::Piece::PieceWithMaterial>& availab
             maxPiece = std::max(maxPiece, p.info.length_mm);
 
         const MaterialMaster* mat = MaterialRegistry::instance().findById(available[0].materialId);
-        int stockLen = mat ? mat->stockLength_mm : INT_MAX;
+        int stockLen = mat ? mat->effectiveLength() : INT_MAX;
 
         if (maxPiece <= stockLen) {
             // csak erre a rúdra nem fért fel → új rúd kell

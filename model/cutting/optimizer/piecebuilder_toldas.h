@@ -132,7 +132,7 @@ public:
         //    visszaesünk a régi logikára (hulló + hulló, stock + hulló, stock + stock),
         //    vagy hibát dobunk, ha vághatatlan.
         int need = req.requiredLength;
-        int stock = mm->stockLength_mm; // pl. 3000 mm
+        int stock = mm->effectiveLength(); // pl. 3000 mm
 
         // 3) NP-BAR esetén, ha a ToldasEngine nem talált megoldást,
         //    NEM esünk vissza a régi toldás logikára.

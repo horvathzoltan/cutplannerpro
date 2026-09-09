@@ -166,7 +166,7 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod(
 
         SelectedRod rod;
         rod.materialId = stock.materialId;
-        rod.length     = stock.master() ? stock.master()->stockLength_mm : 0;
+        rod.length     = stock.master() ? stock.master()->effectiveLength() : 0;
         rod.isReusable = false;
 
         int matId = SettingsManager::instance().nextMaterialCounter();
@@ -239,7 +239,7 @@ std::optional<SelectedRod> StockFitEngine::pickStockRod2(
         // scoring: scrap / goodLeftOverMin / goodLeftOverMax
         MaterialScoringParams sp = mat->scoringParams();
 
-        int rodLength = static_cast<int>(mat->stockLength_mm);
+        int rodLength = static_cast<int>(mat->effectiveLength());
 
         int usableLength = rodLength
                            - tp.frontTrim_mm

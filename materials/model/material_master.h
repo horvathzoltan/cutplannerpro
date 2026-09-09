@@ -2,7 +2,9 @@
 
 #include <QString>
 #include <QSizeF>
+#include <materialbundles/registry/bundle_registry.h>
 #include "common/surface/surfacetype.h"
+#include "materialbundles/model/bundle_definition.h"
 #include "materials/model/material_family.h"
 #include "materials/model/material_kind.h"
 #include "model/identifiableentity.h"
@@ -18,7 +20,9 @@
 struct MaterialMaster : public IdentifiableEntity {
     MaterialMaster(){}; // 🔧 Default konstruktor deklaráció
 
-    double stockLength_mm = 0.0;       // 📏 Teljes szálhossz mm-ben (pl. 6000)
+private:
+    double _stockLength_mm = 0.0;       // 📏 Teljes szálhossz mm-ben (pl. 6000)
+public:
 
     CrossSectionShape shape;           // 🧩 Keresztmetszet formája
     double diameter_mm = 0.0;          // ⚪ Kör formánál: átmérő
@@ -95,13 +99,40 @@ struct MaterialMaster : public IdentifiableEntity {
         if (!colorName.isEmpty())
             parts << QString("(%1)").arg(colorName);   // pl. RAL9010
 
-        if (stockLength_mm > 0)
-            parts << QString("%1mm").arg(stockLength_mm);
+        if (_stockLength_mm > 0)
+            parts << QString("%1mm").arg(_stockLength_mm);
 
         if (!externalCode.isEmpty())
             parts << QString("[%1]").arg(externalCode);
 
         return parts.join(" ");
     }
+
+    double rawStockLength_mm() const {return _stockLength_mm;}
+
+    void setRawStockLength_mm(double v){ _stockLength_mm = v; }
+
+    double effectiveLength() const
+    {
+        if (kind == MaterialKind::Simple)
+            return _stockLength_mm;
+
+        if (kind == MaterialKind::Bundle) {
+            const BundleDefinition* def =
+                BundleRegistry::instance().findByCode(bundleCode);
+
+            if (!def)
+                return _stockLength_mm;
+
+            auto optLen = def->computedLength_mm();
+            if (optLen.has_value())
+                return *optLen;
+
+            return _stockLength_mm; // fallback
+        }
+
+        return _stockLength_mm;
+    }
+
 
 };

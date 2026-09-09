@@ -85,8 +85,10 @@ public:
 
     // NEW: bundle rod consumption tracker
     struct BundleRodState {
-        QHash<QUuid, int> remaining;   // componentMaterialId → remaining length (mm)
+        // componentMaterialId → per-strand remaining lengths (mm)
+        QHash<QUuid, QVector<int>> remainingStrands;
     };
+
 
     // NEW: initialize bundle rod state from stock or leftover
     static BundleRodState initBundleRodState(
@@ -108,18 +110,25 @@ public:
             if (!cm)
                 continue;
 
-            int len = static_cast<int>(cm->stockLength_mm);
+            int baseLen = static_cast<int>(cm->rawStockLength_mm());
 
             if (loOpt.has_value() && loOpt->materialId == bundleMaster->id) {
                 int loLen = loOpt->getComponentLength(c.materialId);
-                len = std::min(len, loLen);
+                baseLen = std::min(baseLen, loLen);
             }
 
-            st.remaining[c.materialId] = len * c.count;   // 🔢 szálhossz × szálak száma
+            QVector<int> strands;
+            strands.reserve(c.count);
+
+            for (int i = 0; i < c.count; ++i)
+                strands.append(baseLen);
+
+            st.remainingStrands[c.materialId] = strands;
         }
 
         return st;
     }
+
 
 
 
@@ -164,20 +173,32 @@ public:
                     if (!compMaster)
                         continue;
 
-                    // 🔢 még elérhető hossz ebből a komponensből ebben a plan-ben
-                    int remainingLen = state.remaining.value(compMatId, 0);
+                    auto itStrands = state.remainingStrands.find(compMatId);
+                    if (itStrands == state.remainingStrands.end())
+                        continue;
 
-                    // ✔ túlvágás detektálása plan-szinten:
-                    // ha az aktuális darab hossza nagyobb, mint a még elérhető komponens hossz,
-                    // akkor EZ a darab az, ami nem fér ki → pótló request kell rá.
-                    if (pieceLen > remainingLen)
+                    QVector<int>& strands = itStrands.value();
+
+                    // strand-szintű túlvágás detektálása:
+                    // ha bármelyik szál nem adja ki a darabot → overcut
+                    bool overcutHere = false;
+
+                    for (int i = 0; i < strands.size(); ++i)
+                    {
+                        if (strands[i] < pieceLen) {
+                            overcutHere = true;
+                            break;
+                        }
+                    }
+
+                    // ha bármelyik szál nem adja ki → túlvágás
+                    if (overcutHere)
                     {
                         result.hasOvercuts = true;
 
-                        // 1️⃣ eredeti request megkeresése
                         const Cutting::Plan::Request* originalReq = nullptr;
 
-                        for (const auto& r : model.getRequests())   // <-- ez a helyes lista
+                        for (const auto& r : model.getRequests())
                         {
                             if (r.requestId == piece.info.requestId)
                             {
@@ -190,48 +211,36 @@ public:
 
                         if (originalReq)
                         {
-                            // 2️⃣ teljes klónozás
                             req = *originalReq;
-
-                            // 🔧 pótló request anyaga: bundle komponens anyag
                             req.materialId = compMatId;
-
-                            // 🔧 MINDIG ÚJ requestId a pótló requesthez
-                            //req.requestId = QUuid::createUuid();
                         }
                         else
                         {
-                            // fallback skeleton
                             req.requestId = QUuid::createUuid();
                             req.materialId = compMatId;
                         }
 
-                        // 3️⃣ bundle‑komponens specifikus mezők átírása
                         req.requiredLength = pieceLen;
-                        req.quantity = 1;   // 🔧 egy konkrét darab pótlása
-
-                        // 4️⃣ extRef öröklése
+                        req.quantity       = comp.count;
                         req.externalReference = piece.info.externalReference;
 
-                        // 5️⃣ hozzáadás
                         result.newRequests.append(req);
-
-                        // 6️⃣ bundleInstanceId összekötés (egy rúd → több pótló request)
                         result.bundleMap[bundleInstanceId].append(req.requestId);
 
                         zWarning(QStringLiteral(
-                                     "⚠️ BundleOverCuttingDetector: túlvágás detektálva (plan-szintű) "
-                                     "bundle=%1 komponens=%2 pieceLen=%3 remaining=%4")
+                                     "⚠️ BundleOverCuttingDetector: túlvágás detektálva (strand-szintű) "
+                                     "bundle=%1 komponens=%2 pieceLen=%3")
                                      .arg(master->toDisplay())
                                      .arg(compMaster->toDisplay())
-                                     .arg(pieceLen)
-                                     .arg(remainingLen));
+                                     .arg(pieceLen));
                     }
                     else
                     {
-                        // ✅ még belefér: kumulált felhasználás frissítése
-                        state.remaining[compMatId] = remainingLen - pieceLen;
+                        // minden szál kiadja → mindegyikből levonjuk a pieceLen-t
+                        for (int i = 0; i < strands.size(); ++i)
+                            strands[i] -= pieceLen;
                     }
+
                 }
             }
         }

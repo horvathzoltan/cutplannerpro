@@ -162,8 +162,8 @@ inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
         const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
         QString matName = mat ? mat->toReportLabel() : QString("Material:%1").arg(matId.toString());
 
-        double rodLength_m = mat && mat->stockLength_mm > 0
-                                 ? mat->stockLength_mm / 1000.0
+        double rodLength_m = mat && mat->effectiveLength() > 0
+                                 ? mat->effectiveLength() / 1000.0
                                  : 0.0;
 
         out << QString("  • %1:").arg(matName);

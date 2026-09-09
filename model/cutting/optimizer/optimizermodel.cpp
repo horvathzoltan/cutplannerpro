@@ -1176,7 +1176,7 @@ RodInitResult OptimizerModel::initRodForMaterial(
         const MaterialMaster* matStock =
             MaterialRegistry::instance().findById(targetMaterialId);
 
-        int stockLen = matStock ? matStock->stockLength_mm : 0;
+        int stockLen = matStock ? matStock->effectiveLength() : 0;
 
         if (needed > stockLen) {
             zWarning(QString("⛔ PATCH#2 — darab nem fér fel stock rúdra sem: needed=%1, stockLen=%2")
@@ -1259,7 +1259,7 @@ RodInitResult OptimizerModel::initRodForMaterial(
                                )
                                .arg(origMat->barcode)
                                .arg(chosenMat->barcode)
-                               .arg(chosenMat->stockLength_mm));
+                               .arg(chosenMat->effectiveLength()));
                 }
                 QString oldRodId = rod.rodId;
                 rod = *stockRod;
@@ -1335,7 +1335,7 @@ SelectedRod OptimizerModel::selectStockRod(QUuid materialId, const QString& rodi
 
     SelectedRod rod;
     rod.materialId = materialId;
-    rod.length     = mat->stockLength_mm;
+    rod.length     = mat->effectiveLength();
     rod.isReusable = false;
     rod.origin     = RodOrigin::Stock;
 

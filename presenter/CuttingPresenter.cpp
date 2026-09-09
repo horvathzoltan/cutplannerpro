@@ -1,5 +1,6 @@
 #include <QDir>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QPdfWriter>
 #include <ui_clonerequestdialog.h>
 
@@ -713,6 +714,33 @@ void CuttingPresenter::loadLatestSnapshotForCurrentPlan()
 
     if (_optimizerModel.loadSnapshot(latestSnapshot)) {
         zInfo("🟢 Snapshot betöltve.");
+
+        // ⭐ VALIDÁCIÓ: minden plan anyaga létezzen
+        const auto& plans = _optimizerModel.getResult_PlansRef();
+        QStringList invalidMaterials;
+
+        for (const auto& plan : plans) {
+            const MaterialMaster* m = MaterialRegistry::instance().findById(plan.materialId);
+            if (!m) {
+                invalidMaterials << plan.materialId.toString();
+            }
+        }
+
+        if (!invalidMaterials.isEmpty()) {
+            zError(QString("❌ Snapshot hibás: %1 anyag nem található a MaterialRegistry-ben.\n"
+                           "Érintett materialId-k:\n%2")
+                       .arg(invalidMaterials.size())
+                       .arg(invalidMaterials.join("\n")));
+
+            QMessageBox::critical(nullptr,
+                                  "Snapshot hiba",
+                                  "A snapshot olyan anyagokra hivatkozik, amelyek nem szerepelnek az anyagtörzsben.\n"
+                                  "A program nem tudja megjeleníteni a vágási tervet.\n"
+                                  "Ellenőrizd a materials.csv, stock.csv, leftovers.csv és a snapshot fájlt.");
+
+            return; // ⛔ NE frissítsük a view-t → crash lenne
+        }
+
         refreshAllViews(Refresh::Flags::SnapshotOnly);
     }/*else{
         refreshAllViews(Refresh::Flags::RequestOnly);

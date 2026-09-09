@@ -49,7 +49,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
     _table->setItem(rowIx, ColShape, itemShape);
 
     // 📏 Length
-    auto* itemLength = new QTableWidgetItem(QString::number(mat->stockLength_mm));
+    auto* itemLength = new QTableWidgetItem(QString::number(mat->effectiveLength()));
     itemLength->setTextAlignment(Qt::AlignCenter);
     //itemLength->setData(Qt::UserRole, mat->stockLength_mm);
     _table->setItem(rowIx, ColLength, itemLength);
@@ -130,7 +130,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
         emit moveRequested(entryId);  // vagy akár külön signal: moveRequested(entryId);
     });
 
-    StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat, entry.lastSeenAt);
+    StockTable::RowStyler::applyStyle(_table, rowIx, mat->effectiveLength(), entry.quantity, mat, entry.lastSeenAt);
 }
 
 void StockTableManager::updateRow(const StockEntry& entry) {
@@ -172,7 +172,7 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             // 📏 Length
             auto* itemLength = _table->item(rowIx, ColLength);
             if (itemLength && mat) {
-                itemLength->setText(QString::number(mat->stockLength_mm));
+                itemLength->setText(QString::number(mat->effectiveLength()));
             }         
 
             // 🧾 Mennyiség panel
@@ -204,7 +204,7 @@ void StockTableManager::updateRow(const StockEntry& entry) {
             TableUtils::updateCommentCell(commentPanel, entry.comment, entry.entryId);
 
             // 🎨 Stílus újraalkalmazás
-            StockTable::RowStyler::applyStyle(_table, rowIx, mat->stockLength_mm, entry.quantity, mat, entry.lastSeenAt);
+            StockTable::RowStyler::applyStyle(_table, rowIx, mat->effectiveLength(), entry.quantity, mat, entry.lastSeenAt);
           //  return;
         //}
   //  }
