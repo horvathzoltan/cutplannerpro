@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"289";"Antal Ildike";2450;2195;2092;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;Unknown
+"290";"Antal Ildike";1000;2300;2197;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"291";"Antal Ildike";2435;2280;2177;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"292";"Antal Ildike";1230;2265;2162;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"293";"Antal Ildike";2470;2265;2162;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"294";"Antal Ildike";1125;2265;2162;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"297";"Antal Ildike";1930;2180;2077;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM
+"298";"Antal Ildike";3780;2430;2327;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-08;NP;CIP;meghajtas=motoros;SM

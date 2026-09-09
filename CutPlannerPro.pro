@@ -507,6 +507,7 @@ DISTFILES += \
     testdata/cutting_plans/cutting_plan_1.csv \
     testdata/cutting_plans/cuttingplan_20260622-074056_hibateszt.txt \
     testdata/cutting_plans/cuttingplan_20260728-085942.txt \
+    testdata/cutting_plans/cuttingplan_20260908-132810_Lab.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \

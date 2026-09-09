@@ -1,3 +1,7 @@
+detector:
+ - lábaknál nem érzékelte a lábbetét túlvágását
+ - ha ki vannak kapcsolva a hullók, nem talál lábat egyáltalán
+
 CutPlan: cuttingplan_20260903-134153:
  - lábbetét túlvágás nincs detektálva
  - két lábbetét van, az egyik nem jó méret
