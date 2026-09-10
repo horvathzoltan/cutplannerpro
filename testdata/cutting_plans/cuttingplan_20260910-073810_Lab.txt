@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"280";"Hal-Kov";980;3340;3237;;1;1;0;"RAL 8002";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"277";"Hal-Kov";2180;2300;2197;;1;1;0;"RAL 8002";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"278";"Hal-Kov";2325;2300;2197;;1;1;0;"RAL 8002";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"279";"Hal-Kov";1210;3880;3777;;1;1;0;"RAL 8002";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"274";"Porta Finestra, Miskolc";2640;2390;2287;;3;0;0;"RAL 7038";NP-CL2+CLT2+CLB2;Width;false;2026-09-14;NP;CIP;meghajtas=motoros;SM
