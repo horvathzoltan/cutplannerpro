@@ -108,7 +108,7 @@ public:
  * Röviden: ez a "nagy varázsló", ami a bemeneti igényekből (darabok + készlet)
  * elkészíti a teljes vágási terveket és a hulló listát.
  */
-    void optimize(TargetHeuristic heuristic);
+    void optimize(TargetHeuristic heuristic, int rodC=0, int planC=0);
     //void optimize_old(TargetHeuristic heuristic);
 
     void setCuttingRequests(const QVector<Cutting::Plan::Request>& list);
@@ -179,6 +179,11 @@ public:
     SelectedRod selectStockRod(QUuid materialId, const QString& rodid, const QString& rodBarcode);
     bool loadSnapshot(const QString &filePath);
     void saveSnapshot(const QString &filePath);
+     int getPlanCounter(){ return planCounter; }
+    // void setPlanCounter(int value){ planCounter = value; }
+
+     int getRodCounter(){ return rodCounter; }
+    // void setRodCounter(int value){ rodCounter = value; }
 private:
 
     bool _useReusableLeftovers = true;

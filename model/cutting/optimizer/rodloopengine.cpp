@@ -69,7 +69,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
 
     if (filteredGroupVec.isEmpty()) {
         zWarning("RodLoopEngine: nincs a csoportba tartozó darab → rúd lezárása");
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId, rod.rodId};
     }
 
     // FitEngine::FitResult fr =
@@ -153,7 +153,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
                                .arg(p.materialId.toString())
                                .arg(p.info.length_mm));
                      // Új rúd indítása → a darab a következő rúdra kerül
-                     return {RodStepResult::StartNewStockRod, p.materialId};
+                     return {RodStepResult::StartNewStockRod, p.materialId,rod.rodId };
                  }
 
                  // ❌ VALÓDI FAILED — stock rúdra sem fér fel
@@ -180,7 +180,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
                  // Valódi FAILED → töröljük a pendingből
                  groupVec.removeFirst();
 
-                return {RodStepResult::StartNewRod, p.materialId};
+                return {RodStepResult::StartNewRod, p.materialId, rod.rodId};
 
                 //55
                 //55 vége
@@ -189,7 +189,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
 
         // Ha nem minősült FAILED‑nek, marad az eddigi viselkedés:
         zInfo("   ✖ Nincs több vágható darab — rúd lezárása");
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId, rod.rodId};
     }
 
 
@@ -218,31 +218,31 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
             {
                 remainingLength  = 0;
                 dpLimit = 0;
-                return {RodStepResult::StopRod, rod.materialId};
+                return {RodStepResult::StopRod, rod.materialId, rod.rodId};
             }
 
             remainingLength  = 0;
             dpLimit = 0;
-            return{RodStepResult::StopRod, rod.materialId};
+            return{RodStepResult::StopRod, rod.materialId, rod.rodId};
         }
 
         remainingLength  = 0;
         dpLimit = 0;
 
         zInfo("⛔ ROD-STEP — rúd lezárva (túlvágás elleni védelem aktiválva)");
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId, rod.rodId};
     }
 
     if (remainingLength < sp.scrap_mm) {
         zInfo("⛔ ROD-STEP — Rúd lezárva — leftover köszöbérték alatti tartomány");
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId, rod.rodId};
     }
 
     if (remainingLength >= sp.goodLeftOver_Min_mm &&
         remainingLength <= sp.goodLeftOver_Max_mm)
     {
         zInfo("⛔ ROD-STEP — rúd lezárva (jó leftover tartomány, fizikai hulló képződik)");
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId, rod.rodId};
     }
 
     if (remainingLength >= sp.scrap_mm &&
@@ -277,10 +277,10 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
 
             if (newRemaining < sp.scrap_mm) {
                 zInfo("⏭ ROD-STEP — új rúd indítása (aktuális rúd nem vágható tovább)");
-                return {RodStepResult::StartNewRod, rod.materialId};
+                return {RodStepResult::StartNewRod, rod.materialId, rod.rodId};
             } else {
                 zInfo("⛔ ROD-STEP — rúd lezárva (single cut, nincs további darab)");
-                return {RodStepResult::StopRod, rod.materialId};
+                return {RodStepResult::StopRod, rod.materialId, rod.rodId};
             }
         }
     }
@@ -344,9 +344,9 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
             Q_UNUSED(cr4);
             zInfo("➡ ROD-STEP — folytatás ugyanazzal a rúddal (van még vágható "
                   "darab)");
-            return {RodStepResult::ContinueSameRod, rod.materialId};
+            return {RodStepResult::ContinueSameRod, rod.materialId, rod.rodId};
         }
-        return {RodStepResult::StopRod, rod.materialId};
+        return {RodStepResult::StopRod, rod.materialId,rod.rodId};
     }
 
     QStringList limitsStr, resultsStr;
@@ -361,7 +361,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
 
 
 
-    return {RodStepResult::StopRod, rod.materialId};
+    return {RodStepResult::StopRod, rod.materialId,rod.rodId};
 }
 
 } // namespace Optimizer

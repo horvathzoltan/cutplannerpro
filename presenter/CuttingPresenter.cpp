@@ -273,32 +273,15 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         _view->isChkUseLeftoversChecked()
         );
 
+    //_optimizerModel.setRodCounter(0);
+    //_optimizerModel.setPlanCounter(0);
+
     zInfo("▶️ OptimizationRunner::run started");
     // 1️⃣ Optimalizáció futtatása
-    OptimizationRunner::run(_optimizerModel, heuristic);
+    //OptimizationRunner::run(_optimizerModel, heuristic);
+    _optimizerModel.optimize(heuristic);
     zInfo("⏹️ OptimizationRunner::run stopped");
-    // 5️⃣ Logolás
-    OptimizationLogger::logPlans(_optimizerModel.getResult_PlansRef());
 
-    // 2️⃣ Nézet frissítése
-    //if (_view) {
-        //OptimizationViewUpdater::update(_view, _optimizerModel);
-        refreshAllViews(Refresh::Flags::SnapshotOnly);
-        //_view->switchToCuttingPlanTab();   // ⬅️ EZT ADJUK HOZZÁ
-    //}
-
-    // 3️⃣ Export (opcionális)
-    //OptimizationExporter::exportPlans(model.getResult_PlansRef());
-    saveOptimizationSnapshot();
-
-    // 4️⃣ Audit sorok előállítása
-    auto sp = _view->storageAuditPresenter();
-    auto am = sp->auditStateManager();
-
-    am->setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
-    //lastAuditRows = OptimizationAuditBuilder::build(model);
-
-    isModelSynced = false;
 
     auto over = BundleOverCuttingDetector::detect(_optimizerModel);
 
@@ -339,8 +322,11 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         }
 
         extra.setInventorySnapshot(finalSnap);
+        //extra.setPlanCounter(_optimizerModel.getPlanCounter());
+        //extra.setRodCounter(_optimizerModel.getRodCounter());
 
-        extra.optimize(Cutting::Optimizer::TargetHeuristic::ByCount);
+        extra.optimize(Cutting::Optimizer::TargetHeuristic::ByCount,
+                       _optimizerModel.getRodCounter(), _optimizerModel.getPlanCounter());
 
         // 🔗 Az extra futás terveit hozzácsapjuk az eredetihez
         auto extraPlans = extra.getResult_PlansRef();
@@ -349,6 +335,28 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         mainPlans.append(extraPlans);
     }
 
+    // 5️⃣ Logolás
+    OptimizationLogger::logPlans(_optimizerModel.getResult_PlansRef());
+
+    // 2️⃣ Nézet frissítése
+    //if (_view) {
+    //OptimizationViewUpdater::update(_view, _optimizerModel);
+    refreshAllViews(Refresh::Flags::SnapshotOnly);
+    //_view->switchToCuttingPlanTab();   // ⬅️ EZT ADJUK HOZZÁ
+    //}
+
+    // 3️⃣ Export (opcionális)
+    //OptimizationExporter::exportPlans(model.getResult_PlansRef());
+    saveOptimizationSnapshot();
+
+    // 4️⃣ Audit sorok előállítása
+    auto sp = _view->storageAuditPresenter();
+    auto am = sp->auditStateManager();
+
+    am->setOutdated(AuditStateManager::AuditOutdatedReason::OptimizeRun);
+    //lastAuditRows = OptimizationAuditBuilder::build(model);
+
+    isModelSynced = false;
 }
 
 

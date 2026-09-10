@@ -49,7 +49,7 @@ QVector<Cutting::Result::ResultModel> OptimizerModel::getResults_Leftovers() con
     return _planned_leftovers;
 }
 
-void OptimizerModel::optimize(TargetHeuristic heuristic) {
+void OptimizerModel::optimize(TargetHeuristic heuristic, int rodC, int planC) {
     int currentOpId = nextOptimizationId++;
 
 
@@ -62,7 +62,8 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
 
     _fitTelemetry = {};
     rodLoopIteration = 0;
-    rodCounter = 0;
+    rodCounter = rodC;
+    planCounter = planC;
 
     _result_plans.clear();
     _planned_leftovers.clear();
@@ -379,6 +380,13 @@ void OptimizerModel::optimize(TargetHeuristic heuristic) {
             }
 
             if (stepResult.rodStepResult == RodLoopEngine::RodStepResult::StopRod) {
+                // PATCH: ha a rúd anyaga megváltozott (pl. bundle → CLB2),
+                // vagy új requestből jön, akkor új rodId kell.
+                //if (stepResult.rodId != rod.rodId) {
+                if(stepResult.materialId != rod.materialId) {
+                    QString newRodId = IdentifierUtils::makeRodId(++rodCounter);
+                    rod.rodId = newRodId;
+                }
                 break;
             }
         }// rod-loop vége

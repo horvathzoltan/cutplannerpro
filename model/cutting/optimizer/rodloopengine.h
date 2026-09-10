@@ -23,6 +23,11 @@ public:
     struct RodStepResultModel {
         RodStepResult rodStepResult;
         QUuid materialId; // mi az anyag amit valójában a materiialgroup szerint tudunk vágniu
+        QString rodId;      // a rúd azonosítója (ha új rúd → új rodId)
+        //bool newRodRequired = false;   // ← EZ KELL
+
+        RodStepResultModel(RodStepResult r, QUuid m, QString rod)
+            : rodStepResult(r), materialId(m), rodId(rod)  { }
     };
 
     static RodStepResultModel step(
