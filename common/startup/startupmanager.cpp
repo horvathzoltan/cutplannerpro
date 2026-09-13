@@ -72,7 +72,7 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!storageStatus.isSuccess())
         return storageStatus;
 
-    StartupStatus groupStatus = initMaterialGroupRegistry();
+    StartupStatus groupStatus = initMaterialGroupRegistry2();
     if (!groupStatus.isSuccess())
         return groupStatus;
 
@@ -266,24 +266,48 @@ StartupStatus StartupManager::initStockRegistry() {
 }
 
 
-StartupStatus StartupManager::initMaterialGroupRegistry() {
-    bool loaded = MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry::instance());
-    if (!loaded){
-        EventLogger::instance().zEvent("❌ Nem sikerült betölteni az anyagcsoportokat");
+// StartupStatus StartupManager::initMaterialGroupRegistry() {
+//     bool loaded = MaterialGroupRepository::loadFromCsv(MaterialGroupRegistry::instance());
+//     if (!loaded){
+//         EventLogger::instance().zEvent("❌ Nem sikerült betölteni az anyagcsoportokat");
 
-        return StartupStatus::failure("❌ Nem sikerült betölteni az anyagcsoportokat a groups.csv fájlból.");
+//         return StartupStatus::failure("❌ Nem sikerült betölteni az anyagcsoportokat a groups.csv fájlból.");
+//     }
+
+//     int count = MaterialGroupRegistry::instance().readAll().size();
+//     if (count == 0){
+//         EventLogger::instance().zEvent("❌ nincs adat az anyagcsoportokban");
+
+//         return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
+//     }
+
+//     EventLogger::instance().zEvent(StatusHelper::getMessage(true,"anyagcsoport init"));
+//     return StartupStatus::success();
+// }
+
+StartupStatus StartupManager::initMaterialGroupRegistry2() {
+    bool loaded = MaterialGroupRepository::loadFromMsff(MaterialGroupRegistry::instance());
+    if (!loaded){
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni az anyagcsoportokat (MSFF)");
+
+        return StartupStatus::failure(
+            "❌ Nem sikerült betölteni az anyagcsoportokat a materialgroups.msff fájlból."
+            );
     }
 
     int count = MaterialGroupRegistry::instance().readAll().size();
     if (count == 0){
-        EventLogger::instance().zEvent("❌ nincs adat az anyagcsoportokban");
+        EventLogger::instance().zEvent("❌ nincs adat az anyagcsoportokban (MSFF)");
 
-        return StartupStatus::failure("⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás a fájl.");
+        return StartupStatus::failure(
+            "⚠️ Nem található egyetlen anyagcsoport sem. Lehet, hogy üres vagy hibás az MSFF fájl."
+            );
     }
 
-    EventLogger::instance().zEvent(StatusHelper::getMessage(true,"anyagcsoport init"));
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true,"anyagcsoport init (MSFF)"));
     return StartupStatus::success();
 }
+
 
 bool StartupManager::hasMinimumMaterials(int minCount) {
     return MaterialRegistry::instance().readAll().size() >= minCount;

@@ -32,7 +32,7 @@ public:
     QString getWorkingFolder() const;
     QString getStorageCsvFile() const; // 📁 Tároló CSV útvonal
     QString getMaterialCsvFile() const; // 📁 Anyag törzs CSV útvonal
-    QString getGroupCsvFile() const; // 📁 Csoportdefiníciós CSV útvonal
+    //QString getGroupCsvFile() const; // 📁 Csoportdefiníciós CSV útvonal
     QString getStockCsvFile() const; // 📁 Készlet CSV útvonal
 
     // 📓 Naplófájl név
@@ -62,7 +62,7 @@ public:
 
     QString getMovementLogFilePathForDate(const QDate &date) const;
     QString getMovementLogFileNameForDate(const QDate &date) const;
-    QString getGroupMembersCsvFile() const;
+//    QString getGroupMembersCsvFile() const;
 
     //
     QString getCuttingMachineCsvFile() const;
@@ -81,6 +81,9 @@ public:
     QString getBundleCsvFile() const;
     QString getBundleComponentsCsvFile() const;
     QString getLeftoverLabelQueueCsvFile() const;
+
+    QString getMaterialGroupMsffFile() const;
+    QString getMaterialRolemapGroupMsffFile() const;
 
     static QString emojiCacheDir();
 };

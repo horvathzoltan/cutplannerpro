@@ -120,7 +120,7 @@ std::optional<StockEntry>
 StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.barcode);
     if (!mat) {
-        QString msg = L("⚠️ Ismeretlen anyag barcode '%1'").arg(row.barcode);
+        QString msg = L("⚠️ buildStockEntryFromRow: Ismeretlen anyag barcode '%1'").arg(row.barcode);
         ctx.addError(ctx.currentLineNumber(), msg);
 
         return std::nullopt;
@@ -128,7 +128,7 @@ StockRepository::buildStockEntryFromRow(const StockEntryRow& row, CsvReader::Fil
 
     const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
     if (!storage) {
-        QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
+        QString msg = L("⚠️ buildStockEntryFromRow: Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
         ctx.addError(ctx.currentLineNumber(), msg);
 
         storage = StorageRegistry::instance().fallbackStorage();

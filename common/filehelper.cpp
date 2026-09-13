@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QMap>
 
-QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator)
+QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separator, bool keepEmptyRows)
 {
     QList<QVector<QString>> rows;
     if (!st) return rows;
@@ -13,8 +13,13 @@ QList<QVector<QString>> FileHelper::parseCSV(QTextStream *st, const QChar& separ
     while (!st->atEnd()) {
         QString line = st->readLine();
 
-        // Üres sorok kihagyása
-        if (partialLine.isEmpty() && line.trimmed().isEmpty()) continue;
+        // Üres sorok kezelése
+        if (partialLine.isEmpty() && line.trimmed().isEmpty()) {
+            if (keepEmptyRows) {
+                rows.append(QVector<QString>());   // üres blokkhatár
+            }
+            continue;
+        }
 
         // Accumulate lines until quotes are balanced (handles multiline quoted cells)
         if (partialLine.isEmpty()) partialLine = line;
@@ -265,4 +270,114 @@ FileHelper::SeparatorResult FileHelper::detectSeparatorSmart(QTextStream* st) {
     result.globalWarnings << "❌ Nem sikerült szeparátort detektálni a fejléc alapján.";
     return result;
 
+}
+
+FileHelper::SeparatorResult FileHelper::detectSeparatorMsff(QTextStream* st)
+{
+    SeparatorResult result;
+    result.separator = QChar();
+    result.isSingleColumn = false;
+    result.hasError = false;
+    result.hasWarning = false;
+
+    QStringList headerLines;
+
+    // --- 1) Gyűjtsük össze az első 2 nem üres, nem komment sort ---
+    while (!st->atEnd() && headerLines.size() < 2) {
+        QString line = st->readLine().trimmed();
+        if (line.isEmpty()) continue;
+        if (line.startsWith('#')) continue;
+        headerLines << line;
+    }
+
+    result.headerLineCount = headerLines.size();
+
+    if (headerLines.size() < 2) {
+        result.hasError = true;
+        result.globalWarnings << "❌ MSFF: nem található 2 fejléc sor.";
+        return result;
+    }
+
+    // --- 2) Szeparátor jelöltek ---
+    QList<QChar> candidates = { ';', ',', '\t', '|' };
+
+    // --- 3) Közös szeparátor keresése a két header sorban ---
+    QChar foundSep;
+    for (QChar sep : candidates) {
+        if (headerLines[0].contains(sep) && headerLines[1].contains(sep)) {
+            foundSep = sep;
+            break;
+        }
+    }
+
+    // Ha nem találtunk közös szeparátort → próbáljuk lazábban
+    if (foundSep.isNull()) {
+        for (QChar sep : candidates) {
+            if (headerLines[0].contains(sep) || headerLines[1].contains(sep)) {
+                foundSep = sep;
+                break;
+            }
+        }
+    }
+
+    if (foundSep.isNull()) {
+        result.hasError = true;
+        result.globalWarnings << "❌ MSFF: nem sikerült szeparátort találni a fejléc sorok alapján.";
+        return result;
+    }
+
+    // --- 4) Validáljuk az adat sorokban is (nem mezőszám alapján!) ---
+    bool seenInData = false;
+
+    while (!st->atEnd()) {
+        QString line = st->readLine().trimmed();
+        if (line.isEmpty()) continue;
+        if (line.startsWith('#')) continue;
+
+        if (line.contains(foundSep)) {
+            seenInData = true;
+            break;
+        }
+    }
+
+    // Ha az adat sorok nem tartalmazzák → még mindig jó lehet (pl. egysoros child)
+    // Ezért nem dobunk hibát, csak warningot.
+    if (!seenInData) {
+        result.hasWarning = true;
+        result.globalWarnings << "⚠️ MSFF: a szeparátor csak a fejlécben található meg.";
+    }
+
+    result.separator = foundSep;
+    return result;
+}
+
+QList<QList<QVector<QString>>> FileHelper::splitSections(
+    const QList<QVector<QString>>& rows,
+    int headerLineCount)
+{
+    QList<QList<QVector<QString>>> sections;
+    QList<QVector<QString>> current;
+
+    for (int i = headerLineCount; i < rows.size(); ++i) {
+        const auto& row = rows[i];
+
+        bool isEmpty = row.isEmpty() ||
+                       (row.size() == 1 && row[0].trimmed().isEmpty());
+
+        if (isEmpty) {
+            if (!current.isEmpty()) {
+                sections.append(current);
+                current.clear();
+            }
+            continue;
+        }
+
+        current.append(row);
+    }
+
+    if (!current.isEmpty()) {
+        sections.append(current);
+    }
+
+    return sections;
 }
