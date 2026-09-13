@@ -1,0 +1,13 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"259";"Hal-Kov";2710;2100;2680;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"259";"Hal-Kov";2710;2100;2705;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"259";"Hal-Kov";2710;2100;2587;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"259";"Hal-Kov";2710;2100;1997;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"259";"Hal-Kov";2710;2100;2599;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"259";"Hal-Kov";2710;2100;2535;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;2150;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;2175;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;2057;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;1977;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;2069;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM
+"260";"Hal-Kov";2180;2080;2005;;1;0;1;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-15;NP;CIP;meghajtas=motoros;SM

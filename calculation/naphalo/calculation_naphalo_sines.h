@@ -30,7 +30,7 @@ inline double calcTengely_Motoros(double width){
 }
 
 inline double calcTengely_Kurblis(double width){
-    return width - 55;
+    return width - 53;
 }
 
 inline double calcZaroSuly(double width){
