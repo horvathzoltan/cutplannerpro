@@ -65,15 +65,15 @@ QString FileNameHelper::getMaterialCsvFile() const {
     return fn;
 }
 
-QString FileNameHelper::getGroupCsvFile() const {
-    auto fn = QDir(_projectPath).filePath("materialgroups.csv"); // vagy ahová ténylegesen rakod
-    return fn;
-}
+// QString FileNameHelper::getGroupCsvFile() const {
+//     auto fn = QDir(_projectPath).filePath("materialgroups.csv"); // vagy ahová ténylegesen rakod
+//     return fn;
+// }
 
-QString FileNameHelper::getGroupMembersCsvFile() const {
-    auto fn = QDir(_projectPath).filePath("materialgroup_members.csv"); // vagy ahová ténylegesen rakod
-    return fn;
-}
+// QString FileNameHelper::getGroupMembersCsvFile() const {
+//     auto fn = QDir(_projectPath).filePath("materialgroup_members.csv"); // vagy ahová ténylegesen rakod
+//     return fn;
+// }
 
 QString FileNameHelper::getStockCsvFile() const {
     auto fn = QDir(_projectPath).filePath("stock.csv"); // vagy ahová ténylegesen rakod
@@ -252,3 +252,15 @@ QString FileNameHelper::getBundleComponentsCsvFile() const {
 QString FileNameHelper::getLeftoverLabelQueueCsvFile() const {
     return QDir(_projectPath).filePath("leftover_labels.csv");
 }
+
+
+QString FileNameHelper::getMaterialGroupMsffFile() const {
+    auto fn = QDir(_projectPath).filePath("materialgroups.msff"); // vagy ahová ténylegesen rakod
+    return fn;
+}
+
+QString FileNameHelper::getMaterialRolemapGroupMsffFile() const {
+    auto fn = QDir(_projectPath).filePath("materialrolegroups.msff"); // vagy ahová ténylegesen rakod
+    return fn;
+}
+

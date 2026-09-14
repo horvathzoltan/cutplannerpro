@@ -17,6 +17,7 @@ private:
 
     QMap<QUuid, MaterialGroup> _data;     // groupId → group
     QMap<QUuid, QUuid> _materialToGroup;  // materialId → groupId
+    QMap<QString, QUuid> _barcodeToGroup;
 
 public:
     static MaterialGroupRegistry& instance();
@@ -29,4 +30,6 @@ public:
     const MaterialGroup* findByMaterialId(const QUuid& materialId) const;
 
     bool isEmpty() const { return _data.isEmpty(); }
+    bool containsBarcode(const QString &barcode) const;
+    const MaterialGroup *findByBarcode(const QString &barcode) const;
 };

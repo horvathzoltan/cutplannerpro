@@ -11,7 +11,7 @@
 class FileHelper {
 public:
     // Fő CSV parser metódus: escape karakterekkel, többsoros cellákkal
-    static QList<QVector<QString>> parseCSV(QTextStream *st, const QChar& separator = ';');
+    static QList<QVector<QString>> parseCSV(QTextStream *st, const QChar& separator = ';', bool keepEmptyRows = false);
 
     static bool isCsvWithOnlyHeader(const QString &filePath);
 
@@ -19,9 +19,10 @@ public:
         QChar separator;
         bool isSingleColumn;
         bool hasError = false;
-        bool hasWarning = false;
+        bool hasWarning = false;        
         QMap<QChar, QStringList> separatorWarnings;
         QStringList globalWarnings;
+        int headerLineCount = 0;
 
         QString toString()
         {
@@ -56,6 +57,10 @@ public:
     };
 
     static SeparatorResult detectSeparatorSmart(QTextStream *st);
+    static SeparatorResult detectSeparatorMsff(QTextStream *st);
+    static QList<QList<QVector<QString>>> splitSections(
+        const QList<QVector<QString>> &rows,
+        int headerLineCount);
 private:
     // Egyetlen cella értelmezése: escape karakterek feldolgozása
     static QString parseCell(const QString& rawCell);

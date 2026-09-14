@@ -7,6 +7,8 @@ MaterialGroupRegistry& MaterialGroupRegistry::instance() {
 
 void MaterialGroupRegistry::registerGroup(const MaterialGroup& group) {
     _data[group.id] = group;
+    _barcodeToGroup[group.barcode] = group.id;
+
     for (const auto& id : group.materialIds) {
         _materialToGroup[id] = group.id;
     }
@@ -15,6 +17,7 @@ void MaterialGroupRegistry::registerGroup(const MaterialGroup& group) {
 void MaterialGroupRegistry::clearAll() {
     _data.clear();
     _materialToGroup.clear();
+    _barcodeToGroup.clear();
 }
 
 const MaterialGroup* MaterialGroupRegistry::findById(const QUuid& groupId) const {
@@ -32,4 +35,14 @@ const MaterialGroup* MaterialGroupRegistry::findByMaterialId(const QUuid& materi
 
 QList<MaterialGroup> MaterialGroupRegistry::readAll() const {
     return _data.values();
+}
+
+bool MaterialGroupRegistry::containsBarcode(const QString& barcode) const {
+    return _barcodeToGroup.contains(barcode);
+}
+
+const MaterialGroup* MaterialGroupRegistry::findByBarcode(const QString& barcode) const {
+    auto it = _barcodeToGroup.find(barcode);
+    if (it == _barcodeToGroup.end()) return nullptr;
+    return findById(it.value());
 }

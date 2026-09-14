@@ -32,7 +32,8 @@ Skálázhatóság: könnyen alkalmazható más CSV struktúrákra
 class MaterialGroupRepository {
 public:
         /// Fő belépési pont: betölti a csoportokat és tagokat CSV-ből
-    static bool loadFromCsv(MaterialGroupRegistry& registry);
+    //static bool loadFromCsv(MaterialGroupRegistry& registry);
+    static bool loadFromMsff(MaterialGroupRegistry &registry);
 private:
     /// Csoport definíciók egy sora
     struct MaterialGroupRow {
@@ -60,5 +61,10 @@ private:
     static QVector<MaterialGroupRow> loadGroupRows(CsvReader::FileContext& ctx);
     static QVector<MaterialGroupMemberRow> loadMemberRows(CsvReader::FileContext& ctx);
     static void addMaterialToGroup(MaterialGroup* group, const QUuid& materialId);
+
+    static QList<QList<QVector<QString>>> readMsffRows(const QString &filepath, int* headerLineCount = nullptr);
+    static bool parseMsffRows(const QList<QList<QVector<QString>>> &rows,
+                              MaterialGroupRegistry &registry);
+    static std::optional<MaterialGroupMemberRow> convertMsffMemberRow(const QVector<QString> &parts, const QString &currentGroupKey, CsvReader::FileContext &ctx);
 };
 

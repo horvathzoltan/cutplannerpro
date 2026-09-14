@@ -174,17 +174,10 @@ std::optional<LeftoverStockEntry>
 LeftoverStockRepository::buildReusableEntryFromRow(const LeftoverStockEntry_Row& row, CsvReader::FileContext& ctx) {
     const auto* mat = MaterialRegistry::instance().findByBarcode(row.materialBarcode);
     if (!mat) {
-        QString msg = L("⚠️ Ismeretlen anyag barcode '%1'").arg(row.materialBarcode);
+        QString msg = L("⚠️ buildReusableEntryFromRow: Ismeretlen anyag barcode '%1'").arg(row.materialBarcode);
         ctx.addError(ctx.currentLineNumber(), msg);
         return std::nullopt;
     }
-
-    // const auto* storage = StorageRegistry::instance().findByBarcode(row.storageBarcode);
-    // if (!storage) {
-    //     QString msg = L("⚠️ Ismeretlen tároló barcode '%1'").arg(row.storageBarcode);
-    //     ctx.addError(ctx.currentLineNumber(), msg);
-    //     return std::nullopt;
-    // }
 
     LeftoverStockEntry entry;
     entry.materialId         = mat->id;

@@ -54,7 +54,9 @@ private:
     bool hasMinimumMaterials(int minCount);
 
     StartupStatus initMaterialRegistry();
-    StartupStatus initMaterialGroupRegistry();
+    //StartupStatus initMaterialGroupRegistry();
+    StartupStatus initMaterialGroupRegistry2();
+
     StartupStatus initStockRegistry();
     StartupStatus initCuttingRequestRegistry();
     StartupStatus initReusableStockRegistry();

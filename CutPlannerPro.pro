@@ -524,6 +524,8 @@ DISTFILES += \
     testdata/material_rolemap.csv \
     testdata/materialgroup_members.csv \
     testdata/materialgroups.csv \
+    testdata/materialgroups.msff \
+    testdata/materialrolegroups.msff \
     testdata/materials.csv \
     testdata/materials_old.csv \
     testdata/powder_consumption.csv \
