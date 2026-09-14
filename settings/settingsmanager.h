@@ -45,6 +45,9 @@ inline constexpr auto MaxMainOverlengthMM = "toldas.maxMainOverlength_mm";   // 
 
 inline constexpr auto PrioSortMode = "prio_sortMode";
 inline constexpr auto OptimizationLeftoverAuditHours = "optimization_leftover_audit_hours";
+
+inline constexpr auto RepeatDialog_AddInput = "repeatdialog_addinput";
+
 }
 
 enum class TestMode {
@@ -159,6 +162,9 @@ public:
     int materialFinderRange() const;
     void setMaterialFinderRange(int mm);
 
+
+    bool repeatDialog_AddInput() const;
+    void setRepeatDialog_AddInput(bool mm);
 public:
     QVariant value(const QString& key, const QVariant& def = {}) const;
     void setValue(const QString& key, const QVariant& value);

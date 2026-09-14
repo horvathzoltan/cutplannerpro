@@ -5,7 +5,9 @@ NP;BOW;Bowdenes
 ROL;ALAP;Alap
 ROL;RUG;Rugós
 ROL;TET;Tetőtéri
+ROL;TET_NAGY;TetőtériNagyKonzolos
 ROL;TSIN;TokozottSines
+ROL;UJGY;ÚjGyöngyös
 SR;T;Tokozott
 SR;TN;TokNélküli
 SR;MINIT;Minitokos

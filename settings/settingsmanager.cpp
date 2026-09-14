@@ -321,3 +321,13 @@ int SettingsManager::optimizationLeftoverAuditHours() const {
 void SettingsManager::setOptimizationLeftoverAuditHours(int days) {
     persist(SettingsKeys::OptimizationLeftoverAuditHours, QString::number(days));
 }
+
+
+bool SettingsManager::repeatDialog_AddInput() const {
+    return value(SettingsKeys::RepeatDialog_AddInput, false).toBool();
+}
+
+void SettingsManager::setRepeatDialog_AddInput(bool v) {
+    setValue(SettingsKeys::RepeatDialog_AddInput, v);
+}
+

@@ -1,0 +1,60 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"2320";"C-Edge, Győr";1280;2450;1245;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2320";"C-Edge, Győr";1280;2450;1235;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2321";"C-Edge, Győr";1500;2100;1465;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2321";"C-Edge, Győr";1500;2100;1455;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2322";"C-Edge, Győr";1240;2450;1205;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2322";"C-Edge, Győr";1240;2450;1195;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2323";"C-Edge, Győr";1180;2450;1145;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2323";"C-Edge, Győr";1180;2450;1135;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2326";"Rolo-Projekt, Eger";1110;2350;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-16;ROL;UJGY;;Unknown
+"2326";"Rolo-Projekt, Eger";1110;2350;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-16;ROL;UJGY;;Unknown
+"2329";"L.Zs., Nyh";1240;1600;1205;;1;0;1;"";TE-H-32;Width;false;2026-09-16;ROL;UJGY;;Unknown
+"2329";"L.Zs., Nyh";1240;1600;1195;;1;0;1;"";ROL-GYZ;Width;false;2026-09-16;ROL;UJGY;;Unknown
+"2332";"Sándor Árnyék";1015;1350;980;;1;1;0;"";TE-R-23;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2332";"Sándor Árnyék";1015;1350;970;;1;1;0;"";ROL-P;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2333";"Sándor Árnyék";1015;1350;980;;1;1;0;"";TE-R-23;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2333";"Sándor Árnyék";1015;1350;970;;1;1;0;"";ROL-P;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2334";"Sándor Árnyék";1015;1350;980;;1;1;0;"";TE-R-23;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2334";"Sándor Árnyék";1015;1350;970;;1;1;0;"";ROL-P;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2335";"Sándor Árnyék";1015;1350;980;;1;0;1;"";TE-R-23;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2335";"Sándor Árnyék";1015;1350;970;;1;0;1;"";ROL-P;Width;false;2026-09-17;ROL;ALAP;;Unknown
+"2338";"Hársfalvi, Nyh";810;1940;775;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;Unknown
+"2338";"Hársfalvi, Nyh";810;1940;765;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;Unknown
+"2339";"Hársfalvi, Nyh";790;1940;755;;1;0;1;"";TE-R-23;Width;false;2026-09-16;ROL;ALAP;;Unknown
+"2339";"Hársfalvi, Nyh";790;1940;745;;1;0;1;"";ROL-P;Width;false;2026-09-16;ROL;ALAP;;Unknown
+"2342";"Árnyhouse/Seres, Pécs";745;1020;715;;1;0;0;"";TE-R-23;Width;false;2026-09-18;ROL;TET_NAGY;;Unknown
+"2342";"Árnyhouse/Seres, Pécs";745;1020;718;;1;0;0;"";ROL-P;Width;false;2026-09-18;ROL;TET_NAGY;;Unknown
+"2345";"Horváth József, Győr";1110;2300;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2345";"Horváth József, Győr";1110;2300;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2346";"Horváth József, Győr";1110;2300;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2346";"Horváth József, Győr";1110;2300;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2347";"Horváth József, Győr";1110;2300;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2347";"Horváth József, Győr";1110;2300;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2348";"Horváth József, Győr";1110;2300;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2348";"Horváth József, Győr";1110;2300;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2349";"Horváth József, Győr";1110;2300;1075;;1;0;1;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2349";"Horváth József, Győr";1110;2300;1065;;1;0;1;"";ROL-GYZ;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"2352";"Horváth József, Győr";1160;2300;1125;;1;0;0;"";TE-H-32;Width;false;2026-09-21;ROL;UJGY;;Unknown
+"661";"Katona Árpád";510;1240;494;;2;1;1;"";SR-FSN;Width;false;2026-09-21;SR;TN;;Unknown
+"661";"Katona Árpád";510;1240;477;;2;1;1;"";TE-H-32;Width;false;2026-09-21;SR;TN;;Unknown
+"661";"Katona Árpád";510;1240;480;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;Unknown
+"662";"Katona Árpád";865;1260;832;;1;0;1;"";TE-H-32;Width;false;2026-09-21;SR;TN;;Unknown
+"662";"Katona Árpád";865;1260;835;;1;0;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"662";"Katona Árpád";865;1260;849;;1;0;1;"";SR-FSN;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;829;;2;1;1;"";SR-FSN;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;812;;2;1;1;"";TE-H-32;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;815;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;494;;2;1;1;"";SR-FSN;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;477;;2;1;1;"";TE-H-32;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;480;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;799;;3;2;1;"";SR-FSN;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;782;;3;2;1;"";TE-H-32;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;785;;3;1;2;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;724;;1;0;0;"";SR-FSN;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;707;;1;0;0;"";TE-H-32;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;710;;1;0;0;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"669";"Balmaz Aktual";620;1218;615;;2;1;1;"";MT-T;Width;false;2026-09-15;SR;MINIT;;SM
+"669";"Balmaz Aktual";620;1218;610;;2;1;1;"";TE-H-18;Width;false;2026-09-15;SR;MINIT;;SM
+"669";"Balmaz Aktual";620;1218;597;;2;1;1;"";MT-Z+P;Width;false;2026-09-15;SR;MINIT;;SM
+"669";"Balmaz Aktual";620;1218;1218;;2;1;1;"";MT-L2;Width;false;2026-09-15;SR;MINIT;;SM

@@ -34,6 +34,12 @@ ROL;TSIN;Tengely;1
 ROL;TSIN;Zaro;1
 ROL;TSIN;Lab;2
 
+ROL;UJGY;Tengely;1
+ROL;UJGY;Zaro;1
+
+ROL;TET_NAGY;Tengely;1
+ROL;TET_NAGY;Zaro;1
+
 SR;T;Tok;1
 SR;T;Tengely;1
 SR;T;Zaro;1

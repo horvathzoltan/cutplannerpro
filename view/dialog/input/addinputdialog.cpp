@@ -23,11 +23,12 @@
 #include <product/registry/product_type_registry.h>
 #include <product/registry/productattributeregistry.h>
 #include <product/selector/material_selector.h>
+#include <settings/settingsmanager.h>
 
 QString AddInputDialog::s_lastExternalRef;
 QSet<QString> AddInputDialog::s_ownerCache;
 
-bool AddInputDialog::s_lastRepeat = false;
+//bool AddInputDialog::s_lastRepeat = false;
 
 AddInputDialog::AddInputDialog(QWidget *parent,
                                DialogMode mode,
@@ -370,6 +371,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             applyRequestToWidgets(*initial);
 
             setHeadEditable(true);
+            //ui->chk_Repeat->setChecked(false);
             ui->chk_Repeat->hide();
 
             ui->editReference->setText(initial->externalReference);
@@ -379,6 +381,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         }
         else {
             initializeDialog();
+            bool s_lastRepeat = SettingsManager::instance().repeatDialog_AddInput();
             ui->chk_Repeat->setChecked(s_lastRepeat);
         }
         _suppressPreview = false;
@@ -411,6 +414,9 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     ui->lblLengthWarning->setText("");
     ui->lblBomWarning->setText("");
     //groupboxAttributes_hide();
+
+    bool isRepeat = SettingsManager::instance().repeatDialog_AddInput();
+    ui->chk_Repeat->setChecked(isRepeat);
 }
 
 AddInputDialog::~AddInputDialog()
@@ -674,6 +680,7 @@ void AddInputDialog::initializeDialog()
     QString ref = ui->editReference->text().trimmed();
 
     // Repeat BOM workflow → ugyanazon tételszámon folytatunk
+    bool s_lastRepeat = SettingsManager::instance().repeatDialog_AddInput();
     if (ref.isEmpty() && s_lastRepeat && !s_lastExternalRef.isEmpty()) {
         ref = s_lastExternalRef;
         ui->editReference->setText(ref);
@@ -980,8 +987,9 @@ void AddInputDialog::accept() {
 
     const QString ref = req.externalReference;
     s_lastExternalRef = ref;
-    s_lastRepeat = ui->chk_Repeat->isChecked();
+    bool s_lastRepeat = ui->chk_Repeat->isChecked();
 
+    SettingsManager::instance().setRepeatDialog_AddInput(s_lastRepeat);
     s_ownerCache.insert(req.ownerName);
 
     _bomModel.addedMaterials.insert(req.materialId);
@@ -1162,7 +1170,9 @@ void AddInputDialog::on_btn_MaterialSearch_clicked()
 
 void AddInputDialog::reject() {
     // Cancel → reset repeat
-    s_lastRepeat = false;
+    //s_lastRepeat = false;
+    SettingsManager::instance().setRepeatDialog_AddInput(false);
+    ui->chk_Repeat->setChecked(false);
     QDialog::reject();
 }
 
@@ -1266,7 +1276,9 @@ void AddInputDialog::on_btn_Reset_clicked()
     // ⭐ Fókusz beállítása
     applyInitialFocus();
 
-    s_lastRepeat = false;
+    //s_lastRepeat = false;
+    SettingsManager::instance().setRepeatDialog_AddInput(false);
+    ui->chk_Repeat->setChecked(false);
 }
 
 

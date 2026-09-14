@@ -32,18 +32,24 @@ ROL;RUG;Palca;ROL-P*
 ROL;TET;Tengely;TE-R-23*
 ROL;TET;Palca;ROL-P*
 
+ROL;TET_NAGY;Tengely;TE-R-23*
+ROL;TET_NAGY;Palca;ROL-P*
+
+ROL;UJGY;Tengely;TE-H-32*
+ROL;UJGY;Zaro;ROL-GYZ*
+
 ROL;TSIN;Tok;MT-T*
 ROL;TSIN;Tengely;TE-H-18*
 ROL;TSIN;Zaro;MT-Z*
 ROL;TSIN;Lab;MT-L2*
 
 SR;T;Tok;SR-T*
-SR;T;Zaro;SR-Z+P*
 SR;T;Tengely;TE-H-32*
+SR;T;Zaro;SR-Z+P*
 
 SR;TN;FelsoSin;SR-FSN*
-SR;TN;Zaro;SR-Z+P*
 SR;TN;Tengely;TE-H-32*
+SR;TN;Zaro;SR-Z+P*
 
 SR;MINIT;Tok;MT-T*
 SR;MINIT;Tengely;TE-H-18*

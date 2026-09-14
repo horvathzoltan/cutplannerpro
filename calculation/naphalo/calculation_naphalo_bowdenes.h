@@ -137,6 +137,11 @@ std::optional<double> compensation(const QMap<QString, QString>& attributes,
         }
     }
 
+    // --- TOK ---
+    if (role == "NP-TOK") {
+        return -0.50;
+    }
+
     // --- SÚLY ---
     if (role == "NP-BAR") {
         return 0;//-10;

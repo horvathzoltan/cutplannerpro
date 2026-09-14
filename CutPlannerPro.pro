@@ -154,6 +154,16 @@ SOURCES += \
     leftover/view/utils/leftoverreviewform_utils.cpp
 
 HEADERS += \
+    calculation/naphalo/calculation_naphalo.h \
+    calculation/roletta/calculation_roletta.h \
+    calculation/roletta/calculation_roletta_alap.h \
+    calculation/roletta/calculation_roletta_tetoterinagy.h \
+    calculation/roletta/calculation_roletta_tokozottsines.h \
+    calculation/roletta/calculation_roletta_ujgyongyos.h \
+    calculation/savrolo/calculation_savrolo.h \
+    calculation/savrolo/calculation_savrolo_minitokos.h \
+    calculation/savrolo/calculation_savrolo_toknelkuli.h \
+    calculation/savrolo/calculation_savrolo_tokozott.h \
     common/stringsimilarity_helper.h \
     common/qrcodepainter.h \
     common/qrcodegen/qrcodegen.hpp \
@@ -185,7 +195,6 @@ HEADERS += \
     calculation/naphalo/calculation_naphalo_bowdenes.h \
     calculation/naphalo/calculation_naphalo_cipzaras.h \
     calculation/naphalo/calculation_naphalo_sines.h \
-    calculation/naphalo/calculatuon_naphalo.h \
     common/barcodepainter.h \
     common/color/colorconstants.h \
     common/emojihelper.h \

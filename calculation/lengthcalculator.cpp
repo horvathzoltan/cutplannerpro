@@ -1,5 +1,8 @@
 #include "lengthcalculator.h"
-#include "calculation/naphalo/calculatuon_naphalo.h"
+#include "calculation/naphalo/calculation_naphalo.h"
+#include "calculation/roletta/calculation_roletta.h"
+#include "calculation/savrolo/calculation_savrolo.h"
+
 
 #include "common/logger.h"
 
@@ -21,10 +24,10 @@ std::optional<double> LengthCalculator::calculate(
         return Calculation::Naphalo::calc(subtype, attributes, role, width, height, mode);
     }
     else if (type == "SR") {
-        //return Calculation::Savrolo::calc(subtype, attributes, role, width, height, mode);
+        return Calculation::Savrolo::calc(subtype, attributes, role, width, height, mode);
     }
     else if (type == "ROL") {
-        //return Calculation::Roletta::calc(subtype, attributes, role, width, height, mode);
+        return Calculation::Roletta::calc(subtype, attributes, role, width, height, mode);
     } else {
         zInfo("Ismeretlen típus:"+type);
     }

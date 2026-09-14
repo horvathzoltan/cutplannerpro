@@ -47,7 +47,7 @@ Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;15;70;
 Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1200;;;Tengely;simple;
 Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminium;;SM;Length;None;15;70;300;600;1200;80050528;;Tengely;simple;
 SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Tok;simple;
-FelsőSín;SR-FSN;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;Sin;simple;
+FelsőSín;SR-FSN;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;simple;
 SávrolóZáró;SR-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;simple;
 SávrolóPálca;SR-P-6000;6000;14;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;simple;
 SávrolóPálca;SR-P-3000;3000;14;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;simple;
@@ -150,6 +150,15 @@ CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;
 SinesLáb_Combo;NP-SL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CT-SL2
 SinesLáb_Combo;NP-SL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CT-SL2-7016
 SinesLáb_Combo;NP-SL2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CT-SL2-9010
+
+SávrolóZáró_10db;SR-Z10;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z10
+SávrolóZáró_5db;SR-Z5;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z5
+
+FelsőSín_10db;SR-FSN10;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;bundle;BSR-FSN10
+ÚjGyöngyösZáró_12db;ROL-GYZ12;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1200;;;Zaro;bundle;BROL-GYZ12
+
+AlsóPálca_30db;ROL-P30;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P30
+AlsóPálca_15db;ROL-P15;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P15
 
 MinitokosLáb_Combo;MT-L2;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CMT-L2
 SávRolóZáró_Combo;SR-Z+P;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Zaro;bundle;CSR-Z+P

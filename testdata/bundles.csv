@@ -59,3 +59,13 @@ CT-SL2-9010;SinesLáb_Combo
 CMT-L2;MinitokosLáb_Combo
 CSR-Z+P;SávrolóZáró_Combo
 CMT-Z+P;MiniTokosZáró_Combo
+
+BSR-Z10;SávrolóZáró_10db
+BSR-Z5;SávrolóZáró_5db
+
+BSR-FSN10;SávrolóFelsőSín_10db
+
+BROL-GYZ12;ÚjGyöngyösZáró_12db
+
+BROL-P30;AlsóPálca_30db
+BROL-P15;AlsóPálca_15db

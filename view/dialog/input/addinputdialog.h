@@ -99,7 +99,7 @@ private:
 
 
     static QString s_lastExternalRef;
-    static bool s_lastRepeat;
+    //static bool s_lastRepeat;
     static QSet<QString> s_ownerCache;
     inline static const QString OWNER_CACHE_FN = "owner_cache.csv";
 
