@@ -9,7 +9,7 @@ void MaterialGroupRegistry::registerGroup(const MaterialGroup& group) {
     _data[group.id] = group;
     _barcodeToGroup[group.barcode] = group.id;
 
-    for (const auto& id : group.materialIds) {
+    for (const auto& id : group.members()) {
         _materialToGroup[id] = group.id;
     }
 }

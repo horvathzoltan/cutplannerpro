@@ -59,7 +59,7 @@ public:
         const Cutting::Plan::Request& req,
         const Cutting::Piece::PieceWithMaterial& pwm,
         const MaterialMaster* mat,
-        const QString& logicalRole,
+        const QUuid& roleGroupId,
         double quantity = 1.0,
         const QString& unit = "db")
     {
@@ -75,7 +75,8 @@ public:
         ki.role.productTypeId    = req.productTypeId;
         ki.role.productSubtypeId = req.productSubtypeId;
         ki.role.family           = mat ? mat->family : MaterialFamily::Unknown;
-        ki.role.barcodePrefix    = logicalRole;   // pl. "NP-MOT", "NP-POFA", stb.
+        //ki.role.barcodePrefix    = logicalRole;   // pl. "NP-MOT", "NP-POFA", stb.
+        ki.role.groupId = roleGroupId; // Ha van csoport, ide lehet tenni
 
         ki.quantity = quantity;
         ki.unit     = unit;

@@ -3,6 +3,7 @@
 #include "matrix_cell_delegate.h"
 
 #include <materials/registry/material_registry.h>
+#include <materials/registry/material_rolegroup_registry.h>
 
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
@@ -227,6 +228,94 @@ void SeriesMatrixView::computeMaterialSets()
 
 
 
+// QVector<QUuid> SeriesMatrixView::generateBomMaterials(
+//     const Cutting::Plan::Request& req,
+//     const NamedColor& effectiveColor) const
+// {
+//     auto key = qMakePair(req.productTypeId, req.productSubtypeId);
+
+//     // --- Cache hit ---
+//     if (_bomCache.contains(key)) {
+//         return _bomCache[key];
+//     }
+
+//     QVector<QUuid> result;
+
+//     // --- 1) BOM családok stabil sorrendben ---
+//     auto bomFamilies = BomRegistry::instance()
+//                            .bomMap(req.productTypeId, req.productSubtypeId);
+
+//     QList<MaterialFamily> famOrder = bomFamilies.keys();
+//     std::sort(famOrder.begin(), famOrder.end(),
+//               [](MaterialFamily a, MaterialFamily b) {
+//                   return static_cast<int>(a) < static_cast<int>(b);
+//               });
+
+//     // --- 2) Rolemap prefixek stabil sorrendben ---
+//     auto roles = MaterialRoleRegistry::instance()
+//                      .findRoles(req.productTypeId, req.productSubtypeId);
+
+//     std::sort(roles.begin(), roles.end(),
+//               [](const MaterialRole& a, const MaterialRole& b) {
+//                   return a.barcodePrefix < b.barcodePrefix;
+//               });
+
+//     // --- 3) Anyagok stabil sorrendben ---
+//     auto mats = MaterialRegistry::instance().readAll();
+//     std::sort(mats.begin(), mats.end(),
+//               [](const MaterialMaster& a, const MaterialMaster& b) {
+//                   return a.barcode < b.barcode;
+//               });
+
+//     // --- 4) BOM anyagok gyűjtése ---
+//     for (MaterialFamily fam : famOrder) {
+
+//         // prefixek gyűjtése (csillag marad!)
+//         QStringList famPrefixes;
+//         for (const auto& role : roles) {
+//             if (role.family == fam) {
+//                 famPrefixes << role.barcodePrefix.trimmed();
+//             }
+//         }
+//         famPrefixes.sort();
+
+//         // anyagok gyűjtése
+//         for (const auto& prefix : famPrefixes) {
+//             for (const auto& mat : mats) {
+
+//                 // család szűrés
+//                 if (mat.family != fam)
+//                     continue;
+
+//                 // prefix szűrés — helyes wildcard logika
+//                 if (!MaterialFamilyUtils::matchPrefix(mat.barcode, prefix))
+//                     continue;
+
+//                 // színszűrés (opcionális)
+//                 bool materialHasColor = mat.color.isValid() &&
+//                                         !mat.color.code().trimmed().isEmpty();
+
+//                 if (effectiveColor.isValid() &&
+//                     !effectiveColor.code().trimmed().isEmpty())
+//                 {
+//                     if (materialHasColor &&
+//                         mat.color.code() != effectiveColor.code())
+//                         continue;
+
+//                     if (!materialHasColor)
+//                         continue;
+//                 }
+
+//                 result.append(mat.id);
+//             }
+//         }
+//     }
+
+//     // --- Cache store ---
+//     _bomCache[key] = result;
+//     return result;
+// }
+
 QVector<QUuid> SeriesMatrixView::generateBomMaterials(
     const Cutting::Plan::Request& req,
     const NamedColor& effectiveColor) const
@@ -250,14 +339,9 @@ QVector<QUuid> SeriesMatrixView::generateBomMaterials(
                   return static_cast<int>(a) < static_cast<int>(b);
               });
 
-    // --- 2) Rolemap prefixek stabil sorrendben ---
+    // --- 2) Rolemap szerepkörök (groupId-alapú) ---
     auto roles = MaterialRoleRegistry::instance()
                      .findRoles(req.productTypeId, req.productSubtypeId);
-
-    std::sort(roles.begin(), roles.end(),
-              [](const MaterialRole& a, const MaterialRole& b) {
-                  return a.barcodePrefix < b.barcodePrefix;
-              });
 
     // --- 3) Anyagok stabil sorrendben ---
     auto mats = MaterialRegistry::instance().readAll();
@@ -266,46 +350,56 @@ QVector<QUuid> SeriesMatrixView::generateBomMaterials(
                   return a.barcode < b.barcode;
               });
 
-    // --- 4) BOM anyagok gyűjtése ---
-    for (MaterialFamily fam : famOrder) {
+    // --- 4) BOM anyagok gyűjtése szerepkör-csoport alapján ---
+    for (MaterialFamily fam : famOrder)
+    {
+        // szerepkör-csoportok gyűjtése
+        QVector<const MaterialRoleGroup*> groups;
 
-        // prefixek gyűjtése (csillag marad!)
-        QStringList famPrefixes;
-        for (const auto& role : roles) {
-            if (role.family == fam) {
-                famPrefixes << role.barcodePrefix.trimmed();
-            }
+        for (const auto& role : roles)
+        {
+            if (role.family != fam)
+                continue;
+
+            const auto* group =
+                MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+            if (group)
+                groups.append(group);
         }
-        famPrefixes.sort();
 
-        // anyagok gyűjtése
-        for (const auto& prefix : famPrefixes) {
-            for (const auto& mat : mats) {
+        // szerepkör-csoportok anyagai
+        for (const auto* group : groups)
+        {
+            for (const QUuid& matId : group->members())
+            {
+                const MaterialMaster* mat =
+                    MaterialRegistry::instance().findById(matId);
+
+                if (!mat)
+                    continue;
 
                 // család szűrés
-                if (mat.family != fam)
+                if (mat->family != fam)
                     continue;
 
-                // prefix szűrés — helyes wildcard logika
-                if (!MaterialFamilyUtils::matchPrefix(mat.barcode, prefix))
-                    continue;
-
-                // színszűrés (opcionális)
-                bool materialHasColor = mat.color.isValid() &&
-                                        !mat.color.code().trimmed().isEmpty();
+                // színszűrés
+                bool materialHasColor =
+                    mat->color.isValid() &&
+                    !mat->color.code().trimmed().isEmpty();
 
                 if (effectiveColor.isValid() &&
                     !effectiveColor.code().trimmed().isEmpty())
                 {
                     if (materialHasColor &&
-                        mat.color.code() != effectiveColor.code())
+                        mat->color.code() != effectiveColor.code())
                         continue;
 
                     if (!materialHasColor)
                         continue;
                 }
 
-                result.append(mat.id);
+                result.append(matId);
             }
         }
     }

@@ -259,7 +259,7 @@ QString FileNameHelper::getMaterialGroupMsffFile() const {
     return fn;
 }
 
-QString FileNameHelper::getMaterialRolemapGroupMsffFile() const {
+QString FileNameHelper::getMaterialRoleGroupMsffFile() const {
     auto fn = QDir(_projectPath).filePath("materialrolegroups.msff"); // vagy ahová ténylegesen rakod
     return fn;
 }

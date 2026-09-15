@@ -7,11 +7,13 @@ struct MaterialRole {
     QUuid productTypeId;
     QUuid productSubtypeId;
     MaterialFamily family;
-    QString barcodePrefix;
+    //QString barcodePrefix;
+
+    QUuid groupId;
 
     bool operator<(const MaterialRole& other) const {
-        return std::tie(productTypeId, productSubtypeId, family, barcodePrefix)
-        < std::tie(other.productTypeId, other.productSubtypeId, other.family, other.barcodePrefix);
+        return std::tie(productTypeId, productSubtypeId, family, groupId)
+        < std::tie(other.productTypeId, other.productSubtypeId, other.family, other.groupId);
     }
 
 };

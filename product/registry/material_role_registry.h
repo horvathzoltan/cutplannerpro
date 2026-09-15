@@ -18,13 +18,13 @@ public:
 
     void load(const QVector<MaterialRole>& roles);
 
-    QVector<QString> prefixesFor(
-        const QUuid& productTypeId,
-        const QUuid& productSubtypeId,
-        MaterialFamily family
-        ) const;
+    // QVector<QString> prefixesFor(
+    //     const QUuid& productTypeId,
+    //     const QUuid& productSubtypeId,
+    //     MaterialFamily family
+    //     ) const;
 
-    MaterialFamily familyForBarcode(const QString& barcode) const;
+    //MaterialFamily familyForBarcode(const QString& barcode) const;
 
     QVector<MaterialRole> findRoles(
         const QUuid& productTypeId,
@@ -32,4 +32,7 @@ public:
         ) const;
 
     MaterialRole roleForBarcode(const QString& barcode) const;
+
+    int size() const { return m_roles.size(); }
+    QVector<MaterialRole> findRoles(const QUuid &productTypeId, const QUuid &productSubtypeId, const MaterialFamily &family) const;
 };

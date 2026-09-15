@@ -7,12 +7,12 @@
 #include "model/identifiableentity.h"
 
 // 🔗 Egy csoport, amely logikailag összetartozó anyagokat tartalmaz
-struct MaterialGroup  : public IdentifiableEntity {
-private:
-    QList<QUuid> materialIds;       // 📦 Hozzátartozó anyagok GUID-ja
-public:
-    QString colorHex;               // 🎨 Szín hex kóddal (pl. "#AABBCC")
+struct MaterialRoleGroup  : public IdentifiableEntity {
 
+private:
+        QList<QUuid> materialIds;       // 📦 Hozzátartozó anyagok GUID-ja
+
+public:
     void addMaterial(const QUuid v){
         if(materialIds.contains(v)) return; // Elkerüljük a duplikációt
         materialIds.append(v);
@@ -26,7 +26,7 @@ public:
         return materialIds.size();
     }
 
-    const QList<QUuid>& members() const {
+    const QList<QUuid>& members() const{
         return materialIds;
     }
 };

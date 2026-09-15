@@ -32,9 +32,11 @@ static inline QString labelForGroup(const QUuid& id) {
 }
 
 static inline QSet<QUuid> groupMembers(const QUuid& materialId) {
-    const auto* group = MaterialGroupRegistry::instance().findByMaterialId(materialId);
-    return group ? QSet<QUuid>(group->materialIds.begin(), group->materialIds.end())
-                 : QSet<QUuid>{ materialId };
+    const MaterialGroup *group =
+        MaterialGroupRegistry::instance().findByMaterialId(materialId);
+    return group
+               ? QSet<QUuid>(group->members().begin(), group->members().end())
+               : QSet<QUuid>{materialId};
 }
 
 // static inline QSet<QUuid> groupMembers2(const QUuid& materialId) {

@@ -56,6 +56,7 @@ private:
     StartupStatus initMaterialRegistry();
     //StartupStatus initMaterialGroupRegistry();
     StartupStatus initMaterialGroupRegistry2();
+    StartupStatus initMaterialRoleGroupRegistry();
 
     StartupStatus initStockRegistry();
     StartupStatus initCuttingRequestRegistry();

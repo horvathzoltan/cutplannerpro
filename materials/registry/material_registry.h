@@ -40,4 +40,6 @@ public:
     bool isCompound(const QUuid& id) const;
     //void resolveBundleIds();
     const MaterialMaster *findByBundleCode(const QString &bundleCode) const;
+
+    int size() const { return _data.size(); }
 };

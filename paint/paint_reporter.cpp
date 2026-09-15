@@ -3,9 +3,11 @@
 #include "paint_reporter.h"
 #include "common/eventlogger.h"
 #include "model/cutting/plan/audit/naphalo_profile_postfix.h"
+#include "product/model/material_role.h"
 #include "product/utils/material_role_utils.h"
 
 #include <materials/registry/material_registry.h>
+#include <materials/registry/material_rolegroup_registry.h>
 
 #include <model/registries/cuttingplanrequestregistry.h>
 
@@ -13,6 +15,8 @@
 
 #include <QDir>
 #include <QFileInfo>
+
+#include <product/registry/material_role_registry.h>
 
 QString PaintReporter::toText(const PaintPlan& plan)
 {
@@ -74,8 +78,15 @@ QString PaintReporter::toText(const PaintPlan& plan)
                 QString barcode = mat ? mat->barcode : "???";
 
                 //bool isBundle = barcode.contains('+');
-                auto role = MaterialRoleUtils::normalizePrefix(barcode);
-                postfix = ProfileUtils::profilePostfixFor(role);
+                //auto role = MaterialRoleUtils::normalizePrefix(barcode);
+                //postfix = ProfileUtils::profilePostfixFor(role);
+
+                MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
+                auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+                QString groupKey = roleGroup ? roleGroup->barcode : "";
+                postfix = ProfileUtils::profilePostfixFor(groupKey);
+
 
                 // if(isBundle){
                 //     zInfo("bundle!!!");

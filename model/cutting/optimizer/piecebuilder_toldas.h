@@ -51,7 +51,7 @@ public:
             QSet<QUuid> groupMembersPB;
 
             if (grpPB) {
-                groupMembersPB = QSet<QUuid>(grpPB->materialIds.begin(), grpPB->materialIds.end());
+                groupMembersPB = QSet<QUuid>(grpPB->members().begin(), grpPB->members().end());
             } else {
                 groupMembersPB.insert(req.materialId);
             }
@@ -112,21 +112,42 @@ public:
         if (!mm)
             return result;
 
+        // MaterialRole role =
+        //     MaterialRoleUtils::makeRole(req, mm);
+
+        // QString roleName = role.barcodePrefix;
+
+        // 1) role meghatározása (ÚJ: groupKey-alapú)
         MaterialRole role =
-            MaterialRoleUtils::makeRole(req, mm);
+            MaterialRoleRegistry::instance().roleForBarcode(mm->barcode);
 
-        QString roleName = role.barcodePrefix;
+        auto* roleGroup =
+            MaterialRoleGroupRegistry::instance().findById(role.groupId);
 
-        // 2) Nem NP-BAR esetén marad a régi, egyszerű viselkedés
-        if (roleName != "NP-BAR") {
+        QString roleKey = roleGroup ? roleGroup->barcode : "";
+
+        // 2) Nem súly (RNP-CBAR) esetén marad a régi, egyszerű viselkedés
+        if (roleKey != "RNP-CBAR" && roleKey != "RNP-SBAR") {
             Cutting::Piece::PieceInfo info;
-            info.length_mm = req.requiredLength;
-            info.requestId = req.requestId;
+            info.length_mm        = req.requiredLength;
+            info.requestId        = req.requestId;
             info.externalReference = req.externalReference;
 
             result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
             return result;
         }
+
+
+        // // 2) Nem NP-BAR esetén marad a régi, egyszerű viselkedés
+        // if (roleName != "NP-BAR") {
+        //     Cutting::Piece::PieceInfo info;
+        //     info.length_mm = req.requiredLength;
+        //     info.requestId = req.requestId;
+        //     info.externalReference = req.externalReference;
+
+        //     result.append(Cutting::Piece::PieceWithMaterial(info, req.materialId));
+        //     return result;
+        // }
 
         // 3) NP-BAR esetén, ha a ToldasEngine nem talált megoldást,
         //    visszaesünk a régi logikára (hulló + hulló, stock + hulló, stock + stock),

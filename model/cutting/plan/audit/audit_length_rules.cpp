@@ -1,10 +1,14 @@
 #include "audit_length_rules.h"
+#include "product/model/material_role.h"
 #include "product/utils/material_role_utils.h"
 #include "materials/registry/material_registry.h"
 //#include "materials/model/material_family_utils.h"
 
+#include <product/registry/material_role_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
+
+#include <materials/registry/material_rolegroup_registry.h>
 
 // NAPHÁLÓ típus felismerés (egyszerűsített)
 static bool isNaphalo(const QUuid& typeId, const QUuid& subtypeId)
@@ -48,8 +52,10 @@ LengthAuditResult AuditLengthRules::check(
         if (!mm)
             continue;
 
-        MaterialRole role = MaterialRoleUtils::makeRole(req, mm);
-        QString key = role.barcodePrefix.trimmed();
+        MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mm->barcode);
+        auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+        QString key = roleGroup ? roleGroup->barcode : "";
 
         int len = req.requiredLength;
         bool lenValid = (len > 0);

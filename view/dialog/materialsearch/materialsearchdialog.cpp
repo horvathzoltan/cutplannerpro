@@ -12,6 +12,8 @@
 
 #include <materials/model/material_family_utils.h>
 
+#include <materials/registry/material_rolegroup_registry.h>
+
 static void clearLayout(QLayout* layout)
 {
     if (!layout)
@@ -270,12 +272,29 @@ void MaterialSearchDialog::applyFilter(const QString& text)
     QVector<MaterialRole> roles =
         MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
 
-    QSet<MaterialFamily> allowedFamilies;
-    QStringList allowedPrefixes;
+    // QSet<MaterialFamily> allowedFamilies;
+    // QStringList allowedPrefixes;
 
-    for (const auto& r : roles) {
+    // for (const auto& r : roles) {
+    //     allowedFamilies.insert(r.family);
+    //     allowedPrefixes.append(r.barcodePrefix);
+    // }
+    QSet<MaterialFamily> allowedFamilies;
+    QSet<QUuid> allowedGroupIds;
+    QSet<QUuid> allowedMaterialIds;
+
+    for (const auto& r : roles)
+    {
         allowedFamilies.insert(r.family);
-        allowedPrefixes.append(r.barcodePrefix);
+        allowedGroupIds.insert(r.groupId);
+
+        // szerepkör-csoport tagjainak összegyűjtése
+        const auto* group = MaterialRoleGroupRegistry::instance().findById(r.groupId);
+        if (group)
+        {
+            for (const QUuid& matId : group->members())
+                allowedMaterialIds.insert(matId);
+        }
     }
 
 

@@ -37,6 +37,8 @@
 
 #include <materialbundles/repository/bundle_repository.h>
 
+#include <materials/repository/material_rolegroup_repository.h>
+
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
@@ -45,6 +47,17 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus materialStatus = initMaterialRegistry();
     if (!materialStatus.isSuccess())
         return materialStatus;
+
+    StartupStatus groupStatus = initMaterialGroupRegistry2();
+    if (!groupStatus.isSuccess())
+        return groupStatus;
+
+    StartupStatus roleGroupStatus = initMaterialRoleGroupRegistry();
+    if (!roleGroupStatus.isSuccess())
+        return roleGroupStatus;
+
+    //MaterialRoleGroupRegistry::instance().debugDump();
+
 
     StartupStatus bundleStatus = initBundleRegistry();
     if (!bundleStatus.isSuccess())
@@ -72,9 +85,6 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!storageStatus.isSuccess())
         return storageStatus;
 
-    StartupStatus groupStatus = initMaterialGroupRegistry2();
-    if (!groupStatus.isSuccess())
-        return groupStatus;
 
     StartupStatus stockStatus = initStockRegistry();
     if (!stockStatus.isSuccess())
@@ -105,6 +115,10 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(ralColorStatus.warnings());
 
     finalStatus.addWarnings(materialStatus.warnings());
+
+    finalStatus.addWarnings(groupStatus.warnings());
+    finalStatus.addWarnings(roleGroupStatus.warnings());
+
     finalStatus.addWarnings(bundleStatus.warnings());
 
     finalStatus.addWarnings(productTypeStatus.warnings());
@@ -112,7 +126,6 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(bomStatus.warnings());
     finalStatus.addWarnings(roleStatus.warnings());
 
-    finalStatus.addWarnings(groupStatus.warnings());
     finalStatus.addWarnings(stockStatus.warnings());
     finalStatus.addWarnings(reusableStockStatus.warnings());
     finalStatus.addWarnings(cuttingReqStatus.warnings());
@@ -121,11 +134,14 @@ StartupStatus StartupManager::runStartupSequence() {
     finalStatus.addWarnings(productAttributeStatus.warnings());
     finalStatus.addWarnings(powderStatus.warnings());
 
-    EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %2 gép, %3 stock, %4 leftover")
-                                       .arg(MaterialRegistry::instance().readAll().size())
-                                       .arg(CuttingMachineRegistry::instance().readAll().size())
-                                       .arg(StockRegistry::instance().readAll().size())
-                                       .arg(LeftoverStockRegistry::instance().readAll().size()));
+    EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %5 anyagcsoport, %2 gép, %6 tárhely, %3 rakat, %4 hulló")
+                                       .arg(MaterialRegistry::instance().size())
+                                       .arg(CuttingMachineRegistry::instance().size())
+                                       .arg(StockRegistry::instance().size())
+                                       .arg(LeftoverStockRegistry::instance().size())
+                                       .arg(MaterialRoleRegistry::instance().size())
+                                       .arg(StorageRegistry::instance().size())
+                                   );
 
     return finalStatus;
 }
@@ -159,7 +175,7 @@ StartupStatus StartupManager::initMaterialRegistry() {
     QStringList invalidGroups;
 
     for (const auto& group : groupList) {
-        for (const auto& mid : group.materialIds) {
+        for (const auto& mid : group.members()) {
             if (!knownMaterials.contains(mid)) {
                 invalidGroups << group.name;
                 break;
@@ -600,3 +616,33 @@ StartupStatus StartupManager::initBundleRegistry() {
     return StartupStatus::success();
 }
 
+StartupStatus StartupManager::initMaterialRoleGroupRegistry()
+{
+    // 1) MSFF beolvasás
+    bool loaded = MaterialRoleGroupRepository::loadFromMsff(
+        MaterialRoleGroupRegistry::instance()
+        );
+
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a szerepkör-csoportokat (MSFF)");
+        return StartupStatus::failure(
+            "❌ Nem sikerült betölteni a szerepkör-csoportokat a materialrolegroups.msff fájlból."
+            );
+    }
+
+    // 2) Üres-e?
+    int count = MaterialRoleGroupRegistry::instance().readAll().size();
+    if (count == 0) {
+        EventLogger::instance().zEvent("❌ nincs adat a szerepkör-csoportokban (MSFF)");
+        return StartupStatus::failure(
+            "⚠️ Nem található egyetlen szerepkör-csoport sem. Lehet, hogy üres vagy hibás az MSFF fájl."
+            );
+    }
+
+    // 3) Siker
+    EventLogger::instance().zEvent(
+        StatusHelper::getMessage(true, "szerepkör-csoport init (MSFF)")
+        );
+
+    return StartupStatus::success();
+}
