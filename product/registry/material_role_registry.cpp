@@ -122,4 +122,14 @@ MaterialRole MaterialRoleRegistry::roleForBarcode(const QString& barcode) const
 }
 
 
+void MaterialRoleRegistry::updateStorageGroupIds(const QMap<QUuid, QUuid>& map)
+{
+    // 1) végigmegyünk minden role-listán
+    for (auto& role : m_roles)   // vagy ahogy nálad van
+    {
+        // 2) ha a role.groupId szerepel a mapben → beállítjuk
+        if (map.contains(role.groupId))
+            role.storageGroupId = map[role.groupId];
+    }
+}
 

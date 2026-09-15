@@ -151,14 +151,14 @@ SinesLáb_Combo;NP-SL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;
 SinesLáb_Combo;NP-SL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CT-SL2-7016
 SinesLáb_Combo;NP-SL2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CT-SL2-9010
 
-SávrolóZáró_10db;SR-Z10;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z10
-SávrolóZáró_5db;SR-Z5;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z5
+SávrolóZáró_10db;SR-Z10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z10
+SávrolóZáró_5db;SR-Z5;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Zaro;bundle;BSR-Z5
 
-FelsőSín_10db;SR-FSN10;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;bundle;BSR-FSN10
-ÚjGyöngyösZáró_12db;ROL-GYZ12;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1200;;;Zaro;bundle;BROL-GYZ12
+FelsőSín_10db;SR-FSN10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;bundle;BSR-FSN10
+ÚjGyöngyösZáró_12db;ROL-GYZ12;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1200;;;Zaro;bundle;BROL-GYZ12
 
-AlsóPálca_30db;ROL-P30;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P30
-AlsóPálca_15db;ROL-P15;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P15
+AlsóPálca_30db;ROL-P30;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P30
+AlsóPálca_15db;ROL-P15;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P15
 
 MinitokosLáb_Combo;MT-L2;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;CMT-L2
 SávRolóZáró_Combo;SR-Z+P;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Zaro;bundle;CSR-Z+P

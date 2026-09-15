@@ -9,11 +9,19 @@ struct MaterialRole {
     MaterialFamily family;
     //QString barcodePrefix;
 
-    QUuid groupId;
+    QUuid groupId;          // gyártási szerepkör-csoport (MaterialRoleGroup)
+    QUuid storageGroupId;   // tárolási szerepkör-csoport (StorageRoleGroup)
 
     bool operator<(const MaterialRole& other) const {
-        return std::tie(productTypeId, productSubtypeId, family, groupId)
-        < std::tie(other.productTypeId, other.productSubtypeId, other.family, other.groupId);
+        return std::tie(productTypeId,
+                        productSubtypeId,
+                        family,
+                        groupId,
+                        storageGroupId)
+               < std::tie(other.productTypeId,
+                          other.productSubtypeId,
+                          other.family,
+                          other.groupId,
+                          other.storageGroupId);
     }
-
 };

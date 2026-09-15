@@ -38,6 +38,9 @@
 #include <materialbundles/repository/bundle_repository.h>
 
 #include <materials/repository/material_rolegroup_repository.h>
+#include <materials/repository/material_storagegrouprepository.h>
+
+#include <materials/registry/material_storagegroupregistry.h>
 
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
@@ -56,14 +59,13 @@ StartupStatus StartupManager::runStartupSequence() {
     if (!roleGroupStatus.isSuccess())
         return roleGroupStatus;
 
-    //MaterialRoleGroupRegistry::instance().debugDump();
-
+    if(_isDump){
+        MaterialRoleGroupRegistry::instance().debugDump();
+    }
 
     StartupStatus bundleStatus = initBundleRegistry();
     if (!bundleStatus.isSuccess())
         return bundleStatus;
-
-    //MaterialRegistry::instance().resolveBundleIds();
 
     StartupStatus productTypeStatus = initProductTypeRegistry();
     if (!productTypeStatus.isSuccess())
@@ -80,6 +82,17 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus roleStatus = initMaterialRoleRegistry();
     if (!roleStatus.isSuccess())
         return roleStatus;
+
+    // 🔥 Tárolási anyagcsoportok generálása gyártási csoportokból
+    auto map = MaterialStorageGroupRepository::buildStorageGroups();
+    MaterialRoleRegistry::instance().updateStorageGroupIds(map);
+
+    if(_isDump){
+    // 🔍 Dump a tárolási csoportokra — ellenőrzéshez
+        MaterialStorageGroupRegistry::instance().debugDump();
+    }
+
+    //MaterialRegistry::instance().resolveBundleIds();
 
     StartupStatus storageStatus = initStorageRegistry();
     if (!storageStatus.isSuccess())

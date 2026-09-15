@@ -51,6 +51,8 @@ public:
 
 private:
 
+    bool _isDump = false;
+
     bool hasMinimumMaterials(int minCount);
 
     StartupStatus initMaterialRegistry();

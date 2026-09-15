@@ -13,6 +13,7 @@
 #include <materials/model/material_family_utils.h>
 
 #include <materials/registry/material_rolegroup_registry.h>
+#include <materials/registry/material_storagegroupregistry.h>
 
 static void clearLayout(QLayout* layout)
 {
@@ -238,12 +239,42 @@ void MaterialSearchDialog::applyFilter(const QString& text)
 {
     model->clear();
 
-    QString t = text.trimmed().toLower();
+    QString t0 = text.trimmed().toLower();
+
+    auto normalize = [](QString s) {
+        // 1) lowercase
+        s = s.toLower();
+
+        // 2) Unicode canonical decomposition (NFD)
+        QString decomposed = s.normalized(QString::NormalizationForm_D);
+
+        // 3) combining diacritics eltávolítása
+        QString result;
+        for (QChar c : decomposed) {
+            if (c.category() != QChar::Mark_NonSpacing &&
+                c.category() != QChar::Mark_SpacingCombining &&
+                c.category() != QChar::Mark_Enclosing)
+            {
+                result.append(c);
+            }
+        }
+
+        return result;
+    };
+
+    QString t = normalize(t0);
+
+
 
     QVector<MaterialMaster> exactMatches;
     QVector<MaterialMaster> prefixMatches;
     QVector<MaterialMaster> substringMatches;
     QVector<MaterialMaster> fuzzyMatches;
+
+
+
+
+
 
     QString typeCode = selectedType();
     QUuid typeId;
@@ -269,39 +300,53 @@ void MaterialSearchDialog::applyFilter(const QString& text)
         }
     }
 
-    QVector<MaterialRole> roles =
-        MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
+    // ⭐ Role‑lista a Mind logika szerint
+    QVector<MaterialRole> roles;
+    bool useRoleFilter = false;
 
-    // QSet<MaterialFamily> allowedFamilies;
-    // QStringList allowedPrefixes;
-
-    // for (const auto& r : roles) {
-    //     allowedFamilies.insert(r.family);
-    //     allowedPrefixes.append(r.barcodePrefix);
-    // }
-    QSet<MaterialFamily> allowedFamilies;
-    QSet<QUuid> allowedGroupIds;
-    QSet<QUuid> allowedMaterialIds;
-
-    for (const auto& r : roles)
-    {
-        allowedFamilies.insert(r.family);
-        allowedGroupIds.insert(r.groupId);
-
-        // szerepkör-csoport tagjainak összegyűjtése
-        const auto* group = MaterialRoleGroupRegistry::instance().findById(r.groupId);
-        if (group)
-        {
-            for (const QUuid& matId : group->members())
-                allowedMaterialIds.insert(matId);
+    if (typeCode == "Mind") {
+        // ⭐ Típus = Mind → nincs role‑szűrés, minden anyag jöhet
+        roles.clear();
+        useRoleFilter = false;
+    } else {
+        // ⭐ Van konkrét típus
+        if (subtypeCode == "Mind") {
+            // ⭐ Altípus = Mind → az adott típus ÖSSZES altípusának role‑jai
+            for (const auto& r : MaterialRoleRegistry::instance().readAll()) {
+                if (r.productTypeId == typeId) {
+                    roles.append(r);
+                }
+            }
+            useRoleFilter = true;
+        } else {
+            // ⭐ Konkrét típus + konkrét altípus
+            roles =
+                MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
+            useRoleFilter = true;
         }
     }
 
+    QSet<MaterialFamily> allowedFamilies;
+    QSet<QUuid> allowedMaterialIds;
 
+    // ⭐ Role‑okból tárolási csoport → anyag ID‑k
+    for (const auto& r : roles)
+    {
+        allowedFamilies.insert(r.family);
 
-    bool useRoleFilter =
-        (typeCode != "Mind") &&
-        (subtypeCode != "Mind");
+        QUuid sgId = r.storageGroupId;
+        if (sgId.isNull())
+            continue;
+
+        const MaterialStorageGroup* sg =
+            MaterialStorageGroupRegistry::instance().findById(sgId);
+        if (!sg)
+            continue;
+
+        for (const QUuid& matId : sg->members)
+            allowedMaterialIds.insert(matId);
+    }
+
 
 
     // Ha nincs keresőkifejezés → teljes lista (szín szerint)
@@ -327,26 +372,13 @@ void MaterialSearchDialog::applyFilter(const QString& text)
 
 
             if (useRoleFilter) {
-                // Family szűrés
                 if (!allowedFamilies.contains(m.family))
                     continue;
 
-                // // Barcode prefix szűrés
-                // bool prefixOk = false;
-                // for (const QString& p : allowedPrefixes) {
-                //     QString px = p;
-                //     if (px.endsWith("*"))
-                //         px.chop(1);
-
-                //     if (m.barcode.startsWith(px)) {
-                //         prefixOk = true;
-                //         break;
-                //     }
-                // }
-
-                // if (!prefixOk)
-                //     continue;
+                if (!allowedMaterialIds.contains(m.id))
+                    continue;
             }
+
 
             auto* item = new QStandardItem();
             item->setData(QVariant::fromValue(m), Qt::UserRole);
@@ -376,6 +408,34 @@ void MaterialSearchDialog::applyFilter(const QString& text)
                 continue;
         }
 
+        // ⭐ TÁROLÁSI SZŰRÉS
+        if (useRoleFilter) {
+            if (!allowedFamilies.contains(m.family))
+                continue;
+
+            if (!allowedMaterialIds.contains(m.id))
+                continue;
+        }
+
+        // QString name = m.name.toLower();
+        // QString bc   = m.barcode.toLower();
+        // QString ext  = m.externalCode.toLower();
+
+        // QStringList fields = { name, bc, ext };
+
+        // bool isExact      = StringSimilarity::anyExact(fields, t);
+        // bool isPrefix     = StringSimilarity::anyPrefix(fields, t);
+        // bool isSubstring  = StringSimilarity::anySubstring(fields, t);
+        // bool isFuzzy      = StringSimilarity::anyFuzzy(fields, t);
+
+        // if (isExact)
+        //     exactMatches.append(m);
+        // else if (isPrefix)
+        //     prefixMatches.append(m);
+        // else if (isSubstring)
+        //     substringMatches.append(m);
+        // else if (isFuzzy)
+        //     fuzzyMatches.append(m);
 
         QString name = m.name.toLower();
         QString bc   = m.barcode.toLower();
@@ -383,10 +443,29 @@ void MaterialSearchDialog::applyFilter(const QString& text)
 
         QStringList fields = { name, bc, ext };
 
-        bool isExact      = StringSimilarity::anyExact(fields, t);
-        bool isPrefix     = StringSimilarity::anyPrefix(fields, t);
-        bool isSubstring  = StringSimilarity::anySubstring(fields, t);
-        bool isFuzzy      = StringSimilarity::anyFuzzy(fields, t);
+        bool isExact = false;
+        bool isPrefix = false;
+        bool isSubstring = false;
+
+        for (const auto& f0 : fields) {
+            QString f = normalize(f0);
+
+            if (f == t) {
+                isExact = true;
+                break;
+            }
+            if (f.startsWith(t)) {
+                isPrefix = true;
+            }
+            if (f.contains(t)) {
+                isSubstring = true;
+            }
+        }
+
+        // egyszerű fuzzy: engedjük el, vagy hagyd meg a régi helperrel, ha akarod
+        //bool isFuzzy = false;
+        // pl. ha akarod:
+        bool isFuzzy = StringSimilarity::anyFuzzy(fields, t);
 
         if (isExact)
             exactMatches.append(m);
@@ -396,55 +475,141 @@ void MaterialSearchDialog::applyFilter(const QString& text)
             substringMatches.append(m);
         else if (isFuzzy)
             fuzzyMatches.append(m);
-    }
-
-    // 1) Exact match
-    if (!exactMatches.isEmpty()) {
-        addSeparator("Pontos egyezés");
-        QMap<MaterialFamily, QVector<MaterialMaster>> grouped;
-
-        for (const auto& m : exactMatches)
-            grouped[m.family].append(m);
-
-        for (auto it = grouped.begin(); it != grouped.end(); ++it) {
-            addSeparator(QString("Család: %1").arg(MaterialFamilyUtils::toString(it.key())));
-
-            for (const auto& m : it.value()) {
-                auto* item = new QStandardItem();
-                item->setData(QVariant::fromValue(m), Qt::UserRole);
-                item->setData(m.name, Qt::DisplayRole);
-                model->appendRow(item);
-            }
-        }
 
     }
 
-    // 2) Prefix match
-    if (!prefixMatches.isEmpty()) {
-        addSeparator("Kezdődik ezzel");
-        for (const auto& m : prefixMatches) {
+    // // 1) Exact match
+    // if (!exactMatches.isEmpty()) {
+    //     addSeparator("Pontos egyezés");
+    //     QMap<MaterialFamily, QVector<MaterialMaster>> grouped;
+
+    //     for (const auto& m : exactMatches)
+    //         grouped[m.family].append(m);
+
+    //     for (auto it = grouped.begin(); it != grouped.end(); ++it) {
+    //         addSeparator(QString("Család: %1").arg(MaterialFamilyUtils::toString(it.key())));
+
+    //         for (const auto& m : it.value()) {
+    //             auto* item = new QStandardItem();
+    //             item->setData(QVariant::fromValue(m), Qt::UserRole);
+    //             item->setData(m.name, Qt::DisplayRole);
+    //             model->appendRow(item);
+    //         }
+    //     }
+
+    // }
+
+    // // 2) Prefix match
+    // if (!prefixMatches.isEmpty()) {
+    //     addSeparator("Kezdődik ezzel");
+    //     for (const auto& m : prefixMatches) {
+    //         auto* item = new QStandardItem();
+    //         item->setData(QVariant::fromValue(m), Qt::UserRole);
+    //         item->setData(m.name, Qt::DisplayRole);
+    //         model->appendRow(item);
+    //     }
+    // }
+
+    // // 3) Substring match
+    // if (!substringMatches.isEmpty()) {
+    //     addSeparator("Tartalmazza");
+    //     for (const auto& m : substringMatches) {
+    //         auto* item = new QStandardItem();
+    //         item->setData(QVariant::fromValue(m), Qt::UserRole);
+    //         item->setData(m.name, Qt::DisplayRole);
+    //         model->appendRow(item);
+    //     }
+    // }
+
+    // // 4) Fuzzy match
+    // if (!fuzzyMatches.isEmpty()) {
+    //     addSeparator("Hasonló (elgépelés)");
+    //     for (const auto& m : fuzzyMatches) {
+    //         auto* item = new QStandardItem();
+    //         item->setData(QVariant::fromValue(m), Qt::UserRole);
+    //         item->setData(m.name, Qt::DisplayRole);
+    //         model->appendRow(item);
+    //     }
+    // }
+
+    //
+    // ⭐ RELEVÁNS TALÁLATOK BLOKKJA (felül)
+    //
+    bool hasRelevant = false;
+
+    auto addRelevantBlock = [&](const QString& title, const QVector<MaterialMaster>& list) {
+        if (list.isEmpty())
+            return;
+
+        hasRelevant = true;
+
+        addSeparator(title);
+        for (const auto& m : list) {
             auto* item = new QStandardItem();
             item->setData(QVariant::fromValue(m), Qt::UserRole);
             item->setData(m.name, Qt::DisplayRole);
             model->appendRow(item);
         }
-    }
+    };
 
-    // 3) Substring match
-    if (!substringMatches.isEmpty()) {
-        addSeparator("Tartalmazza");
-        for (const auto& m : substringMatches) {
-            auto* item = new QStandardItem();
-            item->setData(QVariant::fromValue(m), Qt::UserRole);
-            item->setData(m.name, Qt::DisplayRole);
-            model->appendRow(item);
+    // releváns találatok
+    addRelevantBlock("Pontos egyezés", exactMatches);
+    addRelevantBlock("Kezdődik ezzel", prefixMatches);
+    addRelevantBlock("Tartalmazza", substringMatches);
+    addRelevantBlock("Hasonló (elgépelés)", fuzzyMatches);
+
+
+    //
+    // ⭐ NEM RELEVÁNS TALÁLATOK BLOKKJA (alul)
+    //
+    QVector<MaterialMaster> nonRelevant;
+
+    for (const auto& m : allMaterials) {
+
+        // színszűrés
+        QString selectedCode = selectedColorCode();
+        if (selectedCode == "RAW") {
+            if (m.color.isValid())
+                continue;
+        } else if (selectedCode != "ALL") {
+            if (m.color.code() != selectedCode)
+                continue;
         }
+
+        // tárolási szűrés
+        if (useRoleFilter) {
+            if (!allowedFamilies.contains(m.family))
+                continue;
+            if (!allowedMaterialIds.contains(m.id))
+                continue;
+        }
+
+        // releváns találatokat kihagyjuk
+        auto isRelevant = [&](const MaterialMaster& mm) {
+            auto hasId = [&](const QVector<MaterialMaster>& vec) {
+                for (const auto& x : vec)
+                    if (x.id == mm.id)
+                        return true;
+                return false;
+            };
+
+            return hasId(exactMatches)
+                   || hasId(prefixMatches)
+                   || hasId(substringMatches)
+                   || hasId(fuzzyMatches);
+        };
+
+        if (isRelevant(m))
+            continue;
+
+
+        nonRelevant.append(m);
     }
 
-    // 4) Fuzzy match
-    if (!fuzzyMatches.isEmpty()) {
-        addSeparator("Hasonló (elgépelés)");
-        for (const auto& m : fuzzyMatches) {
+    // ha vannak nem releváns találatok → külön blokk
+    if (!nonRelevant.isEmpty()) {
+        addSeparator("Egyéb anyagok");
+        for (const auto& m : nonRelevant) {
             auto* item = new QStandardItem();
             item->setData(QVariant::fromValue(m), Qt::UserRole);
             item->setData(m.name, Qt::DisplayRole);

@@ -35,4 +35,6 @@ public:
 
     int size() const { return m_roles.size(); }
     QVector<MaterialRole> findRoles(const QUuid &productTypeId, const QUuid &productSubtypeId, const MaterialFamily &family) const;
+
+    void updateStorageGroupIds(const QMap<QUuid, QUuid> &map);
 };
