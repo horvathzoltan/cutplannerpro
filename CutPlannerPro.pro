@@ -518,6 +518,7 @@ DISTFILES += \
     testdata/cutting_plans/cuttingplan_20260728-085942.txt \
     testdata/cutting_plans/cuttingplan_20260908-132810_Lab.txt \
     testdata/cutting_plans/cuttingplan_20260910-073810_Lab.txt \
+    testdata/cutting_plans/cuttingplan_20260914-080329_SRZ.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \
