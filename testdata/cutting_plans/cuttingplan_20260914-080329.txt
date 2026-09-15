@@ -58,3 +58,11 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "669";"Balmaz Aktual";620;1218;610;;2;1;1;"";TE-H-18;Width;false;2026-09-15;SR;MINIT;;SM
 "669";"Balmaz Aktual";620;1218;597;;2;1;1;"";MT-Z+P;Width;false;2026-09-15;SR;MINIT;;SM
 "669";"Balmaz Aktual";620;1218;1218;;2;1;1;"";MT-L2;Width;false;2026-09-15;SR;MINIT;;SM
+
+"661";"Katona Árpád";510;1240;480;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;Unknown
+"662";"Katona Árpád";865;1260;835;;1;0;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;815;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;480;;2;1;1;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;785;;3;1;2;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;710;;1;0;0;"";SR-Z+P;Width;false;2026-09-21;SR;TN;;SM
+

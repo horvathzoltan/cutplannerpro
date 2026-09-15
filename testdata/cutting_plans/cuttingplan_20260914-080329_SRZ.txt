@@ -1,0 +1,14 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"661";"Katona Árpád";510;1240;480;;2;1;1;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+"662";"Katona Árpád";865;1260;835;;1;0;1;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;815;;2;1;1;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;480;;2;1;1;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;785;;3;1;2;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;710;;1;0;0;"";SR-Z;Width;false;2026-09-21;SR;TN;;SM
+#
+"661";"Katona Árpád";510;1240;480;;2;1;1;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
+"662";"Katona Árpád";865;1260;835;;1;0;1;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
+"663";"Katona Árpád";845;1260;815;;2;1;1;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
+"664";"Katona Árpád";510;122;480;;2;1;1;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
+"665";"Katona Árpád";815;124;785;;3;1;2;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
+"666";"Katona Árpád";740;925;710;;1;0;0;"";SR-P-3000;Width;false;2026-09-21;SR;TN;;SM
