@@ -15,7 +15,6 @@ int   AddWasteDialog::s_lastLength = 0;
 QUuid AddWasteDialog::s_lastStorageId;
 QString AddWasteDialog::s_lastBarcode;
 
-bool AddWasteDialog::s_lastRepeat = false;
 
 AddWasteDialog::AddWasteDialog(QWidget *parent)
     : QDialog(parent)
@@ -24,6 +23,7 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
 {
     ui->setupUi(this);
     populateMaterialCombo();
+    ui->btn_RecentMaterials->setSeed("addwastedialog");
     ui->btn_RecentMaterials->rebuildMenu(ui->comboMaterial);
 
     connect(ui->btn_MaterialSearch, &QPushButton::clicked, this, [this]() {
@@ -56,20 +56,33 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
         ui->editLength->setText(QString::number(s_lastLength));
 
     // Tárhely ajánlása
-    if (!s_lastStorageId.isNull()) {
-        // 🔥 Körbevitelnél emlékezzen
-        int sidx = ui->comboStorage->findData(s_lastStorageId);
-        if (sidx >= 0)
-            ui->comboStorage->setCurrentIndex(sidx);
+    QString lastBc = SettingsManager::instance().lastStorage_AddLeftover();
+
+    if (!lastBc.isEmpty()) {
+        for (int i = 0; i < ui->comboStorage->count(); ++i) {
+            QUuid id = ui->comboStorage->itemData(i).toUuid();
+            auto st = StorageRegistry::instance().findById(id);
+
+            if (st->barcode == lastBc) {
+                ui->comboStorage->setCurrentIndex(i);
+                break;
+            }
+        }
     } else {
-        // 🔥 Első megnyitáskor NE legyen kiválasztva semmi
         ui->comboStorage->setCurrentIndex(-1);
     }
 
 
+
     // Prefix-aware ajánlás (pl. RSM-129 → RSM-130, maki-55 → maki-56)
+    // 🔥 L= formátum esetén NEM ajánlunk semmit
+    // Ha L= volt → ne emlékezzünk rá ajánláshoz
     QString bc;
-    if (!s_lastBarcode.isEmpty()) {
+    if (s_lastBarcode.startsWith("L=")) {
+        s_lastBarcode = "L=";
+        bc = "L=";
+    }
+    else if (!s_lastBarcode.isEmpty()) {
         QRegularExpression re("^(.*?)(\\d+)$");
         QRegularExpressionMatch m = re.match(s_lastBarcode);
         if (m.hasMatch()) {
@@ -83,25 +96,37 @@ AddWasteDialog::AddWasteDialog(QWidget *parent)
     }
     ui->editBarcode->setText(bc);
 
-    ui->chk_Repeat->setChecked(s_lastRepeat);
+    ui->chk_Repeat->setChecked(
+        SettingsManager::instance().repeatDialog_AddLeftover()
+        );
 
-    // barcodeDebounceTimer = new QTimer(this);
-    // barcodeDebounceTimer->setSingleShot(true);
-    // barcodeDebounceTimer->setInterval(1500); // 200 ms debounce
-
-    // connect(barcodeDebounceTimer, &QTimer::timeout,
-    //         this, &AddWasteDialog::applyBarcodeSyntax);
-
-    // connect(ui->editBarcode, &QLineEdit::textChanged, this, [this]() {
-    //     barcodeDebounceTimer->start();   // minden változás újraindítja
-    // });
+    connect(ui->chk_Repeat, &QCheckBox::toggled, this, [](bool checked){
+        SettingsManager::instance().setRepeatDialog_AddLeftover(checked);
+    });
 
     ui->editBarcode->installEventFilter(this);
     ui->editLength->installEventFilter(this);
 
-
     QTimer::singleShot(0, this, [this]() {
         applyInitialFocus();
+    });
+
+    connect(ui->comboStorage, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this](int idx){
+                if (idx < 0) return;
+
+                QUuid id = ui->comboStorage->itemData(idx).toUuid();
+                auto st = StorageRegistry::instance().findById(id);
+
+                SettingsManager::instance().setLastStorage_AddLeftover(st->barcode);
+            });
+
+    barcodeDebounceTimer = new QTimer(this);
+    barcodeDebounceTimer->setSingleShot(true);
+    barcodeDebounceTimer->setInterval(350); // 350ms idle után fut
+
+    connect(barcodeDebounceTimer, &QTimer::timeout, this, [this](){
+        compositeBarcodeHandler(ui->editBarcode->text());
     });
 
 }
@@ -111,12 +136,18 @@ bool AddWasteDialog::eventFilter(QObject *obj, QEvent *event)
     if (obj == ui->editBarcode && event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent*>(event);
 
+        // ENTER → ne csináljon semmit, ne zárja be a dialogot
         if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
-            //ke->accept();
-            compositeBarcodeHandler(ui->editBarcode->text());
-            return true;
+            return true; // swallow enter
         }
+
+        // Minden más billentyű → debounce timer újraindítása
+        if (barcodeDebounceTimer)
+            barcodeDebounceTimer->start();
+
+        return false;
     }
+
 
     if (obj == ui->editLength && event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent*>(event);
@@ -124,6 +155,7 @@ bool AddWasteDialog::eventFilter(QObject *obj, QEvent *event)
         if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
             //ke->accept();
             compositeBarcodeHandler(ui->editLength->text());
+            this->accept();
             return true;
         }
     }
@@ -162,12 +194,15 @@ void AddWasteDialog::compositeBarcodeHandler(const QString& b){
     }
 
     // van tárhely → automatikus rögzítés
-    this->accept();
+    //this->accept();
 
 }
 
 void AddWasteDialog::applyInitialFocus(){
-    ui->editLength->setFocus();
+    if(s_lastBarcode.startsWith("L="))
+        ui->editBarcode->setFocus();
+    else
+        ui->editLength->setFocus();
 }
 
 AddWasteDialog::~AddWasteDialog()
@@ -234,36 +269,44 @@ void AddWasteDialog::setModel(const LeftoverStockEntry& entry) {
     current_storageId  = entry.storageId;
 
     shadowManualCounter = SettingsManager::instance().peekManualLeftoverCounter(); // shadow counter init
+    QString bc;
+    if(s_lastBarcode.startsWith("L=")){
 
-    QString bc = entry.barcode.trimmed().toUpper();
+        bc = "L=";
+    }
+    else
+    {
 
-    // 🔥 Ha a modelben nincs barcode → generáljunk egyet
-    if (bc.isEmpty()) {
+        bc = entry.barcode.trimmed().toUpper();
 
-        // 1) Prefix-aware +1 (pl. RSM-129 → RSM-130, maki-55 → maki-56)
-        QRegularExpression re("^(.*?)(\\d+)$");
-        QRegularExpressionMatch m = re.match(s_lastBarcode);
-        if (m.hasMatch()) {
-            QString prefix = m.captured(1);
-            QString numStr = m.captured(2);
-            int num = numStr.toInt();
-            int inc = num + 1;
-            QString padded = QString("%1").arg(inc, numStr.length(), 10, QChar('0'));
-            bc = prefix + padded;
-        } else {
-            // 2) Shadow counter fallback → csak ha nincs prefix-match
-            int next = shadowManualCounter;
-            bc = IdentifierUtils::makeManualLeftoverId(next);
+        // 🔥 Ha a modelben nincs barcode → generáljunk egyet
+        if (bc.isEmpty()) {
 
-            while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
-                next++;
+            // 1) Prefix-aware +1 (pl. RSM-129 → RSM-130, maki-55 → maki-56)
+            QRegularExpression re("^(.*?)(\\d+)$");
+            QRegularExpressionMatch m = re.match(s_lastBarcode);
+            if (m.hasMatch()) {
+                QString prefix = m.captured(1);
+                QString numStr = m.captured(2);
+                int num = numStr.toInt();
+                int inc = num + 1;
+                QString padded = QString("%1").arg(inc, numStr.length(), 10, QChar('0'));
+                bc = prefix + padded;
+            } else {
+                // 2) Shadow counter fallback → csak ha nincs prefix-match
+                int next = shadowManualCounter;
                 bc = IdentifierUtils::makeManualLeftoverId(next);
+
+                while (LeftoverStockRegistry::instance().existsBarcode(bc)) {
+                    next++;
+                    bc = IdentifierUtils::makeManualLeftoverId(next);
+                }
+
+                shadowManualCounter = next;
             }
 
-            shadowManualCounter = next;
+            //ui->editBarcode->setText(bc);
         }
-
-        ui->editBarcode->setText(bc);
     }
 
     ui->editBarcode->setText(bc);
@@ -349,9 +392,6 @@ void AddWasteDialog::accept() {
     // shadow counter commit → csak RSM prefix esetén
     if (bc.startsWith("RSM"))
         SettingsManager::instance().commitManualLeftoverCounter(shadowManualCounter);
-
-    s_lastRepeat = ui->chk_Repeat->isChecked();
-
 
     // recent anyag frissítése
     ui->btn_RecentMaterials->rememberMaterial(selectedMaterialId());

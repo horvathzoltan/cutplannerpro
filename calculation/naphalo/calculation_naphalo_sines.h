@@ -49,33 +49,33 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   CalcMode mode)
 {
     // --- TOK ---
-    if (role == "NP-T") {
+    if (role == "RNP-T") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTok(width);
     }
 
     // --- TOKFEDEL ---
-    if (role == "NP-TF") {
+    if (role == "RNP-TF") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTokFedel(width);
     }
 
     // --- ZÁRÓ ---
-    if (role == "NP-SZ") {
+    if (role == "RNP-SZ") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaro(width);
     }
 
     // --- LAB ---
-    if (role == "NP-SL" ||
-        role == "NP-SL2")
+    if (role == "RNP-SL" ||
+        role == "RNP-SL2")
     {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcLab(height);
     }
 
     // --- TENGELY ---
-    if (role == "NP-ROLL") {
+    if (role == "RNP-ROLL") {
         // attribútumfüggő tengely
         const QString meghajtas_key = "meghajtas";
         if(attributes.contains(meghajtas_key))
@@ -99,13 +99,13 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     }
 
     // --- SÚLY ---
-    if (role == "NP-BAR") {
+    if (role == "RNP-SBAR") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaroSuly(width);
     }
 
     // --- VÁSZON ---
-    if (role == "NP-VASZON") {
+    if (role == "RNP-VASZON") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcVaszon(width);
     }
@@ -117,7 +117,7 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
 
 std::optional<double> compensation(const QMap<QString, QString>& attributes,
                                    const QString& role){
-    if (role == "NP-ROLL") {
+    if (role == "RNP-ROLL") {
         // attribútumfüggő tengely
         const QString meghajtas_key = "meghajtas";
         if(attributes.contains(meghajtas_key))
@@ -139,12 +139,12 @@ std::optional<double> compensation(const QMap<QString, QString>& attributes,
     }
 
     // --- TOK ---
-    if (role == "NP-TOK") {
+    if (role == "RNP-TOK") {
         return -0.50;
     }
 
     // --- SÚLY ---
-    if (role == "NP-BAR") {
+    if (role == "RNP-BAR") {
         return 0;//-10;
     }
 

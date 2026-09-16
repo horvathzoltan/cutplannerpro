@@ -1,6 +1,7 @@
 #include "recentmaterialswidget.h"
-
-QList<QUuid> RecentMaterialsWidget::s_recent;
+#include "common/logger.h"
+#include <settings/settingsmanager.h>
+#include <materials/registry/material_registry.h>
 
 RecentMaterialsWidget::RecentMaterialsWidget(QWidget* parent)
     : QToolButton(parent),
@@ -16,22 +17,44 @@ RecentMaterialsWidget::RecentMaterialsWidget(QWidget* parent)
 
 void RecentMaterialsWidget::rememberMaterial(const QUuid& id)
 {
-    s_recent.removeAll(id);
-    s_recent.prepend(id);
+    auto mat = MaterialRegistry::instance().findById(id);
+    QString bc = mat->barcode.trimmed();
 
-    if (s_recent.size() > 5)
-        s_recent.removeLast();
+    if (bc.isEmpty())
+        return;
+
+    s_recentBarcodes.removeAll(bc);
+    s_recentBarcodes.prepend(bc);
+
+    while (s_recentBarcodes.size() > 5)
+        s_recentBarcodes.removeLast();
+
+    savePersistent();   // 🔥 azonnal mentjük
 }
+
 
 void RecentMaterialsWidget::rebuildMenu(QComboBox* combo)
 {
+    if(_seed.isEmpty()){
+        zWarning("RecentMaterialWidget: seed nincs megadva!");
+        return;
+    }
+
     m_menu->clear();
 
-    for (const QUuid& id : s_recent) {
-        int idx = combo->findData(id);
-        if (idx >= 0) {
-            QAction* act = m_menu->addAction(combo->itemText(idx));
-            act->setData(id);
+    for (int r = 0; r < s_recentBarcodes.size(); ++r) {
+        const QString& bc = s_recentBarcodes.at(r);
+
+        // anyag keresése barcode alapján
+        for (int i = 0; i < combo->count(); ++i) {
+            QUuid id = combo->itemData(i).toUuid();
+            auto mat = MaterialRegistry::instance().findById(id);
+
+            if (mat->barcode == bc) {
+                QAction* act = m_menu->addAction(combo->itemText(i));
+                act->setData(id);
+                break;
+            }
         }
     }
 
@@ -41,4 +64,16 @@ void RecentMaterialsWidget::rebuildMenu(QComboBox* combo)
         if (idx >= 0)
             combo->setCurrentIndex(idx);
     });
+}
+
+
+void RecentMaterialsWidget::loadPersistent()
+{
+    s_recentBarcodes =
+        SettingsManager::instance().recentMaterials(_seed);
+}
+
+void RecentMaterialsWidget::savePersistent()
+{
+    SettingsManager::instance().setRecentMaterials(_seed, s_recentBarcodes);
 }

@@ -47,7 +47,11 @@ inline constexpr auto PrioSortMode = "prio_sortMode";
 inline constexpr auto OptimizationLeftoverAuditHours = "optimization_leftover_audit_hours";
 
 inline constexpr auto RepeatDialog_AddInput = "repeatdialog_addinput";
+inline constexpr auto RepeatDialog_AddLeftover = "repeatdialog_addleftover";
 
+inline constexpr auto RecentMaterials = "repeatdialog_addleftover_RecentMaterials";
+
+static const QString LastStorage_AddLeftover = "laststorage_addleftover";
 }
 
 enum class TestMode {
@@ -144,7 +148,6 @@ public:
     SortMode prioSortMode() const;
     void setPrioSortMode(SortMode mode);
 
-
     static constexpr int printedLineWidth = 80;
     static constexpr int printedPageHeight = 60;
 
@@ -165,6 +168,15 @@ public:
 
     bool repeatDialog_AddInput() const;
     void setRepeatDialog_AddInput(bool mm);
+    bool repeatDialog_AddLeftover() const;
+    void setRepeatDialog_AddLeftover(bool mm);
+
+    QString lastStorage_AddLeftover() const;
+    void setLastStorage_AddLeftover(QString v);
+
+    QList<QString> recentMaterials(const QString& seed) const;
+    void setRecentMaterials(const QString& seed, const QList<QString>& list);
+
 public:
     QVariant value(const QString& key, const QVariant& def = {}) const;
     void setValue(const QString& key, const QVariant& value);
