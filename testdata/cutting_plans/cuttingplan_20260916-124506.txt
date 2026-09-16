@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"336";"Csinos";1778;1580;1748;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM
+"336";"Csinos";1778;1580;1773;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM
+"336";"Csinos";1778;1580;1655;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM
+"336";"Csinos";1778;1580;1477;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM
+"336";"Csinos";1778;1580;1667;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM
+"336";"Csinos";1778;1580;1603;;1;1;0;"RAL 7016";NP-BAR22-3000;Width;false;2026-09-17;NP;CIP;meghajtas=motoros;SM

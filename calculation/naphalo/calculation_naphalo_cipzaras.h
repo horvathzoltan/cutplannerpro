@@ -30,7 +30,7 @@ inline double calcLabBetet(double height){
 }
 
 inline double calcTengely_Motoros(double width){
-    return width - 111;//115;
+    return width - 110;//115;
 }
 
 inline double calcTengely_Kurblis(double width){
