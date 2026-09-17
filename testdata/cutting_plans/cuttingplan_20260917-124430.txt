@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"330";"Arthy L.";1980;2200;1950;;1;1;0;"RAL 8003";NP-T;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"330";"Arthy L.";1980;2200;1975;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"330";"Arthy L.";1980;2200;1857;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"330";"Arthy L.";1980;2200;2097;;1;1;0;"RAL 8003";NP-CL2+CLT2+CLB2;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"330";"Arthy L.";1980;2200;1870;;1;1;0;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"330";"Arthy L.";1980;2200;1805;;1;1;0;"RAL 8003";NP-BAR22-3000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2340;;1;0;1;"RAL 8003";NP-T;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2365;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2247;;1;0;1;"RAL 8003";NP-CZ;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2077;;1;0;1;"RAL 8003";NP-CL2+CLT2+CLB2;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2260;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"331";"Arthy L.";2370;2180;2195;;1;0;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2250;;2;1;1;"RAL 8003";NP-T;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2275;;2;1;1;"RAL 8003";NP-TF;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2157;;2;1;1;"RAL 8003";NP-CZ;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2077;;2;1;1;"RAL 8003";NP-CL2+CLT2+CLB2;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2170;;2;1;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"332";"Arthy L.";2280;2180;2105;;2;1;1;"RAL 8003";NP-BAR22-3000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;3100;;1;1;0;"RAL 8003";NP-T;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;3125;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;3007;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;1982;;1;1;0;"RAL 8003";NP-CL2+CLT2+CLB2;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;3020;;1;1;0;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
+"333";"Arthy L.";3130;2085;2955;;1;1;0;"RAL 8003";NP-BAR22-3000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM
