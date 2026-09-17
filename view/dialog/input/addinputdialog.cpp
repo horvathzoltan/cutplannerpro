@@ -10,6 +10,7 @@
 #include "view/dialog/materialsearch/materialsearchdialog.h"
 
 #include <QCompleter>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -84,7 +85,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         connect(rb, &QRadioButton::toggled, this, [this](bool checked){
             if (!checked) return;
 
-            refreshBom();
+            refreshBom("type changed");
             onProductTypeChanged(true);   // megmarad a subtype stack váltás
 
             ui->lblLengthWarning->hide();
@@ -116,7 +117,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             connect(rb, &QRadioButton::toggled, this, [this](bool checked){
                 if (!checked) return;
 
-                refreshBom();
+                refreshBom("subtype changed");
                 updateAttributePanel();
 
                 ui->lblLengthWarning->hide();
@@ -304,7 +305,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
         updateColorPreview();
-        refreshBom();
+        refreshBom("length changed");
     });
 
     connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
@@ -319,7 +320,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
         updateColorPreview();
-        refreshBom();
+        refreshBom("color changed");
     });
 
     connect(ui->edit_Color, &QLineEdit::textChanged,
@@ -456,9 +457,196 @@ void AddInputDialog::groupboxAttributes_show(){
     this->resize(this->width(), this->height() + h);
 }
 
-void AddInputDialog::refreshBom()
+// void AddInputDialog::refreshBom()
+// {
+//     zTrace();
+
+//     QElapsedTimer timer1;
+
+//     {
+//         QUuid id = _bomModel.lastSuggestedMaterial;
+//         if (id.isNull()) {
+//             zInfo("  lastSuggestedMaterial at entry: NULL");
+//         } else {
+//             const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//             if (m)
+//                 zInfo(QString("  lastSuggestedMaterial at entry: %1 [%2]")
+//                           .arg(m->name)
+//                           .arg(m->barcode));
+//             else
+//                 zInfo(QString("  lastSuggestedMaterial at entry: UNKNOWN GUID %1")
+//                           .arg(id.toString()));
+//         }
+//     }
+
+//     // 1) User által bevitt request (érintetlen!)
+//     Cutting::Plan::Request req = getModel();
+
+//     //2) Selector input: req + hint (lokális kontextus)
+//     // Cutting::Plan::Request selReq = req;
+//     // if (selReq <= 0 && _lengthHint > 0)
+//     //     selReq.requiredLength = _lengthHint;
+
+
+//     //zInfo("selReq.requiredLength: "+QString::number(req.requiredLength));
+
+//     // 3) Tiszta BOM generálás
+//     auto bom = MaterialRegistry::instance().generateBom(
+//         req.productTypeId,
+//         req.productSubtypeId
+//         );
+
+//     // 4) Preferencia alkalmazása (jobbágy)
+//     auto ranked = MaterialSelector::rankMaterials(bom, req);
+
+//     // 5) BOM utófeldolgozás (király)
+//     QMap<MaterialRole, QUuid> bestPerRole;
+
+//     for (auto id : ranked.ranked) {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//         if (!m) continue;
+
+//         //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+//         MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
+
+//         if (!bestPerRole.contains(role))
+//             bestPerRole[role] = id;
+//     }
+
+
+
+//     QVector<QUuid> recommended;
+//     for (auto id : ranked.ranked) {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//         if (!m) continue;
+
+//         //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+//         MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
+
+//         if (bestPerRole[role] == id)
+//             recommended << id;
+
+//     }
+
+//     // 1) BOM ajánlás beállítása
+//     _bomModel.bomList = recommended;
+
+//     // ⭐ Második kör: szűrés — csak a vágási anyagok kerülnek a vágási workflow BOM-jába
+//     QVector<QUuid> cuttableBom;
+//     for (auto id : _bomModel.bomList) {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//         if (!m) continue;
+
+//         if (m->cuttingMode == CuttingMode::Length) {
+//             cuttableBom << id;
+//         } else {
+//             zInfo(QString("  KIT item present in BOM (kept for kitting, skipped for cutting): %1 [%2]")
+//                       .arg(m->name)
+//                       .arg(m->barcode));
+//         }
+//     }
+
+//     // ⭐ A vágási workflow BOM-ja csak a CUT anyagokat tartalmazza
+//     _bomModel.bomList = cuttableBom;
+
+//     // 2) lastSuggestedMaterial szinkronizálása az új BOM-hoz
+
+//     // ranked-first fallback
+//     auto pickRankedFirst = [&]() -> QUuid {
+//         for (auto id : ranked.ranked) {
+//             if (_bomModel.bomList.contains(id))
+//                 return id;
+//         }
+//         return QUuid();
+//     };
+
+//     // 2) lastSuggestedMaterial szinkronizálása az új BOM-hoz
+//     if (!_bomModel.lastSuggestedMaterial.isNull()) {
+//         // ha kiesett → ranked első BOM elem
+//         if (!_bomModel.bomList.contains(_bomModel.lastSuggestedMaterial)) {
+//             _bomModel.lastSuggestedMaterial = pickRankedFirst();
+//         }
+//     }
+//     else {
+//         // ha eddig nem volt → ranked első szabad BOM elem
+//         for (auto id : ranked.ranked) {
+//             if (_bomModel.bomList.contains(id) &&
+//                 !_bomModel.addedMaterials.contains(id))
+//             {
+//                 _bomModel.lastSuggestedMaterial = id;
+//                 break;
+//             }
+//         }
+//     }
+
+//     zInfo("=== Recommended BOM order ===");
+//     for (auto id : _bomModel.bomList) {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
+//         if (!m) continue;
+
+//         QString mode;
+//         switch (m->cuttingMode) {
+//         case CuttingMode::Length: mode = "CUT"; break;
+//         case CuttingMode::Piece:  mode = "KIT"; break;
+//         default:                  mode = "N/A"; break;
+//         }
+
+//         zInfo(QString("  %1  [%2]  (%3)")
+//                   .arg(m->name)
+//                   .arg(m->barcode)
+//                   .arg(mode));
+//     }
+//     zInfo("=== END Recommended BOM ===");
+
+
+//     // 3) ComboMaterial szinkronizálása a lastSuggestedMaterial-hez
+//     // if (!_bomModel.lastSuggestedMaterial.isNull()) {
+//     //     int idx = ui->comboMaterial->findData(_bomModel.lastSuggestedMaterial);
+//     //     if (idx >= 0) {
+//     //         ui->comboMaterial->setCurrentIndex(idx);
+//     //         zInfo(QString("comboMaterial synced to %1")
+//     //                   .arg(_bomModel.lastSuggestedMaterial.toString()));
+//     //     } else {
+//     //         zInfo("comboMaterial: lastSuggestedMaterial not found in combo");
+//     //     }
+//     // }
+
+
+//     // ⭐ BOM befejezés jelzése
+//     bool bomDone = (_bomModel.addedMaterials.size() == _bomModel.bomList.size());
+
+//     if (bomDone) {
+//         ui->btnNextMaterial->setEnabled(false);
+//         ui->btnNextMaterial->setText("✔ Kész");
+//         ui->btnNextMaterial->setStyleSheet(
+//             "background-color: #4CAF50; color: white; font-weight: bold;"
+//             );
+//         ui->btnNextMaterial->setToolTip("Minden ajánlott anyag rögzítve");
+//     } else {
+//         ui->btnNextMaterial->setEnabled(true);
+//         ui->btnNextMaterial->setText("↓ Köv. anyag");
+//         ui->btnNextMaterial->setStyleSheet("");
+//         ui->btnNextMaterial->setToolTip("Következő ajánlott anyag");
+//     }
+
+//     _lastSelectorResult = ranked;
+//     updateBomWarnings();
+
+//     // aktuális anyaghoz tartozó material warning frissítése
+//     QUuid currentMat = selectedMaterialId();
+//     updateMaterialWarnings(currentMat);
+// }
+
+void AddInputDialog::refreshBom(const QString& key)
 {
-    zTrace();
+    zInfo(L("AddInputDialog::refreshBom: ")+key);
+    QElapsedTimer totalTimer;
+    totalTimer.start();
+    QElapsedTimer stepTimer;
+    stepTimer.start();
+
 
     {
         QUuid id = _bomModel.lastSuggestedMaterial;
@@ -475,26 +663,22 @@ void AddInputDialog::refreshBom()
                           .arg(id.toString()));
         }
     }
+    zInfo(QString("[refreshBom] entry-log block: %1 ms").arg(stepTimer.restart()));
 
     // 1) User által bevitt request (érintetlen!)
     Cutting::Plan::Request req = getModel();
-
-    //2) Selector input: req + hint (lokális kontextus)
-    // Cutting::Plan::Request selReq = req;
-    // if (selReq <= 0 && _lengthHint > 0)
-    //     selReq.requiredLength = _lengthHint;
-
-
-    //zInfo("selReq.requiredLength: "+QString::number(req.requiredLength));
+    zInfo(QString("[refreshBom] getModel(): %1 ms").arg(stepTimer.restart()));
 
     // 3) Tiszta BOM generálás
     auto bom = MaterialRegistry::instance().generateBom(
         req.productTypeId,
         req.productSubtypeId
         );
+    zInfo(QString("[refreshBom] generateBom(): %1 ms").arg(stepTimer.restart()));
 
     // 4) Preferencia alkalmazása (jobbágy)
     auto ranked = MaterialSelector::rankMaterials(bom, req);
+    zInfo(QString("[refreshBom] rankMaterials(): %1 ms").arg(stepTimer.restart()));
 
     // 5) BOM utófeldolgozás (király)
     QMap<MaterialRole, QUuid> bestPerRole;
@@ -503,29 +687,28 @@ void AddInputDialog::refreshBom()
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
-        //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
         MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
-
 
         if (!bestPerRole.contains(role))
             bestPerRole[role] = id;
     }
-
-
+    zInfo(QString("[refreshBom] bestPerRole loop (%1 elem): %2 ms")
+              .arg(ranked.ranked.size())
+              .arg(stepTimer.restart()));
 
     QVector<QUuid> recommended;
     for (auto id : ranked.ranked) {
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
-        //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
         MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
-
 
         if (bestPerRole[role] == id)
             recommended << id;
-
     }
+    zInfo(QString("[refreshBom] recommended loop (%1 elem): %2 ms")
+              .arg(ranked.ranked.size())
+              .arg(stepTimer.restart()));
 
     // 1) BOM ajánlás beállítása
     _bomModel.bomList = recommended;
@@ -544,11 +727,12 @@ void AddInputDialog::refreshBom()
                       .arg(m->barcode));
         }
     }
+    zInfo(QString("[refreshBom] cuttableBom filter loop (%1 elem): %2 ms")
+              .arg(_bomModel.bomList.size())
+              .arg(stepTimer.restart()));
 
     // ⭐ A vágási workflow BOM-ja csak a CUT anyagokat tartalmazza
     _bomModel.bomList = cuttableBom;
-
-    // 2) lastSuggestedMaterial szinkronizálása az új BOM-hoz
 
     // ranked-first fallback
     auto pickRankedFirst = [&]() -> QUuid {
@@ -561,13 +745,11 @@ void AddInputDialog::refreshBom()
 
     // 2) lastSuggestedMaterial szinkronizálása az új BOM-hoz
     if (!_bomModel.lastSuggestedMaterial.isNull()) {
-        // ha kiesett → ranked első BOM elem
         if (!_bomModel.bomList.contains(_bomModel.lastSuggestedMaterial)) {
             _bomModel.lastSuggestedMaterial = pickRankedFirst();
         }
     }
     else {
-        // ha eddig nem volt → ranked első szabad BOM elem
         for (auto id : ranked.ranked) {
             if (_bomModel.bomList.contains(id) &&
                 !_bomModel.addedMaterials.contains(id))
@@ -577,6 +759,7 @@ void AddInputDialog::refreshBom()
             }
         }
     }
+    zInfo(QString("[refreshBom] lastSuggestedMaterial sync: %1 ms").arg(stepTimer.restart()));
 
     zInfo("=== Recommended BOM order ===");
     for (auto id : _bomModel.bomList) {
@@ -596,20 +779,7 @@ void AddInputDialog::refreshBom()
                   .arg(mode));
     }
     zInfo("=== END Recommended BOM ===");
-
-
-    // 3) ComboMaterial szinkronizálása a lastSuggestedMaterial-hez
-    // if (!_bomModel.lastSuggestedMaterial.isNull()) {
-    //     int idx = ui->comboMaterial->findData(_bomModel.lastSuggestedMaterial);
-    //     if (idx >= 0) {
-    //         ui->comboMaterial->setCurrentIndex(idx);
-    //         zInfo(QString("comboMaterial synced to %1")
-    //                   .arg(_bomModel.lastSuggestedMaterial.toString()));
-    //     } else {
-    //         zInfo("comboMaterial: lastSuggestedMaterial not found in combo");
-    //     }
-    // }
-
+    zInfo(QString("[refreshBom] recommended BOM log print: %1 ms").arg(stepTimer.restart()));
 
     // ⭐ BOM befejezés jelzése
     bool bomDone = (_bomModel.addedMaterials.size() == _bomModel.bomList.size());
@@ -627,16 +797,19 @@ void AddInputDialog::refreshBom()
         ui->btnNextMaterial->setStyleSheet("");
         ui->btnNextMaterial->setToolTip("Következő ajánlott anyag");
     }
+    zInfo(QString("[refreshBom] btnNextMaterial UI update: %1 ms").arg(stepTimer.restart()));
 
     _lastSelectorResult = ranked;
     updateBomWarnings();
+    zInfo(QString("[refreshBom] updateBomWarnings(): %1 ms").arg(stepTimer.restart()));
 
     // aktuális anyaghoz tartozó material warning frissítése
     QUuid currentMat = selectedMaterialId();
     updateMaterialWarnings(currentMat);
+    zInfo(QString("[refreshBom] selectedMaterialId()+updateMaterialWarnings(): %1 ms").arg(stepTimer.restart()));
+
+    zInfo(QString("[refreshBom] TOTAL: %1 ms").arg(totalTimer.elapsed()));
 }
-
-
 
 
 // void AddInputDialog::initializeDialog()
@@ -1756,7 +1929,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
     _bomModel.lastSuggestedMaterial = QUuid();
 
     // 1) BOM generálása az aktuális UI állapot alapján
-    refreshBom();   // ez tölti fel _bomModel.bomList-et (recommended)
+    refreshBom("initializeBomModel");   // ez tölti fel _bomModel.bomList-et (recommended)
 
     // 2) Registry lekérdezés — mi lett már hozzáadva ehhez a ref-hez?
     auto existing = CuttingPlanRequestRegistry::instance().findByExternalReference(ref);

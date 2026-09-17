@@ -185,7 +185,7 @@ private:
     void setMaterialEditable(bool editable);
     void setItemEditable(bool editable);
     void applySide_Slider(int l, int r);
-    void refreshBom();
+    void refreshBom(const QString& key );
     void updateAttributePanel();
     void applyAttributes(const Cutting::Plan::Request &r);
     void groupboxAttributes_hide();
