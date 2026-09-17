@@ -46,31 +46,31 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
 {
 
     // --- TOK ---
-    if (role == "MT-T") {
+    if (role == "RMT-T") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTok(width);
     }
 
     // --- TENGELY ---
-    if (role == "TE-H") {
+    if (role == "RTE-H-18") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
-    if (role == "SR-VASZON") {
+    if (role == "RSR-VASZON") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcVaszon(width);
     }
 
     // --- ZARO ---
-    if (role == "MT-Z") {
+    if (role == "RMT-Z") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaro(width);
     }
 
     // --- LAB ---
-    if (role == "MT-L2") {
+    if (role == "RMT-L2") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcLab(height);
     }

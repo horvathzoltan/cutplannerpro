@@ -11,6 +11,8 @@
 #include "common/logger.h"
 #include "leftover/registry/leftoverstockregistry.h"
 #include <settings/settingsmanager.h>
+#include <product/registry/material_role_registry.h>
+#include <materials/registry/material_rolegroup_registry.h>
 
 namespace Cutting {
 namespace Optimizer {
@@ -171,20 +173,29 @@ public:
         QSet<QUuid> groupMembers;
 
         if (grp) {
-            groupMembers = QSet<QUuid>(grp->materialIds.begin(), grp->materialIds.end());
+            groupMembers = QSet<QUuid>(grp->members().begin(), grp->members().end());
         } else {
             // ha nincs csoport → csak önmagát tartalmazza
             groupMembers.insert(req.materialId);
         }
 
         // 2) Role meghatározása
-        MaterialRole role =
-            MaterialRoleUtils::makeRole(req, mm);
+        // MaterialRole role =
+        //     MaterialRoleUtils::makeRole(req, mm);
 
-        const QString roleName = role.barcodePrefix;
+        // const QString roleName = role.barcodePrefix;
+
+        MaterialRole role =
+            MaterialRoleRegistry::instance().roleForBarcode(mm->barcode);
+
+        auto* roleGroup =
+            MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+        QString roleKey = roleGroup ? roleGroup->barcode : "";
+
 
         // 3) Csak NP-BAR (súly) esetén dolgozunk
-        if (roleName != "NP-BAR") {
+        if (roleKey != "RNP-CBAR" && roleKey != "RNP-SBAR") {
             // Nem súly, nem mi kezeljük
             return;
         }

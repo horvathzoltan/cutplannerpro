@@ -5,7 +5,7 @@
 #include <QApplication>
 
 #include "materials/model/material_master.h"
-#include "materials/utils/material_utils.h"
+//#include "materials/utils/material_utils.h"
 //#include "materials/utils/group_utils.h"
 
 Q_DECLARE_METATYPE(MaterialMaster)

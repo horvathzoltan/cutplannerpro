@@ -1,11 +1,31 @@
 #pragma once
 #include "materialdelegate.h"
+#include "materials/utils/material_group_utils.h"
+#include "materials/utils/material_utils.h"
 
 void MaterialDelegate::paint(QPainter* painter,
                              const QStyleOptionViewItem& option,
                              const QModelIndex& index) const
 {
     painter->save();
+
+    // ⭐ SZEPRÁTOR KEZELÉSE
+    if (index.data(Qt::UserRole + 1).toBool()) {
+        QStyleOptionViewItem opt(option);
+        initStyleOption(&opt, index);
+
+        // szeparátor szöveg
+        opt.text = index.data(Qt::DisplayRole).toString();
+
+        // szeparátor stílus
+        opt.font.setBold(true);
+        opt.palette.setColor(QPalette::Text, Qt::darkGray);
+
+        QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+        painter->restore();
+        return;
+    }
+
 
     QVariant v = index.data(Qt::UserRole);
     if (!v.isValid()) {

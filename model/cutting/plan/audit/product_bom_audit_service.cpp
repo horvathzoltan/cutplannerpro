@@ -15,6 +15,8 @@
 
 #include <model/registries/cuttingplanrequestregistry.h>
 
+#include <materials/registry/material_rolegroup_registry.h>
+
 
 // product_bom_audit_service.cpp
 
@@ -121,23 +123,27 @@ ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::R
                 continue;
             }
 
-            MaterialRole normalized = MaterialRoleUtils::makeRole(r, mm);
+            //MaterialRole normalized = MaterialRoleUtils::makeRole(r, mm);
+            MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mm->barcode);
+            auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+            QString roleKey = roleGroup->barcode;   // pl. "RNP-CZ"
 
-            if (normalized.family == MaterialFamily::Unknown ||
-                normalized.barcodePrefix.isEmpty())
-            {
-                result.entries.add(
-                    ref,
-                    "BOM",
-                    "role known",
-                    false,
-                    "valid role",
-                    mm->barcode
-                    );
-                continue;
-            }
 
-            QString roleKey = normalized.barcodePrefix.trimmed();
+            // if (normalized.family == MaterialFamily::Unknown ||
+            //     normalized.barcodePrefix.isEmpty())
+            // {
+            //     result.entries.add(
+            //         ref,
+            //         "BOM",
+            //         "role known",
+            //         false,
+            //         "valid role",
+            //         mm->barcode
+            //         );
+            //     continue;
+            // }
+
+            // QString roleKey = normalized.barcodePrefix.trimmed();
             actual[roleKey] += r.quantity;
         }
 
@@ -148,8 +154,10 @@ ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::R
         // 5) BOM hiány / többlet
         for (auto it2 = bomRoleMap.begin(); it2 != bomRoleMap.end(); ++it2)
         {
-            QString rawKey = it2.key();
-            QString roleKey = MaterialRoleUtils::normalizePrefix(rawKey);
+            //QString rawKey = it2.key();
+            //QString roleKey = MaterialRoleUtils::normalizePrefix(rawKey);
+
+            QString roleKey = it2.key();   // már groupKey
 
             double expectedPerProduct = it2.value();
             double expected = expectedPerProduct * productCount;
@@ -172,11 +180,11 @@ ProductBomAuditResult ProductBomAuditService::run(const QVector<Cutting::Plan::R
         for (auto it3 = actual.begin(); it3 != actual.end(); ++it3)
         {
             QString rawKey = it3.key();
-            QString roleKey = MaterialRoleUtils::normalizePrefix(rawKey);
 
-            double got = it3.value();
-
+            QString roleKey = rawKey;  // már groupKey
+            double got = actual.value(roleKey);
             bool ok = bomRoleMap.contains(roleKey);
+
 
             result.entries.add(
                 ref,

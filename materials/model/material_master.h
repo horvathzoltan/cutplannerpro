@@ -134,5 +134,10 @@ public:
         return _stockLength_mm;
     }
 
+    inline bool operator==(const MaterialMaster& other) const
+    {
+        return id == other.id;
+    }
+
 
 };

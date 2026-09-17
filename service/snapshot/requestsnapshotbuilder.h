@@ -5,7 +5,9 @@
 #include "materials/utils/material_group_utils.h"
 #include "product/utils/material_role_utils.h"
 #include <materials/registry/material_registry.h>
+#include <materials/registry/material_rolegroup_registry.h>
 #include <calculation/lengthcalculator.h>
+#include <product/registry/material_role_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
@@ -36,9 +38,14 @@ public:
             if (!m)
                 continue;
 
+            // 🔥 ÚJ: szerepkör meghatározása groupKey alapján
             MaterialRole role =
-                MaterialRoleUtils::makeRole(r, m);
+                MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
 
+            auto* roleGroup =
+                MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+            QString groupKey = roleGroup ? roleGroup->barcode : "";
             auto type = ProductTypeRegistry::instance().findById(r.productTypeId);
             auto subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
 
@@ -47,7 +54,7 @@ public:
                     type->code,
                     subtype->code,
                     r.attributes,
-                    role.barcodePrefix);
+                    groupKey);
 
                 if (comp.has_value()) {
                     r.requiredLength += *comp;

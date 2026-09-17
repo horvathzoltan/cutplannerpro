@@ -16,6 +16,7 @@
 #include <calculation/lengthcalculator.h>
 #include <common/eventlogger.h>
 #include <materials/model/material_master.h>
+#include <materials/registry/material_rolegroup_registry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
@@ -381,8 +382,14 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         }
         else {
             initializeDialog();
-            bool s_lastRepeat = SettingsManager::instance().repeatDialog_AddInput();
-            ui->chk_Repeat->setChecked(s_lastRepeat);
+
+            ui->chk_Repeat->setChecked(
+                SettingsManager::instance().repeatDialog_AddInput()
+                );
+
+            connect(ui->chk_Repeat, &QCheckBox::toggled, this, [](bool checked){
+                SettingsManager::instance().setRepeatDialog_AddInput(checked);
+            });
         }
         _suppressPreview = false;
         _suppressLengthSuggestion = false;
@@ -415,8 +422,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     ui->lblBomWarning->setText("");
     //groupboxAttributes_hide();
 
-    bool isRepeat = SettingsManager::instance().repeatDialog_AddInput();
-    ui->chk_Repeat->setChecked(isRepeat);
+
 }
 
 AddInputDialog::~AddInputDialog()
@@ -497,7 +503,9 @@ void AddInputDialog::refreshBom()
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
-        MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+        //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+        MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
 
         if (!bestPerRole.contains(role))
             bestPerRole[role] = id;
@@ -510,7 +518,9 @@ void AddInputDialog::refreshBom()
         const MaterialMaster* m = MaterialRegistry::instance().findById(id);
         if (!m) continue;
 
-        MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+        //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+        MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
 
         if (bestPerRole[role] == id)
             recommended << id;
@@ -987,9 +997,7 @@ void AddInputDialog::accept() {
 
     const QString ref = req.externalReference;
     s_lastExternalRef = ref;
-    bool s_lastRepeat = ui->chk_Repeat->isChecked();
 
-    SettingsManager::instance().setRepeatDialog_AddInput(s_lastRepeat);
     s_ownerCache.insert(req.ownerName);
 
     _bomModel.addedMaterials.insert(req.materialId);
@@ -1171,8 +1179,7 @@ void AddInputDialog::on_btn_MaterialSearch_clicked()
 void AddInputDialog::reject() {
     // Cancel → reset repeat
     //s_lastRepeat = false;
-    SettingsManager::instance().setRepeatDialog_AddInput(false);
-    ui->chk_Repeat->setChecked(false);
+
     QDialog::reject();
 }
 
@@ -1276,9 +1283,6 @@ void AddInputDialog::on_btn_Reset_clicked()
     // ⭐ Fókusz beállítása
     applyInitialFocus();
 
-    //s_lastRepeat = false;
-    SettingsManager::instance().setRepeatDialog_AddInput(false);
-    ui->chk_Repeat->setChecked(false);
 }
 
 
@@ -2279,8 +2283,16 @@ void AddInputDialog::onMaterialComboChanged(int index)
 
     // 2) Role meghatározása
     Cutting::Plan::Request req = getModel();
-    MaterialRole role = MaterialRoleUtils::makeRole(req, m);
+    //MaterialRole role = MaterialRoleUtils::makeRole(req, m);
     //QString roleName = MaterialRoleUtils::toString(role);
+
+    MaterialRole role =
+        MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
+    auto* roleGroup =
+        MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+    QString groupKey = roleGroup ? roleGroup->barcode : "";
 
     // 3) HEAD adatok
     QString typeCode = currentProductTypeCode();
@@ -2296,7 +2308,7 @@ void AddInputDialog::onMaterialComboChanged(int index)
         typeCode,
         subtypeCode,
         attrs,
-        role.barcodePrefix,
+        groupKey,
         width,
         height,
         CalcMode::GyartasiMeret);
@@ -2310,7 +2322,7 @@ void AddInputDialog::onMaterialComboChanged(int index)
         ui->editLength->clear();
         ui->lblLengthWarning->setText(
             QString("⚠️ Nincs gyártási méret képlet ehhez az anyaghoz: %1.")
-                .arg(role.barcodePrefix)
+                .arg(groupKey)
             );
         ui->lblLengthWarning->show();
     }

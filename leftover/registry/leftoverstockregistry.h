@@ -39,4 +39,5 @@ public:
     bool markSeen(const QUuid& entryId);
     bool markNotFound(const QUuid& entryId);
 
+    int size() const { return _data.size(); }
 };

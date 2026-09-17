@@ -11,6 +11,8 @@
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
+#include <materials/registry/material_rolegroup_registry.h>
+
 MaterialRoleRepository::MaterialRoleRepository(){}
 
 QVector<MaterialRole> MaterialRoleRepository::load(const QString& csvPath) const
@@ -46,7 +48,8 @@ QVector<MaterialRole> MaterialRoleRepository::load(const QString& csvPath) const
         QString typeCode    = cols[0].trimmed();
         QString subtypeCode = cols[1].trimmed();
         QString familyStr   = cols[2].trimmed();
-        QString prefix      = cols[3].trimmed();
+        //QString prefix      = cols[3].trimmed();
+        QString groupKey    = cols[3].trimmed();   // 🔥 prefix helyett groupKey
 
         const ProductType* type = ProductTypeRegistry::instance().findByCode(typeCode);
         if (!type) {
@@ -66,11 +69,19 @@ QVector<MaterialRole> MaterialRoleRepository::load(const QString& csvPath) const
             continue;
         }
 
+        // 🔥 ÚJ: groupKey → groupId feloldás
+        const auto* group = MaterialRoleGroupRegistry::instance().findByBarcode(groupKey);
+        if (!group) {
+            qWarning() << "MaterialRoleRepository: unknown roleGroup:" << groupKey;
+            continue;
+        }
+
         MaterialRole r;
         r.productTypeId    = type->id;
         r.productSubtypeId = subtype->id;
         r.family           = fam;
-        r.barcodePrefix    = prefix;
+        //r.barcodePrefix    = prefix;
+        r.groupId          = group->id;   // 🔥 prefix helyett GUID
 
         result.append(r);
     }

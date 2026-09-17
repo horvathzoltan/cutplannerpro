@@ -52,7 +52,7 @@ RodLoopEngine::RodStepResultModel RodLoopEngine::step(
     QSet<QUuid> groupMembers;
 
     if (grp) {
-        groupMembers = QSet<QUuid>(grp->materialIds.begin(), grp->materialIds.end());
+        groupMembers = QSet<QUuid>(grp->members().begin(), grp->members().end());
     } else {
         groupMembers.insert(rod.materialId);
     }

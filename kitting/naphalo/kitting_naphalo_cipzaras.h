@@ -8,7 +8,9 @@
 #include <kitting/kittingengine.h>
 #include <materials/model/material_family_utils.h>
 #include <materials/model/material_master.h>
+#include <materials/model/material_rolegroup.h>
 #include <materials/registry/material_registry.h>
+#include <materials/registry/material_rolegroup_registry.h>
 #include <product/registry/material_role_registry.h>
 #include <product/selector/material_selector.h>
 
@@ -23,21 +25,26 @@ inline QVector<KittingInstruction> expandTok(
 {
     QVector<KittingInstruction> out;
 
+    auto mat = MaterialRegistry::instance().findById(pwm.materialId);
+    if(!mat) return{};
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    QUuid groupId = role.groupId;
+
     auto pofa_R = MaterialRegistry::instance().findByBarcode("NP-CP-R");
     if(pofa_R){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, "NP-CP");
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_R, groupId);
     }
 
     auto pofa_L = MaterialRegistry::instance().findByBarcode("NP-CP-L");
     if(pofa_L){
-        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, "NP-CP");
+        out << KittingInstruction::makeKitItem(req, pwm, pofa_L, groupId);
     }
 
     auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS3");
     if(csavar){
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
+        out << KittingInstruction::makeKitItem(req, pwm, csavar, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar, groupId);
     }
 
     return out;
@@ -50,10 +57,15 @@ inline QVector<KittingInstruction> expandTokFedel(
 {
     QVector<KittingInstruction> out;
 
+    auto mat = MaterialRegistry::instance().findById(pwm.materialId);
+    if(!mat) return{};
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    QUuid groupId = role.groupId;
+
     auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS1");
     if(csavar){
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CS");
+        out << KittingInstruction::makeKitItem(req, pwm, csavar, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar, groupId);
     }
 
     return out;
@@ -66,6 +78,13 @@ inline QVector<KittingInstruction> expandTengely_Motoros(
 {
 
     QVector<KittingInstruction> out;
+
+
+    auto mat = MaterialRegistry::instance().findById(pwm.materialId);
+    if(!mat) return{};
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    QUuid groupId = role.groupId;
+
     // pofa anyag (pl. NP-POFA-CIP)
     auto motors = MaterialRegistry::instance().findAllByFamily(MaterialFamily::Motor);
     if(!motors.isEmpty()){
@@ -81,7 +100,7 @@ inline QVector<KittingInstruction> expandTengely_Motoros(
             auto motor = MaterialRegistry::instance().findById(motors_ranked.ranked.first());
 
             if(motor){
-                out << KittingInstruction::makeKitItem(req, pwm, motor, "NP-MOT");
+                out << KittingInstruction::makeKitItem(req, pwm, motor, groupId);
             }
         }
     }
@@ -96,17 +115,21 @@ inline QVector<KittingInstruction> expandTengely_Dugo(
     QVector<KittingInstruction> out;
 
     auto mat = MaterialRegistry::instance().findById(pwm.materialId);
-    if(mat){
-        if(mat->diameter_mm==70){
-            auto dugo = MaterialRegistry::instance().findByBarcode("NP-ROLL70-D");
-            if(dugo){
-                out << KittingInstruction::makeKitItem(req, pwm, dugo, "NP-ROLL70-D");
-            }
-        } else if(mat->diameter_mm ==78){
-            auto dugo = MaterialRegistry::instance().findByBarcode("NP-ROLL78-D");
-            if(dugo){
-                out << KittingInstruction::makeKitItem(req, pwm, dugo, "NP-ROLL78-D");
-            }
+    if(!mat) return{};
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    QUuid groupId = role.groupId;
+
+    if(!mat) return out;
+
+    if(mat->diameter_mm==70){
+        auto dugo = MaterialRegistry::instance().findByBarcode("NP-ROLL70-D");
+        if(dugo){
+            out << KittingInstruction::makeKitItem(req, pwm, dugo, groupId);
+        }
+    } else if(mat->diameter_mm ==78){
+        auto dugo = MaterialRegistry::instance().findByBarcode("NP-ROLL78-D");
+        if(dugo){
+            out << KittingInstruction::makeKitItem(req, pwm, dugo, groupId);
         }
     }
 
@@ -121,26 +144,32 @@ inline QVector<KittingInstruction> expandZaro(
 {
     QVector<KittingInstruction> out;
 
+    auto mat = MaterialRegistry::instance().findById(pwm.materialId);
+    if(!mat) return{};
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    QUuid groupId = role.groupId;
+
+
     auto zaro = MaterialRegistry::instance().findByBarcode("NP-CZ-D");
     if(zaro){
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, zaro, "NP-CZ");
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, zaro, groupId);
     }
 
     auto csavar = MaterialRegistry::instance().findByBarcode("NP-CS4");
     if(csavar) {
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
-        out << KittingInstruction::makeKitItem(req, pwm, csavar, "NP-CZ");
+        out << KittingInstruction::makeKitItem(req, pwm, csavar,groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar,groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar,groupId);
+        out << KittingInstruction::makeKitItem(req, pwm, csavar,groupId);
     }
 
     auto kefe = MaterialRegistry::instance().findByBarcode("NP-CZ-K");
     if(kefe){
         double hossz_mm = pwm.info.length_mm-20;   // vagy pwm.info.requiredLength
-        out << KittingInstruction::makeKitItem(req, pwm, kefe, "NP-CZ", hossz_mm, "mm");
+        out << KittingInstruction::makeKitItem(req, pwm, kefe, groupId, hossz_mm, "mm");
     }
 
     return out;
@@ -166,19 +195,27 @@ inline QVector<KittingInstruction> expand(
     //QString roleCode = pwm.info.roleCode;   // ezt neked kell biztosan kitölteni a PieceInfo-ban
     auto mat = MaterialRegistry::instance().findById(pwm.materialId);
     if(!mat) return{};
-    MaterialRole role = MaterialRoleUtils::makeRole(req, mat);
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(mat->barcode);
+    auto *roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+    if (!roleGroup) {
+        zWarning("Ismeretlen szerepkör-csoport: " + mat->barcode);
+        return out;
+    }
+
+    const QString& g = roleGroup->barcode;   // pl. "RNP-T", "RNP-ROLL", stb.
 
     // --- TOK → pofa + csavar + tokfedél ---
-    if (role.barcodePrefix == "NP-T") {
+    if (g == "RNP-T") {
         out << expandTok(req,pwm,plan);
     }
 
-    if (role.barcodePrefix == "NP-TF") {
+    if (g == "RNP-TF") {
         out << expandTokFedel(req,pwm,plan);
     }
 
     // --- TENGELY → motor + adapter + dugó ---
-    if (role.barcodePrefix == "NP-ROLL") {
+    if (g == "RNP-ROLL") {
         //zInfo("tétel: "+req.externalReference+". tengely:" + mat->toReportLabel());
         out << expandTengely_Dugo(req,pwm,plan);
         const QString meghajtas_key = "meghajtas";
@@ -199,12 +236,12 @@ inline QVector<KittingInstruction> expand(
     }
 
     // --- CIPZÁRAS ZÁRÓ → zárósúly ---
-    if (role.barcodePrefix == "NP-CZ") {
+    if (g == "RNP-CZ") {
         out << expandZaro(req,pwm,plan);
     }
 
     // --- LAB → labbetét ---
-    if (role.barcodePrefix == "NP-CL") {
+    if (g == "RNP-CL2") {
         // const MaterialMaster* labBetet =
         //     MaterialRegistry::instance().findByBarcodePrefix("NP-LABB");
         // out << makeKitItem(req, pwm, labBetet, "NP-LABB");

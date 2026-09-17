@@ -83,7 +83,7 @@ public:
     QString getLeftoverLabelQueueCsvFile() const;
 
     QString getMaterialGroupMsffFile() const;
-    QString getMaterialRolemapGroupMsffFile() const;
+    QString getMaterialRoleGroupMsffFile() const;
 
     static QString emojiCacheDir();
 };

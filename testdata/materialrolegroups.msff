@@ -1,27 +1,27 @@
 groupKey;groupName
 materialBarCode
 
-NP-T;NaphálóTok
+RNP-T;NaphálóTok
 NP-T
 NP-T-7016
 NP-T-9010
 
-NP-TF;NaphálóTokFedél
+RNP-TF;NaphálóTokFedél
 NP-TF
 NP-TF-7016
 NP-TF-9010
 
-NP-CZ;NaphálóCipzárosZáró
+RNP-CZ;NaphálóCipzárosZáró
 NP-CZ
 NP-CZ-7016
 NP-CZ-9010
 
-NP-CL2+CLT2+CLB2;NaphálóCipzárosLáb
+RNP-CL2+CLT2+CLB2;NaphálóCipzárosLáb
 NP-CL2+CLT2+CLB2
 NP-CL2+CLT2+CLB2-7016
 NP-CL2+CLT2+CLB2-9010
 
-NP-ROLL;NaphálóTengely
+RNP-ROLL;NaphálóTengely
 NP-ROLL70-5000
 NP-ROLL70-6000
 NP-ROLL70-7000
@@ -29,54 +29,57 @@ NP-ROLL78-5000
 NP-ROLL78-6000
 NP-ROLL78-7000
 
-NP-CBAR;NaphálóCipzárosSúly
+RNP-CBAR;NaphálóCipzárosSúly
 NP-BAR22-3000
 NP-BAR22-4000
 NP-BAR20-6000
 
-NP-SL2;NaphálóSinesLáb
+RNP-SL2;NaphálóSinesLáb
 NP-SL2
 NP-SL2-7016
 NP-SL2-9010
 
-NP-SZ;NaphálóSinesZáró
+RNP-SZ;NaphálóSinesZáró
 NP-SZ
 NP-SZ-7016
 NP-SZ-9010
 
-NP-SBAR;NaphálóSinesSúly
+RNP-SBAR;NaphálóSinesSúly
 NP-BAR12-3000
 NP-BAR12-4000
 
-TE-R-23;RolettaTengely
+RTE-R-23;RolettaTengely
 TE-R-23
 
-ROL-P;RolettaPalca
+RROL-P;RolettaPalca
 ROL-P
 
-MT-T;MiniTok
+RMT-T;MiniTok
 MT-T
 
-TE-H-18;MiniTokosTengely
+RTE-H-18;MiniTokosTengely
 TE-H-18
 
-MT-Z;MiniTokosZáró
+RMT-Z;MiniTokosZáró
 MT-Z
 
-MT-ZP;MiniTokosZáró+Palca
+RMT-ZP;MiniTokosZáró+Palca
 MT-Z+P
 
-MT-L;MiniTokosLáb
+RMT-L;MiniTokosLáb
 MT-L2
 
-SR-T;SávrolóTok
+RSR-T;SávrolóTok
 SR-T
 
-SR-ZP;SávrolóZáró+Palca
+RSR-ZP;SávrolóZáró+Palca
 SR-Z+P
 
-TE-H-32;SávrolóTengely
+RTE-H-32;SávrolóTengely
 TE-H-32
 
-SR-FSN;SávrolóFelsoSin
+RSR-FSN;SávrolóFelsoSin
 SR-FSN
+
+RNP-B;NaphálóBowden
+NP-B

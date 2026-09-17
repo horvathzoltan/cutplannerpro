@@ -38,6 +38,8 @@ public:
 
     QMap<QUuid, int> readAllAggregated() const;
     QVector<StockEntry> findByStorageId(const QUuid &storageId) const;
+
+    int size() const { return _data.size(); }
 private:
     StockRegistry() = default;
     ~StockRegistry() = default;

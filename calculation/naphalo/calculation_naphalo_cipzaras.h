@@ -53,35 +53,35 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   CalcMode mode)
 {
     // --- TOK ---
-    if (role == "NP-T") {
+    if (role == "RNP-T") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTok(width);
     }
 
     // --- TOKFEDEL ---
-    if (role == "NP-TF") {
+    if (role == "RNP-TF") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTokFedel(width);
     }
 
     // --- ZÁRÓ ---
-    if (role == "NP-CZ") {
+    if (role == "RNP-CZ") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaro(width);
     }
 
     // --- LAB ---
-    if (role == "NP-CL" ||
-        role == "NP-CLB" ||
-        role == "NP-CLT" ||
-        role == "NP-CL2+CLT2+CLB2")
+    if (role == "RNP-CL" ||
+        role == "RNP-CLB" ||
+        role == "RNP-CLT" ||
+        role == "RNP-CL2+CLT2+CLB2")
     {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcLab(height);
     }
 
     // --- TENGELY ---
-    if (role == "NP-ROLL") {
+    if (role == "RNP-ROLL") {
         // attribútumfüggő tengely
         const QString meghajtas_key = "meghajtas";
         if(attributes.contains(meghajtas_key))
@@ -105,13 +105,13 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     }
 
     // --- SÚLY ---
-    if (role == "NP-BAR") {
+    if (role == "RNP-CBAR") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaroSuly(width);
     }
 
     // --- VÁSZON ---
-    if (role == "NP-VASZON") {
+    if (role == "RNP-VASZON") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcVaszon(width);
     }
@@ -125,7 +125,7 @@ std::optional<double> compensation(
     const QMap<QString, QString>& attributes,
     const QString& role){
 
-    if (role == "NP-ROLL") {
+    if (role == "RNP-ROLL") {
         // attribútumfüggő tengely
         const QString meghajtas_key = "meghajtas";
         if(attributes.contains(meghajtas_key))
@@ -147,12 +147,12 @@ std::optional<double> compensation(
     }
 
     // --- TOK ---
-    if (role == "NP-TOK") {
+    if (role == "RNP-TOK") {
         return -0.50;
     }
 
     // --- SÚLY ---
-    if (role == "NP-BAR") {
+    if (role == "RNP-BAR") {
         return 0;//-10;
     }
 

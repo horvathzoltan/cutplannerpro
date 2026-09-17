@@ -18,10 +18,18 @@ public:
     // Popup menü újraépítése a combo alapján
     void rebuildMenu(QComboBox* combo);
 
+    void loadPersistent();
+    void savePersistent();
+
+    void setSeed(const QString& v){
+        _seed = v;
+        loadPersistent();
+    }
+
 private:
     QMenu* m_menu;
 
-    // Globális recent lista
-    static QList<QUuid> s_recent;
+    QString _seed;
+    QList<QString> s_recentBarcodes;
 };
 

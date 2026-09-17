@@ -331,3 +331,30 @@ void SettingsManager::setRepeatDialog_AddInput(bool v) {
     setValue(SettingsKeys::RepeatDialog_AddInput, v);
 }
 
+
+bool SettingsManager::repeatDialog_AddLeftover() const {
+    return value(SettingsKeys::RepeatDialog_AddLeftover, false).toBool();
+}
+
+void SettingsManager::setRepeatDialog_AddLeftover(bool v) {
+    setValue(SettingsKeys::RepeatDialog_AddLeftover, v);
+}
+
+QString SettingsManager::lastStorage_AddLeftover() const {
+     return value(SettingsKeys::LastStorage_AddLeftover, false).toString();
+}
+
+void SettingsManager::setLastStorage_AddLeftover(QString v) {
+     setValue(SettingsKeys::LastStorage_AddLeftover, v);
+}
+
+QList<QString> SettingsManager::recentMaterials(const QString& seed) const {
+    QString key = seed.isEmpty() ? SettingsKeys::RecentMaterials : QString("%1_%2").arg(SettingsKeys::RecentMaterials, seed);
+    return value(key).toStringList();
+}
+
+void SettingsManager::setRecentMaterials(const QString& seed, const QList<QString>& list) {
+    QString key = seed.isEmpty() ? SettingsKeys::RecentMaterials : QString("%1_%2").arg(SettingsKeys::RecentMaterials, seed);
+
+    setValue(key, QVariant(list));
+}

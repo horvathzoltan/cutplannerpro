@@ -35,19 +35,19 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   CalcMode mode)
 {
     // --- TENGELY ---
-    if (role == "TE-H") {
+    if (role == "RTE-H-32") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
-    if (role == "NP-VASZON") {
+    if (role == "RNP-VASZON") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcVaszon(width);
     }
 
     // --- ZÁRÓ ---
-    if (role == "ROL-GYZ") {
+    if (role == "RROL-GYZ") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaro(width);
     }

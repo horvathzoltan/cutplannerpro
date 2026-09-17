@@ -1,5 +1,7 @@
 #include "materials/registry/material_registry.h"
 
+#include "material_rolegroup_registry.h"
+
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
 #include <QHash>
@@ -48,6 +50,67 @@ bool MaterialRegistry::registerData(const MaterialMaster& material) {
     return true;
 }
 
+// QVector<QUuid> MaterialRegistry::generateBom(
+//     QUuid typeId,
+//     QUuid subtypeId) const
+// {
+//     QVector<QUuid> ordered;
+
+//     // 1) BOM családok
+//     QHash<MaterialFamily, double> bomFamilies =
+//         BomRegistry::instance().bomMap(typeId, subtypeId);
+
+//     // 2) Rolemap prefixek
+//     QVector<MaterialRole> roles =
+//         MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
+
+//     // 3) BOM sorrend (deterministic)
+//     QList<MaterialFamily> famOrder;
+//     for (const auto& e : BomRegistry::instance().readAll()) {
+//         if (e.productTypeId == typeId &&
+//             e.productSubtypeId == subtypeId)
+//         {
+//             famOrder << e.family;
+//         }
+//     }
+
+//     // 4) Anyagok stabil sorrendben
+//     auto mats = readAll();
+//     std::sort(mats.begin(), mats.end(),
+//               [](const MaterialMaster& a, const MaterialMaster& b) {
+//                   return a.barcode < b.barcode;
+//               });
+
+//     // 5) Családonként teljes anyaglista
+//     for (MaterialFamily fam : famOrder) {
+
+//         // prefixek gyűjtése (csillag marad!)
+//         QStringList famPrefixes;
+//         for (const auto& role : roles) {
+//             if (role.family == fam) {
+//                 famPrefixes << role.barcodePrefix.trimmed();
+//             }
+//         }
+//         famPrefixes.sort();
+
+//         // anyagok gyűjtése prefix + wildcard alapján
+//         for (const auto& prefix : famPrefixes) {
+//             for (const auto& mat : mats) {
+
+//                 if (mat.family != fam)
+//                     continue;
+
+//                 if (!MaterialFamilyUtils::matchPrefix(mat.barcode, prefix))
+//                     continue;
+
+//                 ordered << mat.id;
+//             }
+//         }
+//     }
+
+//     return ordered;
+// }
+
 QVector<QUuid> MaterialRegistry::generateBom(
     QUuid typeId,
     QUuid subtypeId) const
@@ -58,7 +121,7 @@ QVector<QUuid> MaterialRegistry::generateBom(
     QHash<MaterialFamily, double> bomFamilies =
         BomRegistry::instance().bomMap(typeId, subtypeId);
 
-    // 2) Rolemap prefixek
+    // 2) Rolemap szerepkörök (groupId-alapú)
     QVector<MaterialRole> roles =
         MaterialRoleRegistry::instance().findRoles(typeId, subtypeId);
 
@@ -79,29 +142,40 @@ QVector<QUuid> MaterialRegistry::generateBom(
                   return a.barcode < b.barcode;
               });
 
-    // 5) Családonként teljes anyaglista
-    for (MaterialFamily fam : famOrder) {
+    // 5) Családonként anyaglista szerepkör-csoport alapján
+    for (MaterialFamily fam : famOrder)
+    {
+        // szerepkör-csoportok gyűjtése
+        QVector<const MaterialRoleGroup*> groups;
 
-        // prefixek gyűjtése (csillag marad!)
-        QStringList famPrefixes;
-        for (const auto& role : roles) {
-            if (role.family == fam) {
-                famPrefixes << role.barcodePrefix.trimmed();
-            }
+        for (const auto& role : roles)
+        {
+            if (role.family != fam)
+                continue;
+
+            const auto* group =
+                MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+            if (group)
+                groups.append(group);
         }
-        famPrefixes.sort();
 
-        // anyagok gyűjtése prefix + wildcard alapján
-        for (const auto& prefix : famPrefixes) {
-            for (const auto& mat : mats) {
+        // szerepkör-csoportok anyagai
+        for (const auto* group : groups)
+        {
+            for (const QUuid& matId : group->members())
+            {
+                // csak a megfelelő család anyagai
+                const MaterialMaster* mat =
+                    MaterialRegistry::instance().findById(matId);
 
-                if (mat.family != fam)
+                if (!mat)
                     continue;
 
-                if (!MaterialFamilyUtils::matchPrefix(mat.barcode, prefix))
+                if (mat->family != fam)
                     continue;
 
-                ordered << mat.id;
+                ordered << matId;
             }
         }
     }

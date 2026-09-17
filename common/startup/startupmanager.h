@@ -51,11 +51,14 @@ public:
 
 private:
 
+    bool _isDump = false;
+
     bool hasMinimumMaterials(int minCount);
 
     StartupStatus initMaterialRegistry();
     //StartupStatus initMaterialGroupRegistry();
     StartupStatus initMaterialGroupRegistry2();
+    StartupStatus initMaterialRoleGroupRegistry();
 
     StartupStatus initStockRegistry();
     StartupStatus initCuttingRequestRegistry();

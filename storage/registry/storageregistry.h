@@ -118,4 +118,6 @@ public:
 
     const StorageEntry* fallbackStorage() const { return findById(_fallbackId); }
     const StorageEntry *findByLogisticBarcode(const QString &code) const;
+
+    int size() const { return _data.size(); }
 };

@@ -55,7 +55,6 @@ private:
     static QUuid s_lastStorageId;
     static QString s_lastBarcode;   // 🆕
 
-    static bool s_lastRepeat;
 
     int shadowManualCounter = 0; // shadow counter a manuális leftover ID-hez
     bool validateBarcodeFormat(const QString &bc) const;
