@@ -908,11 +908,17 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
             req.attributes["meghajtas"] = "kurblis";
 
         zInfo("attr kiolvasva, meghajtas: " + req.attributes["meghajtas"]);
+    } else if (attrs.contains("szamitas")) {
+        if (ui->radioAttrSzamitas_UvegMeret->isChecked())
+            req.attributes["szamitas"] = "uvegmeret";
+        else if (ui->radioAttrSzamitas_GyartasiMeret->isChecked())
+            req.attributes["szamitas"] = "gyartasimeret";
+
+        zInfo("attr kiolvasva, szamitas: " + req.attributes["szamitas"]);
     } else {
         zInfo("attr NINCS kiolvasva");
     }
-
-    return req;
+       return req;
 }
 
 QString AddInputDialog::currentProductTypeCode() const
@@ -2246,15 +2252,26 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
     QString v;
     if (r.attributes.contains("meghajtas")) {
         v = r.attributes["meghajtas"];
-    } else {
+
+        if (v == "motoros")
+            ui->radioAttrMotoros->setChecked(true);
+        else
+            ui->radioAttrKurblis->setChecked(true);
+    }
+    else if (r.attributes.contains("szamitas")) {
+        v = r.attributes["szamitas"];
+
+        if (v == "uvegmeret")
+            ui->radioAttrSzamitas_UvegMeret->setChecked(true);
+        else
+            ui->radioAttrSzamitas_GyartasiMeret->setChecked(true);
+
+    }else {
         // 3) Ha nincs Request-érték → registry default
-        v = attrs["meghajtas"];
+        //v = attrs["meghajtas"];
     }
 
-    if (v == "motoros")
-        ui->radioAttrMotoros->setChecked(true);
-    else
-        ui->radioAttrKurblis->setChecked(true);
+
 
     zInfo("applyAttributes: meghajtas = " + v);
 }

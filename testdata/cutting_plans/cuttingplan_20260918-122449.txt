@@ -1,0 +1,13 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface
+"672";"Antal Ildike";1700;1850;1694;;1;0;1;"";SR-T;Width;false;2026-09-21;SR;MOT;;SM
+"672";"Antal Ildike";1700;1850;1670;;1;0;1;"";TE-B-47;Width;false;2026-09-21;SR;MOT;;SM
+"672";"Antal Ildike";1700;1850;1673;;1;0;1;"";SR-Z+P;Width;false;2026-09-21;SR;MOT;;SM
+"673";"Antal Ildike";1700;1820;1694;;1;0;1;"";SR-T;Width;false;2026-09-21;SR;MOT;;SM
+"673";"Antal Ildike";1700;1820;1670;;1;0;1;"";TE-B-47;Width;false;2026-09-21;SR;MOT;;SM
+"673";"Antal Ildike";1700;1820;1673;;1;0;1;"";SR-Z+P;Width;false;2026-09-21;SR;MOT;;SM
+"674";"Antal Ildike";1700;1970;1694;;1;0;1;"";SR-T;Width;false;2026-09-21;SR;MOT;;SM
+"674";"Antal Ildike";1700;1970;1670;;1;0;1;"";TE-B-47;Width;false;2026-09-21;SR;MOT;;SM
+"674";"Antal Ildike";1700;1970;1673;;1;0;1;"";SR-Z+P;Width;false;2026-09-21;SR;MOT;;SM
+"675";"Antal Ildike";1700;1970;1694;;1;1;0;"";SR-T;Width;false;2026-09-21;SR;MOT;;SM
+"675";"Antal Ildike";1700;1970;1670;;1;1;0;"";TE-B-47;Width;false;2026-09-21;SR;MOT;;SM
+"675";"Antal Ildike";1700;1970;1673;;1;1;0;"";SR-Z+P;Width;false;2026-09-21;SR;MOT;;SM

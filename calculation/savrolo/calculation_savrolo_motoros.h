@@ -1,3 +1,7 @@
+#ifndef MOTOROS_H
+#define MOTOROS_H
+
+#endif // MOTOROS_H
 #pragma once
 
 #include "calculation/calcmode.h"
@@ -6,58 +10,32 @@
 #include <QString>
 
 namespace Calculation{
-namespace Roletta{
-namespace TokozottSines{
+namespace Savrolo{
+namespace Motoros{
 namespace GyartasiMeret{
 
 inline double calcTok(double width){
-    return width - 35;
+    return width -6;
 }
 
 inline double calcTengely(double width){
-    return width - 35;
+    return width -30;
 }
 
 inline double calcVaszon(double width){
-    return width - 45;
+    return width -37;
 }
 
 inline double calcZaro(double width){
-    return width - 45;
+    return width -27;
 }
 
-inline double calcLab(double height){
-    return height;
-}
 }
 
-namespace UvegMeret{
-
-inline double calcTok(double width){
-    return width +10;
-}
-
-inline double calcTengely(double width){
-    return width +5;
-}
-
-inline double calcVaszon(double width){
-    return width - 5;
-}
-
-inline double calcZaro(double width){
-    return width - 7;
-}
-
-inline double calcLab(double height){
-    return height;
-}
-}
 /*
-SR;MINIT;Tok;MT-T*
-SR;MINIT;Tengely;TE-H-18*
-SR;MINIT;Zaro;MT-Z*
-SR;MINIT;Lab;MT-L2*
+SR;T;Tok;SR-T*
+SR;T;Tengely;TE-H-32*
+SR;T;Zaro;SR-Z+P*
 */
 
 inline std::optional<double> calc(const QMap<QString, QString>& attributes,
@@ -68,13 +46,13 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
 {
 
     // --- TOK ---
-    if (role == "RMT-T") {
+    if (role == "RSR-T") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTok(width);
     }
 
     // --- TENGELY ---
-    if (role == "RTE-H-18") {
+    if (role == "RTE-H-32") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcTengely(width);
     }
@@ -86,19 +64,13 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     }
 
     // --- ZARO ---
-    if (role == "RMT-Z") {
+    if (role == "RSR-ZP") {
         if(mode == CalcMode::GyartasiMeret)
             return GyartasiMeret::calcZaro(width);
     }
 
-    // --- LAB ---
-    if (role == "RMT-L2") {
-        if(mode == CalcMode::GyartasiMeret)
-            return GyartasiMeret::calcLab(height);
-    }
-
     // --- ISMERETLEN ROLE ---
-    zInfo("Ismeretlen ROL-TS role: " + role);
+    zInfo("Ismeretlen SR-T role: " + role);
     return std::nullopt;
 }
 }}}
