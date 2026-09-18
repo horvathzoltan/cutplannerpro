@@ -4,6 +4,8 @@
 #include "calculation/savrolo/calculation_savrolo_toknelkuli.h"
 #include "calculation/savrolo/calculation_savrolo_minitokos.h"
 #include "calculation/savrolo/calculation_savrolo_tokozott.h"
+#include "calculation/savrolo/calculation_savrolo_motoros.h"
+
 
 #include "common/logger.h"
 #include <QMap>
@@ -30,7 +32,9 @@ inline std::optional<double> calc(const QString& subtype,
     else if(subtype == "MINIT"){
         return MiniTokos::calc(attributes, role, width, height, mode);
     }
-
+    else if(subtype == "MOT"){
+        return Motoros::calc(attributes, role, width, height, mode);
+    }
     else {
         zInfo("Ismeretlen altípus:"+subtype);
     }

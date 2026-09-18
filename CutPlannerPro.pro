@@ -54,7 +54,6 @@ SOURCES += \
     product/registry/material_role_registry.cpp \
     product/registry/product_subtype_registry.cpp \
     product/registry/product_type_registry.cpp \
-    product/registry/productattributeregistry.cpp \
     product/repository/bom_repository.cpp \
     product/repository/material_role_repository.cpp \
     product/repository/product_subtype_repository.cpp \
@@ -166,6 +165,7 @@ HEADERS += \
     calculation/roletta/calculation_roletta_ujgyongyos.h \
     calculation/savrolo/calculation_savrolo.h \
     calculation/savrolo/calculation_savrolo_minitokos.h \
+    calculation/savrolo/calculation_savrolo_motoros.h \
     calculation/savrolo/calculation_savrolo_toknelkuli.h \
     calculation/savrolo/calculation_savrolo_tokozott.h \
     common/stringsimilarity_helper.h \

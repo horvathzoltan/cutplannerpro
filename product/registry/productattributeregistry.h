@@ -79,6 +79,8 @@ public:
     void initDefaults()
     {
         add("NP", "*", "meghajtas", "motoros");
+        add("SR", "MINIT", "szamitas", "uvegmeret"); // minitokos sávroló
+        add("ROL", "TSIN", "szamitas", "uvegmeret"); // roletta tokozott sines
     }
 
 private:

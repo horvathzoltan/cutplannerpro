@@ -4,13 +4,14 @@
 
 
 enum class CalcMode {
-    GyartasiMeret
+    GyartasiMeret, UvegMeret, Unknown
 };
 
 namespace CalcModeUtils{
 
 inline QString toString(CalcMode m){
     if(m==CalcMode::GyartasiMeret) return "GyartasiMeret";
+    if(m==CalcMode::UvegMeret) return "UvegMeret";
     return "";
 }
 
