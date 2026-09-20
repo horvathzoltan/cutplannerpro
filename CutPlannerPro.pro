@@ -48,6 +48,8 @@ SOURCES += \
     paint/presenter/paintpresenter.cpp \
     paint/repository/powder_consumption_repository.cpp \
     leftover/presenter/leftoverpresenter.cpp \
+    product/registry/product_calcmode_registry.cpp \
+    product/repository/product_calcmode_repository.cpp \
     stock/presenter/stockpresenter.cpp \
     presenter/storageauditpresenter.cpp \
     product/registry/bom_registry.cpp \
@@ -168,6 +170,7 @@ HEADERS += \
     calculation/savrolo/calculation_savrolo_motoros.h \
     calculation/savrolo/calculation_savrolo_toknelkuli.h \
     calculation/savrolo/calculation_savrolo_tokozott.h \
+    calculation/sizecalcmode.h \
     common/stringsimilarity_helper.h \
     common/qrcodepainter.h \
     common/qrcodegen/qrcodegen.hpp \
@@ -195,12 +198,14 @@ HEADERS += \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
+    product/model/product_calcmodes.h \
+    product/registry/product_calcmode_registry.h \
+    product/repository/product_calcmode_repository.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
     service/cutting/plan/cuttingplan_validationservice.h \
     service/snapshot/inventorysnapshot_validator.h \
     stock/model/stockentry.h \
-    calculation/calcmode.h \
     calculation/lengthcalculator.h \
     calculation/naphalo/calculation_naphalo_bowdenes.h \
     calculation/naphalo/calculation_naphalo_cipzaras.h \
@@ -540,6 +545,7 @@ DISTFILES += \
     testdata/materials.csv \
     testdata/materials_old.csv \
     testdata/powder_consumption.csv \
+    testdata/product_calcmodes.msff \
     testdata/product_subtype.csv \
     testdata/ral_colors/classic.csv \
     testdata/ral_colors/design.csv \

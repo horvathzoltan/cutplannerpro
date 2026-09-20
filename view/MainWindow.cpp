@@ -194,7 +194,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     ui->tableInput->setColumnHidden(5, true);   // Tolerance
-    ui->tableInput->setColumnHidden(10, true);  // Measurement
+    //ui->tableInput->setColumnHidden(10, true);  // Measurement
 
     connect(_storageAuditPresenter->auditStateManager(), &AuditStateManager::auditStateChanged,
             this, [this](AuditStateManager::AuditOutdatedReason reason) {

@@ -20,11 +20,12 @@ enum class Status {
 namespace StatusUtils{
     inline QString toDisplayText(Status s) {
         switch (s) {
-        case Status::NotStarted:   return "Not started";
-        case Status::InProgress:   return "In progress";
-        case Status::Completed:    return "Completed";
-        default:                   return "Unknown";
+            case Status::NotStarted:   return "Not started";
+            case Status::InProgress:   return "In progress";
+            case Status::Completed:    return "Completed";
+            case Status::Abandoned:    return "Abandoned";
         }
+        return "Unknown";
     }
 
     inline QString toCsv(Status s) {

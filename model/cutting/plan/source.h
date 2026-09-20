@@ -19,8 +19,8 @@ inline QString toDisplayText(Source s){
     switch(s){
         case Source::Stock: return "Stock";
         case Source::Reusable: return "Reusable";
-        default: return "Unknown";
         };
+    return "Unknown";
 }
 
 inline QString toCsv(Source s) {

@@ -3,7 +3,7 @@
 #include "calculation/roletta/calculation_roletta.h"
 #include "calculation/savrolo/calculation_savrolo.h"
 
-
+#include "calculation/sizecalcmode.h"
 #include "common/logger.h"
 
 // =========================
@@ -17,7 +17,7 @@ std::optional<double> LengthCalculator::calculate(
     const QString& role,
     double width,
     double height,
-    CalcMode mode)
+    SizeCalcMode mode)
 {
     // 2) Típus/altípus specializáció
     if (type == "NP") {

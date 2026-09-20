@@ -24,6 +24,7 @@
 
 #include <product/repository/bom_repository.h>
 #include <product/repository/material_role_repository.h>
+#include <product/repository/product_calcmode_repository.h>
 #include <product/repository/product_subtype_repository.h>
 #include <product/repository/product_type_repository.h>
 
@@ -74,6 +75,14 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus productSubtypeStatus = initProductSubtypeRegistry();
     if (!productSubtypeStatus.isSuccess())
         return productSubtypeStatus;
+
+    StartupStatus productCalcModeStatus = initProductCalcModeRegistry();
+    if (!productCalcModeStatus.isSuccess())
+        return productCalcModeStatus;
+
+    if (_isDump2) {
+        ProductCalcModeRegistry::instance().debugDump();
+    }
 
     StartupStatus bomStatus = initBomRegistry();
     if (!bomStatus.isSuccess())
@@ -146,6 +155,7 @@ StartupStatus StartupManager::runStartupSequence() {
 
     finalStatus.addWarnings(productAttributeStatus.warnings());
     finalStatus.addWarnings(powderStatus.warnings());
+    finalStatus.addWarnings(productCalcModeStatus.warnings());
 
     EventLogger::instance().zEvent(QString("🌱 Init összefoglaló: %1 anyag, %5 anyagcsoport, %2 gép, %6 tárhely, %3 rakat, %4 hulló")
                                        .arg(MaterialRegistry::instance().size())
@@ -659,3 +669,41 @@ StartupStatus StartupManager::initMaterialRoleGroupRegistry()
 
     return StartupStatus::success();
 }
+
+
+StartupStatus StartupManager::initProductCalcModeRegistry()
+{
+    // 1) MSFF beolvasás
+    bool loaded = ProductCalcModeRepository::loadFromMsff(
+        ProductCalcModeRegistry::instance()
+        );
+
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a méretszámítási módokat (MSFF)");
+        return StartupStatus::failure(
+            "❌ Nem sikerült betölteni a méretszámítási módokat a product_calcmodes.msff fájlból."
+            );
+    }
+
+    // 2) Üres-e?
+    int count = ProductCalcModeRegistry::instance().readAll().size();
+    if (count == 0) {
+        EventLogger::instance().zEvent("❌ nincs adat a méretszámítási módokban (MSFF)");
+        return StartupStatus::failure(
+            "⚠️ Nem található egyetlen méretszámítási mód sem. Lehet, hogy üres vagy hibás az MSFF fájl."
+            );
+    }
+
+    // 3) Dump (ha kérted)
+    if (_isDump) {
+        ProductCalcModeRegistry::instance().debugDump();
+    }
+
+    // 4) Siker
+    EventLogger::instance().zEvent(
+        StatusHelper::getMessage(true, "méretszámítási módok init (MSFF)")
+        );
+
+    return StartupStatus::success();
+}
+

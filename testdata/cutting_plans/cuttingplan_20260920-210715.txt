@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"678";"HZ-Ablak, Szeged";1005;1175;1015;;2;0;2;"";MT-T;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"678";"HZ-Ablak, Szeged";1005;1175;1010;;2;0;2;"";TE-H-18;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"678";"HZ-Ablak, Szeged";1005;1175;998;;2;0;2;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"679";"HZ-Ablak, Szeged";425;1175;435;;2;2;0;"";MT-T;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"679";"HZ-Ablak, Szeged";425;1175;430;;2;2;0;"";TE-H-18;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"679";"HZ-Ablak, Szeged";425;1175;418;;2;2;0;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"678";"HZ-Ablak, Szeged";1005;1175;1175;;2;2;0;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"679";"HZ-Ablak, Szeged";425;1175;1175;;2;0;2;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Uveg

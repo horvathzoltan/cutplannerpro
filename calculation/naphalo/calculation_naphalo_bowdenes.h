@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "common/logger.h"
 #include <QMap>
 #include <QString>
@@ -46,30 +46,30 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode)
+                                  SizeCalcMode mode)
 {
     // --- TOK ---
     if (role == "RNP-T") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTok(width);
     }
 
     // --- TOKFEDEL ---
     if (role == "RNP-TF") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTokFedel(width);
     }
 
     // --- ZÁRÓ ---
     if (role == "RNP-SZ") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcZaro(width);
     }
 
     // --- BOWDEN ---
     if (role == "RNP-B")
     {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcBowden(height);
     }
 
@@ -81,11 +81,11 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
         {
             QString meghajtas = attributes.value(meghajtas_key);
             if (meghajtas == "motoros") {
-                if(mode == CalcMode::GyartasiMeret)
+                if(mode == SizeCalcMode::Gyartasi)
                     return GyartasiMeret::calcTengely_Motoros(width);
             }
             else if (meghajtas == "kurblis") {
-                if(mode == CalcMode::GyartasiMeret)
+                if(mode == SizeCalcMode::Gyartasi)
                     return GyartasiMeret::calcTengely_Kurblis(width);
             }
             else {
@@ -99,13 +99,13 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
 
     // --- SÚLY ---
     if (role == "RNP-SBAR") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcZaroSuly(width);
     }
 
     // --- VÁSZON ---
     if (role == "RNP-VASZON") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcVaszon(width);
     }
 

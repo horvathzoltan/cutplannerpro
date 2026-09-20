@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "calculation/naphalo/calculation_naphalo_cipzaras.h"
 #include "calculation/naphalo/calculation_naphalo_sines.h"
 #include "calculation/naphalo/calculation_naphalo_bowdenes.h"
@@ -19,7 +19,7 @@ inline std::optional<double> calc(const QString& subtype,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode){
+                                  SizeCalcMode mode){
 
     if(subtype == "CIP"){
         return Cipzaras::calc(attributes, role, width, height, mode);

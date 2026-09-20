@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "common/logger.h"
 #include <QMap>
 #include <QString>
@@ -64,37 +64,48 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode)
+                                  SizeCalcMode mode)
 {
 
     // --- TOK ---
     if (role == "RMT-T") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTok(width);
+        if(mode == SizeCalcMode::Uveg)
+            return UvegMeret::calcTok(width);
     }
 
     // --- TENGELY ---
     if (role == "RTE-H-18") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTengely(width);
+        if(mode == SizeCalcMode::Uveg)
+            return UvegMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
     if (role == "RSR-VASZON") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcVaszon(width);
+        if(mode == SizeCalcMode::Uveg)
+            return UvegMeret::calcVaszon(width);
     }
 
     // --- ZARO ---
     if (role == "RMT-Z") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcZaro(width);
+        if(mode == SizeCalcMode::Uveg)
+            return UvegMeret::calcZaro(width);
     }
 
+    // ha kell festeni, a láb 4 cm-el hosszabb, és fúrni is kell a felfüggesztés miatt
     // --- LAB ---
-    if (role == "RMT-L2") {
-        if(mode == CalcMode::GyartasiMeret)
+    if (role == "RMT-L") {
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcLab(height);
+        if(mode == SizeCalcMode::Uveg)
+            return UvegMeret::calcLab(height);
     }
 
     // --- ISMERETLEN ROLE ---

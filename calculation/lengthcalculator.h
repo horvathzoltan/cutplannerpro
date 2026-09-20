@@ -2,7 +2,7 @@
 #include <optional>
 #include <QString>
 #include <QMap>
-#include "calcmode.h"
+#include "sizecalcmode.h"
 
 class LengthCalculator
 {
@@ -14,7 +14,7 @@ public:
         const QString& role,
         double width,
         double height,
-        CalcMode mode);
+        SizeCalcMode mode);
 
     static std::optional<double> compensate(
         const QString& productType,

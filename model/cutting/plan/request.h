@@ -5,6 +5,7 @@
 #include <QDate>
 
 #include "../../../common/color/namedcolor.h"
+#include "calculation/sizecalcmode.h"
 #include "common/surface/surfacetype.h"
 #include "relevantdimension.h"
 #include "tolerance.h"
@@ -56,7 +57,8 @@ struct Request {
     // 🎨 Anyag színe - ebben a színben kéri a megrendelő a terméket (RAL vagy HEX kód)
     NamedColor requiredColor;
     SurfaceType surface = SurfaceType::Unknown; ///< Felület típusa (matt, fényes, stb.)
-    //QString color;
+
+    SizeCalcMode calcMode = SizeCalcMode::Unknown;   // <-- ÚJ MEZŐ    //QString color;
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 

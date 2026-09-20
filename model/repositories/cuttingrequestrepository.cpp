@@ -95,6 +95,8 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
     case CSVVersion::V6_Surface:
         return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V6, true);
 
+    case CSVVersion::V7_CalcMode:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V7, true);
 
     default:
         ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
@@ -129,22 +131,35 @@ CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(
     bool hasTypeCode    = cols.contains("typeCode", Qt::CaseInsensitive);
     bool hasSubtypeCode = cols.contains("subtypeCode", Qt::CaseInsensitive);
     bool hasAttributes  = cols.contains("attributes", Qt::CaseInsensitive);
+    bool hasSurface     = cols.contains("surface", Qt::CaseInsensitive);
+    bool hasCalcMode    = cols.contains("calcMode", Qt::CaseInsensitive);
+
+    // ⭐ V7: dueDate + typeCode + subtypeCode + attributes + surface + calcMode
+    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes && hasSurface && hasCalcMode)
+        return CSVVersion::V7_CalcMode;
+
+    // ⭐ V6: dueDate + typeCode + subtypeCode + attributes + surface (calcMode nélkül)
+    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes && hasSurface)
+        return CSVVersion::V6_Surface;
 
     // ⭐ V5: dueDate + typeCode + subtypeCode + attributes
     if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes)
         return CSVVersion::V5_Attributes;
 
-    // ⭐ V4: dueDate + typeCode + subtypeCode (attributes nélkül)
+    // ⭐ V4: dueDate + typeCode + subtypeCode
     if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode)
         return CSVVersion::V4_ProductVariant;
 
-    // ⭐ V3: ugyanaz mint V2, de dueDate is van
+    // ⭐ V3: subtype + dueDate
     if (hasLeft && hasRight && hasSubtype && hasDueDate)
         return CSVVersion::V3_WithDueDate;
 
-    // ⭐ V2: nincs dueDate
+    // ⭐ V2: subtype (dueDate nélkül)
     if (hasLeft && hasRight && hasSubtype)
         return CSVVersion::V2_LeftRightSubtype;
+
+    return CSVVersion::Unknown;
+
 
     return CuttingRequestRepository::CSVVersion::Unknown;
 }
@@ -168,6 +183,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V1(const QVector<QString
     row.requiredLength    = parts[4].trimmed().toInt();
     row.toleranceStr      = parts[5].trimmed();
     row.quantity          = parts[6].trimmed().toInt();
+
     row.handlerSide = parts[7].trimmed();
     row.requiredColorName = parts[8].trimmed();
     row.barcode           = parts[9].trimmed();
@@ -228,6 +244,8 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V2(const QVector<QString
     return row;
 }
 
+
+
 std::optional<CuttingRequestRepository::CuttingRequestRow>
 CuttingRequestRepository::convertRowToCuttingRequestRow_V3(const QVector<QString>& parts,
                                                            CsvReader::FileContext& ctx)
@@ -237,28 +255,12 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V3(const QVector<QString
         return std::nullopt;
     }
 
-    CuttingRequestRow row;
-    row.externalReference = parts[0].trimmed();
-    row.ownerName         = parts[1].trimmed();
-    row.fullWidth_mm      = parts[2].trimmed().toInt();
-    row.fullHeight_mm     = parts[3].trimmed().toInt();
-    row.requiredLength    = parts[4].trimmed().toInt();
-    row.toleranceStr      = parts[5].trimmed();
-    row.quantity          = parts[6].trimmed().toInt();
+    auto baseOpt = convertRowToCuttingRequestRow_V2(parts, ctx);
+    if (!baseOpt.has_value()) return std::nullopt;
 
-    row.leftCount         = parts[7].trimmed().toInt();
-    row.rightCount        = parts[8].trimmed().toInt();
-    //row.subtypeStr        = parts[9].trimmed();
+    CuttingRequestRow row = baseOpt.value();
 
-    row.requiredColorName = parts[10].trimmed();
-    row.barcode           = parts[11].trimmed();
-    row.relevantDimStr    = parts[12].trimmed();
-    row.isMeasurementNeeded = (parts[13].trimmed().toLower() == "true");
-
-    row.typeCode.clear();
-    row.subtypeCode.clear();
-
-    // ⭐ dueDate (YYYY-MM-DD)
+    // dueDate
     QString dueStr = parts[14].trimmed();
     QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
     row.dueDate = d.isValid() ? d : QDate::currentDate();
@@ -302,6 +304,27 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V4(const QVector<QString
     return row;
 }
 
+// std::optional<CuttingRequestRepository::CuttingRequestRow>
+// CuttingRequestRepository::convertRowToCuttingRequestRow_V4(const QVector<QString>& parts,
+//                                                            CsvReader::FileContext& ctx)
+// {
+//     if (parts.size() < 16) {
+//         ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V4)"));
+//         return std::nullopt;
+//     }
+
+//     auto baseOpt = convertRowToCuttingRequestRow_V3(parts, ctx);
+//     if (!baseOpt.has_value()) return std::nullopt;
+
+//     CuttingRequestRow row = baseOpt.value();
+
+//     row.typeCode    = parts[14].trimmed();
+//     row.subtypeCode = parts[15].trimmed();
+
+//     return row;
+
+// }
+
 std::optional<CuttingRequestRepository::CuttingRequestRow>
 CuttingRequestRepository::convertRowToCuttingRequestRow_V5(const QVector<QString>& parts,
                                                            CsvReader::FileContext& ctx)
@@ -311,71 +334,65 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V5(const QVector<QString
         return std::nullopt;
     }
 
-    CuttingRequestRow row;
-    row.externalReference = parts[0].trimmed();
-    row.ownerName         = parts[1].trimmed();
-    row.fullWidth_mm      = parts[2].trimmed().toInt();
-    row.fullHeight_mm     = parts[3].trimmed().toInt();
-    row.requiredLength    = parts[4].trimmed().toInt();
-    row.toleranceStr      = parts[5].trimmed();
-    row.quantity          = parts[6].trimmed().toInt();
+    auto baseOpt = convertRowToCuttingRequestRow_V4(parts, ctx);
+    if (!baseOpt.has_value()) return std::nullopt;
 
-    row.leftCount         = parts[7].trimmed().toInt();
-    row.rightCount        = parts[8].trimmed().toInt();
-
-    row.requiredColorName = parts[9].trimmed();
-    row.barcode           = parts[10].trimmed();
-    row.relevantDimStr    = parts[11].trimmed();
-    row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
-
-    QString dueStr = parts[13].trimmed();
-    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
-    row.dueDate = d.isValid() ? d : QDate::currentDate();
-
-    row.typeCode    = parts[14].trimmed();
-    row.subtypeCode = parts[15].trimmed();
+    CuttingRequestRow row = baseOpt.value();
 
     row.attributesStr = parts[16].trimmed();
+
+    return row;
+
+}
+
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V6(
+    const QVector<QString>& parts,
+    CsvReader::FileContext& ctx)
+{
+    // V6: V5 + surfaceStr
+    if (parts.size() < 18) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V6)"));
+        return std::nullopt;
+    }
+
+    // 1) Alapmezők: V5 konverter
+    auto baseOpt = convertRowToCuttingRequestRow_V5(parts, ctx);
+    if (!baseOpt.has_value())
+        return std::nullopt;
+
+    CuttingRequestRow row = baseOpt.value();
+
+    // 2) Új mező: surfaceStr (index 17)
+    row.surfaceStr = parts[17].trimmed();
+
     return row;
 }
 
 std::optional<CuttingRequestRepository::CuttingRequestRow>
-CuttingRequestRepository::convertRowToCuttingRequestRow_V6(const QVector<QString>& parts,
-                                                           CsvReader::FileContext& ctx)
+CuttingRequestRepository::convertRowToCuttingRequestRow_V7(
+    const QVector<QString>& parts,
+    CsvReader::FileContext& ctx)
 {
-    if (parts.size() < 18) {
-        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V5)"));
+    if (parts.size() < 19) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V7)"));
         return std::nullopt;
     }
 
-    CuttingRequestRow row;
-    row.externalReference = parts[0].trimmed();
-    row.ownerName         = parts[1].trimmed();
-    row.fullWidth_mm      = parts[2].trimmed().toInt();
-    row.fullHeight_mm     = parts[3].trimmed().toInt();
-    row.requiredLength    = parts[4].trimmed().toInt();
-    row.toleranceStr      = parts[5].trimmed();
-    row.quantity          = parts[6].trimmed().toInt();
+    // 1) Alap: V6 konverter
+    auto baseOpt = convertRowToCuttingRequestRow_V6(parts, ctx);
+    if (!baseOpt.has_value())
+        return std::nullopt;
 
-    row.leftCount         = parts[7].trimmed().toInt();
-    row.rightCount        = parts[8].trimmed().toInt();
+    CuttingRequestRow row = baseOpt.value();
 
-    row.requiredColorName = parts[9].trimmed();
-    row.barcode           = parts[10].trimmed();
-    row.relevantDimStr    = parts[11].trimmed();
-    row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+    // 2) Új mező: calcModeStr (index 18)
+    row.calcModeStr = parts[18].trimmed();
 
-    QString dueStr = parts[13].trimmed();
-    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
-    row.dueDate = d.isValid() ? d : QDate::currentDate();
-
-    row.typeCode    = parts[14].trimmed();
-    row.subtypeCode = parts[15].trimmed();
-
-    row.attributesStr = parts[16].trimmed();
-    row.surfaceStr    = parts[17].trimmed();   // <-- ÚJ MEZŐ
     return row;
 }
+
+
 
 
 std::optional<Cutting::Plan::Request>
@@ -489,6 +506,14 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         req.surface = SurfaceType::Unknown;
     }
 
+    // 🔍 CalcMode konverzió (ha van)
+    if (!row.calcModeStr.isEmpty()) {
+        SizeCalcMode mode = SizeCalcModeUtils::parseSizeCalcMode(row.calcModeStr);
+        req.calcMode = mode;
+    } else {
+        req.calcMode = SizeCalcMode::Unknown;
+    }
+
     return req;
 }
 
@@ -549,6 +574,17 @@ CuttingRequestRepository::convertRowToCuttingRequest_V6(const QVector<QString>& 
     return buildCuttingRequestFromRow(rowOpt.value(), ctx);
 }
 
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V7(
+    const QVector<QString>& parts,
+    CsvReader::FileContext& ctx)
+{
+    const auto rowOpt = convertRowToCuttingRequestRow_V7(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
+
 bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& registry, const QString& filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -566,7 +602,9 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     //out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;subtype;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate\n";
 
     // új fejléc (V4):
-    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface\n";
+    out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;"
+           "leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;"
+           "dueDate;typeCode;subtypeCode;attributes;surface;calcMode\n";
 
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
@@ -607,9 +645,9 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << typeCode << ";"
             << subtypeCode << ";"
             << attrStr << ";"
-            << SurfaceTypeUtils::toCode(req.surface)   // <-- FS, SM, CS, MT, GL, ST
+            << SurfaceTypeUtils::toCode(req.surface)  << ";"  // <-- FS, SM, CS, MT, GL, ST
+            << SizeCalcModeUtils::toString(req.calcMode)
             << "\n";
-
     }
 
 
@@ -645,3 +683,154 @@ QMap<QString, QString> CuttingRequestRepository::parseAttributes(const QString& 
     return map;
 }
 
+
+
+
+// std::optional<CuttingRequestRepository::CuttingRequestRow>
+// CuttingRequestRepository::convertRowToCuttingRequestRow_V3(const QVector<QString>& parts,
+//                                                            CsvReader::FileContext& ctx)
+// {
+//     if (parts.size() < 15) {
+//         ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V3)"));
+//         return std::nullopt;
+//     }
+
+//     CuttingRequestRow row;
+//     row.externalReference = parts[0].trimmed();
+//     row.ownerName         = parts[1].trimmed();
+//     row.fullWidth_mm      = parts[2].trimmed().toInt();
+//     row.fullHeight_mm     = parts[3].trimmed().toInt();
+//     row.requiredLength    = parts[4].trimmed().toInt();
+//     row.toleranceStr      = parts[5].trimmed();
+//     row.quantity          = parts[6].trimmed().toInt();
+
+//     row.leftCount         = parts[7].trimmed().toInt();
+//     row.rightCount        = parts[8].trimmed().toInt();
+//     //row.subtypeStr        = parts[9].trimmed();
+
+//     row.requiredColorName = parts[10].trimmed();
+//     row.barcode           = parts[11].trimmed();
+//     row.relevantDimStr    = parts[12].trimmed();
+//     row.isMeasurementNeeded = (parts[13].trimmed().toLower() == "true");
+
+//     row.typeCode.clear();
+//     row.subtypeCode.clear();
+
+//     // ⭐ dueDate (YYYY-MM-DD)
+//     QString dueStr = parts[14].trimmed();
+//     QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+//     row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+//     return row;
+// }
+
+// std::optional<CuttingRequestRepository::CuttingRequestRow>
+// CuttingRequestRepository::convertRowToCuttingRequestRow_V4(const QVector<QString>& parts,
+//                                                            CsvReader::FileContext& ctx)
+// {
+//     if (parts.size() < 16) {
+//         ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V4)"));
+//         return std::nullopt;
+//     }
+
+//     CuttingRequestRow row;
+//     row.externalReference = parts[0].trimmed();
+//     row.ownerName         = parts[1].trimmed();
+//     row.fullWidth_mm      = parts[2].trimmed().toInt();
+//     row.fullHeight_mm     = parts[3].trimmed().toInt();
+//     row.requiredLength    = parts[4].trimmed().toInt();
+//     row.toleranceStr      = parts[5].trimmed();
+//     row.quantity          = parts[6].trimmed().toInt();
+
+//     row.leftCount         = parts[7].trimmed().toInt();
+//     row.rightCount        = parts[8].trimmed().toInt();
+
+//     row.requiredColorName = parts[9].trimmed();
+//     row.barcode           = parts[10].trimmed();
+//     row.relevantDimStr    = parts[11].trimmed();
+//     row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+
+//     QString dueStr = parts[13].trimmed();
+//     QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+//     row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+//     row.typeCode    = parts[14].trimmed();
+//     row.subtypeCode = parts[15].trimmed();
+
+//     return row;
+// }
+
+// std::optional<CuttingRequestRepository::CuttingRequestRow>
+// CuttingRequestRepository::convertRowToCuttingRequestRow_V5(const QVector<QString>& parts,
+//                                                            CsvReader::FileContext& ctx)
+// {
+//     if (parts.size() < 17) {
+//         ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V5)"));
+//         return std::nullopt;
+//     }
+
+//     CuttingRequestRow row;
+//     row.externalReference = parts[0].trimmed();
+//     row.ownerName         = parts[1].trimmed();
+//     row.fullWidth_mm      = parts[2].trimmed().toInt();
+//     row.fullHeight_mm     = parts[3].trimmed().toInt();
+//     row.requiredLength    = parts[4].trimmed().toInt();
+//     row.toleranceStr      = parts[5].trimmed();
+//     row.quantity          = parts[6].trimmed().toInt();
+
+//     row.leftCount         = parts[7].trimmed().toInt();
+//     row.rightCount        = parts[8].trimmed().toInt();
+
+//     row.requiredColorName = parts[9].trimmed();
+//     row.barcode           = parts[10].trimmed();
+//     row.relevantDimStr    = parts[11].trimmed();
+//     row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+
+//     QString dueStr = parts[13].trimmed();
+//     QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+//     row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+//     row.typeCode    = parts[14].trimmed();
+//     row.subtypeCode = parts[15].trimmed();
+
+//     row.attributesStr = parts[16].trimmed();
+//     return row;
+// }
+
+// std::optional<CuttingRequestRepository::CuttingRequestRow>
+// CuttingRequestRepository::convertRowToCuttingRequestRow_V6(const QVector<QString>& parts,
+//                                                            CsvReader::FileContext& ctx)
+// {
+//     if (parts.size() < 18) {
+//         ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V5)"));
+//         return std::nullopt;
+//     }
+
+//     CuttingRequestRow row;
+//     row.externalReference = parts[0].trimmed();
+//     row.ownerName         = parts[1].trimmed();
+//     row.fullWidth_mm      = parts[2].trimmed().toInt();
+//     row.fullHeight_mm     = parts[3].trimmed().toInt();
+//     row.requiredLength    = parts[4].trimmed().toInt();
+//     row.toleranceStr      = parts[5].trimmed();
+//     row.quantity          = parts[6].trimmed().toInt();
+
+//     row.leftCount         = parts[7].trimmed().toInt();
+//     row.rightCount        = parts[8].trimmed().toInt();
+
+//     row.requiredColorName = parts[9].trimmed();
+//     row.barcode           = parts[10].trimmed();
+//     row.relevantDimStr    = parts[11].trimmed();
+//     row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
+
+//     QString dueStr = parts[13].trimmed();
+//     QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+//     row.dueDate = d.isValid() ? d : QDate::currentDate();
+
+//     row.typeCode    = parts[14].trimmed();
+//     row.subtypeCode = parts[15].trimmed();
+
+//     row.attributesStr = parts[16].trimmed();
+//     row.surfaceStr    = parts[17].trimmed();   // <-- ÚJ MEZŐ
+//     return row;
+// }

@@ -69,6 +69,9 @@ private:
     QPushButton* btnNextMaterial = nullptr;
     QPushButton* btnFirstRef = nullptr;
 
+    //bool _bomDirty = false;
+    bool _dialogInitialized = false;
+
     // ⭐ Kétmódú workflow metódusok
     void enterReferenceEditMode();              // nincs tételszám → beírás
     void loadReference(const QString& ref); // van tételszám → mutatás + nav
@@ -82,7 +85,10 @@ private:
 
     //int _lengthHint = -1;
     QTimer* _lengthDebounceTimer = nullptr;
+    QTimer* _heightDebounceTimer = nullptr;
     QTimer* _colorDebounceTimer = nullptr;
+    QTimer* _bomDebounceTimer = nullptr;
+
 
     struct HeadFields {
         QString owner;
@@ -91,6 +97,7 @@ private:
         QString surfaceCode;
         QUuid   typeId;
         QUuid   subtypeId;
+        SizeCalcMode calcMode;
 
         int quantity = 1;
         int leftCount = 0;
@@ -195,6 +202,38 @@ private:
     void setFullSizeEditable(bool editable);
     void updateBomWarnings();
     void updateMaterialWarnings(const QUuid &id);
+
+    struct SeriesInput
+    {
+        QUuid productTypeId;
+        QUuid productSubtypeId;
+        QString color;
+        QString surfaceCode;
+        int fullWidth_mm;
+        int fullHeight_mm;
+
+        bool operator==(const SeriesInput& o) const
+        {
+            return productTypeId    == o.productTypeId &&
+                   productSubtypeId == o.productSubtypeId &&
+                   color            == o.color &&
+                   surfaceCode      == o.surfaceCode &&
+                   fullWidth_mm     == o.fullWidth_mm &&
+                   fullHeight_mm    == o.fullHeight_mm;
+        }
+
+        bool operator!=(const SeriesInput& o) const
+        {
+            return !(*this == o);
+        }
+    };
+
+    SeriesInput _lastSeriesInput;
+
+    void populateCalcModePanel();
+    //void applyCalcModeFromRequest(const Cutting::Plan::Request &req);
+    SizeCalcMode selectedCalcMode() const;
+    void applyCalcModeFromRequest(const Cutting::Plan::Request &req);
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

@@ -264,3 +264,7 @@ QString FileNameHelper::getMaterialRoleGroupMsffFile() const {
     return fn;
 }
 
+QString FileNameHelper::getProductCalculationModesMsffFile() const {
+    auto fn = QDir(_projectPath).filePath("product_calcmodes.msff"); // vagy ahová ténylegesen rakod
+    return fn;
+}

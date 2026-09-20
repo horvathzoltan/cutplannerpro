@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>764</width>
-    <height>688</height>
+    <height>785</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>1</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -79,12 +79,12 @@
      <item>
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>20</width>
+         <height>40</height>
         </size>
        </property>
       </spacer>
@@ -96,7 +96,7 @@
      <item>
       <widget class="Line" name="line">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -173,6 +173,9 @@
    </item>
    <item row="9" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_productType">
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Termék típus</string>
      </property>
@@ -181,7 +184,7 @@
    <item row="11" column="0" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page"/>
      <widget class="QWidget" name="page_2"/>
@@ -222,12 +225,12 @@
          <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
@@ -244,7 +247,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QSlider" name="sliderHandler"/>
+          <widget class="QSlider" name="sliderHandler">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="labelRightValue">
@@ -300,28 +307,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioAttrSzamitas_GyartasiMeret">
-        <property name="text">
-         <string>Gyartasi</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioAttrSzamitas_UvegMeret">
-        <property name="text">
-         <string>UvegMeret</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>20</width>
+          <height>40</height>
          </size>
         </property>
        </spacer>
@@ -372,7 +365,7 @@
      <item>
       <widget class="Line" name="line_2">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -419,15 +412,36 @@
    <item row="25" column="0" colspan="2">
     <layout class="QHBoxLayout" name="layout_colorPreview"/>
    </item>
-   <item row="28" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::NoButton</set>
+   <item row="24" column="0" colspan="2">
+    <widget class="QLabel" name="lblLengthWarning">
+     <property name="text">
+      <string>TextLabel</string>
      </property>
     </widget>
    </item>
-   <item row="28" column="1">
+   <item row="26" column="0" colspan="2">
+    <widget class="QLabel" name="lblBomWarning">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="0" colspan="2">
+    <widget class="QLabel" name="lblMaterialWarning">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="28" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="btnNextMaterial">
        <property name="text">
@@ -450,24 +464,24 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QCheckBox" name="chk_Repeat">
        <property name="text">
         <string>Új tétel felvitele</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="btn_Reset">
@@ -478,24 +492,10 @@
      </item>
     </layout>
    </item>
-   <item row="24" column="0" colspan="2">
-    <widget class="QLabel" name="lblLengthWarning">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="26" column="0" colspan="2">
-    <widget class="QLabel" name="lblBomWarning">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="22" column="0" colspan="2">
-    <widget class="QLabel" name="lblMaterialWarning">
-     <property name="text">
-      <string>TextLabel</string>
+   <item row="12" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_calcMode">
+     <property name="title">
+      <string>Számítási mód</string>
      </property>
     </widget>
    </item>

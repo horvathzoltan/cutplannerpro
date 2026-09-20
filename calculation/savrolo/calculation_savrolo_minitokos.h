@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "common/logger.h"
 #include <QMap>
 #include <QString>
@@ -64,64 +64,50 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode)
+                                  SizeCalcMode mode)
 {
 
     // attribútumfüggő tengely
     const QString szamitas_key = "szamitas";
-    if(attributes.contains(szamitas_key))
-    {
-        QString szamitas = attributes.value(szamitas_key);
-        if (szamitas == "uvegmeret") {
-            mode = CalcMode::UvegMeret;
-
-        }
-        else if (szamitas == "gyartasimeret") {
-            mode = CalcMode::GyartasiMeret;
-
-        }
-        else {
-            mode = CalcMode::Unknown;
-        }
-    }
 
     // --- TOK ---
     if (role == "RMT-T") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTok(width);
-        else if(mode == CalcMode::UvegMeret)
+        if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcTok(width);
     }
 
     // --- TENGELY ---
     if (role == "RTE-H-18") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTengely(width);
-        else if(mode == CalcMode::UvegMeret)
+        if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
     if (role == "RSR-VASZON") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcVaszon(width);
-        else if(mode == CalcMode::UvegMeret)
+        if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcVaszon(width);
     }
 
     // --- ZARO ---
     if (role == "RMT-ZP") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcZaro(width);
-        else if(mode == CalcMode::UvegMeret)
+        if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcZaro(width);
     }
 
+    // ha kell festeni, a láb 4 cm-el hosszabb, és fúrni is kell a felfüggesztés miatt
     // --- LAB ---
-    if (role == "RMT-L2") {
-        if(mode == CalcMode::GyartasiMeret)
+    if (role == "RMT-L") {
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcLab(height);
-        if(mode == CalcMode::UvegMeret)
+        if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcLab(height);
     }
 

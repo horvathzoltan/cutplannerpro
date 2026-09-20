@@ -21,6 +21,7 @@
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <product/registry/bom_registry.h>
 #include <product/registry/material_role_registry.h>
+#include <product/registry/product_calcmode_registry.h>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 #include <product/registry/productattributeregistry.h>
@@ -47,13 +48,24 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         loadOwnerCache();
     }
 
+
     _mode = mode;
     _shiftEnterAccepted = false;
 
     ui->setupUi(this);
 
-    ui->stackedWidget_stackSubtype->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    // ui->stackedWidget_stackSubtype->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    // ui->stackHandlerSide->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    int h = ui->pageRadio->sizeHint().height();
+    ui->pageSlider->setMinimumHeight(h);
+    ui->pageSlider->setMaximumHeight(h);
+    ui->sliderHandler->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    ui->sliderHandler->setMinimumHeight(1);
+    ui->sliderHandler->setMaximumHeight(h);
     ui->stackHandlerSide->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+//ui->footerPanel->setStyleSheet("background-color: pink;");
 
     ui->editReference->installEventFilter(this);
 
@@ -87,6 +99,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
             refreshBom("type changed");
             onProductTypeChanged(true);   // megmarad a subtype stack váltás
+            populateCalcModePanel();
 
             ui->lblLengthWarning->hide();
         });
@@ -119,6 +132,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
                 refreshBom("subtype changed");
                 updateAttributePanel();
+                populateCalcModePanel();
 
                 ui->lblLengthWarning->hide();
             });
@@ -297,6 +311,15 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         ui->chkUnknownSide->setChecked(false);
     });
 
+    // --- LENGTH DEBOUNCE ---
+    _bomDebounceTimer = new QTimer(this);
+    _bomDebounceTimer->setSingleShot(true);
+    _bomDebounceTimer->setInterval(2000);
+
+    connect(_bomDebounceTimer, &QTimer::timeout, this, [this](){
+        refreshBom("debounced");
+    });
+
 
     // --- LENGTH DEBOUNCE ---
     _lengthDebounceTimer = new QTimer(this);
@@ -305,12 +328,37 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
         updateColorPreview();
-        refreshBom("length changed");
+        //_bomDirty = true;
+        //refreshBom("length changed");
+        _bomDebounceTimer->start();
     });
 
     connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
             this, [this](int){
+               // _bomDirty = true;
+            if (!_dialogInitialized)
                 _lengthDebounceTimer->start();
+            });
+
+
+    // --- HEIGHT DEBOUNCE ---
+    _heightDebounceTimer = new QTimer(this);
+    _heightDebounceTimer->setSingleShot(true);
+    _heightDebounceTimer->setInterval(2000);
+
+    connect(_heightDebounceTimer, &QTimer::timeout, this, [this](){
+        //updateColorPreview();
+        //_bomDirty = true;
+        //refreshBom("height changed");
+        if (!_dialogInitialized)
+        _bomDebounceTimer->start();
+    });
+
+    connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
+            this, [this](int){
+            //    _bomDirty = true;
+            if (!_dialogInitialized)
+                _heightDebounceTimer->start();
             });
 
     // --- COLOR DEBOUNCE ---
@@ -320,18 +368,20 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
         updateColorPreview();
-        refreshBom("color changed");
+   //     _bomDirty = true;
+        //refreshBom("color changed");
+        _bomDebounceTimer->start();
     });
 
     connect(ui->edit_Color, &QLineEdit::textChanged,
             this, [this](){
+            if (!_dialogInitialized)
                 _colorDebounceTimer->start();    // ❗ csak timer, NINCS azonnali BOM
             });
 
+
     connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged),
             this, &AddInputDialog::onMaterialComboChanged);
-
-
 
     connect(ui->editOwner, &QLineEdit::textChanged, this, [this](const QString& newOwner){
 
@@ -398,6 +448,9 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         updateColorPreview();
         updateAttributePanel();
 
+        _dialogInitialized = true;
+
+        this->adjustSize();
     });
 
     const char* warningStyle =
@@ -441,7 +494,11 @@ void AddInputDialog::groupboxAttributes_hide(){
 
     int h = ui->groupBox_attributes->sizeHint().height();
     ui->groupBox_attributes->hide();
-    this->resize(this->width(), this->height() - h);
+    //this->resize(this->width(), this->height() - h);
+    this->adjustSize();
+    // auto g2 = ui->footerPanel->geometry();
+    // int h2 = g2.bottom();
+    // this->resize(this->width(), 400);
 }
 
 void AddInputDialog::groupboxAttributes_show(){
@@ -454,7 +511,13 @@ void AddInputDialog::groupboxAttributes_show(){
 
     int h = ui->groupBox_attributes->sizeHint().height();
     ui->groupBox_attributes->show();
-    this->resize(this->width(), this->height() + h);
+
+    //this->resize(this->width(), this->height() + h);
+    this->adjustSize();
+
+    // auto g2 = ui->footerPanel->geometry();
+    // int h2 = g2.bottom();
+    // this->resize(this->width(), 400);
 }
 
 // void AddInputDialog::refreshBom()
@@ -642,11 +705,44 @@ void AddInputDialog::groupboxAttributes_show(){
 void AddInputDialog::refreshBom(const QString& key)
 {
     zInfo(L("AddInputDialog::refreshBom: ")+key);
+
+    bool force = (key == "initializeBomModel");
+
+    if (!_dialogInitialized && key != "initializeBomModel")
+        return;
+
+
+    SeriesInput currentSeriesInput = {
+        selectedProductTypeId(),
+        selectedProductSubtypeId(),
+        ui->edit_Color->text().trimmed(),
+        ui->comboBox_Surface->currentData().toString(),
+        ui->spinBox_width->value(),
+        ui->spinBox_height->value()
+    };
+
+    bool seriesChanged = (currentSeriesInput != _lastSeriesInput);
+    if (!seriesChanged && !force) {
+        zInfo("refreshBom: no series change → skip");
+        return;
+    }
+
+    if (seriesChanged || force)
+        _lastSeriesInput = currentSeriesInput;
+
+    zInfo(QString("SeriesInput: type=%1 subtype=%2 color=%3 surface=%4 w=%5 h=%6")
+              .arg(currentSeriesInput.productTypeId.toString())
+              .arg(currentSeriesInput.productSubtypeId.toString())
+              .arg(currentSeriesInput.color)
+              .arg(currentSeriesInput.surfaceCode)
+              .arg(currentSeriesInput.fullWidth_mm)
+              .arg(currentSeriesInput.fullHeight_mm));
+
+
     QElapsedTimer totalTimer;
     totalTimer.start();
     QElapsedTimer stepTimer;
     stepTimer.start();
-
 
     {
         QUuid id = _bomModel.lastSuggestedMaterial;
@@ -782,7 +878,21 @@ void AddInputDialog::refreshBom(const QString& key)
     zInfo(QString("[refreshBom] recommended BOM log print: %1 ms").arg(stepTimer.restart()));
 
     // ⭐ BOM befejezés jelzése
-    bool bomDone = (_bomModel.addedMaterials.size() == _bomModel.bomList.size());
+    // bool bomDone = (!_bomModel.bomList.isEmpty() &&
+    //                 !_bomModel.addedMaterials.isEmpty() &&
+    //                 _bomModel.addedMaterials.size() == _bomModel.bomList.size());
+
+    // ⭐ BOM befejezés jelzése
+    int addedCuttableCount = 0;
+    for (const auto& id : _bomModel.bomList) {
+        if (_bomModel.addedMaterials.contains(id))
+            ++addedCuttableCount;
+    }
+
+    bool bomDone = (!_bomModel.bomList.isEmpty() &&
+                    addedCuttableCount == _bomModel.bomList.size());
+
+
 
     if (bomDone) {
         ui->btnNextMaterial->setEnabled(false);
@@ -1069,6 +1179,8 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
 
     req.attributes.clear();
 
+    req.calcMode = selectedCalcMode();
+
     // Ha a terméktípushoz van attribútum, akkor kiolvassuk
     auto attrs = ProductAttributeRegistry::instance().getAll(
         currentProductTypeCode(),
@@ -1081,14 +1193,7 @@ Cutting::Plan::Request AddInputDialog::getModel() const {
             req.attributes["meghajtas"] = "kurblis";
 
         zInfo("attr kiolvasva, meghajtas: " + req.attributes["meghajtas"]);
-    } else if (attrs.contains("szamitas")) {
-        if (ui->radioAttrSzamitas_UvegMeret->isChecked())
-            req.attributes["szamitas"] = "uvegmeret";
-        else if (ui->radioAttrSzamitas_GyartasiMeret->isChecked())
-            req.attributes["szamitas"] = "gyartasimeret";
-
-        zInfo("attr kiolvasva, szamitas: " + req.attributes["szamitas"]);
-    } else {
+    }  else {
         zInfo("attr NINCS kiolvasva");
     }
        return req;
@@ -1368,8 +1473,19 @@ void AddInputDialog::applyRequestToWidgets(const Cutting::Plan::Request& req)
     _suppressPreview = true;
     ui->lblLengthWarning->hide();
 
+    // 1) HEAD mezők
     applyFields_Head(req);
+
+    // 2) CalcMode panel feltöltése
+    //populateCalcModePanel();
+
+    // 3) CalcMode visszatöltése
+    //applyCalcModeFromRequest(req);
+
+    // 4) ITEM mezők
     applyFields_Item(req);
+
+    _suppressPreview = false;
 }
 
 void AddInputDialog::applySide(HandlerSide side)
@@ -1935,7 +2051,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
     _bomModel.lastSuggestedMaterial = QUuid();
 
     // 1) BOM generálása az aktuális UI állapot alapján
-    refreshBom("initializeBomModel");   // ez tölti fel _bomModel.bomList-et (recommended)
+//    refreshBom("initializeBomModel");   // ez tölti fel _bomModel.bomList-et (recommended)
 
     // 2) Registry lekérdezés — mi lett már hozzáadva ehhez a ref-hez?
     auto existing = CuttingPlanRequestRegistry::instance().findByExternalReference(ref);
@@ -1943,6 +2059,9 @@ void AddInputDialog::initializeBomModel(const QString& ref)
         if (!req.materialId.isNull())
             _bomModel.addedMaterials.insert(req.materialId);
     }
+
+    refreshBom("initializeBomModel");   // ez tölti fel _bomModel.bomList-et (recommended)
+
 
     // 3) lastSuggestedMaterial inicializálása:
     // első olyan BOM elem, ami nincs addedMaterials-ben
@@ -1955,6 +2074,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
 
     // 4) ha minden hozzá van adva → nincs ajánlás
     _bomModel.lastSuggestedMaterial = QUuid();
+
 }
 
 
@@ -2245,6 +2365,9 @@ void AddInputDialog::applyFields_Head(const Cutting::Plan::Request& r){
 
     applyFullSize(r);
     applyAttributes(r);
+
+    populateCalcModePanel();
+    applyCalcModeFromRequest(r);
 }
 
 void AddInputDialog::applyFields_Item(const Cutting::Plan::Request& req){
@@ -2271,6 +2394,7 @@ AddInputDialog::HeadFields AddInputDialog::headFromRegistry(const QString& ref) 
     h.quantity = last->quantity;
     h.leftCount = last->leftCount;
     h.rightCount = last->rightCount;
+    h.calcMode   = last->calcMode;
 
     return h;
 }
@@ -2298,6 +2422,7 @@ AddInputDialog::HeadFields AddInputDialog::currentHeadFromDialog() const
         h.rightCount = h.quantity - left;
     }
 
+    h.calcMode = selectedCalcMode();
     return h;
 }
 
@@ -2314,7 +2439,8 @@ bool AddInputDialog::headFieldsDiffer(const HeadFields& a,
         a.subtypeId   != b.subtypeId ||
         a.quantity    != b.quantity ||
         a.leftCount   != b.leftCount ||
-        a.rightCount  != b.rightCount;
+        a.rightCount  != b.rightCount ||
+        a.calcMode    != b.calcMode;
 }
 
 
@@ -2341,6 +2467,7 @@ void AddInputDialog::updateHeadFieldsInRegistry(const QString& ref)
         r->quantity = current.quantity;
         r->leftCount = current.leftCount;
         r->rightCount = current.rightCount;
+        r->calcMode = current.calcMode;
 
         CuttingPlanRequestRegistry::instance().updateRequest(*r);
     }
@@ -2406,7 +2533,7 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
     auto* subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
 
     if (!type) {
-        ui->groupBox_attributes->hide();
+        groupboxAttributes_hide();
         return;
     }
 
@@ -2415,11 +2542,11 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
 
     auto attrs = ProductAttributeRegistry::instance().getAll(typeCode, subtypeCode);
     if (!attrs.contains("meghajtas")) {
-        ui->groupBox_attributes->hide();
+        groupboxAttributes_hide();
         return;
     }
 
-    ui->groupBox_attributes->show();
+    groupboxAttributes_show();
 
     // 2) Ha a Request-ben van érték → AZ élvez prioritást
     QString v;
@@ -2431,20 +2558,10 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
         else
             ui->radioAttrKurblis->setChecked(true);
     }
-    else if (r.attributes.contains("szamitas")) {
-        v = r.attributes["szamitas"];
-
-        if (v == "uvegmeret")
-            ui->radioAttrSzamitas_UvegMeret->setChecked(true);
-        else
-            ui->radioAttrSzamitas_GyartasiMeret->setChecked(true);
-
-    }else {
+    else {
         // 3) Ha nincs Request-érték → registry default
         //v = attrs["meghajtas"];
     }
-
-
 
     zInfo("applyAttributes: meghajtas = " + v);
 }
@@ -2487,21 +2604,26 @@ void AddInputDialog::onMaterialComboChanged(int index)
     // 3) HEAD adatok
     QString typeCode = currentProductTypeCode();
     QString subtypeCode = currentProductSubtypeCode();
-    QMap<QString, QString> attrs = req.attributes;
+    //QMap<QString, QString> attrs = req.attributes;
 
-    double width  = req.fullWidth_mm;
-    double height = req.fullHeight_mm;
+    // double width  = req.fullWidth_mm;
+    // double height = req.fullHeight_mm;
+
+    // SizeCalcMode calcMode = req.calcMode;
 
     //auto n = MaterialRoleUtils::normalizePrefix(role.barcodePrefix);
     // 4) Kalkuláció
+
+    // ha kell festeni, a láb 4 cm-el hosszabb, és fúrni is kell a felfüggesztés miatt
+
     auto val = LengthCalculator::calculate(
         typeCode,
         subtypeCode,
-        attrs,
+        req.attributes,
         groupKey,
-        width,
-        height,
-        CalcMode::GyartasiMeret);
+        req.fullWidth_mm,
+        req.fullHeight_mm,
+        req.calcMode);
 
     // 5) UI frissítés
     if (val.has_value()) {
@@ -2562,4 +2684,93 @@ void AddInputDialog::updateMaterialWarnings(const QUuid& id)
     }
 }
 
+void AddInputDialog::populateCalcModePanel()
+{
+    // 1) Típus + altípus kód lekérése
+    QString typeCode = currentProductTypeCode();
+    QString subtypeCode = currentProductSubtypeCode();
 
+    // 2) CalcMode lista lekérése
+    QVector<SizeCalcMode> modes =
+        ProductCalcModeRegistry::instance().getModes(typeCode, subtypeCode);
+
+    // 3) Ha nincs mód → elrejtjük a groupBox-ot
+    if (modes.isEmpty()) {
+        ui->groupBox_calcMode->hide();
+        return;
+    }
+
+    ui->groupBox_calcMode->show();
+
+    // 4) Régi tartalom törlése
+    QLayout* oldLayout = ui->groupBox_calcMode->layout();
+    if (oldLayout) {
+        QLayoutItem* item;
+        while ((item = oldLayout->takeAt(0)) != nullptr) {
+            if (item->widget())
+                item->widget()->deleteLater();
+            delete item;
+        }
+        delete oldLayout;
+    }
+
+    // 5) Új layout
+    auto* lay = new QHBoxLayout();
+    ui->groupBox_calcMode->setLayout(lay);
+
+    // 6) Rádiógombok létrehozása
+    SizeCalcMode defaultMode =
+        ProductCalcModeRegistry::instance().getDefault(typeCode, subtypeCode);
+
+    for (SizeCalcMode m : modes) {
+        auto* rb = new QRadioButton(SizeCalcModeUtils::toString(m), ui->groupBox_calcMode);
+        rb->setProperty("calcMode", static_cast<int>(m));
+        lay->addWidget(rb);
+
+        if (m == defaultMode)
+            rb->setChecked(true);
+
+    }
+}
+
+void AddInputDialog::applyCalcModeFromRequest(const Cutting::Plan::Request& req)
+{
+    SizeCalcMode mode = req.calcMode;
+
+    QLayout* lay = ui->groupBox_calcMode->layout();
+    if (!lay) return;
+
+    for (int i = 0; i < lay->count(); ++i) {
+        QWidget* w = lay->itemAt(i)->widget();
+        if (!w) continue;
+
+        auto* rb = qobject_cast<QRadioButton*>(w);
+        if (!rb) continue;
+
+        SizeCalcMode m =
+            static_cast<SizeCalcMode>(rb->property("calcMode").toInt());
+
+        rb->setChecked(m == mode);
+    }
+}
+
+
+SizeCalcMode AddInputDialog::selectedCalcMode() const
+{
+    QLayout* lay = ui->groupBox_calcMode->layout();
+    if (!lay) return SizeCalcMode::Unknown;
+
+    for (int i = 0; i < lay->count(); ++i) {
+        QWidget* w = lay->itemAt(i)->widget();
+        if (!w) continue;
+
+        auto* rb = qobject_cast<QRadioButton*>(w);
+        if (!rb) continue;
+
+        if (rb->isChecked()) {
+            return static_cast<SizeCalcMode>(rb->property("calcMode").toInt());
+        }
+    }
+
+    return SizeCalcMode::Unknown;
+}

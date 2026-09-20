@@ -55,6 +55,7 @@ private:
         QDate dueDate;
         QString attributesStr;
         QString surfaceStr;   ///< Felület típusa (matt, fényes, stb.)
+        QString calcModeStr;   ///< méretszámítási mód (Gyartasi/Uveg/Vaszon)
     };
 
     static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V1(const QVector<QString>& parts, CsvReader::FileContext& ctx);
@@ -76,6 +77,10 @@ private:
     static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V6(const QVector<QString>& parts, CsvReader::FileContext& ctx);
 
 
+    static std::optional<CuttingRequestRow> convertRowToCuttingRequestRow_V7(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+    static std::optional<Cutting::Plan::Request> convertRowToCuttingRequest_V7(const QVector<QString>& parts, CsvReader::FileContext& ctx);
+
+
     static std::optional<Cutting::Plan::Request> buildCuttingRequestFromRow(const CuttingRequestRow &row, CsvReader::FileContext& ctx);
 
     enum class CSVVersion {
@@ -85,6 +90,7 @@ private:
         V4_ProductVariant,
         V5_Attributes,
         V6_Surface,
+        V7_CalcMode,
         Unknown
     };
 

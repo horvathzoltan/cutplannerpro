@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "common/logger.h"
 #include <QMap>
 #include <QString>
@@ -34,23 +34,23 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode)
+                                  SizeCalcMode mode)
 {
     // --- TENGELY ---
     if (role == "RTE-R-23") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
     if (role == "RNP-VASZON") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcVaszon(width);
     }
 
     // --- AlsóPálca ---
     if (role == "RROL-P") {
-        if(mode == CalcMode::GyartasiMeret)
+        if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcAlsoPalca(width);
     }
 

@@ -96,8 +96,23 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
         //TableCellViewModel::fromText(request.requiredColorName, "",baseColor, fgColor, true);
 
     // Measurement
+
+    int w = request.fullWidth_mm;
+    int h = request.fullHeight_mm;
+
+    SizeCalcMode mode = request.calcMode;
+
+
+    auto mes_txt = mode == SizeCalcMode::Unknown
+                       ?QString("%1×%2").arg(w).arg(h)
+                       :QString("%3(%1×%2)").arg(w).arg(h).arg(SizeCalcModeUtils::toString(mode));
+
+    // if(request.externalReference == "6000"){
+    //     mes_txt += " upsz!";
+    // }
+    //auto mes_txt = request.isMeasurementNeeded ? "✔" : ""
     vm.cells[InputTableColumns::Measurement] =
-        TableCellViewModel::fromText(request.isMeasurementNeeded ? "✔" : "", "",baseColor, fgColor, true);
+        TableCellViewModel::fromText(mes_txt, "",baseColor, fgColor, true);
 
     // Actions – gombok panelben
     QPushButton* btnUpdate = new QPushButton("✏️");

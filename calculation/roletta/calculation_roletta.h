@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "calculation/roletta/calculation_roletta_ujgyongyos.h"
 #include "calculation/roletta/calculation_roletta_alap.h"
 #include "calculation/roletta/calculation_roletta_tetoterinagy.h"
@@ -21,7 +21,7 @@ inline std::optional<double> calc(const QString& subtype,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode){
+                                  SizeCalcMode mode){
 
     if(subtype == "ALAP"){
         return Alap::calc(attributes, role, width, height, mode);

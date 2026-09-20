@@ -30,6 +30,18 @@ enum Column {
     SubType,
     Color,           ///< Igényelt szín
     Measurement,     ///< Mérési terv jelző (checkbox vagy ikon)
-    Actions          ///< Műveletek (Update/Delete gombok)
+    Actions          ///< Műveletek (Update/Delete gombok) // 11
 };
 } // end of namespace InputTableColumns
+// ExternalRef,
+// DueDate,
+// Owner,
+// Quantity,
+// Measurement,
+// HandlerSide,
+// SubType,
+// Color,
+// Material,
+// Length,
+// Tolerance, hide
+// Actions

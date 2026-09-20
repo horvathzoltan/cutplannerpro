@@ -1,6 +1,6 @@
 #pragma once
 
-#include "calculation/calcmode.h"
+#include "calculation/sizecalcmode.h"
 #include "calculation/savrolo/calculation_savrolo_toknelkuli.h"
 #include "calculation/savrolo/calculation_savrolo_minitokos.h"
 #include "calculation/savrolo/calculation_savrolo_tokozott.h"
@@ -21,7 +21,7 @@ inline std::optional<double> calc(const QString& subtype,
                                   const QString& role,
                                   double width,
                                   double height,
-                                  CalcMode mode){
+                                  SizeCalcMode mode){
 
     if(subtype == "T"){
         return Tokozott::calc(attributes, role, width, height, mode);
