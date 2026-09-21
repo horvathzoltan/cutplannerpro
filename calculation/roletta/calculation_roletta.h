@@ -5,6 +5,8 @@
 #include "calculation/roletta/calculation_roletta_alap.h"
 #include "calculation/roletta/calculation_roletta_tetoterinagy.h"
 #include "calculation/roletta/calculation_roletta_tokozottsines.h"
+#include "calculation/roletta/calculation_roletta_tetoteri.h"
+
 
 
 #include "common/logger.h"
@@ -30,7 +32,7 @@ inline std::optional<double> calc(const QString& subtype,
         //return Rugos::calc(attributes, role, width, height, mode);
     }
     else if(subtype == "TET"){
-        //return Tetoteri::calc(attributes, role, width, height, mode);
+        return Tetoteri::calc(attributes, role, width, height, mode);
     }
     else if(subtype == "TET_NAGY"){
         return TetoteriNagyKonzolos::calc(attributes, role, width, height, mode);

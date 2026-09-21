@@ -29,7 +29,7 @@ inline double calcZaro(double width){
 inline double calcLab(double height){
     return height;
 }
-}
+} // endof namespace GyartasiMeret
 
 namespace UvegMeret{
 
@@ -46,13 +46,59 @@ inline double calcVaszon(double width){
 }
 
 inline double calcZaro(double width){
-    return width - 7;
+    return width - 5;
 }
 
 inline double calcLab(double height){
     return height;
 }
+} // endof namespace  UvegMeret
+
+namespace VaszonMeret{
+
+inline double calcTok(double width){
+    return width +15;
 }
+
+inline double calcTengely(double width){
+    return width +13;
+}
+
+inline double calcVaszon(double width){
+    return width;
+}
+
+inline double calcZaro(double width){
+    return width;
+}
+
+inline double calcLab(double height){
+    return height;
+}
+} // endof namespace VaszonMeret
+
+namespace FalcMeret{
+
+inline double calcTok(double width){
+    return width;
+}
+
+inline double calcTengely(double width){
+    return width -5;
+}
+
+inline double calcVaszon(double width){
+    return width-15;
+}
+
+inline double calcZaro(double width){
+    return width-15;
+}
+
+inline double calcLab(double height){
+    return height-48;
+}
+} //endof namespace
 /*
 SR;MINIT;Tok;MT-T*
 SR;MINIT;Tengely;TE-H-18*
@@ -73,6 +119,10 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return GyartasiMeret::calcTok(width);
         if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcTok(width);
+        if(mode == SizeCalcMode::Vaszon)
+            return VaszonMeret::calcTok(width);
+        if(mode == SizeCalcMode::Falc)
+            return FalcMeret::calcTok(width);
     }
 
     // --- TENGELY ---
@@ -81,6 +131,10 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return GyartasiMeret::calcTengely(width);
         if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcTengely(width);
+        if(mode == SizeCalcMode::Vaszon)
+            return VaszonMeret::calcTengely(width);
+        if(mode == SizeCalcMode::Falc)
+            return FalcMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
@@ -89,6 +143,10 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return GyartasiMeret::calcVaszon(width);
         if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcVaszon(width);
+        if(mode == SizeCalcMode::Vaszon)
+            return VaszonMeret::calcVaszon(width);
+        if(mode == SizeCalcMode::Falc)
+            return FalcMeret::calcVaszon(width);
     }
 
     // --- ZARO ---
@@ -97,6 +155,10 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return GyartasiMeret::calcZaro(width);
         if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcZaro(width);
+        if(mode == SizeCalcMode::Vaszon)
+            return VaszonMeret::calcZaro(width);
+        if(mode == SizeCalcMode::Falc)
+            return FalcMeret::calcZaro(width);
     }
 
     // ha kell festeni, a láb 4 cm-el hosszabb, és fúrni is kell a felfüggesztés miatt
@@ -106,6 +168,10 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return GyartasiMeret::calcLab(height);
         if(mode == SizeCalcMode::Uveg)
             return UvegMeret::calcLab(height);
+        if(mode == SizeCalcMode::Vaszon)
+            return VaszonMeret::calcLab(height);
+        if(mode == SizeCalcMode::Falc)
+            return FalcMeret::calcLab(height);
     }
 
     // --- ISMERETLEN ROLE ---

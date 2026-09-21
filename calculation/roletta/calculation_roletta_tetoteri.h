@@ -7,25 +7,27 @@
 
 namespace Calculation{
 namespace Roletta{
-namespace Alap{
+namespace Tetoteri{
 namespace GyartasiMeret{
 inline double calcTengely(double width){
-    return width - 35;
+    return width - 25;
 }
 
 inline double calcVaszon(double width){
-    return width - 45;
+    return width - 27;
 }
 
 inline double calcAlsoPalca(double width){
-    return width - 45;
+    return width - 27;
 }
+
+
 
 }
 
 /*
-ROL;ALAP;Tengely;TE-R-23*
-ROL;ALAP;Palca;ROL-P*
+ROL;TET_NAGY;Tengely;TE-R-23*
+ROL;TET_NAGY;Palca;ROL-P*
 */
 
 inline std::optional<double> calc(const QMap<QString, QString>& attributes,
@@ -53,8 +55,7 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     }
 
     // --- ISMERETLEN ROLE ---
-    zInfo("Ismeretlen ROL-ALAP role: " + role);
+    zInfo("Ismeretlen ROL-TET_NAGY role: " + role);
     return std::nullopt;
 }
-} // endof alap
-}}
+}}}

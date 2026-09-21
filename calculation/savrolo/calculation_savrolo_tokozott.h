@@ -5,6 +5,10 @@
 #include <QMap>
 #include <QString>
 
+// záró rolettánál ha sávrolótokba megy
+// akkor a záró a textik szélére megy,
+// azaz -30 mm a levonás -20 mm helyett
+
 namespace Calculation{
 namespace Savrolo{
 namespace Tokozott{
@@ -26,8 +30,26 @@ inline double calcZaro(double width){
     return width -20;
 }
 
+} // endof namespace GyartasiMeret
+
+namespace VaszonMeret{
+
+inline double calcTok(double width){
+    return width +24;
 }
 
+inline double calcTengely(double width){
+    return width +7;
+}
+
+inline double calcVaszon(double width){
+    return width;
+}
+
+inline double calcZaro(double width){
+    return width +10;
+}
+} //endof namespace
 /*
 SR;T;Tok;SR-T*
 SR;T;Tengely;TE-H-32*

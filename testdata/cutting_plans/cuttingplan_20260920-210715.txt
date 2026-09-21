@@ -7,3 +7,73 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "679";"HZ-Ablak, Szeged";425;1175;418;;2;2;0;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
 "678";"HZ-Ablak, Szeged";1005;1175;1175;;2;2;0;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
 "679";"HZ-Ablak, Szeged";425;1175;1175;;2;0;2;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"680";"HZ-Ablak, Szeged";785;1030;795;;1;0;1;"";MT-T;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"680";"HZ-Ablak, Szeged";785;1030;790;;1;0;1;"";TE-H-18;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"680";"HZ-Ablak, Szeged";785;1030;778;;1;0;1;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"680";"HZ-Ablak, Szeged";785;1030;1030;;1;0;1;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Uveg
+"683";"HZ-Ablak, Szeged";625;920;640;;1;0;1;"";MT-T;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"683";"HZ-Ablak, Szeged";625;920;638;;1;0;1;"";TE-H-18;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"683";"HZ-Ablak, Szeged";625;920;625;;1;0;1;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"683";"HZ-Ablak, Szeged";625;920;920;;1;0;1;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"686";"Kujbus László";713;1230;723;;1;0;1;"";MT-T;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"686";"Kujbus László";713;1230;718;;1;0;1;"";TE-H-18;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"686";"Kujbus László";713;1230;706;;1;0;1;"";MT-Z+P;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"686";"Kujbus László";713;1230;1230;;1;0;1;"";MT-L2;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"687";"Kujbus László";1280;1320;1290;;1;1;0;"";MT-T;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"687";"Kujbus László";1280;1320;1285;;1;1;0;"";TE-H-18;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"687";"Kujbus László";1280;1320;1273;;1;1;0;"";MT-Z+P;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"687";"Kujbus László";1280;1320;1320;;1;1;0;"";MT-L2;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"688";"Kujbus László";255;1230;265;;1;0;1;"";MT-T;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"688";"Kujbus László";255;1230;260;;1;0;1;"";TE-H-18;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"688";"Kujbus László";255;1230;248;;1;0;1;"";MT-Z+P;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"688";"Kujbus László";255;1230;1230;;1;0;1;"";MT-L2;Width;false;2026-09-28;SR;MINIT;;SM;Uveg
+"694";"Bartha Géza";1300;1850;1284;;2;2;0;"";SR-FSN;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"694";"Bartha Géza";1300;1850;1267;;2;2;0;"";TE-H-32;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"694";"Bartha Géza";1300;1850;1270;;2;0;2;"";SR-Z+P;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"695";"Bartha Géza";570;2050;554;;1;1;0;"";SR-FSN;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"695";"Bartha Géza";570;2050;537;;1;1;0;"";TE-H-32;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"695";"Bartha Géza";570;2050;540;;1;1;0;"";SR-Z+P;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"696";"Bartha Géza";560;2050;544;;1;0;1;"";SR-FSN;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"696";"Bartha Géza";560;2050;527;;1;0;1;"";TE-H-32;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"696";"Bartha Géza";560;2050;530;;1;0;1;"";SR-Z+P;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"697";"Bartha Géza";1400;480;1384;;1;0;1;"";SR-FSN;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"697";"Bartha Géza";1400;480;1367;;1;0;1;"";TE-H-32;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"697";"Bartha Géza";1400;480;1370;;1;0;1;"";SR-Z+P;Width;false;2026-09-29;SR;TN;;SM;Gyartasi
+"703";"Kasza L., Szeged";645;1200;660;;1;0;1;"";MT-T;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"703";"Kasza L., Szeged";645;1200;658;;1;0;1;"";TE-H-18;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"703";"Kasza L., Szeged";645;1200;643;;1;0;1;"";MT-Z+P;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"703";"Kasza L., Szeged";645;1200;1200;;1;0;1;"";MT-L2;Width;false;2026-09-30;SR;MINIT;;SM;Vaszon
+"2361";"Lukács-Ablak, Nyh";1770;1900;1735;;1;0;1;"";TE-H-32;Width;false;2026-09-30;ROL;UJGY;;SM;Gyartasi
+"2361";"Lukács-Ablak, Nyh";1770;1900;1725;;1;0;1;"";ROL-GYZ;Width;false;2026-09-30;ROL;UJGY;;SM;Gyartasi
+"2362";"Lukács-Ablak, Nyh";865;1900;830;;1;0;1;"";TE-H-32;Width;false;2026-09-30;ROL;UJGY;;SM;Gyartasi
+"2362";"Lukács-Ablak, Nyh";865;1900;820;;1;0;1;"";ROL-GYZ;Width;false;2026-09-30;ROL;UJGY;;SM;Gyartasi
+"2365";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2365";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2366";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2366";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2367";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2367";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2368";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2368";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2369";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2369";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2370";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2370";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2371";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2371";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2372";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2372";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2373";"Kocza László, Győr";1210;1900;1175;;1;0;1;"";TE-H-32;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2373";"Kocza László, Győr";1210;1900;1165;;1;0;1;"";ROL-GYZ;Width;false;2026-09-28;ROL;UJGY;;SM;Gyartasi
+"2382";"Soletech";647;692;657;;1;0;1;"";MT-T;Width;false;2026-09-29;ROL;TSIN;;SM;Uveg
+"2382";"Soletech";647;692;652;;1;0;1;"";TE-H-18;Width;false;2026-09-29;ROL;TSIN;;SM;Uveg
+"2382";"Soletech";647;692;642;;1;0;1;"";MT-Z;Width;false;2026-09-29;ROL;TSIN;;SM;Uveg
+"2382";"Soletech";647;692;692;;1;0;1;"";MT-L2;Width;false;2026-09-29;ROL;TSIN;;SM;Uveg
+"2385";"LukácsÁrnyékolás";1600;1300;1565;;1;1;0;"";TE-R-23;Width;false;2026-09-29;ROL;ALAP;;SM;Gyartasi
+"2385";"LukácsÁrnyékolás";1600;1300;1555;;1;1;0;"";ROL-P;Width;false;2026-09-29;ROL;ALAP;;SM;Gyartasi
+"2388";"Bilisánszki Dániel, Nyh";1640;700;1605;;1;0;1;"";TE-R-23;Width;false;2026-09-30;ROL;ALAP;;SM;Gyartasi
+"2388";"Bilisánszki Dániel, Nyh";1640;700;1595;;1;0;1;"";ROL-P;Width;false;2026-09-30;ROL;ALAP;;SM;Gyartasi
+"2391";"Rellux Ajka, Győr";600;930;575;;1;0;0;"";TE-R-23;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
+"2391";"Rellux Ajka, Győr";600;930;573;;1;0;0;"";ROL-P;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
+"2392";"Rellux Ajka, Győr";600;930;575;;1;0;0;"";TE-R-23;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
+"2392";"Rellux Ajka, Győr";600;930;573;;1;0;0;"";ROL-P;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi

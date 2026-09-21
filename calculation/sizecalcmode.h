@@ -5,6 +5,7 @@ enum class SizeCalcMode {
     Unknown,     // nincs konfiguráció, hiba, hiányzó MSFF
     Gyartasi,
     Uveg,
+    Falc,
     Vaszon
 };
 
@@ -15,6 +16,7 @@ inline QString toString(SizeCalcMode m) {
     case SizeCalcMode::Gyartasi: return "Gyartasi";
     case SizeCalcMode::Uveg:     return "Uveg";
     case SizeCalcMode::Vaszon:   return "Vaszon";
+    case SizeCalcMode::Falc:   return "Falc";
     }
 
     return "Unknown";
@@ -26,6 +28,7 @@ inline SizeCalcMode parseSizeCalcMode(const QString& s) {
     if (t == "gyartasi") return SizeCalcMode::Gyartasi;
     if (t == "uveg")     return SizeCalcMode::Uveg;
     if (t == "vaszon")   return SizeCalcMode::Vaszon;
+    if (t == "falc")     return SizeCalcMode::Falc;
 
     return SizeCalcMode::Unknown;
 }
