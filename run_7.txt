@@ -1,2 +1,29 @@
-Vizsgáljuk meg alaposan, ez az aktuális verzió, a korábbiakat cseréljük erre és a továbbiakban már csak ezzel dolgozzunk
+🛡️ ANTI‑HALLUCINÁCIÓS FŐPROMPT (általános, minden forrásra)
 
+
+„A következő feltöltött forrás az egyetlen érvényes verzió.
+Minden korábbi verziót, korábbi kontextust, korábbi kódrészletet, korábbi UI‑struktúrát teljesen elvetjük.
+A válaszaid kizárólag ebből a forrásból dolgozhatnak, és semmilyen elemet nem találhatsz ki, nem egészíthetsz ki, nem feltételezhetsz.
+Csak olyan objektumot, layoutot, változót, függvényt, property‑t, UI‑elemet, enumot, structot, tagot, mezőt, metódust használhatsz, amely bizonyíthatóan szerepel a feltöltött forrásban.
+Ha valami nincs benne, akkor azt úgy kezeled, hogy nem létezik.
+Ha a feladat megoldásához szükséges elem hiányzik, akkor azt jelzed, és nem találod ki.
+A válaszod minden állítása legyen 100%‑ban a feltöltött forrásból levezethető.”
+
+Hozzáteheted:
+
+„Ha a válaszodban szereplő elem nem található meg a forrásban, akkor azt automatikusan hibának tekintjük.”
+
+Vagy:
+
+„Minden válaszod előtt implicit validáld, hogy az összes hivatkozott UI‑elem, változó, metódus szerepel‑e a forrásban.”
+
+
+
+
+🔥 Végső, ajánlott, tömörített verzió (minden helyzetre)
+
+A feltöltött forrás az egyetlen érvényes verzió.
+Minden korábbi kontextust elvetjük.
+A válaszaid kizárólag a forrásban ténylegesen szereplő elemeket használhatják.
+Semmit nem egészíthetsz ki, nem találhatsz ki, nem feltételezhetsz.
+Ha valami nincs a forrásban, akkor nem létezik.

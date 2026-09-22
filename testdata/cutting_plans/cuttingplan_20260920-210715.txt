@@ -77,3 +77,4 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "2391";"Rellux Ajka, Győr";600;930;573;;1;0;0;"";ROL-P;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
 "2392";"Rellux Ajka, Győr";600;930;575;;1;0;0;"";TE-R-23;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
 "2392";"Rellux Ajka, Győr";600;930;573;;1;0;0;"";ROL-P;Width;false;2026-10-05;ROL;TET;;SM;Gyartasi
+"5000";"Teszt Mandarin";2000;1000;2010;;1;0;1;"";MT-T;Width;false;2026-09-21;ROL;;;SM;Uveg

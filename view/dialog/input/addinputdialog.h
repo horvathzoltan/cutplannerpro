@@ -4,6 +4,7 @@
 #include "model/cutting/plan/handlerside.h"
 #include "view/dialog/dialogmode.h"
 #include <QDialog>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
 #include <QUuid>
@@ -68,6 +69,9 @@ private:
     QPushButton* btnNextRef = nullptr;
     QPushButton* btnNextMaterial = nullptr;
     QPushButton* btnFirstRef = nullptr;
+
+    QHBoxLayout* _calcModeLayout = nullptr;
+
 
     //bool _bomDirty = false;
     bool _dialogInitialized = false;

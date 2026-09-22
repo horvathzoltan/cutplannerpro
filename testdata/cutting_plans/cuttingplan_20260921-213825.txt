@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"5000";"Maki Majom";1000;200;1010;;1;0;0;"";MT-T;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
+"5000";"Maki Majom";1000;200;1005;;1;0;0;"";TE-H-18;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
+"5000";"Maki Majom";1000;200;995;;1;0;0;"";MT-Z;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
+"5000";"Maki Majom";1000;200;200;;1;0;0;"";MT-L2;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg

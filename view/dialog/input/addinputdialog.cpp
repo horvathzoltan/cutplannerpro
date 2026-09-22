@@ -86,8 +86,14 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             this, &AddInputDialog::on_btnEditReference_clicked);
 
     // ⭐ ProductType layout
-    auto* typeLayout = new QFlowLayout(ui->groupBox_productType);
-    ui->groupBox_productType->setLayout(typeLayout);
+    // --- groupBox_productType fő layoutja: VERTICAL ---
+    auto* mainLayout = new QVBoxLayout(ui->groupBox_productType);
+    ui->groupBox_productType->setLayout(mainLayout);
+
+    // --- felső csík: típusok QFlowLayoutban ---
+    auto* typeLayout = new QFlowLayout();
+    mainLayout->addLayout(typeLayout);
+
     // ⭐ ProductType rádiógombok dinamikus generálása
     //auto* typeLayout = ui->groupBox_productType->findChild<QVBoxLayout*>("verticalLayout");
     for (const auto& type : ProductTypeRegistry::instance().readAll()) {
@@ -105,6 +111,17 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         });
 
     }
+
+    // ⭐ ALTÍPUS STACKED WIDGET BEILLESZTÉSE A TÍPUSOK ALÁ
+    mainLayout->addWidget(ui->stackedWidget_stackSubtype);
+
+    // --- harmadik csík: calcMode ---
+    auto* calcModeLayout = new QHBoxLayout();
+    mainLayout->addLayout(calcModeLayout);
+
+    // elmentjük, hogy a populateCalcModePanel tudja használni
+    _calcModeLayout = calcModeLayout;
+
 
     auto* subtypeStack = ui->stackedWidget_stackSubtype;
 
@@ -2694,54 +2711,55 @@ void AddInputDialog::populateCalcModePanel()
     QVector<SizeCalcMode> modes =
         ProductCalcModeRegistry::instance().getModes(typeCode, subtypeCode);
 
-    // 3) Ha nincs mód → elrejtjük a groupBox-ot
+    // 3) Ha nincs mód → layout ürítése és kilépés
     if (modes.isEmpty()) {
-        ui->groupBox_calcMode->hide();
+        if (_calcModeLayout) {
+            QLayoutItem* item;
+            while ((item = _calcModeLayout->takeAt(0)) != nullptr) {
+                if (item->widget())
+                    item->widget()->deleteLater();
+                delete item;
+            }
+        }
         return;
     }
 
-    ui->groupBox_calcMode->show();
+    // 4) Default mód
+    SizeCalcMode defaultMode =
+        ProductCalcModeRegistry::instance().getDefault(typeCode, subtypeCode);
 
-    // 4) Régi tartalom törlése
-    QLayout* oldLayout = ui->groupBox_calcMode->layout();
-    if (oldLayout) {
+    // 5) Régi tartalom törlése
+    if (_calcModeLayout) {
         QLayoutItem* item;
-        while ((item = oldLayout->takeAt(0)) != nullptr) {
+        while ((item = _calcModeLayout->takeAt(0)) != nullptr) {
             if (item->widget())
                 item->widget()->deleteLater();
             delete item;
         }
-        delete oldLayout;
     }
 
-    // 5) Új layout
-    auto* lay = new QHBoxLayout();
-    ui->groupBox_calcMode->setLayout(lay);
-
-    // 6) Rádiógombok létrehozása
-    SizeCalcMode defaultMode =
-        ProductCalcModeRegistry::instance().getDefault(typeCode, subtypeCode);
-
+    // 6) Új rádiógombok hozzáadása
     for (SizeCalcMode m : modes) {
-        auto* rb = new QRadioButton(SizeCalcModeUtils::toString(m), ui->groupBox_calcMode);
+        auto* rb = new QRadioButton(SizeCalcModeUtils::toString(m),
+                                    ui->groupBox_productType);
         rb->setProperty("calcMode", static_cast<int>(m));
-        lay->addWidget(rb);
+        _calcModeLayout->addWidget(rb);
 
         if (m == defaultMode)
             rb->setChecked(true);
-
     }
 }
+
 
 void AddInputDialog::applyCalcModeFromRequest(const Cutting::Plan::Request& req)
 {
     SizeCalcMode mode = req.calcMode;
 
-    QLayout* lay = ui->groupBox_calcMode->layout();
-    if (!lay) return;
+    if (!_calcModeLayout)
+        return;
 
-    for (int i = 0; i < lay->count(); ++i) {
-        QWidget* w = lay->itemAt(i)->widget();
+    for (int i = 0; i < _calcModeLayout->count(); ++i) {
+        QWidget* w = _calcModeLayout->itemAt(i)->widget();
         if (!w) continue;
 
         auto* rb = qobject_cast<QRadioButton*>(w);
@@ -2757,11 +2775,11 @@ void AddInputDialog::applyCalcModeFromRequest(const Cutting::Plan::Request& req)
 
 SizeCalcMode AddInputDialog::selectedCalcMode() const
 {
-    QLayout* lay = ui->groupBox_calcMode->layout();
-    if (!lay) return SizeCalcMode::Unknown;
+    if (!_calcModeLayout)
+        return SizeCalcMode::Unknown;
 
-    for (int i = 0; i < lay->count(); ++i) {
-        QWidget* w = lay->itemAt(i)->widget();
+    for (int i = 0; i < _calcModeLayout->count(); ++i) {
+        QWidget* w = _calcModeLayout->itemAt(i)->widget();
         if (!w) continue;
 
         auto* rb = qobject_cast<QRadioButton*>(w);
@@ -2774,3 +2792,4 @@ SizeCalcMode AddInputDialog::selectedCalcMode() const
 
     return SizeCalcMode::Unknown;
 }
+
