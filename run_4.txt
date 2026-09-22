@@ -1,3 +1,7 @@
+_bomModel:
+    - addedMaterials - > a bom modelben hozzáadott anyagok
+    legyen privát tag, ne lehessen kívülről írni!
+
 detector:
  - lábaknál nem érzékelte a lábbetét túlvágását
  - ha ki vannak kapcsolva a hullók, nem talál lábat egyáltalán
