@@ -1,0 +1,54 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"344";"Braun-Árny, Győr";1420;2050;1390;;1;0;1;"RAL 8004";NP-T;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"344";"Braun-Árny, Győr";1420;2050;1415;;1;0;1;"RAL 8004";NP-TF;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"344";"Braun-Árny, Győr";1420;2050;1297;;1;0;1;"RAL 8004";NP-CZ;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"344";"Braun-Árny, Győr";1420;2050;1947;;1;0;1;"RAL 8004";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"344";"Braun-Árny, Győr";1420;2050;1310;;1;0;1;"RAL 8004";NP-ROLL70-5000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"344";"Braun-Árny, Győr";1420;2050;1245;;1;0;1;"RAL 8004";NP-BAR20-6000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1390;;1;1;0;"RAL 8004";NP-T;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1415;;1;1;0;"RAL 8004";NP-TF;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1297;;1;1;0;"RAL 8004";NP-CZ;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1987;;1;1;0;"RAL 8004";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1310;;1;1;0;"RAL 8004";NP-ROLL70-5000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"345";"Braun-Árny, Győr";1420;2090;1245;;1;1;0;"RAL 8004";NP-BAR20-6000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2370;;1;1;0;"RAL 8003";NP-T;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2395;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2277;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2097;;1;1;0;"RAL 8003";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2290;;1;1;0;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"351";"Hal-Kov";2400;2200;2225;;1;0;1;"RAL 8003";NP-BAR20-6000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2455;;1;0;1;"RAL 8003";NP-T;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2480;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2362;;1;0;1;"RAL 8003";NP-CZ;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2097;;1;0;1;"RAL 8003";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2375;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"352";"Hal-Kov";2485;2200;2310;;1;0;1;"RAL 8003";NP-BAR20-6000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"353";"Hal-Kov";2440;1790;2410;;1;1;0;"RAL 8003";NP-T;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2435;;1;1;0;"RAL 8003";NP-TF;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2317;;1;1;0;"RAL 8003";NP-CZ;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2330;;1;1;0;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2265;;1;1;0;"RAL 8003";NP-BAR20-6000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"354";"Hal-Kov";2500;1550;2470;;1;0;1;"RAL 8003";NP-T;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";2500;1550;2495;;1;0;1;"RAL 8003";NP-TF;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";2500;1550;2377;;1;0;1;"RAL 8003";NP-CZ;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";2500;1550;2390;;1;0;1;"RAL 8003";NP-ROLL70-5000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";2500;1550;2325;;1;0;1;"RAL 8003";NP-BAR20-6000;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"353";"Hal-Kov";2440;1790;2200;;1;1;0;"RAL 8003";NP-CL-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2200;;1;1;0;"RAL 8003";NP-CLT-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"353";"Hal-Kov";2440;1790;2200;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"353-4";"Hal-Kov";2500;1550;1790;;1;0;1;"RAL 8003";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CL-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CLT-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"356";"Szajkó, Győr";1039;1829;1009;;1;0;1;"RAL 1019";NP-T;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"356";"Szajkó, Győr";1039;1829;1034;;1;0;1;"RAL 1019";NP-TF;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"356";"Szajkó, Győr";1039;1829;916;;1;0;1;"RAL 1019";NP-CZ;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"356";"Szajkó, Győr";1039;1829;1726;;1;0;1;"RAL 1019";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"356";"Szajkó, Győr";1039;1829;929;;1;0;1;"RAL 1019";NP-ROLL70-5000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"356";"Szajkó, Győr";1039;1829;864;;1;0;1;"RAL 1019";NP-BAR20-6000;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
