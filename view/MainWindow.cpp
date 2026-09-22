@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "leftover/view/dialog/leftoverauditdialog.h"
+#include "materials/model/material_rolegroup.h"
 #include "service/relocation/relocationplanner.h"
 #include "settings/settingsdialog.h"
 #include "storage/storagelabelbatchdialog.h"
@@ -52,6 +53,10 @@
 #include <model/registries/cuttingmachineregistry.h>
 
 #include <leftover/label/leftoverlabelqueue.h>
+
+#include <materials/registry/material_rolegroup_registry.h>
+
+#include <calculation/lengthcalculator.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -660,45 +665,108 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
         AddInputDialog dialog(this, DialogMode::Create, nullptr);
 
         connect(&dialog, &AddInputDialog::seriesContextChanged,
-                this, [this, &dialog](const QString& owner, const QString& ref) {
-
-                // // 1) teljes sorozat
-                // auto full = CuttingPlanRequestRegistry::instance().readAll();
-
-                // // 2) ActiveSeries frissítése (DE NEM updateMatrix!)
-                // ActiveSeries s;
-                // s.active = true;
-                // s.startRef = ref;
-
-                // // 3) teljes tételszám-lista
-                // for (const auto& r : full)
-                //     s.order.append(r.externalReference);
-
-                // // 4) aktuális oszlop beállítása
-                // s.currentColumnIndex = s.order.indexOf(ref);
-                // s.currentMaterialIndex = 0;
-
-                // // 5) csak az ActiveSeries-t frissítjük
-                // _seriesMatrixView->setActiveSeries(s);
-                });
+                this, [this, &dialog](const QString& owner, const QString& ref) {});
 
 
         if (dialog.exec() != QDialog::Accepted)
             return;
 
-        //zInfo("MainWindow getModel start");
-        Cutting::Plan::Request request = dialog.getModel();
-        //zInfo("MainWindow getModel end");
-        _cuttingPresenter->add_CuttingPlanRequest(request);
+        zInfo("handle_btn_AddCuttingPlanRequest_clicked_1");
+        // ⭐ HEAD modell – minden anyaghoz közös fej adatok
+        Cutting::Plan::Request headReq = dialog.getModel();
+        zInfo("handle_btn_AddCuttingPlanRequest_clicked_2");
 
-        // ⭐ filledCells cache frissítése
-        _seriesMatrixView->addFilledCell(request.externalReference, request.materialId);
-        // ⭐ BOM cache kiütése
-        _seriesMatrixView->clearBomCache();
+        if (dialog.generateAllMaterials()) {
+            // BOM + már rögzített anyagok
+            const QVector<QUuid> bom = dialog.bomList();
+            QSet<QUuid> added;
 
-        // ⭐ Új request bekerült → mátrixot újra kell tölteni
-        _seriesMatrixView->refreshAfterAdd(request.externalReference);
+            auto existing = CuttingPlanRequestRegistry::instance()
+                                .findByExternalReference(headReq.externalReference);
 
+            for (const auto& req : existing) {
+                if (!req.materialId.isNull())
+                    added.insert(req.materialId);
+            }
+
+            // type/subtype kódok a LengthCalculator-hoz
+            auto* type = ProductTypeRegistry::instance().findById(headReq.productTypeId);
+            auto* subtype = ProductSubtypeRegistry::instance().findById(headReq.productSubtypeId);
+
+            const QString typeCode    = type    ? type->code    : QString();
+            const QString subtypeCode = subtype ? subtype->code : QString("*");
+
+            for (const QUuid& matId : bom) {
+
+                const MaterialMaster* m = MaterialRegistry::instance().findById(matId);
+                if (!m)
+                    continue;
+
+                // már rögzített anyag → kihagyjuk
+                if (added.contains(matId)){
+                    zInfo("added: "+m->barcode);
+                    continue;
+                }
+
+                QString a1 = m->barcode;
+
+                // szerepkör + groupKey
+                MaterialRole role =
+                    MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+
+                const MaterialRoleGroup* roleGroup =
+                    MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+                const QString groupKey = roleGroup ? roleGroup->barcode : "";
+
+                // hossz kalkuláció
+                auto lenOpt = LengthCalculator::calculate(
+                    typeCode,
+                    subtypeCode,
+                    headReq.attributes,
+                    groupKey,
+                    headReq.fullWidth_mm,
+                    headReq.fullHeight_mm,
+                    headReq.calcMode);
+
+                Cutting::Plan::Request req = headReq;
+                req.requestId  = QUuid::createUuid();
+                req.materialId = matId;
+
+                if (lenOpt.has_value()){
+                    a1+=" ok";
+                    req.requiredLength = static_cast<int>(*lenOpt);
+                }
+                else{
+                    a1+=" failed";
+                    req.requiredLength = -1;   // vagy hagyhatod a headReq.requiredLength-et
+                }
+
+                zInfo("adding: "+a1);
+
+                _cuttingPresenter->add_CuttingPlanRequest(req);
+
+                _seriesMatrixView->addFilledCell(req.externalReference, req.materialId);
+                _seriesMatrixView->clearBomCache();
+                _seriesMatrixView->refreshAfterAdd(req.externalReference);
+            }
+        }
+        else
+        {
+            //zInfo("MainWindow getModel start");
+            //Cutting::Plan::Request request = dialog.getModel();
+            Cutting::Plan::Request request = headReq;
+            //zInfo("MainWindow getModel end");
+            _cuttingPresenter->add_CuttingPlanRequest(request);
+
+            // ⭐ filledCells cache frissítése
+            _seriesMatrixView->addFilledCell(request.externalReference, request.materialId);
+            // ⭐ BOM cache kiütése
+            _seriesMatrixView->clearBomCache();
+
+            // ⭐ Új request bekerült → mátrixot újra kell tölteni
+            _seriesMatrixView->refreshAfterAdd(request.externalReference);
+        }
         if(!dialog.shouldRepeat())
             break;
     }

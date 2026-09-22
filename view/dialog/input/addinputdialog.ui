@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>764</width>
+    <width>825</width>
     <height>785</height>
    </rect>
   </property>
@@ -179,15 +179,23 @@
      <property name="title">
       <string>Termék típus</string>
      </property>
-    </widget>
-   </item>
-   <item row="11" column="0" colspan="2">
-    <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2"/>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QWidget" name="typeContainerWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget_stackSubtype">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="page"/>
+        <widget class="QWidget" name="page_2"/>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="calcModeContainerWidget" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="14" column="0" colspan="2">
@@ -238,7 +246,7 @@
         </layout>
        </widget>
        <widget class="QWidget" name="pageSlider">
-        <layout class="QHBoxLayout">
+        <layout class="QHBoxLayout" stretch="0,1,0">
          <item>
           <widget class="QLabel" name="labelLeftValue">
            <property name="text">
@@ -439,6 +447,13 @@
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="standardButtons">
         <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="chkGenerateAll">
+       <property name="text">
+        <string>AddAll</string>
        </property>
       </widget>
      </item>

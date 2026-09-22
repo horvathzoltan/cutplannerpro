@@ -87,17 +87,16 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     // ⭐ ProductType layout
     // --- groupBox_productType fő layoutja: VERTICAL ---
-    auto* mainLayout = new QVBoxLayout(ui->groupBox_productType);
-    ui->groupBox_productType->setLayout(mainLayout);
+
 
     // --- felső csík: típusok QFlowLayoutban ---
-    auto* typeLayout = new QFlowLayout();
-    mainLayout->addLayout(typeLayout);
+    auto* typeLayout = new QFlowLayout(ui->typeContainerWidget);
+    ui->typeContainerWidget->setLayout(typeLayout);
 
     // ⭐ ProductType rádiógombok dinamikus generálása
     //auto* typeLayout = ui->groupBox_productType->findChild<QVBoxLayout*>("verticalLayout");
     for (const auto& type : ProductTypeRegistry::instance().readAll()) {
-        auto* rb = new QRadioButton(type.name, this);
+        auto* rb = new QRadioButton(type.name, ui->typeContainerWidget);
         rb->setProperty("typeId", type.id);
         typeLayout->addWidget(rb);
         connect(rb, &QRadioButton::toggled, this, [this](bool checked){
@@ -113,14 +112,12 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     }
 
     // ⭐ ALTÍPUS STACKED WIDGET BEILLESZTÉSE A TÍPUSOK ALÁ
-    mainLayout->addWidget(ui->stackedWidget_stackSubtype);
 
     // --- harmadik csík: calcMode ---
-    auto* calcModeLayout = new QHBoxLayout();
-    mainLayout->addLayout(calcModeLayout);
 
     // elmentjük, hogy a populateCalcModePanel tudja használni
-    _calcModeLayout = calcModeLayout;
+    _calcModeLayout = new QFlowLayout(ui->calcModeContainerWidget);
+    ui->calcModeContainerWidget->setLayout(_calcModeLayout);
 
 
     auto* subtypeStack = ui->stackedWidget_stackSubtype;
@@ -134,7 +131,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
 
     // ⭐ ProductSubtype panelek dinamikus generálása
     for (const auto& type : ProductTypeRegistry::instance().readAll()) {
-        auto* page = new QWidget(this);
+        auto* page = new QWidget(ui->stackedWidget_stackSubtype);
         page->setProperty("typeId", type.id);
         //auto* lay = new QVBoxLayout(page);
         auto* lay = new QFlowLayout(page);
@@ -428,6 +425,12 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         ui->editDueDate->setDate(head.due);
     });
 
+
+    connect(ui->chkGenerateAll, &QCheckBox::toggled, this, [this](bool checked){
+        ui->chkGenerateAll->setEnabled(validateHead());
+    });
+
+
     // ⭐ Induló inicializálás
     QTimer::singleShot(0, this, [this, mode, initial]() {
 
@@ -492,6 +495,9 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     ui->lblLengthWarning->setText("");
     ui->lblBomWarning->setText("");
     //groupboxAttributes_hide();
+
+    // ⭐ induláskor altípus stack rejtése
+    ui->stackedWidget_stackSubtype->hide();
 
 
 }
@@ -1231,8 +1237,63 @@ QString AddInputDialog::currentProductSubtypeCode() const
 }
 
 
-bool AddInputDialog::validateInputs() {
+// bool AddInputDialog::validateInputs() {
 
+//     Cutting::Plan::Request req = getModel();
+//     QStringList errors;
+
+//     // 1) J/B darabszám
+//     const int totalPieces = req.quantity;
+//     const int l = req.leftCount;
+//     const int r = req.rightCount;
+
+//     // Ha nincs megadva → engedjük
+//     if (!(l == 0 && r == 0)) {
+//         // Ha meg van adva → validálni kell
+//         if (l + r != totalPieces) {
+//             errors << "A balos és jobbos darabszám összege nem egyezik meg a teljes darabszámmal.";
+//         }
+//     }
+
+//     // 2) Request saját hibái
+//     errors << req.invalidReasons();
+
+//     // 3) Hossz
+//     if (req.requiredLength < 100)
+//         errors << "A vágási hossz nem lehet 100 mm alatt.";
+//     if (req.requiredLength < 200)
+//         errors << "200 mm alatti darabot nem vágunk.";
+
+//     // 4) Dátum
+//     if (!req.dueDate.isValid())
+//         errors << "A határidő érvénytelen.";
+
+//     // 5) Type/Subtype
+//     if (req.productTypeId.isNull())
+//         errors << "Nincs kiválasztva terméktípus.";
+//     if (req.productSubtypeId.isNull())
+//         errors << "Nincs kiválasztva altípus.";
+
+//     // 6) Ha van hiba → egyetlen ablak
+//     if (!errors.isEmpty()) {
+//         QMessageBox::warning(this,
+//                              "Adatellenőrzés",
+//                              "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
+//         return false;
+//     }
+
+//     if (req.fullWidth_mm <= 0)
+//         errors << "A termék szélessége nincs megadva.";
+
+//     if (req.fullHeight_mm <= 0)
+//         errors << "A termék magassága nincs megadva.";
+
+//     return true;
+// }
+
+
+bool AddInputDialog::validateHead() const
+{
     Cutting::Plan::Request req = getModel();
     QStringList errors;
 
@@ -1249,32 +1310,33 @@ bool AddInputDialog::validateInputs() {
         }
     }
 
-    // 2) Request saját hibái
-    errors << req.invalidReasons();
+    if (req.quantity <= 0)
+        errors << "• A darabszám nem lehet nulla vagy negatív.";
 
-    // 3) Hossz
-    if (req.requiredLength < 100)
-        errors << "A vágási hossz nem lehet 100 mm alatt.";
-    if (req.requiredLength < 200)
-        errors << "200 mm alatti darabot nem vágunk.";
+    if (req.quantity > 50)
+        errors << "• A darabszám túl magas (max. 50).";
 
-    // 4) Dátum
+    if (req.ownerName.isEmpty())
+        errors << "A megrendelő nincs megadva.";
+
+    if(req.externalReference.trimmed().isEmpty())
+        errors << "• A külső hivatkozás nem lehet üres.";
+
+    if (req.externalReference.length() > 64)
+        errors << "• A külső hivatkozás túl hosszú (max. 64 karakter).";
+
+    QRegularExpression unsafe("[\"';]+");
+    if (unsafe.match(req.externalReference).hasMatch())
+        errors << "• A külső hivatkozás veszélyes karaktert tartalmaz.";
+
     if (!req.dueDate.isValid())
         errors << "A határidő érvénytelen.";
 
-    // 5) Type/Subtype
     if (req.productTypeId.isNull())
         errors << "Nincs kiválasztva terméktípus.";
+
     if (req.productSubtypeId.isNull())
         errors << "Nincs kiválasztva altípus.";
-
-    // 6) Ha van hiba → egyetlen ablak
-    if (!errors.isEmpty()) {
-        QMessageBox::warning(this,
-                             "Adatellenőrzés",
-                             "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
-        return false;
-    }
 
     if (req.fullWidth_mm <= 0)
         errors << "A termék szélessége nincs megadva.";
@@ -1282,13 +1344,67 @@ bool AddInputDialog::validateInputs() {
     if (req.fullHeight_mm <= 0)
         errors << "A termék magassága nincs megadva.";
 
+
+     auto ty = ProductTypeRegistry::instance().findById(req.productTypeId);
+     if(ty->code=="NP"){
+        // ⭐ Meghajtás validáció
+        const QString meghajtas_key = "meghajtas";
+        if(req.attributes.contains(meghajtas_key)){
+            QString meghajtas = req.attributes.value(meghajtas_key);
+            if(meghajtas!="kurblis" && meghajtas!="motoros"){
+                errors << "A meghajtás értéke érvénytelen (kurblis vagy motoros lehet).";
+            }
+        } else{
+            errors << "Nincs meghajtás megadva.";
+        }
+    }
+
+
+    if (!errors.isEmpty()) {
+        QMessageBox::warning(const_cast<AddInputDialog*>(this), "Adatellenőrzés",
+                             "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
+        return false;
+    }
+
     return true;
 }
 
+bool AddInputDialog::validateItem() const
+{
+    Cutting::Plan::Request req = getModel();
+    QStringList errors;
+
+    if (req.materialId.isNull())
+        errors << "Nincs kiválasztva anyag.";
+
+    if (req.requiredLength <= 0)
+        errors << "A vágáshossz nem lehet nulla vagy negatív.";
+
+    if (req.requiredLength < 100)
+        errors << "A vágási hossz nem lehet 100 mm alatt.";
+
+    if (req.requiredLength < 200)
+        errors << "200 mm alatti darabot nem vágunk.";
+
+    if (!errors.isEmpty()) {
+        QMessageBox::warning(const_cast<AddInputDialog*>(this), "Adatellenőrzés",
+                             "Kérlek javítsd az alábbi hibákat:\n\n" + errors.join("\n"));
+        return false;
+    }
+
+    return true;
+}
 
 void AddInputDialog::accept() {
-    if (!validateInputs())
-        return;
+    if (generateAllMaterials()) {
+        if (!validateHead())
+            return;
+    } else {
+        if (!validateHead())
+            return;
+        if (!validateItem())
+            return;
+    }
 
     Cutting::Plan::Request req = getModel();   // ⭐ egyetlen forrás
 
@@ -1301,8 +1417,10 @@ void AddInputDialog::accept() {
 
     s_ownerCache.insert(req.ownerName);
 
-    _bomModel.addedMaterials.insert(req.materialId);
-
+    // ❗ Csak SINGLE item módban jelöljük added-nek
+    // if (!generateAllMaterials()) {
+    //     _bomModel.addedMaterials.insert(req.materialId);
+    // }
 
     updateHeadFieldsInRegistry(req.externalReference);
 
@@ -1370,9 +1488,9 @@ void AddInputDialog::keyPressEvent(QKeyEvent *e)
             return;
         }
 
-        if (validateInputs()) {
+        //if (validateInputs()) {
             accept();
-        }
+        //}
         return;
     }
 
@@ -1720,6 +1838,17 @@ void AddInputDialog::onProductTypeChanged(bool checked)
         return;
 
     QUuid typeId = sender()->property("typeId").toUuid();
+
+    // --- PATCH: ha nincs típus → altípus + calcMode elrejtése ---
+    if (typeId.isNull()) {
+        ui->stackedWidget_stackSubtype->hide();
+        ui->calcModeContainerWidget->hide();
+        return;
+    }
+
+    // --- PATCH: van típus → altípus látszik ---
+    ui->stackedWidget_stackSubtype->show();
+
     auto* stack = ui->stackedWidget_stackSubtype;
 
     for (int i = 0; i < stack->count(); ++i) {
@@ -1731,6 +1860,8 @@ void AddInputDialog::onProductTypeChanged(bool checked)
     }
 
     updateAttributePanel();
+    // --- PATCH: calcMode láthatóságát majd populateCalcModePanel kezeli ---
+    populateCalcModePanel();
 }
 
 
@@ -2707,6 +2838,18 @@ void AddInputDialog::populateCalcModePanel()
     QString typeCode = currentProductTypeCode();
     QString subtypeCode = currentProductSubtypeCode();
 
+    // --- PATCH: ha nincs típus → calcMode elrejtése ---
+    if (selectedProductTypeId().isNull()) {
+        ui->calcModeContainerWidget->hide();
+        return;
+    }
+
+    // --- PATCH: ha nincs altípus → calcMode elrejtése ---
+    if (selectedProductSubtypeId().isNull()) {
+        ui->calcModeContainerWidget->hide();
+        return;
+    }
+
     // 2) CalcMode lista lekérése
     QVector<SizeCalcMode> modes =
         ProductCalcModeRegistry::instance().getModes(typeCode, subtypeCode);
@@ -2723,6 +2866,9 @@ void AddInputDialog::populateCalcModePanel()
         }
         return;
     }
+
+    // --- PATCH: van mód → calcMode látszik ---
+    ui->calcModeContainerWidget->show();
 
     // 4) Default mód
     SizeCalcMode defaultMode =
@@ -2741,7 +2887,7 @@ void AddInputDialog::populateCalcModePanel()
     // 6) Új rádiógombok hozzáadása
     for (SizeCalcMode m : modes) {
         auto* rb = new QRadioButton(SizeCalcModeUtils::toString(m),
-                                    ui->groupBox_productType);
+                                    ui->calcModeContainerWidget);
         rb->setProperty("calcMode", static_cast<int>(m));
         _calcModeLayout->addWidget(rb);
 
@@ -2793,3 +2939,6 @@ SizeCalcMode AddInputDialog::selectedCalcMode() const
     return SizeCalcMode::Unknown;
 }
 
+bool AddInputDialog::generateAllMaterials() const {
+    return ui->chkGenerateAll->isChecked();
+}

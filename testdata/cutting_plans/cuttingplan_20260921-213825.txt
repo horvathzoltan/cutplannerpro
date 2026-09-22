@@ -3,3 +3,42 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "5000";"Maki Majom";1000;200;1005;;1;0;0;"";TE-H-18;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
 "5000";"Maki Majom";1000;200;995;;1;0;0;"";MT-Z;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
 "5000";"Maki Majom";1000;200;200;;1;0;0;"";MT-L2;Width;false;2026-09-21;ROL;TSIN;;SM;Uveg
+"5100";"Teszt  Kálmán";1000;1000;970;;1;0;1;"RAL 7016";NP-T;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5100";"Teszt  Kálmán";1000;1000;995;;1;0;1;"RAL 7016";NP-TF;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5100";"Teszt  Kálmán";1000;1000;877;;1;0;1;"RAL 7016";NP-CZ;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5100";"Teszt  Kálmán";1000;1000;897;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5100";"Teszt  Kálmán";1000;1000;825;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;970;;1;0;1;"RAL 7016";NP-T;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;995;;1;0;1;"RAL 7016";NP-TF;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;877;;1;0;1;"RAL 7016";NP-CZ;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;897;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;890;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5101";"makesz";1000;1000;825;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-22;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5102";"makesz";1000;1000;970;;1;0;0;"";NP-T;Width;false;2026-09-24;NP;CIP;meghajtas=;SM;Gyartasi
+"5102";"makesz";1000;1000;995;;1;0;0;"";NP-TF;Width;false;2026-09-24;NP;CIP;meghajtas=kurblis;SM;Gyartasi
+"5102";"makesz";1000;1000;877;;1;0;0;"";NP-CZ;Width;false;2026-09-24;NP;CIP;meghajtas=kurblis;SM;Gyartasi
+"5102";"makesz";1000;1000;897;;1;0;0;"";NP-CL2+CLT2+CLB2;Width;false;2026-09-24;NP;CIP;meghajtas=kurblis;SM;Gyartasi
+"5102";"makesz";1000;1000;885;;1;0;0;"";NP-ROLL70-5000;Width;false;2026-09-24;NP;CIP;meghajtas=kurblis;SM;Gyartasi
+"5102";"makesz";1000;1000;825;;1;0;0;"";NP-BAR20-6000;Width;false;2026-09-24;NP;CIP;meghajtas=kurblis;SM;Gyartasi
+"5103";"makesz";1000;1000;970;;1;0;0;"";NP-T;Width;false;2026-09-22;NP;CIP;meghajtas=;SM;Gyartasi
+"5104";"Teszt Elek";1000;1000;970;;1;1;0;"RAL 7016";NP-T;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5104";"Teszt Elek";1000;1000;995;;1;1;0;"RAL 7016";NP-TF;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5104";"Teszt Elek";1000;1000;877;;1;1;0;"RAL 7016";NP-CZ;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5104";"Teszt Elek";1000;1000;897;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5104";"Teszt Elek";1000;1000;825;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5105";"Teszt Mandarin";1000;1000;970;;1;0;1;"RAL 7016";NP-T;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5105";"Teszt Mandarin";1000;1000;995;;1;0;1;"RAL 7016";NP-TF;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5105";"Teszt Mandarin";1000;1000;877;;1;0;1;"RAL 7016";NP-CZ;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5105";"Teszt Mandarin";1000;1000;897;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5105";"Teszt Mandarin";1000;1000;825;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5106";"Majom Alfréd";1000;1000;970;;1;0;1;"RAL 7016";NP-T;Width;false;2026-09-24;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5106";"Majom Alfréd";1000;1000;995;;1;0;1;"RAL 7016";NP-TF;Width;false;2026-09-24;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5106";"Majom Alfréd";1000;1000;877;;1;0;1;"RAL 7016";NP-CZ;Width;false;2026-09-24;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5106";"Majom Alfréd";1000;1000;897;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-24;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5106";"Majom Alfréd";1000;1000;825;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-24;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;970;;1;1;0;"RAL 7016";NP-T;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;995;;1;1;0;"RAL 7016";NP-TF;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;877;;1;1;0;"RAL 7016";NP-CZ;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;897;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;890;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"5107";"Teszt Ábrahám";1000;1000;825;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-23;NP;CIP;meghajtas=motoros;SM;Gyartasi

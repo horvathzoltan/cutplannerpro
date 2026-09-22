@@ -2,6 +2,7 @@
 
 #include "../../../model/cutting/plan/request.h"
 #include "model/cutting/plan/handlerside.h"
+#include "view/common/layouts/qflowlayout.h"
 #include "view/dialog/dialogmode.h"
 #include <QDialog>
 #include <QHBoxLayout>
@@ -51,6 +52,16 @@ public:
     bool wasShiftEnter() const { return _shiftEnterAccepted; }
     bool shouldRepeat();
 
+    QVector<QUuid> bomList() const {
+        return _bomModel.bomList;
+    }
+
+    // QSet<QUuid> addedMaterials() const {
+    //     return _bomModel.addedMaterials;
+    // }
+
+    bool generateAllMaterials() const;
+
 protected:
     void keyPressEvent(QKeyEvent *e) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -70,7 +81,7 @@ private:
     QPushButton* btnNextMaterial = nullptr;
     QPushButton* btnFirstRef = nullptr;
 
-    QHBoxLayout* _calcModeLayout = nullptr;
+    QFlowLayout* _calcModeLayout = nullptr;
 
 
     //bool _bomDirty = false;
@@ -238,6 +249,10 @@ private:
     //void applyCalcModeFromRequest(const Cutting::Plan::Request &req);
     SizeCalcMode selectedCalcMode() const;
     void applyCalcModeFromRequest(const Cutting::Plan::Request &req);
+
+    bool validateHead() const;
+    bool validateItem() const;
+
 private slots:
     void on_btn_MaterialSearch_clicked();
     void on_btn_Reset_clicked();

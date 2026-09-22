@@ -52,7 +52,7 @@ public:
 private:
 
     bool _isDump = false;
-    bool _isDump2 = true;
+    bool _isDump2 = false;
 
     bool hasMinimumMaterials(int minCount);
 
