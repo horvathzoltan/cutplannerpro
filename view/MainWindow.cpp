@@ -671,10 +671,8 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
         if (dialog.exec() != QDialog::Accepted)
             return;
 
-        zInfo("handle_btn_AddCuttingPlanRequest_clicked_1");
         // ⭐ HEAD modell – minden anyaghoz közös fej adatok
         Cutting::Plan::Request headReq = dialog.getModel();
-        zInfo("handle_btn_AddCuttingPlanRequest_clicked_2");
 
         if (dialog.generateAllMaterials()) {
             // BOM + már rögzített anyagok
@@ -704,7 +702,7 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
 
                 // már rögzített anyag → kihagyjuk
                 if (added.contains(matId)){
-                    zInfo("added: "+m->barcode);
+                    zInfo("batch_added: "+m->barcode);
                     continue;
                 }
 
@@ -742,7 +740,7 @@ void MainWindow::handle_btn_AddCuttingPlanRequest_clicked() {
                     req.requiredLength = -1;   // vagy hagyhatod a headReq.requiredLength-et
                 }
 
-                zInfo("adding: "+a1);
+                zInfo("batch_adding: "+a1);
 
                 _cuttingPresenter->add_CuttingPlanRequest(req);
 
