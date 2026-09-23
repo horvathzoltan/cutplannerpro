@@ -435,6 +435,8 @@ void MainWindow::ButtonConnector_Connect()
 
 void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
 {
+    ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
     ui->mainToolBar->addAction(m.actMaterialFinder);
     ui->mainToolBar->addAction(m.actSettings);
     ui->mainToolBar->addAction(m.actSeriesMatrix);
