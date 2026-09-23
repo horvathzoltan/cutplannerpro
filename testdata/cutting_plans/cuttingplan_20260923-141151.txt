@@ -1,0 +1,10 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"719";"Losonczi R., Pécs";900;1400;894;;1;0;1;"";SR-T;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"719";"Losonczi R., Pécs";900;1400;877;;1;0;1;"";TE-H-32;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"719";"Losonczi R., Pécs";900;1400;880;;1;0;1;"";SR-Z+P;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"720";"Losonczi R., Pécs";620;900;614;;2;2;0;"";SR-T;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"720";"Losonczi R., Pécs";620;900;597;;2;2;0;"";TE-H-32;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"720";"Losonczi R., Pécs";620;900;600;;2;2;0;"";SR-Z+P;Width;false;2026-09-25;SR;T;;SM;Gyartasi
+"712";"Molnár András, Pécs";1600;1300;1594;;2;0;2;"";SR-T;Width;false;2026-10-02;SR;T;;SM;Gyartasi
+"712";"Molnár András, Pécs";1600;1300;1577;;2;0;2;"";TE-H-32;Width;false;2026-10-02;SR;T;;SM;Gyartasi
+"712";"Molnár András, Pécs";1600;1300;1580;;2;0;2;"";SR-Z+P;Width;false;2026-10-02;SR;T;;SM;Gyartasi

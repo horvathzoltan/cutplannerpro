@@ -2,6 +2,17 @@ _bomModel:
     - addedMaterials - > a bom modelben hozzáadott anyagok
     legyen privát tag, ne lehessen kívülről írni!
 
+túlvágás:
+a túlvágás esetén a pótlandó szegmenst az határozza meg, hogy melyik
+szegmens kerül a rúdból utoljára levágásra, nem pedig az, hogy
+hanyagdjára kerül kiszámításra.
+vágás előtt a szegmensek átrendeződnek: elölre kerülnek a nagyobbak, majd a kisebbek
+így
+ - így a szegmenseket sorba kell állítani, mert a nagy méret kerül először vágásra,
+ de igazából a sorrendet a vágás sorrendje hatrározza meg, lehet előrevett tétel, akármi
+ de ha az nincs, akkor a vágás a nagy méretektől halad a kis méretek felé, így egy szálon
+ is úgy valósul meg.
+
 detector:
  - lábaknál nem érzékelte a lábbetét túlvágását
  - ha ki vannak kapcsolva a hullók, nem talál lábat egyáltalán
