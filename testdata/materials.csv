@@ -14,6 +14,7 @@ NaphálóTok;NP-T-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;
 NaphálóTokFedél;NP-TF-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;895;1500;2500;80170156;;TokFed;simple;
 CipzárosZáró;NP-CZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170038;;Zaro;simple;
 SinesZáró;NP-SZ-9010-6;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;simple;
+SinesZáró_KefeHornyos;NP-SZH-9010;6000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;757;1500;2500;80170160;;Zaro;simple;
 SinesZáró;NP-SZ-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;300;1000;1800;80170107;;Zaro;simple;
 CipzárosLáb;NP-CL-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170202;;Lab;simple;
 Lábtakaró;NP-CLT-9010;7000;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170030;;Lab;simple;

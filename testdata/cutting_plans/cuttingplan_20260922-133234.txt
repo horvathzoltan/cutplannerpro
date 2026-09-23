@@ -42,9 +42,9 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 
 "353-4";"Hal-Kov";2500;1550;1790;;1;0;1;"RAL 8003";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
 
-"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CL-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
-"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CLT-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
-"354";"Hal-Kov";1550;1790;2200;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";1550;1790;1550;;1;1;0;"RAL 8003";NP-CL-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";1550;1790;1550;;1;1;0;"RAL 8003";NP-CLT-9010;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"354";"Hal-Kov";1550;1790;1550;;1;1;0;"RAL 8003";NP-CLB;Width;false;2026-09-25;NP;CIP;meghajtas=motoros;SM;Gyartasi
 
 "356";"Szajkó, Győr";1039;1829;1009;;1;0;1;"RAL 1019";NP-T;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
 "356";"Szajkó, Győr";1039;1829;1034;;1;0;1;"RAL 1019";NP-TF;Width;false;2026-10-05;NP;CIP;meghajtas=motoros;FS;Gyartasi
