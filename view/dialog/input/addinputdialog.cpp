@@ -871,7 +871,7 @@ void AddInputDialog::refreshBom(const QString& key)
     else {
         for (auto id : ranked.ranked) {
             if (_bomModel.bomList.contains(id) &&
-                !_bomModel.addedMaterials.contains(id))
+                !_bomModel._addedMaterials.contains(id))
             {
                 _bomModel.lastSuggestedMaterial = id;
                 break;
@@ -908,7 +908,7 @@ void AddInputDialog::refreshBom(const QString& key)
     // ⭐ BOM befejezés jelzése
     int addedCuttableCount = 0;
     for (const auto& id : _bomModel.bomList) {
-        if (_bomModel.addedMaterials.contains(id))
+        if (_bomModel._addedMaterials.contains(id))
             ++addedCuttableCount;
     }
 
@@ -2195,7 +2195,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
 {
     // 0) BOM state reset
     _bomModel.bomList.clear();
-    _bomModel.addedMaterials.clear();
+    _bomModel._addedMaterials.clear();
     _bomModel.lastSuggestedMaterial = QUuid();
 
     // 1) BOM generálása az aktuális UI állapot alapján
@@ -2205,7 +2205,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
     auto existing = CuttingPlanRequestRegistry::instance().findByExternalReference(ref);
     for (const auto& req : existing) {
         if (!req.materialId.isNull())
-            _bomModel.addedMaterials.insert(req.materialId);
+            _bomModel._addedMaterials.insert(req.materialId);
     }
 
     refreshBom("initializeBomModel");   // ez tölti fel _bomModel.bomList-et (recommended)
@@ -2214,7 +2214,7 @@ void AddInputDialog::initializeBomModel(const QString& ref)
     // 3) lastSuggestedMaterial inicializálása:
     // első olyan BOM elem, ami nincs addedMaterials-ben
     for (const auto& id : _bomModel.bomList) {
-        if (!_bomModel.addedMaterials.contains(id)) {
+        if (!_bomModel._addedMaterials.contains(id)) {
             _bomModel.lastSuggestedMaterial = id;
             return;
         }
@@ -2395,7 +2395,7 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
         }
     }
 
-    zInfo("  addedMaterials size: " + QString::number(_bomModel.addedMaterials.size()));
+    zInfo("  addedMaterials size: " + QString::number(_bomModel._addedMaterials.size()));
 
     // Log BOM
     zInfo("  BOM list in computeNextMaterial:");
@@ -2424,7 +2424,7 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
                 continue;
             }
 
-            if (!_bomModel.addedMaterials.contains(id)) {
+            if (!_bomModel._addedMaterials.contains(id)) {
                 _bomModel.lastSuggestedMaterial = id;
                 zInfo("  FIRST pick (cuttable): " + id.toString());
                 return id;
@@ -2436,7 +2436,7 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
     }
 
     // 2) Ha van lastSuggestedMaterial ÉS még nincs hozzáadva → visszaadjuk, ha CUT
-    if (!_bomModel.addedMaterials.contains(_bomModel.lastSuggestedMaterial)) {
+    if (!_bomModel._addedMaterials.contains(_bomModel.lastSuggestedMaterial)) {
 
         const MaterialMaster* m = MaterialRegistry::instance().findById(_bomModel.lastSuggestedMaterial);
         if (m && m->cuttingMode == CuttingMode::Length) {
@@ -2465,7 +2465,7 @@ QUuid AddInputDialog::computeNextMaterialForCurrentRef()
         if (!m) continue;
 
         // már hozzáadva → ugrás
-        if (_bomModel.addedMaterials.contains(candidate))
+        if (_bomModel._addedMaterials.contains(candidate))
             continue;
 
         // ⭐ KIT anyag → átugrás

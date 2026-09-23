@@ -129,10 +129,15 @@ private:
 
     DialogMode _mode = DialogMode::Create;
 
-    struct BOM_Model {
+    struct BOM_Model
+    {
+    public:
         QVector<QUuid> bomList;        // aktuális ajánlott BOM (családonként 1)
-        QSet<QUuid> addedMaterials;    // az adott externalReference-hez már rögzített anyagok
         QUuid lastSuggestedMaterial;   // utoljára ajánlott anyag ID
+    private:
+        QSet<QUuid> _addedMaterials;    // az adott externalReference-hez már rögzített anyagok
+    public:
+        QSet<QUuid> addedMaterials() {return _addedMaterials;}
     };
 
     BOM_Model _bomModel;
