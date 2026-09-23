@@ -128,6 +128,7 @@ private slots:
 
     void handle_actMaterialBarcodeList_clicked();
     void handle_actStorageQrcodeList_clicked();
+    void handle_actGlobalStockList_clicked();
 
     void onHighlightLeftover(const QUuid& id);
     void onHighlightStock(const QUuid& id);
@@ -207,6 +208,7 @@ private:
         QAction* actLeftoverLabelQueue = nullptr;
         QAction* actMaterialBarcodeList = nullptr;
         QAction* actStorageQrcodeList = nullptr;
+        QAction* actGlobalStockList = nullptr;
     };
 
     void ActionConnector_connect(ActionConnectorModel& a);

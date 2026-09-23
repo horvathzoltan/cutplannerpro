@@ -18,6 +18,7 @@ public:
     void exportStockListPdf(const QUuid &storageId);
     void exportMaterialBarcodeList();
     void exportStorageBarcodeList();
+    void exportGlobalStockListPdf();
 private:
     MainWindow* _view;
 };

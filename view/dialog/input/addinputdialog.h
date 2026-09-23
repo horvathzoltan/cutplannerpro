@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QUuid>
+#include <model/registries/cuttingplanrequestregistry.h>
 #include <product/selector/material_selector.h>
 //#include "series_matrix_view.h"
 
@@ -133,11 +134,33 @@ private:
     {
     public:
         QVector<QUuid> bomList;        // aktuális ajánlott BOM (családonként 1)
-        QUuid lastSuggestedMaterial;   // utoljára ajánlott anyag ID
+
     private:
+        QUuid _lastSuggestedMaterial;   // utoljára ajánlott anyag ID
         QSet<QUuid> _addedMaterials;    // az adott externalReference-hez már rögzített anyagok
     public:
+        void reset(){
+            bomList.clear();
+            _addedMaterials.clear();
+            _lastSuggestedMaterial = QUuid();
+        }
+
+        bool addedMaterialsContains(const QUuid& id) const {return _addedMaterials.contains(id);}
+        //void addedMaterialsClear(){_addedMaterials.clear();}
+        int addedMaterialsCount() const {return _addedMaterials.size();}
         QSet<QUuid> addedMaterials() {return _addedMaterials;}
+        void addedMaterialsInit(const QString& ref){
+            auto existing = CuttingPlanRequestRegistry::instance().findByExternalReference(ref);
+            for (const auto& req : existing) {
+                if (!req.materialId.isNull())
+                    _addedMaterials.insert(req.materialId);
+            }
+
+        }
+        bool lastSuggestedMaterialIsNull(){return _lastSuggestedMaterial.isNull();}
+        void setLastSuggestedMaterial(const QUuid& id){_lastSuggestedMaterial = id;}
+        void lastSuggestedMaterialClear(){_lastSuggestedMaterial = QUuid();}
+        QUuid lastSuggestedMaterial() {return _lastSuggestedMaterial;}
     };
 
     BOM_Model _bomModel;

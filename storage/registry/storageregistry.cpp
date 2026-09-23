@@ -176,7 +176,7 @@ QString StorageRegistry::buildCandidate(const StorageEntry* s, int depth) const
         cur = findById(cur->parentId);
     }
 
-    return parts.join(" / ");
+    return parts.join("/");
 }
 
 /*logisztikai barcode generálás*/

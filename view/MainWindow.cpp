@@ -78,7 +78,8 @@ MainWindow::MainWindow(QWidget *parent)
         .actStorageLabelBatch = new QAction("📦 Tárhely címkék", this),
         .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this),
         .actMaterialBarcodeList = new QAction("🏷️ Material címkék", this),
-        .actStorageQrcodeList = new QAction("🏷️ Storage címkék", this)
+        .actStorageQrcodeList = new QAction("🏷️ Storage címkék", this),
+        .actGlobalStockList = new QAction("📦 GlobalStockList", this)
     };
 
     // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
@@ -441,6 +442,7 @@ void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
     ui->mainToolBar->addAction(m.actLeftoverLabelQueue);
     ui->mainToolBar->addAction(m.actMaterialBarcodeList);
     ui->mainToolBar->addAction(m.actStorageQrcodeList);
+    ui->mainToolBar->addAction(m.actGlobalStockList);
 }
 
 void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
@@ -503,6 +505,8 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
             this, &MainWindow::handle_actMaterialBarcodeList_clicked);
     connect(m.actStorageQrcodeList, &QAction::triggered,
             this, &MainWindow::handle_actStorageQrcodeList_clicked);
+    connect(m.actGlobalStockList, &QAction::triggered,
+            this, &MainWindow::handle_actGlobalStockList_clicked);
 
 }
 
@@ -1984,4 +1988,8 @@ void MainWindow::handle_actMaterialBarcodeList_clicked(){
 
 void MainWindow::handle_actStorageQrcodeList_clicked(){
     _storagePresenter->exportStorageBarcodeList();
+}
+
+void MainWindow::handle_actGlobalStockList_clicked(){
+    _storagePresenter->exportGlobalStockListPdf();
 }

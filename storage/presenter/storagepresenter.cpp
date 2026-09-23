@@ -407,3 +407,133 @@ void StoragePresenter::exportStorageBarcodeList()
     painter.end();
     zEvent(QString("📄 Tárhely QR‑kód lista exportálva: %1").arg(path));
 }
+
+
+void StoragePresenter::exportGlobalStockListPdf()
+{
+    QList<StockEntry> entries = StockRegistry::instance().readAll();
+
+    QMap<QUuid, StockListFormUtils::AggregatedMaterial> map;
+
+    for (const auto& e : entries)
+    {
+        const MaterialMaster* master =
+            MaterialRegistry::instance().findById(e.materialId);
+
+        if (!master)
+            continue;
+
+        if (master->kind == MaterialKind::Simple)
+        {
+            auto& m = map[e.materialId];
+            m.materialId = e.materialId;
+            //m.master = master;
+            m.totalQty += e.quantity;
+
+            m.storages.append({e.storageId, e.quantity, e.lastSeenAt});
+            continue;
+        }
+        else if (master->kind == MaterialKind::Bundle)
+        {
+            const BundleDefinition* def =
+                BundleRegistry::instance().findByCode(master->bundleCode);
+
+            if (!def)
+                continue;
+
+            for (const auto& comp : def->components)
+            {
+                QUuid compId = comp.materialId;
+                int compTotal = e.quantity * comp.count;
+
+                const MaterialMaster* cm =
+                    MaterialRegistry::instance().findById(compId);
+
+                auto& m = map[compId];
+                m.materialId = compId;
+                //m.master = cm;
+                m.totalQty += compTotal;
+
+                // opcionális: tárolási helyek listája
+                m.storages.append({e.storageId, compTotal, e.lastSeenAt});
+            }
+
+            continue;
+        }
+    }
+
+    QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials = map.values();
+
+    QString dir = "_reports";
+    QDir().mkpath(dir);
+
+    QString path = QString("%1/StockList_GLOBAL_%2.pdf")
+                       .arg(dir)
+                       .arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmm"));
+
+    QPdfWriter writer(path);
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setResolution(300);
+
+    QPainter painter(&writer);
+    if (!painter.isActive()) {
+        zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+        return;
+    }
+
+    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+    painter.setFont(QFont("Noto Sans Mono", 11));
+
+    QFontMetrics fm(painter.font());
+    qreal lineH = fm.height();      // 🔥 VALÓDI sor-magasság
+
+    auto drawHeader = [&](qreal& y){
+        painter.drawText(QRectF(40, y, pageRect.width(), lineH),
+                         Qt::AlignLeft,
+                         "📦 Globális készletlista");
+        y += lineH;
+
+        painter.drawText(QRectF(40, y, pageRect.width(), lineH),
+                         Qt::AlignLeft,
+                         QString("📅 Dátum: %1")
+                             .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm")));
+        y += lineH;
+        y += lineH * 0.5;
+    };
+
+    qreal y = pageRect.top();
+    drawHeader(y);
+
+    for (const auto& m : aggregatedMaterials)
+    {
+        int storageIndex = 0;
+
+        while (storageIndex < m.storages.size())
+        {
+            auto res = drawSingleStockRow(painter, pageRect, y, m, storageIndex);
+
+            if (res.pageBreakNeeded)
+            {
+                writer.newPage();
+                painter.begin(&writer);
+                painter.setFont(QFont("Noto Sans Mono", 11));
+
+                y = pageRect.top();
+                drawHeader(y);
+
+                storageIndex = res.nextStorageIndex;   // folytatás innen
+            }
+            else
+            {
+                y = res.newY;
+                storageIndex = res.nextStorageIndex;   // mehet tovább
+            }
+        }
+    }
+
+
+    painter.end();
+    zEvent(QString("📄 Globális készletlista exportálva: %1").arg(path));
+}
+
+
