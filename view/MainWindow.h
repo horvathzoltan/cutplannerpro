@@ -200,19 +200,19 @@ private:
     //void renderCuttingInstructions();
     //static QStringList generateStatsStrings(const QVector<Cutting::Plan::CutPlan> &plans, const QVector<Cutting::Result::ResultModel> &leftovers);
 
-    struct ActionConnectorModel{
-        QAction* actMaterialFinder = nullptr;
-        QAction* actSettings = nullptr;
-        QAction* actSeriesMatrix = nullptr;
-        QAction* actStorageLabelBatch = nullptr;
-        QAction* actLeftoverLabelQueue = nullptr;
-        QAction* actMaterialBarcodeList = nullptr;
-        QAction* actStorageQrcodeList = nullptr;
-        QAction* actGlobalStockList = nullptr;
-    };
+    // struct ActionConnectorModel{
+    //     QAction* actMaterialFinder = nullptr;
+    //     QAction* actSettings = nullptr;
+    //     QAction* actSeriesMatrix = nullptr;
+    //     QAction* actStorageLabelBatch = nullptr;
+    //     QAction* actLeftoverLabelQueue = nullptr;
+    //     QAction* actMaterialBarcodeList = nullptr;
+    //     QAction* actStorageQrcodeList = nullptr;
+    //     QAction* actGlobalStockList = nullptr;
+    // };
 
-    void ActionConnector_connect(ActionConnectorModel& a);
-    void mainToolbarBuilder(ActionConnectorModel& m1);
+    //void ActionConnector_connect(ActionConnectorModel& a);
+    //void mainToolbarBuilder(ActionConnectorModel& m1);
     void buildStorageTree();
     SortMode selectedSortMode() const;
     QVector<QString> getPriorityReferences() const;

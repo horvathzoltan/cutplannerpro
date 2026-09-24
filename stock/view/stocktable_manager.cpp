@@ -49,10 +49,24 @@ void StockTableManager::addRow(const StockEntry& entry) {
     _table->setItem(rowIx, ColShape, itemShape);
 
     // 📏 Length
-    auto* itemLength = new QTableWidgetItem(QString::number(mat->effectiveLength()));
+
+    QString lengthStr;
+    QString lengthToolTip;
+
+    if(mat->kind == MaterialKind::Bundle){
+        lengthStr = "(bundle)";
+        lengthToolTip = BundleComponentLengthUtils::buildBundleTooltip(mat);
+    } else{
+        lengthStr = QString::number(mat->effectiveLength());
+        lengthToolTip = BundleComponentLengthUtils::buildSingleTooltip(mat);
+    }
+
+    auto* itemLength = new QTableWidgetItem(lengthStr);
+    itemLength->setToolTip(lengthToolTip);
     itemLength->setTextAlignment(Qt::AlignCenter);
     //itemLength->setData(Qt::UserRole, mat->stockLength_mm);
     _table->setItem(rowIx, ColLength, itemLength);
+
 
     // 🏷️ Mennyiség panel
     auto* quantityPanel = TableUtils::createQuantityCell(entry.quantity, entry.entryId, this, [this, entry]() {

@@ -415,12 +415,20 @@ void StoragePresenter::exportGlobalStockListPdf()
 
     QMap<QUuid, StockListFormUtils::AggregatedMaterial> map;
 
+    auto virtualStorage =  StorageRegistry::instance().findByBarcode("VIRT");
+    if(!virtualStorage) {
+        zWarning("Nincs virtuális tárhely definiálva");
+    }
+
     for (const auto& e : entries)
     {
         const MaterialMaster* master =
             MaterialRegistry::instance().findById(e.materialId);
 
         if (!master)
+            continue;
+
+        if(virtualStorage  && e.storageId == virtualStorage->id)
             continue;
 
         if (master->kind == MaterialKind::Simple)

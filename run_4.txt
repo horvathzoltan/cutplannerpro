@@ -1,4 +1,4 @@
-_bomModel:
+_bomModel: FIXED
     - addedMaterials - > a bom modelben hozzáadott anyagok
     legyen privát tag, ne lehessen kívülről írni!
 

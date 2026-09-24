@@ -92,4 +92,51 @@ inline QVector<BundleComponentLength> fromCsv(const QString& csv)
 }
 
 
+inline QString buildBundleTooltip(const MaterialMaster* mat)
+{
+    if (!mat || mat->kind != MaterialKind::Bundle)
+        return QString();
+
+    QString bundleCode = mat->bundleCode;
+    const auto components = BundleRegistry::instance().componentsOf(bundleCode);
+
+    if (components.isEmpty())
+        return QString("Bundle: üres definíció");
+
+    QStringList lines;
+    lines << QString("Bundle: %1").arg(mat->name);
+    lines << "Komponensek:";
+
+    for (const auto& comp : components)
+    {
+        const MaterialMaster* m =
+            MaterialRegistry::instance().findById(comp.materialId);
+
+        if (!m)
+            continue;
+
+        QString barcode = m->barcode;
+        int count = comp.count;
+        int len = m->rawStockLength_mm();   // 🔥 valós raktári hossz
+
+        lines << QString("%1 ×%2   %3 mm")
+                     .arg(barcode)
+                     .arg(count)
+                     .arg(len);
+    }
+
+    return lines.join("\n");
+}
+
+inline QString buildSingleTooltip(const MaterialMaster* mat){
+    QStringList lines;
+    lines << QString("Single: %1").arg(mat->name);
+    lines << QString("%1   %2 mm")
+                 .arg(mat->barcode)
+                 .arg(mat->rawStockLength_mm());
+
+    return lines.join("\n");
+}
+
+
 } // namespace BundleComponentLengthUtils

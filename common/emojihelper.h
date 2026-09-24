@@ -62,6 +62,14 @@ static const QStringList GROUP_ICONS = {
     "🦓"  // Z - Zebra
 };
 
+static const QStringList UiIcons = {
+    "⚙️", // Beállítások
+    "📦", // Raktár
+    "🔍", // Keresés
+    "📊", // Statisztika
+    "🏷️", // Címke
+};
+
 inline QString getGroupIcon(int groupIndex){
     return GROUP_ICONS[groupIndex % EmojiHelper::GROUP_ICONS.size()];
 }
@@ -76,6 +84,7 @@ inline QStringList allEmojis(){
     e << priorityIconFor(10);
 
     e << GROUP_ICONS;
+    e << UiIcons;
     e.removeDuplicates();
     return e;
 }

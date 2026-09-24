@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "common/emojihelper.h"
 #include "leftover/view/dialog/leftoverauditdialog.h"
 #include "materials/model/material_rolegroup.h"
 #include "service/relocation/relocationplanner.h"
@@ -66,29 +67,44 @@ MainWindow::MainWindow(QWidget *parent)
 
     initEventLogWidget();
 
-    _actSeriesMatrix = new QAction(tr("📊 Teljességi mátrix"), this);
-    _actSeriesMatrix->setShortcut(QKeySequence("Ctrl+M"));
-    _actSeriesMatrix->setCheckable(true);
-    _actSeriesMatrix->setChecked(false);
+    // _actSeriesMatrix = new QAction(tr("📊 Teljességi mátrix"), this);
+    // _actSeriesMatrix->setShortcut(QKeySequence("Ctrl+M"));
+    // _actSeriesMatrix->setCheckable(true);
+    // _actSeriesMatrix->setChecked(false);
 
-    ActionConnectorModel m1{
-        .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
-        .actSettings = MainWindowUIBuilder::createSettingsAction(this),
-        .actSeriesMatrix   =   _actSeriesMatrix, // 🔹 egyszerű action
-        .actStorageLabelBatch = new QAction("📦 Tárhely címkék", this),
-        .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this),
-        .actMaterialBarcodeList = new QAction("🏷️ Material címkék", this),
-        .actStorageQrcodeList = new QAction("🏷️ Storage címkék", this),
-        .actGlobalStockList = new QAction("📦 GlobalStockList", this)
-    };
+    // ActionConnectorModel m1{
+    //     .actMaterialFinder = MainWindowUIBuilder::createMaterialFinderAction(this),
+    //     .actSettings = MainWindowUIBuilder::createSettingsAction(this),
+    //     .actSeriesMatrix   =   _actSeriesMatrix, // 🔹 egyszerű action
+    //     .actStorageLabelBatch = new QAction("📦 Tárhely címkék", this),
+    //     .actLeftoverLabelQueue = new QAction("🏷️ Hulló címkék", this),
+    //     .actMaterialBarcodeList = new QAction("🏷️ Material címkék", this),
+    //     .actStorageQrcodeList = new QAction("🏷️ Storage címkék", this),
+    //     .actGlobalStockList = new QAction("📦 GlobalStockList", this)
+    // };
 
     // ui->actionSeriesMatrix->setIcon(QIcon(":/icons/table_on.png"));
     // ui->actionSeriesMatrix->setText("📊 Mátrix");
 
 
+    QPixmap icon = EmojiHelper::loadEmoji("⚙️", 32);
+    ui->btn_Settings->setIcon(QIcon(icon));
 
-    mainToolbarBuilder(m1);
-    ActionConnector_connect(m1);
+    icon = EmojiHelper::loadEmoji("🔍", 32);
+    ui->btn_MaterialFinder->setIcon(QIcon(icon));
+
+    icon = EmojiHelper::loadEmoji("📊", 32);
+    ui->btn_TeljessegiMatrix->setIcon(QIcon(icon));
+
+    icon = EmojiHelper::loadEmoji("🏷️", 32);
+    ui->btn_TarhelyCimkek->setIcon(QIcon(icon));
+    ui->btn_HulloCimkek->setIcon(QIcon(icon));
+    ui->btn_MaterialCimkek->setIcon(QIcon(icon));
+    ui->btn_StorageCimkek->setIcon(QIcon(icon));
+
+    icon = EmojiHelper::loadEmoji("📦", 32);
+    ui->btn_GlobalStockList->setIcon(QIcon(icon));
+
 
     ui->relocateQuickList->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -396,7 +412,6 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_GenerateKittingInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_GenerateKittingPlan_clicked);
 
-
     connect(ui->btn_Painter, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Painter_clicked);
 
@@ -424,36 +439,19 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_StorageLabel, &QPushButton::clicked,
             this, &MainWindow::handle_btn_StorageLabel_clicked);
 
-
     connect(ui->btn_stockIntakeForm, &QPushButton::clicked,
             this, &MainWindow::handle_btn_stockIntakeForm_clicked);
 
     connect(ui->btn_stockListForm, &QPushButton::clicked,
             this, &MainWindow::handle_btn_stockListForm_clicked);
 
-}
-
-void MainWindow::mainToolbarBuilder(ActionConnectorModel& m)
-{
-    ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-    ui->mainToolBar->addAction(m.actMaterialFinder);
-    ui->mainToolBar->addAction(m.actSettings);
-    ui->mainToolBar->addAction(m.actSeriesMatrix);
-    ui->mainToolBar->addAction(m.actStorageLabelBatch);
-    ui->mainToolBar->addAction(m.actLeftoverLabelQueue);
-    ui->mainToolBar->addAction(m.actMaterialBarcodeList);
-    ui->mainToolBar->addAction(m.actStorageQrcodeList);
-    ui->mainToolBar->addAction(m.actGlobalStockList);
-}
-
-void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
-{        
-    connect(m.actMaterialFinder, &QAction::triggered,
+    connect(ui->btn_MaterialFinder,  &QPushButton::clicked,
             this, &MainWindow::handle_act_MaterialFinder_clicked);
-    connect(m.actSettings, &QAction::triggered,
+
+    connect(ui->btn_Settings, &QPushButton::clicked,
             this, &MainWindow::handle_act_Settings_clicked);
-    connect(m.actSeriesMatrix, &QAction::toggled,
+
+    connect(ui->btn_TeljessegiMatrix, &QPushButton::clicked,
             this, [this](bool checked) {
                 _seriesMatrixView->setVisible(checked);
 
@@ -497,17 +495,19 @@ void MainWindow::ActionConnector_connect(ActionConnectorModel& m)
                 }
             });
 
-    connect(m.actStorageLabelBatch, &QAction::triggered,
+    connect(ui->btn_TarhelyCimkek, &QPushButton::clicked,
             this, &MainWindow::handle_act_StorageLabelBatch_clicked);
 
-    connect(m.actLeftoverLabelQueue, &QAction::triggered,
+    connect(ui->btn_HulloCimkek, &QPushButton::clicked,
             this, &MainWindow::handle_act_LeftoverLabelQueue_clicked);
 
-    connect(m.actMaterialBarcodeList, &QAction::triggered,
+    connect(ui->btn_MaterialCimkek, &QPushButton::clicked,
             this, &MainWindow::handle_actMaterialBarcodeList_clicked);
-    connect(m.actStorageQrcodeList, &QAction::triggered,
+
+    connect(ui->btn_StorageCimkek, &QPushButton::clicked,
             this, &MainWindow::handle_actStorageQrcodeList_clicked);
-    connect(m.actGlobalStockList, &QAction::triggered,
+
+    connect(ui->btn_GlobalStockList, &QPushButton::clicked,
             this, &MainWindow::handle_actGlobalStockList_clicked);
 
 }
