@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"318";"Arady V., Győr";4045;2570;4015;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"318";"Arady V., Győr";4045;2570;4040;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"318";"Arady V., Győr";4045;2570;3922;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"318";"Arady V., Győr";4045;2570;2467;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"318";"Arady V., Győr";4045;2570;3935;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"318";"Arady V., Győr";4045;2570;3870;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2975;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2975;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2905;;1;0;1;"RAL 9010";NP-SZ-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2298;;1;0;1;"RAL 9010";NP-SL2-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2936;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"339";"Kelet-Redőny";2980;2400;2860;;1;0;1;"RAL 9010";NP-BAR12-4000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2915;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2915;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2845;;1;0;1;"RAL 9010";NP-SZ-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2298;;1;0;1;"RAL 9010";NP-SL2-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2876;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"340";"Kelet-Redőny";2920;2400;2800;;1;0;1;"RAL 9010";NP-BAR12-4000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;865;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;865;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;795;;1;0;1;"RAL 9010";NP-SZ-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;2298;;1;0;1;"RAL 9010";NP-SL2-9010;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;826;;1;0;1;"RAL 9010";NP-ROLL70-5000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi
+"341";"Kelet-Redőny";870;2400;750;;1;0;1;"RAL 9010";NP-BAR12-4000;Width;false;2026-09-28;NP;SIN;meghajtas=motoros;SM;Gyartasi

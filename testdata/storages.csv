@@ -4,6 +4,7 @@ d472c9e2-f382-4b6e-b412-22de88dd9ab1;HétvezérUtcaiTelephely;Site;d472c9e2-f382
 d472c9e2-f382-4b6e-b412-22de88dd9ab3;Raktár 1;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH01;"1-es raktár"
 d472c9e2-f382-4b6e-b412-22de88dd9ab5;Raktár 4;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH04;"4-es raktár"
 d472c9e2-f382-4b6e-b412-22de88dd9ab6;ÚjCsarnok;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH03;"Zsolti melletti raktár"
+d472c9e2-f382-4b6e-b412-22de88dd9ab7;ÚjCsarnok Külső;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;WH03K;"3-as raktár külső"
 
 e31c5052-b4df-42c0-bb3a-fbd4e8edb1f1;Vasanyag vágó;Warehouse;d472c9e2-f382-4b6e-b412-22de88dd9ab1;CM1WH;"Vasanyag vágó tároló"
 e31c5052-b4df-42c0-bb3a-fbd4e8edb1f2;Polc 14;Shelf;e31c5052-b4df-42c0-bb3a-fbd4e8edb1f1;P1_V;"Tengely tároló"

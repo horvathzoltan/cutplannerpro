@@ -538,7 +538,7 @@ RowResult drawSingleStockRow(
 
     QString name = master ? master->toReportLabel() : "?";
 
-    auto headerText = QString("%1 (%2 db)").arg(name).arg(qtyText);
+    auto headerText = QString("%1 (%2)").arg(name).arg(qtyText);
 
     painter.drawText(QRectF(leftMargin, y, pageRect.width(), needed),
                      Qt::AlignLeft, headerText);
@@ -573,12 +573,15 @@ RowResult drawSingleStockRow(
         QString logisticBarcode = StorageRegistry::instance().logisticBarcode(ste.storageId);
         QString humanName = StorageRegistry::instance().uniqueHumanName(ste.storageId);
 
+        QString ld = ste.lastSeenAt.toString("yyyy.MM.dd HH:mm");
+
         painter.drawText(QRectF(leftMargin + 25, y, pageRect.width(), storageLineH),
                          Qt::AlignLeft,
-                         QString("→ %1[%2]: %3 db")
+                         QString("→ %1[%2]: %3 db @%4")
                              .arg(humanName)
                              .arg(logisticBarcode)
-                             .arg(ste.quantity));
+                             .arg(ste.quantity)
+                             .arg(ld));
 
         y += storageLineH;
     }
