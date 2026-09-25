@@ -15,6 +15,9 @@
 #include "storage/utils/storage_label_utils.h"
 #include "view/MainWindow.h"
 
+#include <materials/registry/material_rolegroup_registry.h>
+#include <materials/registry/material_storagegroupregistry.h>
+
 StoragePresenter::StoragePresenter(MainWindow* view, QObject* parent)
     : QObject(parent), _view(view)
 {
@@ -408,6 +411,140 @@ void StoragePresenter::exportStorageBarcodeList()
     zEvent(QString("📄 Tárhely QR‑kód lista exportálva: %1").arg(path));
 }
 
+// QSet<QUuid> StoragePresenter::findCommonMaterials(const QList<StockListFormUtils::AggregatedMaterial>& mats)
+// {
+//     QMap<QUuid, QSet<QUuid>> matToSubtypes;
+
+//     for (const auto& am : mats)
+//     {
+//         const MaterialMaster* m = MaterialRegistry::instance().findById(am.materialId);
+//         if (!m) continue;
+
+//         QString prefix = m->barcode.split('-').first();
+//         MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(prefix);
+
+//         matToSubtypes[am.materialId].insert(role.productSubtypeId);
+//     }
+
+//     QSet<QUuid> common;
+
+//     for (auto it = matToSubtypes.begin(); it != matToSubtypes.end(); ++it)
+//         if (it.value().size() > 1)
+//             common.insert(it.key());
+
+//     return common;
+// }
+QList<StockListFormUtils::AggregatedMaterial>
+StoragePresenter::buildGroupedList(const QList<StockListFormUtils::AggregatedMaterial>& mats)
+{
+    QList<StockListFormUtils::AggregatedMaterial> result;
+    QSet<QUuid> emitted;   // deduplikáció
+
+    // --- 1) materialId → storageGroup
+    QMap<QUuid, const MaterialStorageGroup*> matToStorageGroup;
+    for (const auto& sg : MaterialStorageGroupRegistry::instance().readAll())
+        for (const QUuid& matId : sg.members)
+            matToStorageGroup[matId] = &sg;
+
+    // --- 2) materialId → szerepkörök
+    const auto allRoles = MaterialRoleRegistry::instance().readAll();
+    QMap<QUuid, QVector<MaterialRole>> matToRoles;
+
+    for (const auto& r : allRoles)
+    {
+        const MaterialStorageGroup* sg =
+            MaterialStorageGroupRegistry::instance().findById(r.storageGroupId);
+
+        if (!sg)
+            continue;
+
+        for (const QUuid& matId : sg->members)
+            matToRoles[matId].append(r);
+    }
+
+    // --- 3) BOM sorrend
+    const auto bom = BomRegistry::instance().readAll();
+    QMap<QUuid, QMap<QUuid, QList<MaterialFamily>>> bomOrder;
+
+    for (const auto& e : bom)
+        bomOrder[e.productTypeId][e.productSubtypeId].append(e.family);
+
+    // --- 4) Csoportok
+    QList<StockListFormUtils::AggregatedMaterial> ungrouped;
+    QMap<QUuid, QMap<MaterialFamily, QList<StockListFormUtils::AggregatedMaterial>>> commonByTypeFamily;
+    QMap<QUuid, QMap<QUuid, QMap<MaterialFamily, QList<StockListFormUtils::AggregatedMaterial>>>> specificByTypeSubtypeFamily;
+
+    for (const auto& am : mats)
+    {
+        const QUuid matId = am.materialId;
+
+        if (!matToStorageGroup.contains(matId)) {
+            ungrouped.append(am);
+            continue;
+        }
+
+        const auto roles = matToRoles.value(matId);
+
+        if (roles.isEmpty()) {
+            ungrouped.append(am);
+            continue;
+        }
+
+        const MaterialMaster* mm = MaterialRegistry::instance().findById(matId);
+        if (!mm)
+            continue;
+
+        if (roles.size() > 1) {
+            QUuid typeId = roles.first().productTypeId;
+            MaterialFamily fam = mm->family;
+            commonByTypeFamily[typeId][fam].append(am);
+        } else {
+            const auto& r = roles.first();
+            specificByTypeSubtypeFamily[r.productTypeId][r.productSubtypeId][mm->family].append(am);
+        }
+    }
+
+    // --- 5) BOM sorrend szerinti kilistázás
+    for (auto typeIt = bomOrder.begin(); typeIt != bomOrder.end(); ++typeIt)
+    {
+        QUuid typeId = typeIt.key();
+        auto& subtypeMap = typeIt.value();
+
+        for (auto subIt = subtypeMap.begin(); subIt != subtypeMap.end(); ++subIt)
+        {
+            QUuid subtypeId = subIt.key();
+            const auto& familyOrder = subIt.value();
+
+            for (MaterialFamily fam : familyOrder)
+            {
+                // közös
+                for (const auto& am : commonByTypeFamily[typeId][fam])
+                    if (!emitted.contains(am.materialId)) {
+                        result.append(am);
+                        emitted.insert(am.materialId);
+                    }
+
+                // specifikus
+                for (const auto& am : specificByTypeSubtypeFamily[typeId][subtypeId][fam])
+                    if (!emitted.contains(am.materialId)) {
+                        result.append(am);
+                        emitted.insert(am.materialId);
+                    }
+            }
+        }
+    }
+
+    // --- 6) BOM‑on kívüli anyagok (fallback)
+    for (const auto& am : ungrouped)
+        if (!emitted.contains(am.materialId)) {
+            result.append(am);
+            emitted.insert(am.materialId);
+        }
+
+    return result;
+}
+
+
 
 void StoragePresenter::exportGlobalStockListPdf()
 {
@@ -428,8 +565,6 @@ void StoragePresenter::exportGlobalStockListPdf()
         if (!master)
             continue;
 
-        if(!master->barcode.toLower().startsWith("np-"))
-            continue;
 
         if(virtualStorage  && e.storageId == virtualStorage->id)
             continue;
@@ -441,7 +576,10 @@ void StoragePresenter::exportGlobalStockListPdf()
             //m.master = master;
             m.totalQty += e.quantity;
 
-            m.storages.append({e.storageId, e.quantity, e.lastSeenAt});
+            StockListFormUtils::AggregatedSte a =
+                StockListFormUtils::buildAggregatedSte(e,1);
+
+            m.storages.append(a);
             continue;
         }
         else if (master->kind == MaterialKind::Bundle)
@@ -466,12 +604,20 @@ void StoragePresenter::exportGlobalStockListPdf()
                 m.totalQty += compTotal;
 
                 // opcionális: tárolási helyek listája
-                m.storages.append({e.storageId, compTotal, e.lastSeenAt});
+
+                StockListFormUtils::AggregatedSte a =
+                    StockListFormUtils::buildAggregatedSte(e,comp.count);
+
+                m.storages.append(a);
             }
 
             continue;
         }
     }
+
+     // QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials =
+     //     buildGroupedList(map.values());
+
 
     QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials = map.values();
 

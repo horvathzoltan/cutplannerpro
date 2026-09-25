@@ -495,10 +495,45 @@ inline void drawStockListTable_2(
 }
 
 struct AggregatedSte{
-    QUuid storageId;
-    int quantity;
+    //QUuid storageId;
+    //int quantity;
+
+    int componentCount;           // pack darabszám
+    int packQuantity;
+
+    QString packBarcode;     // csomagolási egység vonalkód
+
     QDateTime lastSeenAt;
+
+    QString logisticBarcode;
+    QString humanName;
 };
+
+inline AggregatedSte buildAggregatedSte(const StockEntry& e,
+                                        int componentCount)
+{
+    AggregatedSte a;
+
+    //a.storageId = e.storageId;
+    a.lastSeenAt = e.lastSeenAt;
+
+    // pack info
+    a.packBarcode = e.materialBarcode();
+    a.componentCount = componentCount;
+    a.packQuantity = e.quantity;
+
+    // storage info
+    a.logisticBarcode = StorageRegistry::instance().logisticBarcode(e.storageId);
+    a.humanName = StorageRegistry::instance().uniqueHumanName(e.storageId);
+
+    // opcionális bővítések:
+    // a.storagePath = StorageUtils::buildPathTree(e.storageId);
+    // a.storageGroup = StorageRegistry::instance().groupName(e.storageId);
+
+    return a;
+}
+
+
 
 struct AggregatedMaterial {
     QUuid materialId;
@@ -513,7 +548,7 @@ struct RowResult {
     bool pageBreakNeeded;   // kellett-e oldaltörés
 };
 
-RowResult drawSingleStockRow(
+inline RowResult drawSingleStockRow(
     QPainter& painter,
     const QRectF& pageRect,
     qreal y,
@@ -566,22 +601,24 @@ RowResult drawSingleStockRow(
             return { y, i, true };   // itt szakadt félbe
         }
 
-       // auto* storage =  StorageRegistry::instance().findById(ste.storageId);
-
-        //QString storageName = storage ? storage->toDisplay() : "?";
-
-        QString logisticBarcode = StorageRegistry::instance().logisticBarcode(ste.storageId);
-        QString humanName = StorageRegistry::instance().uniqueHumanName(ste.storageId);
-
         QString ld = ste.lastSeenAt.toString("yyyy.MM.dd HH:mm");
 
+        QString q = ste.componentCount==1
+                        ?QString("%1 db").arg(ste.packQuantity)
+                        :QString("%1 db ×%2 = %3 db")
+                            .arg(ste.packQuantity)
+                            .arg(ste.componentCount)
+                            .arg(ste.packQuantity * ste.componentCount);
+
+        QString line = QString("→ %1[%2]: %3  → %4  @%5")
+                           .arg(ste.humanName)
+                           .arg(ste.logisticBarcode)
+                           .arg(ste.packBarcode)
+                           .arg(q)
+                           .arg(ld);
+
         painter.drawText(QRectF(leftMargin + 25, y, pageRect.width(), storageLineH),
-                         Qt::AlignLeft,
-                         QString("→ %1[%2]: %3 db @%4")
-                             .arg(humanName)
-                             .arg(logisticBarcode)
-                             .arg(ste.quantity)
-                             .arg(ld));
+                         Qt::AlignLeft,line);
 
         y += storageLineH;
     }

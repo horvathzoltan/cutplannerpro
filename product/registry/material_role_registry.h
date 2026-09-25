@@ -37,4 +37,6 @@ public:
     QVector<MaterialRole> findRoles(const QUuid &productTypeId, const QUuid &productSubtypeId, const MaterialFamily &family) const;
 
     void updateStorageGroupIds(const QMap<QUuid, QUuid> &map);
+
+    MaterialRole findRoleByStorageGroupId(const QUuid &sgId) const;
 };

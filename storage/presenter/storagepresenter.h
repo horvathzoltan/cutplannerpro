@@ -3,6 +3,7 @@
 #include "storage/model/storageentry.h"
 #include <QObject>
 #include <QString>
+#include <stock/utils/stocklistform_utils.h>
 
 class MainWindow;
 
@@ -21,4 +22,6 @@ public:
     void exportGlobalStockListPdf();
 private:
     MainWindow* _view;
+    static QSet<QUuid> findCommonMaterials(const QList<StockListFormUtils::AggregatedMaterial> &mats);
+    static QList<StockListFormUtils::AggregatedMaterial> buildGroupedList(const QList<StockListFormUtils::AggregatedMaterial> &mats);
 };

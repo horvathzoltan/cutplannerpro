@@ -2,6 +2,8 @@
 #include "common/logger.h"
 #include "material_registry.h"
 
+#include <materials/repository/material_storagegrouprepository.h>
+
 MaterialRoleGroupRegistry& MaterialRoleGroupRegistry::instance() {
     static MaterialRoleGroupRegistry registry;
     return registry;
@@ -48,7 +50,6 @@ const MaterialRoleGroup* MaterialRoleGroupRegistry::findByBarcode(const QString&
     if (it == _barcodeToGroup.end()) return nullptr;
     return findById(it.value());
 }
-
 
 void MaterialRoleGroupRegistry::debugDump() const
 {

@@ -133,3 +133,11 @@ void MaterialRoleRegistry::updateStorageGroupIds(const QMap<QUuid, QUuid>& map)
     }
 }
 
+MaterialRole MaterialRoleRegistry::findRoleByStorageGroupId(const QUuid& sgId) const
+{
+    for (const auto& r : m_roles)
+        if (r.storageGroupId == sgId)
+            return r;
+
+    return MaterialRole{};
+}
