@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"742";"Kolozs Attila";595;1200;605;;1;0;1;"";MT-T;Width;false;2026-09-25;SR;MINIT;;SM;Uveg
+"742";"Kolozs Attila";595;1200;600;;1;0;1;"";TE-H-18;Width;false;2026-09-25;SR;MINIT;;SM;Uveg
+"742";"Kolozs Attila";595;1200;588;;1;0;1;"";MT-Z+P;Width;false;2026-09-25;SR;MINIT;;SM;Uveg
+"742";"Kolozs Attila";595;1200;1200;;1;0;1;"";MT-L2;Width;false;2026-09-25;SR;MINIT;;SM;Uveg

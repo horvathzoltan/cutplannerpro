@@ -1,13 +1,13 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
-"314";"Buglyó Balázs";2655;1000;2625;;1;0;0;"RAL 7016";NP-T;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
-"314";"Buglyó Balázs";2655;1000;2650;;1;0;0;"RAL 7016";NP-TF;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"314";"Buglyó Balázs";2655;1000;2625;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"314";"Buglyó Balázs";2655;1000;2650;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "314";"Buglyó Balázs";2655;1000;2532;;1;0;0;"RAL 7016";NP-CZ-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
-"314";"Buglyó Balázs";2655;1000;897;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"314";"Buglyó Balázs";2655;1000;897;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "314";"Buglyó Balázs";2655;1000;2545;;1;0;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "314";"Buglyó Balázs";2655;1000;2480;;1;0;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "315";"Buglyó Balázs";2210;1000;2180;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "315";"Buglyó Balázs";2210;1000;2205;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "315";"Buglyó Balázs";2210;1000;2087;;1;0;0;"RAL 7016";NP-CZ-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
-"315";"Buglyó Balázs";2210;1000;897;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"315";"Buglyó Balázs";2210;1000;897;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "315";"Buglyó Balázs";2210;1000;2100;;1;0;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi
 "315";"Buglyó Balázs";2210;1000;2035;;1;0;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-28;NP;CIP;meghajtas=motoros;SM;Gyartasi

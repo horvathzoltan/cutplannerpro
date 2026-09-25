@@ -428,6 +428,9 @@ void StoragePresenter::exportGlobalStockListPdf()
         if (!master)
             continue;
 
+        if(!master->barcode.toLower().startsWith("np-"))
+            continue;
+
         if(virtualStorage  && e.storageId == virtualStorage->id)
             continue;
 
