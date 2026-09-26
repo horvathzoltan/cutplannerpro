@@ -14,7 +14,8 @@ public:
 
     enum class ExportMode {
         Standard,
-        RodDiagram
+        RodDiagram,
+        SizeList
     };
 
     static bool ExportCutPlanSummary(

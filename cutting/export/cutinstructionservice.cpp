@@ -101,6 +101,10 @@ bool CutInstructionService::ExportCutInstructions(const QVector<MachineCuts>& ma
         {
             path = dir + "/" + baseName + "_CutInstructions_Rod.txt";
         }
+        else if(mode == ExportMode::SizeList)
+        {
+            path = dir + "/" + baseName + "_CutInstructions_SizeList.txt";
+        }
 
         QFile f(path);
         if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -135,6 +139,11 @@ bool CutInstructionService::ExportCutInstructions(const QVector<MachineCuts>& ma
             else if(mode == ExportMode::RodDiagram)
             {
                 m = CuttingInstructionUtils::formatMachineCutsEvent_2(
+                    mc, rep, failedList, baseName, SettingsManager::printedLineWidth);
+            }
+            else if(mode == ExportMode::SizeList)
+            {
+                m = CuttingInstructionUtils::formatMachineCutsEvent_3(
                     mc, rep, failedList, baseName, SettingsManager::printedLineWidth);
             }
 

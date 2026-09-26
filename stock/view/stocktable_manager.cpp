@@ -53,13 +53,36 @@ void StockTableManager::addRow(const StockEntry& entry) {
     QString lengthStr;
     QString lengthToolTip;
 
-    if(mat->kind == MaterialKind::Bundle){
-        lengthStr = "(bundle)";
+    if (mat->kind == MaterialKind::Bundle) {
+
+        QVector<int> lengths;
+        const auto comps = BundleRegistry::instance().componentsOf(mat->bundleCode);
+
+        for (const auto& c : comps) {
+            const MaterialMaster* m = MaterialRegistry::instance().findById(c.materialId);
+            if (m)
+                lengths.append(m->rawStockLength_mm());
+        }
+
+        if (lengths.isEmpty()) {
+            lengthStr = "(bundle)";
+        } else {
+            int minL = *std::min_element(lengths.begin(), lengths.end());
+            int maxL = *std::max_element(lengths.begin(), lengths.end());
+
+            if (minL == maxL)
+                lengthStr = QString("%1 mm").arg(minL);
+            else
+                lengthStr = QString("%1–%2 mm").arg(minL).arg(maxL);
+        }
+
         lengthToolTip = BundleComponentLengthUtils::buildBundleTooltip(mat);
-    } else{
-        lengthStr = QString::number(mat->effectiveLength());
+
+    } else {
+        lengthStr = QString("%1 mm").arg(mat->effectiveLength());
         lengthToolTip = BundleComponentLengthUtils::buildSingleTooltip(mat);
     }
+
 
     auto* itemLength = new QTableWidgetItem(lengthStr);
     itemLength->setToolTip(lengthToolTip);

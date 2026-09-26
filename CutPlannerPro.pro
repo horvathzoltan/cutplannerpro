@@ -187,6 +187,7 @@ HEADERS += \
     leftover/services/bundlesplitengine.h \
     leftover/view/dialog/bundlesplitdialog.h \
     leftover/view/dialog/leftoverauditdialog.h \
+    leftover/view/utils/leftovertooltiputils.h \
     materialbundles/model/bundle_componentlength.h \
     materialbundles/model/bundle_definition.h \
     materialbundles/registry/bundle_registry.h \

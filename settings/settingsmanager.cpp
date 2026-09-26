@@ -358,3 +358,23 @@ void SettingsManager::setRecentMaterials(const QString& seed, const QList<QStrin
 
     setValue(key, QVariant(list));
 }
+
+
+/**/
+
+bool SettingsManager::repeatDialog_ScrapByBarcode() const {
+    return value(SettingsKeys::RepeatDialog_LeftoverDisposal, false).toBool();
+}
+
+void SettingsManager::setRepeatDialog_ScrapByBarcode(bool v) {
+    setValue(SettingsKeys::RepeatDialog_LeftoverDisposal, v);
+}
+
+bool SettingsManager::repeatDialog_LeftoverReview() const {
+    return value(SettingsKeys::RepeatDialog_LeftoverReview, false).toBool();
+}
+
+void SettingsManager::setRepeatDialog_LeftoverReview(bool v) {
+    setValue(SettingsKeys::RepeatDialog_LeftoverReview, v);
+}
+

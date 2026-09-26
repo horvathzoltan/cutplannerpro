@@ -409,6 +409,9 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_ExportCutInstruction_2, &QPushButton::clicked,
             this, &MainWindow::handle_btn_ExportCutInstruction2_clicked);
 
+    connect(ui->btn_ExportCutInstruction_3, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_ExportCutInstruction3_clicked);
+
     connect(ui->btn_GenerateKittingInstruction, &QPushButton::clicked,
             this, &MainWindow::handle_btn_GenerateKittingPlan_clicked);
 
@@ -1470,6 +1473,21 @@ void MainWindow::handle_btn_ExportCutInstruction2_clicked() {
         _cuttingPresenter->machineCutsList(),
         *_cuttingPresenter->optimizerModel(),
         CutInstructionService::ExportMode::RodDiagram);
+
+    if(!ok){
+        ValidationResult r;
+        r.errors << "Nincs legenerált vágási utasítás.\n"
+                 << "Előbb futtasd a Generate CutInstructions műveletet.";
+        ShowWarningDialog(r);
+    }
+}
+
+void MainWindow::handle_btn_ExportCutInstruction3_clicked() {
+    //_cuttingPresenter->ExportCutInstructions_2();
+    bool ok = CutInstructionService::ExportCutInstructions(
+        _cuttingPresenter->machineCutsList(),
+        *_cuttingPresenter->optimizerModel(),
+        CutInstructionService::ExportMode::SizeList);
 
     if(!ok){
         ValidationResult r;

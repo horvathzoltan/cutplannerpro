@@ -540,6 +540,8 @@ struct AggregatedMaterial {
     //const MaterialMaster* master;
     int totalQty;
     QList<AggregatedSte> storages;   // hol és mennyi volt
+
+    QString sectionKey;   // ← ÚJ: szekció-határ kulcs
 };
 
 struct RowResult {

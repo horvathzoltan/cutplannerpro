@@ -6,6 +6,7 @@
 #include "leftover/view/utils/leftovertable_rowstyler.h"
 #include "common/eventlogger.h"
 #include "leftover/registry/leftoverstockregistry.h"
+#include "leftover/view/utils/leftovertooltiputils.h"
 #include "storage/registry/storageregistry.h"
 #include "materials/registry/material_registry.h"
 #include "leftover/leftoverstatusutils.h"
@@ -47,9 +48,50 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
     barcode->setTextAlignment(Qt::AlignCenter);
     table->setItem(rowIx, ColBarcode, barcode);
 
+
     // 📏 Hossz
-    auto* itemLength = new QTableWidgetItem(QString::number(entry.availableLength_mm));
+    // auto* itemLength = new QTableWidgetItem(QString::number(entry.availableLength_mm));
+    // itemLength->setTextAlignment(Qt::AlignCenter);
+    // table->setItem(rowIx, ColLength, itemLength);
+
+
+    QString lengthStr;
+
+    if (!entry.bundleComponentLengths.isEmpty()) {
+
+        QVector<int> lengths;
+
+        for (const auto& c : entry.bundleComponentLengths) {
+            if (c.length_mm == 0)
+                continue; // komponens nincs benne
+            if (c.length_mm == -1)
+                lengths.append(entry.availableLength_mm);
+            else
+                lengths.append(c.length_mm);
+        }
+
+        if (lengths.isEmpty()) {
+            lengthStr = QString::number(entry.availableLength_mm);
+        } else {
+            int minL = *std::min_element(lengths.begin(), lengths.end());
+            int maxL = *std::max_element(lengths.begin(), lengths.end());
+
+            if (minL == maxL)
+                lengthStr = QString("%1 mm").arg(minL);
+            else
+                lengthStr = QString("%1–%2 mm").arg(minL).arg(maxL);
+        }
+
+    } else {
+        lengthStr = QString("%1 mm").arg(entry.availableLength_mm);
+    }
+
+    auto lengthTooltipTxt = buildLeftoverBundleTooltip(entry);
+
+    auto* itemLength = new QTableWidgetItem(lengthStr);
     itemLength->setTextAlignment(Qt::AlignCenter);
+    itemLength->setToolTip(lengthTooltipTxt);
+
     table->setItem(rowIx, ColLength, itemLength);
 
     auto* itemStatus = new QTableWidgetItem(LeftoverStatusUtils::toString(entry.status));

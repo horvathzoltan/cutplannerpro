@@ -48,6 +48,8 @@ inline constexpr auto OptimizationLeftoverAuditHours = "optimization_leftover_au
 
 inline constexpr auto RepeatDialog_AddInput = "repeatdialog_addinput";
 inline constexpr auto RepeatDialog_AddLeftover = "repeatdialog_addleftover";
+inline constexpr auto RepeatDialog_LeftoverDisposal = "repeatdialog_leftoverdisposal";
+inline constexpr auto RepeatDialog_LeftoverReview = "repeatdialog_leftoverreview";
 
 inline constexpr auto RecentMaterials = "repeatdialog_addleftover_RecentMaterials";
 
@@ -165,12 +167,6 @@ public:
     int materialFinderRange() const;
     void setMaterialFinderRange(int mm);
 
-
-    bool repeatDialog_AddInput() const;
-    void setRepeatDialog_AddInput(bool mm);
-    bool repeatDialog_AddLeftover() const;
-    void setRepeatDialog_AddLeftover(bool mm);
-
     QString lastStorage_AddLeftover() const;
     void setLastStorage_AddLeftover(QString v);
 
@@ -181,7 +177,15 @@ public:
     QVariant value(const QString& key, const QVariant& def = {}) const;
     void setValue(const QString& key, const QVariant& value);
 
+    bool repeatDialog_AddInput() const;
+    void setRepeatDialog_AddInput(bool mm);
+    bool repeatDialog_AddLeftover() const;
+    void setRepeatDialog_AddLeftover(bool mm);
 
+    bool repeatDialog_ScrapByBarcode() const;
+    void setRepeatDialog_ScrapByBarcode(bool v);
+    bool repeatDialog_LeftoverReview() const;
+    void setRepeatDialog_LeftoverReview(bool v);
 private:
     SettingsManager();
 

@@ -437,6 +437,28 @@ void StoragePresenter::exportStorageBarcodeList()
 QList<StockListFormUtils::AggregatedMaterial>
 StoragePresenter::buildGroupedList(const QList<StockListFormUtils::AggregatedMaterial>& mats)
 {
+    auto makeSectionKey = [&](const QUuid& typeId,
+                              const QUuid& subtypeId,
+                              MaterialFamily fam,
+                              bool isCommon)
+    {
+        auto *type = ProductTypeRegistry::instance().findById(typeId);
+        QString typeName = type?type->name:"?";
+        QString famName = MaterialFamilyUtils::toString(fam);
+
+        if (isCommon)
+            return QString("%1::COMMON::%2")
+                .arg(typeName)
+                .arg(famName);
+
+        auto *subType = ProductSubtypeRegistry::instance().findById(subtypeId);
+        QString subtypeName = subType?subType->name:"?";
+        return QString("%1::%2::%3")
+            .arg(typeName)
+            .arg(subtypeName)
+            .arg(famName);
+    };
+
     QList<StockListFormUtils::AggregatedMaterial> result;
     QSet<QUuid> emitted;   // deduplikáció
 
@@ -518,15 +540,19 @@ StoragePresenter::buildGroupedList(const QList<StockListFormUtils::AggregatedMat
             for (MaterialFamily fam : familyOrder)
             {
                 // közös
-                for (const auto& am : commonByTypeFamily[typeId][fam])
-                    if (!emitted.contains(am.materialId)) {
+                for (const auto& am0: commonByTypeFamily[typeId][fam])
+                    if (!emitted.contains(am0.materialId)) {
+                        auto am = am0;
+                        am.sectionKey = makeSectionKey(typeId, QUuid(), fam, true);
                         result.append(am);
                         emitted.insert(am.materialId);
                     }
 
                 // specifikus
-                for (const auto& am : specificByTypeSubtypeFamily[typeId][subtypeId][fam])
-                    if (!emitted.contains(am.materialId)) {
+                for (const auto& am0 : specificByTypeSubtypeFamily[typeId][subtypeId][fam])
+                    if (!emitted.contains(am0.materialId)) {
+                        auto am = am0;
+                        am.sectionKey = makeSectionKey(typeId, subtypeId, fam, false);
                         result.append(am);
                         emitted.insert(am.materialId);
                     }
@@ -535,8 +561,19 @@ StoragePresenter::buildGroupedList(const QList<StockListFormUtils::AggregatedMat
     }
 
     // --- 6) BOM‑on kívüli anyagok (fallback)
-    for (const auto& am : ungrouped)
-        if (!emitted.contains(am.materialId)) {
+    for (const auto& am0 : ungrouped)
+        if (!emitted.contains(am0.materialId)) {
+            auto am = am0;
+            am.sectionKey = "Egyéb::SzerepkörNélküli";
+            result.append(am);
+            emitted.insert(am.materialId);
+        }
+
+    // --- 7) Globális fallback: minden anyag kerüljön be
+    for (const auto& am0 : mats)
+        if (!emitted.contains(am0.materialId)) {
+            auto am = am0;
+            am.sectionKey = "Egyéb::Maradék";
             result.append(am);
             emitted.insert(am.materialId);
         }
@@ -595,8 +632,8 @@ void StoragePresenter::exportGlobalStockListPdf()
                 QUuid compId = comp.materialId;
                 int compTotal = e.quantity * comp.count;
 
-                const MaterialMaster* cm =
-                    MaterialRegistry::instance().findById(compId);
+                // const MaterialMaster* cm =
+                //     MaterialRegistry::instance().findById(compId);
 
                 auto& m = map[compId];
                 m.materialId = compId;
@@ -615,11 +652,11 @@ void StoragePresenter::exportGlobalStockListPdf()
         }
     }
 
-     // QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials =
-     //     buildGroupedList(map.values());
+     QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials =
+         buildGroupedList(map.values());
 
 
-    QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials = map.values();
+   // QList<StockListFormUtils::AggregatedMaterial> aggregatedMaterials = map.values();
 
     QString dir = "_reports";
     QDir().mkpath(dir);
@@ -661,8 +698,33 @@ void StoragePresenter::exportGlobalStockListPdf()
     qreal y = pageRect.top();
     drawHeader(y);
 
+    QString lastSectionKey;
+
     for (const auto& m : aggregatedMaterials)
     {
+        if (m.sectionKey != lastSectionKey)
+        {
+            // új szekció kezdődik
+            lastSectionKey = m.sectionKey;
+
+            // oldaltörés ha nem férne ki
+            qreal needed = lineH * 1.4;
+            if (y + needed > pageRect.bottom()) {
+                writer.newPage();
+                painter.begin(&writer);
+                painter.setFont(QFont("Noto Sans Mono", 11));
+                y = pageRect.top();
+                drawHeader(y);
+            }
+
+            painter.setFont(QFont("Noto Sans Mono", 12, QFont::Bold));
+            painter.drawText(QRectF(40, y, pageRect.width(), needed),
+                             Qt::AlignLeft,
+                             QString("=== %1 ===").arg(m.sectionKey));
+            y += needed;
+
+            painter.setFont(QFont("Noto Sans Mono", 11));
+        }
         int storageIndex = 0;
 
         while (storageIndex < m.storages.size())

@@ -139,4 +139,8 @@ inline QString buildSingleTooltip(const MaterialMaster* mat){
 }
 
 
+
+
+
+
 } // namespace BundleComponentLengthUtils

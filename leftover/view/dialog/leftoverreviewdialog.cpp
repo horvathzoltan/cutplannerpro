@@ -1,6 +1,8 @@
 #include "leftoverreviewdialog.h"
 #include "ui_leftoverreviewdialog.h"
 
+#include <settings/settingsmanager.h>
+
 // LeftoverReviewDialog::LeftoverReviewDialog(QWidget *parent)
 //     : QDialog(parent)
 //     , ui(new Ui::LeftoverReviewDialog)
@@ -24,6 +26,16 @@ LeftoverReviewDialog::LeftoverReviewDialog(QWidget *parent)
     // Enter = OK
     ui->txtBarcode->setFocus();
     ui->txtBarcode->setPlaceholderText("Scan or type barcode...");
+
+    // Repeat checkbox – load saved state
+    ui->chkRepeat->setChecked(
+        SettingsManager::instance().repeatDialog_LeftoverReview()
+        );
+
+    // Persist repeat checkbox changes
+    connect(ui->chkRepeat, &QCheckBox::toggled, this, [](bool checked){
+        SettingsManager::instance().setRepeatDialog_LeftoverReview(checked);
+    });
 
     // Optional: disable resizing
     setFixedSize(sizeHint());
