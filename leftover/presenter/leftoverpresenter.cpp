@@ -18,6 +18,8 @@
 #include <settings/settingsmanager.h>
 #include <leftover/audit/leftoveraudit.h>
 #include <leftover/label/leftoverlabelqueue.h>
+#include <leftover/substitution/leftoversubstitutionengine.h>
+#include <view/dialog/textviewdialog.h>
 
 LeftoverPresenter::LeftoverPresenter(MainWindow* view, LeftoverTableManager* mgr)
     :  _view(view), _mgr(mgr)
@@ -493,4 +495,337 @@ void LeftoverPresenter::update_LeftoverStockEntry(const LeftoverStockEntry& upda
         return;
     }
 }
+
+/**/
+void LeftoverPresenter::ExportOptimizationLeftoverAudit(
+    const QHash<QUuid, CuttingPresenter::OptimizationLeftoverAuditStats>& stats)
+{
+    //
+    // 1️⃣ Audit statisztika
+    //
+    //auto perMachine = _cuttingPresenter->collectUsedLeftoversFromPlans();
+    //auto stats = _cuttingPresenter->collectOptimizationLeftoverStats(perMachine);
+
+    //auto stats = CuttingPresenter::instance()->collectOptimizationLeftoverStats(perMachine);
+
+    bool needAudit = false;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        const auto& s = it.value();
+        if (s.missing > 0 || s.stale > 0) {
+            needAudit = true;
+            break;
+        }
+    }
+
+    if (!needAudit) {
+        QMessageBox::information(nullptr,
+                                 "Optimalization Leftover Audit",
+                                 "✅ Minden leftover friss.\nA vágás indítható.");
+        return;
+    }
+
+    //
+    // 2️⃣ Szűrt leftover lista: csak auditálandók
+    //
+    QHash<QUuid, QVector<QUuid>> filtered;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        QUuid machineId = it.key();
+        const auto& s = it.value();
+
+        QVector<QUuid> ids;
+
+        for (const auto& id : s.missingIds)
+            ids.append(id);
+
+        for (const auto& id : s.staleIds)
+            ids.append(id);
+
+        if (!ids.isEmpty())
+            filtered[machineId] = ids;
+    }
+
+    //
+    // 3️⃣ Részletes statisztika megjelenítése
+    //
+    QString msg;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        QUuid machineId = it.key();
+        const auto& s = it.value();
+
+        auto mach = CuttingMachineRegistry::instance().findById(machineId);
+        QString machName = mach ? mach->name : "Ismeretlen gép";
+
+        msg += QString("Gép: %1\n").arg(machName);
+        msg += QString("  ❌ Eltűnt: %1\n").arg(s.missing);
+        msg += QString("  🕒 Lejárt: %1\n").arg(s.stale);
+        msg += QString("  ✅ Friss: %1\n\n").arg(s.fresh);
+    }
+
+    QMessageBox::warning(nullptr,
+                         "Optimalization Leftover Audit",
+                         msg);
+
+    //
+    // 4️⃣ PDF export
+    //
+    ExportOptimizationLeftoverAuditPdf(filtered);
+}
+
+
+void LeftoverPresenter::ExportSubstitutionAuditPdf(
+    const QVector<LeftoverStockEntry>& list)
+{
+    exportAuditPdf(list, "leftover_opt_substitution_audit");
+}
+
+/**/
+
+// Iteratív Leftover Substitution Audit Engine
+
+// ----------------------------------------------------
+// Iteratív leftover audit kör
+// ----------------------------------------------------
+//
+// Cél:
+//  - kiválasztjuk azokat a leftovereket, amelyek
+//    a tervekből használatban vannak, de minőségük
+//    (lastSeenAt / notFoundCount) alapján bizonytalan,
+//  - ezekhez keresünk max. 3 helyettesítő jelöltet,
+//    azonos materialBarCode + elég hossz,
+//  - mindezt PDF-be exportáljuk auditálásra,
+//    majd a Review dialógussal finomítjuk a minőséget.
+//
+void LeftoverPresenter::runIterativeLeftoverAuditRound()
+{
+    auto cuttingPresenter = _view->cuttingPresenter();
+    if (!cuttingPresenter) {
+        QMessageBox::warning(nullptr,
+                             "Iteratív audit",
+                             "Nincs CuttingPresenter példány.");
+        return;
+    }
+
+    // 1) Tervekből használt leftoverek
+    QHash<QUuid, QVector<QUuid>> perMachine =
+        cuttingPresenter->collectUsedLeftoversFromPlans();
+
+    QVector<LeftoverStockEntry> allEntries =
+        LeftoverStockRegistry::instance().readAll();
+
+    QHash<QUuid, LeftoverStockEntry> byId;
+    for (const auto& e : allEntries)
+        byId.insert(e.entryId, e);
+
+    QVector<LeftoverStockEntry> targets;
+    QHash<QUuid, QVector<LeftoverStockEntry>> candidateSets;
+
+    const QDateTime now = QDateTime::currentDateTime();
+
+    // 2) Target + jelöltek
+    for (auto it = perMachine.constBegin(); it != perMachine.constEnd(); ++it) {
+        for (const QUuid& id : it.value()) {
+
+            if (!byId.contains(id))
+                continue;
+
+            const auto& target = byId[id];
+
+            bool goodQuality =
+                target.notFoundCount == 0 &&
+                target.lastSeenAt.isValid() &&
+                target.lastSeenAt.daysTo(now) <= 7;
+
+            if (goodQuality)
+                continue;
+
+            targets.append(target);
+
+            QVector<LeftoverStockEntry> cands;
+            for (const auto& cand : allEntries) {
+
+                if (cand.entryId == target.entryId)
+                    continue;
+
+                if (cand.materialBarcode() != target.materialBarcode())
+                    continue;
+
+                if (cand.availableLength_mm < target.availableLength_mm)
+                    continue;
+
+                cands.append(cand);
+            }
+
+            std::sort(cands.begin(), cands.end(),
+                      [](const auto& a, const auto& b){
+                          if (a.notFoundCount != b.notFoundCount)
+                              return a.notFoundCount < b.notFoundCount;
+                          if (a.lastSeenAt.isValid() && b.lastSeenAt.isValid())
+                              return a.lastSeenAt > b.lastSeenAt;
+                          return a.availableLength_mm < b.availableLength_mm;
+                      });
+
+            if (cands.size() > 3)
+                cands.resize(3);
+
+            candidateSets.insert(target.entryId, cands);
+        }
+    }
+
+    QString summary = buildSubstitutionSummary(targets, candidateSets);
+    zInfo(summary);
+
+    ExportIterativeAuditPdf(targets, candidateSets);
+
+    TextViewDialog dlg(_view);
+    dlg.setWindowTitle("LEFTOVER SUBSTITUTION SUMMARY");
+    dlg.setText(summary);
+    dlg.exec();
+}
+
+
+QString LeftoverPresenter::buildSubstitutionSummary(
+    const QVector<LeftoverStockEntry>& targets,
+    const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets)
+{
+    QString out;
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+    QString planIdStr = SettingsManager::instance().planIdStr();
+
+    // --- fejlécek ---
+    out += "📄Iteratív Leftover Substitution Audit \n";
+    out += QString("CutPlan: %1").arg(planIdStr)+"\n";
+    out += QString("📅 Dátum: %1").arg(dateStr)+"\n\n";
+
+    // anyagonként csoportosítjuk
+    QMap<QUuid, QVector<const LeftoverStockEntry*>> byMaterial;
+    for (const auto& t : targets)
+        byMaterial[t.materialId].append(&t);
+
+    for (auto it = byMaterial.begin(); it != byMaterial.end(); ++it) {
+
+        //out += QString("Anyag: %1 \n\n").arg(it.key());
+        auto* mat = MaterialRegistry::instance().findById(it.key());
+
+        QString matName = mat?mat->toReportLabel():"?";
+        QString header = QString("Anyag: %1").arg(matName);
+
+        out += header + "\n";
+        out += QString(header.length(), QChar(0x2500)) + "\n\n";
+        // 0x2500 = "─" (box drawing light horizontal)
+
+        for (const LeftoverStockEntry* t : it.value()) {
+
+            // TARGET sor
+            out += QString("%1 (%2 mm)\n")
+                       .arg(t->barcode)
+                       .arg(t->availableLength_mm);
+
+            // JELÖLTEK sor
+            const auto& cands = candidateSets.value(t->entryId);
+
+            if (cands.isEmpty()) {
+                out += "    → (nincs jelölt)\n\n";
+                continue;
+            }
+
+            QStringList candParts;
+            candParts.reserve(cands.size());
+
+            for (const auto& c : cands) {
+                candParts << QString("%1 (%2 mm)")
+                .arg(c.barcode)
+                    .arg(c.availableLength_mm);
+            }
+
+            out += QString("    → %1\n\n")
+                       .arg(candParts.join(", "));
+        }
+
+        out += "\n";
+    }
+
+    return out;
+}
+
+
+
+
+// ----------------------------------------------------
+// Iteratív audit PDF export
+// ----------------------------------------------------
+//
+// Egyszerű megközelítés:
+//  - a cél leftoverek + jelöltek egy közös listába kerülnek,
+//  - a meglévő exportAuditPdf() helperrel PDF-be írjuk.
+//  - a helyettesítési logika a kódban ismeri a mappinget
+//    (candidateSets), az operátor pedig minden itt szereplő
+//    vonalkódot auditálhat.
+//
+void LeftoverPresenter::ExportIterativeAuditPdf(
+    const QVector<LeftoverStockEntry>& targets,
+    const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets)
+{
+    QString dir = "_reports";
+    QDir().mkpath(dir);
+
+    QString path = QString("%1/Iteratív leftover audit_%2.pdf")
+                       .arg(dir)
+                       .arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmm"));
+
+    QPdfWriter writer(path);
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setResolution(300);
+
+    QPainter painter(&writer);
+    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+    painter.setFont(QFont("Noto Sans Mono", 10));
+
+    // --- Fejléc ---
+    // painter.drawText(pageRect, Qt::AlignLeft,
+    //                  "=== Iteratív Leftover Substitution Audit ===\n\n");
+
+    // --- Summary ---
+    QString summary = buildSubstitutionSummary(targets, candidateSets);
+    painter.drawText(pageRect, Qt::AlignLeft | Qt::TextWordWrap, summary);
+
+    writer.newPage();
+
+    // --- Audit blokkok ---
+    qreal yOffset = 0;
+
+    painter.setFont(QFont("Noto Sans Mono", 7));
+
+    auto draw = [&](const LeftoverStockEntry& e){
+        painter.save();
+        painter.translate(0, yOffset);
+
+        qreal used = LeftoverReviewFormUtils::drawAuditBlock(painter, pageRect, e);
+        yOffset += used;
+
+        painter.restore();
+
+        if (yOffset + used > pageRect.height() - 200) {
+            writer.newPage();
+            yOffset = 0;
+        }
+    };
+
+    for (const auto& t : targets) {
+        draw(t);
+        for (const auto& c : candidateSets.value(t.entryId))
+            draw(c);
+    }
+
+    painter.end();
+    zInfo(QString("📄 Iteratív Audit PDF exportálva: %1").arg(path));
+}
+
+
+
+
+
 

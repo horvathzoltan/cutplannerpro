@@ -32,8 +32,7 @@ inline QString buildLeftoverBundleTooltip(const LeftoverStockEntry& e)
             lenInfo = "nem tartalmazza";
         }
         else if (c.length_mm == -1) {
-            lenInfo = QString("leftover hossz érvényes")
-                          .arg(e.availableLength_mm);
+            lenInfo = "leftover hossz érvényes";
         }
         else {
             lenInfo = QString("%1 mm").arg(c.length_mm);

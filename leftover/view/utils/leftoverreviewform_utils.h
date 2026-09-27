@@ -14,4 +14,16 @@ void formatReviewFormPdf(QPainter& painter,
                          const QVector<LeftoverStockEntry>& entries,
                          int rowsPerPage);
 
+qreal drawAuditBlock(
+    QPainter& painter,
+    const QRectF& pageRect,
+    const LeftoverStockEntry& e);
+
+void formatIterativeAudit(
+    QPainter& painter,
+    QPdfWriter& writer,
+    const QRectF& pageRect,
+    const LeftoverStockEntry& target,
+    const QVector<LeftoverStockEntry>& candidates);
+
 }

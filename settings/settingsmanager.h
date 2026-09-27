@@ -186,6 +186,7 @@ public:
     void setRepeatDialog_ScrapByBarcode(bool v);
     bool repeatDialog_LeftoverReview() const;
     void setRepeatDialog_LeftoverReview(bool v);
+    QString planIdStr() const;
 private:
     SettingsManager();
 

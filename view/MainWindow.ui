@@ -268,7 +268,14 @@
             <item>
              <widget class="QPushButton" name="btn_OptLeftoverAudit">
               <property name="text">
-               <string>Leftover Audit</string>
+               <string>LeftoverAudit</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_OptLeftoverAudit2">
+              <property name="text">
+               <string>LeftoverAudit 2</string>
               </property>
              </widget>
             </item>

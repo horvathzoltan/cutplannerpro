@@ -141,6 +141,7 @@ private slots:
     void handle_btn_ReviewForm_clicked();
     void handle_btn_StorageAndMaterialReview_clicked();
     void handle_btn_OptLeftoverAudit_clicked();
+    void handle_btn_OptLeftoverAudit2_clicked();
     void handle_btn_RunOutMaterials_clicked();
     void handle_btn_StorageAudit_2_clicked();
     void handle_btn_StorageLabel_clicked();

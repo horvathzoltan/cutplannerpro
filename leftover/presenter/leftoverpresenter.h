@@ -5,6 +5,8 @@
 
 #include <leftover/model/leftoverstockentry.h>
 
+#include <presenter/CuttingPresenter.h>
+
 class LeftoverTableManager;
 class MainWindow; // Előre deklaráljuk, hogy ne kelljen most includolni
 
@@ -34,7 +36,17 @@ public:
     bool remove_LeftoverStockEntry(const QUuid &entryId);
     void add_LeftoverStockEntry(const LeftoverStockEntry& entry);
     void update_LeftoverStockEntry(const LeftoverStockEntry &updated);
+    void ExportSubstitutionAuditPdf(const QVector<LeftoverStockEntry>& list);
 
+    void ExportOptimizationLeftoverAudit(
+        const QHash<QUuid, CuttingPresenter::OptimizationLeftoverAuditStats>& stats);
+
+    void ExportOptimizationLeftoverSubstitutionAudit(
+        const QHash<QUuid, QVector<QUuid>>& perMachine);
+
+
+    void runIterativeLeftoverAuditRound();
+    void ExportIterativeAuditPdf(const QVector<LeftoverStockEntry> &targets, const QHash<QUuid, QVector<LeftoverStockEntry> > &candidateSets);
 private:
     MainWindow* _view;
 
@@ -46,4 +58,5 @@ private:
     void exportAuditPdf(const QVector<LeftoverStockEntry> &list, const QString &title);
     QVector<LeftoverStockEntry> shuffle(QVector<LeftoverStockEntry>& list, int rowsPerPage);
     QVector<LeftoverStockEntry> filter(const QVector<LeftoverStockEntry>& list);
+    QString buildSubstitutionSummary(const QVector<LeftoverStockEntry> &targets, const QHash<QUuid, QVector<LeftoverStockEntry> > &candidateSets);
 };

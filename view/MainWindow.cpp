@@ -59,6 +59,10 @@
 
 #include <calculation/lengthcalculator.h>
 
+#include <leftover/audit/leftoveraudit.h>
+
+#include <leftover/substitution/leftoversubstitutionengine.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -429,6 +433,9 @@ void MainWindow::ButtonConnector_Connect()
 
     connect(ui->btn_OptLeftoverAudit, &QPushButton::clicked,
             this, &MainWindow::handle_btn_OptLeftoverAudit_clicked);
+
+    connect(ui->btn_OptLeftoverAudit2, &QPushButton::clicked,
+            this, &MainWindow::handle_btn_OptLeftoverAudit2_clicked);
 
     connect(ui->btn_Review, &QPushButton::clicked,
             this, &MainWindow::handle_btn_Review_clicked);
@@ -1669,74 +1676,90 @@ void MainWindow::handle_btn_StorageAudit_2_clicked()
 }
 
 
+// void MainWindow::handle_btn_OptLeftoverAudit_clicked()
+// {
+//     auto perMachine = _cuttingPresenter->collectUsedLeftoversFromPlans();
+
+//     auto stats = _cuttingPresenter->collectOptimizationLeftoverStats(perMachine);
+
+//     bool needAudit = false;
+
+//     for (auto it = stats.begin(); it != stats.end(); ++it) {
+//         const auto& s = it.value();
+//         if (s.missing > 0 || s.stale > 0) {
+//             needAudit = true;
+//             break;
+//         }
+//     }
+
+//     if (!needAudit) {
+//         QMessageBox::information(this,
+//                                  "Optimalization Leftover Audit",
+//                                  "✅ Minden leftover friss.\nA vágás indítható.");
+//         return;
+//     }
+
+
+//     // 🔥 Szűrt leftover lista: csak auditálandók
+//     QHash<QUuid, QVector<QUuid>> filtered;
+
+//     for (auto it = stats.begin(); it != stats.end(); ++it) {
+//         QUuid machineId = it.key();
+//         const auto& s = it.value();
+
+//         QVector<QUuid> ids;
+
+//         // eltűnt leftoverek
+//         for (const auto& id : s.missingIds)
+//             ids.append(id);
+
+//         // lejárt leftoverek
+//         for (const auto& id : s.staleIds)
+//             ids.append(id);
+
+//         if (!ids.isEmpty())
+//             filtered[machineId] = ids;
+//     }
+
+//     // Audit szükséges → részletes statisztika megjelenítése
+//     QString msg;
+
+//     for (auto it = stats.begin(); it != stats.end(); ++it) {
+//         QUuid machineId = it.key();
+//         const auto& s = it.value();
+
+//         auto mach = CuttingMachineRegistry::instance().findById(machineId);
+//         QString machName = mach ? mach->name : "Ismeretlen gép";
+
+//         msg += QString("Gép: %1\n")
+//                    .arg(machName);
+//         msg += QString("  ❌ Eltűnt: %1\n").arg(s.missing);
+//         msg += QString("  🕒 Lejárt: %1\n").arg(s.stale);
+//         msg += QString("  ✅ Friss: %1\n\n").arg(s.fresh);
+//     }
+
+//     QMessageBox::warning(this,
+//                          "Optimalization Leftover Audit",
+//                          msg);
+
+//     // audit szükséges → PDF generálás
+//     _leftoverPresenter->ExportOptimizationLeftoverAuditPdf(filtered);
+// }
+
 void MainWindow::handle_btn_OptLeftoverAudit_clicked()
 {
     auto perMachine = _cuttingPresenter->collectUsedLeftoversFromPlans();
+    QHash<QUuid, CuttingPresenter::OptimizationLeftoverAuditStats> stats = _cuttingPresenter->collectOptimizationLeftoverStats(perMachine);
 
-    auto stats = _cuttingPresenter->collectOptimizationLeftoverStats(perMachine);
-
-    bool needAudit = false;
-
-    for (auto it = stats.begin(); it != stats.end(); ++it) {
-        const auto& s = it.value();
-        if (s.missing > 0 || s.stale > 0) {
-            needAudit = true;
-            break;
-        }
-    }
-
-    if (!needAudit) {
-        QMessageBox::information(this,
-                                 "Optimalization Leftover Audit",
-                                 "✅ Minden leftover friss.\nA vágás indítható.");
-        return;
-    }
+    _leftoverPresenter->ExportOptimizationLeftoverAudit(stats);
+}
 
 
-    // 🔥 Szűrt leftover lista: csak auditálandók
-    QHash<QUuid, QVector<QUuid>> filtered;
-
-    for (auto it = stats.begin(); it != stats.end(); ++it) {
-        QUuid machineId = it.key();
-        const auto& s = it.value();
-
-        QVector<QUuid> ids;
-
-        // eltűnt leftoverek
-        for (const auto& id : s.missingIds)
-            ids.append(id);
-
-        // lejárt leftoverek
-        for (const auto& id : s.staleIds)
-            ids.append(id);
-
-        if (!ids.isEmpty())
-            filtered[machineId] = ids;
-    }
-
-    // Audit szükséges → részletes statisztika megjelenítése
-    QString msg;
-
-    for (auto it = stats.begin(); it != stats.end(); ++it) {
-        QUuid machineId = it.key();
-        const auto& s = it.value();
-
-        auto mach = CuttingMachineRegistry::instance().findById(machineId);
-        QString machName = mach ? mach->name : "Ismeretlen gép";
-
-        msg += QString("Gép: %1\n")
-                   .arg(machName);
-        msg += QString("  ❌ Eltűnt: %1\n").arg(s.missing);
-        msg += QString("  🕒 Lejárt: %1\n").arg(s.stale);
-        msg += QString("  ✅ Friss: %1\n\n").arg(s.fresh);
-    }
-
-    QMessageBox::warning(this,
-                         "Optimalization Leftover Audit",
-                         msg);
-
-    // audit szükséges → PDF generálás
-    _leftoverPresenter->ExportOptimizationLeftoverAuditPdf(filtered);
+//Iteratív leftover recovery audit
+void MainWindow::handle_btn_OptLeftoverAudit2_clicked()
+{
+    //auto perMachine = _cuttingPresenter->collectUsedLeftoversFromPlans();
+    _leftoverPresenter->runIterativeLeftoverAuditRound();
 }
 
 

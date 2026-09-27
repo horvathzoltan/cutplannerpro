@@ -183,4 +183,165 @@ void formatReviewFormPdf(QPainter& painter,
     }
 }
 
+
+qreal drawAuditBlock(
+    QPainter& painter,
+    const QRectF& pageRect,
+    const LeftoverStockEntry& e)
+{
+    painter.save();  // 🔒 teljes state mentése
+
+    painter.setPen(QPen(Qt::black, 2.0));
+    painter.setBrush(Qt::NoBrush);
+
+    const qreal margin = 20.0;
+    const qreal cbSize = 32.0;
+    int cbGap = 10;
+    int barcodeGap = 20;
+    const qreal barcodeHeight = 80.0;
+    const qreal gap = 10.0;
+
+    QFontMetrics fm(painter.font());
+
+    qreal textHeight = 4 * (fm.height() + 2);
+
+    qreal he2 = qMax(barcodeHeight, textHeight);
+    qreal blockHeight = cbSize + he2 + gap;
+
+    QRectF rowRect(
+        pageRect.left() + margin,
+        pageRect.top() + margin,
+        pageRect.width() - 2 * margin,
+        blockHeight
+        );
+
+    painter.drawRect(rowRect);
+
+    qreal w = rowRect.width();
+    qreal leftW  = w * 0.30;
+    qreal midW   = w * 0.40;
+    qreal rightW = w * 0.30;
+
+    QRectF leftCol (rowRect.left(), rowRect.top(), leftW,  blockHeight);
+    QRectF midCol  (leftCol.right(), rowRect.top(), midW,  blockHeight);
+    QRectF rightCol(midCol.right(),  rowRect.top(), rightW, blockHeight);
+
+    qreal bcMarginX = 30.0;
+    qreal cbOffsetX = 30.0;
+
+    // --- BAL: NINCS MEG ---
+    QPointF leftCheckbox(
+        leftCol.left() + cbOffsetX,
+        leftCol.top() + gap
+        );
+
+    drawCheckbox(painter, leftCheckbox, cbSize);
+
+    QString codeMinus = e.barcode + "-";
+    QRectF minusRect(
+        leftCol.left() + bcMarginX,
+        leftCheckbox.y() + cbSize + barcodeGap,
+        leftCol.width() - 2 * bcMarginX,
+        barcodeHeight
+        );
+
+    BarcodePainter::drawCode128(painter, codeMinus, minusRect);
+
+    qreal textY =
+        leftCheckbox.y() + (cbSize / 2) + (fm.ascent() / 2);
+
+    painter.drawText(
+        leftCheckbox.x() + cbSize + cbGap,
+        textY,
+        QStringLiteral("NINCS MEG")
+        );
+
+
+    // --- KÖZÉP: leftover adatok ---
+    const MaterialMaster* mat = e.master();
+    QString matName = mat ? mat->toDisplay() : QStringLiteral("(ismeretlen anyag)");
+
+    const auto* storage = StorageRegistry::instance().findById(e.storageId);
+    QString storageName = storage ? storage->name : QStringLiteral("—");
+
+    QString line1 = e.barcode;
+    QString line2 = QString("%1 mm").arg(e.availableLength_mm);
+    QString line3 = matName;
+    QString line4 = QStringLiteral("Tároló: %1").arg(storageName);
+
+    QList<QString*> lines = { &line1, &line2, &line3, &line4 };
+    for (auto* s : lines)
+        if (s->length() > 40)
+            *s = s->left(40) + "…";
+
+    qreal tx = midCol.left() + 40;
+    qreal ty = textY;//midCol.top() + 40 + fm.ascent();
+
+    painter.drawText(tx, ty, line1);
+    painter.drawText(tx, ty + fm.height() + 4.0, line2);
+    painter.drawText(tx, ty + 2*(fm.height() + 4.0), line3);
+    painter.drawText(tx, ty + 3*(fm.height() + 4.0), line4);
+
+    // --- JOBB: MEGVAN ---
+    QPointF rightCheckbox(
+        rightCol.left() + cbOffsetX,
+        leftCol.top() + gap
+        );
+
+    drawCheckbox(painter, rightCheckbox, cbSize);
+
+    QString codePlus = e.barcode + "+";
+    QRectF plusRect(
+        rightCol.left() + bcMarginX,
+        rightCheckbox.y() + cbSize + barcodeGap,
+        rightCol.width() - 2 * bcMarginX,
+        barcodeHeight
+        );
+    BarcodePainter::drawCode128(painter, codePlus, plusRect);
+
+    painter.drawText(
+        rightCheckbox.x() + cbSize + cbGap,
+        textY,
+        QStringLiteral("MEGVAN")
+        );
+
+        painter.restore(); // 🔓 visszaállítjuk az eredeti állapotot
+
+    return blockHeight + margin; // visszaadjuk a foglalt magasságot
+}
+
+
+void formatIterativeAudit(
+    QPainter& painter,
+    QPdfWriter& writer,
+    const QRectF& pageRect,
+    const LeftoverStockEntry& target,
+    const QVector<LeftoverStockEntry>& candidates)
+{
+    qreal yOffset = 0;
+
+    auto draw = [&](const LeftoverStockEntry& e) {
+        painter.save();
+        painter.translate(0, yOffset);
+
+        qreal used = drawAuditBlock(painter, pageRect, e);
+        yOffset += used;
+
+        painter.restore();
+
+        if (yOffset + used > pageRect.height() - 200) {
+            writer.newPage();
+            yOffset = 0;
+        }
+    };
+
+    // 1) TARGET
+    draw(target);
+
+    // 2) CANDIDATES
+    for (const auto& c : candidates)
+        draw(c);
+}
+
+
 } // namespace LeftoverReviewFormUtils

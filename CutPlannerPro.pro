@@ -24,6 +24,7 @@ SOURCES += \
     leftover/audit/leftoveraudit.cpp \
     leftover/label/leftoverlabelqueue.cpp \
     leftover/services/bundlesplitengine.cpp \
+    leftover/substitution/leftoversubstitutionengine.cpp \
     leftover/view/dialog/bundlesplitdialog.cpp \
     leftover/view/dialog/leftoverauditdialog.cpp \
     materialbundles/model/bundle_definition.cpp \
@@ -185,6 +186,7 @@ HEADERS += \
     leftover/label/leftoverlabelgenerator.h \
     leftover/label/leftoverlabelqueue.h \
     leftover/services/bundlesplitengine.h \
+    leftover/substitution/leftoversubstitutionengine.h \
     leftover/view/dialog/bundlesplitdialog.h \
     leftover/view/dialog/leftoverauditdialog.h \
     leftover/view/utils/leftovertooltiputils.h \

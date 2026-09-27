@@ -2,6 +2,8 @@
 
 #include <common/filenamehelper.h>
 
+#include <QFileInfo>
+
 SettingsManager& SettingsManager::instance() {
     static SettingsManager _instance;
     return _instance;
@@ -66,6 +68,13 @@ void SettingsManager::persist(const QString& key, const QByteArray& value) {
 //CuttingPlanFileName
 QString SettingsManager::cuttingPlanFileName() const{
     return _settings.value(SettingsKeys::CuttingPlanFileName).toString();
+}
+
+QString SettingsManager::planIdStr() const {
+    QString fileName = cuttingPlanFileName();
+    QFileInfo fi(fileName);
+    QString planIdStr = fi.completeBaseName();
+    return planIdStr;
 }
 
 void SettingsManager::setCuttingPlanFileName(const QString& fn) {
