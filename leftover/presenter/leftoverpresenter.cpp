@@ -366,7 +366,7 @@ void LeftoverPresenter::exportAuditPdf(
         return;
     }
 
-    const int rowsPerPage = 10;
+    const int rowsPerPage = 15;
 
     QString dir = "_reports";
     QDir().mkpath(dir);
@@ -385,9 +385,21 @@ void LeftoverPresenter::exportAuditPdf(
         zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
         return;
     }
+    QPageLayout layout = writer.pageLayout();
+    QRectF full  = layout.fullRectPixels(writer.resolution());
+    QRectF paint = layout.paintRectPixels(writer.resolution());
+    // valós nem nyomtatható jobb oldali margó
+    qreal rightNonPrintable = full.right() - paint.right();
+    qreal printerSafeMarginRight = rightNonPrintable + 5.0;// adjunk hozzá 5 px biztonsági ráhagyást
+    // KORRIGÁLT pageRect – ezt kell használni minden rajzoláshoz
+    QRectF pageRect(
+        paint.left(),
+        paint.top(),
+        paint.width() - printerSafeMarginRight,
+        paint.height()
+        );
 
-    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
-    painter.setFont(QFont("Noto Sans Mono", 11));
+    painter.setFont(QFont("Noto Sans Mono", 7));
 
     // ⭐ Többoldalas logika
     int total = list.size();
@@ -887,12 +899,31 @@ void LeftoverPresenter::ExportIterativeAuditPdf(
     writer.setResolution(300);
 
     QPainter painter(&writer);
-    QRectF pageRect = writer.pageLayout().paintRectPixels(writer.resolution());
+    if (!painter.isActive()) {
+        zEvent("❌ Nem sikerült megnyitni a PDF fájlt.");
+        return;
+    }
+
+    QPageLayout layout = writer.pageLayout();
+    QRectF full  = layout.fullRectPixels(writer.resolution());
+    QRectF paint = layout.paintRectPixels(writer.resolution());
+    // valós nem nyomtatható jobb oldali margó
+    qreal rightNonPrintable = full.right() - paint.right();
+    qreal printerSafeMarginRight = rightNonPrintable + 5.0;// adjunk hozzá 5 px biztonsági ráhagyást
+    // KORRIGÁLT pageRect – ezt kell használni minden rajzoláshoz
+    QRectF pageRect(
+        paint.left(),
+        paint.top(),
+        paint.width() - printerSafeMarginRight,
+        paint.height()
+        );
+
     painter.setFont(QFont("Noto Sans Mono", 10));
 
     // --- Fejléc ---
     // painter.drawText(pageRect, Qt::AlignLeft,
     //                  "=== Iteratív Leftover Substitution Audit ===\n\n");
+
 
     // --- Summary ---
     QString summary = buildSubstitutionSummary(targets, candidateSets);

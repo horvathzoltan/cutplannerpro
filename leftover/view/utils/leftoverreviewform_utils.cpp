@@ -17,10 +17,10 @@ void formatReviewFormPdf(QPainter& painter,
                          const QVector<LeftoverStockEntry>& entries,
                          int rowsPerPage)
 {
-    const qreal margin = 40.0;
-    int cbSize = 48.0;
-    int cbGap = 60;
-    int barcodeGap = 60;
+    const qreal margin = 20.0;
+    int cbSize = 32.0;
+    int cbGap = 10;
+    int barcodeGap = 20;
     int barcodeHeight = 80;   // <<< új paraméter, szabadon állítható
 
     qreal usableHeight = pageRect.height() - 2 * margin - (rowsPerPage - 1) * 10.0;
@@ -104,12 +104,13 @@ void formatReviewFormPdf(QPainter& painter,
             );
         BarcodePainter::drawCode128(painter, codeMinus, minusRect);
 
-        // Felirat a barcode alatt
+        qreal textY =
+            leftCheckbox.y() + (cbSize / 2) + (fm.ascent() / 2);
 
         // NINCS MEG felirat a checkbox MELLÉ
         painter.drawText(
             leftCheckbox.x() + cbSize + cbGap,   // checkbox jobb oldala + padding
-            leftCheckbox.y() + fm.ascent(),     // baseline → checkbox tetejéhez igazítva
+            textY, //leftCheckbox.y() + fm.ascent(),     // baseline → checkbox tetejéhez igazítva
             QStringLiteral("NINCS MEG")
             );
 
@@ -141,7 +142,7 @@ void formatReviewFormPdf(QPainter& painter,
         qreal tx = midCol.left() + 40;
 
         // baseline kezdőpont: cella közepe - fél szövegmagasság
-        qreal ty = midCol.top() + (midCol.height() - totalTextHeight) / 2 + fm.ascent();
+        qreal ty = textY;//midCol.top() + (midCol.height() - totalTextHeight) / 2 + fm.ascent();
 
         painter.drawText(tx, ty, line1);
         painter.drawText(tx, ty + fm.height() + 4.0, line2);
@@ -173,7 +174,7 @@ void formatReviewFormPdf(QPainter& painter,
         // MEGVAN felirat a checkbox MELLÉ
         painter.drawText(
             rightCheckbox.x() + cbSize + cbGap,  // checkbox jobb oldala + padding
-            rightCheckbox.y() + fm.ascent(),    // baseline → checkbox tetejéhez igazítva
+            textY, //rightCheckbox.y() + fm.ascent(),    // baseline → checkbox tetejéhez igazítva
             QStringLiteral("MEGVAN")
             );
 
@@ -201,6 +202,7 @@ qreal drawAuditBlock(
     const qreal barcodeHeight = 80.0;
     const qreal gap = 10.0;
 
+
     QFontMetrics fm(painter.font());
 
     qreal textHeight = 4 * (fm.height() + 2);
@@ -211,7 +213,7 @@ qreal drawAuditBlock(
     QRectF rowRect(
         pageRect.left() + margin,
         pageRect.top() + margin,
-        pageRect.width() - 2 * margin,
+        pageRect.width() - margin - margin,
         blockHeight
         );
 
