@@ -1,0 +1,21 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"706";"Oláh Norbert";890;1185;900;;1;0;1;"";MT-T;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"706";"Oláh Norbert";890;1185;895;;1;0;1;"";TE-H-18;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"706";"Oláh Norbert";890;1185;883;;1;0;1;"";MT-Z+P;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"706";"Oláh Norbert";890;1185;1185;;1;0;1;"";MT-L2;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"709";"Oláh Norbert";290;1170;300;;1;1;0;"";MT-T;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"709";"Oláh Norbert";290;1170;295;;1;1;0;"";TE-H-18;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"709";"Oláh Norbert";290;1170;283;;1;1;0;"";MT-Z+P;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"709";"Oláh Norbert";290;1170;1170;;1;1;0;"";MT-L2;Width;false;2026-10-01;SR;MINIT;;SM;Uveg
+"770";"Balmaz Aktual";665;1218;630;;2;1;1;"";MT-T;Width;false;2026-10-02;SR;MINIT;;SM;Gyartasi
+"770";"Balmaz Aktual";665;1218;630;;2;1;1;"";TE-H-18;Width;false;2026-10-02;SR;MINIT;;SM;Gyartasi
+"770";"Balmaz Aktual";665;1218;618;;2;1;1;"";MT-Z+P;Width;false;2026-10-02;SR;MINIT;;SM;Gyartasi
+"770";"Balmaz Aktual";665;1218;1218;;2;1;1;"";MT-L2;Width;false;2026-10-02;SR;MINIT;;SM;Gyartasi
+"729";"Magyari Attila";1205;1333;1215;;1;1;0;"";MT-T;Width;false;2026-10-05;SR;MINIT;;SM;Uveg
+"729";"Magyari Attila";1205;1333;1210;;1;1;0;"";TE-H-18;Width;false;2026-10-05;SR;MINIT;;SM;Uveg
+"729";"Magyari Attila";1205;1333;1198;;1;1;0;"";MT-Z+P;Width;false;2026-10-05;SR;MINIT;;SM;Uveg
+"729";"Magyari Attila";1205;1333;1333;;1;1;0;"";MT-L2;Width;false;2026-10-05;SR;MINIT;;SM;Uveg
+"732";"Árnyhouse, Pécs";550;1280;560;;2;1;1;"";MT-T;Width;false;2026-10-02;SR;MINIT;;SM;Uveg
+"732";"Árnyhouse, Pécs";550;1280;555;;2;1;1;"";TE-H-18;Width;false;2026-10-02;SR;MINIT;;SM;Uveg
+"732";"Árnyhouse, Pécs";550;1280;543;;2;1;1;"";MT-Z+P;Width;false;2026-10-02;SR;MINIT;;SM;Uveg
+"732";"Árnyhouse, Pécs";550;1280;1280;;2;1;1;"";MT-L2;Width;false;2026-10-02;SR;MINIT;;SM;Uveg
