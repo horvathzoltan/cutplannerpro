@@ -622,7 +622,23 @@ void LeftoverPresenter::runIterativeLeftoverAuditRound()
     QVector<LeftoverStockEntry> targets;
     QHash<QUuid, QVector<LeftoverStockEntry>> candidateSets;
 
+    QSet<QUuid> usedAsCandidate;
+
     const QDateTime now = QDateTime::currentDateTime();
+
+    auto isFresh = [&](const LeftoverStockEntry& e) {
+        int hours = SettingsManager::instance().optimizationLeftoverAuditHours();
+        QDateTime now = QDateTime::currentDateTime();
+
+        if (e.notFoundCount > 0)
+            return false;
+
+        if (!e.lastSeenAt.isValid())
+            return false;
+
+        return e.lastSeenAt >= now.addSecs(-hours * 3600);
+    };
+
 
     // 2) Target + jelöltek
     for (auto it = perMachine.constBegin(); it != perMachine.constEnd(); ++it) {
@@ -633,15 +649,18 @@ void LeftoverPresenter::runIterativeLeftoverAuditRound()
 
             const auto& target = byId[id];
 
-            bool goodQuality =
-                target.notFoundCount == 0 &&
-                target.lastSeenAt.isValid() &&
-                target.lastSeenAt.daysTo(now) <= 7;
+            // minőségi státusz meghatározása – de NEM szűrünk ki miatta
+            bool isMissing = (target.notFoundCount > 0);
+            bool isFreshTarget = isFresh(target);
+            bool isStale = (!isMissing && !isFreshTarget);
 
-            if (goodQuality)
-                continue;
-
+            // minden leftover szerepeljen a target listában
             targets.append(target);
+
+            // ha a target friss → nem kell helyettesítés
+            if (isFreshTarget) {
+                continue;
+            }
 
             QVector<LeftoverStockEntry> cands;
             for (const auto& cand : allEntries) {
@@ -655,8 +674,27 @@ void LeftoverPresenter::runIterativeLeftoverAuditRound()
                 if (cand.availableLength_mm < target.availableLength_mm)
                     continue;
 
+                // vágandó leftovereket NE ajánljuk jelöltként
+                bool isUsedInPlans = false;
+                for (auto pit = perMachine.constBegin(); pit != perMachine.constEnd(); ++pit) {
+                    if (pit.value().contains(cand.entryId)) {
+                        isUsedInPlans = true;
+                        break;
+                    }
+                }
+                if (isUsedInPlans)
+                    continue;
+
+                // ha már jelöltként felhasználtuk → nem lehet újra jelölt
+                if (usedAsCandidate.contains(cand.entryId))
+                    continue;
+
+                bool candIsFresh = isFresh(cand);
+
                 cands.append(cand);
+                usedAsCandidate.insert(cand.entryId);
             }
+
 
             std::sort(cands.begin(), cands.end(),
                       [](const auto& a, const auto& b){
@@ -690,6 +728,20 @@ QString LeftoverPresenter::buildSubstitutionSummary(
     const QVector<LeftoverStockEntry>& targets,
     const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets)
 {
+    auto isFresh = [&](const LeftoverStockEntry& e) {
+        int hours = SettingsManager::instance().optimizationLeftoverAuditHours();
+        QDateTime now = QDateTime::currentDateTime();
+
+        if (e.notFoundCount > 0)
+            return false;
+
+        if (!e.lastSeenAt.isValid())
+            return false;
+
+        return e.lastSeenAt >= now.addSecs(-hours * 3600);
+    };
+
+
     QString out;
 
     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
@@ -719,13 +771,51 @@ QString LeftoverPresenter::buildSubstitutionSummary(
 
         for (const LeftoverStockEntry* t : it.value()) {
 
-            // TARGET sor
-            out += QString("%1 (%2 mm)\n")
-                       .arg(t->barcode)
-                       .arg(t->availableLength_mm);
+            // TARGET sor – minőségi státusz
+            bool isMissing = (t->notFoundCount > 0);
+            bool isFreshTarget = isFresh(*t);
+            bool isStale = (!isMissing && !isFreshTarget);
 
-            // JELÖLTEK sor
+
+            QString tStatus;
+            if (isMissing)
+                tStatus = "[NINCS MEG]";
+            else if (isStale)
+                tStatus = "[RÉGI]";
+            else
+                tStatus = "[MEGVAN]";
+
+            out += QString("%1 (%2 mm) %3\n")
+                       .arg(t->barcode)
+                       .arg(t->availableLength_mm)
+                       .arg(tStatus);
+
+
+            // helyettesítés végrehajthatósága CSAK a jelöltek minőségétől függ
+            bool canExecute = false;
+
             const auto& cands = candidateSets.value(t->entryId);
+            for (const auto& c : cands) {
+                bool cIsFresh = isFresh(c);
+                if (cIsFresh) {
+                    canExecute = true;
+                    break;
+                }
+            }
+
+
+            // target friss → nem kell helyettesíteni
+            if (isFreshTarget) {
+                out += "    [HELYETTESÍTÉS NEM SZÜKSÉGES]\n";
+            }
+            else {
+                if (canExecute)
+                    out += "    [HELYETTESÍTÉS VÉGREHAJTHATÓ]\n";
+                else
+                    out += "    [HELYETTESÍTÉS NEM VÉGREHAJTHATÓ]\n";
+            }
+
+
 
             if (cands.isEmpty()) {
                 out += "    → (nincs jelölt)\n\n";
@@ -736,10 +826,26 @@ QString LeftoverPresenter::buildSubstitutionSummary(
             candParts.reserve(cands.size());
 
             for (const auto& c : cands) {
-                candParts << QString("%1 (%2 mm)")
-                .arg(c.barcode)
-                    .arg(c.availableLength_mm);
+
+                bool isMissing = (c.notFoundCount > 0);
+                bool candIsFresh = isFresh(c);
+                bool isStale = (!isMissing && !candIsFresh);
+
+
+                QString status;
+                if (isMissing)
+                    status = "[NINCS MEG]";
+                else if (isStale)
+                    status = "[RÉGI]";
+                else
+                    status = "[MEGVAN]";
+
+                candParts << QString("%1 (%2 mm) %3")
+                                 .arg(c.barcode)
+                                 .arg(c.availableLength_mm)
+                                 .arg(status);
             }
+
 
             out += QString("    → %1\n\n")
                        .arg(candParts.join(", "));

@@ -1,0 +1,213 @@
+Oké, csináljunk egy **lépésenként végrehajtható, pontos patch‑tervet** erre a két függvényre.
+
+---
+
+### 1. Lépés: `runIterativeLeftoverAuditRound()` – target státuszok formalizálása
+
+**Cél:** minden optimizer által megkívánt leftover legyen target, és kapjon minőségi státuszt (friss / régi / nincs meg).
+
+**Teendő:**
+
+1. **A függvény elején**, közvetlenül a `const QDateTime now = ...` után, szúrj be egy kis helper lambdát a minőségi státuszhoz:
+
+```cpp
+const QDateTime now = QDateTime::currentDateTime();
+
+auto classifyQuality = [&](const LeftoverStockEntry& e) {
+    bool isMissing = (e.notFoundCount > 0);
+    bool isStale   = (e.lastSeenAt.isValid() &&
+                      e.lastSeenAt.daysTo(now) > 1); // pl. 1 óra / 1 nap helyett majd finomhangolható
+    return std::make_pair(isMissing, isStale);
+};
+```
+
+*(Ha órában akarsz számolni, átírjuk később, most csak struktúra.)*
+
+2. **A target ciklusban**, ahol most ez van:
+
+```cpp
+const auto& target = byId[id];
+
+// minőségi státusz meghatározása – de NEM szűrünk ki miatta
+bool isMissing =
+    target.notFoundCount > 0;
+
+bool isStale =
+    target.lastSeenAt.isValid() &&
+    target.lastSeenAt.daysTo(now) > 7;
+
+// minden leftover szerepeljen a target listában
+targets.append(target);
+```
+
+**Cseréld erre:**
+
+```cpp
+const auto& target = byId[id];
+
+auto [isMissing, isStale] = classifyQuality(target);
+
+// minden leftover szerepeljen a target listában
+targets.append(target);
+
+// később: itt fogjuk eldönteni, hogy kell-e helyettesítés (isMissing || isStale)
+```
+
+> Ezzel egységesítjük a minőségi státusz számítását, de még nem döntünk semmit a helyettesítésről.
+
+---
+
+### 2. Lépés: `runIterativeLeftoverAuditRound()` – jelöltek generálása csak akkor, ha kell helyettesítés
+
+**Cél:** csak akkor keressünk jelölteket, ha a target nem friss.
+
+Most a jelöltgenerálás **minden targetre** fut.
+Ezt módosítjuk.
+
+3. **A target ciklusban**, közvetlenül a `targets.append(target);` után, a jelöltgeneráló blokk elé szúrj be egy guardot:
+
+Most így néz ki:
+
+```cpp
+targets.append(target);
+
+QVector<LeftoverStockEntry> cands;
+for (const auto& cand : allEntries) {
+    ...
+}
+...
+candidateSets.insert(target.entryId, cands);
+```
+
+**Cseréld erre:**
+
+```cpp
+targets.append(target);
+
+// ha a target friss (nem missing és nem stale), akkor NEM kell helyettesítés
+if (!isMissing && !isStale) {
+    // de ettől még a target bent marad a listában, csak jelöltlista nem lesz
+    continue;
+}
+
+QVector<LeftoverStockEntry> cands;
+for (const auto& cand : allEntries) {
+    ...
+}
+...
+candidateSets.insert(target.entryId, cands);
+```
+
+> Így:
+> – minden leftover targetként szerepel,
+> – de jelöltlista csak azokhoz készül, amelyek **nem friss** állapotban vannak.
+
+---
+
+### 3. Lépés: `runIterativeLeftoverAuditRound()` – vágandó leftoverek kizárása jelöltként
+
+Ezt már beépítetted, de most **tisztázzuk és stabilizáljuk**.
+
+4. A jelöltgeneráló ciklusban a `isUsedInPlans` logika jó, csak **egy apró optimalizálás**:
+
+Most:
+
+```cpp
+bool isUsedInPlans = false;
+for (auto pit = perMachine.constBegin(); pit != perMachine.constEnd(); ++pit) {
+    if (pit.value().contains(cand.entryId)) {
+        isUsedInPlans = true;
+        break;
+    }
+}
+if (isUsedInPlans)
+    continue;
+```
+
+Ez maradhat, csak **kommenttel jelöljük**, hogy ez a „vágandó” státusz:
+
+```cpp
+// vágandó leftovereket NE ajánljuk jelöltként
+bool isUsedInPlans = false;
+for (auto pit = perMachine.constBegin(); pit != perMachine.constEnd(); ++pit) {
+    if (pit.value().contains(cand.entryId)) {
+        isUsedInPlans = true;
+        break;
+    }
+}
+if (isUsedInPlans)
+    continue;
+```
+
+> Funkcionálisan jó, csak dokumentáljuk.
+
+---
+
+### 4. Lépés: `buildSubstitutionSummary()` – target státusz megjelenítése
+
+Most csak a jelöltek státuszát mutatjuk, a target sorban nincs státusz.
+
+5. **A TARGET sor generálásánál**, ahol most ez van:
+
+```cpp
+// TARGET sor
+out += QString("%1 (%2 mm)\n")
+           .arg(t->barcode)
+           .arg(t->availableLength_mm);
+```
+
+**Cseréld erre:**
+
+```cpp
+// TARGET sor – minőségi státusz
+bool isMissing = (t->notFoundCount > 0);
+bool isStale   = (t->lastSeenAt.isValid() &&
+                  t->lastSeenAt.daysTo(QDateTime::currentDateTime()) > 7);
+
+QString tStatus;
+if (isMissing)
+    tStatus = "[NINCS MEG]";
+else if (isStale)
+    tStatus = "[RÉGI]";
+else
+    tStatus = "[MEGVAN]";
+
+out += QString("%1 (%2 mm) %3\n")
+           .arg(t->barcode)
+           .arg(t->availableLength_mm)
+           .arg(tStatus);
+```
+
+> Így a target sorban is látod, hogy az eredeti leftover **friss / régi / nincs meg**.
+
+---
+
+### 5. Lépés: `buildSubstitutionSummary()` – jelöltek státuszának finomhangolása
+
+A jelöltek státusza már jó (`[NINCS MEG] / [RÉGI] / [MEGVAN]`), ezt **megtartjuk**, csak később bővíthetjük `[VÁGANDÓ] / [FOGLALT]` irányba, ha bevezetjük a foglaltság logikát.
+
+Most nem kell hozzányúlni, csak **tudd**, hogy ez már a funkcionális státusz.
+
+---
+
+### 6. Lépés: Ellenőrző futtatás
+
+Miután a fenti 5 lépést végrehajtottad:
+
+- futtasd az optimalizációt,
+- indítsd a `runIterativeLeftoverAuditRound()`‑ot,
+- nézd meg:
+  - minden optimizer által használt leftover szerepel‑e a summary‑ban,
+  - a target sorban helyesen jelenik‑e meg `[MEGVAN] / [RÉGI] / [NINCS MEG]`,
+  - csak azoknál a targeteknél van jelöltlista, amelyek **nem friss** állapotban vannak,
+  - a jelöltek között nincsenek‑e vágandó leftoverek.
+
+---
+
+Ha ez stabilan működik, a **következő patch‑csomag** lehet:
+
+- foglaltság jelölése (ha ugyanaz a jelölt több targethez tartozik),
+- `[FOGLALT]` státusz bevezetése,
+- „helyettesítés végrehajtható / nem végrehajtható” jelölése a summary‑ban.
+
+Ha akarod, mehetünk tovább a foglaltság‑patch tervvel is.
