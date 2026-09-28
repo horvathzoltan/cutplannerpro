@@ -2452,6 +2452,16 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
     const int printedLW)
 {
     QStringList lines;
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    // --- fejlécek ---
+    lines << "📄 Vágási utasítások (gépenkénti)";
+    lines << QString("CutPlan: %1").arg(planIdStr);
+    lines << QString("📅 Dátum: %1").arg(dateStr);
+    lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
+    lines << "──────────────────────────────────";
+
     QVector<const CutInstruction*> orderedCuts;
 
     // 1) Anyagfajták összegyűjtése
@@ -2504,6 +2514,32 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
 
     colWidth["ext"]  = qMax(12, QString("Tételszám").length());
     colWidth["full"] = qMax(12, QString("TeljesMéret").length());
+    // ÚJ OSZLOP: TermékTípusAltípus
+    colWidth["type"] = qMax(14, QString("Termék").length());
+
+    for (const auto& r : rows) {
+
+        QVector<Cutting::Plan::Request> reqs =
+            CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+        QString typeName, subtypeName;
+
+        if (!reqs.isEmpty()) {
+            const auto& req = reqs.first();
+            const auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+            const auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+            if (t) typeName = t->name;
+            if (s) subtypeName = s->name;
+        }
+
+        QString typeCol =
+            (typeName.isEmpty() || subtypeName.isEmpty())
+                ? ""
+                : QString("%1/%2").arg(typeName).arg(subtypeName);
+
+        colWidth["type"] = qMax(colWidth["type"], typeCol.length() + 2);
+    }
 
     for (const auto& col : materialCols) {
         const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
@@ -2546,14 +2582,18 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
     for (const auto& block : columnBlocks) {
 
         // fejléc 1
-        QString h1 = QString("%1 | %2")
+        QString h1 = QString("%1 | %2 | %3")
                          .arg("Tételszám", -colWidth["ext"])
+                         .arg("Termék", -colWidth["type"])
                          .arg("TeljesMéret", -colWidth["full"]);
 
+
         // fejléc 2
-        QString h2 = QString("%1 | %2")
+        QString h2 = QString("%1 | %2 | %3")
                          .arg("", -colWidth["ext"])
+                         .arg("", -colWidth["type"])
                          .arg("", -colWidth["full"]);
+
 
         for (const auto& col : block) {
             const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
@@ -2572,11 +2612,35 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
             QString fullSizeCm = QString("%1 cm")
             .arg(QString::number(r.fullSize_mm / 10.0, 'f', 1));
 
-            QString extWithDot = r.extRef + ".";
+            QVector<Cutting::Plan::Request> reqs = CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+            QString typeName;
+            QString subtypeName;
+            if(!reqs.isEmpty()){
+                auto r = reqs.first();
+                auto* t = ProductTypeRegistry::instance().findById(r.productTypeId);
+                if(t){
+                    typeName = t->name;
+                }
+                auto* s = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
+                if(s){
+                    subtypeName = s->name;
+                }
+            }
 
-            QString line = QString("%1 | %2")
+            //QString extWithDot = r.extRef + ".";
+            QString extWithDot = QString("%1.")
+                                     .arg(r.extRef);
+
+            QString typeCol =
+                (typeName.isEmpty() || subtypeName.isEmpty())
+                    ? ""
+                    : QString("%1/%2").arg(typeName).arg(subtypeName);
+
+            QString line = QString("%1 | %2 | %3")
                                .arg(extWithDot, -colWidth["ext"])
+                               .arg(typeCol, -colWidth["type"])
                                .arg(fullSizeCm, -colWidth["full"]);
+
 
             for (const auto& col : block) {
                 if (r.sizes.contains(col)) {
