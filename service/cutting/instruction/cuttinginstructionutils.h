@@ -2444,7 +2444,227 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_2(const MachineCuts& mc,
 
 
 
-inline MachineCutsEvent_Result formatMachineCutsEvent_3(
+// inline MachineCutsEvent_Result formatMachineCutsEvent_3(
+//     const MachineCuts& mc,
+//     const MachineReport& rep,
+//     const QVector<DiscardedPiece>& failedList,
+//     const QString& planIdStr,
+//     const int printedLW)
+// {
+//     QStringList lines;
+
+//     QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+//     // --- fejlécek ---
+//     lines << "📄 Vágási utasítások (gépenkénti)";
+//     lines << QString("CutPlan: %1").arg(planIdStr);
+//     lines << QString("📅 Dátum: %1").arg(dateStr);
+//     lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
+//     lines << "──────────────────────────────────";
+
+//     QVector<const CutInstruction*> orderedCuts;
+
+//     // 1) Anyagfajták összegyűjtése
+//     QSet<QString> materialSet;
+//     for (const auto& ci : mc.cutInstructions) {
+//         const MaterialMaster* mat =
+//             MaterialRegistry::instance().findById(ci.materialId);
+//         if (mat)
+//             materialSet.insert(mat->barcode);
+//     }
+//     QStringList materialCols = materialSet.values();
+//     materialCols.sort();
+
+//     // 2) Sorok modellje
+//     struct SizeListRow {
+//         QString extRef;
+//         double fullSize_mm;
+//         QMap<QString,double> sizes;
+//     };
+
+//     QMap<QString, SizeListRow> rowMap;
+
+//     for (const auto& ci : mc.cutInstructions) {
+//         orderedCuts.append(&ci);
+
+//         QString ext = ci.externalReference;
+//         auto& row = rowMap[ext];
+//         row.extRef = ext;
+
+//         auto* req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+//         double fs_mm = req ? req->fullWidth_mm : ci.cutSize_mm;
+//         row.fullSize_mm = fs_mm;
+
+//         const MaterialMaster* mat =
+//             MaterialRegistry::instance().findById(ci.materialId);
+
+//         QString matCol = mat ? mat->barcode : "?";
+//         row.sizes[matCol] = ci.cutSize_mm;
+//     }
+
+//     // 3) Rendezés teljes méret szerint
+//     QList<SizeListRow> rows = rowMap.values();
+//     std::sort(rows.begin(), rows.end(),
+//               [](const SizeListRow& a, const SizeListRow& b){
+//                   return a.fullSize_mm > b.fullSize_mm;
+//               });
+
+//     // 4) Dinamikus oszlopszélességek
+//     QMap<QString,int> colWidth;
+
+//     colWidth["ext"]  = qMax(12, QString("Tételszám").length());
+//     colWidth["full"] = qMax(12, QString("TeljesMéret").length());
+//     // ÚJ OSZLOP: TermékTípusAltípus
+//     colWidth["type"] = qMax(14, QString("Termék").length());
+
+//     for (const auto& r : rows) {
+
+//         QVector<Cutting::Plan::Request> reqs =
+//             CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+//         QString typeName, subtypeName;
+
+//         if (!reqs.isEmpty()) {
+//             const auto& req = reqs.first();
+//             const auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+//             const auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+//             if (t) typeName = t->name;
+//             if (s) subtypeName = s->name;
+//         }
+
+//         QString typeCol =
+//             (typeName.isEmpty() || subtypeName.isEmpty())
+//                 ? ""
+//                 : QString("%1/%2").arg(typeName).arg(subtypeName);
+
+//         colWidth["type"] = qMax(colWidth["type"], typeCol.length() + 2);
+//     }
+
+//     for (const auto& col : materialCols) {
+//         const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+//         QString name = mat ? mat->name : col;
+
+//         int w = qMax(name.length(), col.length());
+
+//         for (const auto& r : rows) {
+//             if (r.sizes.contains(col)) {
+//                 QString sz = QString("%1 cm □")
+//                                  .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+//                 w = qMax(w, sz.length());
+//             }
+//         }
+
+//         colWidth[col] = w + 2;
+//     }
+
+//     // 5) Oszlopok tördelése printedLW szerint
+//     QList<QStringList> columnBlocks;
+//     {
+//         QStringList current;
+//         int currentWidth = colWidth["ext"] + colWidth["full"] + 3;
+
+//         for (const auto& col : materialCols) {
+//             int w = colWidth[col] + 3;
+//             if (currentWidth + w > printedLW) {
+//                 columnBlocks.append(current);
+//                 current.clear();
+//                 currentWidth = colWidth["ext"] + colWidth["full"] + 3;
+//             }
+//             current.append(col);
+//             currentWidth += w;
+//         }
+//         if (!current.isEmpty())
+//             columnBlocks.append(current);
+//     }
+
+//     // 6) Kiírás blokkonként
+//     for (const auto& block : columnBlocks) {
+
+//         // fejléc 1
+//         QString h1 = QString("%1 | %2 | %3")
+//                          .arg("Tételszám", -colWidth["ext"])
+//                          .arg("Termék", -colWidth["type"])
+//                          .arg("TeljesMéret", -colWidth["full"]);
+
+
+//         // fejléc 2
+//         QString h2 = QString("%1 | %2 | %3")
+//                          .arg("", -colWidth["ext"])
+//                          .arg("", -colWidth["type"])
+//                          .arg("", -colWidth["full"]);
+
+
+//         for (const auto& col : block) {
+//             const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+//             QString name = mat ? mat->name : col;
+
+//             h1 += QString(" | %1").arg(name, -colWidth[col]);
+//             h2 += QString(" | %1").arg(col, -colWidth[col]);
+//         }
+
+//         lines << h1;
+//         lines << h2;
+//         lines << QString(h1.length(), '-');
+
+//         // sorok
+//         for (const auto& r : rows) {
+//             QString fullSizeCm = QString("%1 cm")
+//             .arg(QString::number(r.fullSize_mm / 10.0, 'f', 1));
+
+//             QVector<Cutting::Plan::Request> reqs = CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+//             QString typeName;
+//             QString subtypeName;
+//             if(!reqs.isEmpty()){
+//                 auto r = reqs.first();
+//                 auto* t = ProductTypeRegistry::instance().findById(r.productTypeId);
+//                 if(t){
+//                     typeName = t->name;
+//                 }
+//                 auto* s = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
+//                 if(s){
+//                     subtypeName = s->name;
+//                 }
+//             }
+
+//             //QString extWithDot = r.extRef + ".";
+//             QString extWithDot = QString("%1.")
+//                                      .arg(r.extRef);
+
+//             QString typeCol =
+//                 (typeName.isEmpty() || subtypeName.isEmpty())
+//                     ? ""
+//                     : QString("%1/%2").arg(typeName).arg(subtypeName);
+
+//             QString line = QString("%1 | %2 | %3")
+//                                .arg(extWithDot, -colWidth["ext"])
+//                                .arg(typeCol, -colWidth["type"])
+//                                .arg(fullSizeCm, -colWidth["full"]);
+
+
+//             for (const auto& col : block) {
+//                 if (r.sizes.contains(col)) {
+//                     QString sz = QString("%1 cm □")
+//                                      .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+//                     line += QString(" | %1").arg(sz, -colWidth[col]);
+//                 } else {
+//                     line += QString(" | %1").arg("", -colWidth[col]);
+//                 }
+//             }
+
+//             lines << line;
+//         }
+
+//         lines << ""; // üres sor blokk után
+//     }
+
+//     MachineCutsEvent_Result res;
+//     res.planTxt = lines.join("\n");
+//     res.orderedCuts = orderedCuts;
+//     return res;
+// }
+
+inline MachineCutsEvent_Result formatMachineCutsEvent_3_1(
     const MachineCuts& mc,
     const MachineReport& rep,
     const QVector<DiscardedPiece>& failedList,
@@ -2513,10 +2733,10 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
     QMap<QString,int> colWidth;
 
     colWidth["ext"]  = qMax(12, QString("Tételszám").length());
-    colWidth["full"] = qMax(12, QString("TeljesMéret").length());
-    // ÚJ OSZLOP: TermékTípusAltípus
     colWidth["type"] = qMax(14, QString("Termék").length());
+    colWidth["full"] = qMax(12, QString("TeljesMéret").length());
 
+    // --- Termék oszlop szélessége ---
     for (const auto& r : rows) {
 
         QVector<Cutting::Plan::Request> reqs =
@@ -2541,35 +2761,55 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
         colWidth["type"] = qMax(colWidth["type"], typeCol.length() + 2);
     }
 
+    // --- Anyag oszlopok szélessége crunchálással ---
     for (const auto& col : materialCols) {
+
         const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
-        QString name = mat ? mat->name : col;
 
-        int w = qMax(name.length(), col.length());
+        QString barcode = col;
+        QString name    = mat ? mat->name : col;
 
+        // 1) adat szélesség
+        int dataWidth = 0;
         for (const auto& r : rows) {
             if (r.sizes.contains(col)) {
                 QString sz = QString("%1 cm □")
                                  .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
-                w = qMax(w, sz.length());
+                dataWidth = qMax(dataWidth, sz.length());
             }
         }
 
-        colWidth[col] = w + 2;
+        // 2) barcode szélesség
+        int barcodeWidth = barcode.length();
+
+        // 3) minimális szélesség
+        int minWidth = qMax(dataWidth, barcodeWidth);
+
+        // 4) maximális szélesség
+        int maxWidth = printedLW - (colWidth["ext"] + colWidth["type"] + colWidth["full"] + 10);
+
+        // 5) név crunchálása
+        QString nameCrunched = name;
+        if (name.length() > maxWidth) {
+            nameCrunched = name.left(maxWidth - 1) + "…";
+        }
+
+        // 6) végső szélesség
+        colWidth[col] = qMax(minWidth, nameCrunched.length()) + 2;
     }
 
     // 5) Oszlopok tördelése printedLW szerint
     QList<QStringList> columnBlocks;
     {
         QStringList current;
-        int currentWidth = colWidth["ext"] + colWidth["full"] + 3;
+        int currentWidth = colWidth["ext"] + colWidth["type"] + colWidth["full"] + 6;
 
         for (const auto& col : materialCols) {
             int w = colWidth[col] + 3;
             if (currentWidth + w > printedLW) {
                 columnBlocks.append(current);
                 current.clear();
-                currentWidth = colWidth["ext"] + colWidth["full"] + 3;
+                currentWidth = colWidth["ext"] + colWidth["type"] + colWidth["full"] + 6;
             }
             current.append(col);
             currentWidth += w;
@@ -2587,19 +2827,21 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
                          .arg("Termék", -colWidth["type"])
                          .arg("TeljesMéret", -colWidth["full"]);
 
-
         // fejléc 2
         QString h2 = QString("%1 | %2 | %3")
                          .arg("", -colWidth["ext"])
                          .arg("", -colWidth["type"])
                          .arg("", -colWidth["full"]);
 
-
         for (const auto& col : block) {
             const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
             QString name = mat ? mat->name : col;
 
-            h1 += QString(" | %1").arg(name, -colWidth[col]);
+            QString nameCrunched = name;
+            if (name.length() > colWidth[col])
+                nameCrunched = name.left(colWidth[col] - 1) + "…";
+
+            h1 += QString(" | %1").arg(nameCrunched, -colWidth[col]);
             h2 += QString(" | %1").arg(col, -colWidth[col]);
         }
 
@@ -2612,35 +2854,30 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
             QString fullSizeCm = QString("%1 cm")
             .arg(QString::number(r.fullSize_mm / 10.0, 'f', 1));
 
-            QVector<Cutting::Plan::Request> reqs = CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+            QVector<Cutting::Plan::Request> reqs =
+                CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
             QString typeName;
             QString subtypeName;
             if(!reqs.isEmpty()){
-                auto r = reqs.first();
-                auto* t = ProductTypeRegistry::instance().findById(r.productTypeId);
-                if(t){
-                    typeName = t->name;
-                }
-                auto* s = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
-                if(s){
-                    subtypeName = s->name;
-                }
+                auto req = reqs.first();
+                auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+                auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+                if(t) typeName = t->name;
+                if(s) subtypeName = s->name;
             }
-
-            //QString extWithDot = r.extRef + ".";
-            QString extWithDot = QString("%1.")
-                                     .arg(r.extRef);
 
             QString typeCol =
                 (typeName.isEmpty() || subtypeName.isEmpty())
                     ? ""
                     : QString("%1/%2").arg(typeName).arg(subtypeName);
 
+            QString extWithDot = QString("%1.").arg(r.extRef);
+
             QString line = QString("%1 | %2 | %3")
                                .arg(extWithDot, -colWidth["ext"])
                                .arg(typeCol, -colWidth["type"])
                                .arg(fullSizeCm, -colWidth["full"]);
-
 
             for (const auto& col : block) {
                 if (r.sizes.contains(col)) {
@@ -2655,7 +2892,7 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
             lines << line;
         }
 
-        lines << ""; // üres sor blokk után
+        lines << "";
     }
 
     MachineCutsEvent_Result res;
@@ -2663,6 +2900,566 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3(
     res.orderedCuts = orderedCuts;
     return res;
 }
+
+
+
+inline MachineCutsEvent_Result formatMachineCutsEvent_3_2(
+    const MachineCuts& mc,
+    const MachineReport& rep,
+    const QVector<DiscardedPiece>& failedList,
+    const QString& planIdStr,
+    const int printedLW)
+{
+    QStringList lines;
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    // --- fejlécek ---
+    lines << "📄 Vágási utasítások (gépenkénti)";
+    lines << QString("CutPlan: %1").arg(planIdStr);
+    lines << QString("📅 Dátum: %1").arg(dateStr);
+    lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
+    lines << "──────────────────────────────────";
+
+    QVector<const CutInstruction*> orderedCuts;
+
+    // 1) Anyagfajták összegyűjtése
+    QSet<QString> materialSet;
+    for (const auto& ci : mc.cutInstructions) {
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(ci.materialId);
+        if (mat)
+            materialSet.insert(mat->barcode);
+    }
+    QStringList materialCols = materialSet.values();
+    materialCols.sort();
+
+    // 2) Sorok modellje
+    struct SizeListRow {
+        QString extRef;
+        double fullSize_mm;
+        QMap<QString,double> sizes;
+    };
+
+    QMap<QString, SizeListRow> rowMap;
+
+    for (const auto& ci : mc.cutInstructions) {
+        orderedCuts.append(&ci);
+
+        QString ext = ci.externalReference;
+        auto& row = rowMap[ext];
+        row.extRef = ext;
+
+        auto* req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+        double fs_mm = req ? req->fullWidth_mm : ci.cutSize_mm;
+        row.fullSize_mm = fs_mm;
+
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(ci.materialId);
+
+        QString matCol = mat ? mat->barcode : "?";
+        row.sizes[matCol] = ci.cutSize_mm;
+    }
+
+    // 3) Rendezés teljes méret szerint
+    QList<SizeListRow> rows = rowMap.values();
+    std::sort(rows.begin(), rows.end(),
+              [](const SizeListRow& a, const SizeListRow& b){
+                  return a.fullSize_mm > b.fullSize_mm;
+              });
+
+    // --- ÚJ: sorok csoportosítása termék típus / altípus szerint ---
+    QMap<QString, QList<SizeListRow>> rowsByType;
+
+    for (const auto& r : rows) {
+
+        QVector<Cutting::Plan::Request> reqs =
+            CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+        QString typeName, subtypeName;
+
+        if (!reqs.isEmpty()) {
+            const auto& req = reqs.first();
+            const auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+            const auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+            if (t) typeName = t->name;
+            if (s) subtypeName = s->name;
+        }
+
+        QString key;
+        if (!typeName.isEmpty() && !subtypeName.isEmpty())
+            key = QString("%1/%2").arg(typeName).arg(subtypeName);
+        else if (!typeName.isEmpty())
+            key = typeName;
+        else
+            key = "IsmeretlenTermék";
+
+        rowsByType[key].append(r);
+    }
+
+    // 4) Dinamikus oszlopszélességek
+    QMap<QString,int> colWidth;
+
+    colWidth["ext"]  = qMax(12, QString("Tételszám").length());
+    //colWidth["type"] = qMax(14, QString("Termék").length());
+    colWidth["full"] = qMax(12, QString("TeljesMéret").length());
+
+    // --- Termék oszlop szélessége ---
+    // for (const auto& r : rows) {
+
+    //     QVector<Cutting::Plan::Request> reqs =
+    //         CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+    //     QString typeName, subtypeName;
+
+    //     if (!reqs.isEmpty()) {
+    //         const auto& req = reqs.first();
+    //         const auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+    //         const auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+    //         if (t) typeName = t->name;
+    //         if (s) subtypeName = s->name;
+    //     }
+
+    //     QString typeCol =
+    //         (typeName.isEmpty() || subtypeName.isEmpty())
+    //             ? ""
+    //             : QString("%1/%2").arg(typeName).arg(subtypeName);
+
+    //     colWidth["type"] = qMax(colWidth["type"], typeCol.length() + 2);
+    // }
+
+    // --- Anyag oszlopok szélessége crunchálással ---
+    for (const auto& col : materialCols) {
+
+        const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+
+        QString barcode = col;
+        QString name    = mat ? mat->name : col;
+
+        // 1) adat szélesség
+        int dataWidth = 0;
+        for (const auto& r : rows) {
+            if (r.sizes.contains(col)) {
+                QString sz = QString("%1 cm □")
+                                 .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+                dataWidth = qMax(dataWidth, sz.length());
+            }
+        }
+
+        // 2) barcode szélesség
+        int barcodeWidth = barcode.length();
+
+        // 3) minimális szélesség
+        int minWidth = qMax(dataWidth, barcodeWidth);
+
+        // 4) maximális szélesség
+        int maxWidth = printedLW - (colWidth["ext"] + colWidth["full"] + 8);
+
+        // 5) név crunchálása
+        QString nameCrunched = name;
+        if (name.length() > maxWidth) {
+            nameCrunched = name.left(maxWidth - 1) + "…";
+        }
+
+        // 6) végső szélesség
+        colWidth[col] = qMax(minWidth, nameCrunched.length()) + 2;
+    }
+
+    // 5) Oszlopok tördelése printedLW szerint
+    QList<QStringList> columnBlocks;
+    {
+        QStringList current;
+        int currentWidth = colWidth["ext"] + colWidth["full"] + 4;
+
+        for (const auto& col : materialCols) {
+
+            // --- ÜRES OSZLOP SZŰRÉS ---
+            bool hasData = false;
+            for (const auto& r : rows) {
+                if (r.sizes.contains(col)) {
+                    hasData = true;
+                    break;
+                }
+            }
+            if (!hasData)
+                continue;   // teljesen üres oszlop → kihagyjuk
+
+            // --- printedLW tördelés ---
+            int w = colWidth[col] + 3;
+            if (currentWidth + w > printedLW) {
+                columnBlocks.append(current);
+                current.clear();
+                currentWidth = colWidth["ext"] + colWidth["full"] + 4;
+            }
+
+            current.append(col);
+            currentWidth += w;
+        }
+
+        if (!current.isEmpty())
+            columnBlocks.append(current);
+    }
+
+    // --- TÍPUS/ALTÍPUS SZERINTI BLOKKOSÍTÁS ---
+    for (auto it = rowsByType.begin(); it != rowsByType.end(); ++it) {
+
+        QString typeHeader = it.key();
+        const QList<SizeListRow>& typeRows = it.value();
+
+        lines << "";
+        lines << QString("📦 Termék: %1").arg(typeHeader);
+        lines << QString(typeHeader.length() + 12, QChar(0x2500));
+
+        // --- anyagblokkok ---
+        // --- anyagblokkok ---
+        for (const auto& block : columnBlocks) {
+
+            // --- BLOKK OSZLOPOK SZŰRÉSE CSAK AZ ADOTT TERMÉKCSOPORTRA ---
+            QStringList usedCols;
+            for (const auto& col : block) {
+                bool hasDataInType = false;
+                for (const auto& r : typeRows) {
+                    if (r.sizes.contains(col)) {
+                        hasDataInType = true;
+                        break;
+                    }
+                }
+                if (hasDataInType)
+                    usedCols.append(col);
+            }
+
+            // ha ebben a termékcsoportban egyetlen oszlop sem használatos → ugorjuk a blokkot
+            if (usedCols.isEmpty())
+                continue;
+
+            // fejléc 1
+            QString h1 = QString("%1 | %2")
+                             .arg("Tételszám", -colWidth["ext"])
+                             .arg("TeljesMéret", -colWidth["full"]);
+
+            QString h2 = QString("%1 | %2")
+                             .arg("", -colWidth["ext"])
+                             .arg("", -colWidth["full"]);
+
+            for (const auto& col : usedCols) {
+                const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+                QString name = mat ? mat->name : col;
+
+                QString nameCrunched = name;
+                if (name.length() > colWidth[col])
+                    nameCrunched = name.left(colWidth[col] - 1) + "…";
+
+                h1 += QString(" | %1").arg(nameCrunched, -colWidth[col]);
+                h2 += QString(" | %1").arg(col, -colWidth[col]);
+            }
+
+            lines << h1;
+            lines << h2;
+            lines << QString(h1.length(), '-');
+
+            // --- SOROK: csak az adott típushoz tartozók ---
+            for (const auto& r : typeRows) {
+
+                QString fullSizeCm = QString("%1 cm")
+                .arg(QString::number(r.fullSize_mm / 10.0, 'f', 1));
+
+                QVector<Cutting::Plan::Request> reqs =
+                    CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+                QString typeName;
+                QString subtypeName;
+                if(!reqs.isEmpty()){
+                    auto req = reqs.first();
+                    auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+                    auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+                    if(t) typeName = t->name;
+                    if(s) subtypeName = s->name;
+                }
+
+                QString extWithDot = QString("%1.").arg(r.extRef);
+
+                QString line = QString("%1 | %2")
+                                   .arg(extWithDot, -colWidth["ext"])
+                                   .arg(fullSizeCm, -colWidth["full"]);
+
+                for (const auto& col : usedCols) {
+                    if (r.sizes.contains(col)) {
+                        QString sz = QString("%1 cm □")
+                                         .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+                        line += QString(" | %1").arg(sz, -colWidth[col]);
+                    } else {
+                        line += QString(" | %1").arg("", -colWidth[col]);
+                    }
+                }
+
+                lines << line;
+            }
+
+            lines << "";
+        }
+
+    }
+
+    MachineCutsEvent_Result res;
+    res.planTxt = lines.join("\n");
+    res.orderedCuts = orderedCuts;
+    return res;
+}
+
+
+
+
+
+
+
+
+inline MachineCutsEvent_Result formatMachineCutsEvent_3_3(
+    const MachineCuts& mc,
+    const MachineReport& rep,
+    const QVector<DiscardedPiece>& failedList,
+    const QString& planIdStr,
+    const int printedLW)
+{
+    QStringList lines;
+
+    QString dateStr = QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    // --- fejlécek ---
+    lines << "📄 Vágási utasítások (gépenkénti)";
+    lines << QString("CutPlan: %1").arg(planIdStr);
+    lines << QString("📅 Dátum: %1").arg(dateStr);
+    lines << QString("⚙️ Gép: %1").arg(mc.machineHeader.machineName);
+    lines << "──────────────────────────────────";
+
+    QVector<const CutInstruction*> orderedCuts;
+
+    // 1) Anyagfajták összegyűjtése (globális sorrendhez)
+    QSet<QString> materialSet;
+    for (const auto& ci : mc.cutInstructions) {
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(ci.materialId);
+        if (mat)
+            materialSet.insert(mat->barcode);
+    }
+    QStringList materialCols = materialSet.values();
+    materialCols.sort();   // GLOBÁLIS sorrend
+
+    // 2) Sorok modellje
+    struct SizeListRow {
+        QString extRef;
+        double fullSize_mm;
+        QMap<QString,double> sizes;
+    };
+
+    QMap<QString, SizeListRow> rowMap;
+
+    for (const auto& ci : mc.cutInstructions) {
+        orderedCuts.append(&ci);
+
+        QString ext = ci.externalReference;
+        auto& row = rowMap[ext];
+        row.extRef = ext;
+
+        auto* req = CuttingPlanRequestRegistry::instance().findById(ci.requestId);
+        double fs_mm = req ? req->fullWidth_mm : ci.cutSize_mm;
+        row.fullSize_mm = fs_mm;
+
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(ci.materialId);
+
+        QString matCol = mat ? mat->barcode : "?";
+        row.sizes[matCol] = ci.cutSize_mm;
+    }
+
+    // 3) Rendezés teljes méret szerint
+    QList<SizeListRow> rows = rowMap.values();
+    std::sort(rows.begin(), rows.end(),
+              [](const SizeListRow& a, const SizeListRow& b){
+                  return a.fullSize_mm > b.fullSize_mm;
+              });
+
+    // --- Sorok csoportosítása termék típus / altípus szerint ---
+    QMap<QString, QList<SizeListRow>> rowsByType;
+
+    for (const auto& r : rows) {
+
+        QVector<Cutting::Plan::Request> reqs =
+            CuttingPlanRequestRegistry::instance().findByExternalReference(r.extRef);
+
+        QString typeName, subtypeName;
+
+        if (!reqs.isEmpty()) {
+            const auto& req = reqs.first();
+            const auto* t = ProductTypeRegistry::instance().findById(req.productTypeId);
+            const auto* s = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);
+
+            if (t) typeName = t->name;
+            if (s) subtypeName = s->name;
+        }
+
+        QString key;
+        if (!typeName.isEmpty() && !subtypeName.isEmpty())
+            key = QString("%1/%2").arg(typeName).arg(subtypeName);
+        else if (!typeName.isEmpty())
+            key = typeName;
+        else
+            key = "IsmeretlenTermék";
+
+        rowsByType[key].append(r);
+    }
+
+    // 4) Dinamikus oszlopszélességek
+    QMap<QString,int> colWidth;
+
+    colWidth["ext"]  = qMax(12, QString("Tételszám").length());
+    colWidth["full"] = qMax(12, QString("TeljesMéret").length());
+
+    // --- Anyag oszlopok szélessége crunchálással ---
+    for (const auto& col : materialCols) {
+
+        const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+
+        QString barcode = col;
+        QString name    = mat ? mat->name : col;
+
+        // 1) adat szélesség
+        int dataWidth = 0;
+        for (const auto& r : rows) {
+            if (r.sizes.contains(col)) {
+                QString sz = QString("%1 cm □")
+                                 .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+                dataWidth = qMax(dataWidth, sz.length());
+            }
+        }
+
+        // 2) barcode szélesség
+        int barcodeWidth = barcode.length();
+
+        // 3) minimális szélesség
+        int minWidth = qMax(dataWidth, barcodeWidth);
+
+        // 4) maximális szélesség
+        int maxWidth = printedLW - (colWidth["ext"] + colWidth["full"] + 8);
+
+        // 5) név crunchálása
+        QString nameCrunched = name;
+        if (name.length() > maxWidth) {
+            nameCrunched = name.left(maxWidth - 1) + "…";
+        }
+
+        // 6) végső szélesség
+        colWidth[col] = qMax(minWidth, nameCrunched.length()) + 2;
+    }
+
+    // --- TÍPUS/ALTÍPUS SZERINTI BLOKKOSÍTÁS (ÚJ ARCHITEKTÚRA) ---
+    for (auto it = rowsByType.begin(); it != rowsByType.end(); ++it) {
+
+        QString typeHeader = it.key();
+        const QList<SizeListRow>& typeRows = it.value();
+
+        lines << "";
+        lines << QString("📦 Termék: %1").arg(typeHeader);
+        lines << QString(typeHeader.length() + 12, QChar(0x2500));
+
+        // --- 1) Meghatározzuk, mely anyagok szerepelnek ebben a termékcsoportban ---
+        QStringList usedColsType;
+        for (const auto& col : materialCols) {
+            bool hasData = false;
+            for (const auto& r : typeRows) {
+                if (r.sizes.contains(col)) {
+                    hasData = true;
+                    break;
+                }
+            }
+            if (hasData)
+                usedColsType.append(col);
+        }
+
+        // --- 2) printedLW tördelés termékcsoportonként ---
+        QList<QStringList> columnBlocksType;
+        {
+            QStringList current;
+            int currentWidth = colWidth["ext"] + colWidth["full"] + 4;
+
+            for (const auto& col : usedColsType) {
+                int w = colWidth[col] + 3;
+                if (currentWidth + w > printedLW) {
+                    columnBlocksType.append(current);
+                    current.clear();
+                    currentWidth = colWidth["ext"] + colWidth["full"] + 4;
+                }
+                current.append(col);
+                currentWidth += w;
+            }
+            if (!current.isEmpty())
+                columnBlocksType.append(current);
+        }
+
+        // --- 3) Kiírás blokkonként ---
+        for (const auto& block : columnBlocksType) {
+
+            // fejléc 1
+            QString h1 = QString("%1 | %2")
+                             .arg("Tételszám", -colWidth["ext"])
+                             .arg("TeljesMéret", -colWidth["full"]);
+
+            QString h2 = QString("%1 | %2")
+                             .arg("", -colWidth["ext"])
+                             .arg("", -colWidth["full"]);
+
+            for (const auto& col : block) {
+                const MaterialMaster* mat = MaterialRegistry::instance().findByBarcode(col);
+                QString name = mat ? mat->name : col;
+
+                QString nameCrunched = name;
+                if (name.length() > colWidth[col])
+                    nameCrunched = name.left(colWidth[col] - 1) + "…";
+
+                h1 += QString(" | %1").arg(nameCrunched, -colWidth[col]);
+                h2 += QString(" | %1").arg(col, -colWidth[col]);
+            }
+
+            lines << h1;
+            lines << h2;
+            lines << QString(h1.length(), '-');
+
+            // --- SOROK ---
+            for (const auto& r : typeRows) {
+
+                QString fullSizeCm = QString("%1 cm")
+                .arg(QString::number(r.fullSize_mm / 10.0, 'f', 1));
+
+                QString extWithDot = QString("%1.").arg(r.extRef);
+
+                QString line = QString("%1 | %2")
+                                   .arg(extWithDot, -colWidth["ext"])
+                                   .arg(fullSizeCm, -colWidth["full"]);
+
+                for (const auto& col : block) {
+                    if (r.sizes.contains(col)) {
+                        QString sz = QString("%1 cm □")
+                                         .arg(QString::number(r.sizes[col] / 10.0, 'f', 1));
+                        line += QString(" | %1").arg(sz, -colWidth[col]);
+                    } else {
+                        line += QString(" | %1").arg("", -colWidth[col]);
+                    }
+                }
+
+                lines << line;
+            }
+
+            lines << "";
+        }
+    }
+
+    MachineCutsEvent_Result res;
+    res.planTxt = lines.join("\n");
+    res.orderedCuts = orderedCuts;
+    return res;
+}
+
 
 
 

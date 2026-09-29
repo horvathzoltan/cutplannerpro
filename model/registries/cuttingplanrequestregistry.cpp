@@ -130,13 +130,23 @@ QVector<Cutting::Plan::Request> CuttingPlanRequestRegistry::findByExternalRefere
 {
     QVector<Cutting::Plan::Request> result;
 
+    // 1) Darab extref → request extref kinyerése
+    // Példa: "365 1/2" → "365"
+    QString baseRef = ref;
+    int spacePos = ref.indexOf(' ');
+    if (spacePos > 0) {
+        baseRef = ref.left(spacePos);
+    }
+
+    // 2) Keresés a requestek között
     for (const auto& r : _data) {
-        if (r.externalReference == ref)
+        if (r.externalReference == baseRef)
             result.append(r);
     }
 
     return result;
 }
+
 
 const Cutting::Plan::Request* CuttingPlanRequestRegistry::findByExtRefAndMaterial(
     const QString& extRef,

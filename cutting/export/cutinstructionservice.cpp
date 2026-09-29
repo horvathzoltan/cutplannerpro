@@ -143,7 +143,7 @@ bool CutInstructionService::ExportCutInstructions(const QVector<MachineCuts>& ma
             }
             else if(mode == ExportMode::SizeList)
             {
-                m = CuttingInstructionUtils::formatMachineCutsEvent_3(
+                m = CuttingInstructionUtils::formatMachineCutsEvent_3_3(
                     mc, rep, failedList, baseName, SettingsManager::printedLineWidth);
             }
 
