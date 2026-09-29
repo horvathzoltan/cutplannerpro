@@ -1,0 +1,13 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"405";"Hársfalvi, Nyh";2560;2600;2530;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"405";"Hársfalvi, Nyh";2560;2600;2555;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"405";"Hársfalvi, Nyh";2560;2600;2437;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"405";"Hársfalvi, Nyh";2560;2600;2497;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"405";"Hársfalvi, Nyh";2560;2600;2450;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"405";"Hársfalvi, Nyh";2560;2600;2385;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2510;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2535;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2417;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2497;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2430;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"406";"Hársfalvi, Nyh";2540;2600;2365;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-09-30;NP;CIP;meghajtas=motoros;SM;Gyartasi
