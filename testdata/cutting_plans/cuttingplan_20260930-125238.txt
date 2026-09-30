@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"371";"Frama, AyanterSolut";3370;2275;3340;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"371";"Frama, AyanterSolut";3370;2275;3365;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"371";"Frama, AyanterSolut";3370;2275;3247;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"371";"Frama, AyanterSolut";3370;2275;2172;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"371";"Frama, AyanterSolut";3370;2275;3260;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"371";"Frama, AyanterSolut";3370;2275;3195;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-01;NP;CIP;meghajtas=motoros;FS;Gyartasi

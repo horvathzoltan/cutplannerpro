@@ -15,7 +15,7 @@ inline double calcTok(double width){
 }
 
 inline double calcTengely(double width){
-    return width - 35;
+    return width - 40;
 }
 
 inline double calcVaszon(double width){

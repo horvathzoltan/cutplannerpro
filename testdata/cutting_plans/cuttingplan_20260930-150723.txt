@@ -1,0 +1,40 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"715";"Rolló-Halas, Pécs";620;1300;604;;1;0;1;"";SR-FSN;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"715";"Rolló-Halas, Pécs";620;1300;587;;1;0;1;"";TE-H-32;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"715";"Rolló-Halas, Pécs";620;1300;590;;1;0;1;"";SR-Z+P;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"716";"Rolló-Halas, Pécs";660;1300;644;;1;0;1;"";SR-FSN;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"716";"Rolló-Halas, Pécs";660;1300;627;;1;0;1;"";TE-H-32;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"716";"Rolló-Halas, Pécs";660;1300;630;;1;0;1;"";SR-Z+P;Width;false;2026-10-02;SR;TN;;SM;Gyartasi
+"723";"Nils";950;1400;934;;1;0;1;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"723";"Nils";950;1400;917;;1;0;1;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"723";"Nils";950;1400;920;;1;0;1;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"766";"Rellux, Győr";715;1165;699;;1;0;1;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"766";"Rellux, Győr";715;1165;682;;1;0;1;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"766";"Rellux, Győr";715;1165;685;;1;0;1;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"767";"Rellux, Győr";715;1165;699;;1;1;0;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"767";"Rellux, Győr";715;1165;682;;1;1;0;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"767";"Rellux, Győr";715;1165;685;;1;1;0;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"735";"Ro-Konzol, Győr";1040;1400;1024;;1;1;0;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"735";"Ro-Konzol, Győr";1040;1400;1007;;1;1;0;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"735";"Ro-Konzol, Győr";1040;1400;1010;;1;1;0;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"736";"Ro-Konzol, Győr";540;1400;524;;1;0;1;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"736";"Ro-Konzol, Győr";540;1400;507;;1;0;1;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"736";"Ro-Konzol, Győr";540;1400;510;;1;0;1;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"737";"Ro-Konzol, Győr";940;1400;924;;1;1;0;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"737";"Ro-Konzol, Győr";940;1400;907;;1;1;0;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"737";"Ro-Konzol, Győr";940;1400;910;;1;1;0;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"739";"Ro-Konzol, Győr";840;2150;824;;1;1;0;"";SR-FSN;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"739";"Ro-Konzol, Győr";840;2150;807;;1;1;0;"";TE-H-32;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"739";"Ro-Konzol, Győr";840;2150;810;;1;1;0;"";SR-Z+P;Width;false;2026-10-05;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;674;;2;1;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;657;;2;1;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;660;;2;1;1;"";SR-Z+P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;504;;2;1;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;487;;2;1;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;490;;2;1;1;"";SR-Z+P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1384;;1;0;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1367;;1;0;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1370;;1;0;1;"";SR-Z+P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;934;;2;1;1;"";SR-FSN;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;917;;2;1;1;"";TE-H-32;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;920;;2;1;1;"";SR-Z+P;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
