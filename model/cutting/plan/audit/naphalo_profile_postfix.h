@@ -25,7 +25,8 @@ static inline QString profilePostfixFor(const QString& groupKey)
     // Csavar
     if (groupKey == "RNP-CSAV") return "Ø10 mm";
 
-    return "";
+    QString e = "?";
+    return e;
 }
 
     // static inline QString profilePostfixFor(const QString& role)
