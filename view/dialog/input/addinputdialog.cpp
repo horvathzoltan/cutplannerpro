@@ -2017,7 +2017,26 @@ void AddInputDialog::updateColorPreview()
     int len   = ui->editLength->text().toInt();
     int qty   = ui->spinQuantity->value();
     int total = (paintingNeeded ? len * qty : 0);
-    QString postfix = (mat ? ProfileUtils::profilePostfixFor(mat->barcode) : QString());
+
+    QString matName = mat ? mat->toDisplay() : "???";
+    QString barcode = mat ? mat->barcode : "???";
+
+    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
+    auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+    QString groupKey = roleGroup ? roleGroup->barcode : "";
+    QString postfix = ProfileUtils::profilePostfixFor_Role(groupKey);
+
+    if(postfix.isEmpty()){
+        if(groupKey.isEmpty()){
+            zInfo("Festési profil postfix: Nincs csoportkulcs. Anyag: "+matName );
+        }
+        else{
+            zInfo("Festési profil postfix: Ismeretlen csoportkulcs:" +groupKey + " Anyag: " + matName);
+        }
+    }
+
+   // QString postfix = (mat ? ProfileUtils::profilePostfixFor_Role(mat->barcode) : QString());
 
     // 4) Szín kocka
     QLabel* box = new QLabel();

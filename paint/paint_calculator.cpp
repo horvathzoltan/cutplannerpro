@@ -171,7 +171,6 @@ PaintPlan PaintCalculator::buildPlan()
 
                     if(compMat->paintingMode == PaintingMode::None)
                         continue;
-                    //bool isCLT = MaterialFamilyUtils::matchPrefix(compMat->barcode, "NP-CLT*");
 
                     int pieceCount = req.quantity * bc.count;
                     int length_mm  = req.requiredLength * pieceCount;
@@ -182,6 +181,8 @@ PaintPlan PaintCalculator::buildPlan()
                                  length_mm,
                                  kgPerMeter,
                                  req.requestId);
+
+
                 }
 
                 continue;
@@ -189,9 +190,6 @@ PaintPlan PaintCalculator::buildPlan()
                 auto model = PowderConsumptionRegistry::instance().find(
                     req.productTypeId, req.productSubtypeId);
                 double kgPerMeter = model.kgPerMeterCorrected();
-
-                // const MaterialMaster* mat =
-                //     MaterialRegistry::instance().findById(req.materialId);
 
                 int pieceCount = req.quantity;
                 int length_mm  = req.requiredLength * pieceCount;

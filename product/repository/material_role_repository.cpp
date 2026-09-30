@@ -15,6 +15,8 @@
 
 MaterialRoleRepository::MaterialRoleRepository(){}
 
+
+// material_rolemap
 QVector<MaterialRole> MaterialRoleRepository::load(const QString& csvPath) const
 {
     QVector<MaterialRole> result;

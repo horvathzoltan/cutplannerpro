@@ -63,7 +63,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
 
             QString matName;
             QString postfix;
-            double keruletCm = 0.0;
+            //double keruletCm = 0.0;
 
             // if (isCompositeCL)
             // {
@@ -77,16 +77,25 @@ QString PaintReporter::toText(const PaintPlan& plan)
 
                 QString barcode = mat ? mat->barcode : "???";
 
-                //bool isBundle = barcode.contains('+');
-                //auto role = MaterialRoleUtils::normalizePrefix(barcode);
-                //postfix = ProfileUtils::profilePostfixFor(role);
+                if(barcode =="NP-SL-9010"){
+                    auto roles = MaterialRoleRegistry::instance().readAll();
+                    zInfo("hutty");
+                }
 
                 MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
                 auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
 
                 QString groupKey = roleGroup ? roleGroup->barcode : "";
-                postfix = ProfileUtils::profilePostfixFor(groupKey);
+                postfix = ProfileUtils::profilePostfixFor_Role(groupKey);
 
+                if(postfix.isEmpty()){
+                    if(groupKey.isEmpty()){
+                        zInfo("Festési profil postfix: Nincs csoportkulcs. Anyag: "+matName );
+                    }
+                    else{
+                        zInfo("Festési profil postfix: Ismeretlen csoportkulcs:" +groupKey + " anyag: " + matName );
+                    }
+                }
 
                 // if(isBundle){
                 //     zInfo("bundle!!!");
@@ -163,7 +172,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
             if(colorGroup.bowdenesPofa > 0){
                 out<<QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa);
             }
-            QString postfix1 = ProfileUtils::profilePostfixFor("NP-POF");
+            QString postfix1 = ProfileUtils::profilePostfixFor_Role("RNP-POF");
             if (!postfix1.isEmpty()) {
                 out<<QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1);
             } else{
@@ -186,7 +195,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
         if (colorGroup.csavar > 0)
         {
             out<<"   CSAVAROK:";
-            QString postfix2 = ProfileUtils::profilePostfixFor("NP-CSAV");
+            QString postfix2 = ProfileUtils::profilePostfixFor_Role("RNP-CSAV");
             if (!postfix2.isEmpty()) {
                 out<<QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2);
             } else{
