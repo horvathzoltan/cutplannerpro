@@ -1,36 +1,36 @@
-#pragma once
-#include <QHash>
-#include <QString>
-#include <materials/model/material_family_utils.h>
+// #pragma once
+// #include <QHash>
+// #include <QString>
+// #include <materials/model/material_family_utils.h>
 
-namespace ProfileUtils
-{
-static inline QString profilePostfixFor_Role(const QString& groupKey)
-{
-    if (groupKey.isEmpty())
-        return "";
+// namespace ProfileUtils
+// {
+// static inline QString profilePostfixFor_Role(const QString& groupKey)
+// {
+//     if (groupKey.isEmpty())
+//         return "";
 
-    if (groupKey == "RNP-T")   return "20 cm";   // Tok
-    if (groupKey == "RNP-TF")  return "18 cm";   // Tokfedél
-    if (groupKey == "RNP-CZ")  return "13 cm";   // Cipzáros záró
-    if (groupKey == "RNP-SZ")  return "11 cm";   // Sines záró
+//     if (groupKey == "RNP-T")   return "20 cm";   // Tok
+//     if (groupKey == "RNP-TF")  return "18 cm";   // Tokfedél
+//     if (groupKey == "RNP-CZ")  return "13 cm";   // Cipzáros záró
+//     if (groupKey == "RNP-SZ")  return "11 cm";   // Sines záró
 
-    if (groupKey == "RNP-SL2") return "26 cm";   // Sines láb
-    if (groupKey == "RNP-SL") return "13 cm";   // Sines láb
+//     if (groupKey == "RNP-SL2") return "26 cm";   // Sines láb
+//     if (groupKey == "RNP-SL") return "13 cm";   // Sines láb
 
-    // Cipzáros láb (összetett)
-    if (groupKey == "RNP-CL2+CLT2+CLB2") return "54 cm";
-    if (groupKey == "RNP-CL") return "18 cm";
-    if (groupKey == "RNP-CLT") return "9 cm";
-    // Pofa
-    if (groupKey == "RNP-POF") return "10×10 cm";
+//     // Cipzáros láb (összetett)
+//     if (groupKey == "RNP-CL2+CLT2+CLB2") return "54 cm";
+//     if (groupKey == "RNP-CL") return "18 cm";
+//     if (groupKey == "RNP-CLT") return "9 cm";
+//     // Pofa
+//     if (groupKey == "RNP-POF") return "10×10 cm";
 
-    // Csavar
-    if (groupKey == "RNP-CSAV") return "Ø10 mm";
+//     // Csavar
+//     if (groupKey == "RNP-CSAV") return "Ø10 mm";
 
-    QString e = "";
-    return e;
-}
+//     QString e = "";
+//     return e;
+// }
 
 
 // static inline QString profilePostfixFor_Material(const QString& groupKey)
@@ -115,4 +115,4 @@ static inline QString profilePostfixFor_Role(const QString& groupKey)
     //     // Egyéb anyagokhoz nincs postfix
     //     return "";
     // }
-}
+//}

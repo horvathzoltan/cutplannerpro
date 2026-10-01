@@ -2,6 +2,7 @@
 
 #include "../../../model/cutting/plan/request.h"
 #include "common/logger.h"
+#include "materials/model/material_paintgroup.h"
 #include "model/cutting/plan/audit/naphalo_profile_postfix.h"
 #include "product/utils/material_role_utils.h"
 #include "ui_addinputdialog.h"
@@ -17,6 +18,7 @@
 #include <calculation/lengthcalculator.h>
 #include <common/eventlogger.h>
 #include <materials/model/material_master.h>
+#include <materials/registry/material_paintgroup_registry.h>
 #include <materials/registry/material_rolegroup_registry.h>
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <product/registry/bom_registry.h>
@@ -1989,16 +1991,16 @@ void AddInputDialog::updateColorPreview()
         delete item;
     }
 
-    // 3) Szín értelmezése
+    // --- 1) Szín + felület értelmezése ---
     QString raw = ui->edit_Color->text().trimmed();
 
-    // 1) Szín + felület szétválasztása
+    // 1.a) Szín + felület szétválasztása
     auto [colorPart, surfacePart] = SurfaceTypeUtils::extractSurface(raw);
 
-    // 2) Szín értelmezése
+    // 1.b) Szín értelmezése
     NamedColor nc = NamedColor::fromUserInput(colorPart);
 
-    // 3) Felület beállítása, ha van
+    // 1.c) Felület beállítása, ha van
     if (surfacePart != SurfaceType::Unknown) {
         auto code = SurfaceTypeUtils::toCode(surfacePart);
         int ix = ui->comboBox_Surface->findData(code);
@@ -2006,39 +2008,7 @@ void AddInputDialog::updateColorPreview()
             ui->comboBox_Surface->setCurrentIndex(ix);
     }
 
-    QUuid matId = selectedMaterialId();
-    const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-
-    bool paintingNeeded = false;
-    if (mat && nc.isValid() && mat->paintingMode != PaintingMode::None) {
-        paintingNeeded = (nc.code() != mat->color.code());
-    }
-
-    int len   = ui->editLength->text().toInt();
-    int qty   = ui->spinQuantity->value();
-    int total = (paintingNeeded ? len * qty : 0);
-
-    QString matName = mat ? mat->toDisplay() : "???";
-    QString barcode = mat ? mat->barcode : "???";
-
-    MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
-    auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
-
-    QString groupKey = roleGroup ? roleGroup->barcode : "";
-    QString postfix = ProfileUtils::profilePostfixFor_Role(groupKey);
-
-    if(postfix.isEmpty()){
-        if(groupKey.isEmpty()){
-            zInfo("Festési profil postfix: Nincs csoportkulcs. Anyag: "+matName );
-        }
-        else{
-            zInfo("Festési profil postfix: Ismeretlen csoportkulcs:" +groupKey + " Anyag: " + matName);
-        }
-    }
-
-   // QString postfix = (mat ? ProfileUtils::profilePostfixFor_Role(mat->barcode) : QString());
-
-    // 4) Szín kocka
+    // 1.d) Szín kocka
     QLabel* box = new QLabel();
     box->setFixedSize(16, 16);
     if (nc.isValid())
@@ -2047,12 +2017,61 @@ void AddInputDialog::updateColorPreview()
                 .arg(nc.color().name()));
     lay->addWidget(box);
 
-    // 5) Kód + név
+    // 1.e) Kód + név
     QLabel* codeLbl = new QLabel(nc.isValid() ? nc.code() : QString("Ismeretlen"), this);
     lay->addWidget(codeLbl);
 
     QLabel* nameLbl = new QLabel(nc.isValid() ? nc.name() : QString(), this);
     lay->addWidget(nameLbl);
+
+    // --- 2) Anyag lekérése ---
+    QUuid matId = selectedMaterialId();
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
+
+    QString matName = mat ? mat->toDisplay() : "???";
+    QString barcode = mat ? mat->barcode : "???";
+
+    // --- 3) Festési csoport lookup ---
+
+    const MaterialPaintGroup* pg =
+        MaterialPaintGroupRegistry::instance().findByMaterialId(matId);
+    QString paintingPostfix = pg?pg->toString_cm():"";
+
+    if(paintingPostfix.isEmpty()){
+        zInfo("Nincs festési csoport ehhez az anyaghoz: " + barcode);
+    }
+
+    bool paintingNeeded = false;
+    if (mat && nc.isValid() && mat->paintingMode != PaintingMode::None) {
+        paintingNeeded = (nc.code() != mat->color.code());
+    }
+
+
+    // Ha nincs festési csoport → nincs festés
+    if (!paintingNeeded) {
+        //QLabel* lbl = new QLabel("Nincs festési csoport", this);
+        //lay->addWidget(lbl);
+        lay->addStretch();
+        return;
+    }
+
+    int len   = ui->editLength->text().toInt();
+    int qty   = ui->spinQuantity->value();
+    int total = (paintingNeeded ? len * qty : 0);
+
+    // Ha kell festeni, de nincs festési csoport → fallback
+    if (!pg) {
+        QLabel* icon = new QLabel("🖌️", this);
+        lay->addWidget(icon);
+
+        int total = len * qty;  // csak hossz × darabszám
+
+        QLabel* lbl = new QLabel(QString("%1 mm (nincs festési csoport)").arg(total), this);
+        lay->addWidget(lbl);
+
+        lay->addStretch();
+        return;
+    }
 
     // 6) Festés info
     if (paintingNeeded && mat && mat->paintingMode != PaintingMode::None) {
@@ -2060,12 +2079,12 @@ void AddInputDialog::updateColorPreview()
         lay->addWidget(icon);
 
         QString text =
-            postfix.isEmpty()
+            paintingPostfix.isEmpty()
                 ? QString("%1 mm").arg(total)
                 : QString("%1 mm (%2 m × %3)")
                       .arg(total)
                       .arg(total / 1000.0, 0, 'f', 2)
-                      .arg(postfix);
+                      .arg(paintingPostfix);
 
         QLabel* lenLbl = new QLabel(text, this);
         lay->addWidget(lenLbl);

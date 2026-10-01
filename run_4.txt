@@ -1,7 +1,7 @@
 lefotver helyettesítés:
     - az audit 2. köre érinti azokat a hullókat is, amik egy korábbi körben  már megvoltak
 
-festési terv:
+festési terv: - FIXED
     - np-sl-9010 nincsen prefix ...215 a terv vége
     emiatt festési material groupot kell csinálnunk
 

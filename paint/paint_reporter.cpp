@@ -1,4 +1,5 @@
 #include "common/logger.h"
+#include "common/texthelper.h"
 #include "paint_calculator.h"
 #include "paint_reporter.h"
 #include "common/eventlogger.h"
@@ -6,6 +7,7 @@
 #include "product/model/material_role.h"
 #include "product/utils/material_role_utils.h"
 
+#include <materials/registry/material_paintgroup_registry.h>
 #include <materials/registry/material_registry.h>
 #include <materials/registry/material_rolegroup_registry.h>
 
@@ -61,8 +63,8 @@ QString PaintReporter::toText(const PaintPlan& plan)
 
            // bool isCompositeCL = (matId == PaintCalculator::CL_COMPOSITE_ID);
 
-            QString matName;
-            QString postfix;
+            //QString matName;
+            //QString postfix;
             //double keruletCm = 0.0;
 
             // if (isCompositeCL)
@@ -73,29 +75,28 @@ QString PaintReporter::toText(const PaintPlan& plan)
             // else
             // {
                 const MaterialMaster* mat = MaterialRegistry::instance().findById(matId);
-                matName = mat ? mat->toDisplay() : "???";
-
+                QString matName = mat ? mat->toDisplay() : "???";
                 QString barcode = mat ? mat->barcode : "???";
 
-                if(barcode =="NP-SL-9010"){
-                    auto roles = MaterialRoleRegistry::instance().readAll();
-                    zInfo("hutty");
+                // if(barcode =="NP-SL-9010"){
+                //     auto roles = MaterialRoleRegistry::instance().readAll();
+                //     zInfo("hutty");
+                // }
+
+                // MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
+                // auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
+
+                // QString groupKey = roleGroup ? roleGroup->barcode : "";
+                // postfix = ProfileUtils::profilePostfixFor_Role(groupKey);
+
+                const MaterialPaintGroup* pg =
+                    MaterialPaintGroupRegistry::instance().findByMaterialId(matId);
+                QString postfix = pg?pg->toString_cm():"";
+
+                if (!pg) {
+                    zInfo("Nincs festési csoport ehhez az anyaghoz: " + barcode);
                 }
 
-                MaterialRole role = MaterialRoleRegistry::instance().roleForBarcode(barcode);
-                auto* roleGroup = MaterialRoleGroupRegistry::instance().findById(role.groupId);
-
-                QString groupKey = roleGroup ? roleGroup->barcode : "";
-                postfix = ProfileUtils::profilePostfixFor_Role(groupKey);
-
-                if(postfix.isEmpty()){
-                    if(groupKey.isEmpty()){
-                        zInfo("Festési profil postfix: Nincs csoportkulcs. Anyag: "+matName );
-                    }
-                    else{
-                        zInfo("Festési profil postfix: Ismeretlen csoportkulcs:" +groupKey + " anyag: " + matName );
-                    }
-                }
 
                 // if(isBundle){
                 //     zInfo("bundle!!!");
@@ -155,7 +156,17 @@ QString PaintReporter::toText(const PaintPlan& plan)
                 }
             }
 
-            out<<QString("      Tételszámok: %1").arg(tetelszamok.join(", "));
+            //out<<QString("      Tételszámok: %1").arg(tetelszamok.join(", "));
+            QString tetelStr = tetelszamok.join(", ");
+            //QStringList wrapped = TextHelper::wrapSeparated(tetelStr, ",", SettingsManager::printedLineWidth);
+            QStringList wrapped = TextHelper::smartJoin(tetelszamok, ", ", SettingsManager::printedLineWidth);
+
+
+            out << "      Tételszámok:";
+            for (const QString& line : wrapped) {
+                out << "         " + line;
+            }
+
             out<<"";
         }
 
@@ -172,7 +183,16 @@ QString PaintReporter::toText(const PaintPlan& plan)
             if(colorGroup.bowdenesPofa > 0){
                 out<<QString("      Bowdenes: %1").arg(colorGroup.bowdenesPofa);
             }
-            QString postfix1 = ProfileUtils::profilePostfixFor_Role("RNP-POF");
+
+            const MaterialPaintGroup* pg1 =
+                MaterialPaintGroupRegistry::instance().findByBarcode("PNP-POF");
+            QString postfix1 = pg1?pg1->toString_cm():"";
+
+            if (!pg1) {
+                zInfo("Nincs festési csoport ehhez az anyaghoz: PNP-POF");
+            }
+
+            //QString postfix1 = ProfileUtils::profilePostfixFor_Role("PNP-POF");
             if (!postfix1.isEmpty()) {
                 out<<QString("      Összesen: %1 db, %2").arg(colorGroup.sumPofa()).arg(postfix1);
             } else{
@@ -195,7 +215,16 @@ QString PaintReporter::toText(const PaintPlan& plan)
         if (colorGroup.csavar > 0)
         {
             out<<"   CSAVAROK:";
-            QString postfix2 = ProfileUtils::profilePostfixFor_Role("RNP-CSAV");
+            //QString postfix2 = ProfileUtils::profilePostfixFor_Role("PNP-CSAV");
+
+            const MaterialPaintGroup* pg2 =
+                MaterialPaintGroupRegistry::instance().findByBarcode("PNP-CSAV");
+            QString postfix2 = pg2?pg2->toString_cm():"";
+
+            if (!pg2) {
+                zInfo("Nincs festési csoport ehhez az anyaghoz: PNP-CSAV");
+            }
+
             if (!postfix2.isEmpty()) {
                 out<<QString("      Összesen: %1 db, %2").arg(colorGroup.csavar).arg(postfix2);
             } else{

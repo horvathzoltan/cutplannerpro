@@ -30,8 +30,10 @@ SOURCES += \
     materialbundles/model/bundle_definition.cpp \
     materialbundles/registry/bundle_registry.cpp \
     materialbundles/repository/bundle_repository.cpp \
+    materials/registry/material_paintgroup_registry.cpp \
     materials/registry/material_rolegroup_registry.cpp \
     materials/registry/material_storagegroupregistry.cpp \
+    materials/repository/material_paintgroup_repository.cpp \
     materials/repository/material_rolegroup_repository.cpp \
     materials/repository/material_storagegrouprepository.cpp \
     model/cutting/optimizer/cutengine.cpp \
@@ -195,10 +197,14 @@ HEADERS += \
     materialbundles/registry/bundle_registry.h \
     materialbundles/repository/bundle_repository.h \
     materials/model/material_kind.h \
+    materials/model/material_paintgeometry_type.h \
+    materials/model/material_paintgroup.h \
     materials/model/material_rolegroup.h \
     materials/model/material_storagegroup.h \
+    materials/registry/material_paintgroup_registry.h \
     materials/registry/material_rolegroup_registry.h \
     materials/registry/material_storagegroupregistry.h \
+    materials/repository/material_paintgroup_repository.h \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
@@ -547,6 +553,7 @@ DISTFILES += \
     testdata/materialgroup_members.csv \
     testdata/materialgroups.csv \
     testdata/materialgroups.msff \
+    testdata/materialpaintgroups.msff \
     testdata/materialrolegroups.msff \
     testdata/materials.csv \
     testdata/materials_old.csv \

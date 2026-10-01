@@ -38,9 +38,11 @@
 
 #include <materialbundles/repository/bundle_repository.h>
 
+#include <materials/repository/material_paintgroup_repository.h>
 #include <materials/repository/material_rolegroup_repository.h>
 #include <materials/repository/material_storagegrouprepository.h>
 
+#include <materials/registry/material_paintgroup_registry.h>
 #include <materials/registry/material_storagegroupregistry.h>
 
 StartupStatus StartupManager::runStartupSequence() {
@@ -62,6 +64,15 @@ StartupStatus StartupManager::runStartupSequence() {
 
     if(_isDump){
         MaterialRoleGroupRegistry::instance().debugDump();
+    }
+
+
+    StartupStatus paintGroupStatus = initMaterialPaintGroupRegistry();
+    if (!paintGroupStatus.isSuccess())
+        return paintGroupStatus;
+
+    if(_isDump3){
+        MaterialPaintGroupRegistry::instance().debugDump();
     }
 
     StartupStatus bundleStatus = initBundleRegistry();
@@ -140,6 +151,7 @@ StartupStatus StartupManager::runStartupSequence() {
 
     finalStatus.addWarnings(groupStatus.warnings());
     finalStatus.addWarnings(roleGroupStatus.warnings());
+    finalStatus.addWarnings(paintGroupStatus.warnings());
 
     finalStatus.addWarnings(bundleStatus.warnings());
 
@@ -704,6 +716,38 @@ StartupStatus StartupManager::initProductCalcModeRegistry()
         StatusHelper::getMessage(true, "méretszámítási módok init (MSFF)")
         );
 
+    return StartupStatus::success();
+}
+
+StartupStatus StartupManager::initMaterialPaintGroupRegistry()
+{
+    auto& registry = MaterialPaintGroupRegistry::instance();
+    registry.clearAll();
+
+    MaterialPaintGroupRepository repo;
+    bool loaded = repo.loadFromMsff(registry);
+
+    if (!loaded) {
+        EventLogger::instance().zEvent("❌ Nem sikerült betölteni a festési csoportokat (MSFF)");
+        return StartupStatus::failure(
+            "❌ Nem sikerült betölteni a festési csoportokat a material_paintgroups.msff fájlból."
+            );
+    }
+
+    const int count = registry.readAll().size();
+    if (count == 0) {
+        EventLogger::instance().zEvent("❌ nincs adat a festési csoportokban (MSFF)");
+        return StartupStatus::failure(
+            "⚠️ Nem található egyetlen festési csoport sem. Lehet, hogy üres vagy hibás az MSFF fájl."
+            );
+    }
+
+    // Dump, ha kérted
+    if (_isDump3) {
+        registry.debugDump();
+    }
+
+    EventLogger::instance().zEvent(StatusHelper::getMessage(true, "festési csoportok init (MSFF)"));
     return StartupStatus::success();
 }
 

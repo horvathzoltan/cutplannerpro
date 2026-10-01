@@ -255,12 +255,17 @@ QString FileNameHelper::getLeftoverLabelQueueCsvFile() const {
 
 
 QString FileNameHelper::getMaterialGroupMsffFile() const {
-    auto fn = QDir(_projectPath).filePath("materialgroups.msff"); // vagy ahová ténylegesen rakod
+    auto fn = QDir(_projectPath).filePath("materialgroups.msff");
     return fn;
 }
 
 QString FileNameHelper::getMaterialRoleGroupMsffFile() const {
-    auto fn = QDir(_projectPath).filePath("materialrolegroups.msff"); // vagy ahová ténylegesen rakod
+    auto fn = QDir(_projectPath).filePath("materialrolegroups.msff");
+    return fn;
+}
+
+QString FileNameHelper::getMaterialPaintGroupMsffFile() const{
+    auto fn = QDir(_projectPath).filePath("materialpaintgroups.msff");
     return fn;
 }
 

@@ -85,6 +85,7 @@ public:
     QString getMaterialGroupMsffFile() const;
     QString getMaterialRoleGroupMsffFile() const;
     QString getProductCalculationModesMsffFile() const;
+    QString getMaterialPaintGroupMsffFile() const;
 
     static QString emojiCacheDir();
 };

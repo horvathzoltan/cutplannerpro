@@ -70,4 +70,71 @@ static QString compressRanges_String(const QStringList& refs)
     auto a = compressRanges_int(nums);
     return a;
 }
+
+
+static QStringList wrapSeparated(const QString& text,
+                                 const QString& sep = ",",
+                                 int width = 80)
+{
+    // 1) tokenizálás szeparátor alapján
+    QStringList tokens = text.split(sep, Qt::SkipEmptyParts);
+
+    QStringList lines;
+    QString current;
+
+    for (QString tok : tokens) {
+
+        tok = tok.trimmed();   // fontos!
+
+        QString candidate =
+            current.isEmpty()
+                ? tok
+                : current + sep + " " + tok;
+
+        if (candidate.length() > width) {
+            if (!current.isEmpty())
+                lines << current;
+            current = tok;
+        } else {
+            current = candidate;
+        }
+    }
+
+    if (!current.isEmpty())
+        lines << current;
+
+    return lines;
+}
+
+static QStringList smartJoin(const QStringList& tokens,
+                             const QString& sep = ", ",
+                             int width = 80)
+{
+    QStringList lines;
+    QString current;
+
+    for (const QString& tok : tokens) {
+
+        QString candidate =
+            current.isEmpty()
+                ? tok
+                : current + sep + tok;
+
+        if (candidate.length() > width) {
+            if (!current.isEmpty())
+                lines << current;
+            current = tok;
+        } else {
+            current = candidate;
+        }
+    }
+
+    if (!current.isEmpty())
+        lines << current;
+
+    return lines;
+}
+
+
+
 } // end namespace TextHelper
