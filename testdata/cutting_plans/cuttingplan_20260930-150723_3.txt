@@ -1,0 +1,47 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"726";"Perei J., Bcs";950;1500;934;;2;1;1;"";SR-FSN;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;917;;2;1;1;"";TE-H-32;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;920;;2;1;1;"";SR-Z;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"726";"Perei J., Bcs";950;1500;920;;2;1;1;"";SR-P;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"773";"Jövő 2008(114), Bp";1380;1900;1364;;1;0;1;"";SR-FSN;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"773";"Jövő 2008(114), Bp";1380;1900;1347;;1;0;1;"";TE-H-32;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"773";"Jövő 2008(114), Bp";1380;1900;1350;;1;0;1;"";SR-Z;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"773";"Jövő 2008(114), Bp";1380;1900;1350;;1;0;1;"";SR-P-3000;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"774";"Jövő 2008(114), Bp";1890;1500;1874;;1;0;1;"";SR-FSN;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"774";"Jövő 2008(114), Bp";1890;1500;1857;;1;0;1;"";TE-H-32;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"774";"Jövő 2008(114), Bp";1890;1500;1860;;1;0;1;"";SR-Z;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+"774";"Jövő 2008(114), Bp";1890;1500;1860;;1;0;1;"";SR-P-3000;Width;false;2026-10-06;SR;TN;;SM;Gyartasi
+
+"745";"RakamazAblak (Prill)";690;2550;674;;2;1;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;657;;2;1;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;660;;2;1;1;"";SR-Z;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"745";"RakamazAblak (Prill)";690;2550;660;;2;1;1;"";SR-P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;504;;2;1;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;487;;2;1;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;490;;2;1;1;"";SR-Z;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"746";"RakamazAblak (Prill)";520;1950;490;;2;1;1;"";SR-P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1384;;1;0;1;"";SR-FSN;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1367;;1;0;1;"";TE-H-32;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1370;;1;0;1;"";SR-Z;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"747";"RakamazAblak (Prill)";1400;460;1370;;1;0;1;"";SR-P;Width;false;2026-10-07;SR;TN;;SM;Gyartasi
+"753";"Délroll, Szeged";780;1650;774;;1;1;0;"";SR-T;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"753";"Délroll, Szeged";780;1650;757;;1;1;0;"";TE-H-32;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"753";"Délroll, Szeged";780;1650;760;;1;1;0;"";SR-Z;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"753";"Délroll, Szeged";780;1650;760;;1;1;0;"";SR-P;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"754";"Délroll, Szeged";1420;1650;1414;;1;1;0;"";SR-T;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"754";"Délroll, Szeged";1420;1650;1397;;1;1;0;"";TE-H-32;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"754";"Délroll, Szeged";1420;1650;1400;;1;1;0;"";SR-Z;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+"754";"Délroll, Szeged";1420;1650;1400;;1;1;0;"";SR-P;Width;false;2026-10-07;SR;T;;SM;Gyartasi
+
+"788";"An-Ger";1660;1700;1654;;1;0;1;"";SR-T;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"788";"An-Ger";1660;1700;1637;;1;0;1;"";TE-H-32;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"788";"An-Ger";1660;1700;1640;;1;0;1;"";SR-Z;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"788";"An-Ger";1660;1700;1640;;1;0;1;"";SR-P-3000;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"789";"An-Ger";1250;1700;1244;;1;0;1;"";SR-T;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"789";"An-Ger";1250;1700;1227;;1;0;1;"";TE-H-32;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"789";"An-Ger";1250;1700;1230;;1;0;1;"";SR-Z;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"789";"An-Ger";1250;1700;1230;;1;0;1;"";SR-P-3000;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"790";"An-Ger";730;1270;724;;1;0;1;"";SR-T;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"790";"An-Ger";730;1270;707;;1;0;1;"";TE-H-32;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"790";"An-Ger";730;1270;710;;1;0;1;"";SR-Z;Width;false;2026-10-08;SR;T;;SM;Gyartasi
+"790";"An-Ger";730;1270;710;;1;0;1;"";SR-P-3000;Width;false;2026-10-08;SR;T;;SM;Gyartasi

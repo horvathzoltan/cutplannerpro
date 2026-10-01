@@ -22,11 +22,15 @@ NP;BOW;Suly;RNP-SBAR
 
 SR;T;Tok;RSR-T
 SR;T;Tengely;RTE-H-32
-SR;T;Zaro;RSR-ZP
+#SR;T;Zaro;RSR-ZP
+SR;T;Zaro;RSR-Z
+SR;T;Palca;RSR-P
 
 SR;TN;FelsoSin;RSR-FSN
 SR;TN;Tengely;RTE-H-32
-SR;TN;Zaro;RSR-ZP
+#SR;T;Zaro;RSR-ZP
+SR;TN;Zaro;RSR-Z
+SR;TN;Palca;RSR-P
 
 SR;MINIT;Tok;RMT-T
 SR;MINIT;Tengely;RTE-H-18
