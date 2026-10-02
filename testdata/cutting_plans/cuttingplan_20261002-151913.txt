@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"2413";"Kiss Brúnó, Mátészalka";865;1320;830;;1;0;1;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2413";"Kiss Brúnó, Mátészalka";865;1320;820;;1;0;1;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2414";"Kiss Brúnó, Mátészalka";780;1250;745;;1;1;0;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2414";"Kiss Brúnó, Mátészalka";780;1250;735;;1;1;0;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2415";"Kiss Brúnó, Mátészalka";865;1320;830;;1;1;0;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2415";"Kiss Brúnó, Mátészalka";865;1320;820;;1;1;0;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2416";"Kiss Brúnó, Mátészalka";745;1220;710;;1;1;0;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2416";"Kiss Brúnó, Mátészalka";745;1220;700;;1;1;0;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2417";"Kiss Brúnó, Mátészalka";655;114;620;;1;1;0;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2417";"Kiss Brúnó, Mátészalka";655;114;610;;1;1;0;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2418";"Kiss Brúnó, Mátészalka";750;1220;715;;1;0;1;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2418";"Kiss Brúnó, Mátészalka";750;1220;705;;1;0;1;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2419";"Kiss Brúnó, Mátészalka";680;1220;645;;1;1;0;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2419";"Kiss Brúnó, Mátészalka";680;1220;635;;1;1;0;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2420";"Kiss Brúnó, Mátészalka";590;1140;555;;1;0;1;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2420";"Kiss Brúnó, Mátészalka";590;1140;545;;1;0;1;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2421";"Kiss Brúnó, Mátészalka";680;1220;645;;1;0;1;"";TE-R-23;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
+"2421";"Kiss Brúnó, Mátészalka";680;1220;635;;1;0;1;"";ROL-P;Width;false;2026-10-08;ROL;ALAP;;SM;Gyartasi
