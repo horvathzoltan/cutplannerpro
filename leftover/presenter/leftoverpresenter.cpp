@@ -952,9 +952,15 @@ void LeftoverPresenter::ExportIterativeAuditPdf(
     };
 
     for (const auto& t : targets) {
-        draw(t);
-        for (const auto& c : candidateSets.value(t.entryId))
-            draw(c);
+        if (!isFresh(t)) {
+            draw(t);
+        }
+
+        for (const auto& c : candidateSets.value(t.entryId)) {
+            if (!isFresh(c)) {
+                draw(c);
+            }
+        }
     }
 
     painter.end();

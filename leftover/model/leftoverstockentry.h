@@ -71,4 +71,8 @@ struct LeftoverStockEntry {
     }
 
     QString toLeftoverEvent(QString rodId);
+    bool isMissing() const;
+    bool isExtraFresh() const;
+    bool isFresh() const;
+    bool isStale() const;
 };

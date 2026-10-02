@@ -65,3 +65,32 @@ inline QString LeftoverStockEntry::toLeftoverEvent(QString rodId) {
         .arg(entryId.toString())
         .arg(rodId);
 }
+
+bool LeftoverStockEntry::isMissing() const {
+    return notFoundCount > 0;
+}
+
+bool LeftoverStockEntry::isExtraFresh() const {
+    // 1 órán belül látva
+    if (isMissing()) return false;
+    if (!lastSeenAt.isValid()) return false;
+
+    QDateTime now = QDateTime::currentDateTime();
+    return lastSeenAt >= now.addSecs(-3600);
+}
+
+bool LeftoverStockEntry::isFresh() const {
+    // aznap látva
+    if (isMissing()) return false;
+    if (!lastSeenAt.isValid()) return false;
+
+    QDateTime now = QDateTime::currentDateTime();
+    return lastSeenAt.date() == now.date();
+}
+
+bool LeftoverStockEntry::isStale() const {
+    // tegnap vagy régebben
+    return !isMissing() && !isFresh();
+}
+
+
