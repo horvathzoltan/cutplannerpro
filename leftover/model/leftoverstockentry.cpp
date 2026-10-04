@@ -66,31 +66,37 @@ inline QString LeftoverStockEntry::toLeftoverEvent(QString rodId) {
         .arg(rodId);
 }
 
-bool LeftoverStockEntry::isMissing() const {
-    return notFoundCount > 0;
+#include "common/audit/agelogicutils.h"
+
+bool LeftoverStockEntry::isMissing() const
+{
+    return AgeLogicUtils::isMissing(lastSeenAt, notFoundCount);
 }
 
-bool LeftoverStockEntry::isExtraFresh() const {
-    // 1 órán belül látva
-    if (isMissing()) return false;
-    if (!lastSeenAt.isValid()) return false;
-
-    QDateTime now = QDateTime::currentDateTime();
-    return lastSeenAt >= now.addSecs(-3600);
+bool LeftoverStockEntry::isExtraFresh() const
+{
+    return AgeLogicUtils::isExtraFresh(lastSeenAt, notFoundCount);
 }
 
-bool LeftoverStockEntry::isFresh() const {
-    // aznap látva
-    if (isMissing()) return false;
-    if (!lastSeenAt.isValid()) return false;
-
-    QDateTime now = QDateTime::currentDateTime();
-    return lastSeenAt.date() == now.date();
+bool LeftoverStockEntry::isFresh() const
+{
+    return AgeLogicUtils::isFresh(lastSeenAt, notFoundCount);
 }
 
-bool LeftoverStockEntry::isStale() const {
-    // tegnap vagy régebben
-    return !isMissing() && !isFresh();
+bool LeftoverStockEntry::isStale() const
+{
+    return AgeLogicUtils::isStale(lastSeenAt, notFoundCount);
 }
 
+bool LeftoverStockEntry::isOld() const
+{
+    return AgeLogicUtils::isOld(lastSeenAt, notFoundCount);
+}
+
+AgeState LeftoverStockEntry::ageState() const
+{
+    return AgeLogicUtils::determine(
+        lastSeenAt,
+        notFoundCount);
+}
 

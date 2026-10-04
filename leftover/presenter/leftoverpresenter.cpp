@@ -701,7 +701,13 @@ void LeftoverPresenter::runIterativeLeftoverAuditRound()
                 if (usedAsCandidate.contains(cand.entryId))
                     continue;
 
-                bool candIsFresh = isFresh(cand);
+                //bool candIsFresh = isFresh(cand);
+                if (cand.isMissing())
+                    continue;
+
+                if (cand.isOld())
+                    continue;
+
 
                 cands.append(cand);
                 usedAsCandidate.insert(cand.entryId);
@@ -724,10 +730,10 @@ void LeftoverPresenter::runIterativeLeftoverAuditRound()
         }
     }
 
-    QString summary = buildSubstitutionSummary(targets, candidateSets);
-    zInfo(summary);
+    QString summary = buildCompactSummary_2(targets, candidateSets);
+    //zInfo(summary);
 
-    ExportIterativeAuditPdf(targets, candidateSets);
+    ExportIterativeAuditPdf(summary, targets, candidateSets);
 
     TextViewDialog dlg(_view);
     dlg.setWindowTitle("LEFTOVER SUBSTITUTION SUMMARY");
@@ -870,6 +876,110 @@ QString LeftoverPresenter::buildSubstitutionSummary(
 }
 
 
+QString LeftoverPresenter::buildCompactSummary_2(
+    const QVector<LeftoverStockEntry>& targets,
+    const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets)
+{
+    QString out;
+
+    QString dateStr =
+        QDateTime::currentDateTime().toString("yyyy.MM.dd HH:mm");
+
+    QString planIdStr =
+        SettingsManager::instance().planIdStr();
+
+    out += QString("📄 Iteratív Leftover Audit — %1\n")
+               .arg(planIdStr);
+
+    out += QString("📅 %1\n\n")
+               .arg(dateStr);
+
+
+    constexpr int BarcodeW  = 14;
+    constexpr int LengthW   = 6;
+    constexpr int StateW    = 10;
+    constexpr int CandidateW = 14;
+
+
+    auto formatCandidate = [](const LeftoverStockEntry& c)
+    {
+        return QString("%1 (%2,%3)")
+        .arg(c.barcode)
+            .arg(c.availableLength_mm)
+            .arg(AgeStateUtils::toShortCode(c.ageState()));
+    };
+
+    QMap<QUuid, QVector<const LeftoverStockEntry*>> byMaterial;
+
+    for (const auto& t : targets)
+        byMaterial[t.materialId].append(&t);
+
+
+    for (auto it = byMaterial.begin();
+         it != byMaterial.end();
+         ++it)
+    {
+        const MaterialMaster* mat =
+            MaterialRegistry::instance().findById(it.key());
+
+        QString matName =
+            mat
+                ? mat->toReportLabel()
+                : "?";
+
+        out += QString("📦 Anyag: %1\n")
+                   .arg(matName);
+
+        QString header =
+            QString("%1 | %2 | %3 | %4 | %5 | %6")
+                .arg("Barcode",       -BarcodeW)
+                .arg("Hossz",         -LengthW)
+                .arg("Állapot",       -StateW)
+                .arg("Helyettesítő1", -CandidateW)
+                .arg("Helyettesítő2", -CandidateW)
+                .arg("Helyettesítő3", -CandidateW);
+
+        out += header + "\n";
+        out += QString(header.length(), '-') + "\n";
+
+        for (const LeftoverStockEntry* t : it.value())
+        {
+            QString cand1 = "—";
+            QString cand2 = "—";
+            QString cand3 = "—";
+
+            const auto cands =
+                candidateSets.value(t->entryId);
+
+            if (cands.size() > 0)
+                cand1 = formatCandidate(cands[0]);
+
+            if (cands.size() > 1)
+                cand2 = formatCandidate(cands[1]);
+
+            if (cands.size() > 2)
+                cand3 = formatCandidate(cands[2]);
+
+            out += QString("%1 | %2 | %3 | %4 | %5 | %6\n")
+                       .arg(t->barcode, -BarcodeW)
+                       .arg(
+                           QString::number(
+                               t->availableLength_mm),
+                           -LengthW)
+                       .arg(
+                           AgeStateUtils::toDisplayString(
+                               t->ageState()),
+                           -StateW)
+                       .arg(cand1, -CandidateW)
+                       .arg(cand2, -CandidateW)
+                       .arg(cand3, -CandidateW);
+        }
+
+        out += "\n";
+    }
+
+    return out;
+}
 
 
 // ----------------------------------------------------
@@ -884,6 +994,7 @@ QString LeftoverPresenter::buildSubstitutionSummary(
 //    vonalkódot auditálhat.
 //
 void LeftoverPresenter::ExportIterativeAuditPdf(
+    const QString& summary,
     const QVector<LeftoverStockEntry>& targets,
     const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets)
 {
@@ -926,7 +1037,7 @@ void LeftoverPresenter::ExportIterativeAuditPdf(
 
 
     // --- Summary ---
-    QString summary = buildSubstitutionSummary(targets, candidateSets);
+   // QString summary = buildSubstitutionSummary(targets, candidateSets);
     painter.drawText(pageRect, Qt::AlignLeft | Qt::TextWordWrap, summary);
 
     writer.newPage();
@@ -952,16 +1063,17 @@ void LeftoverPresenter::ExportIterativeAuditPdf(
     };
 
     for (const auto& t : targets) {
-        if (!isFresh(t)) {
+        if (!t.isFresh()) {
             draw(t);
         }
 
         for (const auto& c : candidateSets.value(t.entryId)) {
-            if (!isFresh(c)) {
+            if (!c.isFresh()) {
                 draw(c);
             }
         }
     }
+
 
     painter.end();
     zInfo(QString("📄 Iteratív Audit PDF exportálva: %1").arg(path));

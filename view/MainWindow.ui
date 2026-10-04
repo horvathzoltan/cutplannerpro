@@ -394,6 +394,13 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>RodPriority:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLineEdit" name="lineEdit_prioElemek"/>
             </item>
             <item>

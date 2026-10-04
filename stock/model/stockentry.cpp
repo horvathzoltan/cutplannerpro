@@ -51,3 +51,28 @@ QString StockEntry::storageBarcode() const {
     const auto* m = storage();
     return m ? m->barcode : "(?)";
 }
+
+AgeState StockEntry::ageState() const
+{
+    return AgeLogicUtils::determine(lastSeenAt);
+}
+
+bool StockEntry::isExtraFresh() const
+{
+    return ageState() == AgeState::ExtraFresh;
+}
+
+bool StockEntry::isFresh() const
+{
+    return ageState() == AgeState::Fresh;
+}
+
+bool StockEntry::isStale() const
+{
+    return ageState() == AgeState::Stale;
+}
+
+bool StockEntry::isOld() const
+{
+    return ageState() == AgeState::Old;
+}

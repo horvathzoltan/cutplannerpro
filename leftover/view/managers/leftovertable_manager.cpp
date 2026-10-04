@@ -195,13 +195,7 @@ void LeftoverTableManager::addRow(const LeftoverStockEntry& entry) {
                                          LeftoverTableManager::ColBarcode,
                                          entry.barcode);
 
-    // LeftoverStyleUtils::applyAgeStyle(table, rowIx,
-    //                                   LeftoverTableManager::ColLastSeenAt,
-    //                                   entry.lastSeenAt, entry.notFoundCount);
-
-    LeftoverStyleUtils::applyAgeStyle_2(table, rowIx,
-                                      LeftoverTableManager::ColLastSeenAt,
-                                      entry);
+    AgeTableUtils::applyAgeStyle(table,rowIx,LeftoverTableManager::ColLastSeenAt,entry.ageState());
 }
 /*
 ColMaterial         = 0
@@ -316,13 +310,9 @@ void LeftoverTableManager::updateRow(const LeftoverStockEntry& entry) {
                                                  LeftoverTableManager::ColBarcode,
                                                  entry.barcode);
 
-            // LeftoverStyleUtils::applyAgeStyle(table, rowIx,
-            //                                   LeftoverTableManager::ColLastSeenAt,
-            //                                   entry.lastSeenAt, entry.notFoundCount);
 
-            LeftoverStyleUtils::applyAgeStyle_2(table, rowIx,
-                                              LeftoverTableManager::ColLastSeenAt,
-                                              entry);
+            AgeTableUtils::applyAgeStyle(table,rowIx,LeftoverTableManager::ColLastSeenAt,entry.ageState());
+
             return;
   //      }
 //    }

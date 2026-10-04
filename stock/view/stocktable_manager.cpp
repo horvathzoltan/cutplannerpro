@@ -1,4 +1,5 @@
 #include "stocktable_manager.h"
+#include "common/audit/agestyleutils.h"
 #include "stock/view/stocktable_rowstyler.h"
 #include "materials/utils/material_utils.h"
 
@@ -168,6 +169,7 @@ void StockTableManager::addRow(const StockEntry& entry) {
     });
 
     StockTable::RowStyler::applyStyle(_table, rowIx, mat->effectiveLength(), entry.quantity, mat, entry.lastSeenAt);
+
 }
 
 void StockTableManager::updateRow(const StockEntry& entry) {
@@ -242,6 +244,7 @@ void StockTableManager::updateRow(const StockEntry& entry) {
 
             // 🎨 Stílus újraalkalmazás
             StockTable::RowStyler::applyStyle(_table, rowIx, mat->effectiveLength(), entry.quantity, mat, entry.lastSeenAt);
+
           //  return;
         //}
   //  }
@@ -442,8 +445,5 @@ void StockTableManager::addLeftoverRow(const LeftoverStockEntry& e)
                                          StockTableManager::ColBarcode,
                                          e.barcode);
 
-    LeftoverStyleUtils::applyAgeStyle_2(_table, row,
-                                      StockTableManager::ColLastSeenAt,
-                                      e);
-
+    AgeTableUtils::applyAgeStyle(_table,row,StockTableManager::ColLastSeenAt,e.ageState());
 }

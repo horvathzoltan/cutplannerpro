@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QDateTime>
 
+#include "common/audit/agestate.h"
 #include "materialbundles/model/bundle_componentlength.h"
 #include "materials/model/material_master.h"
 #include "model/cutting/result/leftoversource.h"
@@ -75,4 +76,6 @@ struct LeftoverStockEntry {
     bool isExtraFresh() const;
     bool isFresh() const;
     bool isStale() const;
+    bool isOld() const;
+    AgeState ageState() const;
 };

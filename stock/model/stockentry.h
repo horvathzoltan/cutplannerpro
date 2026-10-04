@@ -4,6 +4,8 @@
 #include <QDateTime>
 #include <QString>
 #include <QUuid>
+#include "common/audit/agelogicutils.h"
+#include "common/audit/agestate.h"
 #include "materials/model/material_master.h"
 #include "storage/model/storageentry.h"
 
@@ -31,5 +33,12 @@ struct StockEntry {
     QString storageName() const;  // 📛 Anyag neve
     QString storageBarcode() const; // 🧾 Vonalkód
     const StorageEntry *storage() const;
+
+
+    AgeState ageState() const;
+    bool isExtraFresh() const;
+    bool isFresh() const;
+    bool isStale() const;
+    bool isOld() const;
 };
 

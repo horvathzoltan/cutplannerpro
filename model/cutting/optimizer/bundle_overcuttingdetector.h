@@ -157,9 +157,27 @@ public:
             // 🔗 bundleInstanceId: egy plan-hez egy instance (egy rúd)
             QUuid bundleInstanceId = QUuid::createUuid();
 
+            auto pieces = plan.piecesWithMaterial;
+
+            std::sort(
+                pieces.begin(),
+                pieces.end(),
+                [](const Cutting::Piece::PieceWithMaterial& a,
+                   const Cutting::Piece::PieceWithMaterial& b)
+                {
+                    return a.info.length_mm > b.info.length_mm;
+                });
+
+            zInfo(QString("BundleOverCuttingDetector: piece count=%1 sorted desc")
+                      .arg(pieces.size()));
+
             // 🔗 minden plan-ben lévő bundle darab
-            for (const auto& piece : plan.piecesWithMaterial)
+            for (const auto& piece : pieces)
             {
+
+                zInfo(QString(" piece=%1")
+                          .arg(piece.info.length_mm));
+
                 int pieceLen = piece.info.length_mm;
 
                 auto components = BundleRegistry::instance().componentsOf(master->bundleCode);

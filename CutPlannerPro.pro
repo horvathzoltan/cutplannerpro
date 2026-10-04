@@ -175,6 +175,9 @@ HEADERS += \
     calculation/savrolo/calculation_savrolo_toknelkuli.h \
     calculation/savrolo/calculation_savrolo_tokozott.h \
     calculation/sizecalcmode.h \
+    common/audit/agelogicutils.h \
+    common/audit/agestate.h \
+    common/audit/agestyleutils.h \
     common/stringsimilarity_helper.h \
     common/qrcodepainter.h \
     common/qrcodegen/qrcodegen.hpp \

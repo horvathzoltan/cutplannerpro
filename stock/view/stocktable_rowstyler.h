@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/audit/agestyleutils.h"
 #include "materials/view/material_row_styler.h"
 #include "stock/view//stocktable_manager.h"
 #include "view/tableutils/colorlogicutils.h"
@@ -11,44 +12,18 @@ inline void applyStyle(QTableWidget* table, int row, int length_mm, int quantity
 {
     if (!table) return;
 
-    constexpr int ColLength = StockTableManager::ColLength;
-    constexpr int ColQuantity = StockTableManager::ColQuantity;
-    QColor textColor = Qt::black;
-
-    // for (int col = 0; col < table->columnCount(); ++col) {
-
-    //     QColor backColor;
-    //     if (col == ColLength){
-    //         Qcolor backColor1 = ColorLogicUtils::colorForLength(length_mm);
-    //         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
-    //     }
-    //     else if (col == ColQuantity){
-    //         backColor = ColorLogicUtils::colorForQuantity(quantity);
-    //         TableStyleUtils::setCellStyle(table, row, col, backColor, textColor);
-    //     }
-
-    // }
-
     QColor backColor1 = ColorLogicUtils::colorForLength(length_mm);
-    TableStyleUtils::setCellStyle(table, row, ColLength, backColor1, textColor);
+    TableStyleUtils::setCellStyle(table, row, StockTableManager::ColLength, backColor1, Qt::black);
     QColor backColor2 = ColorLogicUtils::colorForQuantity(quantity);
-    TableStyleUtils::setCellStyle(table, row, ColQuantity, backColor2, textColor);
+    TableStyleUtils::setCellStyle(table, row, StockTableManager::ColQuantity, backColor2, Qt::black);
+    AgeTableUtils::applyAgeStyle(table,row, StockTableManager::ColLastSeenAt, AgeLogicUtils::determine(lastSeenAt));
 
-    MaterialRowStyler::applyMaterialStyle(table, row, mat,{ColLength, ColQuantity});
+    MaterialRowStyler::applyMaterialStyle(table, row, mat,
+                                          {StockTableManager::ColLength,
+                                           StockTableManager::ColQuantity,
+                                           StockTableManager::ColLastSeenAt});
 
-    //QColor createdColor = ColorLogicUtils::colorForAge(entry.createdAt);
-    //TableStyleUtils::setCellStyle(table, row, StockTableManager::ColCreatedAt, createdColor, Qt::black);
-
-    {
-        QColor ageColor = ColorLogicUtils::colorForAge(lastSeenAt);
-
-        if (auto* item = table->item(row, StockTableManager::ColLastSeenAt)) {
-            item->setBackground(ageColor);
-            item->setForeground(Qt::black);
-        }
-    }
 }
-
 
 } // endof namespace RowStyler
 } // endof namespace StockTable

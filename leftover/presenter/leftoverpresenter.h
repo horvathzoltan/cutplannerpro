@@ -46,17 +46,25 @@ public:
 
 
     void runIterativeLeftoverAuditRound();
-    void ExportIterativeAuditPdf(const QVector<LeftoverStockEntry> &targets, const QHash<QUuid, QVector<LeftoverStockEntry> > &candidateSets);
 private:
     MainWindow* _view;
 
-
     void processAuditCode(const QString& auditCode);
+    void exportAuditPdf(const QVector<LeftoverStockEntry> &list,
+                        const QString &title);
 
     LeftoverTableManager* _mgr;
 
-    void exportAuditPdf(const QVector<LeftoverStockEntry> &list, const QString &title);
     QVector<LeftoverStockEntry> shuffle(QVector<LeftoverStockEntry>& list, int rowsPerPage);
     QVector<LeftoverStockEntry> filter(const QVector<LeftoverStockEntry>& list);
     QString buildSubstitutionSummary(const QVector<LeftoverStockEntry> &targets, const QHash<QUuid, QVector<LeftoverStockEntry> > &candidateSets);
+
+    QString buildCompactSummary_2(
+        const QVector<LeftoverStockEntry>& targets,
+        const QHash<QUuid, QVector<LeftoverStockEntry>>& candidateSets);
+    void ExportIterativeAuditPdf(const QString& summary,
+                                 const QVector<LeftoverStockEntry> &targets,
+                                 const QHash<QUuid, QVector<LeftoverStockEntry>> &candidateSets);
+
 };
+
