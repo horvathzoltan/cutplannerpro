@@ -1,4 +1,12 @@
-lefotver helyettesítés:
+munkadarab címkék:
+    tudni kellene, hogy a megrendelőnek hány tételes a megrendelése
+    kérdés: mi van a több darabos tételekkel?
+    mi érdekel minket valójában? hogy hány munkadarabból áll a megrendelés fajtánként?
+
+peremes számítási mód:
+ - minitokosnál + 3 cm , aztán a gyártási
+
+lefotver helyettesítés: - FIXED
     - az audit 2. köre érinti azokat a hullókat is, amik egy korábbi körben  már megvoltak
 
 festési terv: - FIXED
@@ -6,14 +14,11 @@ festési terv: - FIXED
     emiatt festési material groupot kell csinálnunk
 
 
-peremes számítási mód:
- - minitokosnál + 3 cm , aztán a gyártási
-
 _bomModel: FIXED
     - addedMaterials - > a bom modelben hozzáadott anyagok
     legyen privát tag, ne lehessen kívülről írni!
 
-túlvágás:
+túlvágás: - FIXED
 a túlvágás esetén a pótlandó szegmenst az határozza meg, hogy melyik
 szegmens kerül a rúdból utoljára levágásra, nem pedig az, hogy
 hanyagdjára kerül kiszámításra.
