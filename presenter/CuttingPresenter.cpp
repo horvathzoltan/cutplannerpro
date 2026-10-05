@@ -571,10 +571,14 @@ void CuttingPresenter::GenerateCutInstructions(SortMode mode,
     }
 
     // utófeldolgozás
-    for (auto& mc : _machineCutsList)
-        CuttingInstructionUtils::postProcessMachineCuts(mc);
+    for (auto& mc : _machineCutsList){
+        CuttingInstructionUtils::postProcessMachineCuts_1(mc);
+        CuttingInstructionUtils::postProcessMachineCuts_2(mc);
+        CuttingInstructionUtils::postProcessMachineCuts_3(mc, mode);
+        CuttingInstructionUtils::postProcessMachineCuts_4(mc, prioRefs);
+    }
 
-    CutInstructionService::sort(&_machineCutsList, mode, prioRefs);
+    //CutInstructionService::sort(&_machineCutsList, mode, prioRefs);
 
     // 🟦 MachineReport feltöltése (actualPieces)
     for (auto& mc : _machineCutsList) {

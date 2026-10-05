@@ -40,8 +40,8 @@ public:
         // Példa:
         if (f == MaterialFamily::Tok) return 1;
         if (f == MaterialFamily::TokFed) return 1;
+        if (f == MaterialFamily::FelsoSin) return 1;
 
-        if (f == MaterialFamily::FelsoSin) return 2;
         if (f == MaterialFamily::Zaro) return 2;
         if (f == MaterialFamily::Palca) return 2;
 

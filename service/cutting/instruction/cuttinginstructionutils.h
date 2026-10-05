@@ -24,6 +24,8 @@
 
 #include "leftover/registry/leftoverstockregistry.h"
 
+#include <cutting/export/cutinstructionservice.h>
+
 
 
 namespace CuttingInstructionUtils {
@@ -98,6 +100,158 @@ inline void postProcessMachineCuts(MachineCuts& mc, SortStrategy strategy = Sort
             }
         }
     }
+}
+
+// rendezés nagy -> kicsi
+inline void postProcessMachineCuts_1(MachineCuts& mc) {
+    std::stable_sort(mc.cutInstructions.begin(), mc.cutInstructions.end(),
+                     [](const CutInstruction& a, const CutInstruction& b){
+                         if (a.cutSize_mm != b.cutSize_mm)
+                             return a.cutSize_mm > b.cutSize_mm;    // 1️⃣ méret szerint
+                         return a.rodId < b.rodId;                  // 2️⃣ rúd szerint
+                     });
+
+    }
+
+    // steller kompenzáció - mert ha nem pontos a gép, de tudjuk mennyit csal, akkor azt ne fejben kelljen már hozzáadni!
+inline void postProcessMachineCuts_2(MachineCuts& mc) {
+    // 2️⃣ Kompenzációs logika
+    double comp = mc.machineHeader.stellerCompensation_mm.value_or(0.0);
+    double maxLen = mc.machineHeader.stellerMaxLength_mm.value_or(-1);
+
+    for (auto& ci : mc.cutInstructions) {
+        ci.isManualCut = false;
+        ci.effectiveCutSize_mm = ci.cutSize_mm;
+
+        if (maxLen <= 0) {
+            ci.isManualCut = true;
+        } else {
+            double withComp = ci.cutSize_mm + comp;
+            if (withComp > maxLen) {
+                ci.isManualCut = true;
+            } else {
+                ci.effectiveCutSize_mm = withComp;
+            }
+        }
+    }
+}
+
+inline void postProcessMachineCuts_3(
+    MachineCuts& mc,
+    SortMode mode)
+{
+    if (mode != SortMode::ByMaterial &&
+        mode != SortMode::ByWorkflow)
+    {
+        return;
+    }
+
+    QVector<CutInstruction> result;
+
+    if (mode == SortMode::ByMaterial)
+    {
+        QMap<QUuid, QVector<CutInstruction>> groups;
+
+        for (const auto& ci : mc.cutInstructions)
+        {
+            groups[ci.materialId].append(ci);
+        }
+
+        for (auto it = groups.begin();
+             it != groups.end();
+             ++it)
+        {
+            result += it.value();
+        }
+    }
+
+    if (mode == SortMode::ByWorkflow)
+    {
+        QMap<int, QVector<CutInstruction>> groups;
+
+        for (const auto& ci : mc.cutInstructions)
+        {
+            const MaterialMaster* mat =
+                MaterialRegistry::instance().findById(ci.materialId);
+
+            int workflow = 999;
+
+            if (mat)
+                workflow = CutInstructionService::workflowOrder(mat->family);
+
+            groups[workflow].append(ci);
+        }
+
+        for (auto it = groups.begin();
+             it != groups.end();
+             ++it)
+        {
+            result += it.value();
+        }
+    }
+
+    mc.cutInstructions = std::move(result);
+}
+
+
+inline void postProcessMachineCuts_4(
+    MachineCuts& mc,
+    const QVector<QString>& prioRefs)
+{
+    if (prioRefs.isEmpty())
+        return;
+
+    // ------------------------------------
+    // 1. Prioritásos rudak kigyűjtése
+    // ------------------------------------
+
+    QSet<QString> priorityRods;
+
+    for (const auto& ci : mc.cutInstructions)
+    {
+        if (prioRefs.contains(ci.externalReference))
+        {
+            priorityRods.insert(ci.rodId);
+        }
+    }
+
+    if (priorityRods.isEmpty())
+        return;
+
+    // ------------------------------------
+    // 2. Szétválogatás
+    // ------------------------------------
+
+    QVector<CutInstruction> priorityCuts;
+    QVector<CutInstruction> normalCuts;
+
+    priorityCuts.reserve(mc.cutInstructions.size());
+    normalCuts.reserve(mc.cutInstructions.size());
+
+    for (const auto& ci : mc.cutInstructions)
+    {
+        if (priorityRods.contains(ci.rodId))
+        {
+            priorityCuts.append(ci);
+        }
+        else
+        {
+            normalCuts.append(ci);
+        }
+    }
+
+    // ------------------------------------
+    // 3. Összefűzés
+    // ------------------------------------
+
+    mc.cutInstructions.clear();
+
+    mc.cutInstructions.reserve(
+        priorityCuts.size() +
+        normalCuts.size());
+
+    mc.cutInstructions += priorityCuts;
+    mc.cutInstructions += normalCuts;
 }
 
 inline QString buildMaterialStockReportForMachine_AUDIT(const MachineCuts& mc)
@@ -313,6 +467,8 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         QString colMult;
         QString capStr;   // kapocs karakter: "╖", "║", "╜", vagy ""
         QString rodId;
+        double cutSize_mm = 0.0;
+        //double effectiveCutSize_mm = 0.0;
     };
 
     QVector<MachineCutsEvent_Row> rows;
@@ -485,6 +641,8 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         row.colMult        = multiplier;
         row.capStr = capStr;
         row.rodId = rodIdOrBarcode;
+        row.cutSize_mm = ci.cutSize_mm;
+
         rows.push_back(row);
     }
 
@@ -572,7 +730,28 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
     // --- KIÍRÁS ---
     bool first = true;
     const MachineCutsEvent_Row* prevRow = nullptr;
+    double prevCutSize = -1;
+
     for (const auto& r : rows) {
+
+        if (prevCutSize >= 0 &&
+            r.cutSize_mm > prevCutSize)
+        {
+            QString msg =
+                QString(" ▲ ▲ ▲ STELLER FEL: %1 → %2 mm ▲ ▲ ▲ ")
+                    .arg(QString::number(prevCutSize, 'f', 1))
+                    .arg(QString::number(r.cutSize_mm, 'f', 1));
+
+            int side =
+                qMax(0,
+                     (printedLW - msg.length()) / 2);
+
+            lines << QString(colMaterialPos, u'─');
+
+            lines << QString(side, u'═')
+                         + msg
+                         + QString(side, u'═');
+        }
 
         if (prevRow != nullptr && r.rodId != prevRow->rodId) {
             writeSeparator(*prevRow);   // ⭐ előző sor kapcsa
@@ -600,7 +779,8 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 
         lines << line;
 
-            prevRow = &r;   // ⭐ frissítjük az előző sort
+        prevRow = &r;   // ⭐ frissítjük az előző sort
+        prevCutSize = r.cutSize_mm;
     }
 
     MachineCutsEvent_Result r;
@@ -3465,4 +3645,5 @@ inline MachineCutsEvent_Result formatMachineCutsEvent_3_3(
 
 
 } // end namespace CuttingInstructionUtils
+
 
