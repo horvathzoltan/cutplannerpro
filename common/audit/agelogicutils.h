@@ -48,8 +48,9 @@ inline bool isExtraFresh(const QDateTime& lastSeenAt,
 inline bool isFresh(const QDateTime& lastSeenAt,
                     int notFoundCount = 0)
 {
-    return determine(lastSeenAt, notFoundCount)
-    == AgeState::Fresh;
+    auto a =  determine(lastSeenAt, notFoundCount);
+    bool isFresh =  a == AgeState::Fresh || a== AgeState::ExtraFresh;
+    return isFresh;
 }
 
 inline bool isStale(const QDateTime& lastSeenAt,

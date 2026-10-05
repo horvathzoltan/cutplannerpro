@@ -1,23 +1,20 @@
-
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
 "750";"Fenstermann, Szolnok";750;200;734;;1;1;0;"";SR-FSN;Width;false;2026-10-09;SR;TN;;SM;Gyartasi
 "750";"Fenstermann, Szolnok";750;200;717;;1;1;0;"";TE-H-32;Width;false;2026-10-09;SR;TN;;SM;Gyartasi
 "750";"Fenstermann, Szolnok";750;200;720;;1;1;0;"";SR-Z;Width;false;2026-10-09;SR;TN;;SM;Gyartasi
-"750";"Fenstermann, Szolnok";750;200;720;;1;1;0;"";SR-P;Width;false;2026-10-09;SR;TN;;SM;Gyartasi
+"750";"Fenstermann, Szolnok";750;200;720;;1;1;0;"";SR-P-3000;Width;false;2026-10-09;SR;TN;;SM;Gyartasi
 "761";"BBB-Glass, Mezőtúr";800;2000;784;;2;1;1;"";SR-FSN;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "761";"BBB-Glass, Mezőtúr";800;2000;767;;2;1;1;"";TE-H-32;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "761";"BBB-Glass, Mezőtúr";800;2000;770;;2;1;1;"";SR-Z;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
-externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
-
-"761";"BBB-Glass, Mezőtúr";800;2000;770;;2;1;1;"";SR-P;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
+"761";"BBB-Glass, Mezőtúr";800;2000;770;;2;1;1;"";SR-P-3000;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "762";"BBB-Glass, Mezőtúr";800;2020;784;;2;1;1;"";SR-FSN;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "762";"BBB-Glass, Mezőtúr";800;2020;767;;2;1;1;"";TE-H-32;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "762";"BBB-Glass, Mezőtúr";800;2020;770;;2;1;1;"";SR-Z;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
-"762";"BBB-Glass, Mezőtúr";800;2020;770;;2;1;1;"";SR-P;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
+"762";"BBB-Glass, Mezőtúr";800;2020;770;;2;1;1;"";SR-P-3000;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "763";"BBB-Glass, Mezőtúr";1850;1510;1844;;2;0;2;"";SR-T;Width;false;2026-10-12;SR;T;;SM;Gyartasi
 "763";"BBB-Glass, Mezőtúr";1850;1510;1827;;2;0;2;"";TE-H-32;Width;false;2026-10-12;SR;T;;SM;Gyartasi
 "763";"BBB-Glass, Mezőtúr";1850;1510;1830;;2;0;2;"";SR-Z;Width;false;2026-10-12;SR;T;;SM;Gyartasi
-"763";"BBB-Glass, Mezőtúr";1850;1510;1830;;2;0;2;"";SR-P;Width;false;2026-10-12;SR;T;;SM;Gyartasi
-
+"763";"BBB-Glass, Mezőtúr";1850;1510;1830;;2;0;2;"";SR-P-3000;Width;false;2026-10-12;SR;T;;SM;Gyartasi
 "780";"RakamazAblak";580;1250;564;;2;1;1;"";SR-FSN;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "780";"RakamazAblak";580;1250;547;;2;1;1;"";TE-H-32;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "780";"RakamazAblak";580;1250;550;;2;1;1;"";SR-Z;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
@@ -34,4 +31,19 @@ externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;
 "785";"RakamazAblak";1030;1450;997;;1;1;0;"";TE-H-32;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "785";"RakamazAblak";1030;1450;1000;;1;1;0;"";SR-Z;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
 "785";"RakamazAblak";1030;1450;1000;;1;1;0;"";SR-P-3000;Width;false;2026-10-12;SR;TN;;SM;Gyartasi
-
+"796";"Kovács Károly";800;1150;784;;1;0;1;"";SR-FSN;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"796";"Kovács Károly";800;1150;767;;1;0;1;"";TE-H-32;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"796";"Kovács Károly";800;1150;770;;1;0;1;"";SR-Z;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"796";"Kovács Károly";800;1150;770;;1;0;1;"";SR-P-3000;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"797";"Kovács Károly";730;1100;714;;1;1;0;"";SR-FSN;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"797";"Kovács Károly";730;1100;697;;1;1;0;"";TE-H-32;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"797";"Kovács Károly";730;1100;700;;1;1;0;"";SR-Z;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"797";"Kovács Károly";730;1100;700;;1;1;0;"";SR-P-3000;Width;false;2026-10-14;SR;TN;;SM;Gyartasi
+"804";"ThermoNyílászáró, Miskolc";1070;2600;1064;;1;0;1;"";SR-T;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"804";"ThermoNyílászáró, Miskolc";1070;2600;1047;;1;0;1;"";TE-H-32;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"804";"ThermoNyílászáró, Miskolc";1070;2600;1050;;1;0;1;"";SR-Z;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"804";"ThermoNyílászáró, Miskolc";1070;2600;1050;;1;0;1;"";SR-P-3000;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"805";"ThermoNyílászáró, Miskolc";1370;2600;1364;;1;1;0;"";SR-T;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"805";"ThermoNyílászáró, Miskolc";1370;2600;1347;;1;1;0;"";TE-H-32;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"805";"ThermoNyílászáró, Miskolc";1370;2600;1350;;1;1;0;"";SR-Z;Width;false;2026-10-12;SR;T;;SM;Gyartasi
+"805";"ThermoNyílászáró, Miskolc";1370;2600;1350;;1;1;0;"";SR-P-3000;Width;false;2026-10-12;SR;T;;SM;Gyartasi

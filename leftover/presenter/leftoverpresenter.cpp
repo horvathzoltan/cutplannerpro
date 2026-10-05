@@ -1063,11 +1063,18 @@ void LeftoverPresenter::ExportIterativeAuditPdf(
     };
 
     for (const auto& t : targets) {
+        if(t.barcode.toLower()=="rsm-a-140"){
+            zInfo("breke");
+        }
         if (!t.isFresh()) {
             draw(t);
         }
 
         for (const auto& c : candidateSets.value(t.entryId)) {
+            if(c.barcode.toLower()=="rsm-a-140"){
+                zInfo("keke");
+            }
+
             if (!c.isFresh()) {
                 draw(c);
             }
