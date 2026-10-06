@@ -99,6 +99,34 @@ inline double calcLab(double height){
     return height-48;
 }
 } //endof namespace
+
+/*
+peremes számítási mód:
+ - minitokosnál + 3 cm , aztán a gyártási
+*/
+namespace PeremMeret{
+
+inline double calcTok(double width){
+    return width - 5;
+}
+
+inline double calcTengely(double width){
+    return width - 10;
+}
+
+inline double calcVaszon(double width){
+    return width - 15;
+}
+
+inline double calcZaro(double width){
+    return width - 17;
+}
+
+inline double calcLab(double height){
+    return height;
+}
+} //endof namespace
+
 /*
 SR;MINIT;Tok;MT-T*
 SR;MINIT;Tengely;TE-H-18*
@@ -126,6 +154,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return VaszonMeret::calcTok(width);
         if(mode == SizeCalcMode::Falc)
             return FalcMeret::calcTok(width);
+        if(mode == SizeCalcMode::Perem)
+            return PeremMeret::calcTok(width);
     }
 
     // --- TENGELY ---
@@ -138,6 +168,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return VaszonMeret::calcTengely(width);
         if(mode == SizeCalcMode::Falc)
             return FalcMeret::calcTengely(width);
+        if(mode == SizeCalcMode::Perem)
+            return PeremMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
@@ -150,6 +182,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return VaszonMeret::calcVaszon(width);
         if(mode == SizeCalcMode::Falc)
             return FalcMeret::calcVaszon(width);
+        if(mode == SizeCalcMode::Perem)
+            return PeremMeret::calcVaszon(width);
     }
 
     // --- ZARO ---
@@ -162,6 +196,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return VaszonMeret::calcZaro(width);
         if(mode == SizeCalcMode::Falc)
             return FalcMeret::calcZaro(width);
+        if(mode == SizeCalcMode::Perem)
+            return PeremMeret::calcZaro(width);
     }
 
     // ha kell festeni, a láb 4 cm-el hosszabb, és fúrni is kell a felfüggesztés miatt
@@ -175,6 +211,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
             return VaszonMeret::calcLab(height);
         if(mode == SizeCalcMode::Falc)
             return FalcMeret::calcLab(height);
+        if(mode == SizeCalcMode::Perem)
+            return PeremMeret::calcLab(height);
     }
 
     // --- ISMERETLEN ROLE ---

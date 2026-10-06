@@ -30,6 +30,7 @@ private:
         QString stellerMaxLength;
         QString stellerCompensation;
         QString storageBarcode;
+        QString isManual;
         QString comment;
     };
 

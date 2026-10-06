@@ -25,45 +25,45 @@
 
 class RequestSnapshotBuilder {
 public:
-    static QVector<Cutting::Plan::Request> build() {
+    // static QVector<Cutting::Plan::Request> build() {
 
-        QVector<Cutting::Plan::Request> list =
-            CuttingPlanRequestRegistry::instance().readAll();
+    //     QVector<Cutting::Plan::Request> list =
+    //         CuttingPlanRequestRegistry::instance().readAll();
 
-        for (Cutting::Plan::Request& r : list) {
+    //     // for (Cutting::Plan::Request& r : list) {
 
-            const MaterialMaster* m =
-                MaterialRegistry::instance().findById(r.materialId);
+    //     //     const MaterialMaster* m =
+    //     //         MaterialRegistry::instance().findById(r.materialId);
 
-            if (!m)
-                continue;
+    //     //     if (!m)
+    //     //         continue;
 
-            // 🔥 ÚJ: szerepkör meghatározása groupKey alapján
-            MaterialRole role =
-                MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
+    //     //     // 🔥 ÚJ: szerepkör meghatározása groupKey alapján
+    //     //     MaterialRole role =
+    //     //         MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
 
-            auto* roleGroup =
-                MaterialRoleGroupRegistry::instance().findById(role.groupId);
+    //     //     auto* roleGroup =
+    //     //         MaterialRoleGroupRegistry::instance().findById(role.groupId);
 
-            QString groupKey = roleGroup ? roleGroup->barcode : "";
-            auto type = ProductTypeRegistry::instance().findById(r.productTypeId);
-            auto subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
+    //     //     QString groupKey = roleGroup ? roleGroup->barcode : "";
+    //     //     auto type = ProductTypeRegistry::instance().findById(r.productTypeId);
+    //     //     auto subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
 
-            if(type && subtype){
-                auto comp = LengthCalculator::compensate(
-                    type->code,
-                    subtype->code,
-                    r.attributes,
-                    groupKey);
+    //     //     if(type && subtype){
+    //     //         auto comp = LengthCalculator::compensate(
+    //     //             type->code,
+    //     //             subtype->code,
+    //     //             r.attributes,
+    //     //             groupKey);
 
-                if (comp.has_value()) {
-                    r.requiredLength += *comp;
-                }
-            }
-        }
+    //     //         if (comp.has_value()) {
+    //     //             r.requiredLength += *comp;
+    //     //         }
+    //     //     }
+    //     // }
 
-        return list;
-    }
+    //     return list;
+    // }
 
     static QMap<QUuid, QVector<int>> getLengthsPerMaterial(const QVector<Cutting::Plan::Request>& requests){
 

@@ -23,22 +23,20 @@ inline std::optional<double> calc(const QString& subtype,
                                   double height,
                                   SizeCalcMode mode){
 
-    if(subtype == "T"){
+    if(subtype == "T")
         return Tokozott::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "TN"){
-        return TokNelkuli::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "MINIT"){
-        return MiniTokos::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "MOT"){
-        return Motoros::calc(attributes, role, width, height, mode);
-    }
-    else {
-        zInfo("Ismeretlen altípus:"+subtype);
-    }
 
+    if(subtype == "TN")
+        return TokNelkuli::calc(attributes, role, width, height, mode);
+
+    if(subtype == "MINIT")
+        return MiniTokos::calc(attributes, role, width, height, mode);
+
+    if(subtype == "MOT")
+        return Motoros::calc(attributes, role, width, height, mode);
+
+
+    zInfo("Ismeretlen altípus:"+subtype);
     return std::nullopt;
 }
 

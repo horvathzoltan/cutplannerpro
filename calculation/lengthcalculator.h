@@ -16,9 +16,9 @@ public:
         double height,
         SizeCalcMode mode);
 
-    static std::optional<double> compensate(
-        const QString& productType,
-        const QString& productSubtype,
-        const QMap<QString, QString>& attributes,
-        const QString& role);
+    // static std::optional<double> compensate(
+    //     const QString& productType,
+    //     const QString& productSubtype,
+    //     const QMap<QString, QString>& attributes,
+    //     const QString& role);
 };

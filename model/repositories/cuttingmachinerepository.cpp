@@ -11,7 +11,7 @@
 
 std::optional<CuttingMachineRepository::CuttingMachineRow>
 CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, CsvReader::FileContext& ctx) {
-    if (parts.size() < 8) {
+    if (parts.size() < 9) {
         QString msg = L("❌ Érvénytelen gépsor a sorban:");
         ctx.addError(ctx.currentLineNumber(), msg);
 
@@ -26,7 +26,8 @@ CuttingMachineRepository::convertRowToMachineRow(const QVector<QString>& parts, 
     row.stellerMaxLength = parts[4].trimmed();
     row.stellerCompensation = parts[5].trimmed();
     row.storageBarcode = parts[6].trimmed();
-    row.comment = parts[7].trimmed();
+    row.isManual      = parts[7].trimmed();
+    row.comment       = parts[8].trimmed();
     return row;
 }
 
@@ -70,6 +71,11 @@ CuttingMachineRepository::buildMachineFromRow(const CuttingMachineRow& row, CsvR
     machine.kerf_mm = kerf;
     machine.stellerMaxLength_mm = maxLen;
     machine.stellerCompensation_mm = comp;
+
+    machine.isManual =
+        row.isManual == "1" ||
+        row.isManual.compare("true",
+                             Qt::CaseInsensitive) == 0;
     machine.comment = row.comment;
 
     return std::make_optional(machine);

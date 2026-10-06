@@ -556,13 +556,13 @@ DISTFILES += \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \
     testdata/material_rolemap.csv \
-    testdata/materialgroup_members.csv \
-    testdata/materialgroups.csv \
     testdata/materialgroups.msff \
     testdata/materialpaintgroups.msff \
     testdata/materialrolegroups.msff \
     testdata/materials.csv \
-    testdata/materials_old.csv \
+    testdata/old_materialgroup_members.csv \
+    testdata/old_materialgroups.csv \
+    testdata/old_materials_old.csv \
     testdata/powder_consumption.csv \
     testdata/product_calcmodes.msff \
     testdata/product_subtype.csv \

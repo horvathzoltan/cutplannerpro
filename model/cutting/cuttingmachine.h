@@ -20,6 +20,14 @@ struct CuttingMachine : public IdentifiableEntity {
     QUuid rootStorageId;    // 🗂️ A géphez tartozó tárolófa gyökér StorageEntry ID-je    
     QString comment;        // 🗒️ Opcionális megjegyzés / karbantartási információ
     
+    bool isManual = false;
+    // true:
+    // nincs steller-skála
+    // a méretet kézzel kell feljelölni
+    //
+    // false:
+    // stellerrel beállítható gép
+
     void addMaterialType(const MaterialType& v);
 };
 

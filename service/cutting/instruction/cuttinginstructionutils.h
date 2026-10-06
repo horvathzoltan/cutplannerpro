@@ -440,6 +440,12 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 
     lines << buildMachineCutsHeader(mc, rep, failedList, planIdStr);
 
+    const CuttingMachine* machine =
+        CuttingMachineRegistry::instance()
+            .findById(mc.machineHeader.machineId);
+
+    const bool supportsStellerMessages = machine && !machine->isManual;
+
     // --- előkészítés ---
     QString prevRod;
     int maxStep = mc.cutInstructions.isEmpty()
@@ -469,6 +475,7 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         QString rodId;
         double cutSize_mm = 0.0;
         //double effectiveCutSize_mm = 0.0;
+        bool isManualCut = false;
     };
 
     QVector<MachineCutsEvent_Row> rows;
@@ -607,7 +614,10 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
             icon = "";//"■";     // vagy "🔧", vagy akár " " (üres)
         } else {
             // toldat vagy normál darab → vágás
-            icon = ci.isManualCut ? "📏" : "✂️";
+            const bool requiresManualMeasurement =
+                machine && (machine->isManual || ci.isManualCut);
+
+            icon = requiresManualMeasurement?"📏":"✂️";
         }
 
         // Toldás ikon (mind MAIN, mind TOLDAT esetén)
@@ -642,6 +652,8 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
         row.capStr = capStr;
         row.rodId = rodIdOrBarcode;
         row.cutSize_mm = ci.cutSize_mm;
+        row.isManualCut = ci.isManualCut;
+
 
         rows.push_back(row);
     }
@@ -730,16 +742,19 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
     // --- KIÍRÁS ---
     bool first = true;
     const MachineCutsEvent_Row* prevRow = nullptr;
-    double prevCutSize = -1;
+    double prevMachineCutSize = -1;
+    //bool hasPrevMachineCut = false;
 
     for (const auto& r : rows) {
 
-        if (prevCutSize >= 0 &&
-            r.cutSize_mm > prevCutSize)
+        if (supportsStellerMessages &&
+            !r.isManualCut &&
+            prevMachineCutSize >= 0 &&
+            r.cutSize_mm > prevMachineCutSize)
         {
             QString msg =
                 QString(" ▲ ▲ ▲ STELLER FEL: %1 → %2 mm ▲ ▲ ▲ ")
-                    .arg(QString::number(prevCutSize, 'f', 1))
+                    .arg(QString::number(prevMachineCutSize, 'f', 1))
                     .arg(QString::number(r.cutSize_mm, 'f', 1));
 
             int side =
@@ -779,8 +794,12 @@ inline MachineCutsEvent_Result formatMachineCutsEvent(const MachineCuts& mc,
 
         lines << line;
 
-        prevRow = &r;   // ⭐ frissítjük az előző sort
-        prevCutSize = r.cutSize_mm;
+        prevRow = &r;
+
+        if (!r.isManualCut)
+        {
+            prevMachineCutSize = r.cutSize_mm;
+        }
     }
 
     MachineCutsEvent_Result r;

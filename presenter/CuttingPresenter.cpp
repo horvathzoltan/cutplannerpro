@@ -406,7 +406,9 @@ void CuttingPresenter::scrapShortLeftovers()
 }
 
 void CuttingPresenter::syncModelWithRegistries() {
-    QVector<Cutting::Plan::Request> requests = RequestSnapshotBuilder::build();
+    //QVector<Cutting::Plan::Request> requests = RequestSnapshotBuilder::build();
+
+     QVector<Cutting::Plan::Request> requests = CuttingPlanRequestRegistry::instance().readAll();
 
     auto result1 = CuttingPlanValidationService::validate(requests);
     if (_view)
@@ -435,10 +437,10 @@ void CuttingPresenter::syncModelWithRegistries() {
     auto expandedlengths = RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
     QMap<QUuid, int> strandsPerMaterial =
         InventorySnapshotBuilder::greedyStrandPacking(expandedlengths);
-    InventorySnapshot inventory =
+    InventorySnapshot inventorySnapshot =
         InventorySnapshotBuilder::build2(strandsPerMaterial);
 
-    auto result2 = InventorySnapshotValidator::validate(inventory, strandsPerMaterial);
+    auto result2 = InventorySnapshotValidator::validate(inventorySnapshot, strandsPerMaterial);
     if (_view)
         _view->ShowWarningDialog(result2);
 
@@ -449,7 +451,7 @@ void CuttingPresenter::syncModelWithRegistries() {
 
     // 8️⃣ Modell betöltése
     _optimizerModel.setCuttingRequests(requests);
-    _optimizerModel.setInventorySnapshot(inventory);
+    _optimizerModel.setInventorySnapshot(inventorySnapshot);
     isModelSynced = true;
 }
 

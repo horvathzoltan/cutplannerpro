@@ -27,35 +27,32 @@ inline std::optional<double> calc(const QString& subtype,
                                   double height,
                                   SizeCalcMode mode){
 
-    if(subtype == "ALAP"){
+    if(subtype == "ALAP")
         return Alap::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "RUG"){
-        return Rugos::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "TET"){
-        return Tetoteri::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "TET_NAGY"){
-        return TetoteriNagyKonzolos::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "TSIN"){
-       return TokozottSines::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "UJGY"){
-        return Ujgyongyos::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "SRTOK"){
-        return SavroloTok::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "MAXI"){
-        return Maxi::calc(attributes, role, width, height, mode);
-    }
-    //
-    else {
-        zInfo("Ismeretlen altípus:"+subtype);
-    }
 
+    if(subtype == "RUG")
+        return Rugos::calc(attributes, role, width, height, mode);
+
+    if(subtype == "TET")
+        return Tetoteri::calc(attributes, role, width, height, mode);
+
+    if(subtype == "TET_NAGY")
+        return TetoteriNagyKonzolos::calc(attributes, role, width, height, mode);
+
+    if(subtype == "TSIN")
+       return TokozottSines::calc(attributes, role, width, height, mode);
+
+    if(subtype == "UJGY")
+        return Ujgyongyos::calc(attributes, role, width, height, mode);
+
+    if(subtype == "SRTOK")
+        return SavroloTok::calc(attributes, role, width, height, mode);
+
+    if(subtype == "MAXI")
+        return Maxi::calc(attributes, role, width, height, mode);
+
+    //
+    zInfo("Ismeretlen altípus:"+subtype);
     return std::nullopt;
 }
 

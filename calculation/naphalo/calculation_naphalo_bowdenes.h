@@ -114,41 +114,41 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     return std::nullopt;
 }
 
-std::optional<double> compensation(const QMap<QString, QString>& attributes,
-                                   const QString& role){
-    if (role == "RNP-ROLL") {
-        // attribútumfüggő tengely
-        const QString meghajtas_key = "meghajtas";
-        if(attributes.contains(meghajtas_key))
-        {
-            QString meghajtas = attributes.value(meghajtas_key);
-            if (meghajtas == "motoros") {
-                return 0;//-4;
-            }
-            else if (meghajtas == "kurblis") {
-                return 0;//-3;
-            }
-            else {
-                zInfo("Ismeretlen attr value: "+meghajtas);
-            }
-        }
-        else{
-            zInfo(L("Ismeretlen attr key: ")+meghajtas_key);
-        }
-    }
+// std::optional<double> compensation(const QMap<QString, QString>& attributes,
+//                                    const QString& role){
+//     if (role == "RNP-ROLL") {
+//         // attribútumfüggő tengely
+//         const QString meghajtas_key = "meghajtas";
+//         if(attributes.contains(meghajtas_key))
+//         {
+//             QString meghajtas = attributes.value(meghajtas_key);
+//             if (meghajtas == "motoros") {
+//                 return 0;//-4;
+//             }
+//             else if (meghajtas == "kurblis") {
+//                 return 0;//-3;
+//             }
+//             else {
+//                 zInfo("Ismeretlen attr value: "+meghajtas);
+//             }
+//         }
+//         else{
+//             zInfo(L("Ismeretlen attr key: ")+meghajtas_key);
+//         }
+//     }
 
-    // --- TOK ---
-    if (role == "RNP-TOK") {
-        return -0.50;
-    }
+//     // --- TOK ---
+//     if (role == "RNP-TOK") {
+//         return -0.50;
+//     }
 
-    // --- SÚLY ---
-    if (role == "RNP-BAR") {
-        return 0;//-10;
-    }
+//     // --- SÚLY ---
+//     if (role == "RNP-BAR") {
+//         return 0;//-10;
+//     }
 
-    return std::nullopt;
-}
+//     return std::nullopt;
+// }
 
 } //end of namespace Cipzaras
 }

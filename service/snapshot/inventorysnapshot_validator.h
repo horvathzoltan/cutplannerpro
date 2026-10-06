@@ -49,8 +49,9 @@ inline ValidationResult validate( const InventorySnapshot& inventory,
 
         if (totals.have < totals.need) {
             const MaterialGroup* g = MaterialGroupRegistry::instance().findById(it.key());
-            QString groupName = g ? g->name : QString("Ismeretlen csoport");
-            result.warnings << QString("Kevés készlet az anyagcsoportban: %1 (kell: %2 szál, van: %3 szál)")
+            QString groupName = g ? g->name : QString("Ismeretlen csoport: %1").arg(it.key().toString());
+            result.warnings << QString(
+                                   "A generált inventory snapshot nem tartalmaz elegendő szálat az anyagcsoportban: %1 (kell: %2 szál, snapshotban: %3 szál)")
                                    .arg(groupName)
                                    .arg(totals.need)
                                    .arg(totals.have);

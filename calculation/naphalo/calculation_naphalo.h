@@ -21,40 +21,34 @@ inline std::optional<double> calc(const QString& subtype,
                                   double height,
                                   SizeCalcMode mode){
 
-    if(subtype == "CIP"){
+    if(subtype == "CIP")
         return Cipzaras::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "SIN"){
+
+    if(subtype == "SIN")
         return Sines::calc(attributes, role, width, height, mode);
-    }
-    else if(subtype == "BOW"){
+
+    if(subtype == "BOW")
         return Bowdenes::calc(attributes, role, width, height, mode);
-    }
-    else {
-        zInfo("Ismeretlen altípus:"+subtype);
-    }
 
+    zInfo("Ismeretlen altípus:"+subtype);
     return std::nullopt;
 }
 
-inline std::optional<double> compensation(const QString& subtype,
-                                  const QMap<QString, QString>& attributes,
-                                  const QString& role){
+// inline std::optional<double> compensation(const QString& subtype,
+//                                   const QMap<QString, QString>& attributes,
+//                                   const QString& role){
 
-    if(subtype == "CIP"){
-        return Cipzaras::compensation(attributes, role);
-    }
-    else if(subtype == "SIN"){
-        return Sines::compensation(attributes, role);
-    }
-    else if(subtype == "BOW"){
-        return Bowdenes::compensation(attributes, role);
-    }
-    else {
-        zInfo("Ismeretlen altípus:"+subtype);
-    }
+//     if(subtype == "CIP")
+//         return Cipzaras::compensation(attributes, role);
 
-    return std::nullopt;
-}
+//     if(subtype == "SIN")
+//         return Sines::compensation(attributes, role);
+
+//     if(subtype == "BOW")
+//         return Bowdenes::compensation(attributes, role);
+
+//     zInfo("Ismeretlen altípus:"+subtype);
+//     return std::nullopt;
+// }
 } // end of namespace Naphalo
 } // end of namespace Calculation
