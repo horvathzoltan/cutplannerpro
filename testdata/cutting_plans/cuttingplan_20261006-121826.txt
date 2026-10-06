@@ -1,0 +1,69 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"2424";"Tomika(VITALA)";670;1250;640;;1;0;0;"";TE-R-23;Width;false;2026-10-07;ROL;RUG;;SM;Gyartasi
+"2424";"Tomika(VITALA)";670;1250;643;;1;0;0;"";ROL-P;Width;false;2026-10-07;ROL;RUG;;SM;Gyartasi
+"2447";"L.Zs., Nyh";390;700;365;;1;0;0;"";TE-R-23;Width;false;2026-10-07;ROL;TET;;SM;Gyartasi
+"2447";"L.Zs., Nyh";390;700;363;;1;0;0;"";ROL-P;Width;false;2026-10-07;ROL;TET;;SM;Gyartasi
+"2430";"Fenstermann, Szolnok";1500;1500;1494;;1;0;1;"";SR-T;Width;false;2026-10-09;ROL;SRTOK;;SM;Gyartasi
+"2430";"Fenstermann, Szolnok";1500;1500;1477;;1;0;1;"";TE-H-32;Width;false;2026-10-09;ROL;SRTOK;;SM;Gyartasi
+"2430";"Fenstermann, Szolnok";1500;1500;1470;;1;0;1;"";ROL-GYZ;Width;false;2026-10-09;ROL;SRTOK;;SM;Gyartasi
+"2450";"AjtóPark, Ef_Nyh.";2000;3000;1965;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2450";"AjtóPark, Ef_Nyh.";2000;3000;1955;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2451";"AjtóPark, Ef_Nyh.";1975;3000;1940;;1;1;0;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2451";"AjtóPark, Ef_Nyh.";1975;3000;1930;;1;1;0;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2452";"AjtóPark, Ef_Nyh.";2000;3000;1965;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2452";"AjtóPark, Ef_Nyh.";2000;3000;1955;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2455";"AjtóPark, Ef_Miskolc2";1375;1900;1340;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2455";"AjtóPark, Ef_Miskolc2";1375;1900;1330;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2456";"AjtóPark, Ef_Miskolc2";1375;1900;1340;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2456";"AjtóPark, Ef_Miskolc2";1375;1900;1330;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2457";"AjtóPark, Ef_Miskolc2";1375;1900;1340;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2457";"AjtóPark, Ef_Miskolc2";1375;1900;1330;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2458";"AjtóPark, Ef_Miskolc2";1385;1900;1350;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2458";"AjtóPark, Ef_Miskolc2";1385;1900;1340;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2459";"AjtóPark, Ef_Miskolc2";1385;1900;1350;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2459";"AjtóPark, Ef_Miskolc2";1385;1900;1340;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2460";"AjtóPark, Ef_Miskolc2";1385;1900;1350;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2460";"AjtóPark, Ef_Miskolc2";1385;1900;1340;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2461";"AjtóPark, Ef_Miskolc2";1380;1900;1345;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2461";"AjtóPark, Ef_Miskolc2";1380;1900;1335;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2462";"AjtóPark, Ef_Miskolc2";1390;1900;1355;;1;0;1;"";TE-B-47;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2462";"AjtóPark, Ef_Miskolc2";1390;1900;1345;;1;0;1;"";ROL-EZ;Width;false;2026-10-09;ROL;MAXI;;SM;Gyartasi
+"2473";"Generálkiv., Pécs";650;1200;625;;1;0;1;"";TE-R-23;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2473";"Generálkiv., Pécs";650;1200;623;;1;0;1;"";ROL-P;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2474";"Generálkiv., Pécs";650;1200;625;;1;0;1;"";TE-R-23;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2474";"Generálkiv., Pécs";650;1200;623;;1;0;1;"";ROL-P;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2477";"Árnyhouse/Seres, Pécs";745;1020;720;;1;0;1;"";TE-R-23;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2477";"Árnyhouse/Seres, Pécs";745;1020;718;;1;0;1;"";ROL-P;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2478";"Árnyhouse/Seres, Pécs";745;1020;720;;1;0;1;"";TE-R-23;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2478";"Árnyhouse/Seres, Pécs";745;1020;718;;1;0;1;"";ROL-P;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2479";"Árnyhouse/Seres, Pécs";745;1020;720;;1;0;1;"";TE-R-23;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2479";"Árnyhouse/Seres, Pécs";745;1020;718;;1;0;1;"";ROL-P;Width;false;2026-10-09;ROL;TET;;SM;Gyartasi
+"2485";"Lukács-Ablak, Nyh";605;1300;580;;1;0;0;"";TE-R-23;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2485";"Lukács-Ablak, Nyh";605;1300;578;;1;0;0;"";ROL-P;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2486";"Lukács-Ablak, Nyh";605;1300;580;;1;0;0;"";TE-R-23;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2486";"Lukács-Ablak, Nyh";605;1300;578;;1;0;0;"";ROL-P;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2487";"Lukács-Ablak, Nyh";605;900;580;;1;0;0;"";TE-R-23;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2487";"Lukács-Ablak, Nyh";605;900;578;;1;0;0;"";ROL-P;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2488";"Lukács-Ablak, Nyh";605;900;580;;1;0;0;"";TE-R-23;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2488";"Lukács-Ablak, Nyh";605;900;578;;1;0;0;"";ROL-P;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2489";"Lukács-Ablak, Nyh";605;900;580;;1;0;0;"";TE-R-23;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2489";"Lukács-Ablak, Nyh";605;900;578;;1;0;0;"";ROL-P;Width;false;2026-10-06;ROL;TET;;SM;Gyartasi
+"2492";"Kiss Árnyékolás, Pécs";1140;1000;1105;;1;0;1;"";TE-R-23;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2492";"Kiss Árnyékolás, Pécs";1140;1000;1095;;1;0;1;"";ROL-P;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2519";"Pócsik Béla, Eger";450;1400;415;;1;0;1;"";TE-R-23;Width;false;2026-10-06;ROL;ALAP;;SM;Gyartasi
+"2519";"Pócsik Béla, Eger";450;1400;405;;1;0;1;"";ROL-P;Width;false;2026-10-06;ROL;ALAP;;SM;Gyartasi
+"2520";"Pócsik Béla, Eger";1200;1500;1165;;1;1;0;"";TE-R-23;Width;false;2026-10-06;ROL;ALAP;;SM;Gyartasi
+"2520";"Pócsik Béla, Eger";1200;1500;1155;;1;1;0;"";ROL-P;Width;false;2026-10-06;ROL;ALAP;;SM;Gyartasi
+"2527";"Szekér Zsolt, Pécs";570;1260;535;;1;0;1;"";TE-R-23;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2527";"Szekér Zsolt, Pécs";570;1260;525;;1;0;1;"";ROL-P;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2528";"Szekér Zsolt, Pécs";570;1260;535;;1;1;0;"";TE-R-23;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2528";"Szekér Zsolt, Pécs";570;1260;525;;1;1;0;"";ROL-P;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2433";"Oros-Csőszer, Mtúr";820;1750;785;;1;0;1;"";TE-R-23;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2433";"Oros-Csőszer, Mtúr";820;1750;775;;1;0;1;"";ROL-P;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2434";"Oros-Csőszer, Mtúr";820;1750;785;;1;0;1;"";TE-R-23;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2434";"Oros-Csőszer, Mtúr";820;1750;775;;1;0;1;"";ROL-P;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2435";"Oros-Csőszer, Mtúr";820;1700;785;;1;0;1;"";TE-R-23;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2435";"Oros-Csőszer, Mtúr";820;1700;775;;1;0;1;"";ROL-P;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2436";"Oros-Csőszer, Mtúr";820;1700;785;;1;0;1;"";TE-R-23;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"2436";"Oros-Csőszer, Mtúr";820;1700;775;;1;0;1;"";ROL-P;Width;false;2026-10-12;ROL;ALAP;;SM;Gyartasi
+"20261006";"Molnár Károly";1385;1000;1350;;5;5;0;"";TE-H-32;Width;false;2026-10-06;ROL;UJGY;;SM;Gyartasi

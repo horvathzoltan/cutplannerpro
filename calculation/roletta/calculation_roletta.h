@@ -6,7 +6,9 @@
 #include "calculation/roletta/calculation_roletta_tetoterinagy.h"
 #include "calculation/roletta/calculation_roletta_tokozottsines.h"
 #include "calculation/roletta/calculation_roletta_tetoteri.h"
-
+#include "calculation/roletta/calculation_roletta_rugos.h"
+#include "calculation/roletta/calculation_roletta_savrolotok.h"
+#include "calculation/roletta/calculation_roletta_maxi.h"
 
 
 #include "common/logger.h"
@@ -29,7 +31,7 @@ inline std::optional<double> calc(const QString& subtype,
         return Alap::calc(attributes, role, width, height, mode);
     }
     else if(subtype == "RUG"){
-        //return Rugos::calc(attributes, role, width, height, mode);
+        return Rugos::calc(attributes, role, width, height, mode);
     }
     else if(subtype == "TET"){
         return Tetoteri::calc(attributes, role, width, height, mode);
@@ -43,6 +45,13 @@ inline std::optional<double> calc(const QString& subtype,
     else if(subtype == "UJGY"){
         return Ujgyongyos::calc(attributes, role, width, height, mode);
     }
+    else if(subtype == "SRTOK"){
+        return SavroloTok::calc(attributes, role, width, height, mode);
+    }
+    else if(subtype == "MAXI"){
+        return Maxi::calc(attributes, role, width, height, mode);
+    }
+    //
     else {
         zInfo("Ismeretlen altípus:"+subtype);
     }

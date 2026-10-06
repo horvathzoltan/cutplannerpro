@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"395";"Hársfalvi, Nyh";4410;2490;4380;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"395";"Hársfalvi, Nyh";4410;2490;4405;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"395";"Hársfalvi, Nyh";4410;2490;4287;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"395";"Hársfalvi, Nyh";4410;2490;2387;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"395";"Hársfalvi, Nyh";4410;2490;4300;;1;1;0;"RAL 7016";NP-ROLL78-7000;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"395";"Hársfalvi, Nyh";4410;2490;4235;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-07;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;1830;;1;0;1;"RAL 8004";NP-T;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;1855;;1;0;1;"RAL 8004";NP-TF;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;1737;;1;0;1;"RAL 8004";NP-CZ;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;2262;;1;0;1;"RAL 8004";NP-CL2+CLT2+CLB2;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;1750;;1;0;1;"RAL 8004";NP-ROLL78-7000;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"401";"Generálkiv., Pécs";1860;2365;1685;;1;0;1;"RAL 8004";NP-BAR20-6000;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2260;;1;1;0;"RAL 8004";NP-T;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2285;;1;1;0;"RAL 8004";NP-TF;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2167;;1;1;0;"RAL 8004";NP-CZ;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2202;;1;1;0;"RAL 8004";NP-CL2+CLT2+CLB2;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2180;;1;1;0;"RAL 8004";NP-ROLL70-5000;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi
+"402";"Generálkiv., Pécs";2290;2305;2115;;1;1;0;"RAL 8004";NP-BAR20-6000;Width;false;2026-10-09;NP;CIP;meghajtas=motoros;FS;Gyartasi

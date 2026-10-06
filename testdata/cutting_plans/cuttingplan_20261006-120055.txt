@@ -1,0 +1,53 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"777";"Napex, Pécs";1175;380;1185;;1;0;1;"";MT-T;Width;false;2026-10-09;SR;MINIT;;SM;Uveg
+"777";"Napex, Pécs";1175;380;1180;;1;0;1;"";TE-H-18;Width;false;2026-10-09;SR;MINIT;;SM;Uveg
+"777";"Napex, Pécs";1175;380;1168;;1;0;1;"";MT-Z+P;Width;false;2026-10-09;SR;MINIT;;SM;Uveg
+"777";"Napex, Pécs";1175;380;380;;1;0;1;"";MT-L2;Width;false;2026-10-09;SR;MINIT;;SM;Uveg
+"757";"Függönycenter";933;1020;943;;1;0;1;"";MT-T;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"757";"Függönycenter";933;1020;938;;1;0;1;"";TE-H-18;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"757";"Függönycenter";933;1020;926;;1;0;1;"";MT-Z+P;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"757";"Függönycenter";933;1020;1020;;1;0;1;"";MT-L2;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"758";"Függönycenter";633;910;643;;1;0;1;"";MT-T;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"758";"Függönycenter";633;910;638;;1;0;1;"";TE-H-18;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"758";"Függönycenter";633;910;626;;1;0;1;"";MT-Z+P;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"758";"Függönycenter";633;910;910;;1;0;1;"";MT-L2;Width;false;2026-10-08;SR;MINIT;;SM;Uveg
+"800";"Driszku";940;1120;950;;2;2;0;"";MT-T;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"800";"Driszku";940;1120;945;;2;2;0;"";TE-H-18;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"800";"Driszku";940;1120;933;;2;2;0;"";MT-Z+P;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"800";"Driszku";940;1120;1120;;2;2;0;"";MT-L2;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"801";"Driszku";930;1120;940;;1;1;0;"";MT-T;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"801";"Driszku";930;1120;935;;1;1;0;"";TE-H-18;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"801";"Driszku";930;1120;923;;1;1;0;"";MT-Z+P;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"801";"Driszku";930;1120;1120;;1;1;0;"";MT-L2;Width;false;2026-10-14;SR;MINIT;;SM;Uveg
+"808";"Rollo-Flex";565;985;575;;2;1;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"808";"Rollo-Flex";565;985;570;;2;1;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"808";"Rollo-Flex";565;985;558;;2;1;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"808";"Rollo-Flex";565;985;985;;2;1;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"809";"Rollo-Flex";655;910;665;;1;0;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"809";"Rollo-Flex";655;910;660;;1;0;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"809";"Rollo-Flex";655;910;648;;1;0;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"809";"Rollo-Flex";655;910;910;;1;0;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"810";"Rollo-Flex";740;1000;750;;1;0;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"810";"Rollo-Flex";740;1000;745;;1;0;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"810";"Rollo-Flex";740;1000;733;;1;0;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"810";"Rollo-Flex";740;1000;1000;;1;0;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"811";"Rollo-Flex";515;1130;525;;2;1;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"811";"Rollo-Flex";515;1130;520;;2;1;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"811";"Rollo-Flex";515;1130;508;;2;1;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"811";"Rollo-Flex";515;1130;1130;;2;1;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"812";"Rollo-Flex";965;990;975;;2;1;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"812";"Rollo-Flex";965;990;970;;2;1;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"812";"Rollo-Flex";965;990;958;;2;1;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"812";"Rollo-Flex";965;990;990;;2;1;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"813";"Rollo-Flex";650;1040;660;;2;1;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"813";"Rollo-Flex";650;1040;655;;2;1;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"813";"Rollo-Flex";650;1040;643;;2;1;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"813";"Rollo-Flex";650;1040;1040;;2;1;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"814";"Rollo-Flex";650;1140;660;;2;1;1;"";MT-T;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"814";"Rollo-Flex";650;1140;655;;2;1;1;"";TE-H-18;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"814";"Rollo-Flex";650;1140;643;;2;1;1;"";MT-Z+P;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"814";"Rollo-Flex";650;1140;1140;;2;1;1;"";MT-L2;Width;false;2026-10-15;SR;MINIT;;SM;Uveg
+"2427";"Fenstermann, Szolnok";367;1277;377;;1;1;0;"";MT-T;Width;false;2026-10-09;ROL;TSIN;;SM;Uveg
+"2427";"Fenstermann, Szolnok";367;1277;372;;1;1;0;"";TE-H-18;Width;false;2026-10-09;ROL;TSIN;;SM;Uveg
+"2427";"Fenstermann, Szolnok";367;1277;362;;1;1;0;"";MT-Z;Width;false;2026-10-09;ROL;TSIN;;SM;Uveg
+"2427";"Fenstermann, Szolnok";367;1277;1277;;1;1;0;"";MT-L2;Width;false;2026-10-09;ROL;TSIN;;SM;Uveg
