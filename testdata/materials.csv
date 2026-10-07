@@ -167,3 +167,7 @@ MiniTokosZáró_Combo;MT-Z+P;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Painta
 ErősítettZáró_10;ROL-EZ10;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1200;;;Zaro;bundle;CROL-EZ10
 ErősítettZáró_5;ROL-EZ5;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1200;;;Zaro;bundle;CROL-EZ5
 
+MinitokosLáb_40db;MT-L40;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Lab;bundle;CMT-L40
+MinitokosLáb_20db;MT-L20;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;70;300;600;1500;;;Lab;bundle;CMT-L20
+
+
