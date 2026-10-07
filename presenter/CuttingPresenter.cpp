@@ -4,6 +4,9 @@
 #include <QPdfWriter>
 #include <ui_clonerequestdialog.h>
 
+#include <service/snapshot/inventoryauditbuilder.h>
+#include <service/snapshot/inventoryauditformatter.h>
+
 #include "CuttingPresenter.h"
 #include "../view/MainWindow.h"
 
@@ -33,6 +36,7 @@
 #include "cutting/export/cutinstructionservice.h"
 #include "service/snapshot/inventorysnapshotbuilder.h"
 #include "model/cutting/optimizer/bundle_overcuttingdetector.h"
+#include "view/dialog/textviewdialog.h"
 //#include <model/registries/cuttingmachineregistry.h>
 //#include <model/repositories/cuttingrequestrepository.h>
 //#include <model/cutting/plan/audit/naphalo_audit_types.h>
@@ -434,20 +438,39 @@ void CuttingPresenter::syncModelWithRegistries() {
 
     // 5️⃣ Igény → szálak → inventory
     auto lengthsPerMaterial = RequestSnapshotBuilder::getLengthsPerMaterial(requests);
-    auto expandedlengths = RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
+    auto expandedLengths = RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
     QMap<QUuid, int> strandsPerMaterial =
-        InventorySnapshotBuilder::greedyStrandPacking(expandedlengths);
+        InventorySnapshotBuilder::greedyStrandPacking(expandedLengths);
     InventorySnapshot inventorySnapshot =
         InventorySnapshotBuilder::build2(strandsPerMaterial);
 
-    auto result2 = InventorySnapshotValidator::validate(inventorySnapshot, strandsPerMaterial);
-    if (_view)
-        _view->ShowWarningDialog(result2);
+    auto inventoryAudit =
+        InventoryAuditBuilder::build(
+            requests,
+            lengthsPerMaterial,
+            expandedLengths,
+            strandsPerMaterial,
+            inventorySnapshot);
 
-    if (result2.hasError()) {
-        isModelSynced = false;
-        return;
-    }
+
+    TextViewDialog dlg(_view);
+
+    dlg.setWindowTitle("INVENTORY AUDIT");
+
+    dlg.setText(
+        InventoryAuditFormatter::toText(
+            inventoryAudit));
+
+    dlg.exec();
+
+    // auto result2 = InventorySnapshotValidator::validate(inventorySnapshot, strandsPerMaterial);
+    // if (_view)
+    //     _view->ShowWarningDialog(result2);
+
+    // if (result2.hasError()) {
+    //     isModelSynced = false;
+    //     return;
+    // }
 
     // 8️⃣ Modell betöltése
     _optimizerModel.setCuttingRequests(requests);

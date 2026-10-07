@@ -53,6 +53,8 @@ SOURCES += \
     leftover/presenter/leftoverpresenter.cpp \
     product/registry/product_calcmode_registry.cpp \
     product/repository/product_calcmode_repository.cpp \
+    service/snapshot/inventoryauditbuilder.cpp \
+    service/snapshot/inventoryauditformatter.cpp \
     stock/presenter/stockpresenter.cpp \
     presenter/storageauditpresenter.cpp \
     product/registry/bom_registry.cpp \
@@ -220,6 +222,9 @@ HEADERS += \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
     service/cutting/plan/cuttingplan_validationservice.h \
+    service/snapshot/inventoryauditbuilder.h \
+    service/snapshot/inventoryauditformatter.h \
+    service/snapshot/inventoryauditmodel.h \
     service/snapshot/inventorysnapshot_validator.h \
     stock/model/stockentry.h \
     calculation/lengthcalculator.h \
