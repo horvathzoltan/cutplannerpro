@@ -1,9 +1,17 @@
+addinput dialog:
+    - fehér termékhez natúrt ajánl fel: a szín beírásakor nem frissül a bom, még a szín nélküli állapotot tárolja
+    tehát a szín beírása után nem frissül a bom, a debounce timer nem sül el????
+
+leftover:
+    - automatikus felvétel: a vonalkód beolvasására a fehér helyett natúrt vesz fel.
+
 munkadarab címkék:
+    - vékonyabb csík a papiron, több ragacs az anyagon
     tudni kellene, hogy a megrendelőnek hány tételes a megrendelése
     kérdés: mi van a több darabos tételekkel?
     mi érdekel minket valójában? hogy hány munkadarabból áll a megrendelés fajtánként?
 
-peremes számítási mód:
+peremes számítási mód: - FIXED
  - minitokosnál + 3 cm , aztán a gyártási
 
 lefotver helyettesítés: - FIXED

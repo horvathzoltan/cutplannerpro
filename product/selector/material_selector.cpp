@@ -7,6 +7,7 @@
 #include <product/registry/product_type_registry.h>
 
 #include <materialbundles/registry/bundle_registry.h>
+#include "common/logger.h"
 
 struct Candidate {
     QUuid id;
@@ -22,6 +23,8 @@ MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(
     const QVector<QUuid>& bomList,
     const Cutting::Plan::Request& req)
 {
+    zTrace();
+
     MaterialSelectionResult r;
 
     // qDebug() << "=== MaterialSelector INPUT ===";

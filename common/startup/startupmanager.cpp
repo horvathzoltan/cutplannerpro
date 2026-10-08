@@ -742,11 +742,6 @@ StartupStatus StartupManager::initMaterialPaintGroupRegistry()
             );
     }
 
-    // Dump, ha kérted
-    if (_isDump3) {
-        registry.debugDump();
-    }
-
     EventLogger::instance().zEvent(StatusHelper::getMessage(true, "festési csoportok init (MSFF)"));
     return StartupStatus::success();
 }
