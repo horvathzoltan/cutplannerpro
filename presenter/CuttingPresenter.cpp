@@ -311,7 +311,7 @@ void CuttingPresenter::runOptimization(Cutting::Optimizer::TargetHeuristic heuri
         auto expanded =
             RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
 
-        QMap<QUuid, int> strandsPerMaterial =
+        QMap<QUuid, InventorySnapshotBuilder::StrandDemandEstimate> strandsPerMaterial =
             InventorySnapshotBuilder::greedyStrandPacking(expanded);
 
         InventorySnapshot extraNeeded =
@@ -437,10 +437,15 @@ void CuttingPresenter::syncModelWithRegistries() {
     }
 
     // 5️⃣ Igény → szálak → inventory
-    auto lengthsPerMaterial = RequestSnapshotBuilder::getLengthsPerMaterial(requests);
-    auto expandedLengths = RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
-    QMap<QUuid, int> strandsPerMaterial =
+    QMap<QUuid, QVector<int>> lengthsPerMaterial =
+        RequestSnapshotBuilder::getLengthsPerMaterial(requests);
+
+    QMap<QUuid, RequestSnapshotBuilder::MaterialLengthDemand> expandedLengths =
+        RequestSnapshotBuilder::expandLengthsWithGroupMembers(lengthsPerMaterial);
+
+    QMap<QUuid, InventorySnapshotBuilder::StrandDemandEstimate> strandsPerMaterial =
         InventorySnapshotBuilder::greedyStrandPacking(expandedLengths);
+
     InventorySnapshot inventorySnapshot =
         InventorySnapshotBuilder::build2(strandsPerMaterial);
 

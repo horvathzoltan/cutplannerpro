@@ -1,213 +1,267 @@
-Oké, csináljunk egy **lépésenként végrehajtható, pontos patch‑tervet** erre a két függvényre.
+Szerintem most ne patch-eljünk, hanem álljunk meg és definiáljuk a
+logikát. A mostani audit pont erre volt jó.
 
----
+A BW12-ből ezt tanultuk:
 
-### 1. Lépés: `runIterativeLeftoverAuditRound()` – target státuszok formalizálása
+Igény: 12
 
-**Cél:** minden optimizer által megkívánt leftover legyen target, és kapjon minőségi státuszt (friss / régi / nincs meg).
+Original: NP-BAR12-4000 stock: 45
 
-**Teendő:**
+Alternative: NP-BAR12-3000 stock: 0
 
-1. **A függvény elején**, közvetlenül a `const QDateTime now = ...` után, szúrj be egy kis helper lambdát a minőségi státuszhoz:
+És a helyes válasz:
 
-```cpp
-const QDateTime now = QDateTime::currentDateTime();
+✅ ORIGINAL
 
-auto classifyQuality = [&](const LeftoverStockEntry& e) {
-    bool isMissing = (e.notFoundCount > 0);
-    bool isStale   = (e.lastSeenAt.isValid() &&
-                      e.lastSeenAt.daysTo(now) > 1); // pl. 1 óra / 1 nap helyett majd finomhangolható
-    return std::make_pair(isMissing, isStale);
-};
-```
+nem pedig:
 
-*(Ha órában akarsz számolni, átírjuk később, most csak struktúra.)*
+❌ SHORTAGE
 
-2. **A target ciklusban**, ahol most ez van:
+Tehát a coverage számításnak NEM ezt kell vizsgálnia:
 
-```cpp
-const auto& target = byId[id];
+totalGreedyStrands vs totalSnapshotStrands
 
-// minőségi státusz meghatározása – de NEM szűrünk ki miatta
-bool isMissing =
-    target.notFoundCount > 0;
+hanem ezt:
 
-bool isStale =
-    target.lastSeenAt.isValid() &&
-    target.lastSeenAt.daysTo(now) > 7;
+Az origin igény kielégíthető-e? Ha nem, a teljes csoport kielégíthető-e?
 
-// minden leftover szerepeljen a target listában
-targets.append(target);
-```
+1.  Fázis – Fogalmak tisztázása
 
-**Cseréld erre:**
+A group summary-ból szerintem el kell tűnnie ennek:
 
-```cpp
-const auto& target = byId[id];
+expandedGreedyStrands totalGreedyStrands
 
-auto [isMissing, isStale] = classifyQuality(target);
+vagy legalábbis információs célra maradhat, de ne ez legyen a döntés
+alapja.
 
-// minden leftover szerepeljen a target listában
-targets.append(target);
+Az üzleti fogalmak:
 
-// később: itt fogjuk eldönteni, hogy kell-e helyettesítés (isMissing || isStale)
-```
+requiredDemand
 
-> Ezzel egységesítjük a minőségi státusz számítását, de még nem döntünk semmit a helyettesítésről.
+az eredeti igény.
 
----
+originalAvailable
 
-### 2. Lépés: `runIterativeLeftoverAuditRound()` – jelöltek generálása csak akkor, ha kell helyettesítés
+az eredeti anyag fedezete.
 
-**Cél:** csak akkor keressünk jelölteket, ha a target nem friss.
+alternativeAvailable
 
-Most a jelöltgenerálás **minden targetre** fut.
-Ezt módosítjuk.
+az alternatívák fedezete.
 
-3. **A target ciklusban**, közvetlenül a `targets.append(target);` után, a jelöltgeneráló blokk elé szúrj be egy guardot:
+groupAvailable
 
-Most így néz ki:
+a kettő összege.
 
-```cpp
-targets.append(target);
-
-QVector<LeftoverStockEntry> cands;
-for (const auto& cand : allEntries) {
-    ...
-}
-...
-candidateSets.insert(target.entryId, cands);
-```
-
-**Cseréld erre:**
-
-```cpp
-targets.append(target);
-
-// ha a target friss (nem missing és nem stale), akkor NEM kell helyettesítés
-if (!isMissing && !isStale) {
-    // de ettől még a target bent marad a listában, csak jelöltlista nem lesz
-    continue;
-}
-
-QVector<LeftoverStockEntry> cands;
-for (const auto& cand : allEntries) {
-    ...
-}
-...
-candidateSets.insert(target.entryId, cands);
-```
-
-> Így:
-> – minden leftover targetként szerepel,
-> – de jelöltlista csak azokhoz készül, amelyek **nem friss** állapotban vannak.
-
----
-
-### 3. Lépés: `runIterativeLeftoverAuditRound()` – vágandó leftoverek kizárása jelöltként
-
-Ezt már beépítetted, de most **tisztázzuk és stabilizáljuk**.
-
-4. A jelöltgeneráló ciklusban a `isUsedInPlans` logika jó, csak **egy apró optimalizálás**:
+2.  Fázis – Mit jelent egy csoport?
 
 Most:
 
-```cpp
-bool isUsedInPlans = false;
-for (auto pit = perMachine.constBegin(); pit != perMachine.constEnd(); ++pit) {
-    if (pit.value().contains(cand.entryId)) {
-        isUsedInPlans = true;
-        break;
-    }
-}
-if (isUsedInPlans)
-    continue;
-```
+BW12
 
-Ez maradhat, csak **kommenttel jelöljük**, hogy ez a „vágandó” státusz:
+NP-BAR12-4000 (origin) NP-BAR12-3000 (alternative)
 
-```cpp
-// vágandó leftovereket NE ajánljuk jelöltként
-bool isUsedInPlans = false;
-for (auto pit = perMachine.constBegin(); pit != perMachine.constEnd(); ++pit) {
-    if (pit.value().contains(cand.entryId)) {
-        isUsedInPlans = true;
-        break;
-    }
-}
-if (isUsedInPlans)
-    continue;
-```
+Valójában ez egy “coverage pool”.
 
-> Funkcionálisan jó, csak dokumentáljuk.
+Vagyis:
 
----
+Need = original material demand
 
-### 4. Lépés: `buildSubstitutionSummary()` – target státusz megjelenítése
+és
 
-Most csak a jelöltek státuszát mutatjuk, a target sorban nincs státusz.
+Have = original material stock + alternative material stock
 
-5. **A TARGET sor generálásánál**, ahol most ez van:
+3.  Fázis – Az új summary modell
 
-```cpp
-// TARGET sor
-out += QString("%1 (%2 mm)\n")
-           .arg(t->barcode)
-           .arg(t->availableLength_mm);
-```
+Én ezt vezetném be:
 
-**Cseréld erre:**
+struct InventoryAuditGroupSummary { QString groupKey; QString groupName;
 
-```cpp
-// TARGET sor – minőségi státusz
-bool isMissing = (t->notFoundCount > 0);
-bool isStale   = (t->lastSeenAt.isValid() &&
-                  t->lastSeenAt.daysTo(QDateTime::currentDateTime()) > 7);
+    int requiredDemand = 0;
 
-QString tStatus;
-if (isMissing)
-    tStatus = "[NINCS MEG]";
-else if (isStale)
-    tStatus = "[RÉGI]";
-else
-    tStatus = "[MEGVAN]";
+    int originalAvailable = 0;
 
-out += QString("%1 (%2 mm) %3\n")
-           .arg(t->barcode)
-           .arg(t->availableLength_mm)
-           .arg(tStatus);
-```
+    int alternativeAvailable = 0;
 
-> Így a target sorban is látod, hogy az eredeti leftover **friss / régi / nincs meg**.
+    int totalAvailable = 0;
 
----
+    GroupCoverage coverage;
 
-### 5. Lépés: `buildSubstitutionSummary()` – jelöltek státuszának finomhangolása
+};
 
-A jelöltek státusza már jó (`[NINCS MEG] / [RÉGI] / [MEGVAN]`), ezt **megtartjuk**, csak később bővíthetjük `[VÁGANDÓ] / [FOGLALT]` irányba, ha bevezetjük a foglaltság logikát.
+4.  Fázis – A coverage szabályrendszer
 
-Most nem kell hozzányúlni, csak **tudd**, hogy ez már a funkcionális státusz.
+Definiáljuk pontosan.
 
----
+✅ ORIGINAL
 
-### 6. Lépés: Ellenőrző futtatás
+Az eredeti anyag önmagában elegendő.
 
-Miután a fenti 5 lépést végrehajtottad:
+originalAvailable >= requiredDemand
 
-- futtasd az optimalizációt,
-- indítsd a `runIterativeLeftoverAuditRound()`‑ot,
-- nézd meg:
-  - minden optimizer által használt leftover szerepel‑e a summary‑ban,
-  - a target sorban helyesen jelenik‑e meg `[MEGVAN] / [RÉGI] / [NINCS MEG]`,
-  - csak azoknál a targeteknél van jelöltlista, amelyek **nem friss** állapotban vannak,
-  - a jelöltek között nincsenek‑e vágandó leftoverek.
+🔄 PARTIAL
 
----
+Az eredeti önmagában kevés.
 
-Ha ez stabilan működik, a **következő patch‑csomag** lehet:
+De:
 
-- foglaltság jelölése (ha ugyanaz a jelölt több targethez tartozik),
-- `[FOGLALT]` státusz bevezetése,
-- „helyettesítés végrehajtható / nem végrehajtható” jelölése a summary‑ban.
+originalAvailable > 0
 
-Ha akarod, mehetünk tovább a foglaltság‑patch tervvel is.
+ÉS
+
+originalAvailable + alternativeAvailable >= requiredDemand
+
+🔁 SUBSTITUTE
+
+Nincs eredeti fedezet.
+
+originalAvailable == 0
+
+viszont:
+
+alternativeAvailable >= requiredDemand
+
+❌ SHORTAGE
+
+A teljes csoport sem elég.
+
+originalAvailable + alternativeAvailable < requiredDemand
+
+5.  Fázis – Meg kell találnunk a megfelelő adatforrást
+
+Itt jön a kritikus kérdés.
+
+Most a summary ezeket használja:
+
+snapshotStrands stockStrands
+
+De előbb el kell dönteni:
+
+Mit akarunk vizsgálni?
+
+Készletfedezet?
+
+Akkor:
+
+stockStrands
+
+kell.
+
+Optimizer snapshot fedezet?
+
+Akkor:
+
+snapshotStrands
+
+kell.
+
+Szerintem a coverage jelentése:
+
+A gyártás legyártható-e?
+
+ezért:
+
+stockStrands
+
+az érdekes.
+
+Nem:
+
+snapshotStrands
+
+6.  Fázis – Ellenőrző példa
+
+BW12:
+
+need = 12
+
+originalAvailable = 45
+
+alternativeAvailable = 0
+
+↓
+
+✅ ORIGINAL
+
+RT70:
+
+need = 7
+
+originalAvailable = 18
+
+alternativeAvailable = 133 + 14
+
+↓
+
+✅ ORIGINAL
+
+Másik példa:
+
+need = 12
+
+originalAvailable = 5 alternativeAvailable = 20
+
+↓
+
+🔄 PARTIAL
+
+7.  PATCH TERV
+
+Ha a fenti definícióval egyetértesz, akkor a patch sorrendje:
+
+Patch A
+
+InventoryAuditGroupSummary átalakítása:
+
+requiredDemand originalAvailable alternativeAvailable totalAvailable
+coverage
+
+Patch B
+
+InventoryAuditBuilder::build()
+
+A summary aggregáció újraírása.
+
+Nem:
+
+expandedGreedyStrands totalGreedyStrands
+
+hanem:
+
+requiredDemand
+
+originalAvailable
+
+alternativeAvailable
+
+számolása.
+
+Patch C
+
+Coverage számítás:
+
+✅ ORIGINAL 🔄 PARTIAL 🔁 SUBSTITUTE ❌ SHORTAGE
+
+szabályokkal.
+
+Patch D
+
+Formatter summary blokk átírása.
+
+Valami ilyenre:
+
+BW12 (Zárósúly Ø12)
+
+required demand : 12
+
+original available : 45 alternative available: 0
+
+total available : 45
+
+coverage : ✅ ORIGINAL
+
+Szerintem ez lenne az első verzió, ami már nem a validator logikáját
+mutatja vissza, hanem azt, amit te valójában tudni akarsz:
+
+Legyártható az igény?
+
+Ha igen, miből?

@@ -28,6 +28,7 @@ QString InventoryAuditFormatter::toText(
     const int colGreedy   = 60;
     const int colStock    = 70;
     const int colSnap     = 80;
+    const int colStatus   = 90;
 
     {
         QString header(95, ' ');
@@ -39,6 +40,7 @@ QString InventoryAuditFormatter::toText(
         put(header, colGreedy,  "GREEDY");
         put(header, colStock,   "STOCK");
         put(header, colSnap,    "SNAP");
+        put(header, colStatus,  "OK");
 
         out << header;
     }
@@ -47,11 +49,27 @@ QString InventoryAuditFormatter::toText(
 
     for (const auto& r : model.rows)
     {
+        if (r.isExpanded)
+            continue;
+
         QString line(95, ' ');
 
         const QString marker =
             r.isExpanded ? "EXP" : "REQ";
 
+        QString status;
+
+        if (r.isExpanded)
+        {
+            status = "🔄";
+        }
+        else
+        {
+            status =
+                r.snapshotStrands >= r.estimatedStrands
+                    ? "✅"
+                    : "❌";
+        }
         put(line, colType,    marker);
         put(line, colBarcode, r.barcode.left(32));
         put(line, colDb,      QString::number(r.requestPieces));
@@ -59,14 +77,11 @@ QString InventoryAuditFormatter::toText(
         put(line, colGreedy,  QString::number(r.estimatedStrands));
         put(line, colStock,   QString::number(r.stockStrands));
         put(line, colSnap,    QString::number(r.snapshotStrands));
+        put(line, colStatus, status);
 
         out << line;
 
-        if (!r.materialGroup.isEmpty())
-        {
-            out << QString("      group: %1")
-                       .arg(r.materialGroup);
-        }
+
 
         if (r.isExpanded)
         {
@@ -80,6 +95,37 @@ QString InventoryAuditFormatter::toText(
                        .arg(r.materialName);
         }
 
+        for (const auto& child : model.rows)
+        {
+            if (!child.isExpanded)
+                continue;
+
+            if (child.originMaterialId != r.materialId)
+                continue;
+
+            QString childLine(95, ' ');
+
+            put(childLine, colType,    "->");
+            put(childLine, colBarcode, child.barcode.left(32));
+            put(childLine, colGreedy,  QString::number(child.estimatedStrands));
+            put(childLine, colStock,   QString::number(child.stockStrands));
+            put(childLine, colSnap,    QString::number(child.snapshotStrands));
+            put(childLine, colStatus,  "ALT");
+
+            out << childLine;
+
+            if (!child.materialName.isEmpty())
+            {
+                out << QString("         %1")
+                .arg(child.materialName);
+            }
+
+            if (!child.sourceBarcode.isEmpty())
+            {
+                out << QString("         origin: %1")
+                .arg(child.sourceBarcode);
+            }
+        }
         out << "";
     }
 
@@ -95,13 +141,13 @@ QString InventoryAuditFormatter::toText(
         .arg(g.groupKey)
             .arg(g.groupName);
 
-        out << QString("    original greedy : %1")
+        out << QString("    request demand  : %1")
                    .arg(g.originalGreedyStrands);
 
-        out << QString("    expanded greedy : %1")
+        out << QString("    expanded demand : %1")
                    .arg(g.expandedGreedyStrands);
 
-        out << QString("    total greedy    : %1")
+        out << QString("    total demand    : %1")
                    .arg(g.totalGreedyStrands);
 
         out << QString("    stock           : %1")
@@ -110,8 +156,29 @@ QString InventoryAuditFormatter::toText(
         out << QString("    snapshot        : %1")
                    .arg(g.totalSnapshotStrands);
 
-        out << QString("    status          : %1")
-                   .arg(g.hasShortage ? "SHORTAGE" : "OK");
+        QString coverageText;
+
+        switch (g.coverage)
+        {
+        case GroupCoverage::Original:
+            coverageText = "✅ ORIGINAL";
+            break;
+
+        case GroupCoverage::Partial:
+            coverageText = "🔄 PARTIAL";
+            break;
+
+        case GroupCoverage::Substitute:
+            coverageText = "🔁 SUBSTITUTE";
+            break;
+
+        case GroupCoverage::Shortage:
+            coverageText = "❌ SHORTAGE";
+            break;
+        }
+
+        out << QString("    coverage        : %1")
+                   .arg(coverageText);
 
         out << "";
         out << QString(60, '-');

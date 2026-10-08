@@ -7,8 +7,10 @@
 InventoryAuditModel InventoryAuditBuilder::build(
     const QVector<Cutting::Plan::Request>& requests,
     const QMap<QUuid,QVector<int>>& lengthsPerMaterial,
-    const QMap<QUuid,QVector<int>>& expandedLengths,
-    const QMap<QUuid,int>& strandsPerMaterial,
+    const QMap<QUuid,
+               RequestSnapshotBuilder::MaterialLengthDemand>& expandedLengths,
+    const QMap<QUuid,
+               InventorySnapshotBuilder::StrandDemandEstimate>& strandsPerMaterial,
     const InventorySnapshot& snapshot)
 {
     InventoryAuditModel model;
@@ -93,11 +95,27 @@ InventoryAuditModel InventoryAuditBuilder::build(
          it != expandedLengths.end();
          ++it)
     {
-        auto& row = findOrCreateRow(it.key());
+        const auto& demand = it.value();
 
-        if (!lengthsPerMaterial.contains(it.key()))
+        auto& row =
+            findOrCreateRow(demand.materialId);
+
+        row.originMaterialId =
+            demand.originMaterialId;
+
+        row.isExpanded =
+            demand.origin ==
+            RequestSnapshotBuilder::MaterialDemandOrigin::Expanded;
+
+        if (row.isExpanded)
         {
-            row.isExpanded = true;
+            if (const MaterialMaster* originMat =
+                MaterialRegistry::instance()
+                    .findById(demand.originMaterialId))
+            {
+                row.sourceBarcode =
+                    originMat->barcode;
+            }
         }
     }
 
@@ -109,9 +127,14 @@ InventoryAuditModel InventoryAuditBuilder::build(
          it != strandsPerMaterial.end();
          ++it)
     {
-        auto& row = findOrCreateRow(it.key());
+        const auto& estimate =
+            it.value();
 
-        row.estimatedStrands = it.value();
+        auto& row =
+            findOrCreateRow(estimate.materialId);
+
+        row.estimatedStrands =
+            estimate.strandCount;
     }
 
     //----------------------------------------------------
@@ -201,11 +224,41 @@ InventoryAuditModel InventoryAuditBuilder::build(
             s.originalGreedyStrands +
             s.expandedGreedyStrands;
 
-        s.hasShortage =
-            s.totalSnapshotStrands <
-            s.totalGreedyStrands;
+        const int originalNeed =
+            s.originalGreedyStrands;
 
-        model.groups.push_back(s);
-    }
+        const int expandedNeed =
+            s.expandedGreedyStrands;
+
+        const int originalHave =
+            s.totalSnapshotStrands;
+
+        const int groupHave =
+            s.totalStockStrands;
+
+        if (originalHave >= originalNeed)
+        {
+            s.coverage =
+                GroupCoverage::Original;
+        }
+        else if (originalHave > 0 &&
+                 groupHave >= originalNeed)
+        {
+            s.coverage =
+                GroupCoverage::Partial;
+        }
+        else if (originalHave == 0 &&
+                 groupHave >= originalNeed)
+        {
+            s.coverage =
+                GroupCoverage::Substitute;
+        }
+        else
+        {
+            s.coverage =
+                GroupCoverage::Shortage;
+        }
+
+        model.groups.push_back(s);    }
     return model;
 }

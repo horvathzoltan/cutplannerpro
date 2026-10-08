@@ -6,6 +6,7 @@
 #include "materials/registry/material_registry.h"
 #include "materialbundles/registry/bundle_registry.h"
 #include "common/logger.h"
+#include "requestsnapshotbuilder.h"
 
 /**
  * @brief Service osztály, amely InventorySnapshot-ot épít a registrykből.
@@ -28,28 +29,64 @@ public:
         return snapshot;
     }
 
-    static QMap<QUuid, int> greedyStrandPacking(
-        const QMap<QUuid, QVector<int>>& lengthsPerMaterial)
+    struct StrandDemandEstimate
     {
-        QMap<QUuid, int> strandsPerMaterial;
+        QUuid materialId;
+
+        RequestSnapshotBuilder::MaterialDemandOrigin origin =
+            RequestSnapshotBuilder::MaterialDemandOrigin::Request;
+
+        QUuid originMaterialId;
+
+        int strandCount = 0;
+    };
+
+    static QMap<QUuid, StrandDemandEstimate> greedyStrandPacking(
+        const QMap<QUuid, RequestSnapshotBuilder::MaterialLengthDemand>& lengthsPerMaterial)
+    {
+        QMap<QUuid, StrandDemandEstimate> strandsPerMaterial;
 
         // végigmegyünk minden anyagon
         for (auto it = lengthsPerMaterial.begin(); it != lengthsPerMaterial.end(); ++it) {
 
-            QUuid materialId = it.key();
-            QVector<int> lengths = it.value();
+            const RequestSnapshotBuilder::MaterialLengthDemand& demand =
+                it.value();
+
+            const QUuid materialId =
+                demand.materialId;
+
+            QVector<int> lengths =
+                demand.lengths;
+
 
             // ha nincs request erre az anyagra → 0 szál kell
             if (lengths.isEmpty()) {
-                strandsPerMaterial[materialId] = 0;
+
+                strandsPerMaterial[materialId] =
+                    StrandDemandEstimate{
+                        .materialId = materialId,
+                        .origin = demand.origin,
+                        .originMaterialId =
+                        demand.originMaterialId,
+                        .strandCount = 0
+                    };
+
                 continue;
             }
 
             // szálhossz lekérése a MaterialMasterből
             const MaterialMaster* mm = MaterialRegistry::instance().findById(materialId);
             if (!mm) {
-                // ismeretlen anyag → nem tudunk számolni
-                strandsPerMaterial[materialId] = 0;
+
+                strandsPerMaterial[materialId] =
+                    StrandDemandEstimate{
+                        .materialId = materialId,
+                        .origin = demand.origin,
+                        .originMaterialId =
+                        demand.originMaterialId,
+                        .strandCount = 0
+                    };
+
                 continue;
             }
 
@@ -73,14 +110,22 @@ public:
             if (currentUsed > 0)
                 strandCount++;
 
-            strandsPerMaterial[materialId] = strandCount;
+            strandsPerMaterial[materialId] =
+                StrandDemandEstimate{
+                    .materialId = materialId,
+                    .origin = demand.origin,
+                    .originMaterialId =
+                    demand.originMaterialId,
+                    .strandCount = strandCount
+                };
         }
 
         return strandsPerMaterial;
     }
 
     /// ÚJ: inventory snapshot a strand-igény alapján
-    static InventorySnapshot build2(const QMap<QUuid, int>& strandsPerMaterial)
+    static InventorySnapshot build2(const QMap<QUuid,
+                        InventorySnapshotBuilder::StrandDemandEstimate>& strandsPerMaterial)
     {
         InventorySnapshot snapshot;
 
@@ -96,9 +141,32 @@ public:
         // 0️⃣ Igényelt szálak
         zInfo("📌 Igényelt szálak:");
         for (auto it = strandsPerMaterial.begin(); it != strandsPerMaterial.end(); ++it) {
+            const StrandDemandEstimate& estimate =
+                it.value();
+
             const MaterialMaster* m = MaterialRegistry::instance().findById(it.key());
             if (!m) continue;
-            zInfo(QString("• %1: %2 szál").arg(m->toReportLabel()).arg(it.value()));
+
+            QString originText =
+                estimate.origin ==
+                        RequestSnapshotBuilder::MaterialDemandOrigin::Request
+                    ? "REQ"
+                    : "EXP";
+
+            QString originBarcode;
+
+            if (const MaterialMaster* om =
+                MaterialRegistry::instance()
+                    .findById(estimate.originMaterialId))
+            {
+                originBarcode = om->barcode;
+            }
+
+            zInfo(QString("• %1: %2 szál [%3] origin=%4")
+                      .arg(m->toReportLabel())
+                      .arg(estimate.strandCount)
+                      .arg(originText)
+                      .arg(originBarcode));
         }
 
         // 1️⃣ Aggregált készlet (bundle robbantva → SIMPLE szálak)
@@ -114,8 +182,16 @@ public:
         // 2️⃣ Végigmegyünk a kért szálakon – itt MÁR SIMPLE szálak vannak robbantva
         for (auto it = strandsPerMaterial.begin(); it != strandsPerMaterial.end(); ++it) {
 
-            QUuid materialId = it.key();
-            int needStrands  = it.value();
+            const StrandDemandEstimate& estimate =
+                it.value();
+
+
+            const QUuid materialId =
+                estimate.materialId;
+
+            const int needStrands =
+                estimate.strandCount;
+
             if (needStrands <= 0) continue;
 
             const MaterialMaster* master = MaterialRegistry::instance().findById(materialId);

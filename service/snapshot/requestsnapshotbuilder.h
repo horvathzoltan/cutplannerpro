@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../model/registries/cuttingplanrequestregistry.h"
 #include "../../model/cutting/plan/request.h"
 #include "materials/utils/material_group_utils.h"
 #include "product/utils/material_role_utils.h"
@@ -12,58 +11,37 @@
 #include <product/registry/product_type_registry.h>
 
 /**
- * @brief Service osztály, amely a vágási igények (Cutting::Plan::Request) listáját építi a registryből.
+ * @brief Request alapú optimalizálási inputokat építő helper.
  *
- * Ez a réteg választja le az optimizert az éles CuttingPlanRequestRegistry-ről:
- * - az optimizer csak a kész request listát kapja,
- * - a registryhez való hozzáférés itt történik.
+ * Feladata:
+ * - requestek hosszlistává alakítása
+ * - materialonkénti aggregálás
+ * - helyettesítő anyagcsoportok expandálása
  *
- * Nem végez validációt, nem mutat hibát, csak a nyers adatot adja vissza.
- * A validáció és a hibakezelés a presenter feladata.
+ * Nem végez validációt és nem ér el készletadatokat.
  */
 
 
 class RequestSnapshotBuilder {
 public:
-    // static QVector<Cutting::Plan::Request> build() {
+    enum class MaterialDemandOrigin
+    {
+        Request,
+        Expanded
+    };
 
-    //     QVector<Cutting::Plan::Request> list =
-    //         CuttingPlanRequestRegistry::instance().readAll();
 
-    //     // for (Cutting::Plan::Request& r : list) {
+    struct MaterialLengthDemand
+    {
+        QUuid materialId;
 
-    //     //     const MaterialMaster* m =
-    //     //         MaterialRegistry::instance().findById(r.materialId);
+        MaterialDemandOrigin origin =
+            MaterialDemandOrigin::Request;
 
-    //     //     if (!m)
-    //     //         continue;
+        QUuid originMaterialId;
 
-    //     //     // 🔥 ÚJ: szerepkör meghatározása groupKey alapján
-    //     //     MaterialRole role =
-    //     //         MaterialRoleRegistry::instance().roleForBarcode(m->barcode);
-
-    //     //     auto* roleGroup =
-    //     //         MaterialRoleGroupRegistry::instance().findById(role.groupId);
-
-    //     //     QString groupKey = roleGroup ? roleGroup->barcode : "";
-    //     //     auto type = ProductTypeRegistry::instance().findById(r.productTypeId);
-    //     //     auto subtype = ProductSubtypeRegistry::instance().findById(r.productSubtypeId);
-
-    //     //     if(type && subtype){
-    //     //         auto comp = LengthCalculator::compensate(
-    //     //             type->code,
-    //     //             subtype->code,
-    //     //             r.attributes,
-    //     //             groupKey);
-
-    //     //         if (comp.has_value()) {
-    //     //             r.requiredLength += *comp;
-    //     //         }
-    //     //     }
-    //     // }
-
-    //     return list;
-    // }
+        QVector<int> lengths;
+    };
 
     static QMap<QUuid, QVector<int>> getLengthsPerMaterial(const QVector<Cutting::Plan::Request>& requests){
 
@@ -77,15 +55,22 @@ public:
         return reqLengths;
     }
 
-    static QMap<QUuid, QVector<int>>
+    static QMap<QUuid, MaterialLengthDemand>
     expandLengthsWithGroupMembers(const QMap<QUuid, QVector<int>>& lengthsPerMaterial)
     {
-        QMap<QUuid, QVector<int>> expanded = lengthsPerMaterial;
+        QMap<QUuid, MaterialLengthDemand> expanded;
 
         for (auto it = lengthsPerMaterial.begin(); it != lengthsPerMaterial.end(); ++it) {
 
             QUuid materialId = it.key();
             const QVector<int>& lengths = it.value();
+            // önmaga beillesztése
+            expanded[materialId] = MaterialLengthDemand{
+                .materialId = materialId,
+                .origin = MaterialDemandOrigin::Request,
+                .originMaterialId = materialId,
+                .lengths = lengths
+            };
 
             // 1️⃣ Group tagok lekérése
             QSet<QUuid> siblings = GroupUtils::groupMembers(materialId);
@@ -97,12 +82,16 @@ public:
                 if (expanded.contains(sibId))
                     continue;
 
-                expanded[sibId] = lengths;
+                expanded[sibId] = MaterialLengthDemand{
+                    .materialId = sibId,
+                    .origin = MaterialDemandOrigin::Expanded,
+                    .originMaterialId = materialId,
+                    .lengths = lengths
+                };
             }
         }
 
         return expanded;
     }
-
 
 };

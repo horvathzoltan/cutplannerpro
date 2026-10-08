@@ -1,5 +1,7 @@
 #pragma once
 
+#include "requestsnapshotbuilder.h"
+
 #include <QString>
 #include <QVector>
 #include <QUuid>
@@ -30,7 +32,20 @@ struct InventoryAuditRow
 
     bool hasRequest = false;
 
+    QUuid originMaterialId;
 
+    RequestSnapshotBuilder::MaterialDemandOrigin
+        origin =
+        RequestSnapshotBuilder::MaterialDemandOrigin::Request;
+
+};
+
+enum class GroupCoverage
+{
+    Original,
+    Partial,
+    Substitute,
+    Shortage
 };
 
 struct InventoryAuditGroupSummary
@@ -46,7 +61,7 @@ struct InventoryAuditGroupSummary
     int totalStockStrands = 0;
     int totalSnapshotStrands = 0;
 
-    bool hasShortage = false;
+    GroupCoverage coverage;
 };
 
 
