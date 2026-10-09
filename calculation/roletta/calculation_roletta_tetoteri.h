@@ -20,11 +20,21 @@ inline double calcVaszon(double width){
 inline double calcAlsoPalca(double width){
     return width - 27;
 }
-
-
-
 }
 
+namespace TuskeMeret{
+inline double calcTengely(double width){
+    return width - 26;
+}
+
+inline double calcVaszon(double width){
+    return width - 27;
+}
+
+inline double calcAlsoPalca(double width){
+    return width - 27;
+}
+}
 /*
 ROL;TET_NAGY;Tengely;TE-R-23*
 ROL;TET_NAGY;Palca;ROL-P*
@@ -40,18 +50,24 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     if (role == "RTE-R-23") {
         if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcTengely(width);
+        if(mode == SizeCalcMode::Tuske)
+            return TuskeMeret::calcTengely(width);
     }
 
     // --- VÁSZON ---
     if (role == "RNP-VASZON") {
         if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcVaszon(width);
+        if(mode == SizeCalcMode::Tuske)
+            return TuskeMeret::calcVaszon(width);
     }
 
     // --- AlsóPálca ---
     if (role == "RROL-P") {
         if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcAlsoPalca(width);
+        if(mode == SizeCalcMode::Tuske)
+            return TuskeMeret::calcAlsoPalca(width);
     }
 
     // --- ISMERETLEN ROLE ---

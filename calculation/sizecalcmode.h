@@ -7,7 +7,8 @@ enum class SizeCalcMode {
     Uveg,
     Falc,
     Vaszon,
-    Perem
+    Perem,
+    Tuske
 };
 
 namespace SizeCalcModeUtils{
@@ -17,8 +18,9 @@ inline QString toString(SizeCalcMode m) {
     case SizeCalcMode::Gyartasi: return "Gyartasi";
     case SizeCalcMode::Uveg:     return "Uveg";
     case SizeCalcMode::Vaszon:   return "Vaszon";
-    case SizeCalcMode::Falc:   return "Falc";
-    case SizeCalcMode::Perem:   return "Perem";
+    case SizeCalcMode::Falc:     return "Falc";
+    case SizeCalcMode::Perem:    return "Perem";
+    case SizeCalcMode::Tuske:    return "Tuske";
     }
 
     return "Unknown";
@@ -32,6 +34,7 @@ inline SizeCalcMode parseSizeCalcMode(const QString& s) {
     if (t == "vaszon")   return SizeCalcMode::Vaszon;
     if (t == "falc")     return SizeCalcMode::Falc;
     if (t == "perem")    return SizeCalcMode::Perem;
+    if (t == "tuske")    return SizeCalcMode::Tuske;
 
     return SizeCalcMode::Unknown;
 }
