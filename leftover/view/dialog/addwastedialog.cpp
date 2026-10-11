@@ -169,6 +169,14 @@ void AddWasteDialog::compositeBarcodeHandler(const QString& b){
     if (!p.valid)
         return;
 
+    zInfo(
+        QString(
+            "Composite barcode detected: %1 | %2 | %3")
+            .arg(p.id)
+            .arg(p.length)
+            .arg(p.materialCode));
+
+
     applyParsedComposite(p);
 
     //
@@ -492,7 +500,13 @@ AddWasteDialog::ParsedComposite AddWasteDialog::parseCompositeBarcode(const QStr
 
         bool ok = false;
         int mm = lParts[0].toInt(&ok);
-        if (!ok || mm <= 0)
+        if (!ok)
+            return out;
+
+        if (mm < 50)
+            return out;
+
+        if (mm > 12000)
             return out;
 
         out.length = mm;
@@ -503,18 +517,55 @@ AddWasteDialog::ParsedComposite AddWasteDialog::parseCompositeBarcode(const QStr
 
     // RÉGI PIPE-OS FORMÁTUM
     QStringList parts = raw.split("|");
-    if (parts.size() < 2 || parts.size() > 3)
+    if (parts.size() != 3)
         return out;
 
     out.id = parts[0].trimmed();
 
+    const QString input =
+        raw.trimmed().toUpper();
+
+    const bool isRST =
+        input.startsWith("RST-");
+
+    const bool isRSM =
+        input.startsWith("RSM-");
+
+    if (!isRST && !isRSM)
+    {
+        return out;
+    }
+
     bool ok = false;
-    out.length = parts[1].trimmed().toInt(&ok);
-    if (!ok || out.length <= 0)
+    int mm = parts[1].trimmed().toInt(&ok);
+    if (!ok)
         return out;
 
-    if (parts.size() == 3)
-        out.materialCode = parts[2].trimmed();
+    if (mm < 50)
+        return out;
+
+    if (mm > 12000)
+        return out;
+
+    out.length = mm;
+
+    out.materialCode =
+        parts[2].trimmed();
+
+    const MaterialMaster* mat =
+        MaterialRegistry::instance()
+            .findByBarcode(
+                out.materialCode);
+
+    if (!mat)
+    {
+        zWarning(
+            QString(
+                "Unknown material barcode in composite leftover: %1")
+                .arg(out.materialCode));
+
+        return ParsedComposite{};
+    }
 
     out.valid = true;
     return out;
@@ -530,14 +581,36 @@ void AddWasteDialog::applyParsedComposite(const ParsedComposite& p)
 
     // 2) Hossz mező
     ui->editLength->setText(QString::number(p.length));
+/*
+ * if (!p.materialCode.isEmpty()) {
+    for (int i = 0; i < ui->comboMaterial->count(); ++i) {
+        QString display = ui->comboMaterial->itemText(i).trimmed();
 
+        if (display.contains(p.materialCode, Qt::CaseInsensitive)) {
+            ui->comboMaterial->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+ */
     // 3) Anyag automatikus felismerése
-    if (!p.materialCode.isEmpty()) {
-        for (int i = 0; i < ui->comboMaterial->count(); ++i) {
-            QString display = ui->comboMaterial->itemText(i).trimmed();
-            if (display.contains(p.materialCode, Qt::CaseInsensitive)) {
-                ui->comboMaterial->setCurrentIndex(i);
-                break;
+    if (!p.materialCode.isEmpty())
+    {
+        const MaterialMaster* mat =
+            MaterialRegistry::instance()
+                .findByBarcode(
+                    p.materialCode);
+
+        if (mat)
+        {
+            int idx =
+                ui->comboMaterial
+                    ->findData(mat->id);
+
+            if (idx >= 0)
+            {
+                ui->comboMaterial
+                    ->setCurrentIndex(idx);
             }
         }
     }

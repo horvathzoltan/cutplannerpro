@@ -6,6 +6,34 @@
 #include <QVector>
 #include <QUuid>
 
+enum class InventoryCoverageSource
+{
+    Undefined,
+
+    OriginalStock,
+    AlternativeMaterial,
+    ComponentAssembly,
+
+    Mixed,
+
+    Missing
+};
+
+struct InventoryAuditComponent
+{
+    QUuid materialId;
+
+    QString barcode;
+
+    QString materialName;
+
+    int requiredPerBundle = 0;
+
+    int stock = 0;
+
+    int assemblableCount = 0;
+};
+
 struct InventoryAuditRow
 {
     QUuid materialId;
@@ -38,6 +66,20 @@ struct InventoryAuditRow
         origin =
         RequestSnapshotBuilder::MaterialDemandOrigin::Request;
 
+    InventoryCoverageSource coverageSource =
+        InventoryCoverageSource::Undefined;
+
+    int originalStock = 0;
+
+    int alternativeStock = 0;
+
+    int componentAssemblyStock = 0;
+
+    int availableStock = 0;
+
+    QVector<InventoryAuditComponent>
+        assemblyComponents;
+
 };
 
 enum class GroupCoverage
@@ -53,15 +95,19 @@ struct InventoryAuditGroupSummary
     QString groupKey;
     QString groupName;
 
-    int originalGreedyStrands = 0;
-    int expandedGreedyStrands = 0;
+    // Coverage
+    int requiredDemand = 0;
 
-    int totalGreedyStrands = 0;
+    int originalAvailable = 0;
+    int alternativeAvailable = 0;
 
-    int totalStockStrands = 0;
-    int totalSnapshotStrands = 0;
+    int totalAvailable = 0;
 
     GroupCoverage coverage;
+
+    // Audit info
+    int originalEstimate = 0;
+    int alternativeEstimate = 0;
 };
 
 

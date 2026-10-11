@@ -1,267 +1,276 @@
-Szerintem most ne patch-eljünk, hanem álljunk meg és definiáljuk a
-logikát. A mostani audit pont erre volt jó.
-
-A BW12-ből ezt tanultuk:
-
-Igény: 12
-
-Original: NP-BAR12-4000 stock: 45
-
-Alternative: NP-BAR12-3000 stock: 0
-
-És a helyes válasz:
-
-✅ ORIGINAL
-
-nem pedig:
-
-❌ SHORTAGE
-
-Tehát a coverage számításnak NEM ezt kell vizsgálnia:
-
-totalGreedyStrands vs totalSnapshotStrands
-
-hanem ezt:
-
-Az origin igény kielégíthető-e? Ha nem, a teljes csoport kielégíthető-e?
-
-1.  Fázis – Fogalmak tisztázása
-
-A group summary-ból szerintem el kell tűnnie ennek:
-
-expandedGreedyStrands totalGreedyStrands
-
-vagy legalábbis információs célra maradhat, de ne ez legyen a döntés
-alapja.
-
-Az üzleti fogalmak:
-
-requiredDemand
-
-az eredeti igény.
-
-originalAvailable
-
-az eredeti anyag fedezete.
-
-alternativeAvailable
-
-az alternatívák fedezete.
-
-groupAvailable
-
-a kettő összege.
-
-2.  Fázis – Mit jelent egy csoport?
-
-Most:
-
-BW12
-
-NP-BAR12-4000 (origin) NP-BAR12-3000 (alternative)
-
-Valójában ez egy “coverage pool”.
-
-Vagyis:
-
-Need = original material demand
-
-és
-
-Have = original material stock + alternative material stock
-
-3.  Fázis – Az új summary modell
-
-Én ezt vezetném be:
-
-struct InventoryAuditGroupSummary { QString groupKey; QString groupName;
-
-    int requiredDemand = 0;
-
-    int originalAvailable = 0;
-
-    int alternativeAvailable = 0;
-
-    int totalAvailable = 0;
-
-    GroupCoverage coverage;
-
-};
-
-4.  Fázis – A coverage szabályrendszer
-
-Definiáljuk pontosan.
-
-✅ ORIGINAL
-
-Az eredeti anyag önmagában elegendő.
-
-originalAvailable >= requiredDemand
-
-🔄 PARTIAL
-
-Az eredeti önmagában kevés.
-
-De:
-
-originalAvailable > 0
-
-ÉS
-
-originalAvailable + alternativeAvailable >= requiredDemand
-
-🔁 SUBSTITUTE
-
-Nincs eredeti fedezet.
-
-originalAvailable == 0
-
-viszont:
-
-alternativeAvailable >= requiredDemand
-
-❌ SHORTAGE
-
-A teljes csoport sem elég.
-
-originalAvailable + alternativeAvailable < requiredDemand
-
-5.  Fázis – Meg kell találnunk a megfelelő adatforrást
-
-Itt jön a kritikus kérdés.
-
-Most a summary ezeket használja:
-
-snapshotStrands stockStrands
-
-De előbb el kell dönteni:
-
-Mit akarunk vizsgálni?
-
-Készletfedezet?
-
-Akkor:
-
-stockStrands
-
-kell.
-
-Optimizer snapshot fedezet?
-
-Akkor:
-
-snapshotStrands
-
-kell.
-
-Szerintem a coverage jelentése:
-
-A gyártás legyártható-e?
-
-ezért:
-
-stockStrands
-
-az érdekes.
-
-Nem:
-
-snapshotStrands
-
-6.  Fázis – Ellenőrző példa
-
-BW12:
-
-need = 12
-
-originalAvailable = 45
-
-alternativeAvailable = 0
-
-↓
-
-✅ ORIGINAL
-
-RT70:
-
-need = 7
-
-originalAvailable = 18
-
-alternativeAvailable = 133 + 14
-
-↓
-
-✅ ORIGINAL
-
-Másik példa:
-
-need = 12
-
-originalAvailable = 5 alternativeAvailable = 20
-
-↓
-
-🔄 PARTIAL
-
-7.  PATCH TERV
-
-Ha a fenti definícióval egyetértesz, akkor a patch sorrendje:
-
-Patch A
-
-InventoryAuditGroupSummary átalakítása:
-
-requiredDemand originalAvailable alternativeAvailable totalAvailable
-coverage
-
-Patch B
-
-InventoryAuditBuilder::build()
-
-A summary aggregáció újraírása.
-
-Nem:
-
-expandedGreedyStrands totalGreedyStrands
-
-hanem:
-
-requiredDemand
-
-originalAvailable
-
-alternativeAvailable
-
-számolása.
-
-Patch C
-
-Coverage számítás:
-
-✅ ORIGINAL 🔄 PARTIAL 🔁 SUBSTITUTE ❌ SHORTAGE
-
-szabályokkal.
-
-Patch D
-
-Formatter summary blokk átírása.
-
-Valami ilyenre:
-
-BW12 (Zárósúly Ø12)
-
-required demand : 12
-
-original available : 45 alternative available: 0
-
-total available : 45
-
-coverage : ✅ ORIGINAL
-
-Szerintem ez lenne az első verzió, ami már nem a validator logikáját
-mutatja vissza, hanem azt, amit te valójában tudni akarsz:
-
-Legyártható az igény?
-
-Ha igen, miből?
+[2026-10-11T22:16:46.718] started CutPlannerPro as zoli@pif
+[2026-10-11T22:16:47.756] ✅ RAL szinek init ok
+[2026-10-11T22:16:47.765] ✅ anyagtörzs init ok
+[2026-10-11T22:16:47.765] ✅ anyagcsoport init (MSFF) ok
+[2026-10-11T22:16:47.766] ✅ szerepkör-csoport init (MSFF) ok
+[2026-10-11T22:16:47.767] ✅ festési csoportok init (MSFF) ok
+[2026-10-11T22:16:47.768] ✅ bundle definíciók init ok
+[2026-10-11T22:16:47.769] ✅ product type init ok
+[2026-10-11T22:16:47.769] ✅ product subtype init ok
+[2026-10-11T22:16:47.769] ✅ méretszámítási módok init (MSFF) ok
+[2026-10-11T22:16:47.770] ✅ BOM init ok
+[2026-10-11T22:16:47.819] ✅ raktár törzs init ok
+[2026-10-11T22:16:47.862] ✅ készlet init ok
+[2026-10-11T22:16:47.889] ✅ maradék készlet init ok
+[2026-10-11T22:16:47.891] ✅ vágási terv init ok
+[2026-10-11T22:16:47.891] ✅ vágógépek init ok
+[2026-10-11T22:16:47.891] ✅ festési normák init ok
+[2026-10-11T22:16:47.891] 🌱 Init összefoglaló: 144 anyag, 52 anyagcsoport, 2 gép, 73 tárhely, 112 rakat, 575 hulló
+[2026-10-11T22:16:47.970] INFO: ✅ MainWindow inited
+[2026-10-11T22:17:06.469] INFO: COMBO CURRENT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:06.483] INFO: COMBO CURRENT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:15.229] INFO: COMBO CURRENT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:15.710] INFO: SUGGESTED MATERIAL = NaphálóTok [NP-T]
+[2026-10-11T22:17:15.711] INFO: COMBO CURRENT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:18.534] INFO: BOM_DEBOUNCE_TIMEOUT - refreshbom started
+[2026-10-11T22:17:18.535] INFO: BOM_DEBOUNCE_TIMEOUT - refreshbom stopped
+[2026-10-11T22:17:27.034] INFO: BOM_DEBOUNCE_TIMEOUT - refreshbom started
+[2026-10-11T22:17:27.077] INFO: SUGGESTED MATERIAL = NaphálóTok [NP-T-9010]
+[2026-10-11T22:17:27.078] INFO: COMBO CURRENT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:27.079] INFO: BOM_DEBOUNCE_TIMEOUT - refreshbom stopped
+[2026-10-11T22:17:28.768] INFO: ACCEPT MATERIAL = Csőtengely Ø70x5000mm [NP-ROLL70-5000]
+[2026-10-11T22:17:28.871] INFO: COMBO CHANGED TO = Zárósúly Ø20x6000mm [NP-BAR20-6000]
+[2026-10-11T22:17:28.899] INFO: COMBO CURRENT MATERIAL = Zárósúly Ø20x6000mm [NP-BAR20-6000]
+
+
+
+
+és a log:
+
+
+
+
+22:16:42: Debugging /home/zoli/source/build/cutplannerpro/Desktop_Qt_6_10_0-Debug/CutPlannerPro ...
+QCoreApplication::applicationDirPath: Please instantiate the QApplication object first
+INFO:started CutPlannerPro as zoli@pif
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/ral_colors/classic.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/ral_colors/design.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/ral_colors/p1.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/ral_colors/p2.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/materials.csv, separator: ';'
+WARNING:⚠️ Hibák az importálás során (4 sor):
+WARNING:📄 Fájl: /home/zoli/source/repos/CutPlannerPro/testdata/materials.csv
+Hibalista:
+  1. ⚠️ Bundle anyag (ROL-EZ10) stockLength mezője nem lehet valós hossz (6000 mm). Állítsd -1 értékre. (Sor: 144)
+  2. ⚠️ Bundle anyag (ROL-EZ5) stockLength mezője nem lehet valós hossz (6000 mm). Állítsd -1 értékre. (Sor: 145)
+  3. ⚠️ Bundle anyag (MT-L40) stockLength mezője nem lehet valós hossz (6000 mm). Állítsd -1 értékre. (Sor: 146)
+  4. ⚠️ Bundle anyag (MT-L20) stockLength mezője nem lehet valós hossz (6000 mm). Állítsd -1 értékre. (Sor: 147)
+
+
+INFO:✅ 144 anyag sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/materials.csv
+WARNING:⚠️ MSFF: Ismeretlen anyag barcode:NP-B
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/bundles.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/bundle_components.csv, separator: ';'
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/product_type.csv, separator: ';'
+INFO:✅ 3 terméktípus sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/product_type.csv
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/product_subtype.csv, separator: ';'
+INFO:✅ 15 termék-altípus sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/product_subtype.csv
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/bom.csv, separator: ';'
+INFO:✅ 55 BOM-lista sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/bom.csv
+MaterialRoleRepository: unknown productType: "#SR"
+MaterialRoleRepository: unknown productType: "#SR"
+INFO:✅ 52 rolemap sor importálva: /home/zoli/source/repos/CutPlannerPro/testdata/material_rolemap.csv
+INFO:StorageRoleGroupRepository: tárolási csoportok felépítve (bundleCode + bundle komponensek alapján).
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/stock.csv, separator: ';'
+WARNING:⚠️ Hibák az importálás során (2 sor):
+WARNING:📄 Fájl: /home/zoli/source/repos/CutPlannerPro/testdata/stock.csv
+Hibalista:
+  1. ⚠️ Sor %1: hibás barcode vagy mennyiség (Sor: 103)
+  2. ⚠️ Sor %1: hibás barcode vagy mennyiség (Sor: 104)
+
+
+INFO:✅ 112 készletbejegyzés sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/stock.csv
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/leftovers.csv, separator: ';'
+INFO:✅ 575 készletbejegyzés sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/leftovers.csv
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261011-221028.txt, separator: ';'
+INFO:✅ 6 vágási igény sikeresen importálva a fájlból: /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261011-221028.txt
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/cuttingmachines.csv, separator: ','
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/cuttingmachine_materialtypes.csv, separator: ','
+INFO:✅ ProductAttributeRegistry feltöltve
+INFO:filename: /home/zoli/source/repos/CutPlannerPro/testdata/powder_consumption.csv, separator: ';'
+INFO:✅ 3 festési norma betöltve: /home/zoli/source/repos/CutPlannerPro/testdata/powder_consumption.csv
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:groupboxAttributes_hide:true
+INFO:AddInputDialog::refreshBom: initializeBomModel
+INFO:SeriesInput: type={00000000-0000-0000-0000-000000000000} subtype={00000000-0000-0000-0000-000000000000} color= surface=SM w=0 h=0
+INFO:  lastSuggestedMaterial at entry: NULL
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr NINCS kiolvasva
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 0 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 1 ms
+INFO:[refreshBom] bestPerRole loop (0 elem): 0 ms
+INFO:[refreshBom] recommended loop (0 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (0 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 0 ms
+INFO:[refreshBom] TOTAL: 2 ms
+INFO:AddInputDialog::refreshBom: initializeBomModel
+INFO:SeriesInput: type={00000000-0000-0000-0000-000000000000} subtype={00000000-0000-0000-0000-000000000000} color= surface=SM w=0 h=0
+INFO:  lastSuggestedMaterial at entry: NULL
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr NINCS kiolvasva
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 0 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 0 ms
+INFO:[refreshBom] bestPerRole loop (0 elem): 0 ms
+INFO:[refreshBom] recommended loop (0 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (0 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 6 ms
+INFO:[refreshBom] TOTAL: 6 ms
+INFO:WIDTH_CHANGED dialogInitialized=1
+INFO:WIDTH_CHANGED dialogInitialized=1
+INFO:WIDTH_CHANGED dialogInitialized=1
+INFO:WIDTH_CHANGED dialogInitialized=1
+INFO:HEIGHT_CHANGED dialogInitialized=1
+INFO:HEIGHT_CHANGED dialogInitialized=1
+INFO:HEIGHT_CHANGED dialogInitialized=1
+INFO:HEIGHT_CHANGED dialogInitialized=1
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:WIDTH_DEBOUNCE_TIMEOUT
+INFO:AddInputDialog::refreshBom: type changed
+INFO:SeriesInput: type={b72272db-34f2-4df6-8a5c-274ae98ffa1b} subtype={00000000-0000-0000-0000-000000000000} color= surface=SM w=1000 h=1000
+INFO:  lastSuggestedMaterial at entry: NULL
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr kiolvasva, meghajtas:
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 1 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 0 ms
+INFO:[refreshBom] bestPerRole loop (0 elem): 0 ms
+INFO:[refreshBom] recommended loop (0 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (0 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 1 ms
+INFO:[refreshBom] TOTAL: 2 ms
+INFO:groupboxAttributes_show:false
+INFO:AddInputDialog::refreshBom: subtype changed
+INFO:SeriesInput: type={b72272db-34f2-4df6-8a5c-274ae98ffa1b} subtype={28513c3b-1ba7-455e-bcae-a7d57323ae23} color= surface=SM w=1000 h=1000
+INFO:  lastSuggestedMaterial at entry: NULL
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr kiolvasva, meghajtas:
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 1 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 31 ms
+INFO:[refreshBom] bestPerRole loop (21 elem): 0 ms
+INFO:[refreshBom] recommended loop (21 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (6 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:  NaphálóTok  [NP-T]  (CUT)
+INFO:  NaphálóTokFedél  [NP-TF]  (CUT)
+INFO:  CipzárosZáró  [NP-CZ]  (CUT)
+INFO:  CipzárosLáb_Combo  [NP-CL2+CLT2+CLB2]  (CUT)
+INFO:  Csőtengely Ø70x5000mm  [NP-ROLL70-5000]  (CUT)
+INFO:  Zárósúly Ø20x6000mm  [NP-BAR20-6000]  (CUT)
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 2 ms
+INFO:[refreshBom] TOTAL: 36 ms
+INFO:HEIGHT_DEBOUNCE_TIMEOUT
+INFO:BOM_DEBOUNCE_TIMEOUT
+INFO:AddInputDialog::refreshBom: debounced
+INFO:refreshBom: no series change → skip
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:COLOR_CHANGED dialogInitialized=1
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:COLOR_CHANGED dialogInitialized=1
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:COLOR_CHANGED dialogInitialized=1
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:COLOR_CHANGED dialogInitialized=1
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-ROLL70-5000
+INFO:COLOR_DEBOUNCE_TIMEOUT
+INFO:BOM_DEBOUNCE_TIMEOUT
+INFO:AddInputDialog::refreshBom: debounced
+INFO:SeriesInput: type={b72272db-34f2-4df6-8a5c-274ae98ffa1b} subtype={28513c3b-1ba7-455e-bcae-a7d57323ae23} color=9010 surface=SM w=1000 h=1000
+INFO:  lastSuggestedMaterial at entry: NaphálóTok [NP-T]
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 1 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 37 ms
+INFO:[refreshBom] bestPerRole loop (21 elem): 0 ms
+INFO:[refreshBom] recommended loop (21 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (6 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:  NaphálóTok  [NP-T-9010]  (CUT)
+INFO:  NaphálóTokFedél  [NP-TF-9010]  (CUT)
+INFO:  CipzárosZáró  [NP-CZ-9010]  (CUT)
+INFO:  CipzárosLáb_Combo  [NP-CL2+CLT2+CLB2-9010]  (CUT)
+INFO:  Csőtengely Ø70x5000mm  [NP-ROLL70-5000]  (CUT)
+INFO:  Zárósúly Ø20x6000mm  [NP-BAR20-6000]  (CUT)
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 2 ms
+INFO:[refreshBom] TOTAL: 43 ms
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:batch_adding: NP-T-9010 ok
+INFO:batch_adding: NP-TF-9010 ok
+INFO:batch_adding: NP-CZ-9010 ok
+INFO:batch_adding: NP-CL2+CLT2+CLB2-9010 ok
+INFO:batch_adding: NP-ROLL70-5000 ok
+INFO:batch_adding: NP-BAR20-6000 ok
+INFO:COLOR_CHANGED dialogInitialized=0
+INFO:AddInputDialog::refreshBom: type changed
+INFO:AddInputDialog::refreshBom: subtype changed
+INFO:WIDTH_CHANGED dialogInitialized=0
+INFO:HEIGHT_CHANGED dialogInitialized=0
+INFO:groupboxAttributes_show:true
+INFO:applyAttributes: meghajtas = motoros
+INFO:AddInputDialog::refreshBom: initializeBomModel
+INFO:SeriesInput: type={b72272db-34f2-4df6-8a5c-274ae98ffa1b} subtype={28513c3b-1ba7-455e-bcae-a7d57323ae23} color=RAL 9010 surface=SM w=1000 h=1000
+INFO:  lastSuggestedMaterial at entry: NULL
+INFO:[refreshBom] entry-log block: 0 ms
+INFO:attr kiolvasva, meghajtas: motoros
+INFO:[refreshBom] getModel(): 0 ms
+INFO:[refreshBom] generateBom(): 1 ms
+TRACE:../../../repos/CutPlannerPro/product/selector/material_selector.cpp:26 static MaterialSelector::MaterialSelectionResult MaterialSelector::rankMaterials(QVector<QUuid>&, const Cutting::Plan::Request&)
+INFO:[refreshBom] rankMaterials(): 24 ms
+INFO:[refreshBom] bestPerRole loop (21 elem): 0 ms
+INFO:[refreshBom] recommended loop (21 elem): 0 ms
+INFO:[refreshBom] cuttableBom filter loop (6 elem): 0 ms
+INFO:[refreshBom] lastSuggestedMaterial sync: 0 ms
+INFO:=== Recommended BOM order ===
+INFO:  NaphálóTok  [NP-T-9010]  (CUT)
+INFO:  NaphálóTokFedél  [NP-TF-9010]  (CUT)
+INFO:  CipzárosZáró  [NP-CZ-9010]  (CUT)
+INFO:  CipzárosLáb_Combo  [NP-CL2+CLT2+CLB2-9010]  (CUT)
+INFO:  Csőtengely Ø70x5000mm  [NP-ROLL70-5000]  (CUT)
+INFO:  Zárósúly Ø20x6000mm  [NP-BAR20-6000]  (CUT)
+INFO:=== END Recommended BOM ===
+INFO:[refreshBom] recommended BOM log print: 0 ms
+INFO:[refreshBom] btnNextMaterial UI update: 0 ms
+INFO:[refreshBom] updateBomWarnings(): 0 ms
+INFO:[refreshBom] selectedMaterialId()+updateMaterialWarnings(): 0 ms
+INFO:[refreshBom] TOTAL: 27 ms
+INFO:Nincs festési csoport ehhez az anyaghoz: NP-BAR20-6000
+22:17:39: Debugging of /home/zoli/source/build/cutplannerpro/Desktop_Qt_6_10_0-Debug/CutPlannerPro has finished with exit code 0.

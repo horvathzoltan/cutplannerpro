@@ -28,4 +28,7 @@ public:
 
     QMap<QUuid, int> computeComponentNeed(const QString &bundleCode, int strandCount) const;
     QVector<BundleComponent> componentsOf(const QString &bundleCode) const;
+    int computeAssemblableCount(
+        const QString& bundleCode,
+        const QMap<QUuid,int>& availableComponents) const;
 };

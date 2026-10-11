@@ -1,8 +1,10 @@
+készletegészség funkció
+
 addinput dialog:
     - fehér termékhez natúrt ajánl fel: a szín beírásakor nem frissül a bom, még a szín nélküli állapotot tárolja
     tehát a szín beírása után nem frissül a bom, a debounce timer nem sül el????
 
-leftover:
+leftover: - FIXED
     - automatikus felvétel: a vonalkód beolvasására a fehér helyett natúrt vesz fel.
 
 munkadarab címkék:

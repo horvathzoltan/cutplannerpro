@@ -1,0 +1,13 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"12346";"Teszt  Elek";2000;2000;1970;;1;1;0;"RAL 9010";NP-T;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12346";"Teszt  Elek";2000;2000;1995;;1;1;0;"RAL 9010";NP-TF;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12346";"Teszt  Elek";2000;2000;1877;;1;1;0;"RAL 9010";NP-CZ;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12346";"Teszt  Elek";2000;2000;1897;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12346";"Teszt  Elek";2000;2000;1890;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12346";"Teszt  Elek";2000;2000;1825;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1970;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1995;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1877;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1897;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1890;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"12347";"Teszt  Elek";2000;2000;1825;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026-10-23;NP;CIP;meghajtas=motoros;SM;Gyartasi

@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"1234568";"Teszt Mandarin";1200;1200;1170;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"1234568";"Teszt Mandarin";1200;1200;1195;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"1234568";"Teszt Mandarin";1200;1200;1077;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"1234568";"Teszt Mandarin";1200;1200;1097;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"1234568";"Teszt Mandarin";1200;1200;1090;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"1234568";"Teszt Mandarin";1200;1200;1025;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026-10-15;NP;CIP;meghajtas=motoros;SM;Gyartasi

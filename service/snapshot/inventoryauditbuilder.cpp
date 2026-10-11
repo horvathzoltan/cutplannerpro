@@ -3,6 +3,7 @@
 #include "materials/registry/material_registry.h"
 #include "materials/registry/material_group_registry.h"
 #include "stock/registry/stockregistry.h"
+#include "materialbundles/registry/bundle_registry.h"
 
 InventoryAuditModel InventoryAuditBuilder::build(
     const QVector<Cutting::Plan::Request>& requests,
@@ -141,13 +142,8 @@ InventoryAuditModel InventoryAuditBuilder::build(
     // 5. STOCK készlet
     //----------------------------------------------------
 
-    QMap<QUuid,int> stockPerMaterial;
-
-    for (const StockEntry& s :
-         StockRegistry::instance().readAll())
-    {
-        stockPerMaterial[s.materialId] += s.quantity;
-    }
+    QMap<QUuid,int> stockPerMaterial =
+        StockRegistry::instance().readAllAggregated();
 
     for (auto it = stockPerMaterial.begin();
          it != stockPerMaterial.end();
@@ -158,6 +154,90 @@ InventoryAuditModel InventoryAuditBuilder::build(
         if(!row) continue;
 
         row->stockStrands = it.value();
+    }
+
+    //----------------------------------------------------
+    // 5/b ASSEMBLABLE bundle készlet
+    //----------------------------------------------------
+
+    for (auto& row : model.rows)
+    {
+        const MaterialMaster* master =
+            MaterialRegistry::instance()
+                .findById(row.materialId);
+
+        if (!master)
+            continue;
+
+        if (master->kind != MaterialKind::Bundle)
+            continue;
+
+        row.componentAssemblyStock =
+            BundleRegistry::instance()
+                .computeAssemblableCount(
+                    master->bundleCode,
+                    stockPerMaterial);
+        const auto components =
+            BundleRegistry::instance()
+                .componentsOf(
+                    master->bundleCode);
+
+        for (const BundleComponent& comp : components)
+        {
+            InventoryAuditComponent item;
+
+            item.materialId =
+                comp.materialId;
+
+            item.requiredPerBundle =
+                comp.count;
+
+            item.stock =
+                stockPerMaterial.value(
+                    comp.materialId,
+                    0);
+
+            item.assemblableCount =
+                comp.count > 0
+                    ? item.stock / comp.count
+                    : 0;
+
+            if (const MaterialMaster* cm =
+                MaterialRegistry::instance()
+                    .findById(comp.materialId))
+            {
+                item.barcode =
+                    cm->barcode;
+
+                item.materialName =
+                    cm->toReportLabel();
+            }
+
+            row.assemblyComponents
+                .push_back(item);
+        }
+    }
+
+    //----------------------------------------------------
+    // 5/c AVAILABLE stock
+    //----------------------------------------------------
+
+    for (auto& row : model.rows)
+    {
+
+        //----------------------------------------------------
+        // TODO:
+        // availableStock currently assumes that
+        // stockStrands and componentAssemblyStock
+        // are disjoint sources.
+        //
+        // This must be verified before coverage
+        // fully relies on availableStock.
+        //----------------------------------------------------
+
+        row.availableStock =
+            row.stockStrands +
+            row.componentAssemblyStock;
     }
 
     //----------------------------------------------------
@@ -183,6 +263,9 @@ InventoryAuditModel InventoryAuditBuilder::build(
         row->snapshotStrands = it.value();
     }
 
+    //----------------------------------------------------
+    // 7. summary
+    //----------------------------------------------------
 
     QMap<QString, InventoryAuditGroupSummary> summaries;
     for (const auto& row : model.rows)
@@ -200,19 +283,34 @@ InventoryAuditModel InventoryAuditBuilder::build(
         {
             s.groupName = g->name;
         }
-        //s.totalGreedyStrands += row.estimatedStrands;
-        s.totalSnapshotStrands += row.snapshotStrands;
-        s.totalStockStrands += row.stockStrands;
-
         if (row.isExpanded)
         {
-            s.expandedGreedyStrands += row.estimatedStrands;
+            s.alternativeAvailable += row.availableStock;
+
+            s.alternativeEstimate += row.estimatedStrands;
         }
         else
         {
-            s.originalGreedyStrands += row.estimatedStrands;
+            s.requiredDemand =
+                qMax(
+                    s.requiredDemand,
+                    row.estimatedStrands);
+
+            // NOTE:
+            //
+            // originalAvailable currently aggregates
+            // all REQ rows in the group.
+            //
+            // This assumes independent inventories.
+            // Verify if multiple REQ rows can draw
+            // from the same physical stock.
+
+            s.originalAvailable += row.availableStock;
+
+            s.originalEstimate += row.estimatedStrands;
         }
     }
+
 
     for (auto it = summaries.begin();
          it != summaries.end();
@@ -220,35 +318,25 @@ InventoryAuditModel InventoryAuditBuilder::build(
     {
         InventoryAuditGroupSummary& s = it.value();
 
-        s.totalGreedyStrands =
-            s.originalGreedyStrands +
-            s.expandedGreedyStrands;
+        s.totalAvailable =
+            s.originalAvailable +
+            s.alternativeAvailable;
 
-        const int originalNeed =
-            s.originalGreedyStrands;
-
-        const int expandedNeed =
-            s.expandedGreedyStrands;
-
-        const int originalHave =
-            s.totalSnapshotStrands;
-
-        const int groupHave =
-            s.totalStockStrands;
-
-        if (originalHave >= originalNeed)
+        if (s.originalAvailable >= s.requiredDemand)
         {
             s.coverage =
                 GroupCoverage::Original;
         }
-        else if (originalHave > 0 &&
-                 groupHave >= originalNeed)
+        else if (
+            s.originalAvailable > 0 &&
+            s.totalAvailable >= s.requiredDemand)
         {
             s.coverage =
                 GroupCoverage::Partial;
         }
-        else if (originalHave == 0 &&
-                 groupHave >= originalNeed)
+        else if (
+            s.originalAvailable == 0 &&
+            s.alternativeAvailable >= s.requiredDemand)
         {
             s.coverage =
                 GroupCoverage::Substitute;

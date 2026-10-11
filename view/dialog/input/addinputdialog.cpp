@@ -327,34 +327,15 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         ui->chkUnknownSide->setChecked(false);
     });
 
-    // --- LENGTH DEBOUNCE ---
+    // --- BOM DEBOUNCE ---
     _bomDebounceTimer = new QTimer(this);
     _bomDebounceTimer->setSingleShot(true);
     _bomDebounceTimer->setInterval(2000);
 
-    connect(_bomDebounceTimer, &QTimer::timeout, this, [this](){
-        refreshBom("debounced");
-    });
-
-
-    // --- LENGTH DEBOUNCE ---
+    // --- LENGTH (=WIDTH) DEBOUNCE ---
     _lengthDebounceTimer = new QTimer(this);
     _lengthDebounceTimer->setSingleShot(true);
     _lengthDebounceTimer->setInterval(2000);
-
-    connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
-        updateColorPreview();
-        //_bomDirty = true;
-        //refreshBom("length changed");
-        _bomDebounceTimer->start();
-    });
-
-    connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
-            this, [this](int){
-               // _bomDirty = true;
-            if (!_dialogInitialized)
-                _lengthDebounceTimer->start();
-            });
 
 
     // --- HEIGHT DEBOUNCE ---
@@ -362,36 +343,84 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     _heightDebounceTimer->setSingleShot(true);
     _heightDebounceTimer->setInterval(2000);
 
-    connect(_heightDebounceTimer, &QTimer::timeout, this, [this](){
-        //updateColorPreview();
-        //_bomDirty = true;
-        //refreshBom("height changed");
-        if (!_dialogInitialized)
-        _bomDebounceTimer->start();
-    });
-
-    connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
-            this, [this](int){
-            //    _bomDirty = true;
-            if (!_dialogInitialized)
-                _heightDebounceTimer->start();
-            });
-
     // --- COLOR DEBOUNCE ---
     _colorDebounceTimer = new QTimer(this);
     _colorDebounceTimer->setSingleShot(true);
     _colorDebounceTimer->setInterval(2000);
 
-    connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
+
+    connect(_bomDebounceTimer, &QTimer::timeout, this, [this](){
+
+        zInfo("BOM_DEBOUNCE_TIMEOUT");
+        zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom started");
+
+        refreshBom("debounced");
+
+        zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom stopped");
+    });
+
+
+    connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
         updateColorPreview();
-   //     _bomDirty = true;
-        //refreshBom("color changed");
+        //_bomDirty = true;
+        //refreshBom("length changed");
+
+        zInfo("WIDTH_DEBOUNCE_TIMEOUT");
+
         _bomDebounceTimer->start();
     });
 
+    connect(_heightDebounceTimer, &QTimer::timeout, this, [this](){
+        //updateColorPreview();
+        //_bomDirty = true;
+        //refreshBom("height changed");
+        //if (!_dialogInitialized)
+        zInfo("HEIGHT_DEBOUNCE_TIMEOUT");
+
+        _bomDebounceTimer->start();
+    });
+
+    connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
+        updateColorPreview();
+        //     _bomDirty = true;
+        //refreshBom("color changed");
+
+        zInfo("COLOR_DEBOUNCE_TIMEOUT");
+
+        _bomDebounceTimer->start();
+    });
+
+    connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
+            this, [this](int){
+               // _bomDirty = true;
+            zInfo(QString(
+                  "WIDTH_CHANGED dialogInitialized=%1")
+                  .arg(_dialogInitialized));
+
+            if (_dialogInitialized)
+                _lengthDebounceTimer->start();
+            });
+
+    connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
+            this, [this](int){
+            //    _bomDirty = true;
+
+        zInfo(QString(
+                  "HEIGHT_CHANGED dialogInitialized=%1")
+                  .arg(_dialogInitialized));
+
+            if (_dialogInitialized)
+                _heightDebounceTimer->start();
+            });
+
     connect(ui->edit_Color, &QLineEdit::textChanged,
             this, [this](){
-            if (!_dialogInitialized)
+
+        zInfo(QString(
+                  "COLOR_CHANGED dialogInitialized=%1")
+                  .arg(_dialogInitialized));
+
+            if (_dialogInitialized)
                 _colorDebounceTimer->start();    // ❗ csak timer, NINCS azonnali BOM
             });
 
@@ -941,6 +970,36 @@ void AddInputDialog::refreshBom(const QString& key)
     // aktuális anyaghoz tartozó material warning frissítése
     QUuid currentMat = selectedMaterialId();
     updateMaterialWarnings(currentMat);
+
+    auto* suggested =
+        MaterialRegistry::instance()
+            .findById(
+                _bomModel.lastSuggestedMaterial());
+
+    if (suggested)
+    {
+        zEventINFO(
+            QString(
+                "SUGGESTED MATERIAL = %1 [%2]")
+                .arg(suggested->name)
+                .arg(suggested->barcode));
+    }
+
+    QUuid selected = selectedMaterialId();
+
+    const MaterialMaster* current =
+        MaterialRegistry::instance()
+            .findById(selected);
+
+    if (current)
+    {
+        zEventINFO(
+            QString(
+                "COMBO CURRENT MATERIAL = %1 [%2]")
+                .arg(current->name)
+                .arg(current->barcode));
+    }
+
     zInfo(QString("[refreshBom] selectedMaterialId()+updateMaterialWarnings(): %1 ms").arg(stepTimer.restart()));
 
     zInfo(QString("[refreshBom] TOTAL: %1 ms").arg(totalTimer.elapsed()));
@@ -1398,6 +1457,20 @@ bool AddInputDialog::validateItem() const
 }
 
 void AddInputDialog::accept() {
+
+    auto* m =
+        MaterialRegistry::instance()
+            .findById(selectedMaterialId());
+
+    if (m)
+    {
+        zEventINFO(
+            QString(
+                "ACCEPT MATERIAL = %1 [%2]")
+                .arg(m->name)
+                .arg(m->barcode));
+    }
+
     if (generateAllMaterials()) {
         if (!validateHead())
             return;
@@ -2758,6 +2831,19 @@ void AddInputDialog::applyAttributes(const Cutting::Plan::Request& r)
 void AddInputDialog::onMaterialComboChanged(int index)
 {
     Q_UNUSED(index);
+
+    const MaterialMaster* m2 =
+        MaterialRegistry::instance()
+            .findById(selectedMaterialId());
+
+    if (m2)
+    {
+        zEventINFO(
+            QString(
+                "COMBO CHANGED TO = %1 [%2]")
+                .arg(m2->name)
+                .arg(m2->barcode));
+    }
 
     //zTrace();
 

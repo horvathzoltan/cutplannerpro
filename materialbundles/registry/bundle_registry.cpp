@@ -60,3 +60,41 @@ QVector<BundleComponent> BundleRegistry::componentsOf(const QString& bundleCode)
     }
     return def->components;
 }
+
+int BundleRegistry::computeAssemblableCount(
+    const QString& bundleCode,
+    const QMap<QUuid,int>& availableComponents) const
+{
+    const auto components =
+        componentsOf(bundleCode);
+
+    if (components.isEmpty())
+        return 0;
+
+    int result =
+        std::numeric_limits<int>::max();
+
+    for (const BundleComponent& comp : components)
+    {
+        if (comp.count <= 0)
+            continue;
+
+        const int available =
+            availableComponents.value(
+                comp.materialId,
+                0);
+
+        result =
+            std::min(
+                result,
+                available / comp.count);
+    }
+
+    if (result ==
+        std::numeric_limits<int>::max())
+    {
+        return 0;
+    }
+
+    return result;
+}
