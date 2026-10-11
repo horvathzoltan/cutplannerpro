@@ -1,0 +1,13 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"829";"Kolozsi Ati";595;1200;605;;2;0;2;"";MT-T;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"829";"Kolozsi Ati";595;1200;600;;2;0;2;"";TE-H-18;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"829";"Kolozsi Ati";595;1200;588;;2;0;2;"";MT-Z+P;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"829";"Kolozsi Ati";595;1200;1200;;2;0;2;"";MT-L2;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"830";"Kolozsi Ati";360;1230;370;;1;0;1;"";MT-T;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"830";"Kolozsi Ati";360;1230;365;;1;0;1;"";TE-H-18;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"830";"Kolozsi Ati";360;1230;353;;1;0;1;"";MT-Z+P;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"830";"Kolozsi Ati";360;1230;1230;;1;0;1;"";MT-L2;Width;false;2026-10-10;SR;MINIT;;SM;Uveg
+"820";"Boros S.";790;570;800;;1;0;1;"";MT-T;Width;false;2026-10-20;SR;MINIT;;SM;Uveg
+"820";"Boros S.";790;570;795;;1;0;1;"";TE-H-18;Width;false;2026-10-20;SR;MINIT;;SM;Uveg
+"820";"Boros S.";790;570;783;;1;0;1;"";MT-Z+P;Width;false;2026-10-20;SR;MINIT;;SM;Uveg
+"820";"Boros S.";790;570;570;;1;0;1;"";MT-L2;Width;false;2026-10-20;SR;MINIT;;SM;Uveg

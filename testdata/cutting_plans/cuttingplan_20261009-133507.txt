@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"2542";"AxialLogistic";780;1900;750;;1;0;0;"";TE-R-23;Width;false;2026-10-21;ROL;RUG;;SM;Gyartasi
+"2542";"AxialLogistic";780;1900;753;;1;0;0;"";ROL-P;Width;false;2026-10-21;ROL;RUG;;SM;Gyartasi
+"2545";"György Zs., Msz";1270;1450;1235;;1;1;0;"";TE-H-32;Width;false;2026-10-15;ROL;UJGY;;SM;Gyartasi
+"2545";"György Zs., Msz";1270;1450;1225;;1;1;0;"";ROL-GYZ;Width;false;2026-10-15;ROL;UJGY;;SM;Gyartasi
+"2546";"György Zs., Msz";530;1450;495;;1;0;1;"";TE-H-32;Width;false;2026-10-15;ROL;UJGY;;SM;Gyartasi
+"2546";"György Zs., Msz";530;1450;485;;1;0;1;"";ROL-GYZ;Width;false;2026-10-15;ROL;UJGY;;SM;Gyartasi
+"2549";"Dózsa Cs.";610;1180;584;;1;0;0;"";TE-R-23;Width;false;2026-10-16;ROL;TET;;SM;Tuske
+"2549";"Dózsa Cs.";610;1180;583;;1;0;0;"";ROL-P;Width;false;2026-10-16;ROL;TET;;SM;Tuske
+"2552";"Szekér Zsolt, Pécs";570;1260;535;;1;0;0;"";TE-R-23;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2552";"Szekér Zsolt, Pécs";570;1260;525;;1;0;0;"";ROL-P;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2553";"Szekér Zsolt, Pécs";570;1260;535;;1;0;0;"";TE-R-23;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"2553";"Szekér Zsolt, Pécs";570;1260;525;;1;0;0;"";ROL-P;Width;false;2026-10-16;ROL;ALAP;;SM;Gyartasi
+"817";"Rada";2600;3000;2594;;4;0;4;"";SR-T;Width;false;2026-10-20;SR;T;;SM;Gyartasi
+"817";"Rada";2600;3000;2577;;4;0;4;"";TE-H-32;Width;false;2026-10-20;SR;T;;SM;Gyartasi
+"817";"Rada";2600;3000;2580;;4;0;4;"";SR-Z;Width;false;2026-10-20;SR;T;;SM;Gyartasi
+"817";"Rada";2600;3000;2580;;4;0;4;"";SR-P-3000;Width;false;2026-10-20;SR;T;;SM;Gyartasi
+"823";"Rellux, Győr";980;1260;964;;1;0;1;"";SR-FSN;Width;false;2026-10-19;SR;TN;;SM;Gyartasi
+"823";"Rellux, Győr";980;1260;947;;1;0;1;"";TE-H-32;Width;false;2026-10-19;SR;TN;;SM;Gyartasi
+"823";"Rellux, Győr";980;1260;950;;1;0;1;"";SR-Z;Width;false;2026-10-19;SR;TN;;SM;Gyartasi
+"823";"Rellux, Győr";980;1260;950;;1;0;1;"";SR-P-3000;Width;false;2026-10-19;SR;TN;;SM;Gyartasi
+"826";"B.György, Bcs";900;2780;884;;1;1;0;"";SR-FSN;Width;false;2026-10-20;SR;TN;;SM;Gyartasi
+"826";"B.György, Bcs";900;2780;867;;1;1;0;"";TE-H-32;Width;false;2026-10-20;SR;TN;;SM;Gyartasi
+"826";"B.György, Bcs";900;2780;870;;1;1;0;"";SR-Z;Width;false;2026-10-20;SR;TN;;SM;Gyartasi
+"826";"B.György, Bcs";900;2780;870;;1;1;0;"";SR-P-3000;Width;false;2026-10-20;SR;TN;;SM;Gyartasi
