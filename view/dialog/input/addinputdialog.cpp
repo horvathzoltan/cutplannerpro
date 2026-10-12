@@ -104,7 +104,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         connect(rb, &QRadioButton::toggled, this, [this](bool checked){
             if (!checked) return;
 
-            refreshBom("type changed");
+            //refreshBom("type changed");
+            scheduleSeriesRefresh("type");
             onProductTypeChanged(true);   // megmarad a subtype stack váltás
             populateCalcModePanel();
 
@@ -146,7 +147,8 @@ AddInputDialog::AddInputDialog(QWidget *parent,
             connect(rb, &QRadioButton::toggled, this, [this](bool checked){
                 if (!checked) return;
 
-                refreshBom("subtype changed");
+                //refreshBom("subtype changed");
+                scheduleSeriesRefresh("subtype");
                 updateAttributePanel();
                 populateCalcModePanel();
 
@@ -167,10 +169,10 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     populateMaterialCombo();
 
     populateSurfaceCombo();
-    connect(ui->edit_Color, &QLineEdit::textChanged, this, &AddInputDialog::updateColorPreview);
+    connect(ui->edit_Color, &QLineEdit::textChanged, this, &AddInputDialog::updatePaintPreview);
     //connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged), this, &AddInputDialog::updateColorPreview);
 //    connect(ui->editLength, &QLineEdit::textChanged, this, &AddInputDialog::updateColorPreview);
-    connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged), this, &AddInputDialog::updateColorPreview);
+    connect(ui->spinQuantity, qOverload<int>(&QSpinBox::valueChanged), this, &AddInputDialog::updatePaintPreview);
 
 
     // ⭐ Tiszta tételszám ajánlás
@@ -328,102 +330,141 @@ AddInputDialog::AddInputDialog(QWidget *parent,
     });
 
     // --- BOM DEBOUNCE ---
-    _bomDebounceTimer = new QTimer(this);
-    _bomDebounceTimer->setSingleShot(true);
-    _bomDebounceTimer->setInterval(2000);
+    // _bomDebounceTimer = new QTimer(this);
+    // _bomDebounceTimer->setSingleShot(true);
+    // _bomDebounceTimer->setInterval(2000);
 
     // --- LENGTH (=WIDTH) DEBOUNCE ---
-    _lengthDebounceTimer = new QTimer(this);
-    _lengthDebounceTimer->setSingleShot(true);
-    _lengthDebounceTimer->setInterval(2000);
+    // _lengthDebounceTimer = new QTimer(this);
+    // _lengthDebounceTimer->setSingleShot(true);
+    // _lengthDebounceTimer->setInterval(2000);
 
 
     // --- HEIGHT DEBOUNCE ---
-    _heightDebounceTimer = new QTimer(this);
-    _heightDebounceTimer->setSingleShot(true);
-    _heightDebounceTimer->setInterval(2000);
+    // _heightDebounceTimer = new QTimer(this);
+    // _heightDebounceTimer->setSingleShot(true);
+    // _heightDebounceTimer->setInterval(2000);
 
     // --- COLOR DEBOUNCE ---
-    _colorDebounceTimer = new QTimer(this);
-    _colorDebounceTimer->setSingleShot(true);
-    _colorDebounceTimer->setInterval(2000);
+    // _colorDebounceTimer = new QTimer(this);
+    // _colorDebounceTimer->setSingleShot(true);
+    // _colorDebounceTimer->setInterval(2000);
+
+    _seriesDebounceTimer =
+        new QTimer(this);
+
+    _seriesDebounceTimer->setSingleShot(true);
+    _seriesDebounceTimer->setInterval(500);
 
 
-    connect(_bomDebounceTimer, &QTimer::timeout, this, [this](){
+    connect(
+        _seriesDebounceTimer,
+        &QTimer::timeout,
+        this,
+        [this]()
+        {
+            zInfo("SERIES_DEBOUNCE_TIMEOUT");
 
-        zInfo("BOM_DEBOUNCE_TIMEOUT");
-        zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom started");
+            if (!isSeriesInputComplete())
+            {
+                zInfo(
+                    "SERIES INPUT INCOMPLETE");
+                return;
+            }
 
-        refreshBom("debounced");
 
-        zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom stopped");
-    });
+            refreshBom("series debounce");
+        });
 
 
-    connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
-        updateColorPreview();
-        //_bomDirty = true;
-        //refreshBom("length changed");
+    // connect(_bomDebounceTimer, &QTimer::timeout, this, [this](){
 
-        zInfo("WIDTH_DEBOUNCE_TIMEOUT");
+    //     zInfo("BOM_DEBOUNCE_TIMEOUT");
+    //     zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom started");
 
-        _bomDebounceTimer->start();
-    });
+    //     refreshBom("debounced");
 
-    connect(_heightDebounceTimer, &QTimer::timeout, this, [this](){
-        //updateColorPreview();
-        //_bomDirty = true;
-        //refreshBom("height changed");
-        //if (!_dialogInitialized)
-        zInfo("HEIGHT_DEBOUNCE_TIMEOUT");
+    //     zEventINFO("BOM_DEBOUNCE_TIMEOUT - refreshbom stopped");
+    // });
 
-        _bomDebounceTimer->start();
-    });
 
-    connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
-        updateColorPreview();
-        //     _bomDirty = true;
-        //refreshBom("color changed");
+    // connect(_lengthDebounceTimer, &QTimer::timeout, this, [this](){
+    //     updateColorPreview();
+    //     //_bomDirty = true;
+    //     //refreshBom("length changed");
 
-        zInfo("COLOR_DEBOUNCE_TIMEOUT");
+    //     zInfo("WIDTH_DEBOUNCE_TIMEOUT");
 
-        _bomDebounceTimer->start();
-    });
+    //     _bomDebounceTimer->start();
+    // });
+
+    // connect(_heightDebounceTimer, &QTimer::timeout, this, [this](){
+    //     //updateColorPreview();
+    //     //_bomDirty = true;
+    //     //refreshBom("height changed");
+    //     //if (!_dialogInitialized)
+    //     zInfo("HEIGHT_DEBOUNCE_TIMEOUT");
+
+    //     _bomDebounceTimer->start();
+    // });
+
+    // connect(_colorDebounceTimer, &QTimer::timeout, this, [this](){
+    //     updateColorPreview();
+    //     //     _bomDirty = true;
+    //     //refreshBom("color changed");
+
+    //     zInfo("COLOR_DEBOUNCE_TIMEOUT");
+
+    //     _bomDebounceTimer->start();
+    // });
 
     connect(ui->spinBox_width, qOverload<int>(&QSpinBox::valueChanged),
             this, [this](int){
                // _bomDirty = true;
-            zInfo(QString(
-                  "WIDTH_CHANGED dialogInitialized=%1")
-                  .arg(_dialogInitialized));
+            // zInfo(QString(
+            //       "WIDTH_CHANGED dialogInitialized=%1")
+            //       .arg(_dialogInitialized));
 
-            if (_dialogInitialized)
-                _lengthDebounceTimer->start();
-            });
+            // if (_dialogInitialized)
+            //     _lengthDebounceTimer->start();
+            //
+            updatePaintPreview();
+            scheduleSeriesRefresh("width");
+    });
 
     connect(ui->spinBox_height, qOverload<int>(&QSpinBox::valueChanged),
             this, [this](int){
             //    _bomDirty = true;
 
-        zInfo(QString(
-                  "HEIGHT_CHANGED dialogInitialized=%1")
-                  .arg(_dialogInitialized));
+        // zInfo(QString(
+        //           "HEIGHT_CHANGED dialogInitialized=%1")
+        //           .arg(_dialogInitialized));
 
-            if (_dialogInitialized)
-                _heightDebounceTimer->start();
+            // if (_dialogInitialized)
+            //     _heightDebounceTimer->start();
+            updatePaintPreview();
+            scheduleSeriesRefresh("height");
             });
 
     connect(ui->edit_Color, &QLineEdit::textChanged,
             this, [this](){
 
-        zInfo(QString(
-                  "COLOR_CHANGED dialogInitialized=%1")
-                  .arg(_dialogInitialized));
+        // zInfo(QString(
+        //           "COLOR_CHANGED dialogInitialized=%1")
+        //           .arg(_dialogInitialized));
 
-            if (_dialogInitialized)
-                _colorDebounceTimer->start();    // ❗ csak timer, NINCS azonnali BOM
+            /*if (_dialogInitialized)
+                _colorDebounceTimer->start();    // ❗ csak timer, NINCS azonnali BOM*/
+            updatePaintPreview();
+            scheduleSeriesRefresh("color");
             });
 
+        connect(ui->comboBox_Surface, qOverload<int>(&QComboBox::currentIndexChanged),
+            [this](int)
+            {
+                updatePaintPreview();
+                scheduleSeriesRefresh("surface");
+            });
 
     connect(ui->comboMaterial, qOverload<int>(&QComboBox::currentIndexChanged),
             this, &AddInputDialog::onMaterialComboChanged);
@@ -496,7 +537,7 @@ AddInputDialog::AddInputDialog(QWidget *parent,
         _suppressPreview = false;
         _suppressLengthSuggestion = false;
 
-        updateColorPreview();
+        updatePaintPreview();
         updateAttributePanel();
 
         _dialogInitialized = true;
@@ -765,15 +806,27 @@ void AddInputDialog::refreshBom(const QString& key)
     if (!_dialogInitialized && key != "initializeBomModel")
         return;
 
+    if (!force &&
+        !isSeriesInputComplete())
+    {
+        zInfo(
+            "refreshBom: SeriesInput incomplete");
 
-    SeriesInput currentSeriesInput = {
-        selectedProductTypeId(),
-        selectedProductSubtypeId(),
-        ui->edit_Color->text().trimmed(),
-        ui->comboBox_Surface->currentData().toString(),
-        ui->spinBox_width->value(),
-        ui->spinBox_height->value()
-    };
+        return;
+    }
+
+    // SeriesInput currentSeriesInput = {
+    //     selectedProductTypeId(),
+    //     selectedProductSubtypeId(),
+    //     ui->edit_Color->text().trimmed(),
+    //     ui->comboBox_Surface->currentData().toString(),
+    //     ui->spinBox_width->value(),
+    //     ui->spinBox_height->value()
+    // };
+
+    SeriesInput currentSeriesInput =
+        this->currentSeriesInput();
+
 
     bool seriesChanged = (currentSeriesInput != _lastSeriesInput);
     if (!seriesChanged && !force) {
@@ -782,7 +835,10 @@ void AddInputDialog::refreshBom(const QString& key)
     }
 
     if (seriesChanged || force)
+    {
         _lastSeriesInput = currentSeriesInput;
+        _pendingSeriesInput = currentSeriesInput;
+    }
 
     zInfo(QString("SeriesInput: type=%1 subtype=%2 color=%3 surface=%4 w=%5 h=%6")
               .arg(currentSeriesInput.productTypeId.toString())
@@ -2046,7 +2102,7 @@ void AddInputDialog::applySurfaceFromRequest(const Cutting::Plan::Request& req)
         ui->comboBox_Surface->setCurrentIndex(idx);
 }
 
-void AddInputDialog::updateColorPreview()
+void AddInputDialog::updatePaintPreview()
 {
 
     if (_suppressPreview)
@@ -2912,6 +2968,8 @@ void AddInputDialog::onMaterialComboChanged(int index)
             );
         ui->lblLengthWarning->show();
     }
+
+    updatePaintPreview();
 }
 
 void AddInputDialog::updateBomWarnings()
@@ -3067,4 +3125,80 @@ SizeCalcMode AddInputDialog::selectedCalcMode() const
 
 bool AddInputDialog::generateAllMaterials() const {
     return ui->chkGenerateAll->isChecked();
+}
+
+
+AddInputDialog::SeriesInput
+AddInputDialog::currentSeriesInput() const
+{
+    return {
+        selectedProductTypeId(),
+        selectedProductSubtypeId(),
+        ui->edit_Color->text().trimmed(),
+        ui->comboBox_Surface->currentData().toString(),
+        ui->spinBox_width->value(),
+        ui->spinBox_height->value()
+    };
+}
+
+bool AddInputDialog::isSeriesInputComplete() const
+{
+    if (selectedProductTypeId().isNull())
+        return false;
+
+    if (selectedProductSubtypeId().isNull())
+        return false;
+
+    if (ui->spinBox_width->value() <= 0)
+        return false;
+
+    if (ui->spinBox_height->value() <= 0)
+        return false;
+
+    // QString color =
+    //     ui->edit_Color->text().trimmed();
+
+    // if (color.isEmpty())
+    //     return false;
+
+    return true;
+}
+
+void AddInputDialog::scheduleSeriesRefresh(const QString& key)
+{
+    if (!_dialogInitialized)
+        return;
+
+    if (!isSeriesInputComplete())
+        return;
+
+    const SeriesInput current =
+        currentSeriesInput();
+
+    if (current == _lastSeriesInput)
+    {
+        zInfo(
+            QString(
+                "scheduleSeriesRefresh skipped (%1): already calculated")
+                .arg(key));
+        return;
+    }
+
+    if (current == _pendingSeriesInput)
+    {
+        zInfo(
+            QString(
+                "scheduleSeriesRefresh skipped (%1): already pending")
+                .arg(key));
+        return;
+    }
+
+    _pendingSeriesInput = current;
+
+    zInfo(
+        QString(
+            "scheduleSeriesRefresh (%1)")
+            .arg(key));
+
+    _seriesDebounceTimer->start();
 }

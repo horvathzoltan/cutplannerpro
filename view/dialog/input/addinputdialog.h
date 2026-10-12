@@ -100,11 +100,12 @@ private:
     QUuid current_requestId;
 
     //int _lengthHint = -1;
-    QTimer* _lengthDebounceTimer = nullptr;
-    QTimer* _heightDebounceTimer = nullptr;
-    QTimer* _colorDebounceTimer = nullptr;
-    QTimer* _bomDebounceTimer = nullptr;
+    // QTimer* _lengthDebounceTimer = nullptr;
+    // QTimer* _heightDebounceTimer = nullptr;
+    // QTimer* _colorDebounceTimer = nullptr;
+    // QTimer* _bomDebounceTimer = nullptr;
 
+    QTimer* _seriesDebounceTimer = nullptr;
 
     struct HeadFields {
         QString owner;
@@ -210,7 +211,7 @@ private:
     void populateSurfaceCombo();
     void setSurfaceEditable(bool editable);
     void applySurfaceFromRequest(const Cutting::Plan::Request &req);
-    void updateColorPreview();
+    void updatePaintPreview();
 
     void applySideFromRequest(const Cutting::Plan::Request &req);
     void resetUiForNextReference();
@@ -280,6 +281,13 @@ private:
 
     bool validateHead() const;
     bool validateItem() const;
+
+
+    void scheduleSeriesRefresh(const QString& key);
+    bool isSeriesInputComplete() const;
+    SeriesInput currentSeriesInput() const;
+
+    SeriesInput _pendingSeriesInput;
 
 private slots:
     void on_btn_MaterialSearch_clicked();
