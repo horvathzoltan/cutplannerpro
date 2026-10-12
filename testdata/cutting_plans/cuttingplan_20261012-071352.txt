@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"458";"Jakufa-Ép, Nyh.";3475;2350;3445;;1;1;0;"RAL 8012";NP-T;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;3470;;1;1;0;"RAL 8012";NP-TF;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;3352;;1;1;0;"RAL 8012";NP-CZ;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;2247;;1;1;0;"RAL 8012";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;3365;;1;1;0;"RAL 8012";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;3300;;1;1;0;"RAL 8012";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3445;;1;0;1;"RAL 8012";NP-T;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3470;;1;0;1;"RAL 8012";NP-TF;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3352;;1;0;1;"RAL 8012";NP-CZ;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;2267;;1;0;1;"RAL 8012";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3365;;1;0;1;"RAL 8012";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3300;;1;0;1;"RAL 8012";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3970;;1;1;0;"RAL 8019";NP-T;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3995;;1;1;0;"RAL 8019";NP-TF;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3877;;1;1;0;"RAL 8019";NP-CZ;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;2497;;1;1;0;"RAL 8019";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3890;;1;1;0;"RAL 8019";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3825;;1;1;0;"RAL 8019";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1250;;1;0;1;"RAL 8019";NP-T;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1275;;1;0;1;"RAL 8019";NP-TF;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1157;;1;0;1;"RAL 8019";NP-CZ;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;2252;;1;0;1;"RAL 8019";NP-CL2+CLT2+CLB2-9010;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1170;;1;0;1;"RAL 8019";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1105;;1;0;1;"RAL 8019";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
