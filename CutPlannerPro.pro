@@ -168,6 +168,7 @@ HEADERS += \
     calculation/roletta/calculation_roletta.h \
     calculation/roletta/calculation_roletta_alap.h \
     calculation/roletta/calculation_roletta_maxi.h \
+    calculation/roletta/calculation_roletta_motoros.h \
     calculation/roletta/calculation_roletta_rugos.h \
     calculation/roletta/calculation_roletta_savrolotok.h \
     calculation/roletta/calculation_roletta_tetoteri.h \
