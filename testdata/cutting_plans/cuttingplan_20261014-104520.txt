@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"2597";"Bányai L.";675;1250;645;;1;0;0;"";TE-R-23;Width;false;2026-10-22;ROL;TET_NAGY;;SM;Gyartasi
+"2597";"Bányai L.";675;1250;648;;1;0;0;"";ROL-P;Width;false;2026-10-22;ROL;TET_NAGY;;SM;Gyartasi
+"2598";"Bányai L.";675;1250;645;;1;0;0;"";TE-R-23;Width;false;2026-10-22;ROL;TET_NAGY;;SM;Gyartasi
+"2598";"Bányai L.";675;1250;648;;1;0;0;"";ROL-P;Width;false;2026-10-22;ROL;TET_NAGY;;SM;Gyartasi
+"2601";"MolKomfort, Eger";1880;1500;1845;;1;0;1;"";TE-R-23;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi
+"2601";"MolKomfort, Eger";1880;1500;1835;;1;0;1;"";ROL-P;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi
+"2610";"Kocza László, Győr";530;990;505;;1;0;0;"";TE-R-23;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi
+"2610";"Kocza László, Győr";530;990;503;;1;0;0;"";ROL-P;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi

@@ -1463,19 +1463,26 @@ bool AddInputDialog::validateHead() const
 
 
      auto ty = ProductTypeRegistry::instance().findById(req.productTypeId);
-     if(ty->code=="NP"){
-        // ⭐ Meghajtás validáció
-        const QString meghajtas_key = "meghajtas";
-        if(req.attributes.contains(meghajtas_key)){
-            QString meghajtas = req.attributes.value(meghajtas_key);
-            if(meghajtas!="kurblis" && meghajtas!="motoros"){
-                errors << "A meghajtás értéke érvénytelen (kurblis vagy motoros lehet).";
-            }
-        } else{
-            errors << "Nincs meghajtás megadva.";
-        }
-    }
+     if (ty)
+     {
 
+         if(ty->code=="NP"){
+            // ⭐ Meghajtás validáció
+            const QString meghajtas_key = "meghajtas";
+            if(req.attributes.contains(meghajtas_key)){
+                QString meghajtas = req.attributes.value(meghajtas_key);
+                if(meghajtas!="kurblis" && meghajtas!="motoros"){
+                    errors << "A meghajtás értéke érvénytelen (kurblis vagy motoros lehet).";
+                }
+            } else{
+                errors << "Nincs meghajtás megadva.";
+            }
+        }
+     }
+     else
+     {
+        errors << "A termék típusa nincs megadva.";
+     }
 
     if (!errors.isEmpty()) {
         QMessageBox::warning(const_cast<AddInputDialog*>(this), "Adatellenőrzés",

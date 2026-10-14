@@ -29,6 +29,9 @@ ROL;RUG;Palca;1
 ROL;TET;Tengely;1
 ROL;TET;Palca;1
 
+ROL;TET_NAGY;Tengely;1
+ROL;TET_NAGY;Palca;1
+
 ROL;TSIN;Tok;1
 ROL;TSIN;Tengely;1
 ROL;TSIN;Zaro;1
@@ -42,9 +45,6 @@ ROL;MAXI;Zaro;1
 
 ROL;MOT;Tengely;1
 ROL;MOT;Zaro;1
-
-ROL;TET_NAGY;Tengely;1
-ROL;TET_NAGY;Zaro;1
 
 ROL;SRTOK;Tok;1
 ROL;SRTOK;Tengely;1
