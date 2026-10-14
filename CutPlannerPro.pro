@@ -217,6 +217,7 @@ HEADERS += \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
+    model/cutting/plan/requeststate.h \
     product/model/product_calcmodes.h \
     product/registry/product_calcmode_registry.h \
     product/repository/product_calcmode_repository.h \

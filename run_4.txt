@@ -1,3 +1,5 @@
+terv 
+
 készletegészség funkció
 
 addinput dialog:

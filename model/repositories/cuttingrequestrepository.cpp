@@ -98,6 +98,9 @@ CuttingRequestRepository::loadFromCsv_private(CsvReader::FileContext& ctx)
     case CSVVersion::V7_CalcMode:
         return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V7, true);
 
+    case CSVVersion::V8_RequestState:
+        return CsvReader::readAndConvert<Cutting::Plan::Request>(ctx, convertRowToCuttingRequest_V8, true);
+
     default:
         ctx.addError(0, "Ismeretlen CSV formátum – fejléc nem értelmezhető");
         return {};
@@ -134,34 +137,56 @@ CuttingRequestRepository::CSVVersion CuttingRequestRepository::detectCsvVersion(
     bool hasSurface     = cols.contains("surface", Qt::CaseInsensitive);
     bool hasCalcMode    = cols.contains("calcMode", Qt::CaseInsensitive);
 
+    bool hasRequestState =
+        cols.contains("requestState", Qt::CaseInsensitive);
+
+    bool isV2 = hasLeft && hasRight && hasSubtype;
+
+    bool isV3 = isV2 && hasDueDate;
+
+    bool isV4 =
+        hasLeft &&
+        hasRight &&
+        hasDueDate &&
+        hasTypeCode &&
+        hasSubtypeCode;
+
+    bool isV5 =isV4 && hasAttributes;
+
+    bool isV6 =isV5 && hasSurface;
+
+    bool isV7 =isV6 && hasCalcMode;
+
+    bool isV8 = isV7 && hasRequestState;
+    // ⭐ V8
+    if (isV8)
+        return CSVVersion::V8_RequestState;
+
     // ⭐ V7: dueDate + typeCode + subtypeCode + attributes + surface + calcMode
-    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes && hasSurface && hasCalcMode)
+    if (isV7)
         return CSVVersion::V7_CalcMode;
 
     // ⭐ V6: dueDate + typeCode + subtypeCode + attributes + surface (calcMode nélkül)
-    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes && hasSurface)
+    if (isV6)
         return CSVVersion::V6_Surface;
 
     // ⭐ V5: dueDate + typeCode + subtypeCode + attributes
-    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode && hasAttributes)
+    if (isV5)
         return CSVVersion::V5_Attributes;
 
     // ⭐ V4: dueDate + typeCode + subtypeCode
-    if (hasLeft && hasRight && hasDueDate && hasTypeCode && hasSubtypeCode)
+    if (isV4)
         return CSVVersion::V4_ProductVariant;
 
     // ⭐ V3: subtype + dueDate
-    if (hasLeft && hasRight && hasSubtype && hasDueDate)
+    if (isV3)
         return CSVVersion::V3_WithDueDate;
 
     // ⭐ V2: subtype (dueDate nélkül)
-    if (hasLeft && hasRight && hasSubtype)
+    if (isV2)
         return CSVVersion::V2_LeftRightSubtype;
 
     return CSVVersion::Unknown;
-
-
-    return CuttingRequestRepository::CSVVersion::Unknown;
 }
 
 
@@ -393,7 +418,28 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V7(
 }
 
 
+std::optional<CuttingRequestRepository::CuttingRequestRow>
+CuttingRequestRepository::convertRowToCuttingRequestRow_V8(
+    const QVector<QString>& parts,
+    CsvReader::FileContext& ctx)
+{
+    if (parts.size() < 20) {
+        ctx.addError(ctx.currentLineNumber(), L("⚠️ Kevés adat (V8)"));
+        return std::nullopt;
+    }
 
+    // 1) Alap: V7 konverter
+    auto baseOpt = convertRowToCuttingRequestRow_V7(parts, ctx);
+    if (!baseOpt.has_value())
+        return std::nullopt;
+
+    CuttingRequestRow row = baseOpt.value();
+
+    // 2) Új mező: requestStateStr (index 19)
+    row.requestStateStr = parts[19].trimmed();
+
+    return row;
+}
 
 std::optional<Cutting::Plan::Request>
 CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& row, CsvReader::FileContext& ctx) {
@@ -514,6 +560,9 @@ CuttingRequestRepository::buildCuttingRequestFromRow(const CuttingRequestRow& ro
         req.calcMode = SizeCalcMode::Unknown;
     }
 
+    req.state =
+        Cutting::Plan::RequestStateUtils::fromCsv(row.requestStateStr);
+
     return req;
 }
 
@@ -585,6 +634,17 @@ CuttingRequestRepository::convertRowToCuttingRequest_V7(
     return buildCuttingRequestFromRow(rowOpt.value(), ctx);
 }
 
+std::optional<Cutting::Plan::Request>
+CuttingRequestRepository::convertRowToCuttingRequest_V8(
+    const QVector<QString>& parts,
+    CsvReader::FileContext& ctx)
+{
+    const auto rowOpt = convertRowToCuttingRequestRow_V8(parts, ctx);
+    if (!rowOpt.has_value()) return std::nullopt;
+
+    return buildCuttingRequestFromRow(rowOpt.value(), ctx);
+}
+
 bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& registry, const QString& filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -604,7 +664,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
     // új fejléc (V4):
     out << "externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;"
            "leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;"
-           "dueDate;typeCode;subtypeCode;attributes;surface;calcMode\n";
+           "dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState\n";
 
 
     for (const Cutting::Plan::Request& req : registry.readAll()) {
@@ -646,7 +706,8 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
             << subtypeCode << ";"
             << attrStr << ";"
             << SurfaceTypeUtils::toCode(req.surface)  << ";"  // <-- FS, SM, CS, MT, GL, ST
-            << SizeCalcModeUtils::toString(req.calcMode)
+            << SizeCalcModeUtils::toString(req.calcMode) <<";"
+            << Cutting::Plan::RequestStateUtils::toCsv(req.state)
             << "\n";
     }
 

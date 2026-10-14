@@ -9,6 +9,7 @@
 #include "common/surface/surfacetype.h"
 #include "relevantdimension.h"
 #include "tolerance.h"
+#include "requeststate.h"
 
 namespace Cutting {
 namespace Plan {
@@ -62,6 +63,7 @@ struct Request {
 
     QDate dueDate = QDate::currentDate();   // 🗓️ alapértelmezés: ma
 
+    RequestState state = RequestState::Unknown;
 
     QMap<QString, QString> attributes;
 
