@@ -161,7 +161,8 @@ SOURCES += \
     view/managers/resultstable_manager.cpp \
     stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
-    leftover/view/utils/leftoverreviewform_utils.cpp
+    leftover/view/utils/leftoverreviewform_utils.cpp \
+    worksheetsummary/registry/worksheetsummary_registry.cpp
 
 HEADERS += \
     calculation/naphalo/calculation_naphalo.h \
@@ -509,7 +510,8 @@ HEADERS += \
     view/viewmodels/result/badgerowgenerator.h \
     view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \
-    view/viewmodels/tablerowviewmodel.h
+    view/viewmodels/tablerowviewmodel.h \
+    worksheetsummary/registry/worksheetsummary_registry.h
 
 FORMS += \
     leftover/view/dialog/bundlesplitdialog.ui \
