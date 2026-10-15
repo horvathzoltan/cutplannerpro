@@ -59,9 +59,9 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
     int score = 0;
 
     // --- Domináns prioritások ---
-    score += pieceCount * 100000;   // 1) több darab → mindig jobb
-    score -= waste * 100;           // 2) kevesebb hulló → mindig jobb
-    score -= leftoverLength;        // 3) rövidebb leftover → mindig jobb
+    score += pieceCount * 100;//000;   // 1) több darab → mindig jobb
+    score -= waste;// * 100;           // 2) kevesebb hulló → mindig jobb
+    score -= leftoverLength/50;        // 3) rövidebb leftover → mindig jobb
 
     // --- Finomhangoló bónuszok (megtartjuk a régieket) ---
 
@@ -78,7 +78,7 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
 
     // 🎯 Pontos egy darabos illeszkedés – külön jutalom
     if (leftoverLength <= sp.scrap_mm && pieceCount == 1) {
-        score += 200;
+        score += 500;//200;
     }
 
     // 😊 Jó leftover tartomány – „jó érzésű” maradék
