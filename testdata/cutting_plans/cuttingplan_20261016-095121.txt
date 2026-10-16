@@ -1,7 +1,8 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
 "2617";"Imre B. Nyh.";410;430;380;;1;1;0;"";TE-S-18;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
-"2617";"Imre B. Nyh.";410;430;370;;1;1;0;"";ROL-P;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
 "2618";"Imre B. Nyh.";410;430;380;;1;0;1;"";TE-S-18;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
+
+"2617";"Imre B. Nyh.";410;430;370;;1;1;0;"";ROL-P;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
 "2618";"Imre B. Nyh.";410;430;370;;1;0;1;"";ROL-P;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
 "2621";"RakamazAblak";570;1050;535;;1;0;1;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
 "2621";"RakamazAblak";570;1050;525;;1;0;1;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
