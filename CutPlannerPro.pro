@@ -169,6 +169,7 @@ HEADERS += \
     calculation/roletta/calculation_roletta.h \
     calculation/roletta/calculation_roletta_alap.h \
     calculation/roletta/calculation_roletta_maxi.h \
+    calculation/roletta/calculation_roletta_mini.h \
     calculation/roletta/calculation_roletta_motoros.h \
     calculation/roletta/calculation_roletta_rugos.h \
     calculation/roletta/calculation_roletta_savrolotok.h \
@@ -561,6 +562,7 @@ DISTFILES += \
     testdata/cutting_plans/cuttingplan_20260914-080329_SRZ.txt \
     testdata/cutting_plans/cuttingplan_20260930-150723_2.txt \
     testdata/cutting_plans/cuttingplan_20260930-150723_3.txt \
+    testdata/cutting_plans/cuttingplan_20261016-095121_2.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \

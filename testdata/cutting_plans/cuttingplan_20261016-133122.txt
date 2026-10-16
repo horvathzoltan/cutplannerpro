@@ -1,0 +1,45 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"833";"LizaText";1600;1200;1594;;1;0;1;"";SR-T;Width;false;2026-10-20;SR;T;;SM;Gyartasi;UNKNOWN
+"833";"LizaText";1600;1200;1577;;1;0;1;"";TE-H-32;Width;false;2026-10-20;SR;T;;SM;Gyartasi;UNKNOWN
+"833";"LizaText";1600;1200;1580;;1;0;1;"";SR-Z;Width;false;2026-10-20;SR;T;;SM;Gyartasi;UNKNOWN
+"833";"LizaText";1600;1200;1580;;1;0;1;"";SR-P-3000;Width;false;2026-10-20;SR;T;;SM;Gyartasi;UNKNOWN
+"836";"Driszku Zs.";1090;1450;1074;;2;0;2;"";SR-FSN;Width;false;2026-10-22;SR;TN;;SM;Gyartasi;UNKNOWN
+"836";"Driszku Zs.";1090;1450;1057;;2;0;2;"";TE-H-32;Width;false;2026-10-22;SR;TN;;SM;Gyartasi;UNKNOWN
+"836";"Driszku Zs.";1090;1450;1060;;2;0;2;"";SR-Z;Width;false;2026-10-22;SR;TN;;SM;Gyartasi;UNKNOWN
+"836";"Driszku Zs.";1090;1450;1060;;2;0;2;"";SR-P-3000;Width;false;2026-10-22;SR;TN;;SM;Gyartasi;UNKNOWN
+"839";"Berkes Balázs, Bcs";700;1700;694;;1;0;1;"";SR-T;Width;false;2026-10-27;SR;T;;SM;Gyartasi;UNKNOWN
+"839";"Berkes Balázs, Bcs";700;1700;677;;1;0;1;"";TE-H-32;Width;false;2026-10-27;SR;T;;SM;Gyartasi;UNKNOWN
+"839";"Berkes Balázs, Bcs";700;1700;680;;1;0;1;"";SR-Z;Width;false;2026-10-27;SR;T;;SM;Gyartasi;UNKNOWN
+"839";"Berkes Balázs, Bcs";700;1700;680;;1;0;1;"";SR-P-3000;Width;false;2026-10-27;SR;T;;SM;Gyartasi;UNKNOWN
+"858";"Boros S.";670;1310;654;;1;1;0;"";SR-FSN;Width;false;2026-10-21;SR;TN;;SM;Gyartasi;UNKNOWN
+"858";"Boros S.";670;1310;637;;1;1;0;"";TE-H-32;Width;false;2026-10-21;SR;TN;;SM;Gyartasi;UNKNOWN
+"858";"Boros S.";670;1310;640;;1;1;0;"";SR-Z;Width;false;2026-10-21;SR;TN;;SM;Gyartasi;UNKNOWN
+"858";"Boros S.";670;1310;640;;1;1;0;"";SR-P-3000;Width;false;2026-10-21;SR;TN;;SM;Gyartasi;UNKNOWN
+"842";"Orbán T.";1865;2420;1859;;1;1;0;"";SR-T;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"842";"Orbán T.";1865;2420;1842;;1;1;0;"";TE-H-32;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"842";"Orbán T.";1865;2420;1845;;1;1;0;"";SR-Z;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"842";"Orbán T.";1865;2420;1845;;1;1;0;"";SR-P-3000;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"843";"Orbán T.";1910;2420;1904;;1;1;0;"";SR-T;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"843";"Orbán T.";1910;2420;1887;;1;1;0;"";TE-H-32;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"843";"Orbán T.";1910;2420;1890;;1;1;0;"";SR-Z;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"843";"Orbán T.";1910;2420;1890;;1;1;0;"";SR-P-3000;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"844";"Orbán T.";1915;2420;1909;;1;0;1;"";SR-T;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"844";"Orbán T.";1915;2420;1892;;1;0;1;"";TE-H-32;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"844";"Orbán T.";1915;2420;1895;;1;0;1;"";SR-Z;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"844";"Orbán T.";1915;2420;1895;;1;0;1;"";SR-P-3000;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"845";"Orbán T.";1605;2420;1599;;1;1;0;"";SR-T;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"845";"Orbán T.";1605;2420;1582;;1;1;0;"";TE-H-32;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"845";"Orbán T.";1605;2420;1585;;1;1;0;"";SR-Z;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"845";"Orbán T.";1605;2420;1585;;1;1;0;"";SR-P-3000;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"846";"Orbán T.";840;1450;834;;1;0;1;"";SR-T;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"846";"Orbán T.";840;1450;817;;1;0;1;"";TE-H-32;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"846";"Orbán T.";840;1450;820;;1;0;1;"";SR-Z;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"846";"Orbán T.";840;1450;820;;1;0;1;"";SR-P-3000;Width;false;2026-10-22;SR;T;;SM;Gyartasi;UNKNOWN
+"861";"Soletech";1600;1600;1584;;1;0;1;"";SR-FSN;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"861";"Soletech";1600;1600;1567;;1;0;1;"";TE-H-32;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"861";"Soletech";1600;1600;1570;;1;0;1;"";SR-Z;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"861";"Soletech";1600;1600;1570;;1;0;1;"";SR-P-3000;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"862";"Soletech";1600;1600;1584;;1;1;0;"";SR-FSN;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"862";"Soletech";1600;1600;1567;;1;1;0;"";TE-H-32;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"862";"Soletech";1600;1600;1570;;1;1;0;"";SR-Z;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN
+"862";"Soletech";1600;1600;1570;;1;1;0;"";SR-P-3000;Width;false;2026-10-16;SR;TN;;SM;Gyartasi;UNKNOWN

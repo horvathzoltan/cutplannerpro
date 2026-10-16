@@ -61,7 +61,7 @@ NP-BAR12-4000
 RTE-R-23;RolettaTengely
 TE-R-23
 
-RROL-P;RolettaPalca
+RROL-P;RolettaPálca
 ROL-P
 
 RROL-GYZ;ÚjGyöngyösZáró
@@ -75,6 +75,9 @@ MT-T
 
 RTE-H-18;MiniTokosTengely
 TE-H-18
+
+RTE-S-18;MiniGyöngyösTengely
+TE-S-18
 
 RMT-Z;MiniTokosZáró
 MT-Z

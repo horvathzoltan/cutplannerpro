@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2617";"Imre B. Nyh.";410;430;380;;1;1;0;"";TE-S-18;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
+"2617";"Imre B. Nyh.";410;430;370;;1;1;0;"";ROL-P;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
+"2618";"Imre B. Nyh.";410;430;380;;1;0;1;"";TE-S-18;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
+"2618";"Imre B. Nyh.";410;430;370;;1;0;1;"";ROL-P;Width;false;2026-10-28;ROL;MINI;;SM;Teljes;UNKNOWN
+"2621";"RakamazAblak";570;1050;535;;1;0;1;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2621";"RakamazAblak";570;1050;525;;1;0;1;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2622";"RakamazAblak";540;1050;505;;1;0;1;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2622";"RakamazAblak";540;1050;495;;1;0;1;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2623";"RakamazAblak";800;1000;765;;1;0;1;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2623";"RakamazAblak";800;1000;755;;1;0;1;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2624";"RakamazAblak";350;1050;315;;1;1;0;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2624";"RakamazAblak";350;1050;305;;1;1;0;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2625";"RakamazAblak";560;1050;525;;1;1;0;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2625";"RakamazAblak";560;1050;515;;1;1;0;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2626";"RakamazAblak";560;1050;525;;1;1;0;"";TE-R-23;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2626";"RakamazAblak";560;1050;515;;1;1;0;"";ROL-P;Width;false;2026-10-26;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2630";"RakamazAblak";650;1400;620;;1;0;0;"";TE-R-23;Width;false;2026-10-20;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2630";"RakamazAblak";650;1400;623;;1;0;0;"";ROL-P;Width;false;2026-10-20;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2633";"Tóth Mónika";605;1250;580;;1;0;0;"";TE-R-23;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2633";"Tóth Mónika";605;1250;578;;1;0;0;"";ROL-P;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2634";"Tóth Mónika";605;1250;580;;1;0;0;"";TE-R-23;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2634";"Tóth Mónika";605;1250;578;;1;0;0;"";ROL-P;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2635";"Tóth Mónika";605;1250;580;;1;0;0;"";TE-R-23;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2635";"Tóth Mónika";605;1250;578;;1;0;0;"";ROL-P;Width;false;2026-10-26;ROL;TET;;SM;Gyartasi;UNKNOWN
