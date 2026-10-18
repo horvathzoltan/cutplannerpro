@@ -15,6 +15,7 @@ public:
     bool registerData(const WorkSheetSummary& summary);
 
     const QVector<WorkSheetSummary>& readAll() const;
+    QVector<WorkSheetSummary>& readAll();
 
     WorkSheetSummary* findByFilePath(
         const QString& filePath);
@@ -32,9 +33,16 @@ public:
         return _data.size();
     }
 
-private:
-    WorkSheetSummaryRegistry() = default;
+    WorkSheetSummary* findByFileName(
+        const QString& fileName);
+
+    const WorkSheetSummary* findByFileName(
+        const QString& fileName) const;
+
+    void debugDump() const;
 
 private:
     QVector<WorkSheetSummary> _data;
+
+    WorkSheetSummaryRegistry() = default;
 };

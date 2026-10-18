@@ -21,6 +21,7 @@
 #include "../filenamehelper.h"
 
 #include "../color/namedcolor.h"
+#include "worksheetsummary/model/worksheetsummary.h"
 
 #include <product/repository/bom_repository.h>
 #include <product/repository/material_role_repository.h>
@@ -44,6 +45,12 @@
 
 #include <materials/registry/material_paintgroup_registry.h>
 #include <materials/registry/material_storagegroupregistry.h>
+
+#include <worksheetsummary/registry/worksheetsummary_registry.h>
+
+#include <worksheetsummary/repository/worksheetsummary_repository.h>
+
+#include <worksheetsummary/worksheetsummary_builder.h>
 
 StartupStatus StartupManager::runStartupSequence() {
     StartupStatus ralColorStatus = initRalColors();
@@ -131,6 +138,10 @@ StartupStatus StartupManager::runStartupSequence() {
     StartupStatus cuttingReqStatus = initCuttingRequestRegistry();
     if (!cuttingReqStatus.isSuccess())
         return cuttingReqStatus;
+
+    StartupStatus worksheetStatus = initWorkSheetSummaryRegistry();
+    if (!worksheetStatus.isSuccess())
+        return worksheetStatus;
 
     StartupStatus cuttingMachineStatus = initCuttingMachineRegistry();
     if (!cuttingMachineStatus.isSuccess())
@@ -746,3 +757,152 @@ StartupStatus StartupManager::initMaterialPaintGroupRegistry()
     return StartupStatus::success();
 }
 
+StartupStatus StartupManager::initWorkSheetSummaryRegistry()
+{
+    auto& fnh =
+        FileNameHelper::instance();
+
+    auto fn1 = fnh.getWorkSheetSummaryFilePath();
+    auto& wssr = WorkSheetSummaryRegistry::instance();
+
+    WorkSheetSummaryRepository::loadFromFile(
+        wssr,
+        fn1);
+
+    zInfo(
+        QString("📦 %1 cache rekord betöltve")
+            .arg(wssr.size()));
+
+    QStringList files =
+        fnh.findAllCuttingPlans();
+
+    QStringList filesDeleted;
+    for (auto& summary : wssr.readAll())
+    {
+        if (!files.contains(summary.fileName))
+        {
+            filesDeleted.push_back(summary.fileName);
+
+            zInfo(
+                QString("🗑️ Törölt worksheet: %1")
+                    .arg(summary.fileName));
+
+            summary.presence =
+                WorkSheetPresence::Missing;
+        }
+    }
+
+    QStringList newFiles;
+    QStringList filesToBuild;
+    QStringList filesCached;
+
+
+    for (const QString& file : files)
+    {
+        WorkSheetSummary* summary =wssr.findByFileName(file);
+
+        if (!summary)
+        {
+            zInfo(
+                QString("🆕 Új worksheet: %1")
+                    .arg(file));
+
+            newFiles.push_back(file);
+            filesToBuild.push_back(file);
+
+            continue;
+        }
+
+        zInfo(
+            QString("♻️ Cache-ben már szerepel: %1")
+                .arg(file));
+        summary->presence =
+            WorkSheetPresence::Present;
+        filesCached.push_back(file);
+    }
+
+
+    QStringList filesChanged;
+    QStringList filesUnchanged;
+
+    for (const auto& file : filesCached)
+    {
+        auto* summary =wssr.findByFileName(file);
+
+        if (worksheetChanged(file, summary))
+        {
+            filesChanged.push_back(file);
+            filesToBuild.push_back(file);
+        }
+        else
+        {
+            filesUnchanged.push_back(file);
+        }
+    }
+
+    zInfo(
+        QString(
+            "%1 új, %2 cache-elt, %3 törölt - "
+            "%4 változott, %5 változatlan, "
+            "%6 buildelendő")
+            .arg(newFiles.size())
+            .arg(filesCached.size())
+            .arg(filesDeleted.size())
+            .arg(filesChanged.size())
+            .arg(filesUnchanged.size())
+            .arg(filesToBuild.size())
+        );
+
+    int rebuiltCount = 0;
+
+    for (const auto& file : filesToBuild)
+    {
+        auto summaryOpt =
+            WorkSheetSummaryBuilder::build(file);
+
+        if (!summaryOpt.has_value())
+        {
+            continue;
+        }
+
+        wssr.registerData(summaryOpt.value());
+
+        ++rebuiltCount;
+    }
+
+    bool saved = WorkSheetSummaryRepository::saveToFile(wssr,fn1);
+
+    if (!saved)
+    {
+        return StartupStatus::failure(
+            "❌ Nem sikerült menteni a worksheet cache-t.");
+    }
+
+
+    zInfo(
+        QString(
+            "🔨 %1 worksheet újraépítve")
+            .arg(rebuiltCount));
+
+    wssr.debugDump();
+
+    return StartupStatus::success();
+}
+
+bool StartupManager::worksheetChanged(
+    const QString& fileName,
+    const WorkSheetSummary* summary)
+{
+    if (!summary)
+    {
+        return true;
+    }
+
+    QByteArray currentHash =
+        WorkSheetSummaryBuilder::
+        calculateFileHash(
+            fileName);
+
+    return currentHash !=
+           summary->fileHash;
+}

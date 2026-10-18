@@ -119,6 +119,52 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <widget class="QWidget" name="worksheetTab">
+         <attribute name="title">
+          <string>WorkSheets</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QTableWidget" name="tableWorksheets">
+            <column>
+             <property name="text">
+              <string>fileName</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>presence</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>reqCount</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>completed</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>uncompleted</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>unknown</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>attention</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="cutrequest_tab">
          <attribute name="title">
           <string>CutRequest</string>

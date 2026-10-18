@@ -381,3 +381,5 @@ QList<QList<QVector<QString>>> FileHelper::splitSections(
 
     return sections;
 }
+
+

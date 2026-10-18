@@ -1,5 +1,6 @@
 #pragma once
 
+#include "worksheetsummary/model/worksheetsummary.h"
 #include <QString>
 #include <QStringList>
 
@@ -79,4 +80,8 @@ private:
     StartupStatus initMaterialPaintGroupRegistry();
 
 
+    StartupStatus initWorkSheetSummaryRegistry();
+    bool worksheetChanged(
+        const QString& fileName,
+        const WorkSheetSummary* summary);
 };

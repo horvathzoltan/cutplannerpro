@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QString>
 #include <QMap>
+#include <QFileInfo>
 
 class FileHelper {
 public:
@@ -61,6 +62,12 @@ public:
     static QList<QList<QVector<QString>>> splitSections(
         const QList<QVector<QString>> &rows,
         int headerLineCount);
+
+    static bool isExists(const QString& filePath){
+        QFileInfo fi(filePath);
+
+        return fi.exists();
+    };
 private:
     // Egyetlen cella értelmezése: escape karakterek feldolgozása
     static QString parseCell(const QString& rawCell);

@@ -3,6 +3,12 @@
 #include <QString>
 #include <QByteArray>
 
+enum class WorkSheetPresence
+{
+    Present,
+    Missing
+};
+
 struct WorkSheetSummary
 {
     QString filePath;
@@ -17,6 +23,9 @@ struct WorkSheetSummary
     int uncompletedCount = 0;
 
     int undefinedCount = 0;
+
+    WorkSheetPresence presence = WorkSheetPresence::Present;
+;
 
     bool requiresAttention() const
     {

@@ -100,6 +100,7 @@ SOURCES += \
     view/dialog/textviewdialog.cpp \
     leftover/view/dialog/leftoverreviewdialog.cpp \
     leftover/view/dialog/scrapbybarcodedialog.cpp \
+    view/managers/worksheetsummarytable_manager.cpp \
     view/tableutils/auditgrouplabeler.cpp \
     view/tableutils/auditgroupsynchronizer.cpp \
     main.cpp \
@@ -162,7 +163,9 @@ SOURCES += \
     stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
-    worksheetsummary/registry/worksheetsummary_registry.cpp
+    worksheetsummary/registry/worksheetsummary_registry.cpp \
+    worksheetsummary/repository/worksheetsummary_repository.cpp \
+    worksheetsummary/worksheetsummary_builder.cpp
 
 HEADERS += \
     calculation/naphalo/calculation_naphalo.h \
@@ -377,6 +380,7 @@ HEADERS += \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
+    view/columnindexes/worksheetsummarytable_columns.h \
     view/common/layouts/qflowlayout.h \
     view/common/widgets/recentmaterialswidget.h \
     view/dialog/dialogmode.h \
@@ -390,6 +394,7 @@ HEADERS += \
     view/dialog/textviewdialog.h \
     leftover/view/dialog/leftoverreviewdialog.h \
     leftover/view/dialog/scrapbybarcodedialog.h \
+    view/managers/worksheetsummarytable_manager.h \
     view/tableutils/RowTracker.h \
     view/tableutils/auditcellformatter.h \
     view/tableutils/auditgrouplabeler.h \
@@ -512,7 +517,9 @@ HEADERS += \
     view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \
     view/viewmodels/tablerowviewmodel.h \
-    worksheetsummary/registry/worksheetsummary_registry.h
+    worksheetsummary/registry/worksheetsummary_registry.h \
+    worksheetsummary/repository/worksheetsummary_repository.h \
+    worksheetsummary/worksheetsummary_builder.h
 
 FORMS += \
     leftover/view/dialog/bundlesplitdialog.ui \

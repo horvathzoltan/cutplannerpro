@@ -273,3 +273,24 @@ QString FileNameHelper::getProductCalculationModesMsffFile() const {
     auto fn = QDir(_projectPath).filePath("product_calcmodes.msff"); // vagy ahová ténylegesen rakod
     return fn;
 }
+
+QString FileNameHelper::getWorkSheetSummaryFilePath() const{
+    auto fn = QDir(_projectPath).filePath("worksheet_summary.csv");
+    return fn;
+}
+
+QStringList FileNameHelper::findAllCuttingPlans() const{
+    const QString folder = getCuttingPlanFolder();
+
+    QDir dir(folder);
+
+    QStringList files =
+        dir.entryList(
+            QStringList()
+                << "cuttingplan_*.txt",
+            QDir::Files,
+            QDir::Name);
+
+    return files;
+}
+

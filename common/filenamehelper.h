@@ -87,5 +87,8 @@ public:
     QString getProductCalculationModesMsffFile() const;
     QString getMaterialPaintGroupMsffFile() const;
 
+    QString getWorkSheetSummaryFilePath() const;
+    QStringList findAllCuttingPlans() const;
+
     static QString emojiCacheDir();
 };

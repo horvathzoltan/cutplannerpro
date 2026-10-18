@@ -28,6 +28,9 @@ public:
     static bool wasLastFileEffectivelyEmpty() {
         return lastFileWasEffectivelyEmpty;
     }
+
+    static QVector<Cutting::Plan::Request> loadRequests(const QString &filePath);
+
 private:
     inline static bool lastFileWasEffectivelyEmpty = false;
 
