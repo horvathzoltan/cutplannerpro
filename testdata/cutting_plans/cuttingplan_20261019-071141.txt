@@ -1,0 +1,41 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"849";"Orbán T.";777;1260;787;;4;2;2;"";MT-T;Width;false;2026-10-22;SR;MINIT;;SM;Uveg;UNKNOWN
+"849";"Orbán T.";777;1260;782;;4;2;2;"";TE-H-18;Width;false;2026-10-22;SR;MINIT;;SM;Uveg;UNKNOWN
+"849";"Orbán T.";777;1260;770;;4;2;2;"";MT-Z+P;Width;false;2026-10-22;SR;MINIT;;SM;Uveg;UNKNOWN
+"849";"Orbán T.";777;1260;1260;;4;2;2;"";MT-L2;Width;false;2026-10-22;SR;MINIT;;SM;Uveg;UNKNOWN
+"855";"Antal Viktor, Eger";670;1230;680;;2;1;1;"";MT-T;Width;false;2026-10-21;SR;MINIT;;SM;Uveg;UNKNOWN
+"855";"Antal Viktor, Eger";670;1230;675;;2;1;1;"";TE-H-18;Width;false;2026-10-21;SR;MINIT;;SM;Uveg;UNKNOWN
+"855";"Antal Viktor, Eger";670;1230;663;;2;1;1;"";MT-Z+P;Width;false;2026-10-21;SR;MINIT;;SM;Uveg;UNKNOWN
+"855";"Antal Viktor, Eger";670;1230;1230;;2;1;1;"";MT-L2;Width;false;2026-10-21;SR;MINIT;;SM;Uveg;UNKNOWN
+"865";"Sándor Árnyék";565;1100;575;;1;0;1;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"865";"Sándor Árnyék";565;1100;570;;1;0;1;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"865";"Sándor Árnyék";565;1100;558;;1;0;1;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"865";"Sándor Árnyék";565;1100;1100;;1;0;1;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"866";"Sándor Árnyék";565;1100;575;;1;1;0;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"866";"Sándor Árnyék";565;1100;570;;1;1;0;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"866";"Sándor Árnyék";565;1100;558;;1;1;0;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"866";"Sándor Árnyék";565;1100;1100;;1;1;0;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"867";"Sándor Árnyék";565;1100;575;;1;0;1;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"867";"Sándor Árnyék";565;1100;570;;1;0;1;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"867";"Sándor Árnyék";565;1100;558;;1;0;1;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"867";"Sándor Árnyék";565;1100;1100;;1;0;1;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"868";"Sándor Árnyék";565;1100;575;;1;1;0;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"868";"Sándor Árnyék";565;1100;570;;1;1;0;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"868";"Sándor Árnyék";565;1100;558;;1;1;0;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"868";"Sándor Árnyék";565;1100;1100;;1;1;0;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"869";"Sándor Árnyék";350;1000;360;;1;0;1;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"869";"Sándor Árnyék";350;1000;355;;1;0;1;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"869";"Sándor Árnyék";350;1000;343;;1;0;1;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"869";"Sándor Árnyék";350;1000;1000;;1;0;1;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"870";"Sándor Árnyék";935;1000;945;;1;0;1;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"870";"Sándor Árnyék";935;1000;940;;1;0;1;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"870";"Sándor Árnyék";935;1000;928;;1;0;1;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"870";"Sándor Árnyék";935;1000;1000;;1;0;1;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"871";"Sándor Árnyék";460;1100;470;;1;0;1;"";MT-T;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"871";"Sándor Árnyék";460;1100;465;;1;0;1;"";TE-H-18;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"871";"Sándor Árnyék";460;1100;453;;1;0;1;"";MT-Z+P;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"871";"Sándor Árnyék";460;1100;1100;;1;0;1;"";MT-L2;Width;false;2026-10-27;SR;MINIT;;SM;Uveg;UNKNOWN
+"874";"An-Ger";545;1065;555;;1;0;1;"";MT-T;Width;false;2026-10-26;SR;MINIT;;SM;Uveg;UNKNOWN
+"874";"An-Ger";545;1065;550;;1;0;1;"";TE-H-18;Width;false;2026-10-26;SR;MINIT;;SM;Uveg;UNKNOWN
+"874";"An-Ger";545;1065;538;;1;0;1;"";MT-Z+P;Width;false;2026-10-26;SR;MINIT;;SM;Uveg;UNKNOWN
+"874";"An-Ger";545;1065;1065;;1;0;1;"";MT-L2;Width;false;2026-10-26;SR;MINIT;;SM;Uveg;UNKNOWN
