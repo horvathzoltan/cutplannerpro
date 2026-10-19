@@ -1,0 +1,21 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode
+"452";"Otthonka, Bp.";4010;2570;3900;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-20;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"452";"Otthonka, Bp.";4010;2570;3835;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-20;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"462";"Jakufa-Ép, Nyh.";4000;2600;3890;;1;1;0;"RAL 8019";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"462";"Jakufa-Ép, Nyh.";4000;2600;3825;;1;1;0;"RAL 8019";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+
+"463";"Jakufa-Ép, Nyh.";1280;2355;1170;;1;0;1;"RAL 8019";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+"463";"Jakufa-Ép, Nyh.";1280;2355;1105;;1;0;1;"RAL 8019";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;MT;Gyartasi
+
+"458";"Jakufa-Ép, Nyh.";3475;2350;3365;;1;1;0;"RAL 8012";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"458";"Jakufa-Ép, Nyh.";3475;2350;3300;;1;1;0;"RAL 8012";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"459";"Jakufa-Ép, Nyh.";3475;2370;3365;;1;0;1;"RAL 8012";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+"459";"Jakufa-Ép, Nyh.";3475;2370;3300;;1;0;1;"RAL 8012";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi
+
+"444";"MolKomfort, Eger";2295;2770;2185;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"444";"MolKomfort, Eger";2295;2770;2120;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+
+"455";"Takács Ablak, Eger";2215;2450;2105;;1;1;0;"RAL 9010";NP-ROLL70-5000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"455";"Takács Ablak, Eger";2215;2450;2040;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026-10-21;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
