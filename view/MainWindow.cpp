@@ -145,6 +145,9 @@ MainWindow::MainWindow(QWidget *parent)
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, _cuttingPresenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
+    workSheetSummaryTableManager = std::make_unique<WorkSheetSummaryTableManager>(ui->tableWorksheets, this);
+
+    workSheetSummaryTableManager ->refresh_TableFromRegistry();
 
     _leftoverPresenter = new LeftoverPresenter(this, leftoverTableManager.get());
     _kittingPresenter = new KittingPresenter(this, this);
@@ -263,7 +266,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto scGoToCutRequest = new QShortcut(QKeySequence("Alt+1"), this);
     connect(scGoToCutRequest, &QShortcut::activated, this, [this]() {
-        ui->midBox->setCurrentIndex(0); // vagy a CutRequest tab indexe
+        ui->midBox->setCurrentIndex(TAB_CUTREQUEST); // vagy a CutRequest tab indexe
     });
 
     ui->chkUseLeftovers->setChecked(

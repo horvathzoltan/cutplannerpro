@@ -32,6 +32,56 @@ WorkSheetSummaryBuilder::calculateFileHash(
             QCryptographicHash::Sha256);
 }
 
+QVector<WorkSheetOrderInfo>
+WorkSheetSummaryBuilder::buildOrderInfos(
+    const QVector<Cutting::Plan::Request>& requests)
+{
+    QMap<QString, WorkSheetOrderInfo> orders;
+
+    for (const auto& req : requests)
+    {
+        auto& order =
+            orders[req.externalReference];
+
+        if (order.externalReference.isEmpty())
+        {
+            order.externalReference =
+                req.externalReference;
+
+            order.ownerName =
+                req.ownerName;
+
+            order.dueDate =
+                req.dueDate;
+
+            order.productTypeId =
+                req.productTypeId;
+
+            order.productSubtypeId =
+                req.productSubtypeId;
+        }
+
+        ++order.requestCount;
+
+        switch (req.state)
+        {
+        case Cutting::Plan::RequestState::Cut:
+            ++order.completedCount;
+            break;
+
+        case Cutting::Plan::RequestState::NotCut:
+            ++order.uncompletedCount;
+            break;
+
+        case Cutting::Plan::RequestState::Unknown:
+            ++order.undefinedCount;
+            break;
+        }
+    }
+
+    return orders.values().toVector();
+}
+
 std::optional<WorkSheetSummary>
 WorkSheetSummaryBuilder::build(
     const QString& fileName)
@@ -62,28 +112,9 @@ WorkSheetSummaryBuilder::build(
         CuttingRequestRepository::loadRequests(
             summary.filePath);
 
-    //TODO üres worksheet != hibás worksheet
-
-    summary.requestCount =
-        requests.size();
-
-    for (const auto& req : requests)
-    {
-        switch (req.state)
-        {
-        case Cutting::Plan::RequestState::Cut:
-            ++summary.completedCount;
-            break;
-
-        case Cutting::Plan::RequestState::NotCut:
-            ++summary.uncompletedCount;
-            break;
-
-        case Cutting::Plan::RequestState::Unknown:
-            ++summary.undefinedCount;
-            break;
-        }
-    }
+    summary.orders =
+        buildOrderInfos(
+            requests);
 
     return summary;
 }

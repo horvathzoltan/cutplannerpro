@@ -1,8 +1,6 @@
 #pragma once
 
 #include <QTableWidget>
-//#include <optional>
-//#include "view/tableutils/rowid.h"
 #include "../../model/cutting/plan/request.h"
 
 class InputTableManager: public QObject {  // 🔧 QObject öröklés!

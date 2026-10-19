@@ -275,7 +275,7 @@ QString FileNameHelper::getProductCalculationModesMsffFile() const {
 }
 
 QString FileNameHelper::getWorkSheetSummaryFilePath() const{
-    auto fn = QDir(_projectPath).filePath("worksheet_summary.csv");
+    auto fn = QDir(_projectPath).filePath("worksheet_summary.msff");
     return fn;
 }
 

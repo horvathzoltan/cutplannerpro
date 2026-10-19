@@ -117,22 +117,22 @@ void WorkSheetSummaryRegistry::debugDump() const
         zInfo(
             QString(
                 "   Requests      : %1")
-                .arg(item.requestCount));
+                .arg(item.requestCount()));
 
         zInfo(
             QString(
                 "   Completed     : %1")
-                .arg(item.completedCount));
+                .arg(item.completedCount()));
 
         zInfo(
             QString(
                 "   Uncompleted   : %1")
-                .arg(item.uncompletedCount));
+                .arg(item.uncompletedCount()));
 
         zInfo(
             QString(
                 "   Undefined     : %1")
-                .arg(item.undefinedCount));
+                .arg(item.undefinedCount()));
 
         zInfo(
             QString(

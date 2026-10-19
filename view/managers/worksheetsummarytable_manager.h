@@ -1,10 +1,28 @@
-#ifndef WORKSHEETSUMMARYTABLE_MANAGER_H
-#define WORKSHEETSUMMARYTABLE_MANAGER_H
+#pragma once
 
-class WorkSheetSummaryTableManager
+#include <QObject>
+#include <QTableWidget>
+
+#include "worksheetsummary/model/worksheetsummary.h"
+
+class WorkSheetSummaryTableManager : public QObject
 {
-public:
-    WorkSheetSummaryTableManager();
-};
+    Q_OBJECT
 
-#endif // WORKSHEETSUMMARYTABLE_MANAGER_H
+public:
+    explicit WorkSheetSummaryTableManager(QTableWidget* table, QWidget* parent = nullptr);
+
+    void addRow(
+        const WorkSheetSummary& summary);
+
+    void refresh_TableFromRegistry();
+
+    void clearTable();
+
+private:
+
+    QTableWidget* _table;
+    QWidget* parent;
+
+    static bool _isVerbose;
+};

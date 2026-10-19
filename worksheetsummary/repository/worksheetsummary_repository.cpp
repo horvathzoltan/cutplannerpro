@@ -1,145 +1,160 @@
 #include "worksheetsummary_repository.h"
 
+#include "common/filehelper.h"
 #include "common/logger.h"
 
 #include <QFile>
 #include <QTextStream>
 #include <QStringConverter>
 
-bool WorkSheetSummaryRepository::loadFromFile(
-    WorkSheetSummaryRegistry& registry,
-    const QString& filePath)
+#include <product/registry/product_subtype_registry.h>
+#include <product/registry/product_type_registry.h>
+
+QList<QList<QVector<QString>>>
+WorkSheetSummaryRepository::readMsffSections(
+    const QString& filepath)
 {
-    if (filePath.isEmpty() ||
-        !QFile::exists(filePath))
+    QFile file(filepath);
+
+    if (!file.open(
+            QIODevice::ReadOnly |
+            QIODevice::Text))
     {
-        return false;
-    }
-
-    CsvReader::FileContext ctx(filePath);
-
-    QVector<WorkSheetSummary> data =
-        loadFromCsv_private(ctx);
-
-    if (ctx.hasErrors())
-    {
-        zWarning(ctx.toString());
-    }
-
-    registry.clear();
-
-    for (const auto& item : data)
-    {
-        registry.registerData(item);
-    }
-
-    return true;
-}
-
-QVector<WorkSheetSummary>
-WorkSheetSummaryRepository::loadFromCsv_private(
-    CsvReader::FileContext& ctx)
-{
-    switch (detectCsvVersion(ctx.filepath()))
-    {
-    case CSVVersion::V1:
-        return CsvReader::readAndConvert<WorkSheetSummary>(
-            ctx,
-            convertRowToWorkSheetSummary,
-            true);
-
-    default:
-        ctx.addError(
-            0,
-            "Ismeretlen WorkSheetSummary CSV formátum");
+        zWarning(
+            "❌ Nem sikerült megnyitni az MSFF fájlt: "
+            + filepath);
 
         return {};
     }
-}
-
-WorkSheetSummaryRepository::CSVVersion
-WorkSheetSummaryRepository::detectCsvVersion(
-    const QString& filePath)
-{
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        return CSVVersion::Unknown;
-    }
 
     QTextStream in(&file);
-    in.setEncoding(QStringConverter::Utf8);
 
-    QString header =
-        in.readLine().trimmed();
+    in.setEncoding(
+        QStringConverter::Utf8);
 
-    QStringList cols =
-        header.split(';', Qt::KeepEmptyParts);
+    auto sepResult =
+        FileHelper::detectSeparatorMsff(
+            &in);
 
-    bool isV1 =
-        cols.contains("filePath") &&
-        cols.contains("fileName") &&
-        cols.contains("fileHash") &&
-        cols.contains("requestCount") &&
-        cols.contains("completedCount") &&
-        cols.contains("uncompletedCount") &&
-        cols.contains("undefinedCount");
+    if (sepResult.hasError ||
+        sepResult.separator.isNull())
+    {
+        zWarning(
+            "❌ MSFF: szeparátor detektálás sikertelen.");
 
-    return isV1
-               ? CSVVersion::V1
-               : CSVVersion::Unknown;
+        return {};
+    }
+
+    file.seek(0);
+    in.seek(0);
+
+    auto allRows =
+        FileHelper::parseCSV(
+            &in,
+            sepResult.separator,
+            true);
+
+    return FileHelper::splitSections(
+        allRows,
+        sepResult.headerLineCount);
 }
 
-std::optional<WorkSheetSummaryRepository::WorkSheetSummaryRow>
-WorkSheetSummaryRepository::convertRowToWorkSheetSummaryRow(
-    const QVector<QString>& parts,
-    CsvReader::FileContext& ctx)
+std::optional<
+    WorkSheetSummaryRepository::
+    WorkSheetSummaryRow>
+    WorkSheetSummaryRepository::
+    convertRowToWorkSheetSummaryRow(
+        const QVector<QString>& parts,
+        CsvReader::FileContext& ctx)
 {
-    if (parts.size() < 7)
+    if (parts.size() != 4)
     {
         ctx.addError(
             ctx.currentLineNumber(),
-            "Kevés adat");
+            QString(
+                "❌ Hibás worksheet parent sor. "
+                "4 mező szükséges, kapott: %1")
+                .arg(parts.size()));
 
         return std::nullopt;
     }
 
     WorkSheetSummaryRow row;
 
-    row.filePath         = parts[0].trimmed();
-    row.fileName         = parts[1].trimmed();
+    row.filePath =
+        parts[0].trimmed();
 
-    row.fileHash         = parts[2].trimmed();
+    row.fileName =
+        parts[1].trimmed();
 
-    row.requestCount     = parts[3].trimmed().toInt();
+    row.fileHash =
+        parts[2].trimmed();
 
-    row.completedCount   = parts[4].trimmed().toInt();
+    row.presence =
+        parts[3].trimmed();
 
-    row.uncompletedCount = parts[5].trimmed().toInt();
+    return row;
+}
 
-    row.undefinedCount   = parts[6].trimmed().toInt();
+std::optional<
+    WorkSheetSummaryRepository::
+    WorkSheetOrderInfoRow>
+    WorkSheetSummaryRepository::
+    convertRowToWorkSheetOrderInfoRow(
+        const QVector<QString>& parts,
+        CsvReader::FileContext& ctx)
+{
+    if (parts.size() != 9)
+    {
+        ctx.addError(
+            ctx.currentLineNumber(),
+            QString(
+                "❌ Hibás worksheet order sor. "
+                "9 mező szükséges, kapott: %1")
+                .arg(parts.size()));
+
+        return std::nullopt;
+    }
+
+    WorkSheetOrderInfoRow row;
+
+    row.externalReference =
+        parts[0].trimmed();
+
+    row.ownerName =
+        parts[1].trimmed();
+
+    row.dueDate =
+        parts[2].trimmed();
+
+    row.productTypeCode =
+        parts[3].trimmed();
+
+    row.productSubtypeCode =
+        parts[4].trimmed();
+
+    row.requestCount =
+        parts[5].trimmed().toInt();
+
+    row.completedCount =
+        parts[6].trimmed().toInt();
+
+    row.uncompletedCount =
+        parts[7].trimmed().toInt();
+
+    row.undefinedCount =
+        parts[8].trimmed().toInt();
 
     return row;
 }
 
 std::optional<WorkSheetSummary>
-WorkSheetSummaryRepository::convertRowToWorkSheetSummary(
-    const QVector<QString>& parts,
-    CsvReader::FileContext& ctx)
+    WorkSheetSummaryRepository::
+    buildWorkSheetSummaryFromRow(
+        const WorkSheetSummaryRow& row,
+        CsvReader::FileContext& ctx)
 {
-    auto rowOpt =
-        convertRowToWorkSheetSummaryRow(
-            parts,
-            ctx);
-
-    if (!rowOpt.has_value())
-    {
-        return std::nullopt;
-    }
-
-    const auto& row =
-        rowOpt.value();
+    Q_UNUSED(ctx)
 
     WorkSheetSummary summary;
 
@@ -153,19 +168,200 @@ WorkSheetSummaryRepository::convertRowToWorkSheetSummary(
         QByteArray::fromBase64(
             row.fileHash.toUtf8());
 
-    summary.requestCount =
-        row.requestCount;
-
-    summary.completedCount =
-        row.completedCount;
-
-    summary.uncompletedCount =
-        row.uncompletedCount;
-
-    summary.undefinedCount =
-        row.undefinedCount;
+    summary.presence =
+        WorkSheetPresenceUtils::fromCsv(
+            row.presence);
 
     return summary;
+}
+
+std::optional<WorkSheetOrderInfo>
+    WorkSheetSummaryRepository::
+    buildWorkSheetOrderInfoFromRow(
+        const WorkSheetOrderInfoRow& row,
+        CsvReader::FileContext& ctx)
+{
+    WorkSheetOrderInfo info;
+
+    info.externalReference =
+        row.externalReference;
+
+    info.ownerName =
+        row.ownerName;
+
+    info.dueDate =
+        QDate::fromString(
+            row.dueDate,
+            "yyyy-MM-dd");
+
+    if (!info.dueDate.isValid())
+    {
+        ctx.addError(
+            ctx.currentLineNumber(),
+            QString(
+                "❌ Érvénytelen dueDate: %1")
+                .arg(row.dueDate));
+
+        return std::nullopt;
+    }
+
+    const auto* type =
+        ProductTypeRegistry::instance()
+            .findByCode(row.productTypeCode);
+
+    const auto* subtype =
+        ProductSubtypeRegistry::instance()
+            .findByCode(row.productSubtypeCode);
+
+    info.productTypeId =
+        type ? type->id : QUuid();
+
+    info.productSubtypeId =
+        subtype ? subtype->id : QUuid();
+
+    if (info.productTypeId.isNull())
+    {
+        ctx.addError(
+            ctx.currentLineNumber(),
+            QString(
+                "❌ Érvénytelen productTypeCode: %1")
+                .arg(row.productTypeCode));
+
+        return std::nullopt;
+    }
+
+
+    if (info.productSubtypeId.isNull())
+    {
+        ctx.addError(
+            ctx.currentLineNumber(),
+            QString(
+                "❌ Érvénytelen productSubtypeCode: %1")
+                .arg(row.productSubtypeCode));
+
+        return std::nullopt;
+    }
+
+    info.requestCount =
+        row.requestCount;
+
+    info.completedCount =
+        row.completedCount;
+
+    info.uncompletedCount =
+        row.uncompletedCount;
+
+    info.undefinedCount =
+        row.undefinedCount;
+
+    return info;
+}
+
+bool WorkSheetSummaryRepository::parseMsffSections(
+    const QList<QList<QVector<QString>>>& sections,
+    WorkSheetSummaryRegistry& registry)
+{
+    for (const auto& sec : sections)
+    {
+        if (sec.isEmpty())
+        {
+            continue;
+        }
+
+        CsvReader::FileContext parentCtx(
+            "worksheet_parent");
+
+        auto parentRow =
+            convertRowToWorkSheetSummaryRow(
+                sec[0],
+                parentCtx);
+
+        if (!parentRow.has_value())
+        {
+            zWarning(
+                "❌ Hibás worksheet parent sor.");
+
+            return false;
+        }
+
+        auto parent =
+            buildWorkSheetSummaryFromRow(
+                parentRow.value(),
+                parentCtx);
+
+        if (!parent.has_value())
+        {
+            zWarning(
+                "❌ Hibás worksheet objektum.");
+
+            return false;
+        }
+
+        WorkSheetSummary summary =
+            parent.value();
+
+        for (int i = 1;
+             i < sec.size();
+             ++i)
+        {
+            CsvReader::FileContext childCtx(
+                summary.fileName);
+
+            auto orderRow =
+                convertRowToWorkSheetOrderInfoRow(
+                    sec[i],
+                    childCtx);
+
+            if (!orderRow.has_value())
+            {
+                zWarning(
+                    "❌ Hibás worksheet order sor.");
+
+                return false;
+            }
+
+            auto order =
+                buildWorkSheetOrderInfoFromRow(
+                    orderRow.value(),
+                    childCtx);
+
+            if (!order.has_value())
+            {
+                zWarning(
+                    "❌ Hibás worksheet order objektum.");
+
+                return false;
+            }
+
+            summary.orders.push_back(
+                order.value());
+        }
+
+        registry.registerData(
+            summary);
+    }
+
+    return true;
+}
+
+bool WorkSheetSummaryRepository::loadFromFile(
+    WorkSheetSummaryRegistry& registry,
+    const QString& filePath)
+{
+    auto sections =
+        readMsffSections(
+            filePath);
+
+    if (sections.isEmpty())
+    {
+        return false;
+    }
+
+    registry.clear();
+
+    return parseMsffSections(
+        sections,
+        registry);
 }
 
 bool WorkSheetSummaryRepository::saveToFile(
@@ -183,29 +379,76 @@ bool WorkSheetSummaryRepository::saveToFile(
 
     QTextStream out(&file);
 
+    out.setEncoding(
+        QStringConverter::Utf8);
+
     out
         << "filePath;"
            "fileName;"
            "fileHash;"
+           "presence\n";
+
+    out
+        << "externalReference;"
+           "ownerName;"
+           "dueDate;"
+           "productTypeCode;"
+           "productSubtypeCode;"
            "requestCount;"
            "completedCount;"
            "uncompletedCount;"
-           "undefinedCount\n";
+           "undefinedCount\n\n";
 
-    for (const auto& item : registry.readAll())
+    bool first = true;
+
+    for (const auto& ws : registry.readAll())
     {
-        out
-            << item.filePath << ";"
-            << item.fileName << ";"
-            << item.fileHash.toBase64() << ";"
-            << item.requestCount << ";"
-            << item.completedCount << ";"
-            << item.uncompletedCount << ";"
-            << item.undefinedCount
-            << "\n";
-    }
+        if (!first)
+        {
+            out << "\n";
+        }
 
-    file.close();
+        first = false;
+        out
+            << ws.filePath << ";"
+            << ws.fileName << ";"
+            << ws.fileHash.toBase64() << ";"
+            << WorkSheetPresenceUtils::toCsv(
+                   ws.presence)
+            << "\n";
+
+        for (const auto& order : ws.orders)
+        {
+            auto* type =
+                ProductTypeRegistry::instance()
+                    .findById(order.productTypeId);
+
+            auto* subtype =
+                ProductSubtypeRegistry::instance()
+                    .findById(order.productSubtypeId);
+
+            out
+                << order.externalReference << ";"
+                << order.ownerName << ";"
+                << order.dueDate.toString(
+                       "yyyy-MM-dd")
+                << ";"
+                << (type?type->code:"")
+                << ";"
+                << (subtype?subtype->code:"")
+                << ";"
+                << order.requestCount
+                << ";"
+                << order.completedCount
+                << ";"
+                << order.uncompletedCount
+                << ";"
+                << order.undefinedCount
+                << "\n";
+        }
+
+        out << "\n";
+    }
 
     return true;
 }

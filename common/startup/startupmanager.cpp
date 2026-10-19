@@ -884,8 +884,6 @@ StartupStatus StartupManager::initWorkSheetSummaryRegistry()
             "🔨 %1 worksheet újraépítve")
             .arg(rebuiltCount));
 
-    wssr.debugDump();
-
     return StartupStatus::success();
 }
 

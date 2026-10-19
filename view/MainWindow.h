@@ -20,6 +20,7 @@
 #include "tableutils/highlightdelegate.h"
 #include "view/dialog/input/series_matrix_view.h"
 #include "cutting/export/sortmode.h"
+#include "view/managers/worksheetsummarytable_manager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -176,19 +177,22 @@ private:
     std::unique_ptr<StorageAuditTableManager> storageAuditTableManager = nullptr;
 
     std::unique_ptr<RelocationPlanTableManager> relocationPlanTableManager = nullptr;
-
+    // egy munkalap nézete - vágási kérelemléista
     std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
+    // munkalapok átfogó nézet
+    std::unique_ptr<WorkSheetSummaryTableManager> workSheetSummaryTableManager = nullptr;
 
     QAction* _actSeriesMatrix = nullptr;
 
 private:
-    static constexpr int TAB_CUTREQUEST        = 0;
-    static constexpr int TAB_CUTTINGPLAN       = 1;
-    static constexpr int TAB_STORAGEAUDIT      = 2;
-    static constexpr int TAB_RELOCATION        = 3;
-    static constexpr int TAB_CUTINSTRUCTION    = 4;
-    static constexpr int TAB_STOCK             = 5;
-    static constexpr int TAB_LEFTOVER          = 6;
+    static constexpr int TAB_WORKSHEETS        = 0;
+    static constexpr int TAB_CUTREQUEST        = 1;
+    static constexpr int TAB_CUTTINGPLAN       = 2;
+    static constexpr int TAB_STORAGEAUDIT      = 3;
+    static constexpr int TAB_RELOCATION        = 4;
+    static constexpr int TAB_CUTINSTRUCTION    = 5;
+    static constexpr int TAB_STOCK             = 6;
+    static constexpr int TAB_LEFTOVER          = 7;
 
 
     void closeEvent(QCloseEvent *event) override;
