@@ -22,6 +22,8 @@ struct WorkSheetOrderInfo
     int uncompletedCount = 0;
     int undefinedCount = 0;
 
+    QString requiredColorCode;
+
     bool requiresAttention() const
     {
         return

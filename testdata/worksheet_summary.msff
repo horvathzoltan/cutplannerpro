@@ -1,5 +1,5 @@
 filePath;fileName;fileHash;presence
-externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCount;completedCount;uncompletedCount;undefinedCount
+externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requiredColorCode;requestCount;completedCount;uncompletedCount;undefinedCount
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20250727-180645.txt;cuttingplan_20250727-180645.txt;1iLqeUyPGI6FzrcMCz08PuhncxaKbo4fdoIwU5GoKhI=;Present
 
@@ -26,113 +26,113 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260407-190651.txt;cuttingplan_20260407-190651.txt;y/tqhhfDsJOXeRzeJBNb3z2lSWb8wrK3XUTmt5ff4EQ=;Present
-1173;frama;2026-10-19;;;1;0;0;1
-1274;frama;2026-10-19;;;1;0;0;1
-1275;frama;2026-10-19;;;1;0;0;1
-1276;frama;2026-10-19;;;1;0;0;1
-1277;frama;2026-10-19;;;1;0;0;1
-1278;frama;2026-10-19;;;1;0;0;1
-1279;frama;2026-10-19;;;1;0;0;1
-1280;frama;2026-10-19;;;1;0;0;1
-1281;frama;2026-10-19;;;1;0;0;1
-1282;frama;2026-10-19;;;1;0;0;1
-1283;frama;2026-10-19;;;1;0;0;1
-1284;frama;2026-10-19;;;1;0;0;1
-1285;frama;2026-10-19;;;1;0;0;1
-1286;frama;2026-10-19;;;1;0;0;1
-1287;frama;2026-10-19;;;1;0;0;1
-1288;frama;2026-10-19;;;1;0;0;1
-1289;frama;2026-10-19;;;1;0;0;1
-1290;frama;2026-10-19;;;1;0;0;1
+1173;frama;2026-10-20;;;;1;0;0;1
+1274;frama;2026-10-20;;;;1;0;0;1
+1275;frama;2026-10-20;;;;1;0;0;1
+1276;frama;2026-10-20;;;;1;0;0;1
+1277;frama;2026-10-20;;;;1;0;0;1
+1278;frama;2026-10-20;;;;1;0;0;1
+1279;frama;2026-10-20;;;;1;0;0;1
+1280;frama;2026-10-20;;;;1;0;0;1
+1281;frama;2026-10-20;;;;1;0;0;1
+1282;frama;2026-10-20;;;;1;0;0;1
+1283;frama;2026-10-20;;;;1;0;0;1
+1284;frama;2026-10-20;;;;1;0;0;1
+1285;frama;2026-10-20;;;;1;0;0;1
+1286;frama;2026-10-20;;;;1;0;0;1
+1287;frama;2026-10-20;;;;1;0;0;1
+1288;frama;2026-10-20;;;;1;0;0;1
+1289;frama;2026-10-20;;;;1;0;0;1
+1290;frama;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260407-205650.txt;cuttingplan_20260407-205650.txt;iHOkp5yEL0ekt/CpChKEpniBd5taPjiSzaTYNnSTb4k=;Present
-1273;frama;2026-10-19;;;1;0;0;1
-1274;frama;2026-10-19;;;1;0;0;1
-1275;frama;2026-10-19;;;1;0;0;1
-1276;frama;2026-10-19;;;1;0;0;1
-1277;frama;2026-10-19;;;1;0;0;1
-1278;frama;2026-10-19;;;1;0;0;1
-1279;frama;2026-10-19;;;1;0;0;1
-1280;frama;2026-10-19;;;1;0;0;1
-1281;frama;2026-10-19;;;1;0;0;1
-1282;frama;2026-10-19;;;1;0;0;1
-1283;frama;2026-10-19;;;1;0;0;1
-1284;frama;2026-10-19;;;1;0;0;1
-1285;frama;2026-10-19;;;1;0;0;1
-1286;frama;2026-10-19;;;1;0;0;1
-1287;frama;2026-10-19;;;1;0;0;1
-1288;frama;2026-10-19;;;1;0;0;1
-1289;frama;2026-10-19;;;1;0;0;1
-1290;frama;2026-10-19;;;1;0;0;1
+1273;frama;2026-10-20;;;;1;0;0;1
+1274;frama;2026-10-20;;;;1;0;0;1
+1275;frama;2026-10-20;;;;1;0;0;1
+1276;frama;2026-10-20;;;;1;0;0;1
+1277;frama;2026-10-20;;;;1;0;0;1
+1278;frama;2026-10-20;;;;1;0;0;1
+1279;frama;2026-10-20;;;;1;0;0;1
+1280;frama;2026-10-20;;;;1;0;0;1
+1281;frama;2026-10-20;;;;1;0;0;1
+1282;frama;2026-10-20;;;;1;0;0;1
+1283;frama;2026-10-20;;;;1;0;0;1
+1284;frama;2026-10-20;;;;1;0;0;1
+1285;frama;2026-10-20;;;;1;0;0;1
+1286;frama;2026-10-20;;;;1;0;0;1
+1287;frama;2026-10-20;;;;1;0;0;1
+1288;frama;2026-10-20;;;;1;0;0;1
+1289;frama;2026-10-20;;;;1;0;0;1
+1290;frama;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-173255.txt;cuttingplan_20260506-173255.txt;eVCSV6zD43oUoSC0kT7Dq1qw/Y9WC8lW90+/8GuDizc=;Present
-1413;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1414;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1415;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1416;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1417;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1418;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1419;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1420;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1421;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1422;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1423;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1424;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1425;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1426;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1427;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1428;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1429;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1430;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1431;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1432;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1433;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1434;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1435;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1436;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1437;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1438;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1439;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1440;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1443;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1444;PrémiumHoliday;2026-06-03;;;1;0;0;1
-1445;PrémiumHoliday;2026-06-03;;;1;0;0;1
+1413;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1414;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1415;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1416;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1417;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1418;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1419;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1420;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1421;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1422;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1423;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1424;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1425;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1426;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1427;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1428;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1429;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1430;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1431;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1432;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1433;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1434;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1435;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1436;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1437;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1438;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1439;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1440;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1443;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1444;PrémiumHoliday;2026-06-03;;;;1;0;0;1
+1445;PrémiumHoliday;2026-06-03;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-173255_maki.txt;cuttingplan_20260506-173255_maki.txt;76EkrBx7Y/14BhYu97+fpzN6SZYqITgsbH+r6+a/c6U=;Present
-1413;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1414;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1415;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1416;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1417;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1418;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1419;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1420;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1421;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1422;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1423;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1424;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1425;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1426;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1427;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1428;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1429;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1430;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1431;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1432;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1433;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1434;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1435;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1436;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1437;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1438;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1439;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1440;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1443;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1444;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1445;PrémiumHoliday;2026-10-19;;;1;0;0;1
+1413;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1414;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1415;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1416;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1417;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1418;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1419;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1420;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1421;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1422;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1423;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1424;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1425;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1426;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1427;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1428;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1429;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1430;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1431;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1432;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1433;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1434;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1435;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1436;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1437;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1438;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1439;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1440;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1443;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1444;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1445;PrémiumHoliday;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-173255_teszt2.txt;cuttingplan_20260506-173255_teszt2.txt;CUDHZlb9O9LDmqpwyYd/36IAkCBeSxVpoccFrYMGUwg=;Present
@@ -142,130 +142,130 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-203455.txt;cuttingplan_20260506-203455.txt;8XEqTYDj1B1Ahyafzp9yCxI9z5ujvyLofMCLzb8UbMQ=;Present
-1413;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1414;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1415;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1416;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1417;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1418;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1419;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1420;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1421;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1422;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1423;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1424;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1425;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1426;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1427;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1428;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1429;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1430;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1431;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1432;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1433;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1434;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1435;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1436;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1437;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1438;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1439;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1440;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1443;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1444;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1445;PrémiumHoliday;2026-10-19;;;1;0;0;1
+1413;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1414;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1415;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1416;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1417;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1418;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1419;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1420;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1421;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1422;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1423;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1424;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1425;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1426;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1427;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1428;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1429;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1430;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1431;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1432;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1433;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1434;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1435;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1436;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1437;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1438;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1439;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1440;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1443;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1444;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1445;PrémiumHoliday;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-210620.txt;cuttingplan_20260506-210620.txt;QVdbitr7gKeDckOasbZSqvbcagNR95z/Hw2aZtdAkw0=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-210828.txt;cuttingplan_20260506-210828.txt;t6Vp+dQWMn/1lz1TTQfeuHfU5UZUanNML4AbeaicyNo=;Present
-1413;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1414;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1415;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1416;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1417;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1418;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1419;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1420;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1421;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1422;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1423;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1424;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1425;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1426;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1427;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1428;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1429;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1430;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1431;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1432;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1433;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1434;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1435;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1436;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1437;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1438;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1439;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1440;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1443;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1444;PrémiumHoliday;2026-10-19;;;1;0;0;1
-1445;PrémiumHoliday;2026-10-19;;;1;0;0;1
+1413;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1414;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1415;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1416;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1417;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1418;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1419;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1420;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1421;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1422;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1423;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1424;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1425;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1426;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1427;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1428;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1429;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1430;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1431;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1432;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1433;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1434;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1435;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1436;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1437;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1438;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1439;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1440;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1443;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1444;PrémiumHoliday;2026-10-20;;;;1;0;0;1
+1445;PrémiumHoliday;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-211808.txt;cuttingplan_20260506-211808.txt;+GweAkEt8lHhXkgRTJ9w6oknod18O6WshTEye3KECKI=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260511-082828.txt;cuttingplan_20260511-082828.txt;ds8tSb0Fsf6l45fy6hI6NivWIRNgNdF6Y/BbYMzU9RI=;Present
-1477;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1478;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1479;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1480;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1481;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1482;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1483;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1484;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1485;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1486;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1487;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1488;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1489;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1490;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1491;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1492;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1493;HajduAlu_Porta;2026-10-19;;;1;0;0;1
+1477;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1478;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1479;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1480;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1481;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1482;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1483;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1484;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1485;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1486;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1487;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1488;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1489;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1490;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1491;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1492;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1493;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260511-092413.txt;cuttingplan_20260511-092413.txt;dosN1Io8irjMBNTT7ce7ypakXpULRHdKXm5YVWlDsrs=;Present
-1477;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1478;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1479;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1480;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1481;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1482;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1483;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1484;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1485;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1486;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1487;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1488;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1489;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1490;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1491;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1492;HajduAlu_Porta;2026-10-19;;;1;0;0;1
-1493;HajduAlu_Porta;2026-10-19;;;1;0;0;1
+1477;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1478;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1479;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1480;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1481;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1482;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1483;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1484;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1485;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1486;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1487;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1488;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1489;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1490;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1491;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1492;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
+1493;HajduAlu_Porta;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260512-072220.txt;cuttingplan_20260512-072220.txt;EgpC/I6Qnjj5yuy5vRfHfhwwgqLiWnevEtNVtSyB6XA=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260512-072220_lab.txt;cuttingplan_20260512-072220_lab.txt;E3n/kK2jHdOJGU9ZmptizSa07efaG/zBwq/bwo2r8Dc=;Present
-1880;LosoncziR;2026-10-19;;;1;0;0;1
-1881;LosoncziR;2026-10-19;;;1;0;0;1
-1882;LosoncziR;2026-10-19;;;1;0;0;1
-1883;LosoncziR;2026-10-19;;;1;0;0;1
-1884;LosoncziR;2026-10-19;;;1;0;0;1
-1885;LosoncziR;2026-10-19;;;1;0;0;1
-1886;LosoncziR;2026-10-19;;;1;0;0;1
+1880;LosoncziR;2026-10-20;;;;1;0;0;1
+1881;LosoncziR;2026-10-20;;;;1;0;0;1
+1882;LosoncziR;2026-10-20;;;;1;0;0;1
+1883;LosoncziR;2026-10-20;;;;1;0;0;1
+1884;LosoncziR;2026-10-20;;;;1;0;0;1
+1885;LosoncziR;2026-10-20;;;;1;0;0;1
+1886;LosoncziR;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260515-134322.txt;cuttingplan_20260515-134322.txt;3b8yGxqikCYRyd1fhV0g5Kje/scuKFhIoWGgcJSZxYI=;Present
@@ -281,36 +281,36 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260516-104949.txt;cuttingplan_20260516-104949.txt;1HBReioXfl1ynug13wyxpcs+lVK7ie8PDoqUYtbvYdc=;Present
-1264;Hovafa;2026-10-19;;;1;0;0;1
-1265;Hovafa;2026-10-19;;;1;0;0;1
-1284;Tóth M.;2026-10-19;;;1;0;0;1
-1287;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1288;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1289;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1290;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1291;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1292;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1293;SándorÁrnyék;2026-10-19;;;1;0;0;1
-1308;RedőnyShop;2026-10-19;;;1;0;0;1
-1322;György Zs.;2026-10-19;;;1;0;0;1
-1323;György Zs.;2026-10-19;;;1;0;0;1
-1324;György Zs.;2026-10-19;;;1;0;0;1
-1325;György Zs.;2026-10-19;;;1;0;0;1
-1326;György Zs.;2026-10-19;;;1;0;0;1
-1327;György Zs.;2026-10-19;;;1;0;0;1
-1328;György Zs.;2026-10-19;;;1;0;0;1
-1329;György Zs.;2026-10-19;;;1;0;0;1
-1330;György Zs.;2026-10-19;;;1;0;0;1
-1331;György Zs.;2026-10-19;;;1;0;0;1
+1264;Hovafa;2026-10-20;;;;1;0;0;1
+1265;Hovafa;2026-10-20;;;;1;0;0;1
+1284;Tóth M.;2026-10-20;;;;1;0;0;1
+1287;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1288;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1289;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1290;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1291;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1292;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1293;SándorÁrnyék;2026-10-20;;;;1;0;0;1
+1308;RedőnyShop;2026-10-20;;;;1;0;0;1
+1322;György Zs.;2026-10-20;;;;1;0;0;1
+1323;György Zs.;2026-10-20;;;;1;0;0;1
+1324;György Zs.;2026-10-20;;;;1;0;0;1
+1325;György Zs.;2026-10-20;;;;1;0;0;1
+1326;György Zs.;2026-10-20;;;;1;0;0;1
+1327;György Zs.;2026-10-20;;;;1;0;0;1
+1328;György Zs.;2026-10-20;;;;1;0;0;1
+1329;György Zs.;2026-10-20;;;;1;0;0;1
+1330;György Zs.;2026-10-20;;;;1;0;0;1
+1331;György Zs.;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260516-112845.txt;cuttingplan_20260516-112845.txt;rO2MSdZybHvZ3I9du5lsBXisPiQAT2IEx/m1dwDFcug=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260520-085143.txt;cuttingplan_20260520-085143.txt;B5662UNbmbRkhQUNZ2StBmf68dCpcS4XGMIYJGVDmoo=;Present
-1496;teszt1;2026-10-19;;;1;0;0;1
-1497;teszt1;2026-10-19;;;1;0;0;1
-1498;teszt1;2026-10-19;;;1;0;0;1
+1496;teszt1;2026-10-20;;;;1;0;0;1
+1497;teszt1;2026-10-20;;;;1;0;0;1
+1498;teszt1;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260527-075244.txt;cuttingplan_20260527-075244.txt;7Bp/pNNNL22JodzzOONFKjAfc+w9/jwkwUZXoTu99ls=;Present
@@ -320,11 +320,11 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260527-132401.txt;cuttingplan_20260527-132401.txt;2O30nGEp3VvCx/qFeUf3x7L3qwgK2BGYCbD9QLrKJpA=;Present
-1395;Rellux;2026-10-19;;;1;0;0;1
-1396;Rellux;2026-10-19;;;1;0;0;1
-1397;Rellux;2026-10-19;;;1;0;0;1
-1398;Rellux;2026-10-19;;;1;0;0;1
-1399;Rellux;2026-10-19;;;1;0;0;1
+1395;Rellux;2026-10-20;;;;1;0;0;1
+1396;Rellux;2026-10-20;;;;1;0;0;1
+1397;Rellux;2026-10-20;;;;1;0;0;1
+1398;Rellux;2026-10-20;;;;1;0;0;1
+1399;Rellux;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260527-133556.txt;cuttingplan_20260527-133556.txt;QN0MCbKG4t5YibpCVXboLye4TbxqwUKKbLHJbc/0/KI=;Present
@@ -334,75 +334,75 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-072103.txt;cuttingplan_20260603-072103.txt;b6IOXa44SMMRSlYcLVgoZcvo+cG7tm/27Kp2pDPOSCU=;Present
-1402;BányaiLajos;2026-10-19;;;1;0;0;1
-1429;Norlux;2026-10-19;;;1;0;0;1
-1430;Norlux;2026-10-19;;;1;0;0;1
-1431;Norlux;2026-10-19;;;1;0;0;1
-1432;Norlux;2026-10-19;;;1;0;0;1
-1433;Norlux;2026-10-19;;;1;0;0;1
-1434;Norlux;2026-10-19;;;1;0;0;1
-1435;Norlux;2026-10-19;;;1;0;0;1
-1436;Norlux;2026-10-19;;;1;0;0;1
-1437;Norlux;2026-10-19;;;1;0;0;1
-1438;Norlux;2026-10-19;;;1;0;0;1
-1439;Norlux;2026-10-19;;;1;0;0;1
-1440;Norlux;2026-10-19;;;1;0;0;1
-1441;Norlux;2026-10-19;;;1;0;0;1
-1442;Norlux;2026-10-19;;;1;0;0;1
-1443;Norlux;2026-10-19;;;1;0;0;1
-1444;Norlux;2026-10-19;;;1;0;0;1
-1445;Norlux;2026-10-19;;;1;0;0;1
-1446;Norlux;2026-10-19;;;1;0;0;1
-1447;Norlux;2026-10-19;;;1;0;0;1
-1458;Timi;2026-10-19;;;1;0;0;1
-1459;Timi;2026-10-19;;;1;0;0;1
-1462;Frama/Bokor;2026-10-19;;;1;0;0;1
-1463;Frama/Bokor;2026-10-19;;;1;0;0;1
-1466;Bányai;2026-10-19;;;1;0;0;1
-1467;Bányai;2026-10-19;;;1;0;0;1
-1468;Bányai;2026-10-19;;;1;0;0;1
-1471;Hör-Mi;2026-10-19;;;1;0;0;1
-1472;Hör-Mi;2026-10-19;;;1;0;0;1
-1473;Hör-Mi;2026-10-19;;;1;0;0;1
-1474;Hör-Mi;2026-10-19;;;1;0;0;1
-1475;Hör-Mi;2026-10-19;;;1;0;0;1
-1478;Hör-Mi;2026-10-19;;;1;0;0;1
-1481;Pro-Plast;2026-10-19;;;1;0;0;1
-1498;DriszkuZs;2026-10-19;;;1;0;0;1
-1499;DriszkuZs;2026-10-19;;;1;0;0;1
-1502;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1503;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1504;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1505;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1506;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1507;Tiba Zoltán;2026-10-19;;;1;0;0;1
-1508;Tiba Zoltán;2026-10-19;;;1;0;0;1
+1402;BányaiLajos;2026-10-20;;;;1;0;0;1
+1429;Norlux;2026-10-20;;;;1;0;0;1
+1430;Norlux;2026-10-20;;;;1;0;0;1
+1431;Norlux;2026-10-20;;;;1;0;0;1
+1432;Norlux;2026-10-20;;;;1;0;0;1
+1433;Norlux;2026-10-20;;;;1;0;0;1
+1434;Norlux;2026-10-20;;;;1;0;0;1
+1435;Norlux;2026-10-20;;;;1;0;0;1
+1436;Norlux;2026-10-20;;;;1;0;0;1
+1437;Norlux;2026-10-20;;;;1;0;0;1
+1438;Norlux;2026-10-20;;;;1;0;0;1
+1439;Norlux;2026-10-20;;;;1;0;0;1
+1440;Norlux;2026-10-20;;;;1;0;0;1
+1441;Norlux;2026-10-20;;;;1;0;0;1
+1442;Norlux;2026-10-20;;;;1;0;0;1
+1443;Norlux;2026-10-20;;;;1;0;0;1
+1444;Norlux;2026-10-20;;;;1;0;0;1
+1445;Norlux;2026-10-20;;;;1;0;0;1
+1446;Norlux;2026-10-20;;;;1;0;0;1
+1447;Norlux;2026-10-20;;;;1;0;0;1
+1458;Timi;2026-10-20;;;;1;0;0;1
+1459;Timi;2026-10-20;;;;1;0;0;1
+1462;Frama/Bokor;2026-10-20;;;;1;0;0;1
+1463;Frama/Bokor;2026-10-20;;;;1;0;0;1
+1466;Bányai;2026-10-20;;;;1;0;0;1
+1467;Bányai;2026-10-20;;;;1;0;0;1
+1468;Bányai;2026-10-20;;;;1;0;0;1
+1471;Hör-Mi;2026-10-20;;;;1;0;0;1
+1472;Hör-Mi;2026-10-20;;;;1;0;0;1
+1473;Hör-Mi;2026-10-20;;;;1;0;0;1
+1474;Hör-Mi;2026-10-20;;;;1;0;0;1
+1475;Hör-Mi;2026-10-20;;;;1;0;0;1
+1478;Hör-Mi;2026-10-20;;;;1;0;0;1
+1481;Pro-Plast;2026-10-20;;;;1;0;0;1
+1498;DriszkuZs;2026-10-20;;;;1;0;0;1
+1499;DriszkuZs;2026-10-20;;;;1;0;0;1
+1502;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1503;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1504;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1505;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1506;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1507;Tiba Zoltán;2026-10-20;;;;1;0;0;1
+1508;Tiba Zoltán;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-072103_ap.txt;cuttingplan_20260603-072103_ap.txt;GYO5y5xuXrxH80NwZUSGK8nL5X6uqvti4TkBJ0QCVSc=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500.txt;cuttingplan_20260603-103500.txt;dWGW/7G0XgMcRO3OfvgNmWQcLX51DkZofGHzcI2Xe0I=;Present
-1454;Perei;2026-10-19;;;1;0;0;1
-1455;Perei;2026-10-19;;;1;0;0;1
-1484;ZentaiAblak;2026-10-19;;;1;0;0;1
-1485;ZentaiAblak;2026-10-19;;;1;0;0;1
-1486;ZentaiAblak;2026-10-19;;;1;0;0;1
-1487;ZentaiAblak;2026-10-19;;;1;0;0;1
-1488;ZentaiAblak;2026-10-19;;;1;0;0;1
-15;Nistor Egon;2026-10-19;;;1;0;0;1
-16;Nistor Egon;2026-10-19;;;1;0;0;1
-17;Nistor Egon;2026-10-19;;;1;0;0;1
-18;Nistor Egon;2026-10-19;;;1;0;0;1
-19;Nistor Egon;2026-10-19;;;1;0;0;1
-1976;Csák L.;2026-10-19;;;1;0;0;1
-1979;Rada;2026-10-19;;;1;0;0;1
-1980;Rada;2026-10-19;;;1;0;0;1
-1986;Kovácsné T. Gyöngy;2026-10-19;;;1;0;0;1
-5;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-6;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-7;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-8;AblakBeÉpítő;2026-10-19;;;1;0;0;1
+1454;Perei;2026-10-20;;;;1;0;0;1
+1455;Perei;2026-10-20;;;;1;0;0;1
+1484;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1485;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1486;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1487;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1488;ZentaiAblak;2026-10-20;;;;1;0;0;1
+15;Nistor Egon;2026-10-20;;;;1;0;0;1
+16;Nistor Egon;2026-10-20;;;;1;0;0;1
+17;Nistor Egon;2026-10-20;;;;1;0;0;1
+18;Nistor Egon;2026-10-20;;;;1;0;0;1
+19;Nistor Egon;2026-10-20;;;;1;0;0;1
+1976;Csák L.;2026-10-20;;;;1;0;0;1
+1979;Rada;2026-10-20;;;;1;0;0;1
+1980;Rada;2026-10-20;;;;1;0;0;1
+1986;Kovácsné T. Gyöngy;2026-10-20;;;;1;0;0;1
+5;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+6;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+7;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+8;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_2.txt;cuttingplan_20260603-103500_2.txt;F5lgCWGK2FifC7AezkEbh3cjhYjWikLhA1rRpJcOaw0=;Present
@@ -412,1377 +412,1377 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requestCo
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_5.txt;cuttingplan_20260603-103500_5.txt;0OJc9w/lHsBpzbbZi3ihKd6vY4FZOk88fuIrgjzNMbk=;Present
-15;Nistor Egon;2026-10-19;;;1;0;0;1
-16;Nistor Egon;2026-10-19;;;1;0;0;1
-17;Nistor Egon;2026-10-19;;;1;0;0;1
-18;Nistor Egon;2026-10-19;;;1;0;0;1
-19;Nistor Egon;2026-10-19;;;1;0;0;1
-1976;Csák L.;2026-10-19;;;1;0;0;1
-1986;Kovácsné T. Gyöngy;2026-10-19;;;1;0;0;1
+15;Nistor Egon;2026-10-20;;;;1;0;0;1
+16;Nistor Egon;2026-10-20;;;;1;0;0;1
+17;Nistor Egon;2026-10-20;;;;1;0;0;1
+18;Nistor Egon;2026-10-20;;;;1;0;0;1
+19;Nistor Egon;2026-10-20;;;;1;0;0;1
+1976;Csák L.;2026-10-20;;;;1;0;0;1
+1986;Kovácsné T. Gyöngy;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_rol_z.txt;cuttingplan_20260603-103500_rol_z.txt;1VA74398Bwe2JixcZ20FyRrpFL8tKHLIN33lzSEd+Xs=;Present
-1454;Perei;2026-10-19;;;1;0;0;1
-1455;Perei;2026-10-19;;;1;0;0;1
-1484;ZentaiAblak;2026-10-19;;;1;0;0;1
-1485;ZentaiAblak;2026-10-19;;;1;0;0;1
-1486;ZentaiAblak;2026-10-19;;;1;0;0;1
-1487;ZentaiAblak;2026-10-19;;;1;0;0;1
-1488;ZentaiAblak;2026-10-19;;;1;0;0;1
+1454;Perei;2026-10-20;;;;1;0;0;1
+1455;Perei;2026-10-20;;;;1;0;0;1
+1484;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1485;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1486;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1487;ZentaiAblak;2026-10-20;;;;1;0;0;1
+1488;ZentaiAblak;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_savr_z.txt;cuttingplan_20260603-103500_savr_z.txt;FL5H8AWiHDwXy279VATZBo6Bo5UoV7kh+P6ZhVPnR3I=;Present
-15;Nistor Egon;2026-10-19;;;1;0;0;1
-16;Nistor Egon;2026-10-19;;;1;0;0;1
-17;Nistor Egon;2026-10-19;;;1;0;0;1
-18;Nistor Egon;2026-10-19;;;1;0;0;1
-19;Nistor Egon;2026-10-19;;;1;0;0;1
-1976;Csák L.;2026-10-19;;;1;0;0;1
-1979;Rada;2026-10-19;;;1;0;0;1
-1980;Rada;2026-10-19;;;1;0;0;1
-1986;Kovácsné T. Gyöngy;2026-10-19;;;1;0;0;1
-5;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-6;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-7;AblakBeÉpítő;2026-10-19;;;1;0;0;1
-8;AblakBeÉpítő;2026-10-19;;;1;0;0;1
+15;Nistor Egon;2026-10-20;;;;1;0;0;1
+16;Nistor Egon;2026-10-20;;;;1;0;0;1
+17;Nistor Egon;2026-10-20;;;;1;0;0;1
+18;Nistor Egon;2026-10-20;;;;1;0;0;1
+19;Nistor Egon;2026-10-20;;;;1;0;0;1
+1976;Csák L.;2026-10-20;;;;1;0;0;1
+1979;Rada;2026-10-20;;;;1;0;0;1
+1980;Rada;2026-10-20;;;;1;0;0;1
+1986;Kovácsné T. Gyöngy;2026-10-20;;;;1;0;0;1
+5;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+6;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+7;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
+8;AblakBeÉpítő;2026-10-20;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-141820.txt;cuttingplan_20260603-141820.txt;6mZLPxZZ1AZ1VJlpkfsu4u+wWKF6/m68CpYCJhpiX7E=;Present
-1;SzabóG.;2026-10-19;;;3;0;0;3
-1983;SzabóMihály;2026-10-19;;;3;0;0;3
+1;SzabóG.;2026-10-20;;;;3;0;0;3
+1983;SzabóMihály;2026-10-20;;;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-185855.txt;cuttingplan_20260603-185855.txt;E7i3O6fu8NHeAX9543Cn86yvckbcThzqGkrryXDmrYQ=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260612-094100.txt;cuttingplan_20260612-094100.txt;aR00MicTrOxoizNf5+2lE7T9tbR7D1lth8x3clEOV+A=;Present
-1560;Tyukodi I.;2026-06-16;;;1;0;0;1
-1561;Tyukodi I.;2026-06-16;;;1;0;0;1
-1574;TátraMix;2026-06-16;;;1;0;0;1
-1591;TátraMix;2026-06-16;;;1;0;0;1
-1622;RoKonzol;2026-06-22;;;1;0;0;1
-1637;RetroÁrnyékolás;2026-06-22;;;1;0;0;1
+1560;Tyukodi I.;2026-06-16;;;;1;0;0;1
+1561;Tyukodi I.;2026-06-16;;;;1;0;0;1
+1574;TátraMix;2026-06-16;;;;1;0;0;1
+1591;TátraMix;2026-06-16;;;;1;0;0;1
+1622;RoKonzol;2026-06-22;;;;1;0;0;1
+1637;RetroÁrnyékolás;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260612-094100_tok.txt;cuttingplan_20260612-094100_tok.txt;p2md99ZXtYIEyJ7qNekDk1pI+1ZX4l/31HyHk8Kk89s=;Present
-1574;TátraMix;2026-06-16;;;1;0;0;1
-1591;TátraMix;2026-06-16;;;1;0;0;1
+1574;TátraMix;2026-06-16;;;;1;0;0;1
+1591;TátraMix;2026-06-16;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260612-094100_zaro.txt;cuttingplan_20260612-094100_zaro.txt;2JnDSIW1OOcV2I55cuDWon+qcb0rJYnMoJpT6XG4lqY=;Present
-1574;TátraMix;2026-06-16;;;1;0;0;1
-1591;TátraMix;2026-06-16;;;1;0;0;1
-1622;RoKonzol;2026-06-22;;;1;0;0;1
-1637;RetroÁrnyékolás;2026-06-22;;;1;0;0;1
+1574;TátraMix;2026-06-16;;;;1;0;0;1
+1591;TátraMix;2026-06-16;;;;1;0;0;1
+1622;RoKonzol;2026-06-22;;;;1;0;0;1
+1637;RetroÁrnyékolás;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-064423.txt;cuttingplan_20260616-064423.txt;zt7LSHUoeY3/PQiYYJl1qdJc1b91W+GV+aPcPLETWQE=;Present
-1728;Molkomfort;2026-06-17;;;1;0;0;1
-1735;ArthyL.;2026-06-16;;;1;0;0;1
-1750;ZákányDénes;2026-06-18;;;1;0;0;1
-1751;ZákányDénes;2026-06-18;;;1;0;0;1
-1752;ZákányDénes;2026-06-18;;;1;0;0;1
-1755;Félegyházi;2026-06-22;;;1;0;0;1
+1728;Molkomfort;2026-06-17;;;;1;0;0;1
+1735;ArthyL.;2026-06-16;;;;1;0;0;1
+1750;ZákányDénes;2026-06-18;;;;1;0;0;1
+1751;ZákányDénes;2026-06-18;;;;1;0;0;1
+1752;ZákányDénes;2026-06-18;;;;1;0;0;1
+1755;Félegyházi;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-064423_láb.txt;cuttingplan_20260616-064423_láb.txt;9T+cdD8tsQiw96ySS2fwut394QiE86eMHPWqHPfSP9g=;Present
-1728;Molkomfort;2026-06-17;;;1;0;0;1
+1728;Molkomfort;2026-06-17;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-064423_tok.txt;cuttingplan_20260616-064423_tok.txt;Ggxdci9RM5AFZGnQhpcYsZUoBE1+cRhzKhAHKPYJsyE=;Present
-1750;ZákányDénes;2026-06-18;;;1;0;0;1
-1751;ZákányDénes;2026-06-18;;;1;0;0;1
-1752;ZákányDénes;2026-06-18;;;1;0;0;1
-1755;Félegyházi;2026-06-22;;;1;0;0;1
+1750;ZákányDénes;2026-06-18;;;;1;0;0;1
+1751;ZákányDénes;2026-06-18;;;;1;0;0;1
+1752;ZákányDénes;2026-06-18;;;;1;0;0;1
+1755;Félegyházi;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-064423_zaro.txt;cuttingplan_20260616-064423_zaro.txt;s7fQjFSJe6xtydEOziKPB2eMwchSc0G6Kn/qv0dWjIo=;Present
-1728;Molkomfort;2026-06-17;;;1;0;0;1
-1750;ZákányDénes;2026-06-18;;;1;0;0;1
-1751;ZákányDénes;2026-06-18;;;1;0;0;1
-1752;ZákányDénes;2026-06-18;;;1;0;0;1
-1755;Félegyházi;2026-06-22;;;1;0;0;1
+1728;Molkomfort;2026-06-17;;;;1;0;0;1
+1750;ZákányDénes;2026-06-18;;;;1;0;0;1
+1751;ZákányDénes;2026-06-18;;;;1;0;0;1
+1752;ZákányDénes;2026-06-18;;;;1;0;0;1
+1755;Félegyházi;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-125336.txt;cuttingplan_20260616-125336.txt;SFsjTJ5okLBB9I2f23GgrKp40Kzi7xoDzAYNRWJbWjQ=;Present
-1745;Ro-Konzol;2026-06-16;;;1;0;0;1
-1746;Ro-Konzol;2026-06-22;;;1;0;0;1
-1747;Ro-Konzol;2026-06-22;;;1;0;0;1
+1745;Ro-Konzol;2026-06-16;;;;1;0;0;1
+1746;Ro-Konzol;2026-06-22;;;;1;0;0;1
+1747;Ro-Konzol;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-125336_láb.txt;cuttingplan_20260616-125336_láb.txt;E7cTU0BLhSrmUWHSViuzVFBHfv/xN+ldNAhTuJDXD4A=;Present
-1745;Ro-Konzol;2026-06-22;;;1;0;0;1
-1746;Ro-Konzol;2026-06-22;;;1;0;0;1
-1747;Ro-Konzol;2026-06-22;;;1;0;0;1
+1745;Ro-Konzol;2026-06-22;;;;1;0;0;1
+1746;Ro-Konzol;2026-06-22;;;;1;0;0;1
+1747;Ro-Konzol;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-125336_záró.txt;cuttingplan_20260616-125336_záró.txt;fKEuavHo8KCBYs75kmjcS/6/vDiNEN5PkdGjPMl4zWk=;Present
-1745;Ro-Konzol;2026-06-22;;;1;0;0;1
-1746;Ro-Konzol;2026-06-22;;;1;0;0;1
-1747;Ro-Konzol;2026-06-22;;;1;0;0;1
+1745;Ro-Konzol;2026-06-22;;;;1;0;0;1
+1746;Ro-Konzol;2026-06-22;;;;1;0;0;1
+1747;Ro-Konzol;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-190026.txt;cuttingplan_20260616-190026.txt;0ELYxibXssu7RBgJUvNd5wfx0d35p+ts0QbiybV/oBs=;Present
-1234;TesztElek;2026-06-16;;;1;0;0;1
-1236;TesztElek;2026-06-16;;;1;0;0;1
+1234;TesztElek;2026-06-16;;;;1;0;0;1
+1236;TesztElek;2026-06-16;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-190026_zaro.txt;cuttingplan_20260616-190026_zaro.txt;8pbm83e8XudVNfVr2I81qN4sIHHcj0NI5tFNTUhofLI=;Present
-1234;TesztElek;2026-06-16;;;1;0;0;1
-1236;TesztElek;2026-06-16;;;1;0;0;1
+1234;TesztElek;2026-06-16;;;;1;0;0;1
+1236;TesztElek;2026-06-16;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260616-200148.txt;cuttingplan_20260616-200148.txt;vTykL0gC3bRMAwGiO6QMYib4cwXxD728gg4PE53R1eI=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260617-085111.txt;cuttingplan_20260617-085111.txt;ELUDr1egjiHI0W1jDLHzUv4W/n//PLZf8DdsY0VBuVY=;Present
-1745;RoKonzol;2026-06-17;;;1;0;0;1
-1746;RoKonzol;2026-06-17;;;1;0;0;1
-1747;RoKonzol;2026-06-17;;;1;0;0;1
-1755;Félegyházi;2026-06-17;;;1;0;0;1
-1773;Szajkó;2026-06-17;;;1;0;0;1
-1774;Szajkó;2026-06-17;;;1;0;0;1
-1775;Szajkó;2026-06-17;;;1;0;0;1
-1776;Szajkó;2026-06-17;;;1;0;0;1
-1782;Tyukodi;2026-06-17;;;1;0;0;1
-1783;Tyukodi;2026-06-17;;;1;0;0;1
-1784;Tyukodi;2026-06-17;;;1;0;0;1
-1787;Atiza;2026-06-17;;;1;0;0;1
-1788;Atiza;2026-06-17;;;1;0;0;1
-1789;Atiza;2026-06-17;;;1;0;0;1
-1790;Atiza;2026-06-17;;;1;0;0;1
-1796;Szajkó;2026-06-17;;;1;0;0;1
-1797;Szajkó;2026-06-17;;;1;0;0;1
-1800;Ablakbeépítő;2026-06-17;;;1;0;0;1
-1801;Ablakbeépítő;2026-06-17;;;1;0;0;1
-1845;Szajkó;2026-06-17;;;1;0;0;1
+1745;RoKonzol;2026-06-17;;;;1;0;0;1
+1746;RoKonzol;2026-06-17;;;;1;0;0;1
+1747;RoKonzol;2026-06-17;;;;1;0;0;1
+1755;Félegyházi;2026-06-17;;;;1;0;0;1
+1773;Szajkó;2026-06-17;;;;1;0;0;1
+1774;Szajkó;2026-06-17;;;;1;0;0;1
+1775;Szajkó;2026-06-17;;;;1;0;0;1
+1776;Szajkó;2026-06-17;;;;1;0;0;1
+1782;Tyukodi;2026-06-17;;;;1;0;0;1
+1783;Tyukodi;2026-06-17;;;;1;0;0;1
+1784;Tyukodi;2026-06-17;;;;1;0;0;1
+1787;Atiza;2026-06-17;;;;1;0;0;1
+1788;Atiza;2026-06-17;;;;1;0;0;1
+1789;Atiza;2026-06-17;;;;1;0;0;1
+1790;Atiza;2026-06-17;;;;1;0;0;1
+1796;Szajkó;2026-06-17;;;;1;0;0;1
+1797;Szajkó;2026-06-17;;;;1;0;0;1
+1800;Ablakbeépítő;2026-06-17;;;;1;0;0;1
+1801;Ablakbeépítő;2026-06-17;;;;1;0;0;1
+1845;Szajkó;2026-06-17;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260617-113038.txt;cuttingplan_20260617-113038.txt;/HLKlWIY4G/W00aMUuuG1vd1IjDWO3k+NsrxN07YP/4=;Present
-1800;Szajkó;2026-06-22;;;1;0;0;1
-1801;Szajkó;2026-06-17;;;1;0;0;1
-1845;Szajkó;2026-06-22;;;1;0;0;1
+1800;Szajkó;2026-06-22;;;;1;0;0;1
+1801;Szajkó;2026-06-17;;;;1;0;0;1
+1845;Szajkó;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260617-113038_lab.txt;cuttingplan_20260617-113038_lab.txt;/0RpYG+kL2w/KcRM/U+s7QoJdJ2x+/yWyrqa+Iy/WQs=;Present
-1800;Szajkó;2026-06-22;;;1;0;0;1
-1801;Szajkó;2026-06-17;;;1;0;0;1
-1845;Szajkó;2026-06-22;;;1;0;0;1
+1800;Szajkó;2026-06-22;;;;1;0;0;1
+1801;Szajkó;2026-06-17;;;;1;0;0;1
+1845;Szajkó;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260617-113038_tok.txt;cuttingplan_20260617-113038_tok.txt;qAEw1aBdlExhPSmnP0xtI05WFSWG4nI+5RQKiDPjcqQ=;Present
-1800;Szajkó;2026-06-22;;;1;0;0;1
-1801;Szajkó;2026-06-17;;;1;0;0;1
-1845;Szajkó;2026-06-22;;;1;0;0;1
+1800;Szajkó;2026-06-22;;;;1;0;0;1
+1801;Szajkó;2026-06-17;;;;1;0;0;1
+1845;Szajkó;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260617-113038_zaro.txt;cuttingplan_20260617-113038_zaro.txt;XsPtj0BRG165bcojKjUJdd7ZyGAC51nVH02eJy+y1kY=;Present
-1800;Szajkó;2026-06-22;;;1;0;0;1
-1801;Szajkó;2026-06-17;;;1;0;0;1
-1845;Szajkó;2026-06-22;;;1;0;0;1
+1800;Szajkó;2026-06-22;;;;1;0;0;1
+1801;Szajkó;2026-06-17;;;;1;0;0;1
+1845;Szajkó;2026-06-22;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260618-074646.txt;cuttingplan_20260618-074646.txt;G0AI9Rbo5OzceCCpoNEUr+UGLtVKzJUGfY+rkJ2h0+o=;Present
-11;minta;2026-06-18;;;1;0;0;1
-12;minta;2026-06-18;;;1;0;0;1
-13;minta;2026-06-18;;;1;0;0;1
-14;minta;2026-06-18;;;1;0;0;1
+11;minta;2026-06-18;;;;1;0;0;1
+12;minta;2026-06-18;;;;1;0;0;1
+13;minta;2026-06-18;;;;1;0;0;1
+14;minta;2026-06-18;;;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260618-090039.txt;cuttingplan_20260618-090039.txt;o7j1PQSprRNWDSJsuE0rT1gKxqTMFPrEK4XXBlHEPvU=;Present
-1862;BenczeL.;2026-07-02;;;3;0;0;3
-1865;Vertex;2026-07-06;;;5;0;0;5
-1866;Vertex;2026-07-06;;;5;0;0;5
-1867;Vertex;2026-07-06;;;5;0;0;5
-1870;Re-Plastic;2026-06-25;;;3;0;0;3
-1871;Re-Plastic;2026-06-25;;;3;0;0;3
-1872;Re-Plastic;2026-06-25;;;3;0;0;3
-1873;Re-Plastic;2026-06-25;;;3;0;0;3
-1874;Re-Plastic;2026-06-25;;;3;0;0;3
+1862;BenczeL.;2026-07-02;;;;3;0;0;3
+1865;Vertex;2026-07-06;;;;5;0;0;5
+1866;Vertex;2026-07-06;;;;5;0;0;5
+1867;Vertex;2026-07-06;;;;5;0;0;5
+1870;Re-Plastic;2026-06-25;;;;3;0;0;3
+1871;Re-Plastic;2026-06-25;;;;3;0;0;3
+1872;Re-Plastic;2026-06-25;;;;3;0;0;3
+1873;Re-Plastic;2026-06-25;;;;3;0;0;3
+1874;Re-Plastic;2026-06-25;;;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260622-074056.txt;cuttingplan_20260622-074056.txt;ZFiq99Fitacj0b6akScV8pvxxCqnHa1L4g+hOvCo1m4=;Present
-1804;Frama/133;2026-06-25;;;5;0;0;5
-1814;Frama;2026-06-23;;;5;0;0;5
-1817;Jola Szolnok;2026-06-23;;;3;0;0;3
-1826;Braun Győr;2026-06-29;;;5;0;0;5
-1829;SzűcsK;2026-06-23;;;3;0;0;3
-1832;Napex Pécs;2026-06-26;;;5;0;0;5
-1833;Napex Pécs;2026-06-26;;;5;0;0;5
-1834;Napex Pécs;2026-06-26;;;5;0;0;5
-1835;Napex Pécs;2026-06-26;;;5;0;0;5
-1848;Arady V.Győr;2026-06-29;;;3;0;0;3
+1804;Frama/133;2026-06-25;;;8014;5;0;0;5
+1814;Frama;2026-06-23;;;8014;5;0;0;5
+1817;Jola Szolnok;2026-06-23;;;1015;3;0;0;3
+1826;Braun Győr;2026-06-29;;;1019;5;0;0;5
+1829;SzűcsK;2026-06-23;;;8003;3;0;0;3
+1832;Napex Pécs;2026-06-26;;;1011;5;0;0;5
+1833;Napex Pécs;2026-06-26;;;1011;5;0;0;5
+1834;Napex Pécs;2026-06-26;;;1011;5;0;0;5
+1835;Napex Pécs;2026-06-26;;;1011;5;0;0;5
+1848;Arady V.Győr;2026-06-29;;;7035;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260622-074056_hibateszt.txt;cuttingplan_20260622-074056_hibateszt.txt;KTztH2H+zl/HaCdNhCjwRYN3msap2P/Wa+F46k8uf+A=;Present
-1804;Frama;2026-06-25;;;4;0;0;4
-1814;Frama;2026-06-23;;;5;0;0;5
-1817;Frama;2026-06-23;;;3;0;0;3
-1826;Braun Győr;2026-06-29;;;5;0;0;5
-1829;Braun Győr;2026-06-23;;;3;0;0;3
-1832;Napex Pécs;2026-06-26;;;5;0;0;5
-1833;Napex Pécs;2026-06-26;;;5;0;0;5
-1834;Napex Pécs;2026-06-26;;;5;0;0;5
-1835;Napex Pécs;2026-06-26;;;5;0;0;5
-1848;Napex Pécs;2026-06-29;;;3;0;0;3
+1804;Frama;2026-06-25;;;;4;0;0;4
+1814;Frama;2026-06-23;;;;5;0;0;5
+1817;Frama;2026-06-23;;;;3;0;0;3
+1826;Braun Győr;2026-06-29;;;;5;0;0;5
+1829;Braun Győr;2026-06-23;;;;3;0;0;3
+1832;Napex Pécs;2026-06-26;;;;5;0;0;5
+1833;Napex Pécs;2026-06-26;;;;5;0;0;5
+1834;Napex Pécs;2026-06-26;;;;5;0;0;5
+1835;Napex Pécs;2026-06-26;;;;5;0;0;5
+1848;Napex Pécs;2026-06-29;;;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260622-074056_old.txt;cuttingplan_20260622-074056_old.txt;i6ub7rn8aZcJAIvRxZGwM18LM/29RatG3pxZBoVdBOs=;Present
-1804;Frama;2026-06-25;NP;CIP;5;0;0;5
-1814;Frama;2026-06-23;NP;CIP;5;0;0;5
-1817;Frama;2026-06-23;NP;BOW;3;0;0;3
-1826;Braun Győr;2026-06-29;NP;CIP;5;0;0;5
-1829;Braun Győr;2026-06-23;NP;BOW;3;0;0;3
-1832;Napex Pécs;2026-06-26;NP;CIP;7;0;0;7
-1833;Napex Pécs;2026-06-26;NP;CIP;6;0;0;6
-1834;Napex Pécs;2026-06-26;NP;CIP;6;0;0;6
-1835;Napex Pécs;2026-06-26;NP;CIP;5;0;0;5
-1848;Napex Pécs;2026-06-29;NP;BOW;3;0;0;3
+1804;Frama;2026-06-25;NP;CIP;;5;0;0;5
+1814;Frama;2026-06-23;NP;CIP;;5;0;0;5
+1817;Frama;2026-06-23;NP;BOW;;3;0;0;3
+1826;Braun Győr;2026-06-29;NP;CIP;;5;0;0;5
+1829;Braun Győr;2026-06-23;NP;BOW;;3;0;0;3
+1832;Napex Pécs;2026-06-26;NP;CIP;;7;0;0;7
+1833;Napex Pécs;2026-06-26;NP;CIP;;6;0;0;6
+1834;Napex Pécs;2026-06-26;NP;CIP;;6;0;0;6
+1835;Napex Pécs;2026-06-26;NP;CIP;;5;0;0;5
+1848;Napex Pécs;2026-06-29;NP;BOW;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260623-084250.txt;cuttingplan_20260623-084250.txt;vTykL0gC3bRMAwGiO6QMYib4cwXxD728gg4PE53R1eI=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260624-070730.txt;cuttingplan_20260624-070730.txt;I8V5/VwAHQdO/4pcTeltkC5IBgELgmtP5uKgPoQISUI=;Present
-1807;Félegyházi, Mezőtúr;2026-06-29;;;5;0;0;5
-1810;Ro-Konzol, Győr;2026-06-29;;;5;0;0;5
-1811;Ro-Konzol, Győr;2026-06-29;;;5;0;0;5
-1838;Bodó Roló, Pécs;2026-06-26;;;4;0;0;4
-1839;Bodó Roló, Pécs;2026-06-26;;;4;0;0;4
-1851;Losonczi R., Pécs;2026-06-26;;;5;0;0;5
-1852;Losonczi R., Pécs;2026-06-26;;;5;0;0;5
-1853;Losonczi R.,Pécs;2026-06-26;;;5;0;0;5
-1854;Losonczi R.,Pécs;2026-06-26;;;5;0;0;5
-1857;ÁrnyékGuru, Győr;2026-06-29;;;5;0;0;5
-1858;ÁrnyékGuru, Győr;2026-06-29;;;5;0;0;5
-1859;ÁrnyékGuru, Győr;2026-06-29;;;5;0;0;5
-1877;JaraRolling;2026-07-03;;;5;0;0;5
-1878;JaraRolling;2026-07-03;;;5;0;0;5
-1879;JaraRolling;2026-07-03;;;5;0;0;5
-1880;JaraRolling;2026-07-03;;;5;0;0;5
+1807;Félegyházi, Mezőtúr;2026-06-29;;;;5;0;0;5
+1810;Ro-Konzol, Győr;2026-06-29;;;;5;0;0;5
+1811;Ro-Konzol, Győr;2026-06-29;;;;5;0;0;5
+1838;Bodó Roló, Pécs;2026-06-26;;;;4;0;0;4
+1839;Bodó Roló, Pécs;2026-06-26;;;;4;0;0;4
+1851;Losonczi R., Pécs;2026-06-26;;;;5;0;0;5
+1852;Losonczi R., Pécs;2026-06-26;;;;5;0;0;5
+1853;Losonczi R.,Pécs;2026-06-26;;;;5;0;0;5
+1854;Losonczi R.,Pécs;2026-06-26;;;;5;0;0;5
+1857;ÁrnyékGuru, Győr;2026-06-29;;;;5;0;0;5
+1858;ÁrnyékGuru, Győr;2026-06-29;;;;5;0;0;5
+1859;ÁrnyékGuru, Győr;2026-06-29;;;;5;0;0;5
+1877;JaraRolling;2026-07-03;;;;5;0;0;5
+1878;JaraRolling;2026-07-03;;;;5;0;0;5
+1879;JaraRolling;2026-07-03;;;;5;0;0;5
+1880;JaraRolling;2026-07-03;;;;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260624-171653.txt;cuttingplan_20260624-171653.txt;AXXMQVbFqrHaK3fyupszbI5ISYJuUH5ccB6/BhYPxsQ=;Present
-1838;Bodó Roló, Pécs;2026-06-26;;;1;0;0;1
-1839;Bodó Roló, Pécs;2026-06-26;;;1;0;0;1
-1851;Losonczi R., Pécs;2026-06-26;;;2;0;0;2
+1838;Bodó Roló, Pécs;2026-06-26;;;9010;1;0;0;1
+1839;Bodó Roló, Pécs;2026-06-26;;;9010;1;0;0;1
+1851;Losonczi R., Pécs;2026-06-26;;;7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260629-070115.txt;cuttingplan_20260629-070115.txt;Z19CwphaM1QX+AdjJSMExcF6L9jqH32QmtZslslpm8c=;Present
-1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;5;0;0;5
-1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;5;0;0;5
-1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;5;0;0;5
-1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;5;0;0;5
-1883;Főnök;2026-06-30;NP;CIP;5;0;0;5
-1884;Főnök;2026-06-30;NP;CIP;5;0;0;5
+1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;5;0;0;5
+1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;;5;0;0;5
+1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;5;0;0;5
+1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;5;0;0;5
+1883;Főnök;2026-06-30;NP;CIP;ST9007;5;0;0;5
+1884;Főnök;2026-06-30;NP;CIP;ST9007;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260630-104319.txt;cuttingplan_20260630-104319.txt;uJ2dGbSDBS3lkRaSGDAnDKbR612P8dbR2WwWaV59okg=;Present
-1883;Főnök;2026-06-30;NP;CIP;1;0;0;1
-1884;Főnök;2026-06-30;NP;CIP;1;0;0;1
+1883;Főnök;2026-06-30;NP;CIP;ST9007;1;0;0;1
+1884;Főnök;2026-06-30;NP;CIP;ST9007;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260630-123246.txt;cuttingplan_20260630-123246.txt;UaEu/gGA4mkQkRAWr9//X2vd1kifQV+8ntItCjkQBQU=;Present
-1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;2;0;0;2
-1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;2;0;0;2
-1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;2;0;0;2
-1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;2;0;0;2
+1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;2;0;0;2
+1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;2;0;0;2
+1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;2;0;0;2
+1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260701-094055.txt;cuttingplan_20260701-094055.txt;QFctuSf5BrzXpH+y+ZqCT2nDD3UbXFCXNRCX+f0fpWc=;Present
-1234;TesztElek;2026-07-06;NP;CIP;5;0;0;5
-1235;TesztElek;2026-07-06;NP;CIP;4;0;0;4
-1236;TesztElek;2026-07-06;NP;CIP;2;0;0;2
-1887;Szoat Bt., Nyh.;2026-07-08;NP;CIP;5;0;0;5
-1888;Szoat Bt., Nyh.;2026-07-08;NP;CIP;5;0;0;5
-1889;Szoat Bt., Nyh.;2026-07-08;NP;CIP;5;0;0;5
-1890;Szoat Bt., Nyh.;2026-07-08;NP;CIP;5;0;0;5
-1891;Szoat Bt., Nyh.;2026-07-08;NP;CIP;5;0;0;5
-1894;An-Ger;2026-07-07;NP;BOW;4;0;0;4
-1897;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;5;0;0;5
-1898;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;5;0;0;5
+1234;TesztElek;2026-07-06;NP;CIP;RAL 7016;5;0;0;5
+1235;TesztElek;2026-07-06;NP;CIP;RAL 7016;4;0;0;4
+1236;TesztElek;2026-07-06;NP;CIP;RAL 7016;2;0;0;2
+1887;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;5;0;0;5
+1888;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;5;0;0;5
+1889;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;5;0;0;5
+1890;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;5;0;0;5
+1891;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;5;0;0;5
+1894;An-Ger;2026-07-07;NP;BOW;RAL 9010;4;0;0;4
+1897;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;RAL 8003;5;0;0;5
+1898;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;RAL 8003;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260702-143814.txt;cuttingplan_20260702-143814.txt;85nnjM/+L28+uX0PsBnSrcGmfyrNx9ptoQX0xtrDm9s=;Present
-1935;Frama, Georgies;2026-07-09;NP;CIP;4;0;0;4
-1936;Frama, Georgies;2026-07-09;NP;CIP;4;0;0;4
+1935;Frama, Georgies;2026-07-09;NP;CIP;7016;4;0;0;4
+1936;Frama, Georgies;2026-07-09;NP;CIP;7016;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260703-093444.txt;cuttingplan_20260703-093444.txt;1w0/ViWh29q6ijmyIMsSUSOlgUsd+j6AkcwW9eF+C00=;Present
-1901;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
-1902;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
-1903;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
-1904;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
-1905;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
-1906;AluschattenKönig;2026-07-08;NP;CIP;6;0;0;6
+1901;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
+1902;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
+1903;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
+1904;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
+1905;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
+1906;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260706-072337.txt;cuttingplan_20260706-072337.txt;ROmJBN4syrtQyLEa6Ldx4wEOWDyQYqn2dAEYsKeY/As=;Present
-1807;Félegyházi, Mezőtúr;2026-06-29;NP;CIP;1;0;0;1
-1810;Ro-Konzol, Győr;2026-06-29;NP;CIP;1;0;0;1
-1811;Ro-Konzol, Győr;2026-06-29;NP;CIP;1;0;0;1
-1857;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;1;0;0;1
-1858;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;1;0;0;1
-1859;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;1;0;0;1
-1877;JaraRolling;2026-06-29;NP;CIP;1;0;0;1
-1878;JaraRolling;2026-06-29;NP;CIP;1;0;0;1
-1879;JaraRolling;2026-06-29;NP;CIP;1;0;0;1
-1880;JaraRolling;2026-06-29;NP;CIP;1;0;0;1
+1807;Félegyházi, Mezőtúr;2026-06-29;NP;CIP;;1;0;0;1
+1810;Ro-Konzol, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1811;Ro-Konzol, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1857;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1858;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1859;ÁrnyékGuru, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1877;JaraRolling;2026-06-29;NP;CIP;;1;0;0;1
+1878;JaraRolling;2026-06-29;NP;CIP;;1;0;0;1
+1879;JaraRolling;2026-06-29;NP;CIP;;1;0;0;1
+1880;JaraRolling;2026-06-29;NP;CIP;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260706-100420.txt;cuttingplan_20260706-100420.txt;VIPNQVrgG9KS8ujOKUIgpcOYJmHCnz8Us4YHzgJYr7k=;Present
-1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;1;0;0;1
-1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;1;0;0;1
-1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;1;0;0;1
-1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;1;0;0;1
-1826;Braun, Győr;2026-06-29;NP;CIP;1;0;0;1
-1851;Losonczi R., Pécs;2026-06-26;NP;CIP;1;0;0;1
-1852;Losonczi R., Pécs;2026-06-26;NP;CIP;1;0;0;1
-1853;Losonczi R., Pécs;2026-06-26;NP;CIP;1;0;0;1
-1854;Losonczi R., Pécs;2026-06-26;NP;CIP;1;0;0;1
-1897;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;1;0;0;1
-1898;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;1;0;0;1
-1935;Frama, Georgies;2026-07-09;NP;CIP;1;0;0;1
-1936;Frama, Georgies;2026-07-09;NP;CIP;1;0;0;1
+1820;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;;1;0;0;1
+1821;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;;1;0;0;1
+1822;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;;1;0;0;1
+1823;Árnyék és Rovar, Bcs.;2026-06-30;NP;CIP;;1;0;0;1
+1826;Braun, Győr;2026-06-29;NP;CIP;;1;0;0;1
+1851;Losonczi R., Pécs;2026-06-26;NP;CIP;;1;0;0;1
+1852;Losonczi R., Pécs;2026-06-26;NP;CIP;;1;0;0;1
+1853;Losonczi R., Pécs;2026-06-26;NP;CIP;;1;0;0;1
+1854;Losonczi R., Pécs;2026-06-26;NP;CIP;;1;0;0;1
+1897;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;RAL 8003;1;0;0;1
+1898;Kezs Ablak, Bcs.;2026-07-07;NP;CIP;RAL 8003;1;0;0;1
+1935;Frama, Georgies;2026-07-09;NP;CIP;RAL 7016;1;0;0;1
+1936;Frama, Georgies;2026-07-09;NP;CIP;RAL 7016;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260707-063518.txt;cuttingplan_20260707-063518.txt;xbgWIYhKL2bDYrOiVZlHGOIv4NaNTh0JJYGbqnPTJW0=;Present
-1887;Szoat Bt., Nyh.;2026-07-08;NP;CIP;3;0;0;3
-1888;Szoat Bt., Nyh.;2026-07-08;NP;CIP;1;0;0;1
+1887;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;3;0;0;3
+1888;Szoat Bt., Nyh.;2026-07-08;NP;CIP;RAL 8014;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260707-220434.txt;cuttingplan_20260707-220434.txt;HV3To7uOv8IkIj16jto3oFV0iZkkYjODtXcoPP50X7E=;Present
-1111;Majom Alfréd;2000-01-01;NP;SIN;1;0;0;1
-1234;Teszt Elek;2026-07-06;NP;CIP;6;0;0;6
-1255;Teszt Ábrahám;2026-07-08;NP;CIP;2;0;0;2
+1111;Majom Alfréd;2000-01-01;NP;SIN;;1;0;0;1
+1234;Teszt Elek;2026-07-06;NP;CIP;RAL 7016;6;0;0;6
+1255;Teszt Ábrahám;2026-07-08;NP;CIP;RAL 7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260708-063217.txt;cuttingplan_20260708-063217.txt;3CS5NePBWIkS5Zcj68leVlmareAnzzqhvhPWKMLFbJA=;Present
-1909;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1910;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1911;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1912;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1913;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1914;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1915;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1916;Generálkiv., Pécs;2026-07-10;NP;CIP;7;0;0;7
-1919;Napex, Pécs;2026-07-10;NP;CIP;7;0;0;7
-1920;Napex, Pécs;2026-07-10;NP;CIP;7;0;0;7
-1952;Napex Pécs;2026-07-10;NP;CIP;7;0;0;7
+1909;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1910;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1911;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1912;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1913;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1914;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1915;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1916;Generálkiv., Pécs;2026-07-10;NP;CIP;RAL 8003;7;0;0;7
+1919;Napex, Pécs;2026-07-10;NP;CIP;RAL 7038;7;0;0;7
+1920;Napex, Pécs;2026-07-10;NP;CIP;RAL 7038;7;0;0;7
+1952;Napex Pécs;2026-07-10;NP;CIP;RAL 7038;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260708-094515.txt;cuttingplan_20260708-094515.txt;aJyqvErANzMpqviwmX6kZ0rFRsxAqQ1iZqFViOccSvU=;Present
-1901;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
-1902;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
-1903;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
-1904;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
-1905;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
-1906;AluschattenKönig;2026-07-08;NP;CIP;1;0;0;1
+1901;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
+1902;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
+1903;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
+1904;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
+1905;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
+1906;AluschattenKönig;2026-07-08;NP;CIP;RAL 7016;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260709-084652.txt;cuttingplan_20260709-084652.txt;PbL0y60dyuHW75591Y65AIoEYSf4s+dAsX4tL2TGuGY=;Present
-1923;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
-1924;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
-1925;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
-1926;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
-1939;Maléth, Bp.;2026-07-13;NP;CIP;7;0;0;7
-1940;Maléth, Bp.;2026-07-13;NP;CIP;7;0;0;7
-1941;Maléth, Bp.;2026-07-13;NP;CIP;7;0;0;7
-1942;Maléth, Bp.;2026-07-13;NP;CIP;7;0;0;7
-1945;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
-1946;Braun, Győr;2026-07-13;NP;CIP;7;0;0;7
+1923;Braun, Győr;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1924;Braun, Győr;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1925;Braun, Győr;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1926;Braun, Győr;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1939;Maléth, Bp.;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1940;Maléth, Bp.;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1941;Maléth, Bp.;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1942;Maléth, Bp.;2026-07-13;NP;CIP;RAL 7016;7;0;0;7
+1945;Braun, Győr;2026-07-13;NP;CIP;RAL 8003;7;0;0;7
+1946;Braun, Győr;2026-07-13;NP;CIP;RAL 8003;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260710-125621.txt;cuttingplan_20260710-125621.txt;R9VYstNuQiZHQiWSUrLB3YtNTxWltMWWJZ4aOusAwPY=;Present
-1929;Otthonka, Bp.;2026-07-14;NP;BOW;3;0;0;3
-1955;An-Ger;2026-07-17;NP;BOW;3;0;0;3
-1958;Frama, Orosz R.;2026-07-16;NP;BOW;3;0;0;3
-1959;Frama, Orosz R.;2026-07-16;NP;BOW;3;0;0;3
-1960;Frama, Orosz R.;2026-07-16;NP;BOW;3;0;0;3
+1929;Otthonka, Bp.;2026-07-14;NP;BOW;RAL 7040;3;0;0;3
+1955;An-Ger;2026-07-17;NP;BOW;RAL 1015;3;0;0;3
+1958;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;3;0;0;3
+1959;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;3;0;0;3
+1960;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260714-092300.txt;cuttingplan_20260714-092300.txt;Hk5eh6QO1a0t7QjSPLulvTYzipBX4UrZ71nCOwN6yjI=;Present
-1949;Jakufa-Ép, Nyh.;2026-07-15;NP;CIP;5;0;0;5
-1963;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;5;0;0;5
-1964;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;5;0;0;5
+1949;Jakufa-Ép, Nyh.;2026-07-15;NP;CIP;RAL 7016;5;0;0;5
+1963;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;RAL 7016;5;0;0;5
+1964;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;RAL 7016;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260714-143007.txt;cuttingplan_20260714-143007.txt;d+UtPy3V2xEnXDbfwu7AXgMFBWfMQkIc00DE2kiyUaE=;Present
-30;Generálkiv., Pécs;2026-07-17;NP;CIP;5;0;0;5
+30;Generálkiv., Pécs;2026-07-17;NP;CIP;RAL 8003;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260714-154935.txt;cuttingplan_20260714-154935.txt;JemeEtjHIxSK73qVUiLwMtw6WrAoXA8ZWJpstdRVF8Q=;Present
-1949;Jakufa-Ép, Nyh.;2026-07-15;NP;CIP;2;0;0;2
+1949;Jakufa-Ép, Nyh.;2026-07-15;NP;CIP;RAL 7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260715-090501.txt;cuttingplan_20260715-090501.txt;Dz1NihDVUjuhZrK3w3o7qxqkmLxsMwgx1iWzlgoZNNQ=;Present
-1967;Frama, Sorel;2026-07-16;NP;CIP;5;0;0;5
-1968;Frama, Sorel;2026-07-16;NP;CIP;5;0;0;5
-1969;Frama, Sorel;2026-07-16;NP;CIP;5;0;0;5
+1967;Frama, Sorel;2026-07-16;NP;CIP;RAL 9010;5;0;0;5
+1968;Frama, Sorel;2026-07-16;NP;CIP;RAL 9010;5;0;0;5
+1969;Frama, Sorel;2026-07-16;NP;CIP;RAL 9010;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260715-122016.txt;cuttingplan_20260715-122016.txt;IXQoxpdd+EcRumKLz7DcoBLOFnhfT6Y1ZxshJkjxwA0=;Present
-1967;Frama, Sorel;2026-07-16;NP;CIP;2;0;0;2
-1968;Frama, Sorel;2026-07-15;NP;CIP;2;0;0;2
-1969;Frama, Sorel;2026-07-16;NP;CIP;2;0;0;2
+1967;Frama, Sorel;2026-07-16;NP;CIP;RAL 9010;2;0;0;2
+1968;Frama, Sorel;2026-07-15;NP;CIP;RAL 9010;2;0;0;2
+1969;Frama, Sorel;2026-07-16;NP;CIP;RAL 9010;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260715-134405.txt;cuttingplan_20260715-134405.txt;Ics3OECroWTDSVBRahWhxYU3zmnMPI+ZMeqJg2IgfYM=;Present
-1955;An-Ger;2026-07-17;NP;BOW;2;0;0;2
-1958;Frama, Orosz R.;2026-07-16;NP;BOW;2;0;0;2
-1959;Frama, Orosz R.;2026-07-16;NP;BOW;2;0;0;2
-1960;Frama, Orosz R.;2026-07-16;NP;BOW;2;0;0;2
-30;Generálkiv., Pécs;2026-07-17;NP;CIP;2;0;0;2
+1955;An-Ger;2026-07-17;NP;BOW;RAL 1015;2;0;0;2
+1958;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;2;0;0;2
+1959;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;2;0;0;2
+1960;Frama, Orosz R.;2026-07-16;NP;BOW;RAL 8019;2;0;0;2
+30;Generálkiv., Pécs;2026-07-17;NP;CIP;RAL 8003;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260716-085044.txt;cuttingplan_20260716-085044.txt;iuS/8Nfb23gGo5vpEfiAuUxlPhc9OVN473uqX3c7UMQ=;Present
-1979;Karlan Business;2026-07-20;NP;BOW;5;0;0;5
+1979;Karlan Business;2026-07-20;NP;BOW;RAL 9010;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260716-112700.txt;cuttingplan_20260716-112700.txt;owVBesSpdDu2nPp9Wn97HcUQVyXsOL1/iHagbGoVXII=;Present
-1903;Generálkiv., Pécs;2026-07-24;ROL;ALAP;2;0;0;2
-1904;Generálkiv., Pécs;2026-07-24;ROL;ALAP;2;0;0;2
-1916;Fábián P.;2026-07-16;ROL;ALAP;2;0;0;2
+1903;Generálkiv., Pécs;2026-07-24;ROL;ALAP;;2;0;0;2
+1904;Generálkiv., Pécs;2026-07-24;ROL;ALAP;;2;0;0;2
+1916;Fábián P.;2026-07-16;ROL;ALAP;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260716-124207.txt;cuttingplan_20260716-124207.txt;EKV9Z/R3dEE1zwDlbVL7OnqSLFgGLRqyNt6PdpYZ2lg=;Present
-1;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
-1982;Karlan Business;2026-07-20;NP;BOW;5;0;0;5
-1983;Karlan Business;2026-07-20;NP;BOW;5;0;0;5
-1984;Karlan Business;2026-07-16;NP;BOW;5;0;0;5
-2;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
+1;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
+1982;Karlan Business;2026-07-20;NP;BOW;RAL 8003;5;0;0;5
+1983;Karlan Business;2026-07-20;NP;BOW;RAL 8003;5;0;0;5
+1984;Karlan Business;2026-07-16;NP;BOW;RAL 8003;5;0;0;5
+2;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260717-080309.txt;cuttingplan_20260717-080309.txt;isqiy3mETguwCKFqf8PN5Edk7BxzrgyipW+kbRDY5V0=;Present
-3;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
-4;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
+3;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
+4;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260717-124120.txt;cuttingplan_20260717-124120.txt;V1tpU8+xLBQEZGGKUetJRoAomjFalyG8fxKNlHwcNPk=;Present
-14;Szajkó, Győr;2026-07-20;NP;SIN;6;0;0;6
-17;O.J.;2026-07-20;NP;CIP;7;0;0;7
-18;O.J.;2026-07-20;NP;CIP;7;0;0;7
-19;O.J.;2026-07-20;NP;CIP;7;0;0;7
-20;O.J.;2026-07-20;NP;CIP;7;0;0;7
-21;O.J.;2026-07-20;NP;CIP;7;0;0;7
-22;O.J.;2026-07-20;NP;CIP;7;0;0;7
+14;Szajkó, Győr;2026-07-20;NP;SIN;RAL 1015;6;0;0;6
+17;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
+18;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
+19;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
+20;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
+21;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
+22;O.J.;2026-07-20;NP;CIP;RAL 7013;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260717-174240.txt;cuttingplan_20260717-174240.txt;rCOpffsguQaoPv6VAx1QOIQ86hJLdOUkqAiotpSGlXw=;Present
-1055;Maki Majom;2026-07-17;NP;CIP;1;0;0;1
+1055;Maki Majom;2026-07-17;NP;CIP;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260720-070015.txt;cuttingplan_20260720-070015.txt;ptcIOmzx66OM7B027DUePIFGr7Yl4nm8WzMv0urwOFw=;Present
-1963;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;2;0;0;2
-1964;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;2;0;0;2
+1963;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;RAL 7016;2;0;0;2
+1964;Ablakbeépítő, Mtúr.;2026-07-20;NP;CIP;RAL 7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260720-104632.txt;cuttingplan_20260720-104632.txt;BsNBSp9nv5eSDXOG0BG5dqw5g4sH1JL97J6S7i89pus=;Present
-1923;Braun, Győr;2026-07-20;NP;CIP;1;0;0;1
-1924;Braun, Győr;2026-07-20;NP;CIP;1;0;0;1
+1923;Braun, Győr;2026-07-20;NP;CIP;RAL 7016;1;0;0;1
+1924;Braun, Győr;2026-07-20;NP;CIP;RAL 7016;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260720-122419.txt;cuttingplan_20260720-122419.txt;Evw5pUhWH3qPzSrZodTIv9hCiU0dnk0vmkWVhbeDxIQ=;Present
-1;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
-2;Molnár Ferenc, Győr;2026-07-20;NP;CIP;7;0;0;7
+1;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
+2;Molnár Ferenc, Győr;2026-07-20;NP;CIP;RAL 8003;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260720-153405.txt;cuttingplan_20260720-153405.txt;EBnoWq51b7vjmFP2nceGtqniIYgo57lpLGJ6q0ETLd0=;Present
-1987;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;8;0;0;8
-1988;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;8;0;0;8
-1989;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;8;0;0;8
-33;Nevatech, Szeged;2026-07-22;NP;CIP;8;0;0;8
-34;Nevatech, Szeged;2026-07-22;NP;CIP;8;0;0;8
+1987;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;RAL 7016;8;0;0;8
+1988;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;RAL 7016;8;0;0;8
+1989;Kezs Ablak, Bcs.;2026-07-21;NP;CIP;RAL 7016;8;0;0;8
+33;Nevatech, Szeged;2026-07-22;NP;CIP;RAL 9010;8;0;0;8
+34;Nevatech, Szeged;2026-07-22;NP;CIP;RAL 9010;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260721-114000.txt;cuttingplan_20260721-114000.txt;CL9Tl0jSzmziHj9uRKTkP9X29iDvJx8iI2rr2EBKHlM=;Present
-1992;Sutyinszki, Bcs.;2026-07-21;NP;CIP;2;0;0;2
+1992;Sutyinszki, Bcs.;2026-07-21;NP;CIP;RAL 8019;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260721-202240.txt;cuttingplan_20260721-202240.txt;dhjtAP983cLnLcSNNN+loh9cA/Iae36AlvP+HjGE940=;Present
-1972;Nevatech, Szeged;2026-07-21;NP;CIP;2;0;0;2
-1973;Nevatech, Szeged;2026-07-21;NP;CIP;2;0;0;2
-1974;Nevatech, Szeged;2026-07-21;NP;CIP;2;0;0;2
-33;Nevatech, Szeged;2026-07-21;NP;CIP;2;0;0;2
-34;Nevatech, Szeged;2026-07-21;NP;CIP;2;0;0;2
-7;Arthy L.;2026-07-22;NP;CIP;2;0;0;2
-8;Arthy L.;2026-07-22;NP;CIP;2;0;0;2
+1972;Nevatech, Szeged;2026-07-21;NP;CIP;RAL 9005;2;0;0;2
+1973;Nevatech, Szeged;2026-07-21;NP;CIP;RAL 9005;2;0;0;2
+1974;Nevatech, Szeged;2026-07-21;NP;CIP;RAL 9005;2;0;0;2
+33;Nevatech, Szeged;2026-07-21;NP;CIP;RAL 9010;2;0;0;2
+34;Nevatech, Szeged;2026-07-21;NP;CIP;RAL 9010;2;0;0;2
+7;Arthy L.;2026-07-22;NP;CIP;RAL 7016;2;0;0;2
+8;Arthy L.;2026-07-22;NP;CIP;RAL 7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260722-093519.txt;cuttingplan_20260722-093519.txt;6cHi847HvSI74Khc+Crqf3JBt+106AncCEmn1j18K2E=;Present
-25;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-26;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-27;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-37;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-38;Agora Fenster, Győr;2026-07-22;NP;CIP;8;0;0;8
-39;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-40;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-49;Jola, Kecskemét, Pécs;2026-07-24;NP;CIP;8;0;0;8
-52;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
-53;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
-54;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
+25;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+26;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+27;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+37;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+38;Agora Fenster, Győr;2026-07-22;NP;CIP;RAL 8016SRMATT;8;0;0;8
+39;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+40;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+49;Jola, Kecskemét, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+52;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
+53;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
+54;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260723-065313.txt;cuttingplan_20260723-065313.txt;2fb6vKXaai/zHxaDQtOfuIdrxDzaXa8+fOOIC9nKv6Y=;Present
-25;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-26;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-27;Árnyhouse, Pécs;2026-07-24;NP;CIP;8;0;0;8
-49;Jola, Kecskemét, Pécs;2026-07-24;NP;CIP;8;0;0;8
+25;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+26;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+27;Árnyhouse, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
+49;Jola, Kecskemét, Pécs;2026-07-24;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260723-112007.txt;cuttingplan_20260723-112007.txt;OrX0zoaG8ESwjJpH5dt+SjkZHOHiwStt/4dFUDObdAo=;Present
-37;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-38;Agora Fenster, Győr;2026-07-22;NP;CIP;8;0;0;8
-39;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-40;Agora Fenster, Győr;2026-07-27;NP;CIP;8;0;0;8
-52;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
-53;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
-54;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
+37;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+38;Agora Fenster, Győr;2026-07-22;NP;CIP;RAL 8016SRMATT;8;0;0;8
+39;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+40;Agora Fenster, Győr;2026-07-27;NP;CIP;RAL 8016SRMATT;8;0;0;8
+52;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
+53;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
+54;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260725-081556.txt;cuttingplan_20260725-081556.txt;7zbKy9aCdWCcyo0tWn2pdwzplmxeDt0DoLhHa+suJKY=;Present
-57;Generálkiv., Pécs;2026-07-31;NP;CIP;8;0;0;8
-58;Generálkiv., Pécs;2026-07-31;NP;CIP;8;0;0;8
-68;Nistor Egon;2026-08-03;NP;SIN;6;0;0;6
-74;Otthonka, Bp.;2026-08-04;NP;CIP;8;0;0;8
-75;Otthonka, Bp.;2026-08-04;NP;CIP;8;0;0;8
-76;Otthonka, Bp.;2026-07-25;NP;CIP;8;0;0;8
+57;Generálkiv., Pécs;2026-07-31;NP;CIP;RAL 7016;8;0;0;8
+58;Generálkiv., Pécs;2026-07-31;NP;CIP;RAL 7016;8;0;0;8
+68;Nistor Egon;2026-08-03;NP;SIN;RAL 7016;6;0;0;6
+74;Otthonka, Bp.;2026-08-04;NP;CIP;RAL 7016;8;0;0;8
+75;Otthonka, Bp.;2026-08-04;NP;CIP;RAL 7016;8;0;0;8
+76;Otthonka, Bp.;2026-07-25;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260727-093037.txt;cuttingplan_20260727-093037.txt;TZRWxJ8jm40jWX6BTmPOdAfup5kZfu+jSMA9L1pgcAA=;Present
-54;Vertex, Miskolc;2026-07-27;NP;CIP;8;0;0;8
+54;Vertex, Miskolc;2026-07-27;NP;CIP;RAL 8016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260728-085942.txt;cuttingplan_20260728-085942.txt;8eHw0WAtGaDt4ST1SgDocOhO22/QeztZzGcZRCOui+k=;Present
-61;Szajkó, Győr;2026-08-03;NP;CIP;8;0;0;8
-62;Szajkó, Győr;2026-08-03;NP;CIP;8;0;0;8
-65;O.J.;2026-08-03;NP;CIP;8;0;0;8
-79;Szűcs K.;2026-08-05;NP;CIP;8;0;0;8
-80;Szűcs K.;2026-08-05;NP;CIP;8;0;0;8
+61;Szajkó, Győr;2026-08-03;NP;CIP;RAL 7005;8;0;0;8
+62;Szajkó, Győr;2026-08-03;NP;CIP;RAL 7005;8;0;0;8
+65;O.J.;2026-08-03;NP;CIP;RAL 7013;8;0;0;8
+79;Szűcs K.;2026-08-05;NP;CIP;RAL 8011;8;0;0;8
+80;Szűcs K.;2026-08-05;NP;CIP;RAL 8011;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260729-103637.txt;cuttingplan_20260729-103637.txt;1h4YW9BeNOZJhVm7ou/iDErHnuhVWs4R2BUlbzEKE3c=;Present
-117;Braun, Győr;2026-08-17;NP;CIP;8;0;0;8
-120;Redőny Shop, Bp.;2026-07-30;NP;SIN;6;0;0;6
-68;Nistor Egon;2026-08-03;NP;SIN;2;0;0;2
+117;Braun, Győr;2026-08-17;NP;CIP;RAL 9010;8;0;0;8
+120;Redőny Shop, Bp.;2026-07-30;NP;SIN;RAL 9010;6;0;0;6
+68;Nistor Egon;2026-08-03;NP;SIN;RAL 7016;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260730-074450.txt;cuttingplan_20260730-074450.txt;AjNlxRQeOkqAGhB2Pnr8OWl82udAAbxawbV42Hle4i4=;Present
-102;Fény-Őr, Bp.;2026-08-13;NP;CIP;8;0;0;8
-111;Braun, Győr;2026-08-17;NP;CIP;8;0;0;8
-114;Arthy L.;2026-08-11;NP;CIP;8;0;0;8
+102;Fény-Őr, Bp.;2026-08-13;NP;CIP;RAL 7038;8;0;0;8
+111;Braun, Győr;2026-08-17;NP;CIP;RAL 7046;8;0;0;8
+114;Arthy L.;2026-08-11;NP;CIP;RAL 8014;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260802-212001.txt;cuttingplan_20260802-212001.txt;+RLviVIGpxAgRhuzjINM9xWN0AMsHRl+muupnRPXW+I=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260802-212019_vertex.txt;cuttingplan_20260802-212019_vertex.txt;oKh59RSlAGeKTOK2yDgoRwsICX9zXT5H646K5lwDMpI=;Present
-86;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-87;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-88;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-89;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-90;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-91;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-92;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-93;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-96;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-97;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-98;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
-99;Vertex, Miskolc;2026-08-11;NP;CIP;8;0;0;8
+86;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+87;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+88;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+89;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+90;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+91;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+92;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+93;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+96;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+97;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+98;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
+99;Vertex, Miskolc;2026-08-11;NP;CIP;RAL 7035;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260803-091403.txt;cuttingplan_20260803-091403.txt;QWb4FiMRe3hVXPzrei5yCqwsJBmnILeMwNCPoq1b104=;Present
-123;Jola, Kecskemét;2026-08-14;NP;SIN;6;0;0;6
-124;Jola, Kecskemét;2026-08-14;NP;SIN;6;0;0;6
-136;RedőnyTech;2026-08-14;NP;SIN;6;0;0;6
-142;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
-143;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
-144;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
-145;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
+123;Jola, Kecskemét;2026-08-14;NP;SIN;RAL 7035;6;0;0;6
+124;Jola, Kecskemét;2026-08-14;NP;SIN;RAL 7035;6;0;0;6
+136;RedőnyTech;2026-08-14;NP;SIN;RAL 9001;6;0;0;6
+142;Rega Rolltech;2026-08-14;NP;CIP;RAL 1015;8;0;0;8
+143;Rega Rolltech;2026-08-14;NP;CIP;RAL 1015;8;0;0;8
+144;Rega Rolltech;2026-08-14;NP;CIP;RAL 1015;8;0;0;8
+145;Rega Rolltech;2026-08-14;NP;CIP;RAL 1015;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260805-082349_braun.txt;cuttingplan_20260805-082349_braun.txt;s5tT+LE2BRlAZhHFeZ7MnPF6eTHVvb6aE0eGHr+BmiE=;Present
-130;Braun, Győr;2026-08-17;NP;CIP;8;0;0;8
+130;Braun, Győr;2026-08-17;NP;CIP;RAL 9010;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260805-083753.txt;cuttingplan_20260805-083753.txt;+RLviVIGpxAgRhuzjINM9xWN0AMsHRl+muupnRPXW+I=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260805-083814.txt;cuttingplan_20260805-083814.txt;n1z2pOlCs7ntRyG6azeATm3PgNjWIa+tzh69M/9G4wI=;Present
-127;Generálkiv., Pécs;2026-08-14;NP;CIP;8;0;0;8
-133;Rolló-Halas, Pécs;2026-08-14;NP;SIN;6;0;0;6
-139;Generálkiv., Pécs;2026-08-14;NP;CIP;8;0;0;8
-148;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
-151;Braun, Győr;2026-08-17;NP;CIP;8;0;0;8
-157;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;8;0;0;8
-158;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;8;0;0;8
-159;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;8;0;0;8
+127;Generálkiv., Pécs;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
+133;Rolló-Halas, Pécs;2026-08-14;NP;SIN;RAL 7016;6;0;0;6
+139;Generálkiv., Pécs;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
+148;Rega Rolltech;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
+151;Braun, Győr;2026-08-17;NP;CIP;RAL 7016;8;0;0;8
+157;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;RAL 7016;8;0;0;8
+158;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;RAL 7016;8;0;0;8
+159;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260806-081118.txt;cuttingplan_20260806-081118.txt;0W9eh1znZZGw/LYy3UIyum0wVPkU1XOy/qZ23iNyxPM=;Present
-171;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-172;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-173;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-174;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-175;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-176;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-177;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
-178;Szajkó, Győr;2026-08-10;NP;CIP;8;0;0;8
+171;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+172;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+173;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+174;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+175;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+176;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+177;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
+178;Szajkó, Győr;2026-08-10;NP;CIP;RAL 9010;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260810-084310.txt;cuttingplan_20260810-084310.txt;V4amgFo8uno+oJqHTsDLIe5RVXH+QO7VHdWWnYesE5k=;Present
-154;Fenyőfa Bt.;2026-08-18;NP;SIN;6;0;0;6
-162;Szajkó, Győr;2026-08-24;NP;CIP;8;0;0;8
-165;Ro-Konzol, Győr;2026-08-24;NP;CIP;8;0;0;8
-181;Napex, Pécs;2026-08-28;NP;CIP;8;0;0;8
-182;Napex, Pécs;2026-08-28;NP;CIP;8;0;0;8
-183;Napex, Pécs;2026-08-28;NP;CIP;8;0;0;8
-186;RedőnyCentrum, Győr;2026-08-24;NP;CIP;8;0;0;8
+154;Fenyőfa Bt.;2026-08-18;NP;SIN;RAL 8019;6;0;0;6
+162;Szajkó, Győr;2026-08-24;NP;CIP;RAL 7037 FSTR;8;0;0;8
+165;Ro-Konzol, Győr;2026-08-24;NP;CIP;RAL 1015;8;0;0;8
+181;Napex, Pécs;2026-08-28;NP;CIP;RAL 8019;8;0;0;8
+182;Napex, Pécs;2026-08-28;NP;CIP;RAL 8019;8;0;0;8
+183;Napex, Pécs;2026-08-28;NP;CIP;RAL 8019;8;0;0;8
+186;RedőnyCentrum, Győr;2026-08-24;NP;CIP;RAL 9006;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260810-115419.txt;cuttingplan_20260810-115419.txt;wuzMjoKvKoOC8IkJC6afUF7SBwzogwP6IZceP6uh4V4=;Present
-127;Generálkiv., Pécs;2026-08-14;NP;CIP;8;0;0;8
-133;Rolló-Halas, Pécs;2026-08-14;NP;SIN;6;0;0;6
-139;Generálkiv., Pécs;2026-08-14;NP;CIP;8;0;0;8
-148;Rega Rolltech;2026-08-14;NP;CIP;8;0;0;8
+127;Generálkiv., Pécs;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
+133;Rolló-Halas, Pécs;2026-08-14;NP;SIN;RAL 7016;6;0;0;6
+139;Generálkiv., Pécs;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
+148;Rega Rolltech;2026-08-14;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260811-103036.txt;cuttingplan_20260811-103036.txt;u4+0eT2QLtN6LbXIMq0HlXqgBHT7YhN5kk9BWqxpWK0=;Present
-158;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;4;0;0;4
-159;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;4;0;0;4
+158;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;RAL 7016;4;0;0;4
+159;ÁrnyékGuru, Győr;2026-08-24;NP;CIP;RAL 7016;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260814-094854.txt;cuttingplan_20260814-094854.txt;qrq2E11femxaMtmir4YFCbKVwCoxEdGf6IdE0PWtZw4=;Present
-192;T-Delux;2026-08-25;NP;BOW;5;0;0;5
-204;Szűcs K.;2026-08-26;NP;BOW;5;0;0;5
-205;Szűcs K.;2026-08-26;NP;BOW;5;0;0;5
-206;Szűcs K.;2026-08-26;NP;BOW;5;0;0;5
-209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;8;0;0;8
+192;T-Delux;2026-08-25;NP;BOW;RAL 1015;5;0;0;5
+204;Szűcs K.;2026-08-26;NP;BOW;RAL 8011;5;0;0;5
+205;Szűcs K.;2026-08-26;NP;BOW;RAL 8011;5;0;0;5
+206;Szűcs K.;2026-08-26;NP;BOW;RAL 8011;5;0;0;5
+209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;RAL 8017;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260814-103328.txt;cuttingplan_20260814-103328.txt;iF7mANRXTxxVW8mYK/uFnjEbFpdVLD37MnKCgmPqFRo=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260815-103915.txt;cuttingplan_20260815-103915.txt;Z2HNNdWc9x3J9p1cJzbmNNn1+ErByEYSDEn4WLtABSA=;Present
-209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;2;0;0;2
-223;Jola, Pécs;2026-08-28;NP;CIP;2;0;0;2
-230;Szajkó, Győr;2026-08-31;NP;CIP;2;0;0;2
-231;Szajkó, Győr;2026-08-31;NP;CIP;2;0;0;2
-232;Szajkó, Győr;2026-08-31;NP;CIP;2;0;0;2
+209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;RAL 8017;2;0;0;2
+223;Jola, Pécs;2026-08-28;NP;CIP;RAL 8022;2;0;0;2
+230;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;2;0;0;2
+231;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;2;0;0;2
+232;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260816-195725.txt;cuttingplan_20260816-195725.txt;WggBce0nHi1Ub78p/4LEQ/Vtf5+qglINnvryI+9LL1c=;Present
-1111;Teszt Elek;2026-08-22;NP;BOW;3;0;0;3
-1112;Teszt  Béla;2026-08-22;NP;BOW;3;0;0;3
-1123;Teszt  Aladár;2026-08-28;NP;BOW;3;0;0;3
-1234;Teszt  Elek;2026-08-22;NP;BOW;3;0;0;3
-1235;Teszt  Elek;2026-08-21;NP;BOW;5;0;0;5
+1111;Teszt Elek;2026-08-22;NP;BOW;RAL 7016;3;0;0;3
+1112;Teszt  Béla;2026-08-22;NP;BOW;RAL 7016;3;0;0;3
+1123;Teszt  Aladár;2026-08-28;NP;BOW;RAL 7016;3;0;0;3
+1234;Teszt  Elek;2026-08-22;NP;BOW;;3;0;0;3
+1235;Teszt  Elek;2026-08-21;NP;BOW;RAL 7016;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260817-123216.txt;cuttingplan_20260817-123216.txt;N4qpd4s4pgGijroS1vsjPmFdH9xz8hCXmevVzugiJTk=;Present
-168;Bugán Gábor;2026-08-19;NP;CIP;8;0;0;8
+168;Bugán Gábor;2026-08-19;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260818-075433.txt;cuttingplan_20260818-075433.txt;LEVE/gzpQthF2yc9sn08sXmeAG2oc2kNJJg2QgKM0XI=;Present
-209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;8;0;0;8
-223;Jola, Pécs;2026-08-28;NP;CIP;6;0;0;6
-230;Szajkó, Győr;2026-08-31;NP;CIP;6;0;0;6
-231;Szajkó, Győr;2026-08-31;NP;CIP;6;0;0;6
-232;Szajkó, Győr;2026-08-31;NP;CIP;6;0;0;6
+209;Porta Finestra, Miskolc;2026-08-31;NP;CIP;RAL 8017;8;0;0;8
+223;Jola, Pécs;2026-08-28;NP;CIP;RAL 8022;6;0;0;6
+230;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;6;0;0;6
+231;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;6;0;0;6
+232;Szajkó, Győr;2026-08-31;NP;CIP;RAL 8003;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260819-072509.txt;cuttingplan_20260819-072509.txt;2o8ZkkBdAsrv71GsSWb/oblCvkzmZT2aozm3UfyqfmI=;Present
-189;ÁrnyékGuru, Eger;2026-08-26;NP;CIP;8;0;0;8
-195;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;8;0;0;8
-200;Frama, Sidral;2026-08-27;NP;CIP;8;0;0;8
-201;Frama, Sidral;2026-08-27;NP;CIP;8;0;0;8
-212;HamarInvest;2026-08-24;NP;BOW;5;0;0;5
-213;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;8;0;0;8
-214;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;8;0;0;8
-215;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-216;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-217;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-218;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-219;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-220;Hársfalvi, Nyh;2026-08-26;NP;CIP;8;0;0;8
-226;CsicsuBau, Bp;2026-08-25;NP;CIP;8;0;0;8
-227;CsicsuBau, Bp;2026-08-25;NP;CIP;8;0;0;8
+189;ÁrnyékGuru, Eger;2026-08-26;NP;CIP;RAL 9010;8;0;0;8
+195;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;RAL 7016;8;0;0;8
+200;Frama, Sidral;2026-08-27;NP;CIP;RAL 7016;8;0;0;8
+201;Frama, Sidral;2026-08-27;NP;CIP;RAL 7016;8;0;0;8
+212;HamarInvest;2026-08-24;NP;BOW;RAL 7016;5;0;0;5
+213;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;RAL 7016;8;0;0;8
+214;Kezs Ablak, Bcs.;2026-09-01;NP;CIP;RAL 7016;8;0;0;8
+215;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+216;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+217;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+218;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+219;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+220;Hársfalvi, Nyh;2026-08-26;NP;CIP;RAL 7016;8;0;0;8
+226;CsicsuBau, Bp;2026-08-25;NP;CIP;RAL 7016;8;0;0;8
+227;CsicsuBau, Bp;2026-08-25;NP;CIP;RAL 7016;8;0;0;8
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260819-093520.txt;cuttingplan_20260819-093520.txt;MNfoy25Jxbq38MUscthxQL7i+NQYEdHm4FHdOPf2fz8=;Present
-489;SzabóG;2026-08-19;SR;TN;1;0;0;1
-490;SzabóG;2026-08-19;SR;TN;1;0;0;1
-491;SzabóG;2026-08-19;SR;TN;1;0;0;1
-492;SzabóG;2026-08-19;SR;TN;1;0;0;1
-493;SzabóG;2026-08-19;SR;TN;1;0;0;1
-494;SzabóG;2026-08-19;SR;TN;1;0;0;1
-495;SzabóG;2026-08-19;SR;TN;1;0;0;1
+489;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+490;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+491;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+492;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+493;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+494;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
+495;SzabóG;2026-08-19;SR;TN;RAL 9016;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260826-080529.txt;cuttingplan_20260826-080529.txt;Wb/DBRgDsnchWvtuLsK/uB4iZyELfrQhqsbjDwXR9uA=;Present
-235;Berecz László;2026-08-31;NP;SIN;6;0;0;6
-236;Berecz László;2026-08-31;NP;SIN;6;0;0;6
-237;Berecz László;2026-08-31;NP;SIN;6;0;0;6
-238;Berecz László;2026-08-31;NP;SIN;6;0;0;6
-241;Ro-Konzol/Eke J., Győr;2026-09-07;NP;CIP;6;0;0;6
-244;SzabóAblak;2026-09-07;NP;CIP;6;0;0;6
-245;SzabóAblak;2026-09-07;NP;CIP;6;0;0;6
+235;Berecz László;2026-08-31;NP;SIN;RAL 9010;6;0;0;6
+236;Berecz László;2026-08-31;NP;SIN;RAL 9010;6;0;0;6
+237;Berecz László;2026-08-31;NP;SIN;RAL 9010;6;0;0;6
+238;Berecz László;2026-08-31;NP;SIN;RAL 9010;6;0;0;6
+241;Ro-Konzol/Eke J., Győr;2026-09-07;NP;CIP;RAL 9010;6;0;0;6
+244;SzabóAblak;2026-09-07;NP;CIP;RAL 9010;6;0;0;6
+245;SzabóAblak;2026-09-07;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260831-143028.txt;cuttingplan_20260831-143028.txt;/UfhuJptZFeIdC1IfssydCAKOA10eAmWa2muGj7dVwA=;Present
-1111;Sutyinszki Zsolt;2026-09-02;NP;CIP;1;0;0;1
-248;Braun-Árny, Győr;2026-09-07;NP;CIP;1;0;0;1
-251;MolKomfort, Eger;2026-09-09;NP;SIN;6;0;0;6
-254;Oláh János;2026-09-09;NP;CIP;6;0;0;6
-255;Oláh János;2026-09-09;NP;CIP;6;0;0;6
-256;Oláh János;2026-09-09;NP;CIP;6;0;0;6
+1111;Sutyinszki Zsolt;2026-09-02;NP;CIP;RAL 9010;1;0;0;1
+248;Braun-Árny, Győr;2026-09-07;NP;CIP;RAL 7016;1;0;0;1
+251;MolKomfort, Eger;2026-09-09;NP;SIN;RAL 7016;6;0;0;6
+254;Oláh János;2026-09-09;NP;CIP;RAL 7016;6;0;0;6
+255;Oláh János;2026-09-09;NP;CIP;RAL 7016;6;0;0;6
+256;Oláh János;2026-09-09;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260831-171932.txt;cuttingplan_20260831-171932.txt;INxpPOGJakrSJhiL7U2lqRrlLaVZdbqvo2WaMu9AsCY=;Present
-269;Redőny Shop, Bp.;2026-09-08;NP;CIP;6;0;0;6
+269;Redőny Shop, Bp.;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260903-134153.txt;cuttingplan_20260903-134153.txt;p0aAf1sTPoBROImcW/YLuP39oqMOj6Uz19W/mtH4STM=;Present
-263;T-Delux;2026-09-11;NP;BOW;5;0;0;5
-266;Fény-Őr, Bp.;2026-09-10;NP;CIP;6;0;0;6
-270;Redőny Shop, Bp.;2026-09-08;NP;CIP;6;0;0;6
-271;Redőny Shop, Bp.;2026-09-08;NP;CIP;6;0;0;6
+263;T-Delux;2026-09-11;NP;BOW;RAL 9010;5;0;0;5
+266;Fény-Őr, Bp.;2026-09-10;NP;CIP;RAL 9010;6;0;0;6
+270;Redőny Shop, Bp.;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+271;Redőny Shop, Bp.;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260904-112241.txt;cuttingplan_20260904-112241.txt;8ko+yD/H8BQF/+0McAdAvoqrB9JNPVkAKf1gvbjnY24=;Present
-2278;Kovács M.;2026-09-10;ROL;ALAP;2;0;0;2
-2281;Unimont, Szeged;2026-09-09;ROL;RUG;2;0;0;2
-2292;Berecz László;2026-09-17;ROL;ALAP;2;0;0;2
+2278;Kovács M.;2026-09-10;ROL;ALAP;;2;0;0;2
+2281;Unimont, Szeged;2026-09-09;ROL;RUG;;2;0;0;2
+2292;Berecz László;2026-09-17;ROL;ALAP;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260904-130124.txt;cuttingplan_20260904-130124.txt;Gz4N08FF34kzPuKtoseoJkYrWhhhMctMX8sylt9OGuo=;Present
-2295;Rellux Ajka, győr;2026-09-14;ROL;TSIN;4;0;0;4
-2296;Rellux Ajka, Győr;2026-09-14;ROL;TSIN;4;0;0;4
-623;SzabóÁrnyékolástechnika;2026-09-11;SR;MINIT;5;0;0;5
-626;T-Deluxe, Tóth Ferenc;2026-09-11;SR;MINIT;5;0;0;5
-627;T-Deluxe, Tóth Ferenc;2026-09-11;SR;MINIT;5;0;0;5
-643;Délroll, Szeged;2026-09-16;ROL;TSIN;4;0;0;4
+2295;Rellux Ajka, győr;2026-09-14;ROL;TSIN;;4;0;0;4
+2296;Rellux Ajka, Győr;2026-09-14;ROL;TSIN;;4;0;0;4
+623;SzabóÁrnyékolástechnika;2026-09-11;SR;MINIT;;5;0;0;5
+626;T-Deluxe, Tóth Ferenc;2026-09-11;SR;MINIT;;5;0;0;5
+627;T-Deluxe, Tóth Ferenc;2026-09-11;SR;MINIT;;5;0;0;5
+643;Délroll, Szeged;2026-09-16;ROL;TSIN;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260907-133141.txt;cuttingplan_20260907-133141.txt;23ezrnzWhCEwZqXQBOYffjx2j+m2Gc/9c3+MOUegpZM=;Present
-630;Vestibulum, Bcs;2026-09-15;SR;T;3;0;0;3
-631;Vestibulum, Bcs;2026-09-15;SR;T;3;0;0;3
-632;Vestibulum, Bcs;2026-09-15;SR;T;3;0;0;3
-635;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
-636;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
-637;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
-638;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
-639;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
-640;Rellux Ajka, Győr;2026-09-14;SR;T;3;0;0;3
+630;Vestibulum, Bcs;2026-09-15;SR;T;;3;0;0;3
+631;Vestibulum, Bcs;2026-09-15;SR;T;;3;0;0;3
+632;Vestibulum, Bcs;2026-09-15;SR;T;;3;0;0;3
+635;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
+636;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
+637;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
+638;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
+639;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
+640;Rellux Ajka, Győr;2026-09-14;SR;T;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260908-113450.txt;cuttingplan_20260908-113450.txt;L+akUgBxvOLLgQUY6jhz8KL7Z+LcEYXrxaMuwBmgT7c=;Present
-2299;Bányai L.;2026-09-17;ROL;TET;2;0;0;2
-2300;Bányai L.;2026-09-17;ROL;TET;2;0;0;2
-2303;Homovics Sándor;2026-09-16;ROL;ALAP;2;0;0;2
-2304;Homovics Sándor;2026-09-16;ROL;ALAP;2;0;0;2
-2305;Homovics Sándor;2026-09-16;ROL;ALAP;2;0;0;2
-2306;Homovics Sándor;2026-09-16;ROL;ALAP;2;0;0;2
-2307;Homovics Sándor;2026-09-16;ROL;ALAP;2;0;0;2
-2310;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;4;0;0;4
-2311;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;4;0;0;4
-2312;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;4;0;0;4
-2313;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;4;0;0;4
+2299;Bányai L.;2026-09-17;ROL;TET;;2;0;0;2
+2300;Bányai L.;2026-09-17;ROL;TET;;2;0;0;2
+2303;Homovics Sándor;2026-09-16;ROL;ALAP;;2;0;0;2
+2304;Homovics Sándor;2026-09-16;ROL;ALAP;;2;0;0;2
+2305;Homovics Sándor;2026-09-16;ROL;ALAP;;2;0;0;2
+2306;Homovics Sándor;2026-09-16;ROL;ALAP;;2;0;0;2
+2307;Homovics Sándor;2026-09-16;ROL;ALAP;;2;0;0;2
+2310;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;;4;0;0;4
+2311;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;;4;0;0;4
+2312;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;;4;0;0;4
+2313;Szabó Viktor, Bcs;2026-09-15;ROL;TSIN;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260908-132810.txt;cuttingplan_20260908-132810.txt;csMzYSajRpYA5iF+HwDmELymrq+20vkZp9NXE0BvByc=;Present
-289;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-290;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-291;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-292;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-293;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-294;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-297;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
-298;Antal Ildike;2026-09-08;NP;CIP;6;0;0;6
+289;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+290;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+291;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+292;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+293;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+294;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+297;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
+298;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260908-132810_Lab.txt;cuttingplan_20260908-132810_Lab.txt;EpbQkIbGuMFmQ7gWGXHInfxpvdkqheatZx5C7D0QfA4=;Present
-289;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-290;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-291;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-292;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-293;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-294;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-297;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
-298;Antal Ildike;2026-09-08;NP;CIP;1;0;0;1
+289;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+290;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+291;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+292;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+293;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+294;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+297;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
+298;Antal Ildike;2026-09-08;NP;CIP;RAL 9010;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260910-073810.txt;cuttingplan_20260910-073810.txt;+Hiwp2rAqy/h+w+E/zZzg/8rXzoQDrG1vBNEUyfTET8=;Present
-274;Porta Finestra, Miskolc;2026-09-14;NP;CIP;6;0;0;6
-277;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
-278;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
-279;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
-280;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
-283;Generálkiv., Pécs;2026-09-18;NP;BOW;5;0;0;5
+274;Porta Finestra, Miskolc;2026-09-14;NP;CIP;RAL 7038;6;0;0;6
+277;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;6;0;0;6
+278;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;6;0;0;6
+279;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;6;0;0;6
+280;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;6;0;0;6
+283;Generálkiv., Pécs;2026-09-18;NP;BOW;RAL 9006;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260910-073810_Lab.txt;cuttingplan_20260910-073810_Lab.txt;Xf74DlrIDx/7erPYCoKvqYP5yN0D9O05O122oyeMAes=;Present
-274;Porta Finestra, Miskolc;2026-09-14;NP;CIP;1;0;0;1
-277;Hal-Kov;2026-09-15;NP;CIP;1;0;0;1
-278;Hal-Kov;2026-09-15;NP;CIP;1;0;0;1
-279;Hal-Kov;2026-09-15;NP;CIP;1;0;0;1
-280;Hal-Kov;2026-09-15;NP;CIP;1;0;0;1
+274;Porta Finestra, Miskolc;2026-09-14;NP;CIP;RAL 7038;1;0;0;1
+277;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;1;0;0;1
+278;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;1;0;0;1
+279;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;1;0;0;1
+280;Hal-Kov;2026-09-15;NP;CIP;RAL 8002;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260911-070208.txt;cuttingplan_20260911-070208.txt;6hIfRPrOqwJBlwFGLZsssXhNumFwcGF0iB6CY7RYvC8=;Present
-259;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
-260;Hal-Kov;2026-09-15;NP;CIP;6;0;0;6
+259;Hal-Kov;2026-09-15;NP;CIP;RAL 7016;6;0;0;6
+260;Hal-Kov;2026-09-15;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260914-080329.txt;cuttingplan_20260914-080329.txt;9jXTbldomWI+0Fm9ySV33YuEofYxCYRoz7NhmCLK/ck=;Present
-2320;C-Edge, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2321;C-Edge, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2322;C-Edge, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2323;C-Edge, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2326;Rolo-Projekt, Eger;2026-09-16;ROL;UJGY;2;0;0;2
-2329;L.Zs., Nyh;2026-09-16;ROL;UJGY;2;0;0;2
-2332;Sándor Árnyék;2026-09-17;ROL;ALAP;2;0;0;2
-2333;Sándor Árnyék;2026-09-17;ROL;ALAP;2;0;0;2
-2334;Sándor Árnyék;2026-09-17;ROL;ALAP;2;0;0;2
-2335;Sándor Árnyék;2026-09-17;ROL;ALAP;2;0;0;2
-2338;Hársfalvi, Nyh;2026-09-16;ROL;ALAP;2;0;0;2
-2339;Hársfalvi, Nyh;2026-09-16;ROL;ALAP;2;0;0;2
-2342;Árnyhouse/Seres, Pécs;2026-09-18;ROL;TET_NAGY;2;0;0;2
-2345;Horváth József, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2346;Horváth József, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2347;Horváth József, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2348;Horváth József, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2349;Horváth József, Győr;2026-09-21;ROL;UJGY;2;0;0;2
-2352;Horváth József, Győr;2026-09-21;ROL;UJGY;1;0;0;1
-661;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-662;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-663;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-664;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-665;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-666;Katona Árpád;2026-09-21;SR;TN;4;0;0;4
-669;Balmaz Aktual;2026-09-15;SR;MINIT;4;0;0;4
+2320;C-Edge, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2321;C-Edge, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2322;C-Edge, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2323;C-Edge, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2326;Rolo-Projekt, Eger;2026-09-16;ROL;UJGY;;2;0;0;2
+2329;L.Zs., Nyh;2026-09-16;ROL;UJGY;;2;0;0;2
+2332;Sándor Árnyék;2026-09-17;ROL;ALAP;;2;0;0;2
+2333;Sándor Árnyék;2026-09-17;ROL;ALAP;;2;0;0;2
+2334;Sándor Árnyék;2026-09-17;ROL;ALAP;;2;0;0;2
+2335;Sándor Árnyék;2026-09-17;ROL;ALAP;;2;0;0;2
+2338;Hársfalvi, Nyh;2026-09-16;ROL;ALAP;;2;0;0;2
+2339;Hársfalvi, Nyh;2026-09-16;ROL;ALAP;;2;0;0;2
+2342;Árnyhouse/Seres, Pécs;2026-09-18;ROL;TET_NAGY;;2;0;0;2
+2345;Horváth József, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2346;Horváth József, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2347;Horváth József, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2348;Horváth József, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2349;Horváth József, Győr;2026-09-21;ROL;UJGY;;2;0;0;2
+2352;Horváth József, Győr;2026-09-21;ROL;UJGY;;1;0;0;1
+661;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+662;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+663;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+664;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+665;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+666;Katona Árpád;2026-09-21;SR;TN;;4;0;0;4
+669;Balmaz Aktual;2026-09-15;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260914-080329_SRZ.txt;cuttingplan_20260914-080329_SRZ.txt;ACaV1q1yiJ57jgl+3iS5dXY02KG+qHCDAiyq7giEheQ=;Present
-661;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
-662;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
-663;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
-664;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
-665;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
-666;Katona Árpád;2026-09-21;SR;TN;2;0;0;2
+661;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
+662;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
+663;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
+664;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
+665;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
+666;Katona Árpád;2026-09-21;SR;TN;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260914-154916.txt;cuttingplan_20260914-154916.txt;QVFO8Q1KHqj/DNjcYjS/sQ3x/JtxcD7tiRelWw1sTSc=;Present
-301;Neva-Tech, Szeged;2026-09-16;NP;CIP;6;0;0;6
-302;Neva-Tech, Szeged;2026-09-16;NP;CIP;6;0;0;6
-303;Neva-Tech, Szeged;2026-09-16;NP;CIP;6;0;0;6
-304;Neva-Tech, Szeged;2026-09-16;NP;CIP;6;0;0;6
-305;Neva-Tech, Szeged;2026-09-16;NP;CIP;6;0;0;6
+301;Neva-Tech, Szeged;2026-09-16;NP;CIP;RAL 9010;6;0;0;6
+302;Neva-Tech, Szeged;2026-09-16;NP;CIP;RAL 9010;6;0;0;6
+303;Neva-Tech, Szeged;2026-09-16;NP;CIP;RAL 9010;6;0;0;6
+304;Neva-Tech, Szeged;2026-09-16;NP;CIP;RAL 9010;6;0;0;6
+305;Neva-Tech, Szeged;2026-09-16;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260916-124506.txt;cuttingplan_20260916-124506.txt;MHsUpn/YI68TtkyfBcbi3Pj20SySl9H0BoFMOvYFmnE=;Present
-336;Csinos;2026-09-17;NP;CIP;6;0;0;6
+336;Csinos;2026-09-17;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260916-152031.txt;cuttingplan_20260916-152031.txt;81Ik4k3oKEQ/DyNc1asKivNnQUId1Q2wKb32Es++0zg=;Present
-311;Szajkó, Győr;2026-09-28;NP;CIP;6;0;0;6
-325;Frama, Jurj;2026-09-24;NP;SIN;6;0;0;6
-326;Frama, Jurj;2026-09-24;NP;SIN;6;0;0;6
-327;Frama, Jurj;2026-09-24;NP;SIN;6;0;0;6
+311;Szajkó, Győr;2026-09-28;NP;CIP;RAL 9010;6;0;0;6
+325;Frama, Jurj;2026-09-24;NP;SIN;RAL 1015;6;0;0;6
+326;Frama, Jurj;2026-09-24;NP;SIN;RAL 1015;6;0;0;6
+327;Frama, Jurj;2026-09-24;NP;SIN;RAL 1015;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260916-211821.txt;cuttingplan_20260916-211821.txt;GEx1UiMQcS/vRHF+iWbLWUHRwCi0egieP9vZ8L3FAwY=;Present
-5050;Teszt  Elemér;2026-09-25;NP;CIP;7;0;0;7
-5090;Teszt Mandarin;2026-09-19;NP;CIP;6;0;0;6
-5555;Teszt Elek;2026-09-17;NP;CIP;6;0;0;6
-5556;Teszt Elek;2026-09-17;NP;CIP;7;0;0;7
-5557;Teszt Elek;2026-09-17;NP;CIP;6;0;0;6
-5558;Teszt  Elek;2026-09-24;NP;CIP;6;0;0;6
-5559;Teszt Elek;2026-09-24;NP;CIP;6;0;0;6
-5561;Teszt  Kálmán;2026-09-24;NP;CIP;5;0;0;5
-5562;Teszt  Béla;2026-09-25;NP;CIP;2;0;0;2
-5565;Teszt  Elemér;2026-09-25;NP;CIP;1;0;0;1
-5567;Teszt Elek;2026-09-25;NP;CIP;10;0;0;10
-5568;Teszt  Kálmán;2026-09-25;NP;CIP;6;0;0;6
-5569;Teszt  Elemér;2026-09-25;NP;CIP;2;0;0;2
-5587;Teszt  Béla;2026-09-25;NP;CIP;7;0;0;7
-5588;Teszt  Kálmán;2026-09-25;NP;CIP;1;0;0;1
-5589;Teszt  Elemér;2026-09-25;NP;CIP;6;0;0;6
-6000;Teszt  Kálmán;2026-09-24;SR;MINIT;1;0;0;1
+5050;Teszt  Elemér;2026-09-25;NP;CIP;RAL 7016;7;0;0;7
+5090;Teszt Mandarin;2026-09-19;NP;CIP;RAL 7016;6;0;0;6
+5555;Teszt Elek;2026-09-17;NP;CIP;RAL 7016;6;0;0;6
+5556;Teszt Elek;2026-09-17;NP;CIP;RAL 7016;7;0;0;7
+5557;Teszt Elek;2026-09-17;NP;CIP;RAL 7016;6;0;0;6
+5558;Teszt  Elek;2026-09-24;NP;CIP;RAL 9010;6;0;0;6
+5559;Teszt Elek;2026-09-24;NP;CIP;RAL 7016;6;0;0;6
+5561;Teszt  Kálmán;2026-09-24;NP;CIP;RAL 7016;5;0;0;5
+5562;Teszt  Béla;2026-09-25;NP;CIP;RAL 7016;2;0;0;2
+5565;Teszt  Elemér;2026-09-25;NP;CIP;RAL 7016;1;0;0;1
+5567;Teszt Elek;2026-09-25;NP;CIP;RAL 7016;10;0;0;10
+5568;Teszt  Kálmán;2026-09-25;NP;CIP;RAL 7016;6;0;0;6
+5569;Teszt  Elemér;2026-09-25;NP;CIP;RAL 7016;2;0;0;2
+5587;Teszt  Béla;2026-09-25;NP;CIP;RAL 7016;7;0;0;7
+5588;Teszt  Kálmán;2026-09-25;NP;CIP;RAL 7016;1;0;0;1
+5589;Teszt  Elemér;2026-09-25;NP;CIP;RAL 7016;6;0;0;6
+6000;Teszt  Kálmán;2026-09-24;SR;MINIT;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260917-124430.txt;cuttingplan_20260917-124430.txt;sCJa6h2YcgMFOu44Ijs8HWkknpMmF7k4N1CkCLtqtls=;Present
-330;Arthy L.;2026-09-30;NP;CIP;6;0;0;6
-331;Arthy L.;2026-09-30;NP;CIP;6;0;0;6
-332;Arthy L.;2026-09-30;NP;CIP;6;0;0;6
-333;Arthy L.;2026-09-30;NP;CIP;6;0;0;6
+330;Arthy L.;2026-09-30;NP;CIP;RAL 8003;6;0;0;6
+331;Arthy L.;2026-09-30;NP;CIP;RAL 8003;6;0;0;6
+332;Arthy L.;2026-09-30;NP;CIP;RAL 8003;6;0;0;6
+333;Arthy L.;2026-09-30;NP;CIP;RAL 8003;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260918-122449.txt;cuttingplan_20260918-122449.txt;HT/Zxz5/BjryXNWZhKq5x7hut60M13frgBIurpRgJYo=;Present
-672;Antal Ildike;2026-09-21;SR;MOT;3;0;0;3
-673;Antal Ildike;2026-09-21;SR;MOT;3;0;0;3
-674;Antal Ildike;2026-09-21;SR;MOT;3;0;0;3
-675;Antal Ildike;2026-09-21;SR;MOT;3;0;0;3
+672;Antal Ildike;2026-09-21;SR;MOT;;3;0;0;3
+673;Antal Ildike;2026-09-21;SR;MOT;;3;0;0;3
+674;Antal Ildike;2026-09-21;SR;MOT;;3;0;0;3
+675;Antal Ildike;2026-09-21;SR;MOT;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260918-153544.txt;cuttingplan_20260918-153544.txt;iF7mANRXTxxVW8mYK/uFnjEbFpdVLD37MnKCgmPqFRo=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260920-210715.txt;cuttingplan_20260920-210715.txt;CbkrL1xosaTrZlnCV+ssebmJZr82/Y0Qaio+CrZ7PyI=;Present
-2361;Lukács-Ablak, Nyh;2026-09-30;ROL;UJGY;2;0;0;2
-2362;Lukács-Ablak, Nyh;2026-09-30;ROL;UJGY;2;0;0;2
-2365;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2366;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2367;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2368;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2369;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2370;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2371;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2372;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2373;Kocza László, Győr;2026-09-28;ROL;UJGY;2;0;0;2
-2382;Soletech;2026-09-29;ROL;TSIN;4;0;0;4
-2385;LukácsÁrnyékolás;2026-09-29;ROL;ALAP;2;0;0;2
-2388;Bilisánszki Dániel, Nyh;2026-09-30;ROL;ALAP;2;0;0;2
-2391;Rellux Ajka, Győr;2026-10-05;ROL;TET;2;0;0;2
-2392;Rellux Ajka, Győr;2026-10-05;ROL;TET;2;0;0;2
-5000;Teszt Mandarin;2026-09-21;ROL;;1;0;0;1
-678;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;4;0;0;4
-679;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;4;0;0;4
-680;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;4;0;0;4
-683;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;4;0;0;4
-686;Kujbus László;2026-09-28;SR;MINIT;4;0;0;4
-687;Kujbus László;2026-09-28;SR;MINIT;4;0;0;4
-688;Kujbus László;2026-09-28;SR;MINIT;4;0;0;4
-694;Bartha Géza;2026-09-29;SR;TN;3;0;0;3
-695;Bartha Géza;2026-09-29;SR;TN;3;0;0;3
-696;Bartha Géza;2026-09-29;SR;TN;3;0;0;3
-697;Bartha Géza;2026-09-29;SR;TN;3;0;0;3
-703;Kasza L., Szeged;2026-09-30;SR;MINIT;4;0;0;4
+2361;Lukács-Ablak, Nyh;2026-09-30;ROL;UJGY;;2;0;0;2
+2362;Lukács-Ablak, Nyh;2026-09-30;ROL;UJGY;;2;0;0;2
+2365;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2366;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2367;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2368;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2369;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2370;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2371;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2372;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2373;Kocza László, Győr;2026-09-28;ROL;UJGY;;2;0;0;2
+2382;Soletech;2026-09-29;ROL;TSIN;;4;0;0;4
+2385;LukácsÁrnyékolás;2026-09-29;ROL;ALAP;;2;0;0;2
+2388;Bilisánszki Dániel, Nyh;2026-09-30;ROL;ALAP;;2;0;0;2
+2391;Rellux Ajka, Győr;2026-10-05;ROL;TET;;2;0;0;2
+2392;Rellux Ajka, Győr;2026-10-05;ROL;TET;;2;0;0;2
+5000;Teszt Mandarin;2026-09-21;ROL;;;1;0;0;1
+678;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;;4;0;0;4
+679;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;;4;0;0;4
+680;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;;4;0;0;4
+683;HZ-Ablak, Szeged;2026-09-30;SR;MINIT;;4;0;0;4
+686;Kujbus László;2026-09-28;SR;MINIT;;4;0;0;4
+687;Kujbus László;2026-09-28;SR;MINIT;;4;0;0;4
+688;Kujbus László;2026-09-28;SR;MINIT;;4;0;0;4
+694;Bartha Géza;2026-09-29;SR;TN;;3;0;0;3
+695;Bartha Géza;2026-09-29;SR;TN;;3;0;0;3
+696;Bartha Géza;2026-09-29;SR;TN;;3;0;0;3
+697;Bartha Géza;2026-09-29;SR;TN;;3;0;0;3
+703;Kasza L., Szeged;2026-09-30;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260921-095617.txt;cuttingplan_20260921-095617.txt;gzHwQq3y145J0r8iwJNEIJEJScQuZej68HnFab3Yg6g=;Present
-672;Antal Ildike;2026-09-22;SR;MOT;3;0;0;3
-673;Antal Ildike;2026-09-22;SR;MOT;3;0;0;3
-674;Antal Ildike;2026-09-22;SR;MOT;3;0;0;3
-675;Antal Ildike;2026-09-22;SR;MOT;3;0;0;3
+672;Antal Ildike;2026-09-22;SR;MOT;;3;0;0;3
+673;Antal Ildike;2026-09-22;SR;MOT;;3;0;0;3
+674;Antal Ildike;2026-09-22;SR;MOT;;3;0;0;3
+675;Antal Ildike;2026-09-22;SR;MOT;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260921-213825.txt;cuttingplan_20260921-213825.txt;uQcKrfxOZuggyK/OPbwP0dfyj10TVgAKtWNBsaZ7FXE=;Present
-5000;Maki Majom;2026-09-21;ROL;TSIN;4;0;0;4
-5100;Teszt  Kálmán;2026-09-23;NP;CIP;5;0;0;5
-5101;makesz;2026-09-22;NP;CIP;6;0;0;6
-5102;makesz;2026-09-24;NP;CIP;6;0;0;6
-5103;makesz;2026-09-22;NP;CIP;1;0;0;1
-5104;Teszt Elek;2026-09-23;NP;CIP;5;0;0;5
-5105;Teszt Mandarin;2026-09-23;NP;CIP;5;0;0;5
-5106;Majom Alfréd;2026-09-24;NP;CIP;5;0;0;5
-5107;Teszt Ábrahám;2026-09-23;NP;CIP;6;0;0;6
+5000;Maki Majom;2026-09-21;ROL;TSIN;;4;0;0;4
+5100;Teszt  Kálmán;2026-09-23;NP;CIP;RAL 7016;5;0;0;5
+5101;makesz;2026-09-22;NP;CIP;RAL 7016;6;0;0;6
+5102;makesz;2026-09-24;NP;CIP;;6;0;0;6
+5103;makesz;2026-09-22;NP;CIP;;1;0;0;1
+5104;Teszt Elek;2026-09-23;NP;CIP;RAL 7016;5;0;0;5
+5105;Teszt Mandarin;2026-09-23;NP;CIP;RAL 7016;5;0;0;5
+5106;Majom Alfréd;2026-09-24;NP;CIP;RAL 7016;5;0;0;5
+5107;Teszt Ábrahám;2026-09-23;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260922-133234.txt;cuttingplan_20260922-133234.txt;Yvp54NJnf2XNhTOKcqbDWJphNQ76fVGx3U1kEvkx39k=;Present
-344;Braun-Árny, Győr;2026-10-05;NP;CIP;6;0;0;6
-345;Braun-Árny, Győr;2026-10-05;NP;CIP;6;0;0;6
-351;Hal-Kov;2026-09-25;NP;CIP;6;0;0;6
-352;Hal-Kov;2026-09-25;NP;CIP;6;0;0;6
-353;Hal-Kov;2026-09-25;NP;CIP;8;0;0;8
-353-4;Hal-Kov;2026-09-25;NP;CIP;1;0;0;1
-354;Hal-Kov;2026-09-25;NP;CIP;8;0;0;8
-356;Szajkó, Győr;2026-10-05;NP;CIP;6;0;0;6
+344;Braun-Árny, Győr;2026-10-05;NP;CIP;RAL 8004;6;0;0;6
+345;Braun-Árny, Győr;2026-10-05;NP;CIP;RAL 8004;6;0;0;6
+351;Hal-Kov;2026-09-25;NP;CIP;RAL 8003;6;0;0;6
+352;Hal-Kov;2026-09-25;NP;CIP;RAL 8003;6;0;0;6
+353;Hal-Kov;2026-09-25;NP;CIP;RAL 8003;8;0;0;8
+353-4;Hal-Kov;2026-09-25;NP;CIP;RAL 8003;1;0;0;1
+354;Hal-Kov;2026-09-25;NP;CIP;RAL 8003;8;0;0;8
+356;Szajkó, Győr;2026-10-05;NP;CIP;RAL 1019;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260923-072732.txt;cuttingplan_20260923-072732.txt;47rBIMVAyyCFKO+Gbz/Wu2C3+DbVopIQNGxewv0eOHM=;Present
-374;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-375;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-376;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-377;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-378;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-379;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-380;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-381;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-382;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-383;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-384;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-385;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
-386;KV-Ép;2026-09-24;NP;SIN;6;0;0;6
+374;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+375;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+376;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+377;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+378;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+379;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+380;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+381;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+382;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+383;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+384;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+385;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
+386;KV-Ép;2026-09-24;NP;SIN;RAL 8003;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260923-141151.txt;cuttingplan_20260923-141151.txt;DBghCByrcmAW4V5HRDWqmZgwZ9mCxbitCwO2ddLPPtI=;Present
-712;Molnár András, Pécs;2026-10-02;SR;T;3;0;0;3
-719;Losonczi R., Pécs;2026-09-25;SR;T;3;0;0;3
-720;Losonczi R., Pécs;2026-09-25;SR;T;3;0;0;3
+712;Molnár András, Pécs;2026-10-02;SR;T;;3;0;0;3
+719;Losonczi R., Pécs;2026-09-25;SR;T;;3;0;0;3
+720;Losonczi R., Pécs;2026-09-25;SR;T;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260924-075643.txt;cuttingplan_20260924-075643.txt;8yaGRCaBPOR4PiikL5BHvvZzvagnpaeW4nzFTgxz408=;Present
-318;Arady V., Győr;2026-09-28;NP;CIP;6;0;0;6
-339;Kelet-Redőny;2026-09-28;NP;SIN;6;0;0;6
-340;Kelet-Redőny;2026-09-28;NP;SIN;6;0;0;6
-341;Kelet-Redőny;2026-09-28;NP;SIN;6;0;0;6
+318;Arady V., Győr;2026-09-28;NP;CIP;RAL 9010;6;0;0;6
+339;Kelet-Redőny;2026-09-28;NP;SIN;RAL 9010;6;0;0;6
+340;Kelet-Redőny;2026-09-28;NP;SIN;RAL 9010;6;0;0;6
+341;Kelet-Redőny;2026-09-28;NP;SIN;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260924-152655.txt;cuttingplan_20260924-152655.txt;3yGAGmWmkrFIV4YW3UYKYFAZmNpS4hMV2yIS+0uUvX0=;Present
-314;Buglyó Balázs;2026-09-28;NP;CIP;6;0;0;6
-315;Buglyó Balázs;2026-09-28;NP;CIP;6;0;0;6
+314;Buglyó Balázs;2026-09-28;NP;CIP;RAL 7016;6;0;0;6
+315;Buglyó Balázs;2026-09-28;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260925-073942.txt;cuttingplan_20260925-073942.txt;m1hpty+2EmXTFFe0z/d4I+B7IpdMmmyzgIIF/ReANwg=;Present
-742;Kolozs Attila;2026-09-25;SR;MINIT;4;0;0;4
+742;Kolozs Attila;2026-09-25;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260927-180215.txt;cuttingplan_20260927-180215.txt;Lu/4SKkCJU30L5Y9rPCkpMM3bP7dO0IEZPm5u6nagqc=;Present
-359;Generálkiv., Pécs;2026-10-02;NP;CIP;6;0;0;6
-360;Generálkiv., Pécs;2026-10-02;NP;CIP;6;0;0;6
-361;Generálkiv., Pécs;2026-10-02;NP;CIP;6;0;0;6
-362;Generálkiv., Pécs;2026-10-02;NP;CIP;6;0;0;6
-365;Rolló-Halas, Pécs;2026-10-02;NP;SIN;6;0;0;6
-398;Fenstermann, Szolnok;2026-10-09;NP;CIP;6;0;0;6
+359;Generálkiv., Pécs;2026-10-02;NP;CIP;RAL 9010;6;0;0;6
+360;Generálkiv., Pécs;2026-10-02;NP;CIP;RAL 9010;6;0;0;6
+361;Generálkiv., Pécs;2026-10-02;NP;CIP;RAL 9010;6;0;0;6
+362;Generálkiv., Pécs;2026-10-02;NP;CIP;RAL 9010;6;0;0;6
+365;Rolló-Halas, Pécs;2026-10-02;NP;SIN;RAL 7038;6;0;0;6
+398;Fenstermann, Szolnok;2026-10-09;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260928-145240.txt;cuttingplan_20260928-145240.txt;9RCCziHfQ9EyoyxQYstwMf/RUrJy5VGQPxaZ4Oqly78=;Present
-706;Oláh Norbert;2026-10-01;SR;MINIT;4;0;0;4
-709;Oláh Norbert;2026-10-01;SR;MINIT;4;0;0;4
-729;Magyari Attila;2026-10-05;SR;MINIT;4;0;0;4
-732;Árnyhouse, Pécs;2026-10-02;SR;MINIT;4;0;0;4
-770;Balmaz Aktual;2026-10-02;SR;MINIT;4;0;0;4
+706;Oláh Norbert;2026-10-01;SR;MINIT;;4;0;0;4
+709;Oláh Norbert;2026-10-01;SR;MINIT;;4;0;0;4
+729;Magyari Attila;2026-10-05;SR;MINIT;;4;0;0;4
+732;Árnyhouse, Pécs;2026-10-02;SR;MINIT;;4;0;0;4
+770;Balmaz Aktual;2026-10-02;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260929-080234.txt;cuttingplan_20260929-080234.txt;qRA2y/O6JHn9t+SHIJHRGevr3TJdkaIak3X5Df+pvdU=;Present
-10000;Redőny Shop, Bp.;2026-09-30;NP;CIP;6;0;0;6
-10001;Redőny Shop, Bp.;2026-09-30;NP;CIP;6;0;0;6
-10002;Redőny Shop, Bp.;2026-09-30;NP;CIP;6;0;0;6
+10000;Redőny Shop, Bp.;2026-09-30;NP;CIP;RAL 9010;6;0;0;6
+10001;Redőny Shop, Bp.;2026-09-30;NP;CIP;RAL 9010;6;0;0;6
+10002;Redőny Shop, Bp.;2026-09-30;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260929-102616.txt;cuttingplan_20260929-102616.txt;wowrqS4D3kTbU0pOqRyBgNsg0fMDtHls++aOEvXrQOI=;Present
-405;Hársfalvi, Nyh;2026-09-30;NP;CIP;6;0;0;6
-406;Hársfalvi, Nyh;2026-09-30;NP;CIP;6;0;0;6
+405;Hársfalvi, Nyh;2026-09-30;NP;CIP;RAL 7016;6;0;0;6
+406;Hársfalvi, Nyh;2026-09-30;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-065228.txt;cuttingplan_20260930-065228.txt;vzXgwy254IEtoNYV5iYnX7ECCrcSlBCPx7tpEZLHP8A=;Present
-348;Nyírfa, Nyh;2026-10-01;NP;SIN;6;0;0;6
-368;Frama, AyanterSolut;2026-10-01;NP;CIP;6;0;0;6
-369;Frama, AyanterSolut;2026-10-01;NP;CIP;6;0;0;6
-370;Frama, AyanterSolut;2026-10-01;NP;CIP;6;0;0;6
+348;Nyírfa, Nyh;2026-10-01;NP;SIN;RAL 7016;6;0;0;6
+368;Frama, AyanterSolut;2026-10-01;NP;CIP;RAL 7016;6;0;0;6
+369;Frama, AyanterSolut;2026-10-01;NP;CIP;RAL 7016;6;0;0;6
+370;Frama, AyanterSolut;2026-10-01;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-114644.txt;cuttingplan_20260930-114644.txt;dj2O/gr/TotnfWnTUx8aBtACjTT51VML8YCLP/MpJt8=;Present
-2410;MolKomfort, Eger;2026-10-01;ROL;ALAP;2;0;0;2
+2410;MolKomfort, Eger;2026-10-01;ROL;ALAP;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-125234.txt;cuttingplan_20260930-125234.txt;vwckgaSALARzdRAEsB6b/4RgXO+WP0VgEUppHy2rR/A=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-125238.txt;cuttingplan_20260930-125238.txt;DOuQZiHJcfHY9ch1oHZc6RLmNX8/LaDYdek6zTMCS7c=;Present
-371;Frama, AyanterSolut;2026-10-01;NP;CIP;6;0;0;6
+371;Frama, AyanterSolut;2026-10-01;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-150723.txt;cuttingplan_20260930-150723.txt;MWWHGKuPXxo2l475oJjMWe54BHhSgvVNWSQH3TtROGg=;Present
-750;Fenstermann, Szolnok;2026-10-09;SR;TN;4;0;0;4
-761;BBB-Glass, Mezőtúr;2026-10-12;SR;TN;4;0;0;4
-762;BBB-Glass, Mezőtúr;2026-10-12;SR;TN;4;0;0;4
-763;BBB-Glass, Mezőtúr;2026-10-12;SR;T;4;0;0;4
-780;RakamazAblak;2026-10-12;SR;TN;4;0;0;4
-781;RakamazAblak;2026-10-12;SR;TN;4;0;0;4
-782;RakamazAblak;2026-10-12;SR;TN;4;0;0;4
-785;RakamazAblak;2026-10-12;SR;TN;4;0;0;4
-796;Kovács Károly;2026-10-14;SR;TN;4;0;0;4
-797;Kovács Károly;2026-10-14;SR;TN;4;0;0;4
-804;ThermoNyílászáró, Miskolc;2026-10-12;SR;T;4;0;0;4
-805;ThermoNyílászáró, Miskolc;2026-10-12;SR;T;4;0;0;4
+750;Fenstermann, Szolnok;2026-10-09;SR;TN;;4;0;0;4
+761;BBB-Glass, Mezőtúr;2026-10-12;SR;TN;;4;0;0;4
+762;BBB-Glass, Mezőtúr;2026-10-12;SR;TN;;4;0;0;4
+763;BBB-Glass, Mezőtúr;2026-10-12;SR;T;;4;0;0;4
+780;RakamazAblak;2026-10-12;SR;TN;;4;0;0;4
+781;RakamazAblak;2026-10-12;SR;TN;;4;0;0;4
+782;RakamazAblak;2026-10-12;SR;TN;;4;0;0;4
+785;RakamazAblak;2026-10-12;SR;TN;;4;0;0;4
+796;Kovács Károly;2026-10-14;SR;TN;;4;0;0;4
+797;Kovács Károly;2026-10-14;SR;TN;;4;0;0;4
+804;ThermoNyílászáró, Miskolc;2026-10-12;SR;T;;4;0;0;4
+805;ThermoNyílászáró, Miskolc;2026-10-12;SR;T;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-150723_2.txt;cuttingplan_20260930-150723_2.txt;yo1jHdG07GOAJeAcj747yNyQJ+l7dIfE+4OxnJU8FRs=;Present
-715;Rolló-Halas, Pécs;2026-10-02;SR;TN;3;0;0;3
-716;Rolló-Halas, Pécs;2026-10-02;SR;TN;3;0;0;3
-723;Nils;2026-10-05;SR;TN;3;0;0;3
-735;Ro-Konzol, Győr;2026-10-05;SR;TN;3;0;0;3
-736;Ro-Konzol, Győr;2026-10-05;SR;TN;3;0;0;3
-737;Ro-Konzol, Győr;2026-10-05;SR;TN;3;0;0;3
-739;Ro-Konzol, Győr;2026-10-05;SR;TN;3;0;0;3
-766;Rellux, Győr;2026-10-05;SR;TN;3;0;0;3
-767;Rellux, Győr;2026-10-05;SR;TN;3;0;0;3
+715;Rolló-Halas, Pécs;2026-10-02;SR;TN;;3;0;0;3
+716;Rolló-Halas, Pécs;2026-10-02;SR;TN;;3;0;0;3
+723;Nils;2026-10-05;SR;TN;;3;0;0;3
+735;Ro-Konzol, Győr;2026-10-05;SR;TN;;3;0;0;3
+736;Ro-Konzol, Győr;2026-10-05;SR;TN;;3;0;0;3
+737;Ro-Konzol, Győr;2026-10-05;SR;TN;;3;0;0;3
+739;Ro-Konzol, Győr;2026-10-05;SR;TN;;3;0;0;3
+766;Rellux, Győr;2026-10-05;SR;TN;;3;0;0;3
+767;Rellux, Győr;2026-10-05;SR;TN;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260930-150723_3.txt;cuttingplan_20260930-150723_3.txt;g7cgp0Z5jmmrd0j6CqN97XOpHeU5KwHQgKcwSGkYPno=;Present
-726;Perei J., Bcs;2026-10-06;SR;TN;4;0;0;4
-745;RakamazAblak (Prill);2026-10-07;SR;TN;4;0;0;4
-746;RakamazAblak (Prill);2026-10-07;SR;TN;4;0;0;4
-747;RakamazAblak (Prill);2026-10-07;SR;TN;4;0;0;4
-753;Délroll, Szeged;2026-10-07;SR;T;4;0;0;4
-754;Délroll, Szeged;2026-10-07;SR;T;4;0;0;4
-773;Jövő 2008(114), Bp;2026-10-06;SR;TN;4;0;0;4
-774;Jövő 2008(114), Bp;2026-10-06;SR;TN;4;0;0;4
-788;An-Ger;2026-10-08;SR;T;4;0;0;4
-789;An-Ger;2026-10-08;SR;T;4;0;0;4
-790;An-Ger;2026-10-08;SR;T;4;0;0;4
+726;Perei J., Bcs;2026-10-06;SR;TN;;4;0;0;4
+745;RakamazAblak (Prill);2026-10-07;SR;TN;;4;0;0;4
+746;RakamazAblak (Prill);2026-10-07;SR;TN;;4;0;0;4
+747;RakamazAblak (Prill);2026-10-07;SR;TN;;4;0;0;4
+753;Délroll, Szeged;2026-10-07;SR;T;;4;0;0;4
+754;Délroll, Szeged;2026-10-07;SR;T;;4;0;0;4
+773;Jövő 2008(114), Bp;2026-10-06;SR;TN;;4;0;0;4
+774;Jövő 2008(114), Bp;2026-10-06;SR;TN;;4;0;0;4
+788;An-Ger;2026-10-08;SR;T;;4;0;0;4
+789;An-Ger;2026-10-08;SR;T;;4;0;0;4
+790;An-Ger;2026-10-08;SR;T;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261002-123231.txt;cuttingplan_20261002-123231.txt;XWfiGhgnqG1/i7B7quxk351mE19lmUPIqweJ2exqna8=;Present
-2359;Rellux Ajka, Győr;2026-10-05;ROL;ALAP;2;0;0;2
-2360;Rellux Ajka, Győr;2026-10-05;ROL;ALAP;2;0;0;2
-2399;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2400;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2401;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2402;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2403;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2404;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;2;0;0;2
-2439;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2440;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2441;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2442;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2443;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2444;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;2;0;0;2
-2465;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
-2466;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
-2467;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
-2468;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
-2469;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
-2470;Perei J., Bcs;2026-10-06;ROL;UJGY;2;0;0;2
+2359;Rellux Ajka, Győr;2026-10-05;ROL;ALAP;;2;0;0;2
+2360;Rellux Ajka, Győr;2026-10-05;ROL;ALAP;;2;0;0;2
+2399;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2400;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2401;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2402;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2403;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2404;Szénási Géza, Szeged;2026-10-07;ROL;ALAP;;2;0;0;2
+2439;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2440;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2441;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2442;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2443;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2444;Redőny Shop, Bp.;2026-10-06;ROL;UJGY;;2;0;0;2
+2465;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
+2466;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
+2467;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
+2468;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
+2469;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
+2470;Perei J., Bcs;2026-10-06;ROL;UJGY;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261002-151913.txt;cuttingplan_20261002-151913.txt;TNfm7960CjGisRj7t+FNNvtjV2MjaHerlIB6CchvK4s=;Present
-2413;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2414;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2415;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2416;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2417;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2418;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2419;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2420;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
-2421;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;2;0;0;2
+2413;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2414;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2415;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2416;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2417;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2418;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2419;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2420;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
+2421;Kiss Brúnó, Mátészalka;2026-10-08;ROL;ALAP;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261005-071650.txt;cuttingplan_20261005-071650.txt;vnvUciGDNOH1HZI5zsnA9aqy6PwGvrm6pE+UIuISNvo=;Present
-389;Kasza L., Szeged;2026-10-07;NP;CIP;6;0;0;6
-390;Kasza L., Szeged;2026-10-07;NP;CIP;6;0;0;6
-391;Kasza L., Szeged;2026-10-07;NP;CIP;6;0;0;6
-392;Kasza L., Szeged;2026-10-07;NP;CIP;6;0;0;6
+389;Kasza L., Szeged;2026-10-07;NP;CIP;RAL 8003;6;0;0;6
+390;Kasza L., Szeged;2026-10-07;NP;CIP;RAL 8003;6;0;0;6
+391;Kasza L., Szeged;2026-10-07;NP;CIP;RAL 8003;6;0;0;6
+392;Kasza L., Szeged;2026-10-07;NP;CIP;RAL 8003;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261006-075241.txt;cuttingplan_20261006-075241.txt;oJwfBB3j6yNROJKdApextGFRlTUNUx9Lw6/VeXOTJSw=;Present
-395;Hársfalvi, Nyh;2026-10-07;NP;CIP;6;0;0;6
-401;Generálkiv., Pécs;2026-10-09;NP;CIP;6;0;0;6
-402;Generálkiv., Pécs;2026-10-09;NP;CIP;6;0;0;6
+395;Hársfalvi, Nyh;2026-10-07;NP;CIP;RAL 7016;6;0;0;6
+401;Generálkiv., Pécs;2026-10-09;NP;CIP;RAL 8004;6;0;0;6
+402;Generálkiv., Pécs;2026-10-09;NP;CIP;RAL 8004;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261006-120055.txt;cuttingplan_20261006-120055.txt;+KPBnhtkjgAQT0y2LYrqU2aHDA18DKgGGMk6VExzmJo=;Present
-2427;Fenstermann, Szolnok;2026-10-09;ROL;TSIN;4;0;0;4
-757;Függönycenter;2026-10-08;SR;MINIT;4;0;0;4
-758;Függönycenter;2026-10-08;SR;MINIT;4;0;0;4
-777;Napex, Pécs;2026-10-09;SR;MINIT;4;0;0;4
-800;Driszku;2026-10-14;SR;MINIT;4;0;0;4
-801;Driszku;2026-10-14;SR;MINIT;4;0;0;4
-808;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-809;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-810;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-811;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-812;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-813;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
-814;Rollo-Flex;2026-10-15;SR;MINIT;4;0;0;4
+2427;Fenstermann, Szolnok;2026-10-09;ROL;TSIN;;4;0;0;4
+757;Függönycenter;2026-10-08;SR;MINIT;;4;0;0;4
+758;Függönycenter;2026-10-08;SR;MINIT;;4;0;0;4
+777;Napex, Pécs;2026-10-09;SR;MINIT;;4;0;0;4
+800;Driszku;2026-10-14;SR;MINIT;;4;0;0;4
+801;Driszku;2026-10-14;SR;MINIT;;4;0;0;4
+808;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+809;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+810;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+811;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+812;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+813;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
+814;Rollo-Flex;2026-10-15;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261006-121826.txt;cuttingplan_20261006-121826.txt;CIsCI+CAUFRBiEL9NYi3riH0JJO6+IDOv1LTCBuAYTs=;Present
-20261006;Molnár Károly;2026-10-06;ROL;UJGY;1;0;0;1
-2424;Tomika(VITALA);2026-10-07;ROL;RUG;2;0;0;2
-2430;Fenstermann, Szolnok;2026-10-09;ROL;SRTOK;3;0;0;3
-2433;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;2;0;0;2
-2434;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;2;0;0;2
-2435;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;2;0;0;2
-2436;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;2;0;0;2
-2447;L.Zs., Nyh;2026-10-07;ROL;TET;2;0;0;2
-2450;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;2;0;0;2
-2451;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;2;0;0;2
-2452;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;2;0;0;2
-2455;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2456;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2457;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2458;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2459;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2460;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2461;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2462;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;2;0;0;2
-2473;Generálkiv., Pécs;2026-10-09;ROL;TET;2;0;0;2
-2474;Generálkiv., Pécs;2026-10-09;ROL;TET;2;0;0;2
-2477;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;2;0;0;2
-2478;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;2;0;0;2
-2479;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;2;0;0;2
-2485;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;2;0;0;2
-2486;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;2;0;0;2
-2487;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;2;0;0;2
-2488;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;2;0;0;2
-2489;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;2;0;0;2
-2492;Kiss Árnyékolás, Pécs;2026-10-16;ROL;ALAP;2;0;0;2
-2519;Pócsik Béla, Eger;2026-10-06;ROL;ALAP;2;0;0;2
-2520;Pócsik Béla, Eger;2026-10-06;ROL;ALAP;2;0;0;2
-2527;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;2;0;0;2
-2528;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;2;0;0;2
+20261006;Molnár Károly;2026-10-06;ROL;UJGY;;1;0;0;1
+2424;Tomika(VITALA);2026-10-07;ROL;RUG;;2;0;0;2
+2430;Fenstermann, Szolnok;2026-10-09;ROL;SRTOK;;3;0;0;3
+2433;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;;2;0;0;2
+2434;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;;2;0;0;2
+2435;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;;2;0;0;2
+2436;Oros-Csőszer, Mtúr;2026-10-12;ROL;ALAP;;2;0;0;2
+2447;L.Zs., Nyh;2026-10-07;ROL;TET;;2;0;0;2
+2450;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;;2;0;0;2
+2451;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;;2;0;0;2
+2452;AjtóPark, Ef_Nyh.;2026-10-09;ROL;;;2;0;0;2
+2455;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2456;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2457;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2458;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2459;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2460;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2461;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2462;AjtóPark, Ef_Miskolc2;2026-10-09;ROL;;;2;0;0;2
+2473;Generálkiv., Pécs;2026-10-09;ROL;TET;;2;0;0;2
+2474;Generálkiv., Pécs;2026-10-09;ROL;TET;;2;0;0;2
+2477;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;;2;0;0;2
+2478;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;;2;0;0;2
+2479;Árnyhouse/Seres, Pécs;2026-10-09;ROL;TET;;2;0;0;2
+2485;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;;2;0;0;2
+2486;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;;2;0;0;2
+2487;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;;2;0;0;2
+2488;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;;2;0;0;2
+2489;Lukács-Ablak, Nyh;2026-10-06;ROL;TET;;2;0;0;2
+2492;Kiss Árnyékolás, Pécs;2026-10-16;ROL;ALAP;;2;0;0;2
+2519;Pócsik Béla, Eger;2026-10-06;ROL;ALAP;;2;0;0;2
+2520;Pócsik Béla, Eger;2026-10-06;ROL;ALAP;;2;0;0;2
+2527;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;;2;0;0;2
+2528;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261007-151927.txt;cuttingplan_20261007-151927.txt;6Sx2ovVOKB2+Dl8Wa2RQYKJqayiSZV6e4/eSOY+2Ov8=;Present
-413;Ro-Konzol, Győr;2026-10-12;NP;CIP;6;0;0;6
-414;Ro-Konzol, Győr;2026-10-12;NP;CIP;6;0;0;6
-415;Ro-Konzol, Győr;2026-10-12;NP;CIP;6;0;0;6
-418;Porta Finestra, Miskolc;2026-10-12;NP;CIP;6;0;0;6
-419;Porta Finestra, Miskolc;2026-10-12;NP;CIP;6;0;0;6
+413;Ro-Konzol, Győr;2026-10-12;NP;CIP;RAL 8011;6;0;0;6
+414;Ro-Konzol, Győr;2026-10-12;NP;CIP;RAL 8011;6;0;0;6
+415;Ro-Konzol, Győr;2026-10-12;NP;CIP;RAL 8011;6;0;0;6
+418;Porta Finestra, Miskolc;2026-10-12;NP;CIP;RAL 8011;6;0;0;6
+419;Porta Finestra, Miskolc;2026-10-12;NP;CIP;RAL 8011;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261008-105437.txt;cuttingplan_20261008-105437.txt;vwckgaSALARzdRAEsB6b/4RgXO+WP0VgEUppHy2rR/A=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261008-113602.txt;cuttingplan_20261008-113602.txt;dmqvj32dISXmOAyVtvVmVQHtD2YwWiRsoymVI+q4KnQ=;Present
-409;Braun, Győr;2026-10-12;NP;CIP;5;0;0;5
-410;Braun, Győr;2026-10-12;NP;CIP;5;0;0;5
+409;Braun, Győr;2026-10-12;NP;CIP;RAL 9010;5;0;0;5
+410;Braun, Győr;2026-10-12;NP;CIP;RAL 9010;5;0;0;5
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261008-143332.txt;cuttingplan_20261008-143332.txt;jy31wOnwmnQIRZFU5AjWTOlaCWXuVKPgTxSHN4056Fw=;Present
-428;Braun, Győr;2026-10-19;NP;CIP;6;0;0;6
-429;Braun, Győr;2026-10-19;NP;CIP;6;0;0;6
+428;Braun, Győr;2026-10-19;NP;CIP;RAL 9010;6;0;0;6
+429;Braun, Győr;2026-10-19;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261009-065015.txt;cuttingplan_20261009-065015.txt;g7i1/wdZPuD8miRQ8bmrzAch4EsqdRZjCWmQvbzaAjs=;Present
-432;Norlux, Bcs;2026-10-20;NP;CIP;6;0;0;6
-433;Norlux, Bcs;2026-10-20;NP;CIP;7;0;0;7
+432;Norlux, Bcs;2026-10-20;NP;CIP;RAL 1014;6;0;0;6
+433;Norlux, Bcs;2026-10-20;NP;CIP;RAL 1014;7;0;0;7
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261009-113737.txt;cuttingplan_20261009-113737.txt;Bh0LG9Y8ZpwFo/WpsTRRQXj/OZQVjGc2CWDwBFSnwz8=;Present
-820;Boros S.;2026-10-20;SR;MINIT;4;0;0;4
-829;Kolozsi Ati;2026-10-10;SR;MINIT;4;0;0;4
-830;Kolozsi Ati;2026-10-10;SR;MINIT;4;0;0;4
+820;Boros S.;2026-10-20;SR;MINIT;;4;0;0;4
+829;Kolozsi Ati;2026-10-10;SR;MINIT;;4;0;0;4
+830;Kolozsi Ati;2026-10-10;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261009-133507.txt;cuttingplan_20261009-133507.txt;Eyq7daMdBLCsvYtj9s68xFhDxukgiT5X+XDSuTKa7cE=;Present
-2542;AxialLogistic;2026-10-21;ROL;RUG;2;0;0;2
-2545;György Zs., Msz;2026-10-15;ROL;UJGY;2;0;0;2
-2546;György Zs., Msz;2026-10-15;ROL;UJGY;2;0;0;2
-2549;Dózsa Cs.;2026-10-16;ROL;TET;2;0;0;2
-2552;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;2;0;0;2
-2553;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;2;0;0;2
-817;Rada;2026-10-20;SR;T;4;0;0;4
-823;Rellux, Győr;2026-10-19;SR;TN;4;0;0;4
-826;B.György, Bcs;2026-10-20;SR;TN;4;0;0;4
+2542;AxialLogistic;2026-10-21;ROL;RUG;;2;0;0;2
+2545;György Zs., Msz;2026-10-15;ROL;UJGY;;2;0;0;2
+2546;György Zs., Msz;2026-10-15;ROL;UJGY;;2;0;0;2
+2549;Dózsa Cs.;2026-10-16;ROL;TET;;2;0;0;2
+2552;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;;2;0;0;2
+2553;Szekér Zsolt, Pécs;2026-10-16;ROL;ALAP;;2;0;0;2
+817;Rada;2026-10-20;SR;T;;4;0;0;4
+823;Rellux, Győr;2026-10-19;SR;TN;;4;0;0;4
+826;B.György, Bcs;2026-10-20;SR;TN;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261011-221028.txt;cuttingplan_20261011-221028.txt;naiusztH/ww0XSoXmjX7C6PD4Y5JEoCT1WwL9dd3RHo=;Present
-123456;TesztElek;2026-10-21;NP;CIP;6;0;0;6
-123457;TesztElek;2026-10-21;NP;CIP;6;0;0;6
+123456;TesztElek;2026-10-21;NP;CIP;RAL 8014;6;0;0;6
+123457;TesztElek;2026-10-21;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261012-071352.txt;cuttingplan_20261012-071352.txt;nSU+FDZRsnj88+qBafKgktLpXA7toylfHlWasNKYtok=;Present
-458;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;6;0;0;6
-459;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;6;0;0;6
-462;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;6;0;0;6
-463;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;6;0;0;6
+458;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8012;6;0;0;6
+459;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8012;6;0;0;6
+462;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8019;6;0;0;6
+463;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8019;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261013-070832.txt;cuttingplan_20261013-070832.txt;OggHXUF4xY0EGkj8VCESbyZ/aXOMPjaAY2ymzBfoUxQ=;Present
-452;Otthonka, Bp.;2026-10-20;NP;CIP;6;0;0;6
+452;Otthonka, Bp.;2026-10-20;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261013-133214.txt;cuttingplan_20261013-133214.txt;vwckgaSALARzdRAEsB6b/4RgXO+WP0VgEUppHy2rR/A=;Present
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261013-141921.txt;cuttingplan_20261013-141921.txt;PbHRibEuEvSXPzbmANg7XoqxwwdIixS+0za/HFHrfzA=;Present
-2562;Lakatos K., Pécs;2026-10-16;ROL;MOT;1;0;0;1
-2563;Lakatos K., Pécs;2026-10-16;ROL;MOT;1;0;0;1
-2564;Lakatos K., Pécs;2026-10-16;ROL;MOT;1;0;0;1
-2565;Lakatos K., Pécs;2026-10-16;ROL;MOT;1;0;0;1
-2566;Lakatos K., Pécs;2026-10-16;ROL;MOT;1;0;0;1
-2569;Kasza L., Szeged;2026-10-21;ROL;UJGY;2;0;0;2
-2570;Kasza L., Szeged;2026-10-21;ROL;UJGY;2;0;0;2
-2571;Kasza L., Szeged;2026-10-21;ROL;UJGY;2;0;0;2
-2575;Oros-Csőszer, Mtúr;2026-10-19;ROL;UJGY;2;0;0;2
-2578;Arthy L.;2026-10-20;ROL;UJGY;2;0;0;2
-2579;Arthy L.;2026-10-20;ROL;UJGY;2;0;0;2
-2580;Arthy L.;2026-10-20;ROL;UJGY;2;0;0;2
-2583;Fekete A., Bcs;2026-10-20;ROL;ALAP;2;0;0;2
-2584;Fekete A., Bcs;2026-10-20;ROL;ALAP;2;0;0;2
-2585;Fekete A., Bcs;2026-10-20;ROL;ALAP;2;0;0;2
-2586;Fekete A., Bcs;2026-10-20;ROL;ALAP;2;0;0;2
-2589;Generálkiv., Pécs;2026-10-16;ROL;TSIN;4;0;0;4
-2590;Generálkiv., Pécs;2026-10-16;ROL;TSIN;4;0;0;4
-2591;Generálkiv., Pécs;2026-10-16;ROL;TSIN;4;0;0;4
-2594;Ro-Konzol, Győr;2026-10-19;SR;MOT;3;0;0;3
+2562;Lakatos K., Pécs;2026-10-16;ROL;MOT;;1;0;0;1
+2563;Lakatos K., Pécs;2026-10-16;ROL;MOT;;1;0;0;1
+2564;Lakatos K., Pécs;2026-10-16;ROL;MOT;;1;0;0;1
+2565;Lakatos K., Pécs;2026-10-16;ROL;MOT;;1;0;0;1
+2566;Lakatos K., Pécs;2026-10-16;ROL;MOT;;1;0;0;1
+2569;Kasza L., Szeged;2026-10-21;ROL;UJGY;;2;0;0;2
+2570;Kasza L., Szeged;2026-10-21;ROL;UJGY;;2;0;0;2
+2571;Kasza L., Szeged;2026-10-21;ROL;UJGY;;2;0;0;2
+2575;Oros-Csőszer, Mtúr;2026-10-19;ROL;UJGY;;2;0;0;2
+2578;Arthy L.;2026-10-20;ROL;UJGY;;2;0;0;2
+2579;Arthy L.;2026-10-20;ROL;UJGY;;2;0;0;2
+2580;Arthy L.;2026-10-20;ROL;UJGY;;2;0;0;2
+2583;Fekete A., Bcs;2026-10-20;ROL;ALAP;;2;0;0;2
+2584;Fekete A., Bcs;2026-10-20;ROL;ALAP;;2;0;0;2
+2585;Fekete A., Bcs;2026-10-20;ROL;ALAP;;2;0;0;2
+2586;Fekete A., Bcs;2026-10-20;ROL;ALAP;;2;0;0;2
+2589;Generálkiv., Pécs;2026-10-16;ROL;TSIN;;4;0;0;4
+2590;Generálkiv., Pécs;2026-10-16;ROL;TSIN;;4;0;0;4
+2591;Generálkiv., Pécs;2026-10-16;ROL;TSIN;;4;0;0;4
+2594;Ro-Konzol, Győr;2026-10-19;SR;MOT;;3;0;0;3
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261014-104520.txt;cuttingplan_20261014-104520.txt;X6DuIm5CPZU9nj64mwhm2sU2Hd31Ysx3Du8tRMECq7E=;Present
-2597;Bányai L.;2026-10-22;ROL;TET_NAGY;2;0;0;2
-2598;Bányai L.;2026-10-22;ROL;TET_NAGY;2;0;0;2
-2601;MolKomfort, Eger;2026-10-21;ROL;ALAP;2;0;0;2
-2610;Kocza László, Győr;2026-10-26;ROL;TET;2;0;0;2
+2597;Bányai L.;2026-10-22;ROL;TET_NAGY;;2;0;0;2
+2598;Bányai L.;2026-10-22;ROL;TET_NAGY;;2;0;0;2
+2601;MolKomfort, Eger;2026-10-21;ROL;ALAP;;2;0;0;2
+2610;Kocza László, Győr;2026-10-26;ROL;TET;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261014-115831.txt;cuttingplan_20261014-115831.txt;QjkWsa8bd6dg0kf6tjAuD3RsTyHwb8sWAkiDPolA2d8=;Present
-466;Felföldi K.;2026-10-26;NP;CIP;6;0;0;6
-467;Felföldi K.;2026-10-26;NP;CIP;6;0;0;6
-468;Felföldi K.;2026-10-26;NP;CIP;6;0;0;6
-469;Felföldi K.;2026-10-26;NP;CIP;6;0;0;6
-470;Felföldi K.;2026-10-26;NP;CIP;6;0;0;6
-473;Berkes Balázs, Bcs;2026-10-27;NP;SIN;6;0;0;6
-474;Berkes Balázs, Bcs;2026-10-27;NP;SIN;6;0;0;6
-475;Berkes Balázs, Bcs;2026-10-27;NP;SIN;6;0;0;6
-487;Roglas, Győr;2026-10-26;NP;CIP;6;0;0;6
+466;Felföldi K.;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
+467;Felföldi K.;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
+468;Felföldi K.;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
+469;Felföldi K.;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
+470;Felföldi K.;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
+473;Berkes Balázs, Bcs;2026-10-27;NP;SIN;RAL 7016;6;0;0;6
+474;Berkes Balázs, Bcs;2026-10-27;NP;SIN;RAL 7016;6;0;0;6
+475;Berkes Balázs, Bcs;2026-10-27;NP;SIN;RAL 7016;6;0;0;6
+487;Roglas, Győr;2026-10-26;NP;CIP;RAL 7016;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261015-115255.txt;cuttingplan_20261015-115255.txt;dk8K0AwH3cMl6U+J92hzPPu194srCtRKqEnZ6boFZx8=;Present
-436;Jola, Siófok_bolt;2026-10-22;NP;CIP;6;0;0;6
-437;Jola, Siófok_bolt;2026-10-22;NP;CIP;6;0;0;6
-440;BeauRollo;2026-10-22;NP;CIP;6;0;0;6
-441;BeauRollo;2026-10-22;NP;CIP;6;0;0;6
-444;MolKomfort, Eger;2026-10-21;NP;CIP;6;0;0;6
-455;Takács Ablak, Eger;2026-10-21;NP;CIP;6;0;0;6
+436;Jola, Siófok_bolt;2026-10-22;NP;CIP;RAL 7016;6;0;0;6
+437;Jola, Siófok_bolt;2026-10-22;NP;CIP;RAL 7016;6;0;0;6
+440;BeauRollo;2026-10-22;NP;CIP;RAL 7016;6;0;0;6
+441;BeauRollo;2026-10-22;NP;CIP;RAL 7016;6;0;0;6
+444;MolKomfort, Eger;2026-10-21;NP;CIP;RAL 7016;6;0;0;6
+455;Takács Ablak, Eger;2026-10-21;NP;CIP;RAL 9010;6;0;0;6
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261016-095121.txt;cuttingplan_20261016-095121.txt;l0jfaEAUfpLnlwiDDkjm3WCiiGmxRfunRA2vdsFVkdg=;Present
-2617;Imre B. Nyh.;2026-10-28;ROL;MINI;2;0;0;2
-2618;Imre B. Nyh.;2026-10-28;ROL;MINI;2;0;0;2
-2621;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2622;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2623;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2624;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2625;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2626;RakamazAblak;2026-10-26;ROL;ALAP;2;0;0;2
-2630;RakamazAblak;2026-10-20;ROL;TET_NAGY;2;0;0;2
-2633;Tóth Mónika;2026-10-26;ROL;TET;2;0;0;2
-2634;Tóth Mónika;2026-10-26;ROL;TET;2;0;0;2
-2635;Tóth Mónika;2026-10-26;ROL;TET;2;0;0;2
+2617;Imre B. Nyh.;2026-10-28;ROL;MINI;;2;0;0;2
+2618;Imre B. Nyh.;2026-10-28;ROL;MINI;;2;0;0;2
+2621;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2622;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2623;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2624;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2625;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2626;RakamazAblak;2026-10-26;ROL;ALAP;;2;0;0;2
+2630;RakamazAblak;2026-10-20;ROL;TET_NAGY;;2;0;0;2
+2633;Tóth Mónika;2026-10-26;ROL;TET;;2;0;0;2
+2634;Tóth Mónika;2026-10-26;ROL;TET;;2;0;0;2
+2635;Tóth Mónika;2026-10-26;ROL;TET;;2;0;0;2
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261016-095121_2.txt;cuttingplan_20261016-095121_2.txt;CEBKD/ybDsrvpwvGtAdCumQCz2+aH/3ke5norGfkutE=;Present
-2617;Imre B. Nyh.;2026-10-28;ROL;MINI;1;0;0;1
-2618;Imre B. Nyh.;2026-10-28;ROL;MINI;1;0;0;1
+2617;Imre B. Nyh.;2026-10-28;ROL;MINI;;1;0;0;1
+2618;Imre B. Nyh.;2026-10-28;ROL;MINI;;1;0;0;1
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261016-133122.txt;cuttingplan_20261016-133122.txt;guTxmK+t9sEHt8go8bHxJ0gYIKJ8/kaLWRWpoZU43J0=;Present
-833;LizaText;2026-10-20;SR;T;4;0;0;4
-836;Driszku Zs.;2026-10-22;SR;TN;4;0;0;4
-839;Berkes Balázs, Bcs;2026-10-27;SR;T;4;0;0;4
-842;Orbán T.;2026-10-22;SR;T;4;0;0;4
-843;Orbán T.;2026-10-22;SR;T;4;0;0;4
-844;Orbán T.;2026-10-22;SR;T;4;0;0;4
-845;Orbán T.;2026-10-22;SR;T;4;0;0;4
-846;Orbán T.;2026-10-22;SR;T;4;0;0;4
-858;Boros S.;2026-10-21;SR;TN;4;0;0;4
-861;Soletech;2026-10-16;SR;TN;4;0;0;4
-862;Soletech;2026-10-16;SR;TN;4;0;0;4
+833;LizaText;2026-10-20;SR;T;;4;0;0;4
+836;Driszku Zs.;2026-10-22;SR;TN;;4;0;0;4
+839;Berkes Balázs, Bcs;2026-10-27;SR;T;;4;0;0;4
+842;Orbán T.;2026-10-22;SR;T;;4;0;0;4
+843;Orbán T.;2026-10-22;SR;T;;4;0;0;4
+844;Orbán T.;2026-10-22;SR;T;;4;0;0;4
+845;Orbán T.;2026-10-22;SR;T;;4;0;0;4
+846;Orbán T.;2026-10-22;SR;T;;4;0;0;4
+858;Boros S.;2026-10-21;SR;TN;;4;0;0;4
+861;Soletech;2026-10-16;SR;TN;;4;0;0;4
+862;Soletech;2026-10-16;SR;TN;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261019-071141.txt;cuttingplan_20261019-071141.txt;b98kU9EsFImPCw2l3bIj97Qr7Fcvy6RbCtu08rhoKl4=;Present
-849;Orbán T.;2026-10-22;SR;MINIT;4;0;0;4
-855;Antal Viktor, Eger;2026-10-21;SR;MINIT;4;0;0;4
-865;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-866;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-867;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-868;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-869;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-870;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-871;Sándor Árnyék;2026-10-27;SR;MINIT;4;0;0;4
-874;An-Ger;2026-10-26;SR;MINIT;4;0;0;4
+849;Orbán T.;2026-10-22;SR;MINIT;;4;0;0;4
+855;Antal Viktor, Eger;2026-10-21;SR;MINIT;;4;0;0;4
+865;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+866;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+867;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+868;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+869;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+870;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+871;Sándor Árnyék;2026-10-27;SR;MINIT;;4;0;0;4
+874;An-Ger;2026-10-26;SR;MINIT;;4;0;0;4
 
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261019-154107.txt;cuttingplan_20261019-154107.txt;RMD8GW+0ca0YEGOlwmn1zqRGsY5Tg8gJ6jWP0e85zXE=;Present
-444;MolKomfort, Eger;2026-10-21;NP;CIP;2;0;0;2
-452;Otthonka, Bp.;2026-10-20;NP;CIP;2;0;0;2
-455;Takács Ablak, Eger;2026-10-21;NP;CIP;2;0;0;2
-458;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;2;0;0;2
-459;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;2;0;0;2
-462;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;2;0;0;2
-463;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;2;0;0;2
+444;MolKomfort, Eger;2026-10-21;NP;CIP;RAL 7016;2;0;0;2
+452;Otthonka, Bp.;2026-10-20;NP;CIP;RAL 7016;2;0;0;2
+455;Takács Ablak, Eger;2026-10-21;NP;CIP;RAL 9010;2;0;0;2
+458;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8012;2;0;0;2
+459;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8012;2;0;0;2
+462;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8019;2;0;0;2
+463;Jakufa-Ép, Nyh.;2026-10-21;NP;CIP;RAL 8019;2;0;0;2
 

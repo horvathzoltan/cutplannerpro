@@ -59,6 +59,9 @@ WorkSheetSummaryBuilder::buildOrderInfos(
 
             order.productSubtypeId =
                 req.productSubtypeId;
+
+            order.requiredColorCode =
+                req.requiredColor.code();
         }
 
         ++order.requestCount;

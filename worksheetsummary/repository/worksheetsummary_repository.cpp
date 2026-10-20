@@ -104,13 +104,13 @@ std::optional<
         const QVector<QString>& parts,
         CsvReader::FileContext& ctx)
 {
-    if (parts.size() != 9)
+    if (parts.size() != 10)
     {
         ctx.addError(
             ctx.currentLineNumber(),
             QString(
                 "❌ Hibás worksheet order sor. "
-                "9 mező szükséges, kapott: %1")
+                "10 mező szükséges, kapott: %1")
                 .arg(parts.size()));
 
         return std::nullopt;
@@ -130,20 +130,24 @@ std::optional<
     row.productTypeCode =
         parts[3].trimmed();
 
+
     row.productSubtypeCode =
         parts[4].trimmed();
 
-    row.requestCount =
-        parts[5].trimmed().toInt();
+    row.requiredColorCode =
+        parts[5].trimmed();
 
-    row.completedCount =
+    row.requestCount =
         parts[6].trimmed().toInt();
 
-    row.uncompletedCount =
+    row.completedCount =
         parts[7].trimmed().toInt();
 
-    row.undefinedCount =
+    row.uncompletedCount =
         parts[8].trimmed().toInt();
+
+    row.undefinedCount =
+        parts[9].trimmed().toInt();
 
     return row;
 }
@@ -218,6 +222,9 @@ std::optional<WorkSheetOrderInfo>
 
     info.productSubtypeId =
         subtype ? subtype->id : QUuid();
+
+    info.requiredColorCode =
+        row.requiredColorCode;
 
     if (info.productTypeId.isNull())
     {
@@ -394,6 +401,7 @@ bool WorkSheetSummaryRepository::saveToFile(
            "dueDate;"
            "productTypeCode;"
            "productSubtypeCode;"
+           "requiredColorCode;"
            "requestCount;"
            "completedCount;"
            "uncompletedCount;"
@@ -436,6 +444,8 @@ bool WorkSheetSummaryRepository::saveToFile(
                 << (type?type->code:"")
                 << ";"
                 << (subtype?subtype->code:"")
+                << ";"
+                << order.requiredColorCode
                 << ";"
                 << order.requestCount
                 << ";"

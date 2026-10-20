@@ -49,6 +49,8 @@ private:
 
         QString productSubtypeCode;
 
+        QString requiredColorCode;
+
         int requestCount = 0;
 
         int completedCount = 0;
