@@ -523,6 +523,20 @@ void MainWindow::ButtonConnector_Connect()
     connect(ui->btn_GlobalStockList, &QPushButton::clicked,
             this, &MainWindow::handle_actGlobalStockList_clicked);
 
+    connect(
+        ui->btn_search,
+        &QPushButton::clicked,
+        this,
+        [this]()
+        {
+            workSheetSummaryTableManager
+                ->setSearchText(
+                    ui->lineEdit_search->text());
+
+            workSheetSummaryTableManager
+                ->refresh_TableFromRegistry();
+        });
+
 }
 
 MainWindow::~MainWindow()

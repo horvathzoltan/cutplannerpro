@@ -18,11 +18,12 @@ public:
     void refresh_TableFromRegistry();
 
     void clearTable();
-
+    void setSearchText(const QString& txt);
 private:
 
     QTableWidget* _table;
     QWidget* parent;
+    QString _searchText;
 
     static bool _isVerbose;
 };

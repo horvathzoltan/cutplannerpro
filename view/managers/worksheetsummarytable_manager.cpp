@@ -6,6 +6,70 @@
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
+bool containsSearchText(
+    const WorkSheetSummary& summary,
+    const QString& searchText)
+{
+    if (searchText.trimmed().isEmpty())
+    {
+        return false;
+    }
+
+    for (const auto& order : summary.orders)
+    {
+        auto* type =
+            ProductTypeRegistry::instance()
+                .findById(order.productTypeId);
+
+        auto* subtype =
+            ProductSubtypeRegistry::instance()
+                .findById(order.productSubtypeId);
+
+        QString typeName =
+            type ? type->name : "";
+
+        QString subtypeName =
+            subtype ? subtype->name : "";
+
+        if (order.externalReference.contains(
+                searchText,
+                Qt::CaseInsensitive))
+        {
+            return true;
+        }
+
+        if (order.ownerName.contains(
+                searchText,
+                Qt::CaseInsensitive))
+        {
+            return true;
+        }
+
+        if (order.requiredColorCode.contains(
+                searchText,
+                Qt::CaseInsensitive))
+        {
+            return true;
+        }
+
+        if (typeName.contains(
+                searchText,
+                Qt::CaseInsensitive))
+        {
+            return true;
+        }
+
+        if (subtypeName.contains(
+                searchText,
+                Qt::CaseInsensitive))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 namespace
 {
 
@@ -126,6 +190,29 @@ void WorkSheetSummaryTableManager::addRow(
             summary.requiresAttention()? "Yes" : "No")
         );
 
+    if (containsSearchText(
+            summary,
+            _searchText))
+    {
+        QColor hitColor("#704040");
+
+        for (int col = 0;
+             col < _table->columnCount();
+             ++col)
+        {
+            auto* item =
+                _table->item(
+                    rowIx,
+                    col);
+
+            if (item)
+            {
+                item->setBackground(
+                    hitColor);
+            }
+        }
+    }
+
     if (_isVerbose)
     {
         qDebug()
@@ -217,3 +304,11 @@ void WorkSheetSummaryTableManager::clearTable()
     _table->setRowCount(0);
     _table->clearContents();
 }
+
+void WorkSheetSummaryTableManager::setSearchText(
+    const QString& txt)
+{
+    _searchText =
+        txt.trimmed();
+}
+
