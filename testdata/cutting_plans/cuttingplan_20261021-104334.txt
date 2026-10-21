@@ -1,0 +1,23 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2638";"Karancsi L.";945;2350;910;;1;0;1;"";TE-R-23;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2638";"Karancsi L.";945;2350;900;;1;0;1;"";ROL-P;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2639";"Karancsi L.";945;2350;910;;1;1;0;"";TE-R-23;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2639";"Karancsi L.";945;2350;900;;1;1;0;"";ROL-P;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2640";"Karancsi L.";975;2150;940;;1;0;1;"";TE-R-23;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2640";"Karancsi L.";975;2150;930;;1;0;1;"";ROL-P;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2641";"Karancsi L.";975;2150;940;;1;1;0;"";TE-R-23;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2641";"Karancsi L.";975;2150;930;;1;1;0;"";ROL-P;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2644";"Varga L.";606;770;581;;1;1;0;"";TE-R-23;Width;false;2026-10-27;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2644";"Varga L.";606;770;579;;1;1;0;"";ROL-P;Width;false;2026-10-27;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2650";"Molnár J.";740;1220;705;;1;0;1;"";TE-R-23;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2650";"Molnár J.";740;1220;695;;1;0;1;"";ROL-P;Width;false;2026-10-27;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2657";"Keczán János";960;1240;930;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2657";"Keczán János";960;1240;933;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2660";"Generálkiv., Pécs";667;1200;642;;1;0;0;"";TE-R-23;Width;false;2026-10-30;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2660";"Generálkiv., Pécs";667;1200;640;;1;0;0;"";ROL-P;Width;false;2026-10-30;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2661";"Generálkiv., Pécs";667;1200;642;;1;0;0;"";TE-R-23;Width;false;2026-10-30;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2661";"Generálkiv., Pécs";667;1200;640;;1;0;0;"";ROL-P;Width;false;2026-10-30;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2664";"Orbán T.";1455;2200;1420;;1;0;1;"";TE-R-23;Width;false;2026-11-03;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2664";"Orbán T.";1455;2200;1410;;1;0;1;"";ROL-P;Width;false;2026-11-03;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2665";"Orbán T.";795;2200;760;;1;1;0;"";TE-R-23;Width;false;2026-11-03;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2665";"Orbán T.";795;2200;750;;1;1;0;"";ROL-P;Width;false;2026-11-03;ROL;ALAP;;SM;Gyartasi;UNKNOWN
