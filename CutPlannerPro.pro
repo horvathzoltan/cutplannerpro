@@ -91,6 +91,8 @@ SOURCES += \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
     view/common/widgets/recentmaterialswidget.cpp \
+    view/common/widgets/worksheetorderrowwidget.cpp \
+    view/common/widgets/worksheetsummarydetailwidget.cpp \
     view/dialog/input/clonerequestdialog.cpp \
     view/dialog/input/matrix_cell_delegate.cpp \
     view/dialog/input/series_matrix_view.cpp \
@@ -383,6 +385,8 @@ HEADERS += \
     view/columnindexes/worksheetsummarytable_columns.h \
     view/common/layouts/qflowlayout.h \
     view/common/widgets/recentmaterialswidget.h \
+    view/common/widgets/worksheetorderrowwidget.h \
+    view/common/widgets/worksheetsummarydetailwidget.h \
     view/dialog/dialogmode.h \
     view/dialog/input/clonerequestdialog.h \
     view/dialog/input/matrix_cell_delegate.h \

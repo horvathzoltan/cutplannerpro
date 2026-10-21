@@ -46,7 +46,7 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     vm.cells[InputTableColumns::Owner] =
         TableCellViewModel::fromText(request.ownerName,"",baseColor, fgColor, true);
 
-    QString dueDateStr = request.dueDate.isValid() ? request.dueDate.toString("yyyy-MM-dd") : "";
+    QString dueDateStr = request.dueDate.isValid() ? request.dueDate.toString("yyyy.MM.dd") : "";
     int daysLeft = QDate::currentDate().daysTo(request.dueDate);
     QString iconKey = EmojiHelper::priorityIconFor_emoji(daysLeft);
 

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
+#include <view/common/widgets/worksheetsummarydetailwidget.h>
 
 bool containsSearchText(
     const WorkSheetSummary& summary,
@@ -70,59 +71,59 @@ bool containsSearchText(
     return false;
 }
 
-namespace
-{
+// namespace
+// {
 
-QString buildDetailText(
-    const WorkSheetSummary& summary)
-{
-    if (summary.orders.isEmpty())
-    {
-        return "Nincs rendelési információ.";
-    }
+// QString buildDetailText(
+//     const WorkSheetSummary& summary)
+// {
+//     if (summary.orders.isEmpty())
+//     {
+//         return "Nincs rendelési információ.";
+//     }
 
-    QVector<WorkSheetOrderInfo> orders =
-        summary.orders;
+//     QVector<WorkSheetOrderInfo> orders =
+//         summary.orders;
 
-    std::sort(
-        orders.begin(),
-        orders.end(),
-        [](const WorkSheetOrderInfo& a,
-           const WorkSheetOrderInfo& b)
-        {
-            return a.dueDate < b.dueDate;
-        });
+//     std::sort(
+//         orders.begin(),
+//         orders.end(),
+//         [](const WorkSheetOrderInfo& a,
+//            const WorkSheetOrderInfo& b)
+//         {
+//             return a.dueDate < b.dueDate;
+//         });
 
-    QStringList lines;
+//     QStringList lines;
 
-    for (const auto& order : orders)
-    {
-        auto* type = ProductTypeRegistry::instance().findById(order.productTypeId);
-        auto* subtype = ProductSubtypeRegistry::instance().findById(order.productSubtypeId);
+//     for (const auto& order : orders)
+//     {
+//         auto* type = ProductTypeRegistry::instance().findById(order.productTypeId);
+//         auto* subtype = ProductSubtypeRegistry::instance().findById(order.productSubtypeId);
 
-        QString typeName = type ? type->name : "";
-        QString subtypeName = subtype ? subtype->name : "";
-        QString colorName = order.requiredColorCode.isEmpty() ? "N/A" : order.requiredColorCode;
+//         QString typeName = type ? type->name : "";
+//         QString subtypeName = subtype ? subtype->name : "";
+//         QString colorName = order.requiredColorCode.isEmpty() ? "N/A" : order.requiredColorCode;
 
-        lines << QString(
-                     "%1 %2 | %3 | %4 | %5/%6")
-                     .arg(order.externalReference + ".", -7)
-                     .arg(order.ownerName, -25)
-                     .arg(order.dueDate.toString("yyyy.MM.dd"), -12)
-                     .arg(
-                         QString("%1/%2/%3")
-                             .arg(typeName)
-                             .arg(subtypeName)
-                             .arg(colorName),
-                         -35)
-                     .arg(order.completedCount)
-                     .arg(order.requestCount);
-    }
+//         lines << QString(
+//                      "%1 %2 | %3 | %4 | %5/%6")
+//                      .arg(order.externalReference + ".", -7)
+//                      .arg(order.ownerName, -25)
+//                      .arg(order.dueDate.toString("yyyy.MM.dd"), -12)
+//                      .arg(
+//                          QString("%1/%2/%3")
+//                              .arg(typeName)
+//                              .arg(subtypeName)
+//                              .arg(colorName),
+//                          -35)
+//                      .arg(order.completedCount)
+//                      .arg(order.requestCount);
+//     }
 
-    return lines.join("\n");
-}
+//     return lines.join("\n");
+// }
 
-}
+// }
 
 
 bool WorkSheetSummaryTableManager::_isVerbose = false;
@@ -227,53 +228,78 @@ void WorkSheetSummaryTableManager::addRow(
 
         _table->insertRow(detailRowIx);
 
-        QString detailText =
-            buildDetailText(summary);
+        // QString detailText =
+        //     buildDetailText(summary);
 
-        auto* item =
-            new QTableWidgetItem(
-                detailText);
+        // auto* item =
+        //     new QTableWidgetItem(
+        //         detailText);
 
-        QFont font =
-            item->font();
-
-        font.setPointSize(
-            std::max(
-                8,
-                font.pointSize() - 2));
-
-        item->setFont(font);
-
-        int lineCount =
-            detailText.count('\n') + 1;
-
-        QFontMetrics fm(font);
-
-        int rowHeight =
-            lineCount * fm.lineSpacing() + 8;
-
-        rowHeight =
-            std::max(
-                24,
-                rowHeight);
-
-        _table->setRowHeight(
-            detailRowIx,
-            rowHeight);
-
-        item->setForeground(
-            QColor("#666666"));
-
-        _table->setItem(
-            detailRowIx,
-            0,
-            item);
+        auto* widget =
+            new WorkSheetSummaryDetailWidget(
+                summary,
+                _searchText,
+                _table);
 
         _table->setSpan(
             detailRowIx,
             0,
             1,
             _table->columnCount());
+
+        _table->setCellWidget(
+            detailRowIx,
+            0,
+            widget);
+
+        constexpr int rowHeightPerOrder = 36;
+
+        int a = summary.orders.size() * rowHeightPerOrder;
+
+        _table->setRowHeight(
+            detailRowIx,
+            std::max( 28, a));
+
+        // QFont font =
+        //     item->font();
+
+        // font.setPointSize(
+        //     std::max(
+        //         8,
+        //         font.pointSize() - 2));
+
+        // item->setFont(font);
+
+        // int lineCount =
+        //     detailText.count('\n') + 1;
+
+        // QFontMetrics fm(font);
+
+        // int rowHeight =
+        //     lineCount * fm.lineSpacing() + 8;
+
+        // rowHeight =
+        //     std::max(
+        //         24,
+        //         rowHeight);
+
+        // _table->setRowHeight(
+        //     detailRowIx,
+        //     rowHeight);
+
+        // item->setForeground(
+        //     QColor("#666666"));
+
+        // _table->setItem(
+        //     detailRowIx,
+        //     0,
+        //     item);
+
+        // _table->setSpan(
+        //     detailRowIx,
+        //     0,
+        //     1,
+        //     _table->columnCount());
     }
 }
 
