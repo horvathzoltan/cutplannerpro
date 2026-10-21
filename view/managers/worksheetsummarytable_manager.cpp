@@ -97,7 +97,6 @@ QString buildDetailText(
 
     for (const auto& order : orders)
     {
-
         auto* type = ProductTypeRegistry::instance().findById(order.productTypeId);
         auto* subtype = ProductSubtypeRegistry::instance().findById(order.productSubtypeId);
 
@@ -106,15 +105,16 @@ QString buildDetailText(
         QString colorName = order.requiredColorCode.isEmpty() ? "N/A" : order.requiredColorCode;
 
         lines << QString(
-                     "%1 %2 | %3 | %4/%5")
-                     .arg(order.externalReference+".", -7)
-                     .arg(order.ownerName,       -25)
+                     "%1 %2 | %3 | %4 | %5/%6")
+                     .arg(order.externalReference + ".", -7)
+                     .arg(order.ownerName, -25)
+                     .arg(order.dueDate.toString("yyyy.MM.dd"), -12)
                      .arg(
                          QString("%1/%2/%3")
                              .arg(typeName)
                              .arg(subtypeName)
                              .arg(colorName),
-                         -30)
+                         -35)
                      .arg(order.completedCount)
                      .arg(order.requestCount);
     }
