@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2653";"Rada";580;1600;545;;1;0;1;"";TE-R-23;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2653";"Rada";580;1600;535;;1;0;1;"";ROL-P;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2654";"Rada";580;1600;545;;1;1;0;"";TE-R-23;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2654";"Rada";580;1600;535;;1;1;0;"";ROL-P;Width;false;2026-10-21;ROL;ALAP;;SM;Gyartasi;UNKNOWN

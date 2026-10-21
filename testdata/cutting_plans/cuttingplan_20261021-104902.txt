@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"880";"Kiss Árnyékolás, Pécs";404;1330;388;;1;1;0;"";SR-FSN;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"880";"Kiss Árnyékolás, Pécs";404;1330;371;;1;1;0;"";TE-H-32;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"880";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-Z;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"880";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-P-3000;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
