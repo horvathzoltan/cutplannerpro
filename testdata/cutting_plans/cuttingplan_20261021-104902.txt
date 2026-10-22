@@ -1,5 +1,13 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
-"880";"Kiss Árnyékolás, Pécs";404;1330;388;;1;1;0;"";SR-FSN;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
 "880";"Kiss Árnyékolás, Pécs";404;1330;371;;1;1;0;"";TE-H-32;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
 "880";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-Z;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
 "880";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-P-3000;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"881";"Kiss Árnyékolás, Pécs";1103;1330;1070;;1;0;1;"";TE-H-32;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"882";"Kiss Árnyékolás, Pécs";404;1330;371;;1;1;0;"";TE-H-32;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"882";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-Z;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"882";"Kiss Árnyékolás, Pécs";404;1330;374;;1;1;0;"";SR-P-3000;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"883";"Kiss Árnyékolás, Pécs";1103;1330;1070;;1;0;1;"";TE-H-32;Width;false;2026-11-06;SR;TN;;SM;Gyartasi;UNKNOWN
+"886";"Katona Árpád";770;1270;754;;4;2;2;"";SR-FSN;Width;false;2026-10-30;SR;TN;;SM;Gyartasi;UNKNOWN
+"886";"Katona Árpád";770;1270;737;;4;2;2;"";TE-H-32;Width;false;2026-10-30;SR;TN;;SM;Gyartasi;UNKNOWN
+"886";"Katona Árpád";770;1270;740;;4;2;2;"";SR-Z;Width;false;2026-10-30;SR;TN;;SM;Gyartasi;UNKNOWN
+"886";"Katona Árpád";770;1270;740;;4;2;2;"";SR-P-3000;Width;false;2026-10-30;SR;TN;;SM;Gyartasi;UNKNOWN

@@ -49,7 +49,7 @@ QString InventoryAuditFormatter::toText(
         out << header;
     }
 
-    out << QString(105, '=');
+    out << QString(60, '=');
 
     for (const auto& r : model.rows)
     {
@@ -173,9 +173,9 @@ QString InventoryAuditFormatter::toText(
     }
 
     out << "";
-    out << QString(95, '=');
+    out << QString(60, '=');
     out << "GROUP SUMMARY";
-    out << QString(95, '=');
+    out << QString(60, '=');
     out << "";
 
     for (const auto& g : model.groups)
