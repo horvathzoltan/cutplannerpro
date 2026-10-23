@@ -1,0 +1,12 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"436";"Jola, Siófok_bolt";1675;1285;1565;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"436";"Jola, Siófok_bolt";1675;1285;1500;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+
+"437";"Jola, Siófok_bolt";3265;1880;3155;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"437";"Jola, Siófok_bolt";3265;1880;3090;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+
+"440";"BeauRollo";1510;2540;1400;;1;1;0;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"440";"BeauRollo";1510;2540;1335;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+
+"441";"BeauRollo";1890;2540;1780;;1;0;1;"RAL 7016";NP-ROLL70-5000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"441";"BeauRollo";1890;2540;1715;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026-10-22;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
