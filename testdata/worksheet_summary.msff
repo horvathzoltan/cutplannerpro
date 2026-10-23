@@ -1806,6 +1806,17 @@ externalReference;ownerName;dueDate;productTypeCode;productSubtypeCode;requiredC
 2665;Orbán T.;2026-11-03;ROL;ALAP;;SM;TE-R-23;2;0;0;2
 
 
-/home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261021-104902.txt;cuttingplan_20261021-104902.txt;oUc34oOTDZEgHo831m42TpgKzORK3FlugG9APKZua4k=;Present
-880;Kiss Árnyékolás, Pécs;2026-11-06;SR;TN;;SM;SR-FSN;4;0;0;4
+/home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261021-104902.txt;cuttingplan_20261021-104902.txt;JcuVvAtEVqJhNHrHOhyNFzfpmIGfACO3NnaVxbmbgws=;Present
+880;Kiss Árnyékolás, Pécs;2026-11-06;SR;TN;;SM;TE-H-32;3;0;0;3
+881;Kiss Árnyékolás, Pécs;2026-11-06;SR;TN;;SM;TE-H-32;1;0;0;1
+882;Kiss Árnyékolás, Pécs;2026-11-06;SR;TN;;SM;TE-H-32;3;0;0;3
+883;Kiss Árnyékolás, Pécs;2026-11-06;SR;TN;;SM;TE-H-32;1;0;0;1
+886;Katona Árpád;2026-10-30;SR;TN;;SM;SR-FSN;4;0;0;4
+
+
+/home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261022-064059.txt;cuttingplan_20261022-064059.txt;Q5pSTxghqk/g8l80UnigFz5YOJnmfwgvYJ4lFH8xGd4=;Present
+436;Jola, Siófok_bolt;2026-10-22;NP;CIP;RAL 7016;SM;NP-ROLL70-5000;2;0;0;2
+437;Jola, Siófok_bolt;2026-10-22;NP;CIP;RAL 7016;SM;NP-ROLL70-5000;2;0;0;2
+440;BeauRollo;2026-10-22;NP;CIP;RAL 7016;SM;NP-ROLL70-5000;2;0;0;2
+441;BeauRollo;2026-10-22;NP;CIP;RAL 7016;SM;NP-ROLL70-5000;2;0;0;2
 
