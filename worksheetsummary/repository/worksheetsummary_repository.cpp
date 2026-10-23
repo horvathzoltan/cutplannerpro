@@ -10,6 +10,8 @@
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 
+#include <materials/registry/material_registry.h>
+
 QList<QList<QVector<QString>>>
 WorkSheetSummaryRepository::readMsffSections(
     const QString& filepath)
@@ -104,7 +106,7 @@ std::optional<
         const QVector<QString>& parts,
         CsvReader::FileContext& ctx)
 {
-    if (parts.size() != 10)
+    if (parts.size() != 12)
     {
         ctx.addError(
             ctx.currentLineNumber(),
@@ -137,17 +139,23 @@ std::optional<
     row.requiredColorCode =
         parts[5].trimmed();
 
+    row.requiredSurfaceCode =
+        parts[6].trimmed();
+
+    row.materialBarcode =
+        parts[7].trimmed();
+
     row.requestCount =
-        parts[6].trimmed().toInt();
-
-    row.completedCount =
-        parts[7].trimmed().toInt();
-
-    row.uncompletedCount =
         parts[8].trimmed().toInt();
 
-    row.undefinedCount =
+    row.completedCount =
         parts[9].trimmed().toInt();
+
+    row.uncompletedCount =
+        parts[10].trimmed().toInt();
+
+    row.undefinedCount =
+        parts[11].trimmed().toInt();
 
     return row;
 }
@@ -223,8 +231,13 @@ std::optional<WorkSheetOrderInfo>
     info.productSubtypeId =
         subtype ? subtype->id : QUuid();
 
-    info.requiredColorCode =
-        row.requiredColorCode;
+    info.requiredColor =
+        NamedColor(
+            row.requiredColorCode);
+
+    info.requiredSurface =
+        SurfaceTypeUtils::fromCode(
+            row.requiredSurfaceCode);
 
     if (info.productTypeId.isNull())
     {
@@ -248,6 +261,16 @@ std::optional<WorkSheetOrderInfo>
 
         return std::nullopt;
     }
+
+    const auto* mat =
+        MaterialRegistry::instance()
+            .findByBarcode(
+                row.materialBarcode);
+
+    info.materialId =
+        mat
+            ? mat->id
+            : QUuid();
 
     info.requestCount =
         row.requestCount;
@@ -402,6 +425,8 @@ bool WorkSheetSummaryRepository::saveToFile(
            "productTypeCode;"
            "productSubtypeCode;"
            "requiredColorCode;"
+           "requiredSurfaceCode;"
+           "materialBarcode;"
            "requestCount;"
            "completedCount;"
            "uncompletedCount;"
@@ -435,6 +460,11 @@ bool WorkSheetSummaryRepository::saveToFile(
                 ProductSubtypeRegistry::instance()
                     .findById(order.productSubtypeId);
 
+            const MaterialMaster* mat =
+                MaterialRegistry::instance()
+                    .findById(
+                        order.materialId);
+
             out
                 << order.externalReference << ";"
                 << order.ownerName << ";"
@@ -445,7 +475,12 @@ bool WorkSheetSummaryRepository::saveToFile(
                 << ";"
                 << (subtype?subtype->code:"")
                 << ";"
-                << order.requiredColorCode
+                << order.requiredColor.code()
+                << ";"
+                << SurfaceTypeUtils::toCode(
+                       order.requiredSurface)
+                << ";"
+                << (mat?mat->barcode:"")
                 << ";"
                 << order.requestCount
                 << ";"

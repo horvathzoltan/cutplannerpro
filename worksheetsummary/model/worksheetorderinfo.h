@@ -1,8 +1,11 @@
 #pragma once
 
+#include "common/surface/surfacetype.h"
 #include <QDate>
 #include <QString>
 #include <QUuid>
+
+#include <common/color/namedcolor.h>
 
 
 struct WorkSheetOrderInfo
@@ -22,7 +25,10 @@ struct WorkSheetOrderInfo
     int uncompletedCount = 0;
     int undefinedCount = 0;
 
-    QString requiredColorCode;
+    //QString requiredColorCode;
+    NamedColor requiredColor;
+    SurfaceType requiredSurface = SurfaceType::Unknown;
+    QUuid materialId;
 
     bool requiresAttention() const
     {

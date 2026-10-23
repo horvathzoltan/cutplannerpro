@@ -50,6 +50,8 @@ private:
         QString productSubtypeCode;
 
         QString requiredColorCode;
+        QString requiredSurfaceCode;
+        QString materialBarcode;
 
         int requestCount = 0;
 

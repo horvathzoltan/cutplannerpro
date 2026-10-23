@@ -48,6 +48,7 @@ SOURCES += \
     model/storageaudit/auditcontext.cpp \
     paint/paint_calculator.cpp \
     paint/paint_reporter.cpp \
+    paint/paintingrequirement_helper.cpp \
     paint/presenter/paintpresenter.cpp \
     paint/repository/powder_consumption_repository.cpp \
     leftover/presenter/leftoverpresenter.cpp \
@@ -225,6 +226,7 @@ HEADERS += \
     materials/repository/material_storagegrouprepository.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \
+    paint/paintingrequirement_helper.h \
     product/model/product_calcmodes.h \
     product/registry/product_calcmode_registry.h \
     product/repository/product_calcmode_repository.h \
@@ -524,6 +526,7 @@ HEADERS += \
     worksheetsummary/model/worksheetorderinfo.h \
     worksheetsummary/registry/worksheetsummary_registry.h \
     worksheetsummary/repository/worksheetsummary_repository.h \
+    worksheetsummary/worksheetsearch_helper.h \
     worksheetsummary/worksheetsummary_builder.h
 
 FORMS += \

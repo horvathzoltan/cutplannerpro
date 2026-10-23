@@ -1,6 +1,8 @@
 #include "worksheetorderrowwidget.h"
 
 #include "common/color/namedcolor.h"
+#include "common/emojihelper.h"
+#include "materials/view/material_cell_generator.h"
 
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
@@ -8,66 +10,28 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include <view/viewmodels/tablecellviewmodel.h>
+#include "worksheetsummary/worksheetsearch_helper.h"
+
 namespace
 {
 
-bool matchesText(
-    const WorkSheetOrderInfo& order,
-    const QString& searchText)
-{
-    QString txt =
-        searchText.trimmed();
-
-    if (txt.isEmpty())
-    {
-        return false;
-    }
-
-    auto* type =
-        ProductTypeRegistry::instance()
-            .findById(order.productTypeId);
-
-    auto* subtype =
-        ProductSubtypeRegistry::instance()
-            .findById(order.productSubtypeId);
-
-    QString typeName =
-        type
-            ? type->name
-            : QString();
-
-    QString subtypeName =
-        subtype
-            ? subtype->name
-            : QString();
-
-    return
-        order.externalReference.contains(
-            txt,
-            Qt::CaseInsensitive)
-        ||
-        order.ownerName.contains(
-            txt,
-            Qt::CaseInsensitive)
-        ||
-        order.requiredColorCode.contains(
-            txt,
-            Qt::CaseInsensitive)
-        ||
-        typeName.contains(
-            txt,
-            Qt::CaseInsensitive)
-        ||
-        subtypeName.contains(
-            txt,
-            Qt::CaseInsensitive);
-}
 
 QLabel* createLabel(
     const QString& text)
 {
-    auto* lbl =
-        new QLabel(text);
+    auto* lbl = new QLabel(text);
+
+    QFont f = lbl->font();
+
+    f.setPointSize(
+        std::max(
+            7,
+            f.pointSize() - 2));
+
+    f.setItalic(true);
+
+    lbl->setFont(f);
 
     lbl->setTextInteractionFlags(
         Qt::TextSelectableByMouse);
@@ -75,26 +39,24 @@ QLabel* createLabel(
     return lbl;
 }
 
+void applyHighlight(QWidget* w)
+{
+    if (!w)
+        return;
+
+    w->setStyleSheet(
+        "background:#704040;");
+};
+
+
 }
 
-WorkSheetOrderRowWidget::
-    WorkSheetOrderRowWidget(
+void WorkSheetOrderRowWidget::insertRow(
+        QGridLayout* grid,
+        int row,
         const WorkSheetOrderInfo& order,
-        const QString& searchText,
-        QWidget* parent)
-    : QWidget(parent)
+        const QString& searchText)
 {
-    auto* layout =
-        new QHBoxLayout(this);
-
-    layout->setContentsMargins(
-        4,
-        2,
-        4,
-        2);
-
-    layout->setSpacing(8);
-
     auto* type =
         ProductTypeRegistry::instance()
             .findById(
@@ -123,10 +85,11 @@ WorkSheetOrderRowWidget::
         createLabel(
             order.ownerName);
 
-    QLabel* lblDue =
-        createLabel(
-            order.dueDate.toString(
-                "yyyy.MM.dd"));
+    QString dueDateStr = order.dueDate.isValid() ? order.dueDate.toString("yyyy.MM.dd.") : "";
+    int daysLeft = QDate::currentDate().daysTo(order.dueDate);
+    QString iconKey = EmojiHelper::priorityIconFor_emoji(daysLeft);
+
+    QLabel* lblDue = createLabel( iconKey + " " + dueDateStr);
 
     QLabel* lblType =
         createLabel(
@@ -140,62 +103,57 @@ WorkSheetOrderRowWidget::
                 .arg(order.completedCount)
                 .arg(order.requestCount));
 
-    QLabel* colorBox =
-        new QLabel();
 
-    colorBox->setFixedSize(
-        12,
-        12);
+    const MaterialMaster* mat = MaterialRegistry::instance().findById(order.materialId);
 
-    NamedColor color =
-        NamedColor::fromUserInput(
-            order.requiredColorCode);
+    TableCellViewModel colorVm;
 
-    if (color.isValid())
+    if (mat)
     {
-        colorBox->setStyleSheet(
-            QString(
-                "background-color:%1;"
-                "border-radius:5px;"
-                "border:1px solid #888;")
-                .arg(
-                    color.color().name()));
-
-        colorBox->setToolTip(
-            color.code());
+        colorVm = CellGenerators::requestColorCell(
+                order.requiredColor,
+                order.requiredSurface,
+                mat->color,
+                mat->surface,
+                mat->paintingMode);
     }
     else
     {
-        colorBox->hide();
+        colorVm =
+            TableCellViewModel::fromText(
+            "⚠️ Hiányzó anyag",
+            "A materialId nem található a MaterialRegistry-ben");
     }
 
-    layout->addWidget(
-        lblRef);
+    grid->addWidget(lblRef, row, 0);
+    grid->addWidget(lblOwner, row, 1);
+    grid->addWidget(lblDue, row, 2);
+    grid->addWidget(lblType, row, 3);
 
-    layout->addWidget(
-        lblOwner);
-
-    layout->addWidget(
-        lblDue);
-
-    layout->addWidget(
-        lblType);
-
-    layout->addWidget(
-        colorBox);
-
-    layout->addWidget(
-        lblProgress);
-
-    layout->addStretch();
-
-    if (matchesText(
-            order,
-            searchText))
+    if (colorVm.widget)
     {
-        setStyleSheet(
-            "background:#704040;");
+        auto f = lblRef->font();
+        f.setItalic(true);
+        colorVm.widget->setToolTip(colorVm.tooltip);
+        //colorVm.widget->layout()->setAlignment(Qt::AlignLeft);
+        colorVm.widget->setFont(f);
+
+        grid->addWidget(colorVm.widget, row, 4);
     }
 
-    setAutoFillBackground(true);
+    grid->addWidget(lblProgress, row, 5);
+
+
+    if (WorkSheetSearchHelper::matches(order,searchText))
+    {
+        //setStyleSheet("background:#704040;");
+        applyHighlight(lblRef);
+        applyHighlight(lblOwner);
+        applyHighlight(lblDue);
+        applyHighlight(lblType);
+        applyHighlight(lblProgress);
+        applyHighlight(colorVm.widget);
+    }
+
+    //setAutoFillBackground(true);
 }

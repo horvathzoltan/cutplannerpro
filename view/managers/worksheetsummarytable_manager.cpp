@@ -46,7 +46,7 @@ bool containsSearchText(
             return true;
         }
 
-        if (order.requiredColorCode.contains(
+        if (order.requiredColor.code().contains(
                 searchText,
                 Qt::CaseInsensitive))
         {
@@ -241,6 +241,8 @@ void WorkSheetSummaryTableManager::addRow(
                 _searchText,
                 _table);
 
+        widget->adjustSize();
+
         _table->setSpan(
             detailRowIx,
             0,
@@ -252,13 +254,9 @@ void WorkSheetSummaryTableManager::addRow(
             0,
             widget);
 
-        constexpr int rowHeightPerOrder = 36;
-
-        int a = summary.orders.size() * rowHeightPerOrder;
-
         _table->setRowHeight(
             detailRowIx,
-            std::max( 28, a));
+            widget->sizeHint().height());
 
         // QFont font =
         //     item->font();

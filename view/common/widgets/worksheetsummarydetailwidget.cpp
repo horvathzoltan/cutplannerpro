@@ -1,9 +1,6 @@
 #include "worksheetsummarydetailwidget.h"
-
 #include "worksheetorderrowwidget.h"
-
 #include <QVBoxLayout>
-
 #include <algorithm>
 
 WorkSheetSummaryDetailWidget::
@@ -13,16 +10,16 @@ WorkSheetSummaryDetailWidget::
         QWidget* parent)
     : QWidget(parent)
 {
-    auto* layout =
-        new QVBoxLayout(this);
+    auto* grid =
+        new QGridLayout(this);
 
-    layout->setContentsMargins(
+    grid->setContentsMargins(
         2,
         2,
         2,
         2);
 
-    layout->setSpacing(1);
+    grid->setSpacing(1);
 
     QVector<WorkSheetOrderInfo> orders =
         summary.orders;
@@ -36,14 +33,35 @@ WorkSheetSummaryDetailWidget::
             return a.dueDate < b.dueDate;
         });
 
-    for (const auto& order : orders)
+    // for (const auto& order : orders)
+    // {
+    //     grid->addWidget(
+    //         new WorkSheetOrderRowWidget(
+    //             order,
+    //             searchText,
+    //             this));
+    // }
+
+    grid->setColumnMinimumWidth(0, 60);   // ref
+    grid->setColumnMinimumWidth(1, 160);  // owner
+    grid->setColumnMinimumWidth(2, 120);  // due
+    grid->setColumnMinimumWidth(3, 180);  // type
+
+    grid->setColumnStretch(4, 1);         // color
+
+    grid->setColumnMinimumWidth(5, 40);   // progress
+
+
+    for (int row = 0;
+         row < orders.size();
+         ++row)
     {
-        layout->addWidget(
-            new WorkSheetOrderRowWidget(
-                order,
-                searchText,
-                this));
+        WorkSheetOrderRowWidget::insertRow(
+            grid,
+            row,
+            orders[row],
+            searchText);
     }
 
-    layout->addStretch();
+    //layout->addStretch();
 }

@@ -1,6 +1,7 @@
 #pragma once
 //#include "model/cutting/plan/request.h"
 #include "materials/utils/material_utils.h"
+#include "paint/paintingrequirement_helper.h"
 #include "view/viewmodels/tablecellviewmodel.h"
 
 #include <model/cutting/instruction/cutinstruction.h>
@@ -92,70 +93,56 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
 // }
 
-inline TableCellViewModel requestColorCell(const NamedColor& requiredColorRaw,
+inline TableCellViewModel requestColorCell(const NamedColor& requiredColor,
+                                           SurfaceType requiredSurface,
                                            const NamedColor& matColor,
-                                           SurfaceType surface,
+                                           SurfaceType matSurface,
                                            PaintingMode matPaintingMode)
 {
-    // QString text = requiredColor.isValid() ? requiredColor.code()+": "+requiredColor.name() : "Nincs szín";
-    // QString tooltip = QString("Igényelt szín: %1").arg(text);
+    auto decision =
+        PaintingRequirementHelper::evaluate(
+            requiredColor,
+            requiredSurface,
+            matColor,
+            matSurface,
+            matPaintingMode);
 
-    // if(requiredColor.isValid()){
-    //     QString surfaceTxt = SurfaceTypeUtils::toCode(surface);
-    //     text += " (" + surfaceTxt+")";
-    //     tooltip += QString("\nFelület: %1").arg(SurfaceTypeUtils::toDisplayText(surface));
-    // }
+    QString surfaceDisplay= SurfaceTypeUtils::toDisplayText(requiredSurface);
 
-    // 1) Szín + felület szétválasztása
-    QString rawColorText = requiredColorRaw.code();   // pl. "RAL 7037 FSTR"
-    auto [colorPart, surfacePart] = SurfaceTypeUtils::extractSurface(rawColorText);
+    QString colorText;
 
-    // 2) Szín újraértelmezése (felületkód nélkül)
-    NamedColor requiredColor = NamedColor::fromUserInput(colorPart);
-
-    QString surfaceCode   = SurfaceTypeUtils::toCode(surface);
-    QString surfaceDisplay= SurfaceTypeUtils::toDisplayText(surface);
-
-    // 3) Felület normalizálása (ha a rawColorText-ben volt)
-    //SurfaceType finalSurface = surface;
-    // if (surfacePart!=SurfaceType::Unknown) {
-    //     finalSurface = SurfaceTypeUtils::toDisplayText(surfacePart);
-    // }
-
-    // 4) Szöveg összeállítása
-    QString text = requiredColor.isValid()
-                       ? requiredColor.code() + ": " + requiredColor.name()
-                       : "Nincs szín";
-
-    text += " (" + surfaceCode + ")";
-
-    QString tooltip = QString("Igényelt szín: %1\nFelület: %2").arg(text).arg(surfaceDisplay);
-        // 6) Festés logika
-    bool szinazonos = requiredColor.code() == matColor.code();
-    bool festheto = matPaintingMode != PaintingMode::None;
-    // Festés jelzés, ha eltér az anyag színétől - illetve ha az anyag natúr, akkor is festeni kell
-    bool isPaintingNeeded =
-        requiredColor.isValid()
-        //&& matColor.isValid()
-        && !szinazonos
-        && festheto;
-
-    if (isPaintingNeeded) {
-        text = "🖌️ " + text;
-        tooltip += "\n🖌️ Festés szükséges";
-    } else{
-        text = "";
-        if(szinazonos){
-            if(!text.isEmpty()) text+=", ";
-            text += "szinazonos";
-            tooltip += "\nFestés nem szükséges";
+    if(requiredColor.isValid()){
+        colorText = QString("%1: %2")
+        .arg(requiredColor.code())
+            .arg(requiredColor.name());
+        if (requiredSurface != SurfaceType::Unknown)
+        {
+            colorText += ": " + surfaceDisplay;
         }
-        if(!festheto){
-            if(!text.isEmpty()) text+=", ";
-            text += "nem festhető";
-            tooltip = "Az anyag nem festhető";
+
+        if (!decision.paintingPossible)
+        {
+            colorText = "🚫 " + colorText;
         }
+        else if (decision.paintingNeeded)
+        {
+            colorText = "🖌️ " + colorText;
+        }
+
     }
+    else
+    {
+        colorText = "Nincs szín előírva";
+    }
+
+    QString tooltip =
+        QString(
+            "Igényelt szín: %1\n"
+            "Felület: %2\n"
+            "Állapot: %3")
+            .arg(colorText)
+            .arg(surfaceDisplay)
+            .arg(decision.reason);
 
     QWidget* panel = new QWidget();
     QHBoxLayout* layout = new QHBoxLayout(panel);
@@ -164,10 +151,13 @@ inline TableCellViewModel requestColorCell(const NamedColor& requiredColorRaw,
     layout->setAlignment(Qt::AlignLeft);      // balra igazítás
 
     //if (isPaintingNeeded) {
-        QLabel* nameLabel = new QLabel(text);
+        QLabel* nameLabel = new QLabel(colorText);
         layout->addWidget(nameLabel);
 
-        if (isPaintingNeeded) {
+        //if (decision.paintingNeeded) {
+        if (requiredColor.isValid())
+        {
+
             if (requiredColor.isValid()) {
                 QColor fgColor = requiredColor.color().lightness() < 128 ? Qt::white : Qt::black;
                 QLabel* colorBox = new QLabel();

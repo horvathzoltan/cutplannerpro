@@ -2,16 +2,16 @@
 
 #include "worksheetsummary/model/worksheetorderinfo.h"
 
-#include <QWidget>
+#include <QGridLayout>
 
-class WorkSheetOrderRowWidget : public QWidget
+
+class WorkSheetOrderRowWidget
 {
-    Q_OBJECT
-
 public:
 
-    explicit WorkSheetOrderRowWidget(
+    static void insertRow(
+        QGridLayout* grid,
+        int row,
         const WorkSheetOrderInfo& order,
-        const QString& searchText = {},
-        QWidget* parent = nullptr);
+        const QString& searchText);
 };
