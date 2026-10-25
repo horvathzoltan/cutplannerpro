@@ -10,6 +10,8 @@
 
 struct WorkSheetOrderInfo
 {
+    QUuid id = QUuid::createUuid();
+
     QString externalReference;
 
     QString ownerName;

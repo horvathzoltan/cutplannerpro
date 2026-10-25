@@ -1,17 +1,15 @@
+#include <QHBoxLayout>
+#include <QLabel>
+
 #include "worksheetorderrowwidget.h"
+
 
 #include "common/color/namedcolor.h"
 #include "common/emojihelper.h"
 #include "materials/view/material_cell_generator.h"
-
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
-
-#include <QHBoxLayout>
-#include <QLabel>
-
 #include <view/viewmodels/tablecellviewmodel.h>
-#include "worksheetsummary/worksheetsearch_helper.h"
 
 namespace
 {
@@ -142,18 +140,6 @@ void WorkSheetOrderRowWidget::insertRow(
     }
 
     grid->addWidget(lblProgress, row, 5);
-
-
-    if (WorkSheetSearchHelper::matches(order,searchText))
-    {
-        //setStyleSheet("background:#704040;");
-        applyHighlight(lblRef);
-        applyHighlight(lblOwner);
-        applyHighlight(lblDue);
-        applyHighlight(lblType);
-        applyHighlight(lblProgress);
-        applyHighlight(colorVm.widget);
-    }
 
     //setAutoFillBackground(true);
 }

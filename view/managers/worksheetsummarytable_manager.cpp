@@ -130,7 +130,7 @@ bool WorkSheetSummaryTableManager::_isVerbose = false;
 
 WorkSheetSummaryTableManager::WorkSheetSummaryTableManager(
     QTableWidget* table, QWidget* parent)
-    : QObject(parent), _table(table), parent(parent)
+    : QObject(parent), _table(table), parent(parent),_rows(table)
 {
 }
 
@@ -144,6 +144,12 @@ void WorkSheetSummaryTableManager::addRow(
         _table->rowCount();
 
     _table->insertRow(rowIx);
+
+    _rows.registerRow(
+        rowIx,
+        summary.id,
+        static_cast<int>(RowType::Summary));
+
 
     _table->setItem(
         rowIx,
@@ -228,6 +234,10 @@ void WorkSheetSummaryTableManager::addRow(
 
         _table->insertRow(detailRowIx);
 
+        _rows.registerRow(
+            detailRowIx,
+            summary.id,
+            static_cast<int>(RowType::Detail));
         // QString detailText =
         //     buildDetailText(summary);
 
@@ -336,3 +346,76 @@ void WorkSheetSummaryTableManager::setSearchText(
         txt.trimmed();
 }
 
+
+
+void WorkSheetSummaryTableManager::
+    clearSearchHighlights()
+{
+    if (!_table) return;
+
+    for (int row = 0;
+         row < _table->rowCount();
+         ++row)
+    {
+        for (int col = 0;
+             col < _table->columnCount();
+             ++col)
+        {
+            auto* item =
+                _table->item(
+                    row,
+                    col);
+
+            if (item)
+            {
+                item->setBackground(
+                    QBrush());
+            }
+        }
+    }
+}
+
+void WorkSheetSummaryTableManager::
+    applySearchResult(
+        const SearchResult& result)
+{
+    clearSearchHighlights();
+
+    QColor hitColor(
+        "#704040");
+
+    for (const SearchHit& hit
+         : result.hits)
+    {
+        if (hit.target !=
+            SearchTarget::Summary)
+        {
+            continue;
+        }
+
+        auto rowOpt =
+            _rows.rowOf(
+                hit.id);
+
+        if (!rowOpt)
+        {
+            continue;
+        }
+
+        int row =
+            *rowOpt;
+
+        auto* item =
+            _table->item(
+                row,
+                hit.column);
+
+        if (!item)
+        {
+            continue;
+        }
+
+        item->setBackground(
+            hitColor);
+    }
+}

@@ -61,6 +61,10 @@
 
 #include <leftover/audit/leftoveraudit.h>
 
+#include <worksheetsummary/search/worksheetsummary_searchengine.h>
+
+#include <worksheetsummary/registry/worksheetsummary_registry.h>
+
 //#include <leftover/substitution/leftoversubstitutionengine.h>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -145,9 +149,9 @@ MainWindow::MainWindow(QWidget *parent)
     storageAuditTableManager = std::make_unique<StorageAuditTableManager>(ui->tableStorageAudit, this);
     relocationPlanTableManager = std::make_unique<RelocationPlanTableManager>(ui->tableRelocationOrder, _cuttingPresenter, this);
     cuttingInstructionTableManager = std::make_unique<CuttingInstructionTableManager>(ui->tableCuttingInstruction, this);
-    workSheetSummaryTableManager = std::make_unique<WorkSheetSummaryTableManager>(ui->tableWorksheets, this);
+    _workSheetSummaryTableManager = std::make_unique<WorkSheetSummaryTableManager>(ui->tableWorksheets, this);
 
-    workSheetSummaryTableManager ->refresh_TableFromRegistry();
+    _workSheetSummaryTableManager ->refresh_TableFromRegistry();
 
     _leftoverPresenter = new LeftoverPresenter(this, leftoverTableManager.get());
     _kittingPresenter = new KittingPresenter(this, this);
@@ -529,14 +533,14 @@ void MainWindow::ButtonConnector_Connect()
         this,
         [this]()
         {
-            workSheetSummaryTableManager
-                ->setSearchText(
-                    ui->lineEdit_search->text());
+            QVector<WorkSheetSummary>& e = WorkSheetSummaryRegistry::instance().readAll();
+            QString searchTxt = ui->lineEdit_search->text();
 
-            workSheetSummaryTableManager
-                ->refresh_TableFromRegistry();
+            SearchResult result =
+                WorkSheetSummarySearchEngine::search(e,searchTxt);
+
+            _workSheetSummaryTableManager->applySearchResult(result);
         });
-
 }
 
 MainWindow::~MainWindow()

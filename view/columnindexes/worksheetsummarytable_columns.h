@@ -16,3 +16,16 @@ enum Column
 };
 
 }
+
+namespace WorkSheetOrderColumns
+{
+enum Column
+{
+    ExternalReference = 0,
+    OwnerName,
+    DueDate,
+    ProductType,
+    RequiredColor,
+    Progress
+};
+}

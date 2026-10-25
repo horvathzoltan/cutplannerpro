@@ -43,6 +43,9 @@ inline WorkSheetPresence fromCsv(const QString& s) {
 
 struct WorkSheetSummary
 {
+    QUuid id = QUuid::createUuid();
+
+
     QString filePath;
     QString fileName;
 

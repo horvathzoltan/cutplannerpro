@@ -166,8 +166,11 @@ SOURCES += \
     stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
+    view/tableutils/rowtracker2.cpp \
     worksheetsummary/registry/worksheetsummary_registry.cpp \
     worksheetsummary/repository/worksheetsummary_repository.cpp \
+    worksheetsummary/search/worksheetsummary_searchengine.cpp \
+    worksheetsummary/view/highlight/worksheetsummary_searchhighlighter.cpp \
     worksheetsummary/worksheetsummary_builder.cpp
 
 HEADERS += \
@@ -232,6 +235,8 @@ HEADERS += \
     product/repository/product_calcmode_repository.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
+    search/model/searchhit.h \
+    search/model/searchresult.h \
     service/cutting/plan/cuttingplan_validationservice.h \
     service/snapshot/inventoryauditbuilder.h \
     service/snapshot/inventoryauditformatter.h \
@@ -409,6 +414,7 @@ HEADERS += \
     view/tableutils/highlightdelegate.h \
     leftover/view/utils/leftoverstyleutils.h \
     view/tableutils/rowid.h \
+    view/tableutils/rowtracker2.h \
     view/tableutils/storageaudittable_connector.h \
     view/tableutils/storageaudittable_rowstyler.h \
     view/tableutils/tableutils_auditcells.h \
@@ -526,7 +532,8 @@ HEADERS += \
     worksheetsummary/model/worksheetorderinfo.h \
     worksheetsummary/registry/worksheetsummary_registry.h \
     worksheetsummary/repository/worksheetsummary_repository.h \
-    worksheetsummary/worksheetsearch_helper.h \
+    worksheetsummary/search/worksheetsummary_searchengine.h \
+    worksheetsummary/view/highlight/worksheetsummary_searchhighlighter.h \
     worksheetsummary/worksheetsummary_builder.h
 
 FORMS += \
