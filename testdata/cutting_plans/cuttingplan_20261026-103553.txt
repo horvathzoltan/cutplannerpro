@@ -1,0 +1,27 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2668";"Z&Z Team Kft.";1700;1400;1665;;1;0;1;"";TE-H-32;Width;false;2026-10-30;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2668";"Z&Z Team Kft.";1700;1400;1655;;1;0;1;"";ROL-GYZ;Width;false;2026-10-30;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2669";"Z&Z Team Kft.";1700;1400;1665;;1;1;0;"";TE-H-32;Width;false;2026-10-30;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2669";"Z&Z Team Kft.";1700;1400;1655;;1;1;0;"";ROL-GYZ;Width;false;2026-10-30;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2672";"Berkes Balázs, Bcs";680;1200;650;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2672";"Berkes Balázs, Bcs";680;1200;653;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2673";"Berkes Balázs, Bcs";680;1200;650;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2673";"Berkes Balázs, Bcs";680;1200;653;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2674";"Berkes Balázs, Bcs";680;1200;650;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2674";"Berkes Balázs, Bcs";680;1200;653;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2675";"Berkes Balázs, Bcs";680;1200;653;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2676";"Berkes Balázs, Bcs";680;1200;650;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2676";"Berkes Balázs, Bcs";680;1200;653;;1;0;0;"";ROL-P;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2675";"Berkes Balázs, Bcs";680;1200;650;;1;0;0;"";TE-R-23;Width;false;2026-11-03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"893";"HZ-Ablak, Szeged";690;690;700;;1;1;0;"";MT-T;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"893";"HZ-Ablak, Szeged";690;690;695;;1;1;0;"";TE-H-18;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"893";"HZ-Ablak, Szeged";690;690;683;;1;1;0;"";MT-Z+P;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"893";"HZ-Ablak, Szeged";690;690;690;;1;1;0;"";MT-L2;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"896";"Orbán T.";1665;1360;1659;;1;1;0;"";SR-T;Width;false;2026-11-04;SR;T;;SM;Gyartasi;UNKNOWN
+"896";"Orbán T.";1665;1360;1642;;1;1;0;"";TE-H-32;Width;false;2026-11-04;SR;T;;SM;Gyartasi;UNKNOWN
+"896";"Orbán T.";1665;1360;1645;;1;1;0;"";SR-Z;Width;false;2026-11-04;SR;T;;SM;Gyartasi;UNKNOWN
+"896";"Orbán T.";1665;1360;1645;;1;1;0;"";SR-P-3000;Width;false;2026-11-04;SR;T;;SM;Gyartasi;UNKNOWN
+"899";"Tóth Mónika";805;1300;815;;2;1;1;"";MT-T;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"899";"Tóth Mónika";805;1300;810;;2;1;1;"";TE-H-18;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"899";"Tóth Mónika";805;1300;798;;2;1;1;"";MT-Z+P;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
+"899";"Tóth Mónika";805;1300;1300;;2;1;1;"";MT-L2;Width;false;2026-11-04;SR;MINIT;;SM;Uveg;UNKNOWN
