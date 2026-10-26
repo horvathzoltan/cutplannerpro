@@ -1,27 +1,17 @@
 #include "rowtracker2.h"
 
-RowTracker2::RowTracker2(
-    QTableWidget* table)
-    : _table(table)
-{
-}
+RowTracker2::RowTracker2(QTableWidget* table): _table(table)
+{}
 
-QTableWidgetItem*
-RowTracker2::ensureHeader(
-    QTableWidget* table,
-    int row)
+QTableWidgetItem* RowTracker2::ensureHeader( QTableWidget* table,int row)
 {
-    auto* hdr =
-        table->verticalHeaderItem(row);
+    auto* hdr =table->verticalHeaderItem(row);
 
     if (!hdr)
     {
-        hdr =
-            new QTableWidgetItem();
+        hdr =new QTableWidgetItem();
 
-        table->setVerticalHeaderItem(
-            row,
-            hdr);
+        table->setVerticalHeaderItem(row,hdr);
     }
 
     return hdr;
@@ -32,41 +22,24 @@ void RowTracker2::registerRow(
     const QUuid& id,
     const QVariant& extra)
 {
-    if (!_table)
-        return;
+    if (!_table) return;
 
-    auto* hdr =
-        ensureHeader(
-            _table,
-            row);
+    auto* hdr = ensureHeader( _table, row);
 
-    hdr->setData(
-        IdRole,
-        id);
+    hdr->setData(IdRole,id);
 
-    hdr->setData(
-        ExtraRole,
-        extra);
+    hdr->setData(ExtraRole,extra);
 }
 
-std::optional<QUuid>
-RowTracker2::idOfRow(
-    int row) const
+std::optional<QUuid> RowTracker2::idOfRow( int row) const
 {
-    if (!_table)
-        return std::nullopt;
+    if (!_table) return std::nullopt;
 
-    auto* hdr =
-        _table->verticalHeaderItem(
-            row);
+    auto* hdr =_table->verticalHeaderItem(row);
 
-    if (!hdr)
-        return std::nullopt;
+    if (!hdr)return std::nullopt;
 
-    QUuid id =
-        hdr->data(
-               IdRole)
-            .toUuid();
+    QUuid id = hdr->data( IdRole) .toUuid();
 
     if (id.isNull())
         return std::nullopt;
@@ -74,9 +47,26 @@ RowTracker2::idOfRow(
     return id;
 }
 
-std::optional<int>
-RowTracker2::rowOf(
-    const QUuid& id) const
+std::optional<int> RowTracker2::rowOf( const QUuid& id) const
+{
+    if (!_table) return std::nullopt;
+
+    for (int row = 0; row < _table->rowCount(); ++row)
+    {
+        auto rowId = idOfRow(row);
+
+        if (rowId && *rowId == id)
+        {
+            return row;
+        }
+    }
+
+    return std::nullopt;
+}
+
+std::optional<int> RowTracker2::rowOf(
+    const QUuid& id,
+    const QVariant& extra) const
 {
     if (!_table)
         return std::nullopt;
@@ -88,8 +78,25 @@ RowTracker2::rowOf(
         auto rowId =
             idOfRow(row);
 
-        if (rowId &&
-            *rowId == id)
+        if (!rowId)
+        {
+            continue;
+        }
+
+        if (*rowId != id)
+        {
+            continue;
+        }
+
+        auto rowExtra =
+            extraOfRow(row);
+
+        if (!rowExtra)
+        {
+            continue;
+        }
+
+        if (*rowExtra == extra)
         {
             return row;
         }
@@ -98,23 +105,17 @@ RowTracker2::rowOf(
     return std::nullopt;
 }
 
-std::optional<QVariant>
-RowTracker2::extraOfRow(
-    int row) const
+std::optional<QVariant> RowTracker2::extraOfRow( int row) const
 {
     if (!_table)
         return std::nullopt;
 
-    auto* hdr =
-        _table->verticalHeaderItem(
-            row);
+    auto* hdr =_table->verticalHeaderItem(row);
 
     if (!hdr)
         return std::nullopt;
 
-    QVariant v =
-        hdr->data(
-            ExtraRole);
+    QVariant v =hdr->data(ExtraRole);
 
     if (!v.isValid())
         return std::nullopt;
@@ -122,12 +123,9 @@ RowTracker2::extraOfRow(
     return v;
 }
 
-std::optional<QVariant>
-RowTracker2::extraOfId(
-    const QUuid& id) const
+std::optional<QVariant> RowTracker2::extraOfId(const QUuid& id) const
 {
-    auto row =
-        rowOf(id);
+    auto row = rowOf(id);
 
     if (!row)
         return std::nullopt;
@@ -135,8 +133,7 @@ RowTracker2::extraOfId(
     return extraOfRow(*row);
 }
 
-bool RowTracker2::contains(
-    const QUuid& id) const
+bool RowTracker2::contains( const QUuid& id) const
 {
     return rowOf(id).has_value();
 }

@@ -7,7 +7,9 @@
 
 #include "worksheetsummary/model/worksheetsummary.h"
 #include "view/tableutils/rowtracker2.h"
+#include <QHash>
 
+class WorkSheetSummaryDetailWidget;
 
 class WorkSheetSummaryTableManager : public QObject
 {
@@ -22,7 +24,6 @@ public:
     void refresh_TableFromRegistry();
 
     void clearTable();
-    void setSearchText(const QString& txt);
 
     enum class RowType
     {
@@ -40,9 +41,10 @@ private:
 
     QTableWidget* _table;
     QWidget* parent;
-    QString _searchText;
 
     RowTracker2 _rows;
+
+    QHash<QUuid, WorkSheetSummaryDetailWidget*> _detailWidgets;
 
     static bool _isVerbose;
 };

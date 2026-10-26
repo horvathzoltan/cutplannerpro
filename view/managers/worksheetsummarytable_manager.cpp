@@ -7,125 +7,6 @@
 #include <product/registry/product_type_registry.h>
 #include <view/common/widgets/worksheetsummarydetailwidget.h>
 
-bool containsSearchText(
-    const WorkSheetSummary& summary,
-    const QString& searchText)
-{
-    if (searchText.trimmed().isEmpty())
-    {
-        return false;
-    }
-
-    for (const auto& order : summary.orders)
-    {
-        auto* type =
-            ProductTypeRegistry::instance()
-                .findById(order.productTypeId);
-
-        auto* subtype =
-            ProductSubtypeRegistry::instance()
-                .findById(order.productSubtypeId);
-
-        QString typeName =
-            type ? type->name : "";
-
-        QString subtypeName =
-            subtype ? subtype->name : "";
-
-        if (order.externalReference.contains(
-                searchText,
-                Qt::CaseInsensitive))
-        {
-            return true;
-        }
-
-        if (order.ownerName.contains(
-                searchText,
-                Qt::CaseInsensitive))
-        {
-            return true;
-        }
-
-        if (order.requiredColor.code().contains(
-                searchText,
-                Qt::CaseInsensitive))
-        {
-            return true;
-        }
-
-        if (typeName.contains(
-                searchText,
-                Qt::CaseInsensitive))
-        {
-            return true;
-        }
-
-        if (subtypeName.contains(
-                searchText,
-                Qt::CaseInsensitive))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-// namespace
-// {
-
-// QString buildDetailText(
-//     const WorkSheetSummary& summary)
-// {
-//     if (summary.orders.isEmpty())
-//     {
-//         return "Nincs rendelési információ.";
-//     }
-
-//     QVector<WorkSheetOrderInfo> orders =
-//         summary.orders;
-
-//     std::sort(
-//         orders.begin(),
-//         orders.end(),
-//         [](const WorkSheetOrderInfo& a,
-//            const WorkSheetOrderInfo& b)
-//         {
-//             return a.dueDate < b.dueDate;
-//         });
-
-//     QStringList lines;
-
-//     for (const auto& order : orders)
-//     {
-//         auto* type = ProductTypeRegistry::instance().findById(order.productTypeId);
-//         auto* subtype = ProductSubtypeRegistry::instance().findById(order.productSubtypeId);
-
-//         QString typeName = type ? type->name : "";
-//         QString subtypeName = subtype ? subtype->name : "";
-//         QString colorName = order.requiredColorCode.isEmpty() ? "N/A" : order.requiredColorCode;
-
-//         lines << QString(
-//                      "%1 %2 | %3 | %4 | %5/%6")
-//                      .arg(order.externalReference + ".", -7)
-//                      .arg(order.ownerName, -25)
-//                      .arg(order.dueDate.toString("yyyy.MM.dd"), -12)
-//                      .arg(
-//                          QString("%1/%2/%3")
-//                              .arg(typeName)
-//                              .arg(subtypeName)
-//                              .arg(colorName),
-//                          -35)
-//                      .arg(order.completedCount)
-//                      .arg(order.requestCount);
-//     }
-
-//     return lines.join("\n");
-// }
-
-// }
-
-
 bool WorkSheetSummaryTableManager::_isVerbose = false;
 
 WorkSheetSummaryTableManager::WorkSheetSummaryTableManager(
@@ -137,88 +18,35 @@ WorkSheetSummaryTableManager::WorkSheetSummaryTableManager(
 void WorkSheetSummaryTableManager::addRow(
     const WorkSheetSummary& summary)
 {
-    if (!_table)
-        return;
+    if (!_table)return;
 
-    int rowIx =
-        _table->rowCount();
+    int rowIx =_table->rowCount();
 
     _table->insertRow(rowIx);
 
-    _rows.registerRow(
-        rowIx,
-        summary.id,
-        static_cast<int>(RowType::Summary));
+    _rows.registerRow(rowIx,
+                      summary.id,static_cast<int>(RowType::Summary));
 
+    _table->setItem(rowIx,0,
+                    new QTableWidgetItem(summary.fileName));
 
-    _table->setItem(
-        rowIx,
-        0,
-        new QTableWidgetItem(
-            summary.fileName));
+    _table->setItem(rowIx,1,
+        new QTableWidgetItem(WorkSheetPresenceUtils::toDisplayText(summary.presence)));
 
-    _table->setItem(
-        rowIx,
-        1,
-        new QTableWidgetItem(
-            WorkSheetPresenceUtils::toDisplayText(summary.presence)));
+    _table->setItem(rowIx,2,
+        new QTableWidgetItem(QString::number(summary.requestCount())));
 
-    _table->setItem(
-        rowIx,
-        2,
-        new QTableWidgetItem(
-            QString::number(
-                summary.requestCount())));
+    _table->setItem(rowIx,3,
+        new QTableWidgetItem(QString::number(summary.completedCount())));
 
-    _table->setItem(
-        rowIx,
-        3,
-        new QTableWidgetItem(
-            QString::number(
-                summary.completedCount())));
+    _table->setItem(rowIx,4,
+        new QTableWidgetItem(QString::number(summary.uncompletedCount())));
 
-    _table->setItem(
-        rowIx,
-        4,
-        new QTableWidgetItem(
-            QString::number(
-                summary.uncompletedCount())));
+    _table->setItem(rowIx,5,
+        new QTableWidgetItem(QString::number(summary.undefinedCount())));
 
-    _table->setItem(
-        rowIx,
-        5,
-        new QTableWidgetItem(
-            QString::number(
-                summary.undefinedCount())));
-    _table->setItem(
-        rowIx,
-        6,
-        new QTableWidgetItem(
-            summary.requiresAttention()? "Yes" : "No")
-        );
-
-    if (containsSearchText(
-            summary,
-            _searchText))
-    {
-        QColor hitColor("#704040");
-
-        for (int col = 0;
-             col < _table->columnCount();
-             ++col)
-        {
-            auto* item =
-                _table->item(
-                    rowIx,
-                    col);
-
-            if (item)
-            {
-                item->setBackground(
-                    hitColor);
-            }
-        }
-    }
+    _table->setItem(rowIx,6,
+        new QTableWidgetItem(summary.requiresAttention()? "Yes" : "No"));
 
     if (_isVerbose)
     {
@@ -234,95 +62,33 @@ void WorkSheetSummaryTableManager::addRow(
 
         _table->insertRow(detailRowIx);
 
-        _rows.registerRow(
-            detailRowIx,
-            summary.id,
-            static_cast<int>(RowType::Detail));
-        // QString detailText =
-        //     buildDetailText(summary);
-
-        // auto* item =
-        //     new QTableWidgetItem(
-        //         detailText);
+        _rows.registerRow(detailRowIx,
+                          summary.id,static_cast<int>(RowType::Detail));
 
         auto* widget =
-            new WorkSheetSummaryDetailWidget(
-                summary,
-                _searchText,
-                _table);
+            new WorkSheetSummaryDetailWidget(summary,_table);
+
+        _detailWidgets.insert(summary.id,widget);
 
         widget->adjustSize();
 
-        _table->setSpan(
-            detailRowIx,
-            0,
-            1,
-            _table->columnCount());
+        _table->setSpan(detailRowIx,0,1,_table->columnCount());
 
-        _table->setCellWidget(
-            detailRowIx,
-            0,
-            widget);
+        _table->setCellWidget(detailRowIx,0,widget);
 
-        _table->setRowHeight(
-            detailRowIx,
-            widget->sizeHint().height());
+        _table->setRowHeight(detailRowIx,widget->sizeHint().height());
 
-        // QFont font =
-        //     item->font();
-
-        // font.setPointSize(
-        //     std::max(
-        //         8,
-        //         font.pointSize() - 2));
-
-        // item->setFont(font);
-
-        // int lineCount =
-        //     detailText.count('\n') + 1;
-
-        // QFontMetrics fm(font);
-
-        // int rowHeight =
-        //     lineCount * fm.lineSpacing() + 8;
-
-        // rowHeight =
-        //     std::max(
-        //         24,
-        //         rowHeight);
-
-        // _table->setRowHeight(
-        //     detailRowIx,
-        //     rowHeight);
-
-        // item->setForeground(
-        //     QColor("#666666"));
-
-        // _table->setItem(
-        //     detailRowIx,
-        //     0,
-        //     item);
-
-        // _table->setSpan(
-        //     detailRowIx,
-        //     0,
-        //     1,
-        //     _table->columnCount());
     }
 }
 
-void WorkSheetSummaryTableManager::
-    refresh_TableFromRegistry()
+void WorkSheetSummaryTableManager:: refresh_TableFromRegistry()
 {
-    if (!_table)
-        return;
+    if (!_table) return;
 
-    TableUtils::clearSafely(
-        _table);
+    _detailWidgets.clear();
+    TableUtils::clearSafely(_table);
 
-    const auto& data =
-        WorkSheetSummaryRegistry::instance()
-            .readAll();
+    const auto& data =WorkSheetSummaryRegistry::instance().readAll();
 
     for (const auto& item : data)
     {
@@ -332,34 +98,21 @@ void WorkSheetSummaryTableManager::
 
 void WorkSheetSummaryTableManager::clearTable()
 {
-    if (!_table)
-        return;
+    if (!_table) return;
+
+    _detailWidgets.clear();
 
     _table->setRowCount(0);
     _table->clearContents();
 }
 
-void WorkSheetSummaryTableManager::setSearchText(
-    const QString& txt)
-{
-    _searchText =
-        txt.trimmed();
-}
-
-
-
-void WorkSheetSummaryTableManager::
-    clearSearchHighlights()
+void WorkSheetSummaryTableManager::clearSearchHighlights()
 {
     if (!_table) return;
 
-    for (int row = 0;
-         row < _table->rowCount();
-         ++row)
+    for (int row = 0;row < _table->rowCount();++row)
     {
-        for (int col = 0;
-             col < _table->columnCount();
-             ++col)
+        for (int col = 0;col < _table->columnCount();++col)
         {
             auto* item =
                 _table->item(
@@ -373,49 +126,57 @@ void WorkSheetSummaryTableManager::
             }
         }
     }
+
+    for (auto it =
+         _detailWidgets.begin();
+         it != _detailWidgets.end();
+         ++it)
+    {
+        if (it.value())
+        {
+            it.value()->clearSearchHighlights();
+        }
+    }
 }
 
-void WorkSheetSummaryTableManager::
-    applySearchResult(
-        const SearchResult& result)
+void WorkSheetSummaryTableManager::applySearchResult(const SearchResult& result)
 {
     clearSearchHighlights();
 
     QColor hitColor(
         "#704040");
 
-    for (const SearchHit& hit
-         : result.hits)
+    for (const SearchHit& hit: result.hits)
     {
-        if (hit.target !=
-            SearchTarget::Summary)
+        if (hit.target != SearchTarget::Summary)
         {
             continue;
         }
 
-        auto rowOpt =
-            _rows.rowOf(
-                hit.id);
+        auto rowOpt =_rows.rowOf(hit.id);
 
         if (!rowOpt)
         {
             continue;
         }
 
-        int row =
-            *rowOpt;
+        int row =*rowOpt;
 
-        auto* item =
-            _table->item(
-                row,
-                hit.column);
+        auto* item =_table->item(row,hit.column);
 
         if (!item)
         {
             continue;
         }
 
-        item->setBackground(
-            hitColor);
+        item->setBackground(hitColor);
+    }
+
+    for (auto it =_detailWidgets.begin();it != _detailWidgets.end();++it)
+    {
+        if (it.value())
+        {
+            it.value()->applySearchResult(result);
+        }
     }
 }

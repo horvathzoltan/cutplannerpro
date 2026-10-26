@@ -1,7 +1,6 @@
 #pragma once
 
 #include "search/model/searchresult.h"
-
 #include "worksheetsummary/model/worksheetsummary.h"
 
 class WorkSheetSummarySearchEngine

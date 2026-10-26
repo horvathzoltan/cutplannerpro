@@ -7,6 +7,7 @@
 #include "common/color/namedcolor.h"
 #include "common/emojihelper.h"
 #include "materials/view/material_cell_generator.h"
+#include "view/columnindexes/worksheetorderrow_columns.h"
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
 #include <view/viewmodels/tablecellviewmodel.h>
@@ -23,9 +24,7 @@ QLabel* createLabel(
     QFont f = lbl->font();
 
     f.setPointSize(
-        std::max(
-            7,
-            f.pointSize() - 2));
+        std::max(7,f.pointSize() - 2));
 
     f.setItalic(true);
 
@@ -37,23 +36,12 @@ QLabel* createLabel(
     return lbl;
 }
 
-void applyHighlight(QWidget* w)
-{
-    if (!w)
-        return;
-
-    w->setStyleSheet(
-        "background:#704040;");
-};
-
-
 }
 
-void WorkSheetOrderRowWidget::insertRow(
-        QGridLayout* grid,
-        int row,
-        const WorkSheetOrderInfo& order,
-        const QString& searchText)
+OrderRowUi WorkSheetOrderRowWidget::insertRow(
+    QGridLayout* grid,
+    int row,
+    const WorkSheetOrderInfo& order)
 {
     auto* type =
         ProductTypeRegistry::instance()
@@ -123,23 +111,37 @@ void WorkSheetOrderRowWidget::insertRow(
             "A materialId nem található a MaterialRegistry-ben");
     }
 
-    grid->addWidget(lblRef, row, 0);
-    grid->addWidget(lblOwner, row, 1);
-    grid->addWidget(lblDue, row, 2);
-    grid->addWidget(lblType, row, 3);
+    grid->addWidget(lblRef, row, toColumnIndex(WorkSheetOrderColumn::Ref));
+    grid->addWidget(lblOwner, row, toColumnIndex(WorkSheetOrderColumn::Owner));
+    grid->addWidget(lblDue, row, toColumnIndex(WorkSheetOrderColumn::Due));
+    grid->addWidget(lblType, row, toColumnIndex(WorkSheetOrderColumn::TypeSubtype));
 
     if (colorVm.widget)
     {
         auto f = lblRef->font();
         f.setItalic(true);
         colorVm.widget->setToolTip(colorVm.tooltip);
-        //colorVm.widget->layout()->setAlignment(Qt::AlignLeft);
         colorVm.widget->setFont(f);
-
-        grid->addWidget(colorVm.widget, row, 4);
+        grid->addWidget(colorVm.widget, row, toColumnIndex(WorkSheetOrderColumn::Color));
     }
 
-    grid->addWidget(lblProgress, row, 5);
+    grid->addWidget(lblProgress, row, toColumnIndex(WorkSheetOrderColumn::Progress));
 
-    //setAutoFillBackground(true);
+    OrderRowUi ui;
+
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Ref)]= lblRef;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Owner)]= lblOwner;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Due)] = lblDue;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::TypeSubtype)] = lblType;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.widget;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Progress)] = lblProgress;
+
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Ref)] = lblRef->styleSheet();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Owner)]= lblOwner->styleSheet();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Due)] = lblDue->styleSheet();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::TypeSubtype)] = lblType->styleSheet();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.widget? colorVm.widget->styleSheet() : QString();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Progress)] = lblProgress->styleSheet();
+
+    return ui;
 }

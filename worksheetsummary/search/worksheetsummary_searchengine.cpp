@@ -1,4 +1,5 @@
 #include "worksheetsummary_searchengine.h"
+#include "view/columnindexes/worksheetorderrow_columns.h"
 
 #include <product/registry/product_subtype_registry.h>
 #include <product/registry/product_type_registry.h>
@@ -26,59 +27,29 @@ void WorkSheetSummarySearchEngine::searchOrder(
             ? subtype->name
             : QString();
 
-    if (order.externalReference.contains(
-            text,
-            Qt::CaseInsensitive))
+    if (order.externalReference.contains(text,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Order,
-            order.id,
-            0
-        });
+        result.hits.push_back({SearchTarget::Order,order.id,toColumnIndex(WorkSheetOrderColumn::Ref)});
     }
 
-    if (order.ownerName.contains(
-            text,
-            Qt::CaseInsensitive))
+    if (order.ownerName.contains(text,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Order,
-            order.id,
-            1
-        });
+        result.hits.push_back({SearchTarget::Order,order.id,toColumnIndex(WorkSheetOrderColumn::Owner)});
     }
 
-    if (order.requiredColor.code().contains(
-            text,
-            Qt::CaseInsensitive))
+    if (order.requiredColor.code().contains(text,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Order,
-            order.id,
-            2
-        });
+        result.hits.push_back({SearchTarget::Order,order.id,toColumnIndex(WorkSheetOrderColumn::Color)});
     }
 
-    if (typeName.contains(
-            text,
-            Qt::CaseInsensitive))
+    if (typeName.contains(text,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Order,
-            order.id,
-            3
-        });
+        result.hits.push_back({SearchTarget::Order,order.id,toColumnIndex(WorkSheetOrderColumn::TypeSubtype)});
     }
 
-    if (subtypeName.contains(
-            text,
-            Qt::CaseInsensitive))
+    if (subtypeName.contains(text,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Order,
-            order.id,
-            4
-        });
+        result.hits.push_back({SearchTarget::Order,order.id,toColumnIndex(WorkSheetOrderColumn::TypeSubtype)});
     }
 }
 
@@ -88,31 +59,21 @@ SearchResult WorkSheetSummarySearchEngine::search(
 {
     SearchResult result;
 
-    QString txt =
-        text.trimmed();
+    QString txt = text.trimmed();
 
     if (txt.isEmpty())
     {
         return result;
     }
 
-    if (summary.fileName.contains(
-            txt,
-            Qt::CaseInsensitive))
+    if (summary.fileName.contains(txt,Qt::CaseInsensitive))
     {
-        result.hits.push_back({
-            SearchTarget::Summary,
-            summary.id,
-            0
-        });
+        result.hits.push_back({SearchTarget::Summary,summary.id,0});
     }
 
     for (const auto& order : summary.orders)
     {
-        searchOrder(
-            order,
-            txt,
-            result);
+        searchOrder(order,txt,result);
     }
 
     return result;
@@ -126,11 +87,7 @@ SearchResult WorkSheetSummarySearchEngine::search(
 
     for(const auto& summary : summaries)
     {
-        auto partial =
-            search(
-                summary,
-                text);
-
+        auto partial =search(summary,text);
         result.hits += partial.hits;
     }
 

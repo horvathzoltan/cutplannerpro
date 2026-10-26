@@ -389,6 +389,7 @@ HEADERS += \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
+    view/columnindexes/worksheetorderrow_columns.h \
     view/columnindexes/worksheetsummarytable_columns.h \
     view/common/layouts/qflowlayout.h \
     view/common/widgets/recentmaterialswidget.h \
@@ -606,7 +607,8 @@ DISTFILES += \
     testdata/ral_colors/p2.csv \
     run.txt \
     testdata/stock.csv \
-    testdata/storages.csv
+    testdata/storages.csv \
+    worksheetsummary/view/worksheetorderrow_columns.h
 
 RESOURCES += \
     resources/statusicons.qrc

@@ -11,43 +11,27 @@ class RowTracker2
 {
 public:
 
-    static constexpr int IdRole =
-        Qt::UserRole;
+    static constexpr int IdRole = Qt::UserRole;
 
-    static constexpr int ExtraRole =
-        Qt::UserRole + 1;
+    static constexpr int ExtraRole = Qt::UserRole + 1;
 
-    explicit RowTracker2(
-        QTableWidget* table);
+    std::optional<int> rowOf(const QUuid& id, const QVariant& extra) const;
 
-    static QTableWidgetItem*
-    ensureHeader(
-        QTableWidget* table,
-        int row);
+    explicit RowTracker2( QTableWidget* table);
 
-    void registerRow(
-        int row,
-        const QUuid& id,
-        const QVariant& extra = {});
+    static QTableWidgetItem* ensureHeader( QTableWidget* table, int row);
 
-    std::optional<QUuid>
-    idOfRow(
-        int row) const;
+    void registerRow( int row, const QUuid& id, const QVariant& extra = {});
 
-    std::optional<int>
-    rowOf(
-        const QUuid& id) const;
+    std::optional<QUuid> idOfRow(int row) const;
 
-    std::optional<QVariant>
-    extraOfRow(
-        int row) const;
+    std::optional<int> rowOf( const QUuid& id) const;
 
-    std::optional<QVariant>
-    extraOfId(
-        const QUuid& id) const;
+    std::optional<QVariant> extraOfRow( int row) const;
 
-    bool contains(
-        const QUuid& id) const;
+    std::optional<QVariant> extraOfId( const QUuid& id) const;
+
+    bool contains( const QUuid& id) const;
 
 private:
 
