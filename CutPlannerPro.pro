@@ -48,6 +48,7 @@ SOURCES += \
     model/storageaudit/auditcontext.cpp \
     paint/paint_calculator.cpp \
     paint/paint_reporter.cpp \
+    paint/paintingrequirement_helper.cpp \
     paint/presenter/paintpresenter.cpp \
     paint/repository/powder_consumption_repository.cpp \
     leftover/presenter/leftoverpresenter.cpp \
@@ -91,6 +92,8 @@ SOURCES += \
     view/cellhelpers/auditstatustext.cpp \
     view/common/layouts/qflowlayout.cpp \
     view/common/widgets/recentmaterialswidget.cpp \
+    view/common/widgets/worksheetorderrowwidget.cpp \
+    view/common/widgets/worksheetsummarydetailwidget.cpp \
     view/dialog/input/clonerequestdialog.cpp \
     view/dialog/input/matrix_cell_delegate.cpp \
     view/dialog/input/series_matrix_view.cpp \
@@ -163,8 +166,11 @@ SOURCES += \
     stock/view/stocktable_manager.cpp \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
+    view/tableutils/rowtracker2.cpp \
     worksheetsummary/registry/worksheetsummary_registry.cpp \
     worksheetsummary/repository/worksheetsummary_repository.cpp \
+    worksheetsummary/search/worksheetsummary_searchengine.cpp \
+    worksheetsummary/view/highlight/worksheetsummary_searchhighlighter.cpp \
     worksheetsummary/worksheetsummary_builder.cpp
 
 HEADERS += \
@@ -223,11 +229,14 @@ HEADERS += \
     materials/repository/material_storagegrouprepository.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \
+    paint/paintingrequirement_helper.h \
     product/model/product_calcmodes.h \
     product/registry/product_calcmode_registry.h \
     product/repository/product_calcmode_repository.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
+    search/model/searchhit.h \
+    search/model/searchresult.h \
     service/cutting/plan/cuttingplan_validationservice.h \
     service/snapshot/inventoryauditbuilder.h \
     service/snapshot/inventoryauditformatter.h \
@@ -380,9 +389,12 @@ HEADERS += \
     view/columnindexes/inputtable_columns.h \
     view/columnindexes/tableresults_columns.h \
     materials/view/material_row_styler.h \
+    view/columnindexes/worksheetorderrow_columns.h \
     view/columnindexes/worksheetsummarytable_columns.h \
     view/common/layouts/qflowlayout.h \
     view/common/widgets/recentmaterialswidget.h \
+    view/common/widgets/worksheetorderrowwidget.h \
+    view/common/widgets/worksheetsummarydetailwidget.h \
     view/dialog/dialogmode.h \
     view/dialog/input/clonerequestdialog.h \
     view/dialog/input/matrix_cell_delegate.h \
@@ -403,6 +415,7 @@ HEADERS += \
     view/tableutils/highlightdelegate.h \
     leftover/view/utils/leftoverstyleutils.h \
     view/tableutils/rowid.h \
+    view/tableutils/rowtracker2.h \
     view/tableutils/storageaudittable_connector.h \
     view/tableutils/storageaudittable_rowstyler.h \
     view/tableutils/tableutils_auditcells.h \
@@ -520,6 +533,8 @@ HEADERS += \
     worksheetsummary/model/worksheetorderinfo.h \
     worksheetsummary/registry/worksheetsummary_registry.h \
     worksheetsummary/repository/worksheetsummary_repository.h \
+    worksheetsummary/search/worksheetsummary_searchengine.h \
+    worksheetsummary/view/highlight/worksheetsummary_searchhighlighter.h \
     worksheetsummary/worksheetsummary_builder.h
 
 FORMS += \
@@ -571,6 +586,7 @@ DISTFILES += \
     testdata/cutting_plans/cuttingplan_20260930-150723_2.txt \
     testdata/cutting_plans/cuttingplan_20260930-150723_3.txt \
     testdata/cutting_plans/cuttingplan_20261016-095121_2.txt \
+    testdata/cutting_plans/cuttingplan_20261026-103553.txt \
     testdata/cuttingmachine_materialtypes.csv \
     testdata/cuttingmachines.csv \
     testdata/leftovers.csv \
@@ -591,7 +607,8 @@ DISTFILES += \
     testdata/ral_colors/p2.csv \
     run.txt \
     testdata/stock.csv \
-    testdata/storages.csv
+    testdata/storages.csv \
+    worksheetsummary/view/worksheetorderrow_columns.h
 
 RESOURCES += \
     resources/statusicons.qrc

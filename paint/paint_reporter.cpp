@@ -147,7 +147,7 @@ QString PaintReporter::toText(const PaintPlan& plan)
             for (const auto& id : s.requestIds) {
                 auto *a = CuttingPlanRequestRegistry::instance().findById(id);
                 QString b = a ? a->externalReference : "?";
-                QString c = a ? a->dueDate.toString("yyyy-MM-dd") : "?";
+                QString c = a ? a->dueDate.toString("yyyy.MM.dd") : "?";
                 QString entry = QString("%1 (%2)").arg(b, c);
 
                 if (!seen.contains(entry)) {

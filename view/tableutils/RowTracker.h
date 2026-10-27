@@ -141,3 +141,5 @@ private:
     // fenntartott: ha később szeretnél ideiglenesen leválasztott sorokat kezelni
     QMap<int, RowInfo> _byRowDetached;
 };
+
+

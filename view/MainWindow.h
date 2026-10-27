@@ -180,7 +180,7 @@ private:
     // egy munkalap nézete - vágási kérelemléista
     std::unique_ptr<CuttingInstructionTableManager> cuttingInstructionTableManager = nullptr;
     // munkalapok átfogó nézet
-    std::unique_ptr<WorkSheetSummaryTableManager> workSheetSummaryTableManager = nullptr;
+    std::unique_ptr<WorkSheetSummaryTableManager> _workSheetSummaryTableManager = nullptr;
 
     QAction* _actSeriesMatrix = nullptr;
 

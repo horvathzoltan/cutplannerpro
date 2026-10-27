@@ -60,8 +60,14 @@ WorkSheetSummaryBuilder::buildOrderInfos(
             order.productSubtypeId =
                 req.productSubtypeId;
 
-            order.requiredColorCode =
-                req.requiredColor.code();
+            order.requiredColor =
+                req.requiredColor;
+
+            order.requiredSurface =
+                req.surface;
+
+            order.materialId =
+                req.materialId;
         }
 
         ++order.requestCount;

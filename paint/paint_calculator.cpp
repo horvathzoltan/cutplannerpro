@@ -1,5 +1,6 @@
 #include "paint_calculator.h"
 #include "materialbundles/model/bundle_definition.h"
+#include "paint/paintingrequirement_helper.h"
 
 #include <model/registries/cuttingplanrequestregistry.h>
 #include <materials/registry/material_registry.h>
@@ -42,23 +43,19 @@ PaintPlan PaintCalculator::buildPlan()
             if(!mat)
                 continue;
 
-            // 1) Ha nem festhető → kihagyjuk
-            if (mat->paintingMode == PaintingMode::None)
+            auto decision =
+                PaintingRequirementHelper::evaluate(
+                    req.requiredColor,
+                    req.surface,
+                    *mat);
+
+            if (!decision.paintingNeeded)
+            {
+                zInfo(
+                    QString("Festés nem szükséges: %1").arg(decision.reason));
+
                 continue;
-
-            // 2) Ha a request színe és felülete megegyezik az anyag saját színével → kihagyjuk
-            bool sameColor = (req.requiredColor.code() == mat->color.code());
-            bool sameSurface = (req.surface == mat->surface || req.surface == SurfaceType::Unknown);
-
-            // if(req.requiredColor.code().contains("9010")){
-            //     zInfo("FEHÉR");
-            //     }
-
-            if (sameColor && sameSurface)
-                 continue;
-
-            //if (sameColor)
-            //    continue;
+            }
 
             QString colorCode;
 

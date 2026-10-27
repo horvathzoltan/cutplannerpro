@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"482";"Sideral, Ro";2010;2315;2212;;1;0;1;"RAL 7016";NP-CLB2;Width;false;2026.10.27;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"2688";"Perei J., Bcs";660;1400;630;;1;0;0;"";TE-R-23;Width;false;2026.11.03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2688";"Perei J., Bcs";660;1400;633;;1;0;0;"";ROL-P;Width;false;2026.11.03;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN

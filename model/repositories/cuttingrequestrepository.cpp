@@ -702,7 +702,7 @@ bool CuttingRequestRepository::saveToFile(const CuttingPlanRequestRegistry& regi
                                    ? req.requiredTolerance->toCsvString()
                                    : "";
 
-        QString dueStr = req.dueDate.toString("yyyy-MM-dd");
+        QString dueStr = req.dueDate.toString("yyyy.MM.dd");
 
         auto* type = ProductTypeRegistry::instance().findById(req.productTypeId);
         auto* subtype = ProductSubtypeRegistry::instance().findById(req.productSubtypeId);

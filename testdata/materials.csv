@@ -94,15 +94,15 @@ BowdenFeszítő;NP-BOW-F;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;Sine
 
 #tárolás
 CipzárosLáb_Pár;NP-CL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;BNP-CL/2
-CipzárosLáb_Pár;NP-CL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;BNP-CL/2-7016
+CipzárosLáb_Pár;NP-CL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;BNP-CL/2-7016
 CipzárosLáb_Pár;NP-CL2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170429;;Lab;bundle;BNP-CL/2-9010
 
 Lábtakaró_Pár;NP-CLT2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/2
-Lábtakaró_Pár;NP-CLT2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/2-7016
+Lábtakaró_Pár;NP-CLT2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/2-7016
 Lábtakaró_Pár;NP-CLT2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/2-9010
 
 Lábtakaró_2Pár;NP-CLT4;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/4
-Lábtakaró_2Pár;NP-CLT4-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/4-7016
+Lábtakaró_2Pár;NP-CLT4-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/4-7016
 Lábtakaró_2Pár;NP-CLT4-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;70;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/4-9010
 
 CipzárosLábbetét_Pár;NP-CLB2;-1;;;Custom;CM2;Plastic;;SM;Length;None;0;20;500;1000;1500;80170955;;Lab;bundle;BNP-CLB/2
@@ -144,7 +144,7 @@ MinitokosPálca_20db;MT-P20;-1;8;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintab
 
 # vágás
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2
-CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2-7016
+CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;15;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2-7016
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2-9010
 
 SinesLáb_Combo;NP-SL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CT-SL2
@@ -155,7 +155,9 @@ SávrolóZáró_10db;SR-Z10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintab
 SávrolóZáró_5db;SR-Z5;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;bundle;BSR-Z5
 
 FelsőSín_10db;SR-FSN10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;bundle;BSR-FSN10
+
 ÚjGyöngyösZáró_12db;ROL-GYZ12;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1200;;;Zaro;bundle;BROL-GYZ12
+ÚjGyöngyösZáró_6db;ROL-GYZ6;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1200;;;Zaro;bundle;BROL-GYZ6
 
 AlsóPálca_30db;ROL-P30;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P30
 AlsóPálca_15db;ROL-P15;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P15
@@ -172,6 +174,5 @@ MinitokosLáb_20db;MT-L20;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Le
 
 Tengely Ø18 sima_15db;TE-S-18/15;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;bundle;CTE-S-18/15
 Tengely Ø32 hornyos_11db;TE-H-32/11;6000;32;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;bundle;CTE-H-32/11
-ÚjGyöngyösZáró_6db;ROL-GYZ6;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1200;;;Zaro;bundle;BROL-GYZ6
 
 

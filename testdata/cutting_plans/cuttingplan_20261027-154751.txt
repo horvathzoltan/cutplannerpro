@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"447";"JanóRedőny, Pécs";2160;1850;2130;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"447";"JanóRedőny, Pécs";2160;1850;2155;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"447";"JanóRedőny, Pécs";2160;1850;2037;;1;0;0;"RAL 7016";NP-CZ-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"447";"JanóRedőny, Pécs";2160;1850;1747;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"447";"JanóRedőny, Pécs";2160;1850;2050;;1;0;0;"RAL 7016";NP-ROLL70-7000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"447";"JanóRedőny, Pécs";2160;1850;1985;;1;0;0;"RAL 7016";NP-BAR20-6000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;2125;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;2150;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;2032;;1;0;0;"RAL 7016";NP-CZ-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;1752;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;2045;;1;0;0;"RAL 7016";NP-ROLL70-7000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"448";"JanóRedőny, Pécs";2155;1855;1980;;1;0;0;"RAL 7016";NP-BAR20-6000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;1340;;1;0;0;"RAL 7016";NP-T-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;1365;;1;0;0;"RAL 7016";NP-TF-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;1247;;1;0;0;"RAL 7016";NP-CZ-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;2697;;1;0;0;"RAL 7016";NP-CL2+CLT2+CLB2-7016;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;1260;;1;0;0;"RAL 7016";NP-ROLL70-7000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"449";"JanóRedőny, Pécs";1370;2800;1195;;1;0;0;"RAL 7016";NP-BAR20-6000;Width;false;2026.10.30;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
