@@ -81,8 +81,8 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 
     // ✅ Visszaadás widget formában
     auto r =  TableCellViewModel::fromWidget(panel, tooltip);
-    r.background = backgroundColor;
-    r.foreground = foregroundColor;
+    r.setBackground(backgroundColor);
+    r.setForeground(foregroundColor);
     return r;
 }
 
@@ -90,7 +90,6 @@ inline TableCellViewModel materialCell(const MaterialMaster& mat, const QString&
 // inline TableCellViewModel cuttingPlanRequestCell(const Cutting::Plan::Request& r, const QString& barcode = ""){
 //     QString text    = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Label,   barcode);
 //     QString tooltip = MaterialUtils::materialToDisplay(mat, MaterialUtils::DisplayType::Tooltip, barcode);
-
 // }
 
 inline TableCellViewModel requestColorCell(const NamedColor& requiredColor,

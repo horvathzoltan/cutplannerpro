@@ -19,8 +19,8 @@ inline TableRowViewModel generate(const Cutting::Plan::CutPlan& plan) {
 
     auto matCell = CellGenerators::materialCell(*mat, plan.sourceBarcode);
 
-    QColor baseColor = matCell.background;
-    QColor fgColor = matCell.foreground;
+    QColor baseColor = matCell.background();
+    QColor fgColor = matCell.foreground();
 
     vm.cells[ResultsTableColumns::Material] = matCell;
 

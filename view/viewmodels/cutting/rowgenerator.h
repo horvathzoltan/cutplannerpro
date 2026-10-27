@@ -184,12 +184,12 @@ inline TableRowViewModel generate(const CutInstruction& ci,
     if (done) {     // Ha Done → szürke háttér, sötét szöveg
         rowBg = QColor(220,220,220);   // világosszürke háttér
         rowFg = QColor(80,80,80);      // sötétszürke szöveg
-        matCell.background = rowBg;
-        matCell.foreground = rowFg;
+        matCell.setBackground(rowBg);
+        matCell.setForeground(rowFg);
 
     } else{
-        rowBg = matCell.background;
-        rowFg = matCell.foreground;
+        rowBg = matCell.background();
+        rowFg = matCell.foreground();
     }
 
     vm.cells[CuttingInstructionTableColumns::Material] = matCell;

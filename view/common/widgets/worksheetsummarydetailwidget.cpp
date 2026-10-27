@@ -3,6 +3,7 @@
 #include "worksheetorderrowwidget.h"
 #include <QVBoxLayout>
 #include <algorithm>
+#include <QStyle>
 
 WorkSheetSummaryDetailWidget::
     WorkSheetSummaryDetailWidget(
@@ -41,16 +42,60 @@ WorkSheetSummaryDetailWidget::
         OrderRowUi ui = WorkSheetOrderRowWidget::insertRow(grid,row,orders[row]);
         _orderRows.insert(orders[row].id,ui);
     }
+
+
+    setStyleSheet(R"(
+QLabel[searchHit="true"]
+{
+    background:#704040;
+}
+
+QWidget[searchHit="true"]
+{
+    background:#704040;
+}
+)");
+
 }
 
 namespace
 {
 
-void applyHighlight( QWidget* w, const QString& originalStyle)
-{
-    if (!w) return;
+// void applyHighlight( QWidget* w, const QString& originalStyle)
+// {
+//     if (!w) return;
 
-    w->setStyleSheet( originalStyle + ";background:#704040;");
+//     w->setStyleSheet( originalStyle + ";background:#704040;");
+// }
+
+void applyHighlight(QWidget* w)
+{
+    if (!w)
+        return;
+
+    w->setProperty(
+        "searchHit",
+        true);
+
+    w->style()->unpolish(w);
+    w->style()->polish(w);
+
+    w->update();
+}
+
+void clearHighlight(QWidget* w)
+{
+    if (!w)
+        return;
+
+    w->setProperty(
+        "searchHit",
+        false);
+
+    w->style()->unpolish(w);
+    w->style()->polish(w);
+
+    w->update();
 }
 
 }
@@ -82,7 +127,7 @@ void WorkSheetSummaryDetailWidget::applySearchResult(const SearchResult& result)
 
         const auto column = static_cast<WorkSheetOrderColumn>(hit.column);
 
-        applyHighlight(ui.widget(column),ui.style(column));
+        applyHighlight(ui.widget(column));//,ui.style(column));
     }
 }
 
@@ -97,13 +142,7 @@ void WorkSheetSummaryDetailWidget:: clearSearchHighlights()
             QWidget* w = ui.widgets[i];
 
             if (!w) continue;
-            auto a = static_cast<WorkSheetOrderColumn>( static_cast<int>(i));
-
-            qDebug()
-                << "clearSearchHighlights: stored_style:"
-                << ui.style(a);
-
-            w->setStyleSheet(ui.style(a));
+            clearHighlight(w);
         }
     }
 }

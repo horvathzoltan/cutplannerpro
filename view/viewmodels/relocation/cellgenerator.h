@@ -33,7 +33,7 @@ TableCellViewModel createQuantityDialogButtonCell(const QUuid& rowId, QObject* r
     layout->addWidget(button);
     layout->setAlignment(Qt::AlignCenter);
 
-    cell.widget = container;
+    cell.setWidget(container);
     return cell;
 }
 
@@ -77,7 +77,7 @@ inline TableCellViewModel createEditableCell(const QUuid& rowId,
     layout->addWidget(button);
     layout->setAlignment(Qt::AlignLeft);
 
-    cell.widget = container;
+    cell.setWidget(container);
     return cell;
 }
 

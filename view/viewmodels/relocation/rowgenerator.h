@@ -170,8 +170,8 @@ inline TableRowViewModel generate(const RelocationInstruction& instr,
     // 🧩 Anyag + csoprt + barcode
     auto matCell = CellGenerators::materialCell(mat, instr.barcode);
     // 🎨 Alapszínek a csoport alapján
-    QColor baseColor = matCell.background;
-    QColor fgColor = matCell.foreground;
+    QColor baseColor = matCell.background();
+    QColor fgColor = matCell.foreground();
     vm.cells[RelocationPlanTableColumns::Material] = matCell;
 
     // Quantity cell text and color logic

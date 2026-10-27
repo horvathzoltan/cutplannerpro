@@ -111,18 +111,23 @@ OrderRowUi WorkSheetOrderRowWidget::insertRow(
             "A materialId nem található a MaterialRegistry-ben");
     }
 
+
+
     grid->addWidget(lblRef, row, toColumnIndex(WorkSheetOrderColumn::Ref));
     grid->addWidget(lblOwner, row, toColumnIndex(WorkSheetOrderColumn::Owner));
     grid->addWidget(lblDue, row, toColumnIndex(WorkSheetOrderColumn::Due));
     grid->addWidget(lblType, row, toColumnIndex(WorkSheetOrderColumn::TypeSubtype));
 
-    if (colorVm.widget)
+    if (colorVm.hasWidget())
     {
+
         auto f = lblRef->font();
-        f.setItalic(true);
-        colorVm.widget->setToolTip(colorVm.tooltip);
-        colorVm.widget->setFont(f);
-        grid->addWidget(colorVm.widget, row, toColumnIndex(WorkSheetOrderColumn::Color));
+        auto styleTxt = QString("font-style: italic;font-size: %1pt;").arg(f.pointSize());
+        colorVm.setStyleSheet(styleTxt);
+
+        colorVm.apply();
+
+        grid->addWidget(colorVm.widget(), row, toColumnIndex(WorkSheetOrderColumn::Color));
     }
 
     grid->addWidget(lblProgress, row, toColumnIndex(WorkSheetOrderColumn::Progress));
@@ -133,14 +138,14 @@ OrderRowUi WorkSheetOrderRowWidget::insertRow(
     ui.widgets[toColumnIndex(WorkSheetOrderColumn::Owner)]= lblOwner;
     ui.widgets[toColumnIndex(WorkSheetOrderColumn::Due)] = lblDue;
     ui.widgets[toColumnIndex(WorkSheetOrderColumn::TypeSubtype)] = lblType;
-    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.widget;
+    ui.widgets[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.widget();
     ui.widgets[toColumnIndex(WorkSheetOrderColumn::Progress)] = lblProgress;
 
     ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Ref)] = lblRef->styleSheet();
     ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Owner)]= lblOwner->styleSheet();
     ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Due)] = lblDue->styleSheet();
     ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::TypeSubtype)] = lblType->styleSheet();
-    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.widget? colorVm.widget->styleSheet() : QString();
+    ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Color)] = colorVm.hasWidget()? colorVm.widget()->styleSheet() : QString();
     ui.originalStyles[toColumnIndex(WorkSheetOrderColumn::Progress)] = lblProgress->styleSheet();
 
     return ui;

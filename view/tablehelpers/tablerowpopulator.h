@@ -27,8 +27,10 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
         int col = it.key();
         const TableCellViewModel& cell = it.value();
 
+        auto cellTooltip = cell.tooltip();
+
         // widget eset - QWidget
-        if (cell.widget) {
+        if (cell.hasWidget()) {
             // előző widget törlése, ha volt
             if (QWidget* old = table->cellWidget(rowIx, col)) {
                 table->removeCellWidget(rowIx, col);
@@ -36,23 +38,25 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
             }
 
             // 🔘 Interaktív cella (pl. SpinBox, RadioButton)
-            table->setCellWidget(rowIx, col, cell.widget);
-            if(!cell.tooltip.isEmpty()){
-                cell.widget->setToolTip(cell.tooltip);
-            }
+            table->setCellWidget(rowIx, col, cell.widget());
+
+            // if(!cellTooltip.isEmpty()){
+            //      cell.widget()->setToolTip(cellTooltip);
+            // }
 
             QString styletxt;
 
-            if(cell.background.isValid()){
-                styletxt+=QString("background-color: %1;").arg(cell.background.name());
+            if(cell.background().isValid()){
+                styletxt+=QString("background-color: %1;").arg(cell.background().name());
             }
-            if(cell.foreground.isValid()){
-                styletxt+=QString("color: %2;").arg(cell.foreground.name());
+            if(cell.foreground().isValid()){
+                styletxt+=QString("color: %1;").arg(cell.foreground().name());
             }
 
-            if(!styletxt.isEmpty()){
-                cell.widget->setStyleSheet(styletxt);
-            }
+            // if(!styletxt.isEmpty()){
+            //     cell.widget()->setStyleSheet(styletxt);
+            // }
+            cell.apply();
         }
         // cellatartalom eset - QTableWidgetItem
         else
@@ -64,19 +68,22 @@ inline void populateRow(QTableWidget* table, int rowIx, const TableRowViewModel&
             }
 
             // 🧾 Sima szöveges cella
-            auto* item = new QTableWidgetItem(cell.text);
-            if(!cell.tooltip.isEmpty()){
-                item->setToolTip(cell.tooltip);
-                }
-            item->setBackground(cell.background);
-            item->setForeground(cell.foreground);
+            auto* item = new QTableWidgetItem(cell.text());
+            if(!cellTooltip.isEmpty()){
+                 item->setToolTip(cellTooltip);
+                 }
+
+            item->setBackground(cell.background());
+            item->setForeground(cell.foreground());
 
             // 🔒 Szerkeszthetőség beállítása
             auto flags = item->flags();
-            if (cell.isReadOnly)
+            if (cell.isReadOnly())
                 item->setFlags(flags & ~Qt::ItemIsEditable);
             else
                 item->setFlags(flags | Qt::ItemIsEditable);
+
+            //cell.apply();
 
             table->setItem(rowIx, col, item);
         }

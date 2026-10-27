@@ -27,8 +27,8 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
     // 🧩 Anyag + csoprt + barcode
     auto matCell = CellGenerators::materialCell(*mat);
     // 🎨 Alapszínek a csoport alapján
-    QColor baseColor = matCell.background;
-    QColor fgColor = matCell.foreground;
+    QColor baseColor = matCell.background();
+    QColor fgColor = matCell.foreground();
     vm.cells[InputTableColumns::Material] = matCell;
 
     // Material cell
@@ -93,8 +93,8 @@ inline TableRowViewModel generate(const Cutting::Plan::Request& request,
                                 request.requiredColor, request.surface,
                                 mat->color, mat->surface, mat->paintingMode);
 
-    colorCell.background = baseColor;
-    colorCell.foreground = fgColor;
+    colorCell.setBackground(baseColor);
+    colorCell.setForeground(fgColor);
     vm.cells[InputTableColumns::Color] = colorCell;
         //TableCellViewModel::fromText(request.requiredColorName, "",baseColor, fgColor, true);
 

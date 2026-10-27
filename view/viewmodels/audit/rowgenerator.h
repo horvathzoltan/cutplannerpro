@@ -35,8 +35,8 @@ inline TableRowViewModel generate(const StorageAuditRow& row,
     // 🧩 Anyag + csoprt + barcode
     auto matCell = CellGenerators::materialCell(mat, row.barcode);
     // 🎨 Alapszínek a csoport alapján
-    QColor baseColor = matCell.background;
-    QColor fgColor = matCell.foreground;
+    QColor baseColor = matCell.background();
+    QColor fgColor = matCell.foreground();
     vm.cells[AuditTableColumns::Material] = matCell;
 
     // 🧩 Tároló

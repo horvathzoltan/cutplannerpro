@@ -95,9 +95,10 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
                                            const QColor& foreground = Qt::black)
 {
     TableCellViewModel cell;
-    cell.tooltip = QString("Tényleges mennyiség: %1").arg(row.actualQuantity);
-    cell.background = background;
-    cell.foreground = foreground;
+    auto tooltipTxt = QString("Tényleges mennyiség: %1").arg(row.actualQuantity);
+    cell.setToolTip(tooltipTxt);
+    cell.setBackground(background);
+    cell.setForeground(foreground);
 
     if (row.sourceType == AuditSourceType::Leftover) {
         // 🔘 Rádiógombos megoldás: "Van" / "Nincs"
@@ -113,9 +114,9 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
         radioPresent->setProperty("rowId", row.rowId);
         radioMissing->setProperty("rowId", row.rowId);
-        radioPresent->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
-        radioMissing->setStyleSheet(QString("color: %1;").arg(cell.foreground.name()));
-        container->setStyleSheet(QString("background-color: %1;").arg(cell.background.name()));
+        radioPresent->setStyleSheet(QString("color: %1;").arg(cell.foreground().name()));
+        radioMissing->setStyleSheet(QString("color: %1;").arg(cell.foreground().name()));
+        container->setStyleSheet(QString("background-color: %1;").arg(cell.background().name()));
 
         auto rowFulfilled = row.isFulfilled();
 
@@ -141,10 +142,10 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
             }
         });
 
-        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background, cell.foreground);
+        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background(), cell.foreground());
         layout->addWidget(checkbox);
 
-        cell.widget = container;
+        cell.setWidget( container);
     } else {
         // 🔢 SpinBox megoldás
         auto* spin = new QSpinBox();
@@ -155,7 +156,7 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
         spin->setStyleSheet(QString(
                                 "background-color: %1; color: %2;"
                                 "QToolTip { background-color: #ffffcc; color: #000000; border: 1px solid gray; }"
-                                ).arg(cell.background.name()).arg(cell.foreground.name()));
+                                ).arg(cell.background().name()).arg(cell.foreground().name()));
 
 
         QObject::connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), receiver, [spin, receiver](int value) {
@@ -172,14 +173,14 @@ inline TableCellViewModel createActualCell(const StorageAuditRow& row,
 
         layout->addWidget(spin);
 
-        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background, cell.foreground);
+        auto* checkbox = createAuditCheckboxWidget(row, receiver, cell.background(), cell.foreground());
         layout->addWidget(checkbox);
 
         container->setStyleSheet(QString("background-color: %1; color: %2;")
-                                     .arg(cell.background.name())
-                                     .arg(cell.foreground.name()));
+                                     .arg(cell.background().name())
+                                     .arg(cell.foreground().name()));
 
-        cell.widget = container;
+        cell.setWidget(container);
 
     }
 
