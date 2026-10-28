@@ -1,4 +1,7 @@
 type;subtype;length;weight;colorMult;surfaceMult
+#length: ennyi méterre elég 1 kg porfesték
 NP;CIP;20;1.20;1.00;1.00
 NP;SIN;20;1.50;1.00;1.00
 NP;BOW;20;1.00;1.00;1.00
+ROL;SRTOK;20;1.00;1.00;1.00
+SR;TN;20;1.00;1.00;1.00

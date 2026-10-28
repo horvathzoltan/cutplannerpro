@@ -44,7 +44,7 @@ NP-SZ-9010
 POL-P;RolettaPalca;Linear;0;;
 ROL-P
 
-PROL-GYZ;ÚjGyöngyösZáró;Linear;0;;
+PROL-GYZ;ÚjGyöngyösZáró;Linear;85;;
 ROL-GYZ
 
 PMT-T;MiniTok;Linear;0;;
@@ -59,7 +59,7 @@ MT-Z+P
 PMT-L;MiniTokosLáb;Linear;0;;40
 MT-L2
 
-PSR-T;SávrolóTok;Linear;0;;
+PSR-T;SávrolóTok;Linear;165;;
 SR-T
 
 PSR-ZP;SávrolóZáró+Palca;Linear;0;;
@@ -68,9 +68,10 @@ SR-Z+P
 PSR-Z;SávrolóZáró;Linear;0;;
 SR-Z
 
-PSR-P;SávrolóPalca;Linear;0;;
+PSR-P;SávrolóPalca;Linear;44;;
 SR-P
 SR-P-3000
+SR-P-3000_NATUR
 
 PSR-FSN;SávrolóFelsoSin;Linear;0;;
 SR-FSN

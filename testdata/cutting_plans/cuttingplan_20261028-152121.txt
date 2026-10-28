@@ -1,0 +1,2 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"10002";"RolettaMűhely";3000;1000;3000;;22;22;0;"RAL 9016";SR-P-3000_NATUR;Width;false;2026.10.30;SR;TN;;SM;Gyartasi;UNKNOWN
