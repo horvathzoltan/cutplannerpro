@@ -530,6 +530,7 @@ HEADERS += \
     view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \
     view/viewmodels/tablerowviewmodel.h \
+    worksheetsummary/model/worksheetmaterialinfo.h \
     worksheetsummary/model/worksheetorderinfo.h \
     worksheetsummary/registry/worksheetsummary_registry.h \
     worksheetsummary/repository/worksheetsummary_repository.h \

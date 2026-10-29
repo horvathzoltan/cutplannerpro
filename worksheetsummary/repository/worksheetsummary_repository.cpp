@@ -12,6 +12,11 @@
 
 #include <materials/registry/material_registry.h>
 
+
+const QString WorkSheetSummaryRepository::MaterialSectionKey = "MAT:1";
+const QString WorkSheetSummaryRepository::OrdersSectionKey = "ORDERS";
+
+
 QList<QList<QVector<QString>>>
 WorkSheetSummaryRepository::readMsffSections(
     const QString& filepath)
@@ -142,8 +147,8 @@ std::optional<
     row.requiredSurfaceCode =
         parts[6].trimmed();
 
-    row.materialBarcode =
-        parts[7].trimmed();
+    // row.materialBarcode =
+    //     parts[7].trimmed();
 
     row.requestCount =
         parts[8].trimmed().toInt();
@@ -187,11 +192,8 @@ std::optional<WorkSheetSummary>
     return summary;
 }
 
-std::optional<WorkSheetOrderInfo>
-    WorkSheetSummaryRepository::
-    buildWorkSheetOrderInfoFromRow(
-        const WorkSheetOrderInfoRow& row,
-        CsvReader::FileContext& ctx)
+std::optional<WorkSheetOrderInfo> WorkSheetSummaryRepository::buildWorkSheetOrderInfoFromRow(
+    const WorkSheetOrderInfoRow& row,CsvReader::FileContext& ctx)
 {
     WorkSheetOrderInfo info;
 
@@ -262,15 +264,19 @@ std::optional<WorkSheetOrderInfo>
         return std::nullopt;
     }
 
-    const auto* mat =
-        MaterialRegistry::instance()
-            .findByBarcode(
-                row.materialBarcode);
+    // const auto* mat =
+    //     MaterialRegistry::instance()
+    //         .findByBarcode(
+    //             row.materialBarcode);
 
-    info.materialId =
-        mat
-            ? mat->id
-            : QUuid();
+    // info.materialId =
+    //     mat
+    //         ? mat->id
+    //         : QUuid();
+
+    // RBCSV:
+    // materials külön blokkból töltődik
+
 
     info.requestCount =
         row.requestCount;
@@ -394,6 +400,10 @@ bool WorkSheetSummaryRepository::loadFromFile(
         registry);
 }
 
+
+
+
+
 bool WorkSheetSummaryRepository::saveToFile(
     const WorkSheetSummaryRegistry& registry,
     const QString& filePath)
@@ -412,88 +422,114 @@ bool WorkSheetSummaryRepository::saveToFile(
     out.setEncoding(
         QStringConverter::Utf8);
 
-    out
-        << "filePath;"
-           "fileName;"
-           "fileHash;"
-           "presence\n";
-
-    out
-        << "externalReference;"
-           "ownerName;"
-           "dueDate;"
-           "productTypeCode;"
-           "productSubtypeCode;"
-           "requiredColorCode;"
-           "requiredSurfaceCode;"
-           "materialBarcode;"
-           "requestCount;"
-           "completedCount;"
-           "uncompletedCount;"
-           "undefinedCount\n\n";
-
-    bool first = true;
-
-    for (const auto& ws : registry.readAll())
+    QVector<WorkSheetSummary> worksheets = registry.readAll();
+    for (const auto& ws : worksheets)
     {
-        if (!first)
-        {
-            out << "\n";
-        }
-
-        first = false;
-        out
-            << ws.filePath << ";"
-            << ws.fileName << ";"
-            << ws.fileHash.toBase64() << ";"
-            << WorkSheetPresenceUtils::toCsv(
-                   ws.presence)
-            << "\n";
-
-        for (const auto& order : ws.orders)
-        {
-            auto* type =
-                ProductTypeRegistry::instance()
-                    .findById(order.productTypeId);
-
-            auto* subtype =
-                ProductSubtypeRegistry::instance()
-                    .findById(order.productSubtypeId);
-
-            const MaterialMaster* mat =
-                MaterialRegistry::instance()
-                    .findById(
-                        order.materialId);
-
-            out
-                << order.externalReference << ";"
-                << order.ownerName << ";"
-                << order.dueDate.toString(
-                       "yyyy-MM-dd")
-                << ";"
-                << (type?type->code:"")
-                << ";"
-                << (subtype?subtype->code:"")
-                << ";"
-                << order.requiredColor.code()
-                << ";"
-                << SurfaceTypeUtils::toCode(
-                       order.requiredSurface)
-                << ";"
-                << (mat?mat->barcode:"")
-                << ";"
-                << order.requestCount
-                << ";"
-                << order.completedCount
-                << ";"
-                << order.uncompletedCount
-                << ";"
-                << order.undefinedCount
-                << "\n";
-        }
-
+        writeWorksheetRow(out, ws);
         out << "\n";
     }
 
     return true;
 }
+
+void WorkSheetSummaryRepository::writeWorksheetRow(QTextStream& out,const WorkSheetSummary& ws)
+{
+    out
+        << ws.filePath
+        << ";"
+        << ws.fileName
+        << ";"
+        << ws.fileHash.toBase64()
+        << ";"
+        << WorkSheetPresenceUtils::toCsv(ws.presence)
+        << ";"
+        << OrdersSectionKey
+        << "\n";
+
+    out << OrdersSectionKey << "\n";
+
+    for (const auto& order : ws.orders)
+    {
+        writeOrderRow(out, order);
+        out << "\n";
+    }
+
+    out << "END # " << OrdersSectionKey << "\n";
+}
+
+void WorkSheetSummaryRepository::
+    writeOrderRow(
+        QTextStream& out,
+        const WorkSheetOrderInfo& order)
+{
+    auto* type =
+        ProductTypeRegistry::instance()
+            .findById(
+                order.productTypeId);
+
+    auto* subtype =
+        ProductSubtypeRegistry::instance()
+            .findById(
+                order.productSubtypeId);
+
+    out
+        << order.externalReference
+        << ";"
+        << order.ownerName
+        << ";"
+        << order.quantity
+        << ";"
+        << order.fullWidthMm
+        << ";"
+        << order.fullHeightMm
+        << ";"
+        << order.dueDate.toString("yyyy-MM-dd")
+        << ";"
+        << (type ? type->code : "")
+        << ";"
+        << (subtype ? subtype->code : "")
+        << ";"
+        << SizeCalcModeUtils::toString(order.calcMode)
+        << ";"
+        << order.requiredColor.code()
+        << ";"
+        << SurfaceTypeUtils::toCode(order.requiredSurface)
+        << ";"
+        << order.requestCount
+        << ";"
+        << order.completedCount
+        << ";"
+        << order.uncompletedCount
+        << ";"
+        << order.undefinedCount
+        << ";"
+        << MaterialSectionKey
+        << "\n";
+
+        writeMaterialSection(out, order.materials);
+
+        out << "\n";
+}
+
+void WorkSheetSummaryRepository::writeMaterialSection(QTextStream& out, const QVector<WorkSheetMaterialInfo>& materials)
+{
+    out << MaterialSectionKey << "\n";
+
+    for (const auto& matInfo : materials)
+    {
+        const auto* mat =MaterialRegistry::instance().findById(matInfo.materialId);
+
+        out
+            << (mat? mat->barcode: "")
+            << ";"
+            << matInfo.cutLengthMm
+            << "\n";
+    }
+
+    out << "END # " << MaterialSectionKey << "\n";
+}
+
+
+
+// load
+

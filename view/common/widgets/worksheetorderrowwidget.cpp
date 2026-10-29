@@ -90,7 +90,17 @@ OrderRowUi WorkSheetOrderRowWidget::insertRow(
                 .arg(order.requestCount));
 
 
-    const MaterialMaster* mat = MaterialRegistry::instance().findById(order.materialId);
+    //const MaterialMaster* mat = MaterialRegistry::instance().findById(order.materialId);
+    const MaterialMaster* mat = nullptr;
+
+    if (!order.materials.isEmpty())
+    {
+        mat =
+            MaterialRegistry::instance()
+                .findById(
+                    order.materials.first().materialId);
+    }
+
 
     TableCellViewModel colorVm;
 
