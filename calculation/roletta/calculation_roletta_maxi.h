@@ -47,7 +47,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     }
 
     // --- ZÁRÓ ---
-    if (role == "RROL-EZ") {
+    if (role == "RROL-EZ" ||
+            role == "RROL-GYZ") {
         if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcZaro(width);
     }

@@ -39,8 +39,8 @@ public:
 
     QString toString_cm() const
     {
-        const int a_cm = dimA_mm / 10;
-        const int b_cm = dimB_mm.value_or(0) / 10;
+        const int a_cm = std::ceil(static_cast<double>(dimA_mm) / 10);
+        const int b_cm = std::ceil(static_cast<double>(dimB_mm.value_or(0)) / 10);
 
         switch (geometry) {
 

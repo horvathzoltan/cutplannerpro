@@ -74,7 +74,8 @@ inline std::optional<double> calc(const QMap<QString, QString>& attributes,
     if (role == "RNP-CL" ||
         role == "RNP-CLB" ||
         role == "RNP-CLT" ||
-        role == "RNP-CL2+CLT2+CLB2")
+        role == "RNP-CL2+CLT2+CLB2" ||
+            role == "RNP-CL2+CLT2+CLBR2")
     {
         if(mode == SizeCalcMode::Gyartasi)
             return GyartasiMeret::calcLab(height);

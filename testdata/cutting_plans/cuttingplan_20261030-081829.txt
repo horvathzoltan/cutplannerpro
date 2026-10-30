@@ -1,0 +1,9 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2604";"AblakGenerál, Pécs";2200;2420;2170;;1;0;1;"";TE-S-36;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2604";"AblakGenerál, Pécs";2200;2420;2160;;1;0;1;"";ROL-GYZ;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2605";"AblakGenerál, Pécs";2200;2420;2170;;1;0;1;"";TE-S-36;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2605";"AblakGenerál, Pécs";2200;2420;2160;;1;0;1;"";ROL-GYZ;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2606";"AblakGenerál, Pécs";2200;2420;2170;;1;1;0;"";TE-S-36;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2606";"AblakGenerál, Pécs";2200;2420;2160;;1;1;0;"";ROL-GYZ;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2607";"AblakGenerál, Pécs";2200;2420;2170;;1;1;0;"";TE-S-36;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2607";"AblakGenerál, Pécs";2200;2420;2160;;1;1;0;"";ROL-GYZ;Width;false;2026.10.30;ROL;ER;;SM;Gyartasi;UNKNOWN

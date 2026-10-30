@@ -1,0 +1,24 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2713";"Jakufa, Nyh.";400;600;370;;1;0;1;"";TE-R-23;Width;false;2026.10.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2713";"Jakufa, Nyh.";400;600;373;;1;0;1;"";ROL-P;Width;false;2026.10.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2714";"Jakufa, Nyh";400;600;394;;1;0;0;"";SR-T;Width;false;2026.11.04;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2714";"Jakufa, Nyh";400;600;377;;1;0;0;"";TE-H-32;Width;false;2026.11.04;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2714";"Jakufa, Nyh";400;600;370;;1;0;0;"";ROL-GYZ;Width;false;2026.11.04;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2717";"Rellux, Győr";580;1240;555;;1;0;0;"";TE-R-23;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2717";"Rellux, Győr";580;1240;553;;1;0;0;"";ROL-P;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2718";"Rellux, Győr";580;1240;555;;1;0;0;"";TE-R-23;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2718";"Rellux, Győr";580;1240;553;;1;0;0;"";ROL-P;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2719";"Rellux, Győr";580;1240;555;;1;0;0;"";TE-R-23;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2719";"Rellux, Győr";580;1240;553;;1;0;0;"";ROL-P;Width;false;2026.11.09;ROL;TET;;SM;Gyartasi;UNKNOWN
+"902";"Napex, Pécs";940;1220;950;;3;1;2;"";MT-T;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"902";"Napex, Pécs";940;1220;945;;3;1;2;"";TE-H-18;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"902";"Napex, Pécs";940;1220;933;;3;1;2;"";MT-Z+P;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"902";"Napex, Pécs";940;1220;1220;;3;1;2;"";MT-L2;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"905";"Jakufa, Nyh";400;600;410;;1;0;1;"";MT-T;Width;false;2026.11.04;SR;MINIT;;SM;Uveg;UNKNOWN
+"905";"Jakufa, Nyh";400;600;405;;1;0;1;"";TE-H-18;Width;false;2026.11.04;SR;MINIT;;SM;Uveg;UNKNOWN
+"905";"Jakufa, Nyh";400;600;393;;1;0;1;"";MT-Z+P;Width;false;2026.11.04;SR;MINIT;;SM;Uveg;UNKNOWN
+"905";"Jakufa, Nyh";400;600;600;;1;0;1;"";MT-L2;Width;false;2026.11.04;SR;MINIT;;SM;Uveg;UNKNOWN
+"908";"ShutterSystem";1200;340;1210;;1;1;0;"";MT-T;Width;false;2026.11.03;SR;MINIT;;SM;Uveg;UNKNOWN
+"908";"ShutterSystem";1200;340;1205;;1;1;0;"";TE-H-18;Width;false;2026.11.03;SR;MINIT;;SM;Uveg;UNKNOWN
+"908";"ShutterSystem";1200;340;1193;;1;1;0;"";MT-Z+P;Width;false;2026.11.03;SR;MINIT;;SM;Uveg;UNKNOWN
+"908";"ShutterSystem";1200;340;340;;1;1;0;"";MT-L2;Width;false;2026.11.03;SR;MINIT;;SM;Uveg;UNKNOWN

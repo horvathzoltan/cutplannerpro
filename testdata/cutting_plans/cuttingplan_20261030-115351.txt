@@ -1,0 +1,2 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"10003";"RolettaMűhely";1015;1000;1015;;5;5;0;"";ROL-GYZ;Width;false;2026.10.31;ROL;UJGY;;SM;Gyartasi;UNKNOWN

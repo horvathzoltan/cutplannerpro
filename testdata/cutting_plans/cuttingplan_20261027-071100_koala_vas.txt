@@ -1,0 +1,6 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"497";"KoalaAblak, Bp.";4375;2220;4265;;1;1;0;"RAL 9010";NP-ROLL78-7000;Width;false;2026.10.29;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"497";"KoalaAblak, Bp.";4375;2220;4200;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026.10.29;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"498";"KoalaAblak, Bp.";3130;2170;3020;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.10.29;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"498";"KoalaAblak, Bp.";3130;2170;2955;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.10.29;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+

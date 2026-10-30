@@ -10,8 +10,8 @@
 #include "calculation/roletta/calculation_roletta_savrolotok.h"
 #include "calculation/roletta/calculation_roletta_maxi.h"
 #include "calculation/roletta/calculation_roletta_motoros.h"
+#include "calculation/roletta/calculation_roletta_erositett.h"
 #include "calculation/roletta/calculation_roletta_mini.h"
-
 
 
 #include "common/logger.h"
@@ -53,6 +53,9 @@ inline std::optional<double> calc(const QString& subtype,
 
     if(subtype == "MAXI")
         return Maxi::calc(attributes, role, width, height, mode);
+
+    if(subtype == "ER")
+        return Erositett::calc(attributes, role, width, height, mode);
 
     if(subtype == "MINI")
         return Mini::calc(attributes, role, width, height, mode);

@@ -1,0 +1,38 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2691";"Rellux, Győr";1710;1300;1704;;1;0;1;"RAL 8019";SR-T;Width;false;2026.11.02;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2691";"Rellux, Győr";1710;1300;1687;;1;0;1;"RAL 8019";TE-H-32;Width;false;2026.11.02;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2691";"Rellux, Győr";1710;1300;1680;;1;0;1;"RAL 8019";ROL-GYZ;Width;false;2026.11.02;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"2694";"Oros-Csőszer, Mtúr";1650;2500;1615;;1;0;1;;TE-H-32;Width;false;2026.11.09;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2694";"Oros-Csőszer, Mtúr";1650;2500;1605;;1;0;1;;ROL-GYZ;Width;false;2026.11.09;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2697";"TátraMix";1530;1300;1495;;1;0;1;;TE-H-32;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2697";"TátraMix";1530;1300;1485;;1;0;1;;ROL-GYZ;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2698";"TátraMix";1530;1300;1495;;1;1;0;;TE-H-32;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2698";"TátraMix";1530;1300;1485;;1;1;0;;ROL-GYZ;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2699";"TátraMix";1900;1800;1865;;1;0;1;;TE-H-32;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2699";"TátraMix";1900;1800;1855;;1;0;1;;ROL-GYZ;Width;false;2026.11.10;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2702";"Kiss Árnyékolás, Pécs";907;1310;877;;1;1;0;;TE-S-18;Width;false;2026.11.06;ROL;MINI;;SM;Teljes;UNKNOWN
+"2702";"Kiss Árnyékolás, Pécs";907;1310;867;;1;1;0;;ROL-P;Width;false;2026.11.06;ROL;MINI;;SM;Teljes;UNKNOWN
+"2705";"Függönycenter";735;1450;745;;1;0;1;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2705";"Függönycenter";735;1450;740;;1;0;1;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2705";"Függönycenter";735;1450;730;;1;0;1;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2705";"Függönycenter";735;1450;1450;;1;0;1;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2706";"Függönycenter";735;1450;745;;1;0;1;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2706";"Függönycenter";735;1450;740;;1;0;1;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2706";"Függönycenter";735;1450;730;;1;0;1;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2706";"Függönycenter";735;1450;1450;;1;0;1;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2707";"Függönycenter";735;1450;745;;1;0;1;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2707";"Függönycenter";735;1450;740;;1;0;1;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2707";"Függönycenter";735;1450;730;;1;0;1;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2707";"Függönycenter";735;1450;1450;;1;0;1;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2708";"Függönycenter";735;1450;745;;1;1;0;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2708";"Függönycenter";735;1450;740;;1;1;0;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2708";"Függönycenter";735;1450;730;;1;1;0;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2708";"Függönycenter";735;1450;1450;;1;1;0;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2709";"Függönycenter";715;1450;725;;1;0;1;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2709";"Függönycenter";715;1450;720;;1;0;1;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2709";"Függönycenter";715;1450;710;;1;0;1;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2709";"Függönycenter";715;1450;1450;;1;0;1;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2710";"Függönycenter";715;1450;725;;1;0;1;"";MT-T;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2710";"Függönycenter";715;1450;720;;1;0;1;"";TE-H-18;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2710";"Függönycenter";715;1450;710;;1;0;1;"";MT-Z;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2710";"Függönycenter";715;1450;1450;;1;0;1;"";MT-L2;Width;false;2026.11.10;ROL;TSIN;;SM;Uveg;UNKNOWN
