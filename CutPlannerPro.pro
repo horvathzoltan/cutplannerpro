@@ -177,6 +177,7 @@ HEADERS += \
     calculation/naphalo/calculation_naphalo.h \
     calculation/roletta/calculation_roletta.h \
     calculation/roletta/calculation_roletta_alap.h \
+    calculation/roletta/calculation_roletta_erositett.h \
     calculation/roletta/calculation_roletta_maxi.h \
     calculation/roletta/calculation_roletta_mini.h \
     calculation/roletta/calculation_roletta_motoros.h \

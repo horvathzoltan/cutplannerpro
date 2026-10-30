@@ -32,6 +32,7 @@ BNP-T+TF-7016;NaphálóTok+Fedél
 BNP-T+TF-9010;NaphálóTok+Fedél
 
 BNP-CLB/2;CipzárosLábbetét_Pár
+BNP-CLBR/2;CipzárosLábbetét_PárR
 
 BNP-HK/20;KurbliCső_20db
 
@@ -51,6 +52,10 @@ BMT-P/20;MinitokosPálca/20db
 CT-CL2+CLT2+CLB2;CipzárosLáb_Combo
 CT-CL2+CLT2+CLB2-7016;CipzárosLáb_Combo
 CT-CL2+CLT2+CLB2-9010;CipzárosLáb_Combo
+
+CT-CL2+CLT2+CLBR2;CipzárosLáb_ComboR
+CT-CL2+CLT2+CLBR2-7016;CipzárosLáb_ComboR
+CT-CL2+CLT2+CLBR2-9010;CipzárosLáb_ComboR
 
 CT-SL2;SinesLáb_Combo
 CT-SL2-7016;SinesLáb_Combo

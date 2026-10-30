@@ -45,6 +45,8 @@ Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;10;
 Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;simple;
 Tengely Ø32 hornyos;TE-H-32;6000;32;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
 Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
+Tengely Ø36 sima;TE-S-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
+
 Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
 Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;80050528;;Tengely;simple;
 SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Tok;simple;
@@ -107,6 +109,8 @@ Lábtakaró_2Pár;NP-CLT4-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Pain
 Lábtakaró_2Pár;NP-CLT4-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;30;20;500;1000;1500;80170023;;Lab;bundle;BNP-CLT/4-9010
 
 CipzárosLábbetét_Pár;NP-CLB2;-1;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab;bundle;BNP-CLB/2
+CipzárosLábbetét_Pár;NP-CLBR2;-1;;;Custom;CM2;Plastic;;SM;Length;None;0;0;500;1000;1500;80170955;;Lab;bundle;BNP-CLBR/2
+
 
 SinesLáb_5db;NP-SL5;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;70;500;1000;1500;80170428;;Lab;bundle;BNP-SL/5
 SinesLáb_5db;NP-SL5-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;70;500;1000;1500;80170164;;Lab;bundle;BNP-SL/5-7016
@@ -147,6 +151,11 @@ MinitokosPálca_20db;MT-P20;-1;8;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintab
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;0;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;30;20;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2-7016
 CipzárosLáb_Combo;NP-CL2+CLT2+CLB2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;30;20;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLB2-9010
+
+CipzárosLábR_Combo;NP-CL2+CLT2+CLBR2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;0;10;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLBR2
+CipzárosLábR_Combo;NP-CL2+CLT2+CLBR2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;FS;Length;Paintable;30;20;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLBR2-7016
+CipzárosLábR_Combo;NP-CL2+CLT2+CLBR2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;30;20;500;1000;1500;80170429;;Lab;bundle;CT-CL2+CLT2+CLBR2-9010
+
 
 SinesLáb_Combo;NP-SL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CT-SL2
 SinesLáb_Combo;NP-SL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CT-SL2-7016
