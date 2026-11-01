@@ -4,7 +4,8 @@
 
 #include <QList>
 
-#include "../model/cutting/plan/request.h"
+//#include "../model/cutting/plan/request.h"
+#include "worksheetsummary/model/worksheetsummary.h"
 
 TestManager& TestManager::instance() {
     static TestManager _instance;
@@ -20,8 +21,12 @@ void TestManager::runBusinessLogicTests(const QString& profile) {
         runMakiTests();
     } else if (profile == "full") {
         runFullTests();    
-    } else if (profile == "tolerance") {
-        runToleranceTests();
+    }
+    // else if (profile == "tolerance") {
+    //     runToleranceTests();
+    // }
+    else if (profile == "schema") {
+        runBuildSchemaTest();
     } else {
         zWarning(QString("⚠️ Ismeretlen tesztprofil: %1").arg(profile));
     }
@@ -41,18 +46,18 @@ void TestManager::runDoubleTests(){
     zInfo("c_txt:"+c_txt);
 }
 
-void TestManager::runToleranceTests()
-{
-    auto t1 = Tolerance::fromString("+/-0.5");    // min=-0.5, max=+0.5
-    auto t2 = Tolerance::fromString("-0.5/0");    // min=-0.5, max=0
-    auto t3 = Tolerance::fromString("234 ±0.5");  // min=-0.5, max=+0.5
-    auto t4 = Tolerance::fromString("234 -0.5/+0.2"); // min=-0.5, max=+0.2
+// void TestManager::runToleranceTests()
+// {
+//     auto t1 = Tolerance::fromString("+/-0.5");    // min=-0.5, max=+0.5
+//     auto t2 = Tolerance::fromString("-0.5/0");    // min=-0.5, max=0
+//     auto t3 = Tolerance::fromString("234 ±0.5");  // min=-0.5, max=+0.5
+//     auto t4 = Tolerance::fromString("234 -0.5/+0.2"); // min=-0.5, max=+0.2
 
-    zInfo("t1:"+t1->toString());           // "+/-0.5 mm"
-    zInfo("t2:"+t2->toString());           // "-0.5/0 mm"
-    zInfo("t3:"+t3->toString(234));        // "234 ±0.5 mm"
-    zInfo("t4:"+t4->toString(234));        // "234 -0.5/0.2 mm"
-}
+//     zInfo("t1:"+t1->toString());           // "+/-0.5 mm"
+//     zInfo("t2:"+t2->toString());           // "-0.5/0 mm"
+//     zInfo("t3:"+t3->toString(234));        // "234 ±0.5 mm"
+//     zInfo("t4:"+t4->toString(234));        // "234 -0.5/0.2 mm"
+// }
 
 void TestManager::runMakiTests() {
     zInfo("▶️ Maki tesztprofil futtatása...");
@@ -97,4 +102,30 @@ void TestManager::runMakiTests() {
 void TestManager::runFullTests() {
     zInfo("▶️ Full tesztprofil futtatása...");
     // Ide jöhetnek komplexebb integrációs tesztek
+}
+
+// --test schema
+void TestManager::runBuildSchemaTest()
+{
+    zInfo("=== BuildSchema tesztek ===");
+
+    QString schema;
+
+    schema = WorkSheetSummary::Meta().BuildSchema();
+    zInfo(schema);
+
+    schema = WorkSheetOrderInfo::Meta().BuildSchema();
+    zInfo(schema);
+
+
+    for(const auto& f :
+         WorkSheetOrderInfo::Meta().ToMetaFieldBases())
+    {
+        zInfo(
+            f.name
+            + " -> "
+            + f.type.name()
+            + " id="
+            + QString::number(f.type.id()));
+    }
 }

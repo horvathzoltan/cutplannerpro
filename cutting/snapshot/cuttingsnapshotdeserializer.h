@@ -24,7 +24,7 @@ public:
 
 private:
     enum Section {
-        NONE,
+        NONE1,
         CUTPLANS,
         SEGMENTS,
         PIECES,

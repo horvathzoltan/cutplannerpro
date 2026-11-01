@@ -63,6 +63,20 @@ int main(int argc, char *argv[])
     //EmojiHelper::RenderAllEmojisToCache();
     //TestLabelMaker::runCompactPdfTest();
 
+    // --test maki
+    if (SettingsManager::instance().isTestMode()) {
+        auto testProfile = SettingsManager::instance().testProfile();
+        //--test materialexport
+        // if(testProfile == "materialexport"){
+        //     MaterialRepository repo;
+        //     repo.exportCsv("materials_out.csv");
+        //     return 0;
+        // }
+        TestManager::instance().runBusinessLogicTests(testProfile);
+        return 0;
+    }
+
+
     StartupManager manager;
     StartupStatus status = manager.runStartupSequence();
 
@@ -78,18 +92,18 @@ int main(int argc, char *argv[])
     }
 
 
-    // --test maki
-    if (SettingsManager::instance().isTestMode()) {
-        auto testProfile = SettingsManager::instance().testProfile();
-        //--test materialexport
-        // if(testProfile == "materialexport"){
-        //     MaterialRepository repo;
-        //     repo.exportCsv("materials_out.csv");
-        //     return 0;
-        // }
-        TestManager::instance().runBusinessLogicTests(testProfile);
-        return 0;
-    }
+    // // --test maki
+    // if (SettingsManager::instance().isTestMode()) {
+    //     auto testProfile = SettingsManager::instance().testProfile();
+    //     //--test materialexport
+    //     // if(testProfile == "materialexport"){
+    //     //     MaterialRepository repo;
+    //     //     repo.exportCsv("materials_out.csv");
+    //     //     return 0;
+    //     // }
+    //     TestManager::instance().runBusinessLogicTests(testProfile);
+    //     return 0;
+    // }
 
     MainWindow window;
 //    window.setWindowTitle("CutPlanner MVP");

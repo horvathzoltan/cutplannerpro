@@ -6,8 +6,8 @@
 #include <QDate>
 #include <QString>
 #include <QUuid>
-
 #include <common/color/namedcolor.h>
+#include "meta/meta.h"
 
 
 struct WorkSheetOrderInfo
@@ -45,4 +45,11 @@ struct WorkSheetOrderInfo
             undefinedCount > 0 ||
             uncompletedCount > 0;
     }
+
+
+private:
+    static MetaData<WorkSheetOrderInfo> _meta;
+public:
+    static MetaData<WorkSheetOrderInfo>& Meta();
+    static void MetaInit();
 };

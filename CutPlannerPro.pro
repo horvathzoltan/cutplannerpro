@@ -36,6 +36,7 @@ SOURCES += \
     materials/repository/material_paintgroup_repository.cpp \
     materials/repository/material_rolegroup_repository.cpp \
     materials/repository/material_storagegrouprepository.cpp \
+    meta/typehelper.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -167,6 +168,8 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
     view/tableutils/rowtracker2.cpp \
+    worksheetsummary/model/worksheetorderinfo.cpp \
+    worksheetsummary/model/worksheetsummary.cpp \
     worksheetsummary/registry/worksheetsummary_registry.cpp \
     worksheetsummary/repository/worksheetsummary_repository.cpp \
     worksheetsummary/search/worksheetsummary_searchengine.cpp \
@@ -228,6 +231,12 @@ HEADERS += \
     materials/repository/material_paintgroup_repository.h \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
+    meta/meta.h \
+    meta/metafield.h \
+    meta/metahelpers.h \
+    meta/metareference.h \
+    meta/metavalue.h \
+    meta/typehelper.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \
     paint/paintingrequirement_helper.h \
