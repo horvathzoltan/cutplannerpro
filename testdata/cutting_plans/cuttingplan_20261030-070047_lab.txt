@@ -1,0 +1,10 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"505";"Felföldi K.";2320;1170;1067;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.03;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"506";"Felföldi K.";2025;1170;1067;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.03;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"523";"Fény-Őr, Bp.";1580;1320;1217;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"524";"Fény-Őr, Bp.";1630;1320;1217;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"525";"Fény-Őr, Bp.";1220;1410;1307;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"526";"Fény-Őr, Bp.";1210;1410;1307;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"527";"Fény-Őr, Bp.";1160;1100;997;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"528";"Fény-Őr, Bp.";1160;1100;997;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"529";"Fény-Őr, Bp.";1160;1100;997;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN

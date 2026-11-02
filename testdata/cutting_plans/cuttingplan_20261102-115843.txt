@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"520";"Szajkó, Győr";1035;1829;1005;;1;1;0;"RAL 1019";NP-T;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"520";"Szajkó, Győr";1035;1829;1030;;1;1;0;"RAL 1019";NP-TF;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"520";"Szajkó, Győr";1035;1829;912;;1;1;0;"RAL 1019";NP-CZ;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"520";"Szajkó, Győr";1035;1829;925;;1;1;0;"RAL 1019";NP-ROLL70-7000;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"520";"Szajkó, Győr";1035;1829;860;;1;1;0;"RAL 1019";NP-BAR20-6000;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"520";"Szajkó, Győr";1035;1829;1726;;1;1;0;"RAL 1019";NP-CL2+CLT2+CLBR2;Width;false;2026.11.02;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN

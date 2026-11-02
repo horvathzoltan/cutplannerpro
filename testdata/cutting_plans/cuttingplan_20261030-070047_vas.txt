@@ -1,0 +1,15 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"523";"Fény-Őr, Bp.";1580;1320;1470;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"523";"Fény-Őr, Bp.";1580;1320;1405;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"524";"Fény-Őr, Bp.";1630;1320;1520;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"524";"Fény-Őr, Bp.";1630;1320;1455;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"525";"Fény-Őr, Bp.";1220;1410;1110;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"525";"Fény-Őr, Bp.";1220;1410;1045;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"526";"Fény-Őr, Bp.";1210;1410;1100;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"526";"Fény-Őr, Bp.";1210;1410;1035;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"527";"Fény-Őr, Bp.";1160;1100;1050;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"527";"Fény-Őr, Bp.";1160;1100;985;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"528";"Fény-Őr, Bp.";1160;1100;1050;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"528";"Fény-Őr, Bp.";1160;1100;985;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"529";"Fény-Őr, Bp.";1160;1100;1050;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"529";"Fény-Őr, Bp.";1160;1100;985;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.05;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
