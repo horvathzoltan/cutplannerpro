@@ -32,5 +32,10 @@ void WorkSheetSummary::MetaInit()
     AddMetaField(presence);
     AddMetaField(orders);
 
+    AddMetaComposition(
+        orders,
+        WorkSheetOrderInfo);
+
     _meta.setInitialized();
+    _meta.RegisterSelf();
 }

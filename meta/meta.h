@@ -5,10 +5,13 @@
 #include <QString>
 #include <QVariant>
 #include "common/logger.h"
+#include "meta/metacomposition.h"
 #include "metafield.h"
 #include "metavalue.h"
 #include "metahelpers.h"
 #include "metareference.h"
+#include "imetadata.h"
+#include "metaregistry.h"
 
 #define AddMetaField(b) _meta.AddField(#b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b));
 #define AddMetaBase(b) _meta.AddBaseName(#b, sizeof(b));
@@ -29,9 +32,11 @@
 #define AddMegnev(t, a) addMetaIdMegnev(FieldName(t,a))
 #define AddCode(t, a) addMetaIdCode(FieldName(t,a))
 
+#define AddMetaComposition(field, childType) \
+_meta.AddComposition<childType>(#field)
 
 template<typename T>
-class MetaData{
+class MetaData : public IMetaData{
     QList<MetaField> _fields;
     IdMegnevIxs _idMegnevIxs;
     bool _verbose = true;
@@ -48,6 +53,18 @@ public:
     void setInitialized()
     {
         _initialized = true;
+    }
+
+    QString baseTypeName() const override
+    {
+        return _baseName;
+    }
+
+    void RegisterSelf()
+    {
+        MetaRegistry::Register(
+            std::type_index(typeid(T)),
+            this);
     }
 
     //QVariantList _references;
@@ -69,6 +86,38 @@ public:
 };
 */
     RefContainer _refcontainer;
+    QList<MetaComposition> _compositions;
+
+
+    const QList<MetaComposition>& compositions() const
+    {
+        return _compositions;
+    }
+
+    template<typename Child>
+    void AddComposition(
+        const QString& fieldName)
+    {
+        MetaComposition c;
+
+        c.fieldIx =
+            GetMetaFieldIx(fieldName);
+
+        c.fieldName =
+            fieldName;
+
+        c.childTypeName =
+            typeid(Child).name();
+
+        c.childType =
+            std::type_index(typeid(Child));
+
+        _compositions.append(c);
+    }
+
+
+
+
 
     template<typename R>
     Ref<R>* GetRef2(const QString& f)
@@ -446,10 +495,13 @@ public:
         }
 
         return
-            T::Meta().GetBaseTypeName()
+            _baseName
             + "="
             + fields.join(';');
     }
+
+
+
 };
 
 

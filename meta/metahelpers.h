@@ -1,5 +1,8 @@
 #pragma once
 
+#include "common/logger.h"
+#include "meta/imetadata.h"
+#include "metaregistry.h"
 #include <QList>
 #include <QMetaType>
 #include <QString>
@@ -53,4 +56,35 @@ public:
     //     Q_UNUSED(l);
     //     _name = v;
     // };
+
+
 };
+
+inline void DumpMetaTree(
+    IMetaData* meta,
+    const QString& indent = "")
+{
+    if(!meta)
+        return;
+
+    zInfo(
+        indent
+        + meta->baseTypeName());
+
+    for(const auto& c :
+         meta->compositions())
+    {
+        zInfo(
+            indent
+            + "  "
+            + c.fieldName);
+
+        IMetaData* child =
+            MetaRegistry::Find(
+                c.childType);
+
+        DumpMetaTree(
+            child,
+            indent + "    ");
+    }
+}

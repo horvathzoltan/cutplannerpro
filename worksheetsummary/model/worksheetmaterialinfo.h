@@ -1,5 +1,6 @@
 #pragma once
 
+#include "meta/meta.h"
 #include <QUuid>
 
 
@@ -9,4 +10,11 @@ struct WorkSheetMaterialInfo
 {
     QUuid materialId;
     int cutLengthMm = 0;
+
+private:
+    static MetaData<WorkSheetMaterialInfo> _meta;
+
+public:
+    static MetaData<WorkSheetMaterialInfo>& Meta();
+    static void MetaInit();
 };

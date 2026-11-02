@@ -168,6 +168,7 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
     view/tableutils/rowtracker2.cpp \
+    worksheetsummary/model/worksheetmaterialinfo.cpp \
     worksheetsummary/model/worksheetorderinfo.cpp \
     worksheetsummary/model/worksheetsummary.cpp \
     worksheetsummary/registry/worksheetsummary_registry.cpp \
@@ -231,10 +232,13 @@ HEADERS += \
     materials/repository/material_paintgroup_repository.h \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
+    meta/imetadata.h \
     meta/meta.h \
+    meta/metacomposition.h \
     meta/metafield.h \
     meta/metahelpers.h \
     meta/metareference.h \
+    meta/metaregistry.h \
     meta/metavalue.h \
     meta/typehelper.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \

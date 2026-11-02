@@ -7,6 +7,8 @@
 //#include "../model/cutting/plan/request.h"
 #include "worksheetsummary/model/worksheetsummary.h"
 
+#include <meta/metacomposition.h>
+
 TestManager& TestManager::instance() {
     static TestManager _instance;
     return _instance;
@@ -104,6 +106,8 @@ void TestManager::runFullTests() {
     // Ide jöhetnek komplexebb integrációs tesztek
 }
 
+
+
 // --test schema
 void TestManager::runBuildSchemaTest()
 {
@@ -117,6 +121,8 @@ void TestManager::runBuildSchemaTest()
     schema = WorkSheetOrderInfo::Meta().BuildSchema();
     zInfo(schema);
 
+    schema = WorkSheetMaterialInfo::Meta().BuildSchema();
+    zInfo(schema);
 
     for(const auto& f :
          WorkSheetOrderInfo::Meta().ToMetaFieldBases())
@@ -128,4 +134,11 @@ void TestManager::runBuildSchemaTest()
             + " id="
             + QString::number(f.type.id()));
     }
+
+
+    zInfo("=== Composition Tree ===");
+
+    DumpMetaTree(
+        &WorkSheetSummary::Meta());
+
 }
