@@ -1,0 +1,35 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"911";"Kiss Árnyékolás, Pécs";1120;1750;1104;;1;1;0;"";SR-FSN;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"911";"Kiss Árnyékolás, Pécs";1120;1750;1087;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"911";"Kiss Árnyékolás, Pécs";1120;1750;1090;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"911";"Kiss Árnyékolás, Pécs";1120;1750;1090;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"912";"Kiss Árnyékolás, Pécs";800;1960;784;;1;1;0;"";SR-FSN;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"912";"Kiss Árnyékolás, Pécs";800;1960;767;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"912";"Kiss Árnyékolás, Pécs";800;1960;770;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"912";"Kiss Árnyékolás, Pécs";800;1960;770;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"913";"Kiss Árnyékolás, Pécs";890;400;874;;1;1;0;"";SR-FSN;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"913";"Kiss Árnyékolás, Pécs";890;400;857;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"913";"Kiss Árnyékolás, Pécs";890;400;860;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"913";"Kiss Árnyékolás, Pécs";890;400;860;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;TN;;SM;Gyartasi;UNKNOWN
+"916";"Lukács László";750;2250;734;;2;1;1;"";SR-FSN;Width;false;2026.11.10;SR;TN;;SM;Gyartasi;UNKNOWN
+"916";"Lukács László";750;2250;717;;2;1;1;"";TE-H-32;Width;false;2026.11.10;SR;TN;;SM;Gyartasi;UNKNOWN
+"916";"Lukács László";750;2250;720;;2;1;1;"";SR-Z;Width;false;2026.11.10;SR;TN;;SM;Gyartasi;UNKNOWN
+"916";"Lukács László";750;2250;720;;2;1;1;"";SR-P-3000;Width;false;2026.11.10;SR;TN;;SM;Gyartasi;UNKNOWN
+"919";"Frama, Georgies";1000;1400;984;;1;0;1;"";SR-FSN;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"919";"Frama, Georgies";1000;1400;967;;1;0;1;"";TE-H-32;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"919";"Frama, Georgies";1000;1400;970;;1;0;1;"";SR-Z;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"919";"Frama, Georgies";1000;1400;970;;1;0;1;"";SR-P-3000;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"920";"Frama, Georgies";800;950;784;;1;0;1;"";SR-FSN;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"920";"Frama, Georgies";800;950;767;;1;0;1;"";TE-H-32;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"920";"Frama, Georgies";800;950;770;;1;0;1;"";SR-Z;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"920";"Frama, Georgies";800;950;770;;1;0;1;"";SR-P-3000;Width;false;2026.11.05;SR;TN;;SM;Gyartasi;UNKNOWN
+"2722";"L.Zs., Nyh";775;2300;745;;1;0;0;"";TE-R-23;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2722";"L.Zs., Nyh";775;2300;748;;1;0;0;"";ROL-P;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2723";"L.Zs., Nyh";925;1400;895;;1;0;0;"";TE-R-23;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2723";"L.Zs., Nyh";925;1400;898;;1;0;0;"";ROL-P;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2724";"L.Zs., Nyh";925;1400;895;;1;0;0;"";TE-R-23;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2724";"L.Zs., Nyh";925;1400;898;;1;0;0;"";ROL-P;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2725";"L.Zs., Nyh";925;1400;895;;1;0;0;"";TE-R-23;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2725";"L.Zs., Nyh";925;1400;898;;1;0;0;"";ROL-P;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2726";"L.Zs., Nyh";925;1400;895;;1;0;0;"";TE-R-23;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2726";"L.Zs., Nyh";925;1400;898;;1;0;0;"";ROL-P;Width;false;2026.11.11;ROL;RUG;;SM;Gyartasi;UNKNOWN
