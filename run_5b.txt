@@ -1,475 +1,289 @@
-11:49:21: Debugging /home/zoli/repos/build-CutPlannerPro-Desktop-Debug/CutPlannerPro ...
-QCoreApplication::applicationDirPath: Please instantiate the QApplication object first
-INFO:started CutPlannerPro as zoli@ZoliThinkPadT60
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/ral_colors/classic.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/ral_colors/design.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/ral_colors/p1.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/ral_colors/p2.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/materials.csv, separator: ';'
-INFO:✅ 133 anyag sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/materials.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/bundles.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/bundle_components.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/product_type.csv, separator: ';'
-INFO:✅ 3 terméktípus sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/product_type.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/product_subtype.csv, separator: ';'
-INFO:✅ 10 termék-altípus sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/product_subtype.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/bom.csv, separator: ';'
-INFO:✅ 41 BOM-lista sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/bom.csv
-INFO:✅ 41 rolemap sor importálva: /home/zoli/repos/cutplannerpro/testdata/material_rolemap.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/materialgroups.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/materialgroup_members.csv, separator: ';'
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/stock.csv, separator: ';'
-INFO:✅ 97 készletbejegyzés sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/stock.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/leftovers.csv, separator: ';'
-INFO:✅ 411 készletbejegyzés sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/leftovers.csv
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260908-132810_Lab.txt, separator: ';'
-INFO:✅ 8 vágási igény sikeresen importálva a fájlból: /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260908-132810_Lab.txt
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/cuttingmachines.csv, separator: ','
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/cuttingmachine_materialtypes.csv, separator: ','
-INFO:✅ ProductAttributeRegistry feltöltve
-INFO:filename: /home/zoli/repos/cutplannerpro/testdata/powder_consumption.csv, separator: ';'
-INFO:✅ 3 festési norma betöltve: /home/zoli/repos/cutplannerpro/testdata/powder_consumption.csv
-INFO:📦 Snapshot megtalálva: /home/zoli/repos/cutplannerpro/testdata/optimization_snapshots/cuttingplan_20260908-132810_Lab.txt.snapshot_20260909-090400.csv
-INFO:🟢 Snapshot betöltve.
-INFO:📦 syncModelWithRegistries requests:
-INFO:   •  289. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2092 mm, 1 db
-INFO:   •  290. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2197 mm, 1 db
-INFO:   •  291. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2177 mm, 1 db
-INFO:   •  292. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2162 mm, 1 db
-INFO:   •  293. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2162 mm, 1 db
-INFO:   •  294. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2162 mm, 1 db
-INFO:   •  297. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2077 mm, 1 db
-INFO:   •  298. Antal Ildike CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], 2327 mm, 1 db
-INFO:📌 Igényelt szálak:
-INFO:• CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] (Pure white) 7000mm [80170429]: 3 szál
-INFO:📦 Aggregált szálkészlet:
-INFO:   • SinesZáró [NP-SZ-9010] (Pure white) 7000mm [80170107] → 117 szál
-INFO:   • Csőtengely Ø70x5000mm [NP-ROLL70-5000] 5000mm → 2 szál
-INFO:   • Zárósúly Ø12x4000mm [NP-BAR12-4000] 4000mm → 74 szál
-INFO:   • NaphálóTok [NP-T-9010] (Pure white) 6000mm [80170156] → 62 szál
-INFO:   • Tengely Ø32 hornyos [TE-H-32] 6000mm → 10 szál
-INFO:   • MinitokosLáb [MT-L] (Traffic white) 6000mm → 105 szál
-INFO:   • NaphálóTokFedél [NP-TF-7016] (Anthracite grey) 6000mm [80170157] → 186 szál
-INFO:   • MiniTok [MT-T] (Traffic white) 6000mm → 46 szál
-INFO:   • SávrolóTok [SR-T] (Traffic white) 6000mm → 338 szál
-INFO:   • SinesLáb [NP-SL-9010] (Pure white) 6000mm [80170164] → 91 szál
-INFO:   • SávrolóPálca [SR-P-3000] (Traffic white) 3000mm → 20 szál
-INFO:   • AlsóPálca [ROL-P] 6000mm → 2 szál
-INFO:   • MinitokosPálca [MT-P] (Traffic white) 6000mm → 135 szál
-INFO:   • Csőtengely Ø70x6000mm [NP-ROLL70-6000] 6000mm → 110 szál
-INFO:   • SinesLáb [NP-SL-7016] (Anthracite grey) 6000mm [80170165] → 216 szál
-INFO:   • CipzárosLáb [NP-CL-9010] (Pure white) 7000mm [80170202] → 25 szál
-INFO:   • SávrolóZáró [SR-Z] (Traffic white) 6000mm → 20 szál
-INFO:   • NaphálóTokFedél [NP-TF] 6000mm [80170426] → 38 szál
-INFO:   • ÚjGyöngyösZáró [ROL-GYZ] (Traffic white) 6000mm → 10 szál
-INFO:   • Csőtengely Ø78x7000mm [NP-ROLL78-7000] 7000mm → 48 szál
-INFO:   • Lábtakaró [NP-CLT] 7000mm [80170023] → 68 szál
-INFO:   • CipzárosZáró [NP-CZ-7016] (Anthracite grey) 7000mm [80170051] → 199 szál
-INFO:   • CipzárosZáró [NP-CZ] 7000mm [80170425] → 20 szál
-INFO:   • Lábtakaró [NP-CLT-7016] (Anthracite grey) 7000mm [80170049] → 126 szál
-INFO:   • MinitokosZáró [MT-Z] (Traffic white) 6000mm → 31 szál
-INFO:   • CipzárosLábbetét [NP-CLB] 6000mm [80170955] → 56 szál
-INFO:   • Tengely Ø23 ragacsos [TE-R-23] 6000mm → 200 szál
-INFO:   • NaphálóTok [NP-T-7016] (Anthracite grey) 6000mm [80170157] → 187 szál
-INFO:   • NaphálóTok [NP-T] 6000mm [80170426] → 38 szál
-INFO:   • SinesZáró [NP-SZ] 6000mm [80170427] → 133 szál
-INFO:   • Lábtakaró [NP-CLT-9010] (Pure white) 7000mm [80170030] → 60 szál
-INFO:   • SinesLáb [NP-SL] 6000mm [80170428] → 29 szál
-INFO:   • SinesZáró [NP-SZ-7016] (Anthracite grey) 7000mm [80170109] → 61 szál
-INFO:   • NaphálóTokFedél [NP-TF-9010] (Pure white) 6000mm [80170156] → 62 szál
-INFO:   • Csőtengely Ø70x7000mm [NP-ROLL70-7000] 7000mm → 10 szál
-INFO:   • KurbliCső [NP-HK] 6000mm → 87 szál
-INFO:   • Zárósúly Ø20x6000mm [NP-BAR20-6000] 6150mm [80170055] → 22 szál
-INFO:   • Tengely Ø18 hornyos [TE-H-18] 6000mm → 105 szál
-INFO:   • CipzárosZáró [NP-CZ-9010] (Pure white) 7000mm [80170038] → 95 szál
-INFO:📦 Inventoryba bekerült szálak:
-INFO:• CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] (Pure white) 7000mm [80170429] – 3 szál – tárhely: (?)
-INFO:▶️ OptimizationRunner::run started
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2092 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2092 role=Nincs toldás extRef=289 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2197 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2197 role=Nincs toldás extRef=290 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2177 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2177 role=Nincs toldás extRef=291 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2162 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2162 role=Nincs toldás extRef=292 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2162 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2162 role=Nincs toldás extRef=293 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2162 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2162 role=Nincs toldás extRef=294 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2077 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2077 role=Nincs toldás extRef=297 side=jobb
-INFO:[buildPiecesByMaterial] material: NP-CL2+CLT2+CLB2-9010, 2327 mm : 1 db
-INFO:PieceBuilderToldas: ToldasEngine returned handled=0, pieces=0
-INFO:PieceBuilder: APPENDING piece len=2327 role=Nincs toldás extRef=298 side=jobb
-INFO:OptimizerModel: piecesByMaterial summary:
-INFO:  → material=NP-CL2+CLT2+CLB2-9010 count=8
-INFO:     • len=2092 role=Nincs toldás src=stock extRef=289
-INFO:     • len=2197 role=Nincs toldás src=stock extRef=290
-INFO:     • len=2177 role=Nincs toldás src=stock extRef=291
-INFO:     • len=2162 role=Nincs toldás src=stock extRef=292
-INFO:     • len=2162 role=Nincs toldás src=stock extRef=293
-INFO:     • len=2162 role=Nincs toldás src=stock extRef=294
-INFO:     • len=2077 role=Nincs toldás src=stock extRef=297
-INFO:     • len=2327 role=Nincs toldás src=stock extRef=298
-INFO:🔍 OPTIMALIZÁCIÓ INDÍTÁSA — pending darabok keresése
-INFO:🔎 OPTIMIZER LOOP #0 — pending darabok vizsgálata
-INFO:   • Anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] → 8 db, összhossz=0 mm
-INFO:📊 Pending összegzés — összes=8 db, összhossz=0 mm, legnagyobb anyagcsoport=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] (8 db)
-INFO:✔ Aktuális anyagcsoport pending: 8 db
-INFO:🔍 GÉP KERESÉSE — anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010]
-INFO:✔ Kiválasztott gép: Rivers (kerf=3.2 mm, maxLen=3269)
-INFO:   • Gép kerf érték: 3.2 mm
-INFO:🔍 RÚD KERESÉSE — először hulló, majd stock vizsgálata
-INFO:🔍 HULLÓ KERESÉSE — anyag=CipzárosLáb_Combo:NP-CL2+CLT2+CLB2-9010
-INFO:pieces:
-INFO:   •len=2092 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=289
-INFO:   •len=2197 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=290
-INFO:   •len=2177 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=291
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=292
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=293
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=294
-INFO:   •len=2077 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=297
-INFO:   •len=2327 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=298
-INFO:LEFTOVER LOOP START
-INFO:🔍 SingleExactFit — keresés indítása (n=8, limit=2085 mm, kerf=0)
-INFO:   • Vizsgálat: piece=2092 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2197 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2177 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2162 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2162 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2162 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2077 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:   • Vizsgálat: piece=2327 mm → used=0 mm (kerfTotal=0)
-INFO:     ✖ Nem pontos illeszkedés
-INFO:❌ SingleExactFit — nincs pontos illeszkedés
-INFO:🔍 FitEngine — legjobb combo keresése (n=8, limit=2085 mm, kerf=3.2)
-INFO:🔎 FitEngine keresés — stratégia=BRUTE_FORCE (n=8, limit=2085, kerf=3.2)
-INFO:🎯 FitEngine találat — BRUTE_FORCE (picks=1, used=2077, waste=8, evaluated=1, skipped=254)
-INFO:    strategy=BruteForce, picks=1, waste=8
-INFO:   ✔ Találat — combo sikeres
-INFO:    combo:
-INFO:        • len=2077  material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010]  extRef=297
-INFO:   ➡ Új legjobb jelölt kiválasztva
-INFO:    scoring: pieces=1 waste=8 leftover=8 → score=100092, bestScore=100092
-INFO:📊 HULLÓ KERESÉS LEZÁRVA
-INFO:🆔 NEW ROD ID: Rod-A (source=leftover, material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], length=2085)
-INFO:MAP-INSERT (on select): RSM-814 → Rod-A (parent=—)
-INFO:SELECTED REUSABLE ROD: rodId=Rod-A, barcode=RSM-814, length=2085
-INFO:🔧 ROD INIT AUDIT (REUSABLE) — rodId=Rod-A, barcode=RSM-814, parent=—, length=2085
-INFO:🔎 RÚD‑LOOP INDÍTÁSA — rodId=Rod-A, barcode=RSM-814, length=2085, reusable=REUSABLE
-INFO:ROD LOOP: #0
-INFO:🔧 ROD AUDIT — rodId=Rod-A, material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], barcode=RSM-814, length=2085
-INFO:🔗 ROD LINEAGE — rodId=Rod-A, parent=—
-INFO:🔧 ROD LIMITS — remaining=2085, dpLimit=2000
-INFO:🔧 MATERIAL GROUP — rodMaterial=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], groupSize=8
-INFO:🔧 ROD ORIGIN — reusable=REUSABLE, barcode=RSM-814
-INFO:🔍 ROD-LOOP ITERÁCIÓ #1 — rodId=Rod-A, pending=8, kerf=3.2
-INFO:🟦 ROD-LOOP LIMITS — remaining=2085, dpLimit=2000
-INFO:🔍 FitEngine — legjobb combo keresése (n=8, limit=2000 mm, kerf=3.2)
-INFO:🔎 FitEngine keresés — stratégia=BRUTE_FORCE (n=8, limit=2000, kerf=3.2)
-INFO:🎯 FitEngine találat — BRUTE_FORCE (picks=0, used=0, waste=2000, evaluated=0, skipped=255)
-INFO:🔎 FitEngine hívás — dpLimit=2000 mm, pending=8
-INFO:   • FitEngine eredmény — strategy=BruteForce, picks=0, waste=2000, rodId=Rod-A
-INFO:   ✖ Nincs több vágható darab — rúd lezárása előtt FAILED‑check
-INFO:🔁 ROD SWITCH REQUEST — StartNewStockRod for material={02af9a7e-2648-48a6-9f66-5c60dddff15f}, pendingPiece=2092 mm
-INFO:📦 STOCK RÚD VÁLASZTVA — material=CipzárosLáb_Combo, barcode=MAT-S-941, length=7000
-INFO:ROD LOOP: #0
-INFO:🔧 ROD AUDIT — rodId=Rod-B, material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], barcode=MAT-S-941, length=7000
-INFO:🔗 ROD LINEAGE — rodId=Rod-B, parent=—
-INFO:🔧 ROD LIMITS — remaining=7000, dpLimit=7000
-INFO:🔧 MATERIAL GROUP — rodMaterial=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], groupSize=8
-INFO:🔧 ROD ORIGIN — reusable=STOCK_ROD, barcode=—
-INFO:🔍 ROD-LOOP ITERÁCIÓ #2 — rodId=Rod-B, pending=8, kerf=3.2
-INFO:🟦 ROD-LOOP LIMITS — remaining=7000, dpLimit=7000
-INFO:🔍 FitEngine — legjobb combo keresése (n=8, limit=7000 mm, kerf=3.2)
-INFO:🔎 FitEngine keresés — stratégia=BRUTE_FORCE (n=8, limit=7000, kerf=3.2)
-INFO:🎯 FitEngine találat — BRUTE_FORCE (picks=3, used=6701, waste=299, evaluated=92, skipped=163)
-INFO:🔎 FitEngine hívás — dpLimit=7000 mm, pending=8
-INFO:   • FitEngine eredmény — strategy=BruteForce, picks=3, waste=299, rodId=Rod-B
-INFO:   ✔ Combo sikeres — 3 darab kiválasztva, used=6701 mm
-INFO:🔍 CUT COMBO — pieces=3, remaining=7000 mm, rodId=Rod-B
-INFO:🎯 CUT COMBO — OK (pieces=3, used=6710, waste=289, rodId=Rod-B)
-INFO:🔍 COMMIT CUT RESULT — rodId=Rod-B, used=6710, waste=289
-INFO:🎯 COMMIT — plan mentve (planId={311e0fb2-0337-4345-b889-b38c336c337c}, pieces=3)
-INFO:   • COMMIT — 3 darab eltávolítva a pending listából
-INFO:🟦 COMMIT BEFORE LIMITS — remaining=7000, dpLimit=7000
-INFO:🟦 COMMIT AFTER LIMITS — remaining=290, dpLimit=290
-INFO:🔎 Lineage OK — parent is STOCK (barcode=MAT-S-941)
-INFO:📐 LINEAGE TREE
-PLAN {311e0fb2-0337-4345-b889-b38c336c337c}
- └─ STOCK (barcode=MAT-S-941)
+Abszolút. És szerintem most kifejezetten fontos, hogy ne találjunk ki új rendszert, hanem a jelenlegi Meta rendszerből vezessük le a következő réteget.
 
-INFO:⛔ ROD-STEP — Rúd lezárva — leftover köszöbérték alatti tartomány
-INFO:➡ RÚD‑LOOP LEZÁRVA
-INFO:🔍 FIZIKAI HULLÓ KERESÉSE — remaining=290 mm
-INFO:🎯 Fizikai hulló létrehozva — barcode=RST-S-945, length=190 mm, rodId=Rod-B, parent=—
-INFO:🔎 Lineage OK — leftover has no parent
-INFO:📐 LINEAGE TREE (Leftover)
-LEFTOVER RST-S-945 (190 mm)
- └─ no parent
+A jelenlegi állapot:
 
-INFO:🔎 OPTIMIZER LOOP #1 — pending darabok vizsgálata
-INFO:   • Anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] → 5 db, összhossz=0 mm
-INFO:📊 Pending összegzés — összes=5 db, összhossz=0 mm, legnagyobb anyagcsoport=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] (5 db)
-INFO:✔ Aktuális anyagcsoport pending: 5 db
-INFO:🔍 GÉP KERESÉSE — anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010]
-INFO:✔ Kiválasztott gép: Rivers (kerf=3.2 mm, maxLen=3269)
-INFO:   • Gép kerf érték: 3.2 mm
-INFO:🔍 RÚD KERESÉSE — először hulló, majd stock vizsgálata
-INFO:🔍 HULLÓ KERESÉSE — anyag=CipzárosLáb_Combo:NP-CL2+CLT2+CLB2-9010
-INFO:pieces:
-INFO:   •len=2092 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=289
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=292
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=293
-INFO:   •len=2162 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=294
-INFO:   •len=2077 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=297
-INFO:LEFTOVER LOOP START
-INFO:📊 HULLÓ KERESÉS LEZÁRVA
-INFO:♻️ No reusable leftover fits — falling back to stock.
-INFO:   • STOCK jelölt: NP-CL2+CLT2+CLB2-9010, rodLen=7000, usable=6900, leftover=4905, score=-4805
-INFO:🔧 ROD INIT AUDIT (STOCK v2) — oldRodId= → newRodId=Rod-C, barcode=MAT-S-946, length=7000
-INFO:🟦 ROD SELECTED (v2) — rodId=Rod-C, barcode=MAT-S-946, length=7000, reusable=0
-INFO:🟦 ROD INITIAL LIMITS (v2) — remaining=7000, dpLimit=6900
-INFO:🔎 RÚD‑LOOP INDÍTÁSA — rodId=Rod-C, barcode=MAT-S-946, length=7000, reusable=STOCK_ROD
-INFO:ROD LOOP: #0
-INFO:🔧 ROD AUDIT — rodId=Rod-C, material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], barcode=MAT-S-946, length=7000
-INFO:🔗 ROD LINEAGE — rodId=Rod-C, parent=—
-INFO:🔧 ROD LIMITS — remaining=7000, dpLimit=6900
-INFO:🔧 MATERIAL GROUP — rodMaterial=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], groupSize=5
-INFO:🔧 ROD ORIGIN — reusable=STOCK_ROD, barcode=—
-INFO:🔍 ROD-LOOP ITERÁCIÓ #3 — rodId=Rod-C, pending=5, kerf=3.2
-INFO:🟦 ROD-LOOP LIMITS — remaining=7000, dpLimit=6900
-INFO:🔍 FitEngine — legjobb combo keresése (n=5, limit=6900 mm, kerf=3.2)
-INFO:🔎 FitEngine keresés — stratégia=BRUTE_FORCE (n=5, limit=6900, kerf=3.2)
-INFO:🎯 FitEngine találat — BRUTE_FORCE (picks=3, used=6486, waste=414, evaluated=25, skipped=6)
-INFO:🔎 FitEngine hívás — dpLimit=6900 mm, pending=5
-INFO:   • FitEngine eredmény — strategy=BruteForce, picks=3, waste=414, rodId=Rod-C
-INFO:   ✔ Combo sikeres — 3 darab kiválasztva, used=6486 mm
-INFO:🔍 CUT COMBO — pieces=3, remaining=7000 mm, rodId=Rod-C
-INFO:🎯 CUT COMBO — OK (pieces=3, used=6495, waste=504, rodId=Rod-C)
-INFO:🔍 COMMIT CUT RESULT — rodId=Rod-C, used=6495, waste=504
-INFO:🎯 COMMIT — plan mentve (planId={cbf05282-7990-4df4-9b0c-877952e184de}, pieces=3)
-INFO:   • COMMIT — 3 darab eltávolítva a pending listából
-INFO:🟦 COMMIT BEFORE LIMITS — remaining=7000, dpLimit=6900
-INFO:🟦 COMMIT AFTER LIMITS — remaining=505, dpLimit=405
-INFO:🔎 Lineage OK — parent is STOCK (barcode=MAT-S-946)
-INFO:📐 LINEAGE TREE
-PLAN {cbf05282-7990-4df4-9b0c-877952e184de}
- └─ STOCK (barcode=MAT-S-946)
+MetaData
+    ↓
+MetaField
+    ↓
+itemType
+    ↓
+MetaRegistry
 
-INFO:🔍 SingleCut keresés indult — candidates=2, limit=405 mm, kerf=0.00
-INFO:   • Vizsgálat: piece=2092 mm → used=0, waste=405, leftover=405, score=59995
-INFO:     ✔ Új legjobb jelölt: piece=2092 mm (score=59995)
-INFO:   • Vizsgálat: piece=2077 mm → used=0, waste=405, leftover=405, score=59995
-INFO:🎯 SingleCut találat — bestPiece=2092 mm, bestScore=59995
-INFO:🔍 CUT SINGLE — piece=2092 mm, remaining=505 mm, rodId=Rod-C
-INFO:✖ CUT SINGLE — DP túllépés (usedNoKerf=2092 > dpLimit=405)
-INFO:🔍 COMMIT CUT RESULT — rodId=Rod-C, used=0, waste=0
-INFO:✖ COMMIT — overfill, nincs mentés
-INFO:⛔ ROD-STEP — rúd lezárva (single cut, nincs további darab)
-INFO:➡ RÚD‑LOOP LEZÁRVA
-INFO:🔍 FIZIKAI HULLÓ KERESÉSE — remaining=505 mm
-INFO:🎯 Fizikai hulló létrehozva — barcode=RST-S-950, length=405 mm, rodId=Rod-C, parent=—
-INFO:🔎 Lineage OK — leftover has no parent
-INFO:📐 LINEAGE TREE (Leftover)
-LEFTOVER RST-S-950 (405 mm)
- └─ no parent
 
-INFO:🔎 OPTIMIZER LOOP #2 — pending darabok vizsgálata
-INFO:   • Anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] → 2 db, összhossz=0 mm
-INFO:📊 Pending összegzés — összes=2 db, összhossz=0 mm, legnagyobb anyagcsoport=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] (2 db)
-INFO:✔ Aktuális anyagcsoport pending: 2 db
-INFO:🔍 GÉP KERESÉSE — anyag=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010]
-INFO:✔ Kiválasztott gép: Rivers (kerf=3.2 mm, maxLen=3269)
-INFO:   • Gép kerf érték: 3.2 mm
-INFO:🔍 RÚD KERESÉSE — először hulló, majd stock vizsgálata
-INFO:🔍 HULLÓ KERESÉSE — anyag=CipzárosLáb_Combo:NP-CL2+CLT2+CLB2-9010
-INFO:pieces:
-INFO:   •len=2092 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=289
-INFO:   •len=2077 material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010] extRef=297
-INFO:LEFTOVER LOOP START
-INFO:📊 HULLÓ KERESÉS LEZÁRVA
-INFO:♻️ No reusable leftover fits — falling back to stock.
-INFO:   • STOCK jelölt: NP-CL2+CLT2+CLB2-9010, rodLen=7000, usable=6900, leftover=4905, score=-4805
-INFO:🔧 ROD INIT AUDIT (STOCK v2) — oldRodId= → newRodId=Rod-D, barcode=MAT-S-951, length=7000
-INFO:🟦 ROD SELECTED (v2) — rodId=Rod-D, barcode=MAT-S-951, length=7000, reusable=0
-INFO:🟦 ROD INITIAL LIMITS (v2) — remaining=7000, dpLimit=6900
-INFO:🔎 RÚD‑LOOP INDÍTÁSA — rodId=Rod-D, barcode=MAT-S-951, length=7000, reusable=STOCK_ROD
-INFO:ROD LOOP: #0
-INFO:🔧 ROD AUDIT — rodId=Rod-D, material=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], barcode=MAT-S-951, length=7000
-INFO:🔗 ROD LINEAGE — rodId=Rod-D, parent=—
-INFO:🔧 ROD LIMITS — remaining=7000, dpLimit=6900
-INFO:🔧 MATERIAL GROUP — rodMaterial=CipzárosLáb_Combo [NP-CL2+CLT2+CLB2-9010], groupSize=2
-INFO:🔧 ROD ORIGIN — reusable=STOCK_ROD, barcode=—
-INFO:🔍 ROD-LOOP ITERÁCIÓ #4 — rodId=Rod-D, pending=2, kerf=3.2
-INFO:🟦 ROD-LOOP LIMITS — remaining=7000, dpLimit=6900
-INFO:🔍 FitEngine — legjobb combo keresése (n=2, limit=6900 mm, kerf=3.2)
-INFO:🎯 FitEngine találat — FULL_FIT (picks=2, used=4169, waste=2731)
-INFO:🔎 FitEngine hívás — dpLimit=6900 mm, pending=2
-INFO:   • FitEngine eredmény — strategy=FullFit, picks=2, waste=2731, rodId=Rod-D
-INFO:   ✔ Combo sikeres — 2 darab kiválasztva, used=4169 mm
-INFO:🔍 CUT COMBO — pieces=2, remaining=7000 mm, rodId=Rod-D
-INFO:🎯 CUT COMBO — OK (pieces=2, used=4175, waste=2824, rodId=Rod-D)
-INFO:🔍 COMMIT CUT RESULT — rodId=Rod-D, used=4175, waste=2824
-INFO:🎯 COMMIT — plan mentve (planId={078307f6-272c-4331-b57d-2b3cf6c1bb93}, pieces=2)
-INFO:   • COMMIT — 2 darab eltávolítva a pending listából
-INFO:🟦 COMMIT BEFORE LIMITS — remaining=7000, dpLimit=6900
-INFO:🟦 COMMIT AFTER LIMITS — remaining=2825, dpLimit=2725
-INFO:🔎 Lineage OK — parent is STOCK (barcode=MAT-S-951)
-INFO:📐 LINEAGE TREE
-PLAN {078307f6-272c-4331-b57d-2b3cf6c1bb93}
- └─ STOCK (barcode=MAT-S-951)
+már teljesen elegendő a hierarchia bejárásához.
 
-INFO:🔍 SingleCut keresés indult — candidates=0, limit=2725 mm, kerf=0.00
-INFO:♻️ SingleCut — nincs egyetlen darab sem, ami beleférne
-INFO:➡ RÚD‑LOOP LEZÁRVA
-INFO:🔍 FIZIKAI HULLÓ KERESÉSE — remaining=2825 mm
-INFO:🎯 Fizikai hulló létrehozva — barcode=RST-S-954, length=2725 mm, rodId=Rod-D, parent=—
-INFO:🔎 Lineage OK — leftover has no parent
-INFO:📐 LINEAGE TREE (Leftover)
-LEFTOVER RST-S-954 (2725 mm)
- └─ no parent
+Nem kell:
 
-INFO:🟢 OPTIMALIZÁCIÓ BEFEJEZVE — nincs több pending darab
-INFO:🔍 FRONT TRIM — planId={311e0fb2-0337-4345-b889-b38c336c337c}, isStock=1
-INFO:🎯 FRONT TRIM — waste rövidítve delta=18.2 mm
-INFO:➡ FRONT TRIM — technikai és kerf szegmens beszúrva (trim=15 mm, kerf=3.2 mm)
-INFO:📊 FRONT TRIM — kész, indexek újraszámozva
-INFO:🔍 FRONT TRIM — planId={cbf05282-7990-4df4-9b0c-877952e184de}, isStock=1
-INFO:🎯 FRONT TRIM — waste rövidítve delta=18.2 mm
-INFO:➡ FRONT TRIM — technikai és kerf szegmens beszúrva (trim=15 mm, kerf=3.2 mm)
-INFO:📊 FRONT TRIM — kész, indexek újraszámozva
-INFO:🔍 FRONT TRIM — planId={078307f6-272c-4331-b57d-2b3cf6c1bb93}, isStock=1
-INFO:🎯 FRONT TRIM — waste rövidítve delta=18.2 mm
-INFO:➡ FRONT TRIM — technikai és kerf szegmens beszúrva (trim=15 mm, kerf=3.2 mm)
-INFO:📊 FRONT TRIM — kész, indexek újraszámozva
-INFO:📊 OPTIMALIZÁCIÓS TELEMETRIA — összegzés
-INFO:   • Hívások száma: 5
-INFO:   • FullFit: 1
-INFO:   • BruteForce: 4
-INFO:   • DP (plain): 0
-INFO:   • DP (scoring): 0
-INFO:   • Greedy: 0
-INFO:   • Átlag pick count: 1.80
-INFO:   • Átlag waste: 1090.40 mm
-INFO:   • Max waste: 2731 mm
-INFO:   • Min waste: 8 mm
-INFO:   • Átlag kerf: 5.40 mm
-INFO:   • Kerf arány: 0.139 %%
-INFO:   • Átlag futási idő: 1.267 ms
-INFO:   • Átlag BF idő: 1.583 ms
-INFO:   • Átlag DP idő: 0.000 ms
-INFO:   • Átlag Greedy idő: 0.000 ms
-INFO:   • BF átlag kombinációk: 200.00
-INFO:   • BF átlag vizsgált: 29.50
-INFO:   • BF átlag skip: 169.50
-INFO:   • DP átlag limit: 0.00
-INFO:   • DP átlag filled cells: 0.00
-INFO:   • DP átlag chain length: 0.00
-INFO:   • Greedy átlag rendezett elemszám: 0.00
-INFO:   • Greedy átlag picks: 0.00
-INFO:📘 TELEMETRIA — vége
-INFO:🟢 AUDIT — rodId uniqueness OK
-INFO:🟢 AUDIT — no physical overcut detected
-INFO:🟢 AUDIT — no FAILED pieces
-INFO:⏹️ OptimizationRunner::run stopped
-INFO:✅ VÁGÁSI TERVEK — részletes audit log:
-INFO:📘 PLAN #0 —> planId=311e0fb2-0337-4345-b889-b38c336c337c
-INFO:   • optimizationId=1
-INFO:   • rodId=Rod-B
-INFO:   • materialName=CipzárosLáb_Combo
-INFO:   • totalKerfLength=12.8 mm
-INFO:   • status=Not started
-INFO:   • Source: Stock, sourceBarcode=MAT-S-941
-INFO:   • Parent: MAT-S-941 (stock)
-INFO:   • machineName: Rivers, machineKerf=3.2 mm
-INFO:   ✂️ Levágott darabok (piecesWithMaterial):
-INFO:      • 290. 2197 mm  (pieceId=51f0f9b1-a7ff-43ae-ade7-46714c370be1)
-INFO:      • 291. 2177 mm  (pieceId=6478e986-91f2-4613-9938-9acbe91fd679)
-INFO:      • 298. 2327 mm  (pieceId=b5440b70-6839-4529-9d75-25f285110a1f)
-INFO:   🧱 Szakaszok (segments):
-INFO:      • [Technical] len=15 mm  (segIx=0, barcode=TECH)
-INFO:      • [Kerf] len=3.2 mm  (segIx=1, barcode=KERF)
-INFO:      • [Piece] len=2197 mm  (segIx=2, barcode=MAT-S-942)
-INFO:      • [Kerf] len=3.2 mm  (segIx=3, barcode=KERF)
-INFO:      • [Piece] len=2177 mm  (segIx=4, barcode=MAT-S-943)
-INFO:      • [Kerf] len=3.2 mm  (segIx=5, barcode=KERF)
-INFO:      • [Piece] len=2327 mm  (segIx=6, barcode=MAT-S-944)
-INFO:      • [Kerf] len=3.2 mm  (segIx=7, barcode=KERF)
-INFO:   • TotalLength=7000 mm, segmentsSum=6728.8 mm, Waste=271.2 mm
-INFO:   • SegmentSumCheck: used+Waste-Total = 0.000 mm
-INFO:   ♻️ Hulló blokk:
-INFO:   • plan._segments.leftoverBarcode=selejt
-INFO:   • plan._segments.waste=271.2 mm
-INFO:📘 PLAN #1 —> planId=cbf05282-7990-4df4-9b0c-877952e184de
-INFO:   • optimizationId=1
-INFO:   • rodId=Rod-C
-INFO:   • materialName=CipzárosLáb_Combo
-INFO:   • totalKerfLength=12.8 mm
-INFO:   • status=Not started
-INFO:   • Source: Stock, sourceBarcode=MAT-S-946
-INFO:   • Parent: MAT-S-946 (stock)
-INFO:   • machineName: Rivers, machineKerf=3.2 mm
-INFO:   ✂️ Levágott darabok (piecesWithMaterial):
-INFO:      • 292. 2162 mm  (pieceId=e8233a54-4e14-4bd3-b965-c0d7388aef00)
-INFO:      • 293. 2162 mm  (pieceId=d1e3e361-3ba3-43e5-8d8d-2d48d9fe73c9)
-INFO:      • 294. 2162 mm  (pieceId=3d85b4c5-ba6e-4813-b0f4-3f8d776800b0)
-INFO:   🧱 Szakaszok (segments):
-INFO:      • [Technical] len=15 mm  (segIx=0, barcode=TECH)
-INFO:      • [Kerf] len=3.2 mm  (segIx=1, barcode=KERF)
-INFO:      • [Piece] len=2162 mm  (segIx=2, barcode=MAT-S-947)
-INFO:      • [Kerf] len=3.2 mm  (segIx=3, barcode=KERF)
-INFO:      • [Piece] len=2162 mm  (segIx=4, barcode=MAT-S-948)
-INFO:      • [Kerf] len=3.2 mm  (segIx=5, barcode=KERF)
-INFO:      • [Piece] len=2162 mm  (segIx=6, barcode=MAT-S-949)
-INFO:      • [Kerf] len=3.2 mm  (segIx=7, barcode=KERF)
-INFO:   • TotalLength=7000 mm, segmentsSum=6513.8 mm, Waste=486.2 mm
-INFO:   • SegmentSumCheck: used+Waste-Total = 0.000 mm
-INFO:   ♻️ Hulló blokk:
-INFO:   • plan._segments.leftoverBarcode=RST-C-363
-INFO:   • plan._segments.waste=486.2 mm
-INFO:📘 PLAN #2 —> planId=078307f6-272c-4331-b57d-2b3cf6c1bb93
-INFO:   • optimizationId=1
-INFO:   • rodId=Rod-D
-INFO:   • materialName=CipzárosLáb_Combo
-INFO:   • totalKerfLength=9.6 mm
-INFO:   • status=Not started
-INFO:   • Source: Stock, sourceBarcode=MAT-S-951
-INFO:   • Parent: MAT-S-951 (stock)
-INFO:   • machineName: Rivers, machineKerf=3.2 mm
-INFO:   ✂️ Levágott darabok (piecesWithMaterial):
-INFO:      • 289. 2092 mm  (pieceId=4a5a66e2-3acb-4645-b14f-98dcf06636f6)
-INFO:      • 297. 2077 mm  (pieceId=160aa715-c656-4ce5-8b85-e72b38b503d8)
-INFO:   🧱 Szakaszok (segments):
-INFO:      • [Technical] len=15 mm  (segIx=0, barcode=TECH)
-INFO:      • [Kerf] len=3.2 mm  (segIx=1, barcode=KERF)
-INFO:      • [Piece] len=2092 mm  (segIx=2, barcode=MAT-S-952)
-INFO:      • [Kerf] len=3.2 mm  (segIx=3, barcode=KERF)
-INFO:      • [Piece] len=2077 mm  (segIx=4, barcode=MAT-S-953)
-INFO:      • [Kerf] len=3.2 mm  (segIx=5, barcode=KERF)
-INFO:   • TotalLength=7000 mm, segmentsSum=4193.6 mm, Waste=2806.4 mm
-INFO:   • SegmentSumCheck: used+Waste-Total = 0.000 mm
-INFO:   ♻️ Hulló blokk:
-INFO:   • plan._segments.leftoverBarcode=RST-C-364
-INFO:   • plan._segments.waste=2806.4 mm
-INFO:🟢 Új optimalizációs snapshot készült: /home/zoli/repos/cutplannerpro/testdata/optimization_snapshots/cuttingplan_20260908-132810_Lab.txt.snapshot_20260909-115013.csv
-INFO:BundleOverCuttingDetector::detect — nincs detektált bundle túlvágás
-INFO:🔍 BEFORE postProcess
-INFO:  • (nincs request)
-INFO:🔍 AFTER postProcess
-INFO:  • (nincs request)
+SchemaNode
+MetaComposition
+MetaVisitorBase
+AbstractWorker
+
+
+és hasonló új rétegek.
+
+1. lépés - MetaWalker létrehozása
+
+Új fájl:
+
+meta/metawalker.h
+
+
+Cél:
+
+A jelenlegi
+
+DumpMetaTree(...)
+
+
+bejárási logikáját kiemelni egy általános függvénybe.
+
+A walker feladata:
+
+- típus belépés
+- mező
+- composition belépés
+- típus kilépés
+
+
+események meghívása.
+
+Javasolt függvény:
+
+template<typename Worker>
+void WalkMetaTree(
+    IMetaData* meta,
+    Worker& worker,
+    int depth = 0)
+
+2. lépés - Worker interfész kialakítása
+
+Nem absztrakt osztály.
+
+Nem virtual.
+
+Csak konvenció.
+
+A walker ezt várja:
+
+worker.EnterType(...)
+worker.Field(...)
+worker.EnterComposition(...)
+worker.LeaveType(...)
+
+
+Minimális worker API:
+
+void EnterType(
+    IMetaData* meta,
+    int depth);
+
+void Field(
+    IMetaData* meta,
+    const MetaFieldBase& field,
+    int depth);
+
+void EnterComposition(
+    IMetaData* parent,
+    const MetaFieldBase& field,
+    IMetaData* child,
+    int depth);
+
+void LeaveType(
+    IMetaData* meta,
+    int depth);
+
+3. lépés - DumpMetaTree átírása workerre
+
+Új fájl:
+
+meta/workers/metadumpworker.h
+
+
+Tartalmazza:
+
+class MetaDumpWorker
+{
+    ...
+};
+
+
+A régi:
+
+DumpMetaTree(...)
+
+
+helyett:
+
+inline void DumpMetaTree(IMetaData* meta)
+{
+    MetaDumpWorker worker;
+
+    WalkMetaTree(
+        meta,
+        worker);
+}
+
+
+Elvárt kimenet:
+
+ugyanaz marad:
+
+WorkSheetSummary
+  orders
+    WorkSheetOrderInfo
+      materials
+        WorkSheetMaterialInfo
+
+4. lépés - Teszt stabilizálása
+
+A jelenlegi teszt marad.
+
+A cél:
+
+Ugyanaz a log.
+
+Semmi funkcionális változás.
+
+5. lépés - SchemaWorker
+
+Új fájl:
+
+meta/workers/schemadumpworker.h
+
+
+Ez már nem zInfo-zik.
+
+Hanem épít:
+
+QString _text;
+
+
+Például:
+
+WorkSheetSummary
+    filePath
+    fileName
+    fileHash
+
+    orders
+        WorkSheetOrderInfo
+            ...
+
+
+Kimenet:
+
+worker.text()
+
+6. lépés - RBCSV Schema Writer Worker
+
+Új fájl:
+
+rbcsv/rbcsvschemawriterworker.h
+
+
+Ez ugyanazt a WalkMetaTree-t használja.
+
+Kimenete valami ilyesmi:
+
+$SCHEMA
+
+TYPE=WorkSheetSummary
+
+filePath
+fileName
+fileHash
+presence
+
+SECTION=orders
+TYPE=WorkSheetOrderInfo
+
+...
+
+SECTION=materials
+TYPE=WorkSheetMaterialInfo
+
+...
+
+
+A pontos formátum ráér.
+
+7. lépés - Data Writer Worker
+
+Új fájl:
+
+rbcsv/rbcsvdatawriterworker.h
+
+
+Ez már nem csak:
+
+IMetaData*
+
+
+hanem:
+
+IMetaData*
++
+objektum pointer
+
+
+alapján dolgozik.
+
+Kiválthatja ezeket:
+
+writeWorksheetRow()
+
+writeOrderRow()
+
+writeMaterialSection()
+
+8. lépés - Reader
+
+Csak ezután.
+
+Nem előbb.
+
+A reader ugyanarra a sémára épül.
+
+Nem kell második igazságforrás.
+
+Összefoglaló
+
+Holnapi patch-sorrend:
+
+1. meta/metawalker.h
+    WalkMetaTree()
+
+2. meta/workers/metadumpworker.h
+    MetaDumpWorker
+
+3. DumpMetaTree() átállítása
+
+4. Teszt futtatása
+
+----- első checkpoint -----
+
+5. meta/workers/schemadumpworker.h
+
+6. Schema dump generálás
+
+----- második checkpoint -----
+
+7. RBCSV schema worker
+
+8. RBCSV data writer worker
+
+9. RBCSV reader
+
+
+Ez a terv teljes egészében a mostani Meta-rendszerre épül, nem vezet be új köztes adattípust, nem épít külön fát, és a már működő:
+
+MetaField
++
+itemType
++
+MetaRegistry
+
+
+hármast használja fel minden további funkcióhoz. Szerintem ez most a legkisebb kockázatú és leginkább előrefelé mutató út. 🚀

@@ -5,7 +5,7 @@
 #include <QString>
 #include <QVariant>
 #include "common/logger.h"
-#include "meta/metacomposition.h"
+#include "collectiontraits.h"
 #include "metafield.h"
 #include "metavalue.h"
 #include "metahelpers.h"
@@ -13,7 +13,8 @@
 #include "imetadata.h"
 #include "metaregistry.h"
 
-#define AddMetaField(b) _meta.AddField(#b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b));
+//#define AddMetaField(b) _meta.AddField(#b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b));
+#define AddMetaField(b) _meta.AddField< decltype(_meta._instance.b) >( #b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b))
 #define AddMetaBase(b) _meta.AddBaseName(#b, sizeof(b));
 
 //#define AddRowToField(b,c) Add_RowToField(#b, c); {(void)_meta._instance.b;}
@@ -31,9 +32,6 @@
 #define SetMetaIdMegnev(t, a, b) setMetaIdMegnev(FieldName(t,a), FieldName(t,b))
 #define AddMegnev(t, a) addMetaIdMegnev(FieldName(t,a))
 #define AddCode(t, a) addMetaIdCode(FieldName(t,a))
-
-#define AddMetaComposition(field, childType) \
-_meta.AddComposition<childType>(#field)
 
 template<typename T>
 class MetaData : public IMetaData{
@@ -86,38 +84,16 @@ public:
 };
 */
     RefContainer _refcontainer;
-    QList<MetaComposition> _compositions;
 
-
-    const QList<MetaComposition>& compositions() const
+    QList<MetaFieldBase> fields() const override
     {
-        return _compositions;
+        QList<MetaFieldBase> m;
+
+        for(const auto& f : _fields)
+            m.append(f);
+
+        return m;
     }
-
-    template<typename Child>
-    void AddComposition(
-        const QString& fieldName)
-    {
-        MetaComposition c;
-
-        c.fieldIx =
-            GetMetaFieldIx(fieldName);
-
-        c.fieldName =
-            fieldName;
-
-        c.childTypeName =
-            typeid(Child).name();
-
-        c.childType =
-            std::type_index(typeid(Child));
-
-        _compositions.append(c);
-    }
-
-
-
-
 
     template<typename R>
     Ref<R>* GetRef2(const QString& f)
@@ -168,6 +144,7 @@ public:
     //      return name;
     //  }
 
+    template<typename FieldType>
     void AddField(const QString& name, const QMetaType& t, char* field_ptr)
     {
         // if(name == "alimedCode"){
@@ -177,9 +154,21 @@ public:
             zWarning("AddField: Do not use QVariant "+name+" in model!");
         }
         MetaField f;
-        f.name=name;
+        f.name = name;
         f.wcode = _baseWcode+"::"+f.name;
         f.type = t;
+
+        f.declaredType = std::type_index(typeid(FieldType));
+
+        zInfo(QString("declared=") + QString(typeid(FieldType).name()));
+
+        if constexpr(CollectionTraits<FieldType>::IsCollection)
+        {
+            using ItemType = typename CollectionTraits<FieldType>::ItemType;
+            f.itemType = std::type_index(typeid(ItemType));
+            zInfo(QString("item=")+ QString(typeid(ItemType).name()));
+        }
+
         int offset = field_ptr - (char*)(&_instance);
         f._offset = offset;
 
@@ -191,7 +180,6 @@ public:
                 +" to "+ _baseName;
             zInfo(msg);
         }
-
         _fields.append(f);
     }
 
@@ -219,9 +207,9 @@ public:
         _baseWcode = "WCodes::"+_baseName;
     }
 
-    QString GetBaseTypeName() {
-        return _baseName;
-    }
+    // QString GetBaseTypeName() {
+    //     return _baseName;
+    // }
 
     // QString GetFieldList_UPDATE(){
     //     if(_fields.isEmpty()) return {};
@@ -355,14 +343,14 @@ public:
     //     return m;
     // }
 
-    QList<MetaFieldBase> ToMetaFieldBases()
-    {
-        QList<MetaFieldBase> m;
-        for (auto&f : _fields) {
-            m.append(f);
-        }
-        return m;
-    }
+    // QList<MetaFieldBase> ToMetaFieldBases()
+    // {
+    //     QList<MetaFieldBase> m;
+    //     for (auto&f : _fields) {
+    //         m.append(f);
+    //     }
+    //     return m;
+    // }
 
     // struct MetaIdMegnevModel{
     // private:
@@ -484,8 +472,8 @@ public:
         return value;
     }
 
-
-    QString BuildSchema()
+    // az AddMetaField helyességét ellenőrzi
+    QString FlatSchemaDump()
     {
         QStringList fields;
 
@@ -499,8 +487,6 @@ public:
             + "="
             + fields.join(';');
     }
-
-
 
 };
 

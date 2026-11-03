@@ -52,9 +52,6 @@ void WorkSheetOrderInfo::MetaInit()
 
     AddMetaField(materials);
 
-    AddMetaComposition(
-        materials,
-        WorkSheetMaterialInfo);
 
     _meta.setInitialized();
     _meta.RegisterSelf();

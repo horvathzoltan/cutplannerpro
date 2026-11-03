@@ -2,6 +2,7 @@
 
 #include "common/logger.h"
 #include "meta/imetadata.h"
+#include "meta/metafield.h"
 #include "metaregistry.h"
 #include <QList>
 #include <QMetaType>
@@ -60,6 +61,14 @@ public:
 
 };
 
+inline bool IsComposition(
+    const MetaFieldBase& field)
+{
+    return
+        field.IsCollection()
+        && HasMeta(field.itemType);
+}
+
 inline void DumpMetaTree(
     IMetaData* meta,
     const QString& indent = "")
@@ -67,24 +76,18 @@ inline void DumpMetaTree(
     if(!meta)
         return;
 
-    zInfo(
-        indent
-        + meta->baseTypeName());
+    zInfo(indent + meta->baseTypeName());
 
-    for(const auto& c :
-         meta->compositions())
+    for(const auto& field : meta->fields())
     {
-        zInfo(
-            indent
-            + "  "
-            + c.fieldName);
-
         IMetaData* child =
-            MetaRegistry::Find(
-                c.childType);
+            MetaRegistry::Find(field.itemType);
 
-        DumpMetaTree(
-            child,
-            indent + "    ");
+        if(!child)
+            continue;
+
+        zInfo(indent + "  " + field.name);
+
+        DumpMetaTree(child, indent + "    ");
     }
 }

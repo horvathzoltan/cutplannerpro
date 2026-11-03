@@ -3,15 +3,28 @@
 #include "common/logger.h"
 #include "metavalue.h"
 #include <QMetaType>
+#include <typeindex>
 
 
 struct MetaFieldBase{
 public:
     QString name;
     QMetaType type;
+
+    std::type_index declaredType =
+        std::type_index(typeid(void));
+
+    std::type_index itemType =
+        std::type_index(typeid(void));
+
     RefType refType=RefType::None;
 
     QString ToString(){return name+' '+type.name();}
+
+    bool IsCollection() const
+    {
+        return itemType != std::type_index(typeid(void));
+    }
 };
 
 // ez megy ki az UI felé

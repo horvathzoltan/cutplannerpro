@@ -232,9 +232,9 @@ HEADERS += \
     materials/repository/material_paintgroup_repository.h \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
+    meta/collectiontraits.h \
     meta/imetadata.h \
     meta/meta.h \
-    meta/metacomposition.h \
     meta/metafield.h \
     meta/metahelpers.h \
     meta/metareference.h \

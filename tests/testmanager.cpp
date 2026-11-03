@@ -7,8 +7,6 @@
 //#include "../model/cutting/plan/request.h"
 #include "worksheetsummary/model/worksheetsummary.h"
 
-#include <meta/metacomposition.h>
-
 TestManager& TestManager::instance() {
     static TestManager _instance;
     return _instance;
@@ -109,23 +107,26 @@ void TestManager::runFullTests() {
 
 
 // --test schema
+// --test schema
 void TestManager::runBuildSchemaTest()
 {
     zInfo("=== BuildSchema tesztek ===");
 
     QString schema;
 
-    schema = WorkSheetSummary::Meta().BuildSchema();
+    schema = WorkSheetSummary::Meta().FlatSchemaDump();
     zInfo(schema);
 
-    schema = WorkSheetOrderInfo::Meta().BuildSchema();
+    schema = WorkSheetOrderInfo::Meta().FlatSchemaDump();
     zInfo(schema);
 
-    schema = WorkSheetMaterialInfo::Meta().BuildSchema();
+    schema = WorkSheetMaterialInfo::Meta().FlatSchemaDump();
     zInfo(schema);
+
+    zInfo("=== Field Analysis ===");
 
     for(const auto& f :
-         WorkSheetOrderInfo::Meta().ToMetaFieldBases())
+         WorkSheetOrderInfo::Meta().fields())
     {
         zInfo(
             f.name
@@ -133,12 +134,28 @@ void TestManager::runBuildSchemaTest()
             + f.type.name()
             + " id="
             + QString::number(f.type.id()));
-    }
 
+        zInfo(
+            QString("  collection=")
+            + (f.IsCollection() ? "true" : "false"));
+
+        IMetaData* child =
+            MetaRegistry::Find(f.itemType);
+
+        zInfo(
+            QString("  composition=")
+            + (child ? "true" : "false"));
+
+        if(child)
+        {
+            zInfo(
+                QString("  childMeta=")
+                + child->baseTypeName());
+        }
+    }
 
     zInfo("=== Composition Tree ===");
 
     DumpMetaTree(
         &WorkSheetSummary::Meta());
-
 }

@@ -5,6 +5,7 @@
 #include <QMap>
 #include <typeindex>
 
+
 class MetaRegistry
 {
 private:
@@ -35,3 +36,9 @@ public:
         return _items.values();
     }
 };
+
+
+inline bool HasMeta(const std::type_index& type)
+{
+    return MetaRegistry::Find(type) != nullptr;
+}
