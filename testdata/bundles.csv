@@ -54,8 +54,8 @@ CT-CL2+CLT2+CLB2-7016;CipzárosLáb_Combo
 CT-CL2+CLT2+CLB2-9010;CipzárosLáb_Combo
 
 CT-CL2+CLT2+CLBR2;CipzárosLáb_ComboR
-CT-CL2+CLT2+CLBR2-7016;CipzárosLáb_ComboR
-CT-CL2+CLT2+CLBR2-9010;CipzárosLáb_ComboR
+CT-CL2+CLT2+CLBR2-7016;CipzárosLáb_ComboR_7016
+CT-CL2+CLT2+CLBR2-9010;CipzárosLáb_ComboR_9010
 
 CT-SL2;SinesLáb_Combo
 CT-SL2-7016;SinesLáb_Combo
@@ -86,3 +86,4 @@ CTE-S-18/15;MiniGyöngyösTengely
 
 CTE-H-32/11;Tengely Ø32 hornyos_11db
 
+BTE-B-47/5;Tengely Ø47 bordás_5db

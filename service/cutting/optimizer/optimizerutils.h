@@ -54,6 +54,8 @@ inline PhysicalCutInfo computePhysicalCut(
     return info;
 }
 
+//TODO minél öregebb egy leftover lastseen időpontja, kategóriák szerint - friss, extrafriss, hiányzik
+// kapjon pontszámot!
 
 inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScoringParams sp) {
     int score = 0;

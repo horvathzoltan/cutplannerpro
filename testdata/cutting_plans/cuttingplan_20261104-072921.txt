@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2729";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2729";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2730";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2730";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2731";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2731";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2732";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2732";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2733";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2733";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2734";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2734";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2735";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;0;1;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2735";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;0;1;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2736";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;0;1;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2736";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;0;1;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2737";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;0;1;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2737";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;0;1;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2738";"AjtóPark, Ef_Pécs.";1815;2200;1760;;1;0;1;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2738";"AjtóPark, Ef_Pécs.";1815;2200;1750;;1;0;1;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2739";"AjtóPark, Ef_Pécs.";1865;2200;1810;;1;1;0;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2739";"AjtóPark, Ef_Pécs.";1865;2200;1800;;1;1;0;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2740";"AjtóPark, Ef_Pécs.";1820;2200;1765;;1;0;1;"";TE-B-47;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
+"2740";"AjtóPark, Ef_Pécs.";1820;2200;1755;;1;0;1;"";ROL-EZ;Width;false;2026.11.13;ROL;MOT;;SM;Teljes;UNKNOWN
