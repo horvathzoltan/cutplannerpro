@@ -235,6 +235,8 @@ HEADERS += \
     meta/collectiontraits.h \
     meta/imetadata.h \
     meta/meta.h \
+    meta/metadiscovery.h \
+    meta/metadumpworker.h \
     meta/metafield.h \
     meta/metahelpers.h \
     meta/metareference.h \

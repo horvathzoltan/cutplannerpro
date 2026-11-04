@@ -2,7 +2,9 @@
 
 #include "common/logger.h"
 #include "meta/imetadata.h"
+#include "meta/metadiscovery.h"
 #include "meta/metafield.h"
+#include "metadumpworker.h"
 #include "metaregistry.h"
 #include <QList>
 #include <QMetaType>
@@ -70,24 +72,9 @@ inline bool IsComposition(
 }
 
 inline void DumpMetaTree(
-    IMetaData* meta,
-    const QString& indent = "")
+    IMetaData* meta)
 {
-    if(!meta)
-        return;
+    MetaDumpWorker worker;
 
-    zInfo(indent + meta->baseTypeName());
-
-    for(const auto& field : meta->fields())
-    {
-        IMetaData* child =
-            MetaRegistry::Find(field.itemType);
-
-        if(!child)
-            continue;
-
-        zInfo(indent + "  " + field.name);
-
-        DumpMetaTree(child, indent + "    ");
-    }
+    DiscoverTree(meta,worker);
 }
