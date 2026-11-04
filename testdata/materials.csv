@@ -40,26 +40,26 @@ Bowden;NP-B-50;50000;;;Custom;CM2;Steel;;SM;Piece;None;0;0;0;0;0;;;Bowden;simple
 NaphálóMotor-10Nm;NP-MOT-10;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45S-10/26;;Motor;simple;
 NaphálóMotor-20Nm;NP-MOT-20;0;;;Custom;Electric;Unknown;;SM;Piece;None;0;0;0;0;0;AM45R-20;;Motor;simple;
 KurbliCső;NP-HK;6000;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;HajtoElem;simple;
-Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;simple;
-Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;simple;
-Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;simple;
-Tengely Ø32 hornyos;TE-H-32;6000;32;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
-Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
-Tengely Ø36 sima;TE-S-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
+Tengely Ø18 sima;TE-S-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1000;;;Tengely;simple;
+Tengely Ø18 hornyos;TE-H-18;6000;18;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1000;;;Tengely;simple;
+Tengely Ø23 ragacsos;TE-R-23;6000;23;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1000;;;Tengely;simple;
+Tengely Ø32 hornyos;TE-H-32;6000;32;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;;;Tengely;simple;
+Tengely Ø36 hornyos;TE-H-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;;;Tengely;simple;
+Tengely Ø36 sima;TE-S-36;6000;36;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;;;Tengely;simple;
 
-Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;simple;
-Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;80050528;;Tengely;simple;
-SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Tok;simple;
+Tengely Ø38 hornyos;TE-H-38;6000;38;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;;;Tengely;simple;
+Tengely Ø47 bordás;TE-B-47;6000;47;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;80050528;;Tengely;simple;
+SávrolóTok;SR-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;70;300;600;1500;;;Tok;simple;
 FelsőSín;SR-FSN;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;simple;
-SávrolóZáró;SR-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;simple;
+SávrolóZáró;SR-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;0;300;600;1500;;;Zaro;simple;
 SávrolóPálca;SR-P;6000;14;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Palca;simple;
 SávrolóPálca;SR-P-3000;3000;14;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Palca;simple;
 SávrolóPálca;SR-P-3000_NATUR;3000;14;;Round;CM2;Aluminium;;;Length;Paintable;0;10;300;600;1500;;;Palca;simple;
-MiniTok;MT-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;100;300;600;1500;;;Tok;simple;
+MiniTok;MT-T;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;70;300;600;1500;;;Tok;simple;
 MinitokosZáró;MT-Z;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;simple;
-MinitokosPálca;MT-P;6000;8;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Palca;simple;
-MinitokosLáb;MT-L;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;50;300;600;1500;;;Lab;simple;
-AlsóPálca;ROL-P;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;simple;
+MinitokosPálca;MT-P;6000;8;;Round;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;0;300;600;1500;;;Palca;simple;
+MinitokosLáb;MT-L;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;30;300;600;1500;;;Lab;simple;
+AlsóPálca;ROL-P;6000;10;;Round;CM2;Aluminium;;SM;Length;None;30;0;300;600;1000;;;Palca;simple;
 ÚjGyöngyösZáró;ROL-GYZ;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1200;;;Zaro;simple;
 ErősítettZáró;ROL-EZ;6000;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1200;;;Zaro;simple;
 RugósRugó;ROL-RRG;0;;;Custom;Steel;Unknown;;SM;Piece;None;0;0;0;0;0;;;Rugo;simple;
@@ -161,8 +161,8 @@ SinesLáb_Combo;NP-SL2;-1;;;Custom;CM2;Aluminium;;SM;Length;Paintable;15;10;500;
 SinesLáb_Combo;NP-SL2-7016;-1;;;Custom;CM2;Aluminium;RAL 7016;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CT-SL2-7016
 SinesLáb_Combo;NP-SL2-9010;-1;;;Custom;CM2;Aluminium;RAL 9010;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CT-SL2-9010
 
-SávrolóZáró_10db;SR-Z10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;bundle;BSR-Z10
-SávrolóZáró_5db;SR-Z5;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;bundle;BSR-Z5
+SávrolóZáró_10db;SR-Z10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;0;300;600;1500;;;Zaro;bundle;BSR-Z10
+SávrolóZáró_5db;SR-Z5;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;0;300;600;1500;;;Zaro;bundle;BSR-Z5
 
 FelsőSín_10db;SR-FSN10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;50;300;600;1500;;;FelsoSin;bundle;BSR-FSN10
 
@@ -172,7 +172,7 @@ FelsőSín_10db;SR-FSN10;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;
 AlsóPálca_30db;ROL-P30;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P30
 AlsóPálca_15db;ROL-P15;-1;10;;Round;CM2;Aluminium;;SM;Length;None;30;100;300;600;1000;;;Palca;bundle;BROL-P15
 
-MinitokosLáb_Combo;MT-L2;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Lab;bundle;CMT-L2
+MinitokosLáb_Combo;MT-L2;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;20;20;500;1000;1500;80170428;;Lab;bundle;CMT-L2
 SávRolóZáró_Combo;SR-Z+P;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Zaro;bundle;CSR-Z+P
 MiniTokosZáró_Combo;MT-Z+P;-1;;;Custom;CM2;Aluminium;RAL 9016;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Zaro;bundle;CMT-Z+P
 
@@ -185,4 +185,5 @@ MinitokosLáb_20db;MT-L20;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 9016;SM;Le
 Tengely Ø18 sima_15db;TE-S-18/15;6000;18;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1000;;;Tengely;bundle;CTE-S-18/15
 Tengely Ø32 hornyos_11db;TE-H-32/11;6000;32;;Round;CM2;Aluminium;;SM;Length;None;15;10;300;600;1200;;;Tengely;bundle;CTE-H-32/11
 
+Tengely Ø47 bordás_5db;TE-B-47/5;6000;47;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;80050528;;Tengely;bundle;BTE-B-47/5
 
