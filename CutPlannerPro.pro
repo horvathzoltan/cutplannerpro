@@ -233,6 +233,7 @@ HEADERS += \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
     meta/collectiontraits.h \
+    meta/discoverypath.h \
     meta/imetadata.h \
     meta/meta.h \
     meta/metadiscovery.h \
@@ -242,6 +243,7 @@ HEADERS += \
     meta/metareference.h \
     meta/metaregistry.h \
     meta/metavalue.h \
+    meta/schemadumpworker.h \
     meta/typehelper.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \

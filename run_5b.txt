@@ -1,289 +1,228 @@
-Abszolút. És szerintem most kifejezetten fontos, hogy ne találjunk ki új rendszert, hanem a jelenlegi Meta rendszerből vezessük le a következő réteget.
 
-A jelenlegi állapot:
+Következő nagy feladat
+RBCSV Schema Writer
 
-MetaData
+Itt jött az új felismerés:
+
+A meta fa:
+
+hierarchikus
+
+
+de az RBCSV:
+
+lapos
+
+
+Ez nem egyszerű dump.
+
+Ez valójában:
+
+Tree
     ↓
-MetaField
+Serializer
     ↓
-itemType
-    ↓
-MetaRegistry
+Linear text
 
+Új alterv: Fa → lapos schema szerializálás
+Probléma
 
-már teljesen elegendő a hierarchia bejárásához.
+A jelenlegi gondolkodás hibája:
 
-Nem kell:
+EnterComposition()
 
-SchemaNode
-MetaComposition
-MetaVisitorBase
-AbstractWorker
 
+pillanatában próbál írni.
 
-és hasonló új rétegek.
+Viszont:
 
-1. lépés - MetaWalker létrehozása
+filePath;fileName;fileHash;presence;[orders]
 
-Új fájl:
 
-meta/metawalker.h
+még nem fejeződött be.
 
+Az orders szekció még nem írható ki.
 
-Cél:
+Helyes modell
 
-A jelenlegi
+A composition nem:
 
-DumpMetaTree(...)
-
-
-bejárási logikáját kiemelni egy általános függvénybe.
-
-A walker feladata:
-
-- típus belépés
-- mező
-- composition belépés
-- típus kilépés
-
-
-események meghívása.
-
-Javasolt függvény:
-
-template<typename Worker>
-void WalkMetaTree(
-    IMetaData* meta,
-    Worker& worker,
-    int depth = 0)
-
-2. lépés - Worker interfész kialakítása
-
-Nem absztrakt osztály.
-
-Nem virtual.
-
-Csak konvenció.
-
-A walker ezt várja:
-
-worker.EnterType(...)
-worker.Field(...)
-worker.EnterComposition(...)
-worker.LeaveType(...)
-
-
-Minimális worker API:
-
-void EnterType(
-    IMetaData* meta,
-    int depth);
-
-void Field(
-    IMetaData* meta,
-    const MetaFieldBase& field,
-    int depth);
-
-void EnterComposition(
-    IMetaData* parent,
-    const MetaFieldBase& field,
-    IMetaData* child,
-    int depth);
-
-void LeaveType(
-    IMetaData* meta,
-    int depth);
-
-3. lépés - DumpMetaTree átírása workerre
-
-Új fájl:
-
-meta/workers/metadumpworker.h
-
-
-Tartalmazza:
-
-class MetaDumpWorker
-{
-    ...
-};
-
-
-A régi:
-
-DumpMetaTree(...)
-
-
-helyett:
-
-inline void DumpMetaTree(IMetaData* meta)
-{
-    MetaDumpWorker worker;
-
-    WalkMetaTree(
-        meta,
-        worker);
-}
-
-
-Elvárt kimenet:
-
-ugyanaz marad:
-
-WorkSheetSummary
-  orders
-    WorkSheetOrderInfo
-      materials
-        WorkSheetMaterialInfo
-
-4. lépés - Teszt stabilizálása
-
-A jelenlegi teszt marad.
-
-A cél:
-
-Ugyanaz a log.
-
-Semmi funkcionális változás.
-
-5. lépés - SchemaWorker
-
-Új fájl:
-
-meta/workers/schemadumpworker.h
-
-
-Ez már nem zInfo-zik.
-
-Hanem épít:
-
-QString _text;
-
-
-Például:
-
-WorkSheetSummary
-    filePath
-    fileName
-    fileHash
-
-    orders
-        WorkSheetOrderInfo
-            ...
-
-
-Kimenet:
-
-worker.text()
-
-6. lépés - RBCSV Schema Writer Worker
-
-Új fájl:
-
-rbcsv/rbcsvschemawriterworker.h
-
-
-Ez ugyanazt a WalkMetaTree-t használja.
-
-Kimenete valami ilyesmi:
-
-$SCHEMA
-
-TYPE=WorkSheetSummary
-
-filePath
-fileName
-fileHash
-presence
-
-SECTION=orders
-TYPE=WorkSheetOrderInfo
-
-...
-
-SECTION=materials
-TYPE=WorkSheetMaterialInfo
-
-...
-
-
-A pontos formátum ráér.
-
-7. lépés - Data Writer Worker
-
-Új fájl:
-
-rbcsv/rbcsvdatawriterworker.h
-
-
-Ez már nem csak:
-
-IMetaData*
+írj ki most valamit
 
 
 hanem:
 
-IMetaData*
-+
-objektum pointer
+jegyezd meg,
+hogy később lesz egy szekció
+
+Új feladat
+RBCSV Schema Buffering
+
+Minden szint saját szekció-kimenetet épít.
+
+Például:
+
+WorkSheetSummary
 
 
-alapján dolgozik.
+előállítja:
 
-Kiválthatja ezeket:
-
-writeWorksheetRow()
-
-writeOrderRow()
-
-writeMaterialSection()
-
-8. lépés - Reader
-
-Csak ezután.
-
-Nem előbb.
-
-A reader ugyanarra a sémára épül.
-
-Nem kell második igazságforrás.
-
-Összefoglaló
-
-Holnapi patch-sorrend:
-
-1. meta/metawalker.h
-    WalkMetaTree()
-
-2. meta/workers/metadumpworker.h
-    MetaDumpWorker
-
-3. DumpMetaTree() átállítása
-
-4. Teszt futtatása
-
------ első checkpoint -----
-
-5. meta/workers/schemadumpworker.h
-
-6. Schema dump generálás
-
------ második checkpoint -----
-
-7. RBCSV schema worker
-
-8. RBCSV data writer worker
-
-9. RBCSV reader
+filePath;fileName;fileHash;presence;[orders]
 
 
-Ez a terv teljes egészében a mostani Meta-rendszerre épül, nem vezet be új köztes adattípust, nem épít külön fát, és a már működő:
+Az orders gyerek előállítja:
 
-MetaField
-+
-itemType
-+
-MetaRegistry
+orders
+
+externalReference;...
+
+END # orders
 
 
-hármast használja fel minden további funkcióhoz. Szerintem ez most a legkisebb kockázatú és leginkább előrefelé mutató út. 🚀
+Majd a szülő a megfelelő helyen összefűzi:
+
+ParentRow
+
+ChildSection
+
+Konkrét célformátum
+
+Schema:
+
+filePath;fileName;fileHash;presence;[orders]
+
+orders
+
+externalReference;ownerName;...;[materials]
+
+materials
+
+materialId;cutLengthMm
+
+END # materials
+
+END # orders
+
+
+Data:
+
+/path/file.txt;file.txt;HASH;Present;[orders]
+
+orders
+
+505;Felföldi K.;...;[materials]
+
+materials
+
+NP-CL2+CLT2+CLBR2-7016;1
+
+END # materials
+
+END # orders
+
+
+A kettő szerkezetileg tükre egymásnak.
+
+Frissített roadmap
+✅ 1. DiscoverTree
+
+Kész.
+
+✅ 2. DiscoveryPath
+
+Kész.
+
+✅ 3. MetaDumpWorker
+
+Kész.
+
+✅ 4. SchemaDumpWorker
+
+Bizonyítási célra elkészült.
+
+Maradhat debug eszköz.
+
+Nem végcél.
+
+## ⏳ 5. RbCsvSchemaWorker
+
+Újratervezés:
+
+Tree
+    ↓
+Buffered serializer
+    ↓
+RBCSV schema
+
+Feladat:
+
+- placeholder kezelés
+- szekciónyitás
+- szekciózárás
+- lokális bufferelés
+- lapos kiírás
+
+FONTOS:
+A composition nem szakíthatja meg a szülő rekord kiírását.
+A rekord mindig teljes egészében felépül és kiíródik.
+A composition mezők csak helyőrzőként ([orders], [materials]) jelennek meg a rekordban.
+
+A hozzájuk tartozó szekciók nem a rekordba, hanem a rekord ALÁ kerülnek.
+Ezért a gyerek szekciók kiírása késleltetett (bufferelt), és csak a szülő rekord lezárása után történik meg.
+
+Mentális modell:
+
+ParentRecord
+    ↓
+ParentRecord kiírás
+    ↓
+ChildSection kiírás
+    ↓
+következő ChildSection kiírás
+
+Nem:
+
+ParentRecord eleje
+    ↓
+ChildSection
+    ↓
+ParentRecord vége
+
+
+Ugyanez a DataWriter esetén is érvényes!
+⏳ 6. RbCsvDataWriterWorker
+
+Ugyanez a logika.
+
+Csak:
+
+mezőnevek
+
+
+helyett:
+
+mezőértékek
+
+⏳ 7. Alias rendszer
+
+Migrációhoz.
+
+Példa:
+
+ownerName
+    ↓
+customerName
+
+⏳ 8. Reader
+
+A schema alapján.
+
+Nem kézzel kódolt oszlopszámokkal.
+
+⏳ 9. Verzió migrátor
+
+Külön réteg.
+
+Nem a Meta része.
+
+Szerintem jelenleg a következő valódi mérföldkő már nem a DiscoverTree tovább faragása, hanem az RbCsvSchemaWorker bufferelési stratégiájának megtervezése, vagyis annak eldöntése, hogy a hierarchikus bejárás közben hogyan áll össze a végül lineárisan kiírandó schema szöveg. Ott most tényleg van még egy megoldandó architekturális feladat. 🚀

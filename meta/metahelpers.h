@@ -75,6 +75,7 @@ inline void DumpMetaTree(
     IMetaData* meta)
 {
     MetaDumpWorker worker;
+    DiscoveryPath path;
 
-    DiscoverTree(meta,worker);
+    DiscoverTree(meta,worker,path);
 }

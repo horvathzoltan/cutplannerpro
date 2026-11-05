@@ -1,42 +1,44 @@
 #pragma once
 
 #include "common/logger.h"
+#include "discoverypath.h"
 #include "meta/imetadata.h"
 
 class MetaDumpWorker
 {
 public:
 
-    void EnterType(
-        IMetaData* meta,
-        int depth)
+    void EnterType(IMetaData* meta, const DiscoveryPath& path)
     {
-        zInfo(
-            QString(depth * 2, ' ')
-            + meta->baseTypeName());
+        int depth = path.Depth();
+        zInfo("enter: " + QString(depth * 2, ' ') + meta->baseTypeName());
     }
 
-    void Field(
-        IMetaData*,
-        const MetaFieldBase&,
-        int)
+    void LeaveType(IMetaData* metaData,const DiscoveryPath& path)
     {
+        int depth = path.Depth();
+        zInfo("leave type: " +QString(depth * 2, ' ')+ metaData->baseTypeName());
     }
 
-    void EnterComposition(
-        IMetaData*,
-        const MetaFieldBase& field,
-        IMetaData*,
-        int depth)
+    // field:amit most dolgozunk fel
+    // path.Current(): melyik composition alatt vagyunk
+    void Field(IMetaData*,const MetaFieldBase& field, const DiscoveryPath& path)
     {
-        zInfo(
-            QString((depth + 1) * 2, ' ')
-            + field.name);
+        int depth = path.Depth();
+        zInfo("field: "+ QString((depth + 1) * 2, ' ') + field.name);
     }
 
-    void LeaveType(
-        IMetaData*,
-        int)
+    void EnterComposition(IMetaData* parent,const MetaFieldBase& field,IMetaData* child, const DiscoveryPath& path)
     {
+        int depth = path.Depth();
+        zInfo("composition: " + field.name + " path:" + path.Path());
     }
+
+    void LeaveComposition(IMetaData* parent,const MetaFieldBase& field,IMetaData* child,const DiscoveryPath& path)
+    {
+        int depth = path.Depth();
+        zInfo("leave composition: "+ field.name+ " path:"+ path.Path());
+    }
+
+
 };

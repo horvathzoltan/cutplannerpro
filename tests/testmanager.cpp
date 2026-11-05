@@ -6,6 +6,7 @@
 
 //#include "../model/cutting/plan/request.h"
 #include "worksheetsummary/model/worksheetsummary.h"
+#include "meta/schemadumpworker.h"
 
 TestManager& TestManager::instance() {
     static TestManager _instance;
@@ -158,4 +159,13 @@ void TestManager::runBuildSchemaTest()
 
     DumpMetaTree(
         &WorkSheetSummary::Meta());
+
+    zInfo("=== Schema Dump ===");
+
+    RbCsvSchemaWorker worker;
+
+    DiscoveryPath path;
+    DiscoverTree(&WorkSheetSummary::Meta(),worker, path);
+
+    zInfo(worker.text());
 }

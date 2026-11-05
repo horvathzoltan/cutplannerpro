@@ -1,18 +1,15 @@
 #pragma once
 
 #include "imetadata.h"
+#include "meta/discoverypath.h"
 #include "metaregistry.h"
 
 template<typename Worker>
-void DiscoverTree(
-    IMetaData* meta,
-    Worker& worker,
-    int depth = 0)
+void DiscoverTree(IMetaData* meta,Worker& worker,DiscoveryPath& path)
 {
-    if(!meta)
-        return;
+    if(!meta) return;
 
-    worker.EnterType( meta,depth);
+    worker.EnterType(meta,path);
 
     for(const auto& field : meta->fields())
     {
@@ -20,14 +17,18 @@ void DiscoverTree(
 
         if(child)
         {
-            worker.EnterComposition(meta,field,child,depth);
-            DiscoverTree(child,worker,depth + 1);
+            worker.EnterComposition(meta,field,child,path);
+            path.fields.append(field);
+            DiscoverTree(child,worker,path);
+            worker.LeaveComposition(meta,field,child,path);
+            path.fields.removeLast();
+
         }
         else
         {
-            worker.Field(meta,field,depth);
+            worker.Field(meta,field,path);
         }
     }
 
-    worker.LeaveType(meta,depth);
+    worker.LeaveType(meta,path);
 }
