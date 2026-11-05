@@ -1,8 +1,10 @@
 terv 
+gép stockján az aluvágóban készlet leltár táblázat alapján
+
 
 készletegészség funkció
 
-addinput dialog:
+addinput dialog: - FIXED
     - fehér termékhez natúrt ajánl fel: a szín beírásakor nem frissül a bom, még a szín nélküli állapotot tárolja
     tehát a szín beírása után nem frissül a bom, a debounce timer nem sül el????
 

@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2743";"Hovefa, Szeged";750;1950;715;;1;0;1;"";TE-R-23;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2743";"Hovefa, Szeged";750;1950;705;;1;0;1;"";ROL-P;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2744";"Hovefa, Szeged";750;1950;715;;1;0;1;"";TE-R-23;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2744";"Hovefa, Szeged";750;1950;705;;1;0;1;"";ROL-P;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2745";"Hovefa, Szeged";750;1950;715;;1;1;0;"";TE-R-23;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2745";"Hovefa, Szeged";750;1950;705;;1;1;0;"";ROL-P;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2746";"Hovefa, Szeged";750;1950;715;;1;1;0;"";TE-R-23;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2746";"Hovefa, Szeged";750;1950;705;;1;1;0;"";ROL-P;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2747";"Hovefa, Szeged";650;1950;615;;1;0;1;"";TE-R-23;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2747";"Hovefa, Szeged";650;1950;605;;1;0;1;"";ROL-P;Width;false;2026.11.11;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2761";"Norlux, Bcs";1750;1300;1715;;1;0;1;"";TE-R-23;Width;false;2026.11.10;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2761";"Norlux, Bcs";1750;1300;1705;;1;0;1;"";ROL-P;Width;false;2026.11.10;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2762";"Norlux, Bcs";1780;1300;1745;;1;1;0;"";TE-R-23;Width;false;2026.11.10;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2762";"Norlux, Bcs";1780;1300;1735;;1;1;0;"";ROL-P;Width;false;2026.11.10;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2753";"Seres György";1200;1300;1165;;1;0;1;"";TE-R-23;Width;false;2026.11.12;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2753";"Seres György";1200;1300;1155;;1;0;1;"";ROL-P;Width;false;2026.11.12;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2754";"Seres György";1200;1300;1165;;1;0;1;"";TE-R-23;Width;false;2026.11.12;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2754";"Seres György";1200;1300;1155;;1;0;1;"";ROL-P;Width;false;2026.11.12;ROL;ALAP;;SM;Gyartasi;UNKNOWN
