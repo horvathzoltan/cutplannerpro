@@ -190,6 +190,22 @@ ParentRecord vége
 
 
 Ugyanez a DataWriter esetén is érvényes!
+
+illetve:
+
+A serializer minden szinten két logikai kimenetet kezel:
+
+1. Current Record
+2. Child Sections
+
+A Current Record mindig teljes egészében elkészül.
+
+A composition mezők helyőrzőként kerülnek a rekordba.
+
+A gyerek szekciók nem a rekordba, hanem a rekord ALÁ kerülnek.
+
+A Child Sections kibocsátása késleltetett, és csak a Current Record lezárása után történik meg.
+
 ⏳ 6. RbCsvDataWriterWorker
 
 Ugyanez a logika.
