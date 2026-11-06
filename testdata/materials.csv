@@ -187,3 +187,10 @@ Tengely Ø32 hornyos_11db;TE-H-32/11;6000;32;;Round;CM2;Aluminium;;SM;Length;Non
 
 Tengely Ø47 bordás_5db;TE-B-47/5;6000;47;;Round;CM2;Aluminium;;SM;Length;None;5;0;300;600;1200;80050528;;Tengely;bundle;BTE-B-47/5
 
+MiniTok;MT-T-8019;6000;;;Custom;CM2;Aluminium;RAL 8019;SM;Length;Paintable;20;70;300;600;1500;;;Tok;simple;
+MinitokosZáró;MT-Z-8019;6000;;;Custom;CM2;Aluminium;RAL 8019;SM;Length;Paintable;15;10;300;600;1500;;;Zaro;simple;
+MinitokosPálca;MT-P-8019;6000;8;;Round;CM2;Aluminium;RAL 8019;SM;Length;Paintable;15;0;300;600;1500;;;Palca;simple;
+MinitokosLáb;MT-L-8019;6000;25.7;3.6;Rectangular;CM2;Aluminium;RAL 8019;SM;Length;Paintable;20;30;300;600;1500;;;Lab;simple;
+MinitokosLáb_Combo;MT-L2-8019;-1;;;Custom;CM2;Aluminium;RAL 8019;SM;Length;Paintable;20;20;500;1000;1500;80170428;;Lab;bundle;CMT-L2-8019
+MiniTokosZáró_Combo;MT-Z+P-8019;-1;;;Custom;CM2;Aluminium;RAL 8019;SM;Length;Paintable;15;10;500;1000;1500;80170428;;Zaro;bundle;CMT-Z+P-8019
+

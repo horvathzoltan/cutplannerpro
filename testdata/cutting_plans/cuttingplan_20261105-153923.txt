@@ -1,33 +1,36 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
-"923";"Szűcs K.";1100;1870;1094;;1;1;0;"";SR-T;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"923";"Szűcs K.";1100;1870;1077;;1;1;0;"";TE-H-32;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"923";"Szűcs K.";1100;1870;1080;;1;1;0;"";SR-Z;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"923";"Szűcs K.";1100;1870;1080;;1;1;0;"";SR-P-3000;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"924";"Szűcs K.";1100;1870;1094;;1;0;1;"";SR-T;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"924";"Szűcs K.";1100;1870;1077;;1;0;1;"";TE-H-32;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"924";"Szűcs K.";1100;1870;1080;;1;0;1;"";SR-Z;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"924";"Szűcs K.";1100;1870;1080;;1;0;1;"";SR-P-3000;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"925";"Szűcs K.";1300;1870;1294;;1;1;0;"";SR-T;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"925";"Szűcs K.";1300;1870;1277;;1;1;0;"";TE-H-32;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"925";"Szűcs K.";1300;1870;1280;;1;1;0;"";SR-Z;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"925";"Szűcs K.";1300;1870;1280;;1;1;0;"";SR-P-3000;Width;false;2026.11.12;SR;T;;SM;Gyartasi;UNKNOWN
-"928";"Bodó Roló, Pécs";595;1260;605;;2;1;1;"";MT-T;Width;false;2026.11.13;SR;MINIT;;SM;Uveg;UNKNOWN
-"928";"Bodó Roló, Pécs";595;1260;600;;2;1;1;"";TE-H-18;Width;false;2026.11.13;SR;MINIT;;SM;Uveg;UNKNOWN
-"928";"Bodó Roló, Pécs";595;1260;588;;2;1;1;"";MT-Z+P;Width;false;2026.11.13;SR;MINIT;;SM;Uveg;UNKNOWN
-"928";"Bodó Roló, Pécs";595;1260;1260;;2;1;1;"";MT-L2;Width;false;2026.11.13;SR;MINIT;;SM;Uveg;UNKNOWN
-"931";"Ablakbeépítő, Mtúr.";2390;1600;2384;;1;1;0;"";SR-T;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"931";"Ablakbeépítő, Mtúr.";2390;1600;2367;;1;1;0;"";TE-H-32;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"931";"Ablakbeépítő, Mtúr.";2390;1600;2370;;1;1;0;"";SR-Z;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"931";"Ablakbeépítő, Mtúr.";2390;1600;2370;;1;1;0;"";SR-P-3000;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"932";"Ablakbeépítő, Mtúr.";1280;1600;1274;;1;1;0;"";SR-T;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"932";"Ablakbeépítő, Mtúr.";1280;1600;1257;;1;1;0;"";TE-H-32;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"932";"Ablakbeépítő, Mtúr.";1280;1600;1260;;1;1;0;"";SR-Z;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"932";"Ablakbeépítő, Mtúr.";1280;1600;1260;;1;1;0;"";SR-P-3000;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"933";"Ablakbeépítő, Mtúr.";980;800;974;;1;0;1;"";SR-T;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"933";"Ablakbeépítő, Mtúr.";980;800;957;;1;0;1;"";TE-H-32;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"933";"Ablakbeépítő, Mtúr.";980;800;960;;1;0;1;"";SR-Z;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"933";"Ablakbeépítő, Mtúr.";980;800;960;;1;0;1;"";SR-P-3000;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"934";"Ablakbeépítő, Mtúr.";1860;1600;1854;;1;0;1;"";SR-T;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"934";"Ablakbeépítő, Mtúr.";1860;1600;1837;;1;0;1;"";TE-H-32;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"934";"Ablakbeépítő, Mtúr.";1860;1600;1840;;1;0;1;"";SR-Z;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
-"934";"Ablakbeépítő, Mtúr.";1860;1600;1840;;1;0;1;"";SR-P-3000;Width;false;2026.11.16;SR;T;;SM;Gyartasi;UNKNOWN
+"923";"Szűcs K.";1100;1870;1094;;1;1;0;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"923";"Szűcs K.";1100;1870;1077;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"923";"Szűcs K.";1100;1870;1080;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"923";"Szűcs K.";1100;1870;1080;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"924";"Szűcs K.";1100;1870;1094;;1;0;1;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"924";"Szűcs K.";1100;1870;1077;;1;0;1;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"924";"Szűcs K.";1100;1870;1080;;1;0;1;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"924";"Szűcs K.";1100;1870;1080;;1;0;1;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"925";"Szűcs K.";1300;1870;1294;;1;1;0;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"925";"Szűcs K.";1300;1870;1277;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"925";"Szűcs K.";1300;1870;1280;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"925";"Szűcs K.";1300;1870;1280;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+
+"928";"Bodó Roló, Pécs";595;1260;605;;2;1;1;"RAL 8019";MT-T-8019;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"928";"Bodó Roló, Pécs";595;1260;600;;2;1;1;"RAL 8019";TE-H-18;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"928";"Bodó Roló, Pécs";595;1260;588;;2;1;1;"RAL 8019";MT-Z-8019;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"928";"Bodó Roló, Pécs";595;1260;588;;2;1;1;"RAL 8019";MT-P;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+"928";"Bodó Roló, Pécs";595;1260;1260;;2;1;1;"RAL 8019";MT-L2-8019;Width;false;2026.11.06;SR;MINIT;;SM;Uveg;UNKNOWN
+
+"931";"Ablakbeépítő, Mtúr.";2390;1600;2384;;1;1;0;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"931";"Ablakbeépítő, Mtúr.";2390;1600;2367;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"931";"Ablakbeépítő, Mtúr.";2390;1600;2370;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"931";"Ablakbeépítő, Mtúr.";2390;1600;2370;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"932";"Ablakbeépítő, Mtúr.";1280;1600;1274;;1;1;0;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"932";"Ablakbeépítő, Mtúr.";1280;1600;1257;;1;1;0;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"932";"Ablakbeépítő, Mtúr.";1280;1600;1260;;1;1;0;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"932";"Ablakbeépítő, Mtúr.";1280;1600;1260;;1;1;0;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"933";"Ablakbeépítő, Mtúr.";980;800;974;;1;0;1;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"933";"Ablakbeépítő, Mtúr.";980;800;957;;1;0;1;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"933";"Ablakbeépítő, Mtúr.";980;800;960;;1;0;1;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"933";"Ablakbeépítő, Mtúr.";980;800;960;;1;0;1;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"934";"Ablakbeépítő, Mtúr.";1860;1600;1854;;1;0;1;"";SR-T;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"934";"Ablakbeépítő, Mtúr.";1860;1600;1837;;1;0;1;"";TE-H-32;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"934";"Ablakbeépítő, Mtúr.";1860;1600;1840;;1;0;1;"";SR-Z;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
+"934";"Ablakbeépítő, Mtúr.";1860;1600;1840;;1;0;1;"";SR-P-3000;Width;false;2026.11.06;SR;T;;SM;Gyartasi;UNKNOWN
