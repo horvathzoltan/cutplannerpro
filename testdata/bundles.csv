@@ -65,8 +65,12 @@ CMT-L2;MinitokosLáb_Combo
 CMT-L40;MinitokosLáb/40db
 CMT-L20;MinitokosLáb/20db
 
+CMT-L2-8019;MinitokosLáb_Combo-8019
+
+
 CSR-Z+P;SávrolóZáró_Combo
 CMT-Z+P;MiniTokosZáró_Combo
+CMT-Z+P-8019;MiniTokosZáró_Combo
 
 BSR-Z10;SávrolóZáró_10db
 BSR-Z5;SávrolóZáró_5db
