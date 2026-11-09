@@ -1,3 +1,9 @@
+festési terv:
+azt az anyagot festjük, ami a requestben van, nem azt, amit ténylegesen levágunk mint helyettesítő
+pl: d22 súly nem festhető, mert hporganyzott, nem kell festeni, de a d20 súly az nem horganyzott, mindenképpen festeni kell
+ez egy tetszőleges színnel történik, maradék anyagból
+
+
 terv 
 gép stockján az aluvágóban készlet leltár táblázat alapján
 
