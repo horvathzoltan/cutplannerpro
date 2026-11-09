@@ -2,6 +2,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 #include "metafield.h"
 
@@ -29,9 +30,8 @@ struct DiscoveryPath
     {
         QStringList parts;
 
-        for(auto field : fields)
+        for(const auto& field : fields)
         {
-
             parts.append(field.name);
         }
 

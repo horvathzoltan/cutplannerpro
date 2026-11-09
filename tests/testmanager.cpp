@@ -5,8 +5,13 @@
 #include <QList>
 
 //#include "../model/cutting/plan/request.h"
+#include "meta/rbcsv_modelworker.h"
+#include "meta/rbcsv_testvalueprovider.h"
 #include "worksheetsummary/model/worksheetsummary.h"
-#include "meta/schemadumpworker.h"
+
+#include <rbcsv/rbcsvserializer.h>
+
+#include <worksheetsummary/registry/worksheetsummary_registry.h>
 
 TestManager& TestManager::instance() {
     static TestManager _instance;
@@ -108,7 +113,6 @@ void TestManager::runFullTests() {
 
 
 // --test schema
-// --test schema
 void TestManager::runBuildSchemaTest()
 {
     zInfo("=== BuildSchema tesztek ===");
@@ -127,7 +131,7 @@ void TestManager::runBuildSchemaTest()
     zInfo("=== Field Analysis ===");
 
     for(const auto& f :
-         WorkSheetOrderInfo::Meta().fields())
+         WorkSheetOrderInfo::Meta().fieldsRef())
     {
         zInfo(
             f.name
@@ -160,12 +164,93 @@ void TestManager::runBuildSchemaTest()
     DumpMetaTree(
         &WorkSheetSummary::Meta());
 
-    zInfo("=== Schema Dump ===");
+    zInfo("=== Export Plan Dump ===");
 
-    RbCsvSchemaWorker worker;
-
+    RbCsvExportPlanBuilder builder;
     DiscoveryPath path;
-    DiscoverTree(&WorkSheetSummary::Meta(),worker, path);
 
-    zInfo(worker.text());
+    DiscoverTree(
+        &WorkSheetSummary::Meta(),
+        builder,
+        path);
+
+    auto text =
+        RbCsvSerializer::
+        SerializeSchema(
+            builder.plan());
+
+
+    // auto text =
+    //     RbCsvSerializer::
+    //     SerializeWith(
+    //         plan,
+    //         [&](const MetaFieldBase* field)
+    //         {
+    //             return ExtractValue(
+    //                 currentObject,
+    //                 field);
+    //         });
+
+
+    zInfo("=== Registry State ===");
+
+    const auto& worksheets =
+        WorkSheetSummaryRegistry::instance()
+            .readAll();
+
+    zInfo(
+        QString("worksheet count = %1")
+            .arg(worksheets.size()));
+
+    for(const auto& item : worksheets)
+    {
+        zInfo(
+            QString("worksheet = %1")
+                .arg(item.fileName));
+    }
+
+    zInfo(text);
+
+
+
+    if(!worksheets.isEmpty())
+    {
+        const auto& ws =
+            worksheets.first();
+
+        QVariant value =
+            WorkSheetSummary::Meta().GetValue(
+                &ws,
+                "fileName");
+
+        zInfo(
+            "fileName="
+            + value.toString());
+    }
+
+
+    for(const auto* field :
+         builder.plan().root.fields)
+    {
+        zInfo(field->name);
+    }
+
+
+    const auto& ws =
+        worksheets.first();
+
+    for(const auto* field :
+         builder.plan().root.fields)
+    {
+        QVariant value =
+            WorkSheetSummary::Meta()
+                .GetValue(
+                    &ws,
+                    field->name);
+
+        zInfo(
+            field->name
+            + "="
+            + value.toString());
+    }
 }

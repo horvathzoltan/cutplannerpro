@@ -85,14 +85,19 @@ public:
 */
     RefContainer _refcontainer;
 
-    QList<MetaFieldBase> fields() const override
+    // QList<MetaFieldBase> fields() const override
+    // {
+    //     QList<MetaFieldBase> m;
+
+    //     for(const auto& f : _fields)
+    //         m.append(f);
+
+    //     return m;
+    // }
+
+    const QList<MetaField>& fieldsRef() const override
     {
-        QList<MetaFieldBase> m;
-
-        for(const auto& f : _fields)
-            m.append(f);
-
-        return m;
+        return _fields;
     }
 
     template<typename R>

@@ -63,6 +63,9 @@ int main(int argc, char *argv[])
     //EmojiHelper::RenderAllEmojisToCache();
     //TestLabelMaker::runCompactPdfTest();
 
+    StartupManager manager;
+    StartupStatus status = manager.runStartupSequence();
+
     // --test maki
     if (SettingsManager::instance().isTestMode()) {
         auto testProfile = SettingsManager::instance().testProfile();
@@ -75,10 +78,6 @@ int main(int argc, char *argv[])
         TestManager::instance().runBusinessLogicTests(testProfile);
         return 0;
     }
-
-
-    StartupManager manager;
-    StartupStatus status = manager.runStartupSequence();
 
     if (!status.isSuccess())  {
         QMessageBox::critical(nullptr, "Indítási hiba", status.errorMessage());
