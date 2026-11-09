@@ -19,11 +19,11 @@ inline double calcTengely(double width){
 }
 
 inline double calcVaszon(double width){
-    return width - 45;
+    return width - 53;
 }
 
 inline double calcZaro(double width){
-    return width - 45;
+    return width - 53;
 }
 
 inline double calcLab(double height){

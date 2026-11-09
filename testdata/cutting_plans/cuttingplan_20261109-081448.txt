@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"545";"KoalaAblak, Bp.";3310;2700;3280;;1;1;0;"RAL 8019";NP-T;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"545";"KoalaAblak, Bp.";3310;2700;3305;;1;1;0;"RAL 8019";NP-TF;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"545";"KoalaAblak, Bp.";3310;2700;3187;;1;1;0;"RAL 8019";NP-CZ;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"545";"KoalaAblak, Bp.";3310;2700;2597;;1;1;0;"RAL 8019";NP-CL2+CLT2+CLBR2;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"545";"KoalaAblak, Bp.";3310;2700;3200;;1;1;0;"RAL 8019";NP-ROLL70-7000;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"545";"KoalaAblak, Bp.";3310;2700;3135;;1;1;0;"RAL 8019";NP-BAR20-6000;Width;false;2026.11.17;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1655;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1680;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1562;;1;0;1;"RAL 9010";NP-CZ-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1647;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1575;;1;0;1;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"548";"Fenstermann, Szolnok";1685;1750;1510;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1655;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1680;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1562;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1647;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1575;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"549";"Fenstermann, Szolnok";1685;1750;1510;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;1080;;1;1;0;"RAL 9010";NP-T-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;1105;;1;1;0;"RAL 9010";NP-TF-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;987;;1;1;0;"RAL 9010";NP-CZ-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;1347;;1;1;0;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;1000;;1;1;0;"RAL 9010";NP-ROLL70-7000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"550";"Fenstermann, Szolnok";1110;1450;935;;1;1;0;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.18;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
