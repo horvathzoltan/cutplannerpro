@@ -1,0 +1,21 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"937";"Eged J., Bcs.";660;1800;654;;1;1;0;"";SR-T;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"937";"Eged J., Bcs.";660;1800;637;;1;1;0;"";TE-H-32;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"937";"Eged J., Bcs.";660;1800;640;;1;1;0;"";SR-Z;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"937";"Eged J., Bcs.";660;1800;640;;1;1;0;"";SR-P-3000;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"940";"Árnyhouse, Pécs";1550;1500;1544;;2;1;1;"";SR-T;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"940";"Árnyhouse, Pécs";1550;1500;1527;;2;1;1;"";TE-H-32;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"940";"Árnyhouse, Pécs";1550;1500;1530;;2;1;1;"";SR-Z;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"940";"Árnyhouse, Pécs";1550;1500;1530;;2;1;1;"";SR-P-3000;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"941";"Árnyhouse, Pécs";1490;850;1484;;4;2;2;"";SR-T;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"941";"Árnyhouse, Pécs";1490;850;1467;;4;2;2;"";TE-H-32;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"941";"Árnyhouse, Pécs";1490;850;1470;;4;2;2;"";SR-Z;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"941";"Árnyhouse, Pécs";1490;850;1470;;4;2;2;"";SR-P-3000;Width;false;2026.11.10;SR;T;;SM;Gyartasi;UNKNOWN
+"944";"Berkes Balázs, Bcs";1000;2500;984;;1;0;1;"";SR-FSN;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"944";"Berkes Balázs, Bcs";1000;2500;967;;1;0;1;"";TE-H-32;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"944";"Berkes Balázs, Bcs";1000;2500;970;;1;0;1;"";SR-Z;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"944";"Berkes Balázs, Bcs";1000;2500;970;;1;0;1;"";SR-P-3000;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"947";"Szabó Viktor, Bcs";730;1370;714;;1;0;1;"";SR-FSN;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"947";"Szabó Viktor, Bcs";730;1370;697;;1;0;1;"";TE-H-32;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"947";"Szabó Viktor, Bcs";730;1370;700;;1;0;1;"";SR-Z;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN
+"947";"Szabó Viktor, Bcs";730;1370;700;;1;0;1;"";SR-P-3000;Width;false;2026.11.17;SR;TN;;SM;Gyartasi;UNKNOWN

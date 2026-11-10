@@ -1,0 +1,15 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2765";"Tóth Á., Bcs.";605;1200;575;;1;0;0;"";TE-R-23;Width;false;2026.11.17;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2765";"Tóth Á., Bcs.";605;1200;578;;1;0;0;"";ROL-P;Width;false;2026.11.17;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2766";"Tóth Á., Bcs.";605;1200;575;;1;0;0;"";TE-R-23;Width;false;2026.11.17;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2766";"Tóth Á., Bcs.";605;1200;578;;1;0;0;"";ROL-P;Width;false;2026.11.17;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2772";"Szekér Zsolt, Pécs";570;1260;580;;1;0;0;"";MT-T;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2772";"Szekér Zsolt, Pécs";570;1260;575;;1;0;0;"";TE-H-18;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2772";"Szekér Zsolt, Pécs";570;1260;565;;1;0;0;"";MT-Z;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2772";"Szekér Zsolt, Pécs";570;1260;1260;;1;0;0;"";MT-L2;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2773";"Szekér Zsolt, Pécs";570;1260;580;;1;0;0;"";MT-T;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2773";"Szekér Zsolt, Pécs";570;1260;575;;1;0;0;"";TE-H-18;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2773";"Szekér Zsolt, Pécs";570;1260;565;;1;0;0;"";MT-Z;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2773";"Szekér Zsolt, Pécs";570;1260;1260;;1;0;0;"";MT-L2;Width;false;2026.11.13;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2775";"Kiss Árnyékolás, Pécs";490;860;460;;1;0;0;"";TE-R-23;Width;false;2026.11.13;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2775";"Kiss Árnyékolás, Pécs";490;860;463;;1;0;0;"";ROL-P;Width;false;2026.11.13;ROL;RUG;;SM;Gyartasi;UNKNOWN

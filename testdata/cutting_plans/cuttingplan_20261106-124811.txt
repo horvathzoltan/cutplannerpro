@@ -1,1 +1,6 @@
 externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"557";"Sutyinszki Zolt, Bcs.";1450;880;1445;;1;1;0;"RAL 8019";NP-T;Width;false;2026.11.24;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"557";"Sutyinszki Zolt, Bcs.";1450;880;1445;;1;1;0;"RAL 8019";NP-TF;Width;false;2026.11.24;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"557";"Sutyinszki Zolt, Bcs.";1450;880;1410;;1;1;0;"RAL 8019";NP-SZ;Width;false;2026.11.24;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"557";"Sutyinszki Zolt, Bcs.";1450;880;1406;;1;1;0;"RAL 8019";NP-ROLL70-7000;Width;false;2026.11.24;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"557";"Sutyinszki Zolt, Bcs.";1450;880;1365;;1;1;0;"RAL 8019";NP-BAR12-4000;Width;false;2026.11.24;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
