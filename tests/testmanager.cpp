@@ -4,14 +4,11 @@
 
 #include <QList>
 
-//#include "../model/cutting/plan/request.h"
 #include "meta/rbcsv_modelworker.h"
-#include "meta/rbcsv_testvalueprovider.h"
 #include "worksheetsummary/model/worksheetsummary.h"
-
-#include <rbcsv/rbcsvserializer.h>
-
-#include <worksheetsummary/registry/worksheetsummary_registry.h>
+#include "rbcsv/export/rbcsv_serializer.h"
+#include "worksheetsummary/registry/worksheetsummary_registry.h"
+#include "rbcsv/export/rbcsv_valueformatter.h"
 
 TestManager& TestManager::instance() {
     static TestManager _instance;
@@ -119,6 +116,7 @@ void TestManager::runBuildSchemaTest()
 
     QString schema;
 
+    // ezek letapogatják a metát, és kellenek a registry-hez, hogy a meták regisztrálva legyenek
     schema = WorkSheetSummary::Meta().FlatSchemaDump();
     zInfo(schema);
 
@@ -128,129 +126,117 @@ void TestManager::runBuildSchemaTest()
     schema = WorkSheetMaterialInfo::Meta().FlatSchemaDump();
     zInfo(schema);
 
-    zInfo("=== Field Analysis ===");
+    // zInfo("=== Field Analysis ===");
 
-    for(const auto& f :
-         WorkSheetOrderInfo::Meta().fieldsRef())
-    {
-        zInfo(
-            f.name
-            + " -> "
-            + f.type.name()
-            + " id="
-            + QString::number(f.type.id()));
+    // for(const auto& f :
+    //      WorkSheetOrderInfo::Meta().fieldsRef())
+    // {
+    //     zInfo(
+    //         f.name
+    //         + " -> "
+    //         + f.type.name()
+    //         + " id="
+    //         + QString::number(f.type.id()));
 
-        zInfo(
-            QString("  collection=")
-            + (f.IsCollection() ? "true" : "false"));
+    //     zInfo(
+    //         QString("  collection=")
+    //         + (f.IsCollection() ? "true" : "false"));
 
-        IMetaData* child =
-            MetaRegistry::Find(f.itemType);
+    //     IMetaData* child =
+    //         MetaRegistry::Find(f.itemType);
 
-        zInfo(
-            QString("  composition=")
-            + (child ? "true" : "false"));
+    //     zInfo(
+    //         QString("  composition=")
+    //         + (child ? "true" : "false"));
 
-        if(child)
-        {
-            zInfo(
-                QString("  childMeta=")
-                + child->baseTypeName());
-        }
-    }
+    //     if(child)
+    //     {
+    //         zInfo(
+    //             QString("  childMeta=")
+    //             + child->baseTypeName());
+    //     }
+    // }
 
-    zInfo("=== Composition Tree ===");
+    // zInfo("=== Composition Tree ===");
 
-    DumpMetaTree(
-        &WorkSheetSummary::Meta());
+    // DumpMetaTree(&WorkSheetSummary::Meta());
 
-    zInfo("=== Export Plan Dump ===");
+    // zInfo("=== Export Plan Dump ===");
 
     RbCsvExportPlanBuilder builder;
     DiscoveryPath path;
 
-    DiscoverTree(
-        &WorkSheetSummary::Meta(),
-        builder,
-        path);
+    DiscoverTree(&WorkSheetSummary::Meta(),builder,path);
 
-    auto text =
-        RbCsvSerializer::
-        SerializeSchema(
-            builder.plan());
+    zInfo("=== SCHEMA EXPORT ===");
+
+    auto schema_txt =RbCsvSerializer::SerializeSchema(builder.plan());
+    zInfo(schema_txt);
 
 
-    // auto text =
-    //     RbCsvSerializer::
-    //     SerializeWith(
-    //         plan,
-    //         [&](const MetaFieldBase* field)
-    //         {
-    //             return ExtractValue(
-    //                 currentObject,
-    //                 field);
-    //         });
-
-
-    zInfo("=== Registry State ===");
+    // zInfo("=== Registry State ===");
 
     const auto& worksheets =
-        WorkSheetSummaryRegistry::instance()
-            .readAll();
+         WorkSheetSummaryRegistry::instance().readAll();
 
-    zInfo(
-        QString("worksheet count = %1")
-            .arg(worksheets.size()));
+    // zInfo(
+    //     QString("worksheet count = %1")
+    //         .arg(worksheets.size()));
+
+    // for(const auto& item : worksheets)
+    // {
+    //     zInfo(
+    //         QString("worksheet = %1")
+    //             .arg(item.fileName));
+    // }
+
+
+
+
+    // if(!worksheets.isEmpty())
+    // {
+    //     const auto& ws =
+    //         worksheets.first();
+
+    //     QVariant value =
+    //         WorkSheetSummary::Meta().GetValue(
+    //             &ws,
+    //             "fileName");
+
+    //     zInfo(
+    //         "fileName="
+    //         + value.toString());
+    // }
+
+
+    // for(const auto* field :
+    //      builder.plan().root.fields)
+    // {
+    //     zInfo(field->name);
+    // }
+
+
+    const WorkSheetSummary* ws = nullptr;
 
     for(const auto& item : worksheets)
     {
-        zInfo(
-            QString("worksheet = %1")
-                .arg(item.fileName));
+        if(item.fileName ==
+            "cuttingplan_20261110-123634.txt")
+        {
+            ws = &item;
+            break;
+        }
     }
 
-    zInfo(text);
-
-
-
-    if(!worksheets.isEmpty())
+    if(!ws)
     {
-        const auto& ws =
-            worksheets.first();
-
-        QVariant value =
-            WorkSheetSummary::Meta().GetValue(
-                &ws,
-                "fileName");
-
-        zInfo(
-            "fileName="
-            + value.toString());
+        zError("worksheet not found");
+        return;
     }
 
+    QString data_txt = RbCsvSerializer::SerializeData(builder.plan(),ws);
 
-    for(const auto* field :
-         builder.plan().root.fields)
-    {
-        zInfo(field->name);
-    }
+    zInfo("=== DATA EXPORT ===");
+    zInfo(data_txt);
 
-
-    const auto& ws =
-        worksheets.first();
-
-    for(const auto* field :
-         builder.plan().root.fields)
-    {
-        QVariant value =
-            WorkSheetSummary::Meta()
-                .GetValue(
-                    &ws,
-                    field->name);
-
-        zInfo(
-            field->name
-            + "="
-            + value.toString());
-    }
 }

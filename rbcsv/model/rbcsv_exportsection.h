@@ -8,7 +8,7 @@ struct RbCsvExportSection
 {
     QString sectionName;
 
-    QList<const MetaFieldBase*> fields;
+    QList<const MetaField*> fields;
 
     QList<QString> children;
 };

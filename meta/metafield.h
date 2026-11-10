@@ -32,10 +32,11 @@ struct MetaField : public MetaFieldBase{
 public:
     QString wcode;
     int _offset;
-    char* GetPtr(char* s){ return s+ _offset; }
+    char* GetPtr(char* s) const { return s+ _offset; }
 
     // ez megy ki az UI felé
-    MetaValue GetMetaValue(char* s){
+    MetaValue GetMetaValue(char* s) const
+    {
         //  001c3 a megyére [5] invalid qvariant row widget keletkezik
 
         // if(name == "countyId")
@@ -49,7 +50,8 @@ public:
         return mv;
     }
 
-    QVariant GetValue(char* s){
+    QVariant GetValue(char* s) const
+    {
         char* ptr = GetPtr(s);
         if(type.id()==QMetaType::QVariant){
             //QMetaType qvm = type;
