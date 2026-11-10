@@ -16,4 +16,5 @@ private:
     void runToleranceTests();
     void runMakiTests();
     void runFullTests();
+    void runBuildSchemaTest(); // --test schema
 };

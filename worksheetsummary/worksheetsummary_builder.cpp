@@ -45,30 +45,23 @@ WorkSheetSummaryBuilder::buildOrderInfos(
 
         if (order.externalReference.isEmpty())
         {
-            order.externalReference =
-                req.externalReference;
-
-            order.ownerName =
-                req.ownerName;
-
-            order.dueDate =
-                req.dueDate;
-
-            order.productTypeId =
-                req.productTypeId;
-
-            order.productSubtypeId =
-                req.productSubtypeId;
-
-            order.requiredColor =
-                req.requiredColor;
-
-            order.requiredSurface =
-                req.surface;
-
-            order.materialId =
-                req.materialId;
+            order.externalReference =req.externalReference;
+            order.ownerName =req.ownerName;
+            order.dueDate =req.dueDate;
+            order.productTypeId =req.productTypeId;
+            order.productSubtypeId =req.productSubtypeId;
+            order.requiredColor =req.requiredColor;
+            order.requiredSurface =req.surface;
+            order.quantity =req.quantity;
+            order.fullWidthMm =req.fullWidth_mm;
+            order.fullHeightMm =req.fullHeight_mm;
+            order.calcMode =req.calcMode;
         }
+
+        WorkSheetMaterialInfo matInfo;
+        matInfo.materialId = req.materialId;
+        matInfo.cutLengthMm = req.requiredLength;
+        order.materials.push_back(matInfo);
 
         ++order.requestCount;
 

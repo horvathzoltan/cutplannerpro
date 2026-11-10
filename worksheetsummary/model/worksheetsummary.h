@@ -3,6 +3,7 @@
 #include "worksheetsummary/model/worksheetorderinfo.h"
 #include <QString>
 #include <QByteArray>
+#include "meta/meta.h"
 
 enum class WorkSheetPresence
 {
@@ -101,4 +102,10 @@ struct WorkSheetSummary
             undefinedCount() > 0 ||
             uncompletedCount() > 0;
     }
+
+private:
+    static MetaData<WorkSheetSummary> _meta;
+public:
+    static MetaData<WorkSheetSummary>& Meta();
+    static void MetaInit();
 };

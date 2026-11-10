@@ -14,7 +14,7 @@ CuttingSnapshotDeserializer::detectSection(const QString& line)
     if (line.startsWith("#SEGMENTS")) return SEGMENTS;
     if (line.startsWith("#PIECES"))   return PIECES;
     if (line.startsWith("#LEFTOVERS"))return LEFTOVERS;
-    return NONE;
+    return Section::NONE1;
 }
 
 QVector<Cutting::Plan::CutPlan>
@@ -27,7 +27,7 @@ CuttingSnapshotDeserializer::loadSnapshot(QTextStream& in)
     QMap<QUuid, QString> leftoverByPlan;
     QMap<QUuid, double> leftoverWasteByPlan;
 
-    Section current = NONE;
+    Section current = Section::NONE1;
 
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();

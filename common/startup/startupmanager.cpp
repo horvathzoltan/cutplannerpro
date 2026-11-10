@@ -803,9 +803,9 @@ StartupStatus StartupManager::initWorkSheetSummaryRegistry()
 
         if (!summary)
         {
-            zInfo(
-                QString("🆕 Új worksheet: %1")
-                    .arg(file));
+            // zInfo(
+            //     QString("🆕 Új worksheet: %1")
+            //         .arg(file));
 
             newFiles.push_back(file);
             filesToBuild.push_back(file);

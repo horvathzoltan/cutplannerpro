@@ -36,6 +36,7 @@ SOURCES += \
     materials/repository/material_paintgroup_repository.cpp \
     materials/repository/material_rolegroup_repository.cpp \
     materials/repository/material_storagegrouprepository.cpp \
+    meta/typehelper.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
     model/cutting/optimizer/leftoverlifecycle.cpp \
@@ -167,6 +168,9 @@ SOURCES += \
     view/managers/storageaudittable_manager.cpp \
     leftover/view/utils/leftoverreviewform_utils.cpp \
     view/tableutils/rowtracker2.cpp \
+    worksheetsummary/model/worksheetmaterialinfo.cpp \
+    worksheetsummary/model/worksheetorderinfo.cpp \
+    worksheetsummary/model/worksheetsummary.cpp \
     worksheetsummary/registry/worksheetsummary_registry.cpp \
     worksheetsummary/repository/worksheetsummary_repository.cpp \
     worksheetsummary/search/worksheetsummary_searchengine.cpp \
@@ -228,6 +232,22 @@ HEADERS += \
     materials/repository/material_paintgroup_repository.h \
     materials/repository/material_rolegroup_repository.h \
     materials/repository/material_storagegrouprepository.h \
+    meta/collectiontraits.h \
+    meta/discoverynode.h \
+    meta/discoverypath.h \
+    meta/imetadata.h \
+    meta/meta.h \
+    meta/metadiscovery.h \
+    meta/metadumpworker.h \
+    meta/metafield.h \
+    meta/metahelpers.h \
+    meta/metareference.h \
+    meta/metaregistry.h \
+    meta/metavalue.h \
+    meta/rbcsv_modelworker.h \
+    meta/rbcsv_schemavalueprovider.h \
+    meta/rbcsv_testvalueprovider.h \
+    meta/typehelper.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \
     paint/paintingrequirement_helper.h \
@@ -236,6 +256,9 @@ HEADERS += \
     product/repository/product_calcmode_repository.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
+    rbcsv/model/rbcsv_exportplan.h \
+    rbcsv/model/rbcsv_exportsection.h \
+    rbcsv/rbcsvserializer.h \
     search/model/searchhit.h \
     search/model/searchresult.h \
     service/cutting/plan/cuttingplan_validationservice.h \
@@ -531,6 +554,7 @@ HEADERS += \
     view/viewmodels/result/rowgenerator.h \
     view/viewmodels/tablecellviewmodel.h \
     view/viewmodels/tablerowviewmodel.h \
+    worksheetsummary/model/worksheetmaterialinfo.h \
     worksheetsummary/model/worksheetorderinfo.h \
     worksheetsummary/registry/worksheetsummary_registry.h \
     worksheetsummary/repository/worksheetsummary_repository.h \

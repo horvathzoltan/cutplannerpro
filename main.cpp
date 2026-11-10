@@ -66,18 +66,6 @@ int main(int argc, char *argv[])
     StartupManager manager;
     StartupStatus status = manager.runStartupSequence();
 
-    if (!status.isSuccess())  {
-        QMessageBox::critical(nullptr, "Indítási hiba", status.errorMessage());
-        return -1;
-    }
-
-    if (!status.warnings().isEmpty()) {
-        QMessageBox::warning(nullptr, "Figyelmeztetés",
-                             "Az alkalmazás elindult, de a következő problémák felmerültek:\n\n" +
-                                 status.warnings().join("\n"));
-    }
-
-
     // --test maki
     if (SettingsManager::instance().isTestMode()) {
         auto testProfile = SettingsManager::instance().testProfile();
@@ -90,6 +78,31 @@ int main(int argc, char *argv[])
         TestManager::instance().runBusinessLogicTests(testProfile);
         return 0;
     }
+
+    if (!status.isSuccess())  {
+        QMessageBox::critical(nullptr, "Indítási hiba", status.errorMessage());
+        return -1;
+    }
+
+    if (!status.warnings().isEmpty()) {
+        QMessageBox::warning(nullptr, "Figyelmeztetés",
+                             "Az alkalmazás elindult, de a következő problémák felmerültek:\n\n" +
+                                 status.warnings().join("\n"));
+    }
+
+
+    // // --test maki
+    // if (SettingsManager::instance().isTestMode()) {
+    //     auto testProfile = SettingsManager::instance().testProfile();
+    //     //--test materialexport
+    //     // if(testProfile == "materialexport"){
+    //     //     MaterialRepository repo;
+    //     //     repo.exportCsv("materials_out.csv");
+    //     //     return 0;
+    //     // }
+    //     TestManager::instance().runBusinessLogicTests(testProfile);
+    //     return 0;
+    // }
 
     MainWindow window;
 //    window.setWindowTitle("CutPlanner MVP");
