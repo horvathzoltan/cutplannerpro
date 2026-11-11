@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"10003";"RolettaMűhely";1900;1000;1894;;1;0;0;"";SR-T;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"10003";"RolettaMűhely";1900;1000;1877;;1;0;0;"";TE-H-32;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"10003";"RolettaMűhely";1900;1000;1870;;1;0;0;"";ROL-GYZ;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"10004";"RolettaMűhely";1530;1000;1524;;2;0;0;"";SR-T;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"10004";"RolettaMűhely";1530;1000;1507;;2;0;0;"";TE-H-32;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN
+"10004";"RolettaMűhely";1530;1000;1500;;2;0;0;"";ROL-GYZ;Width;false;2026.11.12;ROL;SRTOK;;SM;Gyartasi;UNKNOWN

@@ -1,0 +1,4 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"10004";"10005";1755;3200;1715;;2;1;1;"";NP-SZ;Width;false;2026.11.12;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"10005";"10005";1755;3200;1711;;2;1;1;"";NP-ROLL70-7000;Width;false;2026.11.12;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"10006";"10005";1755;3200;1670;;2;1;1;"";NP-BAR12-4000;Width;false;2026.11.12;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
