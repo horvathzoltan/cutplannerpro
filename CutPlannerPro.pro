@@ -236,6 +236,7 @@ HEADERS += \
     meta/collectiontraits.h \
     meta/discoverynode.h \
     meta/discoverypath.h \
+    meta/icollectionaccessor.h \
     meta/imetadata.h \
     meta/meta.h \
     meta/metadiscovery.h \
@@ -245,6 +246,7 @@ HEADERS += \
     meta/metareference.h \
     meta/metaregistry.h \
     meta/metavalue.h \
+    meta/qlistaccessor.h \
     meta/rbcsv_modelworker.h \
     meta/rbcsv_schemavalueprovider.h \
     meta/rbcsv_testvalueprovider.h \

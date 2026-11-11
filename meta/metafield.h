@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/logger.h"
+#include "icollectionaccessor.h"
 #include "metavalue.h"
 #include <QMetaType>
 #include <typeindex>
@@ -20,6 +21,8 @@ public:
     RefType refType=RefType::None;
 
     QString ToString(){return name+' '+type.name();}
+
+    const ICollectionAccessor* collectionAccessor = nullptr;
 
     bool IsCollection() const
     {
@@ -68,9 +71,22 @@ public:
         } else {
             QMetaType qvm = QMetaType(QMetaType::QVariant);
             bool cc = QMetaType::canConvert(type, qvm);
+
+            zInfo(
+                QString("ENUM %1 cc=%2")
+                    .arg(type.name())
+                    .arg(cc));
+
             QVariant v;
             if(cc){
                 bool ok = QMetaType::convert(type, ptr, qvm, &v);
+
+                zInfo(
+                    QString("ENUM %1 ok=%2 valid=%3")
+                        .arg(type.name())
+                        .arg(ok)
+                        .arg(v.isValid()));
+
                 if(!ok){
                     zInfo("cc err");
                 }

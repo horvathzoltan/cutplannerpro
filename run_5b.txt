@@ -1,177 +1,202 @@
-elmondom, mi ment félre:
+Abszolút. Most már van elég információnk ahhoz, hogy ne ötleteljünk, hanem végigverhető tervet rakjunk össze.
 
-    static void SerializeSection(
-const RbCsvExportSection& section,
-const RbCsvExportPlan& plan,
-QString& out,
-bool writeHeader,
-SerializeMode mode,
-const void* currentObject)
+A cél:
 
-section a plan rootja. felesleges átadni?
-INFO:filePath;fileName;fileHash;presence;[orders]
-fields: őrízzük metával: filePath;fileName;fileHash;presence;
-de ezt nem: [orders]  - ez child, és csak a neve van meg
+enum class WorkSheetPresence
 
+
+esetén automatikusan működjön:
+
+WorkSheetPresence
+    ↔ QString
+
+
+a Meta rendszerben.
+
+És ne kelljen külön serializer-hardcode.
+
+1. lépés - ismerje fel a Meta az enumot
+
+metadata.h
+
+először add hozzá:
+
+#include <type_traits>
+
+
+majd az AddField()-be:
+
+if constexpr(std::is_enum_v<FieldType>)
+{
+    zInfo(
+        QString("enum=")
+        + QString(typeid(FieldType).name()));
+}
+
+
+Várható log:
+
+enum=17WorkSheetPresence
+enum=12SizeCalcMode
+enum=10NamedColor
+enum=11SurfaceType
+
+
+Ha ez megvan:
+
+✅ enum felismerés kész
+
+2. lépés - EnumTraits bevezetése
+
+Új fájl:
+
+enumtraits.h
 
 #pragma once
 
-#include <QHash>
-#include <QString>
+template<typename T>
+struct EnumTraits;
 
-#include "../model/rbcsv_exportplan.h"
 
-#include "rbcsv_valueformatter.h"
+Semmi más.
 
-class RbCsvSerializer
+3. lépés - 1 enum kipróbálása
+
+Mondjuk:
+
+WorkSheetPresence
+
+
+specializáció:
+
+template<>
+struct EnumTraits<WorkSheetPresence>
 {
-public:
-
-    enum class SerializeMode
+    static QString ToString(
+        WorkSheetPresence v)
     {
-        Schema,
-        Data
-    };
-
-    static QString SerializeSchema(
-        const RbCsvExportPlan& plan)
-    {
-        QString out;
-
-        SerializeSection(
-            plan.root,
-            plan,
-            out,
-            false,
-            SerializeMode::Schema,
-            nullptr);
-
-        return out;
+        return ::ToString(v);
     }
 
-
-    static QString SerializeData(
-        const RbCsvExportPlan& plan,
-        const void* rootObject)
+    static WorkSheetPresence Parse(
+        const QString& s)
     {
-        QString out;
-
-        SerializeSection(
-            plan.root,
-            plan,
-            out,
-            false,
-            SerializeMode::Data,
-            rootObject);
-
-        return out;
-    }
-
-private:
-
-    static void SerializeSection(
-        const RbCsvExportSection& section,
-        const RbCsvExportPlan& plan,
-        QString& out,
-        bool writeHeader,
-        SerializeMode mode,
-        const void* currentObject)
-    {
-        if(writeHeader)
-        {
-            out += section.sectionName;
-            out += "\n";
-        }
-
-        QStringList record;
-
-        for(const auto* field : section.fields)
-        {
-            if(mode == SerializeMode::Schema)
-            {
-                record.append(field->name);
-            }
-            else
-            {
-
-                QVariant value =
-                    currentObject ?
-                    field->GetValue(
-                        (char*)currentObject):
-                                     "NULL";
-
-
-                record.append(
-                    RbCsvValueFormatter::ToString(
-                        field,
-                        value));
-            }
-        }
-
-        for(const auto& childKey : section.children)
-        {
-            int pos =
-                childKey.lastIndexOf('/');
-
-            QString sectionName =
-                pos < 0
-                    ? childKey
-                    : childKey.mid(pos + 1);
-
-            record.append(
-                "[" + sectionName + "]");
-        }
-
-        if(!record.isEmpty())
-        {
-            out += record.join(';');
-            out += "\n";
-        }
-
-        for(const auto& childKey : section.children)
-        {
-            const auto it =
-                plan.sections.find(childKey);
-
-            if(it == plan.sections.end())
-                continue;
-
-            char* ptr = nullptr;
-
-            if(currentObject){
-
-
-
-                // for(const auto* a : section.fields)
-                // {
-                //     if(a->name == it.value().sectionName)
-                //     {
-                //         ptr = a->GetPtr((char*)currentObject);
-                //         break;
-                //     }
-                // }
-
-                for(const auto* a : section.fields){
-                    if(a->name == childKey){
-                        ptr = a->GetPtr((char*)currentObject);
-                        break;
-                    }
-                }
-
-                //if(!ptr) continue;
-            }
-
-            SerializeSection(
-                it.value(),
-                plan,
-                out,
-                true,
-                mode,
-                ptr);
-
-            out += "END # ";
-            out += it.value().sectionName;
-            out += "\n";
-        }
+        return ::ParseWorkSheetPresence(s);
     }
 };
+
+
+A te meglévő függvényeidet kell hívni.
+
+4. lépés - Qt konverter regisztráció
+
+Új helper:
+
+template<typename EnumType>
+void RegisterEnumConverters()
+{
+    static bool done = false;
+
+    if(done)
+        return;
+
+    done = true;
+
+    QMetaType::registerConverter<
+        EnumType,
+        QString>(
+        EnumType v
+        {
+            return EnumTraits<
+                EnumType>::ToString(v);
+        });
+
+    QMetaType::registerConverter<
+        QString,
+        EnumType>(
+        const QString& s
+        {
+            return EnumTraits<
+                EnumType>::Parse(s);
+        });
+}
+
+5. lépés - AddField bekötés
+
+A meglévő:
+
+if constexpr(std::is_enum_v<FieldType>)
+{
+    ...
+}
+
+
+blokk legyen:
+
+if constexpr(std::is_enum_v<FieldType>)
+{
+    RegisterEnumConverters<
+        FieldType>();
+}
+
+6. lépés - log ellenőrzés
+
+A mostani:
+
+ENUM WorkSheetPresence cc=0
+
+
+helyett ezt várod:
+
+ENUM WorkSheetPresence cc=1
+
+7. lépés - QVariant ellenőrzés
+
+A mostani:
+
+presence -> valid=0
+
+
+helyett valami:
+
+presence -> QString valid=1
+
+
+vagy
+
+presence -> WorkSheetPresence valid=1
+
+
+attól függően, hogyan kezeli a Qt.
+
+8. lépés - formatter
+
+Ha a QVariant már valid:
+
+A formatterben:
+
+if(value.metaType().id() ==
+   QMetaType::QString)
+{
+    return value.toString();
+}
+
+
+nagy valószínűséggel már elegendő lesz.
+
+Megállási pont
+
+Ha idáig eljutsz és a logban ez látszik:
+
+ENUM WorkSheetPresence cc=1
+
+
+akkor megállunk.
+
+Nem írunk még enum accessort.
+
+Nem bonyolítjuk túl.
+
+Előbb nézzük meg, hogy a Qt konverter-regisztráció önmagában megoldja-e a problémát.
+
+Szerintem ez a legkisebb, auditálható, lépésenként végrehajtható út. 🚀

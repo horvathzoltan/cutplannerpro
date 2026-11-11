@@ -12,6 +12,7 @@
 #include "metareference.h"
 #include "imetadata.h"
 #include "metaregistry.h"
+#include "qlistaccessor.h"
 
 //#define AddMetaField(b) _meta.AddField(#b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b));
 #define AddMetaField(b) _meta.AddField< decltype(_meta._instance.b) >( #b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b))
@@ -172,6 +173,9 @@ public:
             using ItemType = typename CollectionTraits<FieldType>::ItemType;
             f.itemType = std::type_index(typeid(ItemType));
             zInfo(QString("item=")+ QString(typeid(ItemType).name()));
+
+            static QListAccessor<ItemType> accessor;
+            f.collectionAccessor = &accessor;
         }
 
         int offset = field_ptr - (char*)(&_instance);

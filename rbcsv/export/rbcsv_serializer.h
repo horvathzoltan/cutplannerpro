@@ -86,6 +86,11 @@ private:
                         (char*)currentObject):
                                      "NULL";
 
+                zInfo(
+                    QString("SerializeSection: %1 -> %2 valid=%3")
+                        .arg(field->name)
+                        .arg(value.metaType().name())
+                        .arg(value.isValid()));
 
                 record.append(
                     RbCsvValueFormatter::ToString(
@@ -126,56 +131,49 @@ private:
 
             bool bejarva = false;
 
+
             if(currentObject){
 
+                int pos =
+                    childKey.lastIndexOf('/');
 
-
-                // for(const auto* a : section.fields)
-                // {
-                //     if(a->name == it.value().sectionName)
-                //     {
-                //         ptr = a->GetPtr((char*)currentObject);
-                //         break;
-                //     }
-                // }
+                QString sectionName =
+                    pos < 0
+                        ? childKey
+                        : childKey.mid(pos + 1);
 
                 for(const auto* a : section.fields){
-                    if(a->name == childKey){
+                    if(a->name == sectionName){
                         ptr = a->GetPtr((char*)currentObject);
 
-                        if(childKey == "orders"){
+                        if(a->collectionAccessor)
+                        {
+                            int count =
+                                a->collectionAccessor
+                                    ->Count(ptr);
 
-                            // most itt vagy van a qt-ben erre megoldás, hogy egy kollekciónak tudjuk a pointerét, és tudjuk a típusát, akkor be tudjuk járni
-                            // vagy nekem kell megoldani, hogy a kollekció típusát tudjuk, és tudjuk a pointerét, és akkor tudjuk bejárni egy helperrel, mondjuk
+                            for(int i=0;i<count;i++)
+                            {
+                                const void* item =
+                                    a->collectionAccessor
+                                        ->ItemAt(ptr,i);
 
-                            QList<WorkSheetOrderInfo>* ptr1 = reinterpret_cast<QList<WorkSheetOrderInfo>*>(ptr);
-
-                            //QList<WorkSheetOrderInfo>* ptr3 = dynamic_cast<QList<a->type.registerType()>*>(ptr);
-
-                            if(ptr1){
-                                for(auto b: *ptr1){
-                                    ptr = reinterpret_cast<char*>(&b);
-
-                                    SerializeSection(
-                                        it.value(),
-                                        plan,
-                                        out,
-                                        true,
-                                        mode,
-                                        ptr);
-                                }
-
-                                out += "END # ";
-                                out += it.value().sectionName;
-                                out += "\n";
-
-                                bejarva = true;
-                                //WorkSheetOrderInfo* ptr2 = &(ptr1->first());
-                                // if(ptr2){
-                                //     ptr = reinterpret_cast<char*>(ptr2);
-                                // }
+                                SerializeSection(
+                                    it.value(),
+                                    plan,
+                                    out,
+                                    true,
+                                    mode,
+                                    item);
                             }
+
+                            out += "END # ";
+                            out += it.value().sectionName;
+                            out += "\n";
+
+                            bejarva = true;
                         }
+
                         break;
                     }
                 }
