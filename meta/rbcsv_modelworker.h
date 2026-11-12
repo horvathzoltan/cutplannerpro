@@ -39,7 +39,7 @@ public:
 
     void Field(
         IMetaData*,
-        const MetaFieldBase& field,
+        const MetaField& field,
         const DiscoveryPath& path)
     {
         CurrentSection(path)
@@ -49,7 +49,7 @@ public:
 
     void EnterComposition(
         IMetaData*,
-        const MetaFieldBase& field,
+        const MetaField& field,
         IMetaData*,
         const DiscoveryPath& path)
     {
@@ -65,9 +65,10 @@ public:
             childPath,
             child);
 
-        CurrentSection(path)
-            .children
-            .append(childPath);
+        auto& cs = CurrentSection(path);
+
+        cs.children.append(childPath);
+        cs.fields.append(&field);
     }
 
     void LeaveComposition(

@@ -1,849 +1,202 @@
-legutóbbi log részlete:
+Abszolút. Most már van elég információnk ahhoz, hogy ne ötleteljünk, hanem végigverhető tervet rakjunk össze.
 
-INFO:=== BuildSchema tesztek ===
-INFO:declared=7QString
-INFO:AddField: 16 QString(24) filePath to WorkSheetSummary
-INFO:declared=7QString
-INFO:AddField: 40 QString(24) fileName to WorkSheetSummary
-INFO:declared=10QByteArray
-INFO:AddField: 64 QByteArray(24) fileHash to WorkSheetSummary
-INFO:declared=17WorkSheetPresence
-INFO:AddField: 88 WorkSheetPresence(4) presence to WorkSheetSummary
-INFO:declared=5QListI18WorkSheetOrderInfoE
-INFO:item=18WorkSheetOrderInfo
-INFO:AddField: 96 QList<WorkSheetOrderInfo>(24) orders to WorkSheetSummary
-INFO:WorkSheetSummary=filePath;fileName;fileHash;presence;orders
-INFO:declared=7QString
-INFO:AddField: 16 QString(24) externalReference to WorkSheetOrderInfo
-INFO:declared=7QString
-INFO:AddField: 40 QString(24) ownerName to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 64 int(4) quantity to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 68 int(4) fullWidthMm to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 72 int(4) fullHeightMm to WorkSheetOrderInfo
-INFO:declared=5QDate
-INFO:AddField: 80 QDate(8) dueDate to WorkSheetOrderInfo
-INFO:declared=5QUuid
-INFO:AddField: 88 QUuid(16) productTypeId to WorkSheetOrderInfo
-INFO:declared=5QUuid
-INFO:AddField: 104 QUuid(16) productSubtypeId to WorkSheetOrderInfo
-INFO:declared=12SizeCalcMode
-INFO:AddField: 120 SizeCalcMode(4) calcMode to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 124 int(4) requestCount to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 128 int(4) completedCount to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 132 int(4) uncompletedCount to WorkSheetOrderInfo
-INFO:declared=i
-INFO:AddField: 136 int(4) undefinedCount to WorkSheetOrderInfo
-INFO:declared=10NamedColor
-INFO:AddField: 144 NamedColor(72) requiredColor to WorkSheetOrderInfo
-INFO:declared=11SurfaceType
-INFO:AddField: 216 SurfaceType(4) requiredSurface to WorkSheetOrderInfo
-INFO:declared=5QListI21WorkSheetMaterialInfoE
-INFO:item=21WorkSheetMaterialInfo
-INFO:AddField: 224 QList<WorkSheetMaterialInfo>(24) materials to WorkSheetOrderInfo
-INFO:WorkSheetOrderInfo=externalReference;ownerName;quantity;fullWidthMm;fullHeightMm;dueDate;productTypeId;productSubtypeId;calcMode;requestCount;completedCount;uncompletedCount;undefinedCount;requiredColor;requiredSurface;materials
-INFO:declared=5QUuid
-INFO:AddField: 0 QUuid(16) materialId to WorkSheetMaterialInfo
-INFO:declared=i
-INFO:AddField: 16 int(4) cutLengthMm to WorkSheetMaterialInfo
-INFO:WorkSheetMaterialInfo=materialId;cutLengthMm
-INFO:=== Field Analysis ===
-INFO:externalReference -> QString id=10
-INFO:  collection=false
-INFO:  composition=false
-INFO:ownerName -> QString id=10
-INFO:  collection=false
-INFO:  composition=false
-INFO:quantity -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:fullWidthMm -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:fullHeightMm -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:dueDate -> QDate id=14
-INFO:  collection=false
-INFO:  composition=false
-INFO:productTypeId -> QUuid id=30
-INFO:  collection=false
-INFO:  composition=false
-INFO:productSubtypeId -> QUuid id=30
-INFO:  collection=false
-INFO:  composition=false
-INFO:calcMode -> SizeCalcMode id=65567
-INFO:  collection=false
-INFO:  composition=false
-INFO:requestCount -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:completedCount -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:uncompletedCount -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:undefinedCount -> int id=2
-INFO:  collection=false
-INFO:  composition=false
-INFO:requiredColor -> NamedColor id=65568
-INFO:  collection=false
-INFO:  composition=false
-INFO:requiredSurface -> SurfaceType id=65569
-INFO:  collection=false
-INFO:  composition=false
-INFO:materials -> QList<WorkSheetMaterialInfo> id=65570
-INFO:  collection=true
-INFO:  composition=true
-INFO:  childMeta=WorkSheetMaterialInfo
-INFO:=== Composition Tree ===
-INFO:enter: WorkSheetSummary
-INFO:field:   filePath
-INFO:field:   fileName
-INFO:field:   fileHash
-INFO:field:   presence
-INFO:composition: orders path:
-INFO:enter:   WorkSheetOrderInfo
-INFO:field:     externalReference
-INFO:field:     ownerName
-INFO:field:     quantity
-INFO:field:     fullWidthMm
-INFO:field:     fullHeightMm
-INFO:field:     dueDate
-INFO:field:     productTypeId
-INFO:field:     productSubtypeId
-INFO:field:     calcMode
-INFO:field:     requestCount
-INFO:field:     completedCount
-INFO:field:     uncompletedCount
-INFO:field:     undefinedCount
-INFO:field:     requiredColor
-INFO:field:     requiredSurface
-INFO:composition: materials path:orders
-INFO:enter:     WorkSheetMaterialInfo
-INFO:field:       materialId
-INFO:field:       cutLengthMm
-INFO:leave type:     WorkSheetMaterialInfo
-INFO:leave composition: materials path:orders/materials
-INFO:leave type:   WorkSheetOrderInfo
-INFO:leave composition: orders path:orders
-INFO:leave type: WorkSheetSummary
-INFO:=== Export Plan Dump ===
-INFO:=== Registry State ===
-INFO:worksheet count = 223
-INFO:worksheet = cuttingplan_20250727-180645.txt
-INFO:worksheet = cuttingplan_20250729-205159.txt
-INFO:worksheet = cuttingplan_20250803-161335.txt
-INFO:worksheet = cuttingplan_20250803-161337.txt
-INFO:worksheet = cuttingplan_20250831-202202.txt
-INFO:worksheet = cuttingplan_20250902-180900.txt
-INFO:worksheet = cuttingplan_20250925-210026.txt
-INFO:worksheet = cuttingplan_20251019-141830.txt
-INFO:worksheet = cuttingplan_20260407-190651.txt
-INFO:worksheet = cuttingplan_20260407-205650.txt
-INFO:worksheet = cuttingplan_20260506-173255.txt
-INFO:worksheet = cuttingplan_20260506-173255_maki.txt
-INFO:worksheet = cuttingplan_20260506-173255_teszt2.txt
-INFO:worksheet = cuttingplan_20260506-202915.txt
-INFO:worksheet = cuttingplan_20260506-203455.txt
-INFO:worksheet = cuttingplan_20260506-210620.txt
-INFO:worksheet = cuttingplan_20260506-210828.txt
-INFO:worksheet = cuttingplan_20260506-211808.txt
-INFO:worksheet = cuttingplan_20260511-082828.txt
-INFO:worksheet = cuttingplan_20260511-092413.txt
-INFO:worksheet = cuttingplan_20260512-072220.txt
-INFO:worksheet = cuttingplan_20260512-072220_lab.txt
-INFO:worksheet = cuttingplan_20260515-134322.txt
-INFO:worksheet = cuttingplan_20260516-071805.txt
-INFO:worksheet = cuttingplan_20260516-081717.txt
-INFO:worksheet = cuttingplan_20260516-095129.txt
-INFO:worksheet = cuttingplan_20260516-104949.txt
-INFO:worksheet = cuttingplan_20260516-112845.txt
-INFO:worksheet = cuttingplan_20260520-085143.txt
-INFO:worksheet = cuttingplan_20260527-075244.txt
-INFO:worksheet = cuttingplan_20260527-083523.txt
-INFO:worksheet = cuttingplan_20260527-132401.txt
-INFO:worksheet = cuttingplan_20260527-133556.txt
-INFO:worksheet = cuttingplan_20260528-111318.txt
-INFO:worksheet = cuttingplan_20260603-072103.txt
-INFO:worksheet = cuttingplan_20260603-072103_ap.txt
-INFO:worksheet = cuttingplan_20260603-103500.txt
-INFO:worksheet = cuttingplan_20260603-103500_2.txt
-INFO:worksheet = cuttingplan_20260603-103500_3.txt
-INFO:worksheet = cuttingplan_20260603-103500_5.txt
-INFO:worksheet = cuttingplan_20260603-103500_rol_z.txt
-INFO:worksheet = cuttingplan_20260603-103500_savr_z.txt
-INFO:worksheet = cuttingplan_20260603-141820.txt
-INFO:worksheet = cuttingplan_20260603-185855.txt
-INFO:worksheet = cuttingplan_20260612-094100.txt
-INFO:worksheet = cuttingplan_20260612-094100_tok.txt
-INFO:worksheet = cuttingplan_20260612-094100_zaro.txt
-INFO:worksheet = cuttingplan_20260616-064423.txt
-INFO:worksheet = cuttingplan_20260616-064423_láb.txt
-INFO:worksheet = cuttingplan_20260616-064423_tok.txt
-INFO:worksheet = cuttingplan_20260616-064423_zaro.txt
-INFO:worksheet = cuttingplan_20260616-125336.txt
-INFO:worksheet = cuttingplan_20260616-125336_láb.txt
-INFO:worksheet = cuttingplan_20260616-125336_záró.txt
-INFO:worksheet = cuttingplan_20260616-190026.txt
-INFO:worksheet = cuttingplan_20260616-190026_zaro.txt
-INFO:worksheet = cuttingplan_20260616-200148.txt
-INFO:worksheet = cuttingplan_20260617-085111.txt
-INFO:worksheet = cuttingplan_20260617-113038.txt
-INFO:worksheet = cuttingplan_20260617-113038_lab.txt
-INFO:worksheet = cuttingplan_20260617-113038_tok.txt
-INFO:worksheet = cuttingplan_20260617-113038_zaro.txt
-INFO:worksheet = cuttingplan_20260618-074646.txt
-INFO:worksheet = cuttingplan_20260618-090039.txt
-INFO:worksheet = cuttingplan_20260622-074056.txt
-INFO:worksheet = cuttingplan_20260622-074056_hibateszt.txt
-INFO:worksheet = cuttingplan_20260622-074056_old.txt
-INFO:worksheet = cuttingplan_20260623-084250.txt
-INFO:worksheet = cuttingplan_20260624-070730.txt
-INFO:worksheet = cuttingplan_20260624-171653.txt
-INFO:worksheet = cuttingplan_20260629-070115.txt
-INFO:worksheet = cuttingplan_20260630-104319.txt
-INFO:worksheet = cuttingplan_20260630-123246.txt
-INFO:worksheet = cuttingplan_20260701-094055.txt
-INFO:worksheet = cuttingplan_20260702-143814.txt
-INFO:worksheet = cuttingplan_20260703-093444.txt
-INFO:worksheet = cuttingplan_20260706-072337.txt
-INFO:worksheet = cuttingplan_20260706-100420.txt
-INFO:worksheet = cuttingplan_20260707-063518.txt
-INFO:worksheet = cuttingplan_20260707-220434.txt
-INFO:worksheet = cuttingplan_20260708-063217.txt
-INFO:worksheet = cuttingplan_20260708-094515.txt
-INFO:worksheet = cuttingplan_20260709-084652.txt
-INFO:worksheet = cuttingplan_20260710-125621.txt
-INFO:worksheet = cuttingplan_20260714-092300.txt
-INFO:worksheet = cuttingplan_20260714-143007.txt
-INFO:worksheet = cuttingplan_20260714-154935.txt
-INFO:worksheet = cuttingplan_20260715-090501.txt
-INFO:worksheet = cuttingplan_20260715-122016.txt
-INFO:worksheet = cuttingplan_20260715-134405.txt
-INFO:worksheet = cuttingplan_20260716-085044.txt
-INFO:worksheet = cuttingplan_20260716-112700.txt
-INFO:worksheet = cuttingplan_20260716-124207.txt
-INFO:worksheet = cuttingplan_20260717-080309.txt
-INFO:worksheet = cuttingplan_20260717-124120.txt
-INFO:worksheet = cuttingplan_20260717-174240.txt
-INFO:worksheet = cuttingplan_20260720-070015.txt
-INFO:worksheet = cuttingplan_20260720-104632.txt
-INFO:worksheet = cuttingplan_20260720-122419.txt
-INFO:worksheet = cuttingplan_20260720-153405.txt
-INFO:worksheet = cuttingplan_20260721-114000.txt
-INFO:worksheet = cuttingplan_20260721-202240.txt
-INFO:worksheet = cuttingplan_20260722-093519.txt
-INFO:worksheet = cuttingplan_20260723-065313.txt
-INFO:worksheet = cuttingplan_20260723-112007.txt
-INFO:worksheet = cuttingplan_20260725-081556.txt
-INFO:worksheet = cuttingplan_20260727-093037.txt
-INFO:worksheet = cuttingplan_20260728-085942.txt
-INFO:worksheet = cuttingplan_20260729-103637.txt
-INFO:worksheet = cuttingplan_20260730-074450.txt
-INFO:worksheet = cuttingplan_20260802-212001.txt
-INFO:worksheet = cuttingplan_20260802-212019_vertex.txt
-INFO:worksheet = cuttingplan_20260803-091403.txt
-INFO:worksheet = cuttingplan_20260805-082349_braun.txt
-INFO:worksheet = cuttingplan_20260805-083753.txt
-INFO:worksheet = cuttingplan_20260805-083814.txt
-INFO:worksheet = cuttingplan_20260806-081118.txt
-INFO:worksheet = cuttingplan_20260810-084310.txt
-INFO:worksheet = cuttingplan_20260810-115419.txt
-INFO:worksheet = cuttingplan_20260811-103036.txt
-INFO:worksheet = cuttingplan_20260814-094854.txt
-INFO:worksheet = cuttingplan_20260814-103328.txt
-INFO:worksheet = cuttingplan_20260815-103915.txt
-INFO:worksheet = cuttingplan_20260816-195725.txt
-INFO:worksheet = cuttingplan_20260817-123216.txt
-INFO:worksheet = cuttingplan_20260818-075433.txt
-INFO:worksheet = cuttingplan_20260819-072509.txt
-INFO:worksheet = cuttingplan_20260819-093520.txt
-INFO:worksheet = cuttingplan_20260826-080529.txt
-INFO:worksheet = cuttingplan_20260831-143028.txt
-INFO:worksheet = cuttingplan_20260831-171932.txt
-INFO:worksheet = cuttingplan_20260903-134153.txt
-INFO:worksheet = cuttingplan_20260904-112241.txt
-INFO:worksheet = cuttingplan_20260904-130124.txt
-INFO:worksheet = cuttingplan_20260907-133141.txt
-INFO:worksheet = cuttingplan_20260908-113450.txt
-INFO:worksheet = cuttingplan_20260908-132810.txt
-INFO:worksheet = cuttingplan_20260908-132810_Lab.txt
-INFO:worksheet = cuttingplan_20260910-073810.txt
-INFO:worksheet = cuttingplan_20260910-073810_Lab.txt
-INFO:worksheet = cuttingplan_20260911-070208.txt
-INFO:worksheet = cuttingplan_20260914-080329.txt
-INFO:worksheet = cuttingplan_20260914-080329_SRZ.txt
-INFO:worksheet = cuttingplan_20260914-154916.txt
-INFO:worksheet = cuttingplan_20260916-124506.txt
-INFO:worksheet = cuttingplan_20260916-152031.txt
-INFO:worksheet = cuttingplan_20260916-211821.txt
-INFO:worksheet = cuttingplan_20260917-124430.txt
-INFO:worksheet = cuttingplan_20260918-122449.txt
-INFO:worksheet = cuttingplan_20260918-153544.txt
-INFO:worksheet = cuttingplan_20260920-210715.txt
-INFO:worksheet = cuttingplan_20260921-095617.txt
-INFO:worksheet = cuttingplan_20260921-213825.txt
-INFO:worksheet = cuttingplan_20260922-133234.txt
-INFO:worksheet = cuttingplan_20260923-072732.txt
-INFO:worksheet = cuttingplan_20260923-141151.txt
-INFO:worksheet = cuttingplan_20260924-075643.txt
-INFO:worksheet = cuttingplan_20260924-152655.txt
-INFO:worksheet = cuttingplan_20260925-073942.txt
-INFO:worksheet = cuttingplan_20260927-180215.txt
-INFO:worksheet = cuttingplan_20260928-145240.txt
-INFO:worksheet = cuttingplan_20260929-080234.txt
-INFO:worksheet = cuttingplan_20260929-102616.txt
-INFO:worksheet = cuttingplan_20260930-065228.txt
-INFO:worksheet = cuttingplan_20260930-114644.txt
-INFO:worksheet = cuttingplan_20260930-125234.txt
-INFO:worksheet = cuttingplan_20260930-125238.txt
-INFO:worksheet = cuttingplan_20260930-150723.txt
-INFO:worksheet = cuttingplan_20260930-150723_2.txt
-INFO:worksheet = cuttingplan_20260930-150723_3.txt
-INFO:worksheet = cuttingplan_20261002-123231.txt
-INFO:worksheet = cuttingplan_20261002-151913.txt
-INFO:worksheet = cuttingplan_20261005-071650.txt
-INFO:worksheet = cuttingplan_20261006-075241.txt
-INFO:worksheet = cuttingplan_20261006-120055.txt
-INFO:worksheet = cuttingplan_20261006-121826.txt
-INFO:worksheet = cuttingplan_20261007-151927.txt
-INFO:worksheet = cuttingplan_20261008-105437.txt
-INFO:worksheet = cuttingplan_20261008-113602.txt
-INFO:worksheet = cuttingplan_20261008-143332.txt
-INFO:worksheet = cuttingplan_20261009-065015.txt
-INFO:worksheet = cuttingplan_20261009-113737.txt
-INFO:worksheet = cuttingplan_20261009-133507.txt
-INFO:worksheet = cuttingplan_20261011-221028.txt
-INFO:worksheet = cuttingplan_20261012-071352.txt
-INFO:worksheet = cuttingplan_20261013-070832.txt
-INFO:worksheet = cuttingplan_20261013-133214.txt
-INFO:worksheet = cuttingplan_20261013-141921.txt
-INFO:worksheet = cuttingplan_20261014-104520.txt
-INFO:worksheet = cuttingplan_20261014-115831.txt
-INFO:worksheet = cuttingplan_20261015-115255.txt
-INFO:worksheet = cuttingplan_20261016-095121.txt
-INFO:worksheet = cuttingplan_20261016-095121_2.txt
-INFO:worksheet = cuttingplan_20261016-133122.txt
-INFO:worksheet = cuttingplan_20261019-071141.txt
-INFO:worksheet = cuttingplan_20261019-154107.txt
-INFO:worksheet = cuttingplan_20261021-102350.txt
-INFO:worksheet = cuttingplan_20261021-104334.txt
-INFO:worksheet = cuttingplan_20261021-104902.txt
-INFO:worksheet = cuttingplan_20261022-064059.txt
-INFO:worksheet = cuttingplan_20261026-103553.txt
-INFO:worksheet = cuttingplan_20261027-071100.txt
-INFO:worksheet = cuttingplan_20261027-071100_koala_vas.txt
-INFO:worksheet = cuttingplan_20261027-142143.txt
-INFO:worksheet = cuttingplan_20261027-154751.txt
-INFO:worksheet = cuttingplan_20261028-102722.txt
-INFO:worksheet = cuttingplan_20261028-105213.txt
-INFO:worksheet = cuttingplan_20261028-152121.txt
-INFO:worksheet = cuttingplan_20261030-065835.txt
-INFO:worksheet = cuttingplan_20261030-070047.txt
-INFO:worksheet = cuttingplan_20261030-070047_lab.txt
-INFO:worksheet = cuttingplan_20261030-070047_vas.txt
-INFO:worksheet = cuttingplan_20261030-081829.txt
-INFO:worksheet = cuttingplan_20261030-115351.txt
-INFO:worksheet = cuttingplan_20261030-132020.txt
-INFO:worksheet = cuttingplan_20261102-115843.txt
-INFO:worksheet = cuttingplan_20261103-125947.txt
-INFO:worksheet = cuttingplan_20261104-072921.txt
-INFO:worksheet = cuttingplan_20261104-104426.txt
-INFO:worksheet = cuttingplan_20261105-092255.txt
-INFO:worksheet = cuttingplan_20261105-153923.txt
-INFO:worksheet = cuttingplan_20261106-124809.txt
-INFO:worksheet = cuttingplan_20261106-124811.txt
-INFO:filePath;fileName;fileHash;presence;[orders]
-orders
-externalReference;ownerName;quantity;fullWidthMm;fullHeightMm;dueDate;productTypeId;productSubtypeId;calcMode;requestCount;completedCount;uncompletedCount;undefinedCount;requiredColor;requiredSurface;[materials]
-materials
-materialId;cutLengthMm
-END # materials
-END # orders
+A cél:
 
-INFO:fileName=cuttingplan_20250727-180645.txt
-INFO:filePath
-INFO:fileName
-INFO:fileHash
-INFO:presence
-INFO:filePath=/home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20250727-180645.txt
-INFO:fileName=cuttingplan_20250727-180645.txt
-INFO:fileHash=�"�yL���η=<>�gs�n�v�0S��*
-INFO:presence=
-20:45:07: Debugging of /home/zoli/source/build/cutplannerpro/Desktop_Qt_6_10_0-Debug/CutPlannerPro --test schema has finished with exit code 0.
-
-terv1:
-
-⏳ Még nyitott és aktuális
-
-1. ExportPlan név és modell
-
-A jelenlegi:
-
-RbCsvSection
+enum class WorkSheetPresence
 
 
-valójában nem adat.
+esetén automatikusan működjön:
 
-Nem séma.
-
-Hanem exportálási terv.
-
-El kell dönteni:
-
-RbCsvSection
+WorkSheetPresence
+    ↔ QString
 
 
-marad-e,
+a Meta rendszerben.
 
-vagy:
+És ne kelljen külön serializer-hardcode.
 
-RbCsvExportSection
+1. lépés - ismerje fel a Meta az enumot
 
+metadata.h
 
-legyen.
+először add hozzá:
 
-Szerintem ez még nyitott.
-
-2. ExportPlan objektum
-
-Jelenleg gyakorlatilag van:
-
-root
-+
-sections
+#include <type_traits>
 
 
-a workerben.
+majd az AddField()-be:
 
-Ezt ki kell emelni egy külön típusba:
+if constexpr(std::is_enum_v<FieldType>)
+{
+    zInfo(
+        QString("enum=")
+        + QString(typeid(FieldType).name()));
+}
 
-struct RbCsvExportPlan
+
+Várható log:
+
+enum=17WorkSheetPresence
+enum=12SizeCalcMode
+enum=10NamedColor
+enum=11SurfaceType
+
+
+Ha ez megvan:
+
+✅ enum felismerés kész
+
+2. lépés - EnumTraits bevezetése
+
+Új fájl:
+
+enumtraits.h
+
+#pragma once
+
+template<typename T>
+struct EnumTraits;
+
+
+Semmi más.
+
+3. lépés - 1 enum kipróbálása
+
+Mondjuk:
+
+WorkSheetPresence
+
+
+specializáció:
+
+template<>
+struct EnumTraits<WorkSheetPresence>
+{
+    static QString ToString(
+        WorkSheetPresence v)
+    {
+        return ::ToString(v);
+    }
+
+    static WorkSheetPresence Parse(
+        const QString& s)
+    {
+        return ::ParseWorkSheetPresence(s);
+    }
+};
+
+
+A te meglévő függvényeidet kell hívni.
+
+4. lépés - Qt konverter regisztráció
+
+Új helper:
+
+template<typename EnumType>
+void RegisterEnumConverters()
+{
+    static bool done = false;
+
+    if(done)
+        return;
+
+    done = true;
+
+    QMetaType::registerConverter<
+        EnumType,
+        QString>(
+        EnumType v
+        {
+            return EnumTraits<
+                EnumType>::ToString(v);
+        });
+
+    QMetaType::registerConverter<
+        QString,
+        EnumType>(
+        const QString& s
+        {
+            return EnumTraits<
+                EnumType>::Parse(s);
+        });
+}
+
+5. lépés - AddField bekötés
+
+A meglévő:
+
+if constexpr(std::is_enum_v<FieldType>)
 {
     ...
-};
+}
 
 
-Ez lesz a cache-elhető egység.
+blokk legyen:
 
-3. PlanBuilder
-
-A jelenlegi:
-
-RbCsvModelWorker<RbCsvSchemaValueProvider>
-
-
-valójában export tervet épít.
-
-Meg kell nézni, hogy:
-
-RbCsvExportPlanBuilder
-
-
-legyen-e belőle.
-
-4. Plan Cache
-
-Nincs még.
-
-Pedig az export terv adattípusonként konstans.
-
-WorkSheetSummary
-    ↓
-1 terv
-
-
-Ez később cache-elhető.
-
-5. DataHarvester
-
-Ez most a legnagyobb nyitott pont.
-
-Feladata:
-
-ExportPlan
-+
-Objektumpéldány
-        ↓
-Data Model
-
-
-Itt kell kitalálni:
-
-hogyan olvassuk ki az értékeket
-hogyan jutunk el a nested objektumokhoz
-milyen köztes modell születik
-6. DataProvider
-
-Jelenleg csak koncepció.
-
-A nagy kérdés:
-
-A DataProvider kap objektumot?
-
-
-vagy
-
-A DataHarvester tölti ki a modellt?
-
-
-Én most inkább a DataHarvester irányba hajlok.
-
-7. Végső adatmodell
-
-A terv és az adat valószínűleg szét fog válni.
-
-Valami ilyesmi:
-
-RbCsvExportPlan
-        ↓
-RbCsvDocument
-
-
-A serializer valójában már a dokumentumot írja ki.
-
-Jelenlegi, tisztított roadmap
-✅ DiscoverTree
-
-✅ DiscoveryPath
-
-✅ MetaDumpWorker
-
-✅ RbCsvSerializer
-
-✅ RbCsvModelWorker<TProvider>
-
-✅ RbCsvSchemaValueProvider
-
-✅ TestProvider
-
-------------------------------------------------
-
-⏳ RbCsvExportPlan
-
-⏳ RbCsvExportPlanBuilder
-
-⏳ RbCsvPlanCache
-
-⏳ RbCsvDataHarvester
-
-⏳ RbCsvDocument modell
-
-⏳ RbCsvData export
-
-⏳ Reader
-
-⏳ Migrációs rendszer
-
-
-Szerintem a következő tényleges mérföldkő már nem a provider, hanem az ExportPlan → DataHarvester → Document lánc megtervezése. Ott fog eldőlni véglegesen, hogy a DataProvider kell-e egyáltalán, vagy a DataHarvester átveszi azt a szerepet. 🚀
-
-
-
-terv2:
-
-Abszolút. Szerintem most már eljutottunk oda, hogy nem újabb ötletelés kell, hanem egy tiszta, végrehajtható patch-sorozat.
-
-Jelenlegi állapot (lezárt)
-
-✅ DiscoverTree
-
-✅ DiscoveryPath
-
-✅ RbCsvSerializer
-
-✅ RbCsvModelWorker
-
-✅ SchemaProvider
-
-✅ TestProvider
-
-✅ Hierarchia → lapos modell átalakítás
-
-✅ Path mint természetes azonosító
-
-Következő cél
-
-A mostani modell:
-
-struct RbCsvSection
+if constexpr(std::is_enum_v<FieldType>)
 {
-    QString sectionName;
+    RegisterEnumConverters<
+        FieldType>();
+}
 
-    QStringList record;
-
-    QList<QString> children;
-};
-
-
-nem export terv.
-
-Ez már előfeldolgozott schema szöveg.
-
-Nekünk export terv kell.
-
-Tehát:
-
-record
-
-
-ne ezt tartalmazza:
-
-"filePath"
-"fileName"
-
-
-hanem:
-
-const MetaFieldBase*
-
-
-referenciákat.
-
-1. patch
-Új típus
-RbCsvExportSection
-
-
-A jelenlegi:
-
-RbCsvSection
-
-
-átnevezése.
-
-Új tartalma:
-
-struct RbCsvExportSection
-{
-    QString sectionName;
-
-    QList<const MetaFieldBase*> fields;
-
-    QList<QString> children;
-};
-
-
-Ekkor:
-
-fields
-
-
-lesz az export terv.
-
-2. patch
-Új export terv objektum
-
-Most:
-
-_root
-
-_sections
-
-
-a workerben él.
-
-Ki kell emelni.
-
-struct RbCsvExportPlan
-{
-    RbCsvExportSection root;
-
-    QHash<QString,RbCsvExportSection> sections;
-};
-
-3. patch
-Worker átállítása tervépítővé
+6. lépés - log ellenőrzés
 
 A mostani:
 
-RbCsvModelWorker<TProvider>
+ENUM WorkSheetPresence cc=0
 
 
-ne építsen schema modellt.
+helyett ezt várod:
 
-Hanem export tervet.
+ENUM WorkSheetPresence cc=1
 
-Field:
+7. lépés - QVariant ellenőrzés
 
-most:
+A mostani:
 
-record.append(...)
-
-
-helyett:
-
-fields.append(&field);
-
-4. patch
-Serializer átállítása
-
-Most:
-
-section.record
+presence -> valid=0
 
 
-stringeket tartalmaz.
+helyett valami:
 
-A jövőben:
-
-section.fields
-
-
-MetaFieldBase pointereket tartalmaz.
-
-Schema serializer:
-
-field->name
-
-
-alapján ír.
-
-Példa:
-
-materialId
-cutLengthMm
-
-Checkpoint
-
-Ekkor már lesz:
-
-Meta
-    ↓
-ExportPlan
-    ↓
-SchemaSerializer
-    ↓
-Schema text
-
-
-És a kimenetnek bitegyezően ugyanannak kell maradnia.
-
-5. patch
-ExportPlanBuilder átnevezés
-
-A worker jelenlegi neve félrevezető.
-
-A végső név:
-
-RbCsvExportPlanBuilder
+presence -> QString valid=1
 
 
 vagy
 
-RbCsvExportPlanWorker
+presence -> WorkSheetPresence valid=1
 
 
-Nekem a Builder tetszik.
+attól függően, hogyan kezeli a Qt.
 
-6. patch
-ExportPlan cache
+8. lépés - formatter
 
-Első verzió:
+Ha a QVariant már valid:
 
-class RbCsvPlanCache
+A formatterben:
+
+if(value.metaType().id() ==
+   QMetaType::QString)
 {
-private:
-
-    QHash<QString,RbCsvExportPlan> _plans;
-};
+    return value.toString();
+}
 
 
-Kulcs:
+nagy valószínűséggel már elegendő lesz.
 
-WorkSheetSummary
-WorkSheetOrderInfo
-...
+Megállási pont
 
-7. patch
-DataHarvester tervezés
+Ha idáig eljutsz és a logban ez látszik:
 
-Bemenet:
-
-RbCsvExportPlan
-+
-const void* object
+ENUM WorkSheetPresence cc=1
 
 
-Kimenet:
+akkor megállunk.
 
-RbCsvDocument
+Nem írunk még enum accessort.
 
+Nem bonyolítjuk túl.
 
-Még nem implementáljuk.
+Előbb nézzük meg, hogy a Qt konverter-regisztráció önmagában megoldja-e a problémát.
 
-Csak a modellt tervezzük meg.
-
-8. patch
-RbCsvDocument modell
-
-Valami ilyesmi:
-
-struct RbCsvDocumentSection
-{
-    QString sectionName;
-
-    QStringList values;
-
-    QList<RbCsvDocumentSection> children;
-};
-
-
-Ez már tényleges adat.
-
-9. patch
-DataHarvester implementáció
-
-Feladata:
-
-field pointer
-+
-objektum pointer
-        ↓
-érték string
-
-
-kinyerése.
-
-10. patch
-Data serializer
-
-Valószínűleg ugyanaz a serializer marad.
-
-Csak:
-
-field->name
-
-
-helyett:
-
-value
-
-
-íródik ki.
-
-Holnapi első konkrét feladat
-
-Nem a DataHarvester.
-
-Hanem:
-
-RbCsvSection
-    ↓
-RbCsvExportSection
-
-QStringList record
-    ↓
-QList<const MetaFieldBase*> fields
-
-RbCsvExportPlan
-
-
-Ha ez megvan, akkor az export terv valóban terv lesz, nem előre legenerált schema szöveg. És szerintem ez lesz az a pont, ahol a DataHarvester természetesen rá fog tudni épülni. 🚀
+Szerintem ez a legkisebb, auditálható, lépésenként végrehajtható út. 🚀

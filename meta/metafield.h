@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/logger.h"
+#include "icollectionaccessor.h"
 #include "metavalue.h"
 #include <QMetaType>
 #include <typeindex>
@@ -21,6 +22,8 @@ public:
 
     QString ToString(){return name+' '+type.name();}
 
+    const ICollectionAccessor* collectionAccessor = nullptr;
+
     bool IsCollection() const
     {
         return itemType != std::type_index(typeid(void));
@@ -32,10 +35,11 @@ struct MetaField : public MetaFieldBase{
 public:
     QString wcode;
     int _offset;
-    char* GetPtr(char* s){ return s+ _offset; }
+    char* GetPtr(char* s) const { return s+ _offset; }
 
     // ez megy ki az UI felé
-    MetaValue GetMetaValue(char* s){
+    MetaValue GetMetaValue(char* s) const
+    {
         //  001c3 a megyére [5] invalid qvariant row widget keletkezik
 
         // if(name == "countyId")
@@ -49,7 +53,8 @@ public:
         return mv;
     }
 
-    QVariant GetValue(char* s){
+    QVariant GetValue(char* s) const
+    {
         char* ptr = GetPtr(s);
         if(type.id()==QMetaType::QVariant){
             //QMetaType qvm = type;
@@ -66,9 +71,22 @@ public:
         } else {
             QMetaType qvm = QMetaType(QMetaType::QVariant);
             bool cc = QMetaType::canConvert(type, qvm);
+
+            zInfo(
+                QString("ENUM %1 cc=%2")
+                    .arg(type.name())
+                    .arg(cc));
+
             QVariant v;
             if(cc){
                 bool ok = QMetaType::convert(type, ptr, qvm, &v);
+
+                zInfo(
+                    QString("ENUM %1 ok=%2 valid=%3")
+                        .arg(type.name())
+                        .arg(ok)
+                        .arg(v.isValid()));
+
                 if(!ok){
                     zInfo("cc err");
                 }

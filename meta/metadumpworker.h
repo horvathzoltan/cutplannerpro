@@ -22,7 +22,7 @@ public:
 
     // field:amit most dolgozunk fel
     // path.Current(): melyik composition alatt vagyunk
-    void Field(IMetaData*,const MetaFieldBase& field, const DiscoveryPath& path)
+    void Field(IMetaData*,const MetaField& field, const DiscoveryPath& path)
     {
         int depth = path.Depth();
         zInfo("field: "+ QString((depth + 1) * 2, ' ') + field.name);

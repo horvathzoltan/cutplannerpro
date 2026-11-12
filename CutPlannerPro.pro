@@ -55,6 +55,7 @@ SOURCES += \
     leftover/presenter/leftoverpresenter.cpp \
     product/registry/product_calcmode_registry.cpp \
     product/repository/product_calcmode_repository.cpp \
+    rbcsv/export/rbcsv_valueformatter.cpp \
     service/snapshot/inventoryauditbuilder.cpp \
     service/snapshot/inventoryauditformatter.cpp \
     stock/presenter/stockpresenter.cpp \
@@ -235,6 +236,7 @@ HEADERS += \
     meta/collectiontraits.h \
     meta/discoverynode.h \
     meta/discoverypath.h \
+    meta/icollectionaccessor.h \
     meta/imetadata.h \
     meta/meta.h \
     meta/metadiscovery.h \
@@ -244,6 +246,7 @@ HEADERS += \
     meta/metareference.h \
     meta/metaregistry.h \
     meta/metavalue.h \
+    meta/qlistaccessor.h \
     meta/rbcsv_modelworker.h \
     meta/rbcsv_schemavalueprovider.h \
     meta/rbcsv_testvalueprovider.h \
@@ -256,9 +259,10 @@ HEADERS += \
     product/repository/product_calcmode_repository.h \
     product/utils/material_role_utils.h \
     product/utils/subtype_utils.h \
+    rbcsv/export/rbcsv_serializer.h \
+    rbcsv/export/rbcsv_valueformatter.h \
     rbcsv/model/rbcsv_exportplan.h \
     rbcsv/model/rbcsv_exportsection.h \
-    rbcsv/rbcsvserializer.h \
     search/model/searchhit.h \
     search/model/searchresult.h \
     service/cutting/plan/cuttingplan_validationservice.h \
