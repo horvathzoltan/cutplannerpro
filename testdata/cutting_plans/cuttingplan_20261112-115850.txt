@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"563";"Szajkó, Győr";3460;2270;3430;;1;1;0;"RAL 7016";NP-T-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"563";"Szajkó, Győr";3460;2270;3455;;1;1;0;"RAL 7016";NP-TF-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"563";"Szajkó, Győr";3460;2270;3337;;1;1;0;"RAL 7016";NP-CZ-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"563";"Szajkó, Győr";3460;2270;2167;;1;1;0;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"563";"Szajkó, Győr";3460;2270;3350;;1;1;0;"RAL 7016";NP-ROLL70-7000;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"563";"Szajkó, Győr";3460;2270;3285;;1;1;0;"RAL 7016";NP-BAR20-6000;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2960;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2985;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2867;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2167;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2880;;1;0;1;"RAL 7016";NP-ROLL70-7000;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"564";"Szajkó, Győr";2990;2270;2815;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026.11.23;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;1065;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;1065;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;995;;1;0;1;"RAL 7016";NP-SZ-7016;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;2098;;1;0;1;"RAL 7016";NP-SL2-7016;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;1026;;1;0;1;"RAL 7016";NP-ROLL70-7000;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"567";"Pro-Plast";1070;2200;950;;1;0;1;"RAL 7016";NP-BAR12-4000;Width;false;2026.11.18;NP;SIN;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;3325;;1;0;1;"RAL 7016";NP-T-7016;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;3350;;1;0;1;"RAL 7016";NP-TF-7016;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;3232;;1;0;1;"RAL 7016";NP-CZ-7016;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;2442;;1;0;1;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;3245;;1;0;1;"RAL 7016";NP-ROLL70-7000;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN
+"570";"Napex, Pécs";3355;2545;3180;;1;0;1;"RAL 7016";NP-BAR20-6000;Width;false;2026.11.20;NP;CIP;meghajtas=motoros;FS;Gyartasi;UNKNOWN

@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2778";"Bence L.";670;900;640;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2778";"Bence L.";670;900;643;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2779";"Bence L.";670;900;640;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2779";"Bence L.";670;900;643;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2780";"Bence L.";745;650;710;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2780";"Bence L.";745;650;700;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2781";"Bence L.";745;650;710;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2781";"Bence L.";745;650;700;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2782";"Bence L.";745;650;710;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2782";"Bence L.";745;650;700;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2783";"Bence L.";745;650;710;;1;0;0;"";TE-R-23;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2783";"Bence L.";745;650;700;;1;0;0;"";ROL-P;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2786";"Driszku Zs.";605;1300;570;;1;0;1;"";TE-R-23;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2786";"Driszku Zs.";605;1300;560;;1;0;1;"";ROL-P;Width;false;2026.11.19;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2789";"Varga L.";875;2300;840;;1;0;1;"";TE-H-32;Width;false;2026.11.19;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2789";"Varga L.";875;2300;830;;1;0;1;"";ROL-GYZ;Width;false;2026.11.19;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2790";"Varga L.";875;2300;840;;1;0;1;"";TE-H-32;Width;false;2026.11.19;ROL;UJGY;;SM;Gyartasi;UNKNOWN
+"2790";"Varga L.";875;2300;830;;1;0;1;"";ROL-GYZ;Width;false;2026.11.19;ROL;UJGY;;SM;Gyartasi;UNKNOWN

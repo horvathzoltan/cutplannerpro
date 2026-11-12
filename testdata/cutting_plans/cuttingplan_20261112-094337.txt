@@ -1,0 +1,2 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"10008";"SürgősTétel";100;2500;2500;;2;2;0;"RAL 7016";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.11.12;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
