@@ -32,109 +32,109 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260407-190651.txt;cuttingplan_20260407-190651.txt;y/tqhhfDsJOXeRzeJBNb3z2lSWb8wrK3XUTmt5ff4EQ=;Present;ORDERS
 ORDERS
-1173;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1173;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1500
 END # MAT:1
 
 
-1274;frama;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1274;frama;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1210
 END # MAT:1
 
 
-1275;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1275;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1250
 END # MAT:1
 
 
-1276;frama;8;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1276;frama;8;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1280
 END # MAT:1
 
 
-1277;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1277;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1810
 END # MAT:1
 
 
-1278;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1278;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1800
 END # MAT:1
 
 
-1279;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1279;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1250
 END # MAT:1
 
 
-1280;frama;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1280;frama;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1660
 END # MAT:1
 
 
-1281;frama;10;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1281;frama;10;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1700
 END # MAT:1
 
 
-1282;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1282;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1170
 END # MAT:1
 
 
-1283;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1283;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1070
 END # MAT:1
 
 
-1284;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1284;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1170
 END # MAT:1
 
 
-1285;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1285;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1040
 END # MAT:1
 
 
-1286;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1286;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1040
 END # MAT:1
 
 
-1287;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1287;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1960
 END # MAT:1
 
 
-1288;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1288;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1960
 END # MAT:1
 
 
-1289;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1289;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1960
 END # MAT:1
 
 
-1290;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1290;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1960
 END # MAT:1
@@ -144,109 +144,109 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260407-205650.txt;cuttingplan_20260407-205650.txt;iHOkp5yEL0ekt/CpChKEpniBd5taPjiSzaTYNnSTb4k=;Present;ORDERS
 ORDERS
-1273;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1273;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1140
 END # MAT:1
 
 
-1274;frama;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1274;frama;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;850
 END # MAT:1
 
 
-1275;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1275;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;790
 END # MAT:1
 
 
-1276;frama;8;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1276;frama;8;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;720
 END # MAT:1
 
 
-1277;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1277;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1780
 END # MAT:1
 
 
-1278;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1278;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;2850
 END # MAT:1
 
 
-1279;frama;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1279;frama;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;790
 END # MAT:1
 
 
-1280;frama;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1280;frama;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1630
 END # MAT:1
 
 
-1281;frama;10;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1281;frama;10;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1670
 END # MAT:1
 
 
-1282;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1282;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1210
 END # MAT:1
 
 
-1283;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1283;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1100
 END # MAT:1
 
 
-1284;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1284;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1910
 END # MAT:1
 
 
-1285;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1285;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;860
 END # MAT:1
 
 
-1286;frama;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1286;frama;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;860
 END # MAT:1
 
 
-1287;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1287;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1430
 END # MAT:1
 
 
-1288;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1288;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1430
 END # MAT:1
 
 
-1289;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1289;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1430
 END # MAT:1
 
 
-1290;frama;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1290;frama;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SL-7016;1430
 END # MAT:1
@@ -446,187 +446,187 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260506-173255_maki.txt;cuttingplan_20260506-173255_maki.txt;76EkrBx7Y/14BhYu97+fpzN6SZYqITgsbH+r6+a/c6U=;Present;ORDERS
 ORDERS
-1413;PrémiumHoliday;5;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1413;PrémiumHoliday;5;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1730
 END # MAT:1
 
 
-1414;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1414;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1145
 END # MAT:1
 
 
-1415;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1415;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;540
 END # MAT:1
 
 
-1416;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1416;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1735
 END # MAT:1
 
 
-1417;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1417;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2075
 END # MAT:1
 
 
-1418;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1418;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;945
 END # MAT:1
 
 
-1419;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1419;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1740
 END # MAT:1
 
 
-1420;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1420;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1135
 END # MAT:1
 
 
-1421;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1421;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;545
 END # MAT:1
 
 
-1422;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1422;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1745
 END # MAT:1
 
 
-1423;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1423;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2075
 END # MAT:1
 
 
-1424;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1424;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;935
 END # MAT:1
 
 
-1425;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1425;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;945
 END # MAT:1
 
 
-1426;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1426;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2125
 END # MAT:1
 
 
-1427;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1427;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1140
 END # MAT:1
 
 
-1428;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1428;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;530
 END # MAT:1
 
 
-1429;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1429;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1135
 END # MAT:1
 
 
-1430;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1430;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;545
 END # MAT:1
 
 
-1431;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1431;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1145
 END # MAT:1
 
 
-1432;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1432;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1150
 END # MAT:1
 
 
-1433;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1433;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;550
 END # MAT:1
 
 
-1434;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1434;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1150
 END # MAT:1
 
 
-1435;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1435;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;545
 END # MAT:1
 
 
-1436;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1436;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;1140
 END # MAT:1
 
 
-1437;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1437;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2095
 END # MAT:1
 
 
-1438;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1438;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;945
 END # MAT:1
 
 
-1439;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1439;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2425
 END # MAT:1
 
 
-1440;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1440;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;840
 END # MAT:1
 
 
-1443;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1443;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2375
 END # MAT:1
 
 
-1444;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1444;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;3599
 END # MAT:1
 
 
-1445;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1445;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;2270
 END # MAT:1
@@ -644,187 +644,187 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260506-203455.txt;cuttingplan_20260506-203455.txt;8XEqTYDj1B1Ahyafzp9yCxI9z5ujvyLofMCLzb8UbMQ=;Present;ORDERS
 ORDERS
-1413;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1413;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1622
 END # MAT:1
 
 
-1414;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1414;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1037
 END # MAT:1
 
 
-1415;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1415;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;432
 END # MAT:1
 
 
-1416;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1416;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1627
 END # MAT:1
 
 
-1417;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1417;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1967
 END # MAT:1
 
 
-1418;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1418;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;837
 END # MAT:1
 
 
-1419;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1419;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1632
 END # MAT:1
 
 
-1420;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1420;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1027
 END # MAT:1
 
 
-1421;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1421;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;437
 END # MAT:1
 
 
-1422;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1422;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1637
 END # MAT:1
 
 
-1423;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1423;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1967
 END # MAT:1
 
 
-1424;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1424;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;827
 END # MAT:1
 
 
-1425;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1425;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;837
 END # MAT:1
 
 
-1426;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1426;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;2017
 END # MAT:1
 
 
-1427;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1427;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1032
 END # MAT:1
 
 
-1428;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1428;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;422
 END # MAT:1
 
 
-1429;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1429;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1027
 END # MAT:1
 
 
-1430;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1430;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;437
 END # MAT:1
 
 
-1431;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1431;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1037
 END # MAT:1
 
 
-1432;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1432;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1042
 END # MAT:1
 
 
-1433;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1433;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;442
 END # MAT:1
 
 
-1434;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1434;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1042
 END # MAT:1
 
 
-1435;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1435;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;437
 END # MAT:1
 
 
-1436;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1436;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1032
 END # MAT:1
 
 
-1437;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1437;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;1987
 END # MAT:1
 
 
-1438;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1438;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;837
 END # MAT:1
 
 
-1439;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1439;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;2317
 END # MAT:1
 
 
-1440;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1440;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;732
 END # MAT:1
 
 
-1443;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1443;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;2267
 END # MAT:1
 
 
-1444;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1444;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;3492
 END # MAT:1
 
 
-1445;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1445;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CZ-7016;2232
 END # MAT:1
@@ -838,187 +838,187 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260506-210828.txt;cuttingplan_20260506-210828.txt;t6Vp+dQWMn/1lz1TTQfeuHfU5UZUanNML4AbeaicyNo=;Present;ORDERS
 ORDERS
-1413;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1413;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1414;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1414;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1415;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1415;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1416;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1416;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1417;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1417;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2397
 END # MAT:1
 
 
-1418;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1418;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1419;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1419;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1420;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1420;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1421;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1421;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1422;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1422;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1487
 END # MAT:1
 
 
-1423;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1423;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2397
 END # MAT:1
 
 
-1424;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1424;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1425;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1425;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1426;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1426;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2397
 END # MAT:1
 
 
-1427;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1427;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1428;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1428;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1429;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1429;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1430;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1430;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1431;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1431;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1432;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1432;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1433;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1433;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1434;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1434;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1482
 END # MAT:1
 
 
-1435;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1435;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1436;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1436;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1437;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1437;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2297
 END # MAT:1
 
 
-1438;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1438;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1477
 END # MAT:1
 
 
-1439;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1439;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2257
 END # MAT:1
 
 
-1440;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1440;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;1327
 END # MAT:1
 
 
-1443;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1443;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2237
 END # MAT:1
 
 
-1444;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1444;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2237
 END # MAT:1
 
 
-1445;PrémiumHoliday;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1445;PrémiumHoliday;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-CL-7016;2237
 END # MAT:1
@@ -1032,103 +1032,103 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260511-082828.txt;cuttingplan_20260511-082828.txt;ds8tSb0Fsf6l45fy6hI6NivWIRNgNdF6Y/BbYMzU9RI=;Present;ORDERS
 ORDERS
-1477;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1477;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;995
 END # MAT:1
 
 
-1478;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1478;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;665
 END # MAT:1
 
 
-1479;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1479;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;665
 END # MAT:1
 
 
-1480;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1480;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;995
 END # MAT:1
 
 
-1481;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1481;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;955
 END # MAT:1
 
 
-1482;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1482;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;945
 END # MAT:1
 
 
-1483;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1483;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;935
 END # MAT:1
 
 
-1484;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1484;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;965
 END # MAT:1
 
 
-1485;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1485;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;950
 END # MAT:1
 
 
-1486;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1486;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;950
 END # MAT:1
 
 
-1487;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1487;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;955
 END # MAT:1
 
 
-1488;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1488;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;945
 END # MAT:1
 
 
-1489;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1489;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;950
 END # MAT:1
 
 
-1490;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1490;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;950
 END # MAT:1
 
 
-1491;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1491;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;950
 END # MAT:1
 
 
-1492;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1492;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;955
 END # MAT:1
 
 
-1493;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1493;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;955
 END # MAT:1
@@ -1138,103 +1138,103 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260511-092413.txt;cuttingplan_20260511-092413.txt;dosN1Io8irjMBNTT7ce7ypakXpULRHdKXm5YVWlDsrs=;Present;ORDERS
 ORDERS
-1477;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1477;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;960
 END # MAT:1
 
 
-1478;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1478;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;630
 END # MAT:1
 
 
-1479;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1479;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;630
 END # MAT:1
 
 
-1480;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1480;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;960
 END # MAT:1
 
 
-1481;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1481;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;920
 END # MAT:1
 
 
-1482;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1482;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;910
 END # MAT:1
 
 
-1483;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1483;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;900
 END # MAT:1
 
 
-1484;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1484;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;930
 END # MAT:1
 
 
-1485;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1485;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;915
 END # MAT:1
 
 
-1486;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1486;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;915
 END # MAT:1
 
 
-1487;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1487;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;920
 END # MAT:1
 
 
-1488;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1488;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;910
 END # MAT:1
 
 
-1489;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1489;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;915
 END # MAT:1
 
 
-1490;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1490;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;915
 END # MAT:1
 
 
-1491;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1491;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;915
 END # MAT:1
 
 
-1492;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1492;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;920
 END # MAT:1
 
 
-1493;HajduAlu_Porta;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1493;HajduAlu_Porta;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-SZ-7016;920
 END # MAT:1
@@ -1248,43 +1248,43 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260512-072220_lab.txt;cuttingplan_20260512-072220_lab.txt;E3n/kK2jHdOJGU9ZmptizSa07efaG/zBwq/bwo2r8Dc=;Present;ORDERS
 ORDERS
-1880;LosoncziR;9;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1880;LosoncziR;9;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1231
 END # MAT:1
 
 
-1881;LosoncziR;9;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1881;LosoncziR;9;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1231
 END # MAT:1
 
 
-1882;LosoncziR;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1882;LosoncziR;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1246
 END # MAT:1
 
 
-1883;LosoncziR;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1883;LosoncziR;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1246
 END # MAT:1
 
 
-1884;LosoncziR;10;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1884;LosoncziR;10;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1231
 END # MAT:1
 
 
-1885;LosoncziR;4;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1885;LosoncziR;4;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1231
 END # MAT:1
 
 
-1886;LosoncziR;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1886;LosoncziR;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 MT-L;1231
 END # MAT:1
@@ -1310,127 +1310,127 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260516-104949.txt;cuttingplan_20260516-104949.txt;1HBReioXfl1ynug13wyxpcs+lVK7ie8PDoqUYtbvYdc=;Present;ORDERS
 ORDERS
-1264;Hovafa;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1264;Hovafa;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;615
 END # MAT:1
 
 
-1265;Hovafa;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1265;Hovafa;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;495
 END # MAT:1
 
 
-1284;Tóth M.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1284;Tóth M.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;570
 END # MAT:1
 
 
-1287;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1287;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1288;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1288;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1289;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1289;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1290;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1290;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1291;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1291;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1292;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1292;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1293;SándorÁrnyék;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1293;SándorÁrnyék;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;582
 END # MAT:1
 
 
-1308;RedőnyShop;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1308;RedőnyShop;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;545
 END # MAT:1
 
 
-1322;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1322;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1100
 END # MAT:1
 
 
-1323;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1323;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1100
 END # MAT:1
 
 
-1324;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1324;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1030
 END # MAT:1
 
 
-1325;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1325;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1030
 END # MAT:1
 
 
-1326;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1326;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1030
 END # MAT:1
 
 
-1327;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1327;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1030
 END # MAT:1
 
 
-1328;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1328;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1010
 END # MAT:1
 
 
-1329;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1329;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1010
 END # MAT:1
 
 
-1330;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1330;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1010
 END # MAT:1
 
 
-1331;György Zs.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1331;György Zs.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1010
 END # MAT:1
@@ -1444,19 +1444,19 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260520-085143.txt;cuttingplan_20260520-085143.txt;B5662UNbmbRkhQUNZ2StBmf68dCpcS4XGMIYJGVDmoo=;Present;ORDERS
 ORDERS
-1496;teszt1;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1496;teszt1;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;3413
 END # MAT:1
 
 
-1497;teszt1;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1497;teszt1;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;3268
 END # MAT:1
 
 
-1498;teszt1;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1498;teszt1;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 NP-T-7016;3368
 END # MAT:1
@@ -1474,31 +1474,31 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260527-132401.txt;cuttingplan_20260527-132401.txt;2O30nGEp3VvCx/qFeUf3x7L3qwgK2BGYCbD9QLrKJpA=;Present;ORDERS
 ORDERS
-1395;Rellux;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1395;Rellux;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1510
 END # MAT:1
 
 
-1396;Rellux;13;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1396;Rellux;13;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1590
 END # MAT:1
 
 
-1397;Rellux;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1397;Rellux;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;2070
 END # MAT:1
 
 
-1398;Rellux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1398;Rellux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1310
 END # MAT:1
 
 
-1399;Rellux;2;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1399;Rellux;2;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1590
 END # MAT:1
@@ -1516,259 +1516,259 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-072103.txt;cuttingplan_20260603-072103.txt;b6IOXa44SMMRSlYcLVgoZcvo+cG7tm/27Kp2pDPOSCU=;Present;ORDERS
 ORDERS
-1402;BányaiLajos;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1402;BányaiLajos;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;1340
 END # MAT:1
 
 
-1429;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1429;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;975
 END # MAT:1
 
 
-1430;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1430;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;975
 END # MAT:1
 
 
-1431;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1431;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;575
 END # MAT:1
 
 
-1432;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1432;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;495
 END # MAT:1
 
 
-1433;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1433;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;575
 END # MAT:1
 
 
-1434;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1434;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;975
 END # MAT:1
 
 
-1435;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1435;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;515
 END # MAT:1
 
 
-1436;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1436;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;445
 END # MAT:1
 
 
-1437;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1437;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;515
 END # MAT:1
 
 
-1438;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1438;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;450
 END # MAT:1
 
 
-1439;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1439;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;510
 END # MAT:1
 
 
-1440;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1440;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;500
 END # MAT:1
 
 
-1441;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1441;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;500
 END # MAT:1
 
 
-1442;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1442;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;500
 END # MAT:1
 
 
-1443;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1443;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;750
 END # MAT:1
 
 
-1444;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1444;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;590
 END # MAT:1
 
 
-1445;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1445;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;975
 END # MAT:1
 
 
-1446;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1446;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;730
 END # MAT:1
 
 
-1447;Norlux;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1447;Norlux;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;590
 END # MAT:1
 
 
-1458;Timi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1458;Timi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;765
 END # MAT:1
 
 
-1459;Timi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1459;Timi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;765
 END # MAT:1
 
 
-1462;Frama/Bokor;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1462;Frama/Bokor;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;595
 END # MAT:1
 
 
-1463;Frama/Bokor;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1463;Frama/Bokor;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;595
 END # MAT:1
 
 
-1466;Bányai;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1466;Bányai;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;700
 END # MAT:1
 
 
-1467;Bányai;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1467;Bányai;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;970
 END # MAT:1
 
 
-1468;Bányai;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1468;Bányai;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;970
 END # MAT:1
 
 
-1471;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1471;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;580
 END # MAT:1
 
 
-1472;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1472;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;580
 END # MAT:1
 
 
-1473;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1473;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;761
 END # MAT:1
 
 
-1474;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1474;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;761
 END # MAT:1
 
 
-1475;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1475;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;761
 END # MAT:1
 
 
-1478;Hör-Mi;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1478;Hör-Mi;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;660
 END # MAT:1
 
 
-1481;Pro-Plast;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1481;Pro-Plast;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;630
 END # MAT:1
 
 
-1498;DriszkuZs;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1498;DriszkuZs;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;710
 END # MAT:1
 
 
-1499;DriszkuZs;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1499;DriszkuZs;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;710
 END # MAT:1
 
 
-1502;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1502;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;405
 END # MAT:1
 
 
-1503;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1503;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;405
 END # MAT:1
 
 
-1504;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1504;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;405
 END # MAT:1
 
 
-1505;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1505;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;405
 END # MAT:1
 
 
-1506;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1506;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;645
 END # MAT:1
 
 
-1507;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1507;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;645
 END # MAT:1
 
 
-1508;Tiba Zoltán;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1508;Tiba Zoltán;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-R-23;645
 END # MAT:1
@@ -1782,121 +1782,121 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-103500.txt;cuttingplan_20260603-103500.txt;dWGW/7G0XgMcRO3OfvgNmWQcLX51DkZofGHzcI2Xe0I=;Present;ORDERS
 ORDERS
-1454;Perei;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1454;Perei;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;815
 END # MAT:1
 
 
-1455;Perei;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1455;Perei;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;825
 END # MAT:1
 
 
-1484;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1484;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1485;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1485;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1486;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1486;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1487;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1487;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1488;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1488;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1165
 END # MAT:1
 
 
-15;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+15;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;627
 END # MAT:1
 
 
-16;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+16;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;627
 END # MAT:1
 
 
-17;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+17;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;797
 END # MAT:1
 
 
-18;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+18;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;657
 END # MAT:1
 
 
-19;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+19;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;577
 END # MAT:1
 
 
-1976;Csák L.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1976;Csák L.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;723
 END # MAT:1
 
 
-1979;Rada;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1979;Rada;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;907
 END # MAT:1
 
 
-1980;Rada;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1980;Rada;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;947
 END # MAT:1
 
 
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;997
 END # MAT:1
 
 
-5;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+5;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1657
 END # MAT:1
 
 
-6;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+6;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1857
 END # MAT:1
 
 
-7;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+7;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1987
 END # MAT:1
 
 
-8;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+8;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1537
 END # MAT:1
@@ -1914,43 +1914,43 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-103500_5.txt;cuttingplan_20260603-103500_5.txt;0OJc9w/lHsBpzbbZi3ihKd6vY4FZOk88fuIrgjzNMbk=;Present;ORDERS
 ORDERS
-15;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+15;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;644
 END # MAT:1
 
 
-16;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+16;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;644
 END # MAT:1
 
 
-17;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+17;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;814
 END # MAT:1
 
 
-18;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+18;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;674
 END # MAT:1
 
 
-19;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+19;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;594
 END # MAT:1
 
 
-1976;Csák L.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1976;Csák L.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;740
 END # MAT:1
 
 
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 SR-FSN;1014
 END # MAT:1
@@ -1960,43 +1960,43 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-103500_rol_z.txt;cuttingplan_20260603-103500_rol_z.txt;1VA74398Bwe2JixcZ20FyRrpFL8tKHLIN33lzSEd+Xs=;Present;ORDERS
 ORDERS
-1454;Perei;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1454;Perei;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;815
 END # MAT:1
 
 
-1455;Perei;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1455;Perei;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;825
 END # MAT:1
 
 
-1484;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1484;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1485;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1485;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1486;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1486;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1487;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1487;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1015
 END # MAT:1
 
 
-1488;ZentaiAblak;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1488;ZentaiAblak;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1165
 END # MAT:1
@@ -2006,79 +2006,79 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-103500_savr_z.txt;cuttingplan_20260603-103500_savr_z.txt;FL5H8AWiHDwXy279VATZBo6Bo5UoV7kh+P6ZhVPnR3I=;Present;ORDERS
 ORDERS
-15;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+15;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;627
 END # MAT:1
 
 
-16;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+16;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;627
 END # MAT:1
 
 
-17;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+17;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;797
 END # MAT:1
 
 
-18;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+18;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;657
 END # MAT:1
 
 
-19;Nistor Egon;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+19;Nistor Egon;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;577
 END # MAT:1
 
 
-1976;Csák L.;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1976;Csák L.;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;723
 END # MAT:1
 
 
-1979;Rada;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1979;Rada;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;907
 END # MAT:1
 
 
-1980;Rada;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1980;Rada;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;947
 END # MAT:1
 
 
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;997
 END # MAT:1
 
 
-5;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+5;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1657
 END # MAT:1
 
 
-6;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+6;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1857
 END # MAT:1
 
 
-7;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+7;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1987
 END # MAT:1
 
 
-8;AblakBeÉpítő;1;0;0;2026-11-11;;;Unknown;;Unknown;1;0;0;1;MAT:1
+8;AblakBeÉpítő;1;0;0;2026-11-12;;;Unknown;;Unknown;1;0;0;1;MAT:1
 MAT:1
 TE-H-32;1537
 END # MAT:1
@@ -2088,7 +2088,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20260603-141820.txt;cuttingplan_20260603-141820.txt;6mZLPxZZ1AZ1VJlpkfsu4u+wWKF6/m68CpYCJhpiX7E=;Present;ORDERS
 ORDERS
-1;SzabóG.;1;0;0;2026-11-11;;;Unknown;;Unknown;3;0;0;3;MAT:1
+1;SzabóG.;1;0;0;2026-11-12;;;Unknown;;Unknown;3;0;0;3;MAT:1
 MAT:1
 TE-H-18;825
 MT-Z;813
@@ -2096,7 +2096,7 @@ MT-L;1240
 END # MAT:1
 
 
-1983;SzabóMihály;1;0;0;2026-11-11;;;Unknown;;Unknown;3;0;0;3;MAT:1
+1983;SzabóMihály;1;0;0;2026-11-12;;;Unknown;;Unknown;3;0;0;3;MAT:1
 MAT:1
 TE-H-18;650
 MT-P;638
@@ -10875,7 +10875,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261027-071100.txt;cuttingplan_20261027-071100.txt;2XNPXgFcm5txU3mKo2b0/z1MZwRXXqWi2QoHbuEn6ec=;Present;ORDERS
 ORDERS
-478;Sideral, Ro;1;1950;2340;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+478;Sideral, Ro;1;1950;2340;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -10886,7 +10886,7 @@ NP-BAR20-6000;1775
 END # MAT:1
 
 
-479;Sideral, Ro;1;1950;2340;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+479;Sideral, Ro;1;1950;2340;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -10897,7 +10897,7 @@ NP-BAR20-6000;1775
 END # MAT:1
 
 
-480;Sideral, Ro;1;3010;2340;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+480;Sideral, Ro;1;3010;2340;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2980
 NP-TF-7016;3005
@@ -10908,7 +10908,7 @@ NP-BAR20-6000;2835
 END # MAT:1
 
 
-481;Sideral, Ro;1;1950;2340;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+481;Sideral, Ro;1;1950;2340;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -10919,7 +10919,7 @@ NP-BAR20-6000;1775
 END # MAT:1
 
 
-482;Sideral, Ro;1;2010;2315;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+482;Sideral, Ro;1;2010;2315;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1980
 NP-TF-7016;2005
@@ -10930,7 +10930,7 @@ NP-BAR20-6000;1835
 END # MAT:1
 
 
-483;Sideral, Ro;1;1950;2315;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+483;Sideral, Ro;1;1950;2315;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -10941,7 +10941,7 @@ NP-BAR20-6000;1775
 END # MAT:1
 
 
-484;Sideral, Ro;1;2000;2335;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+484;Sideral, Ro;1;2000;2335;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1970
 NP-TF-7016;1995
@@ -10952,7 +10952,7 @@ NP-BAR20-6000;1825
 END # MAT:1
 
 
-497;KoalaAblak, Bp.;1;4375;2220;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+497;KoalaAblak, Bp.;1;4375;2220;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;4345
 NP-TF-9010;4370
@@ -10963,7 +10963,7 @@ NP-BAR20-6000;4200
 END # MAT:1
 
 
-498;KoalaAblak, Bp.;1;3130;2170;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+498;KoalaAblak, Bp.;1;3130;2170;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;3100
 NP-TF-9010;3125
@@ -10978,14 +10978,14 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261027-071100_koala_vas.txt;cuttingplan_20261027-071100_koala_vas.txt;QesAf+xcJmyTbRtEXWZGu1BZms/304+42Hu75CkGhms=;Present;ORDERS
 ORDERS
-497;KoalaAblak, Bp.;1;4375;2220;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+497;KoalaAblak, Bp.;1;4375;2220;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL78-7000;4265
 NP-BAR20-6000;4200
 END # MAT:1
 
 
-498;KoalaAblak, Bp.;1;3130;2170;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+498;KoalaAblak, Bp.;1;3130;2170;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;3020
 NP-BAR20-6000;2955
@@ -10996,14 +10996,14 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261027-142143.txt;cuttingplan_20261027-142143.txt;6ljHpklGsfovOkRAArgSh8zwDgDgs0FDu0aj6s0uqOc=;Present;ORDERS
 ORDERS
-2688;Perei J., Bcs;1;660;1400;2026-11-11;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2688;Perei J., Bcs;1;660;1400;2026-11-12;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;630
 ROL-P;633
 END # MAT:1
 
 
-482;Sideral, Ro;1;2010;2315;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
+482;Sideral, Ro;1;2010;2315;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
 MAT:1
 NP-CLB2;2212
 END # MAT:1
@@ -11013,7 +11013,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261027-154751.txt;cuttingplan_20261027-154751.txt;evBZcNzZl8se0EX5L7GhhA0gSfbH5+Ii9EozMBiWgN8=;Present;ORDERS
 ORDERS
-447;JanóRedőny, Pécs;1;2160;1850;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+447;JanóRedőny, Pécs;1;2160;1850;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2130
 NP-TF-7016;2155
@@ -11024,7 +11024,7 @@ NP-BAR20-6000;1985
 END # MAT:1
 
 
-448;JanóRedőny, Pécs;1;2155;1855;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+448;JanóRedőny, Pécs;1;2155;1855;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2125
 NP-TF-7016;2150
@@ -11035,7 +11035,7 @@ NP-BAR20-6000;1980
 END # MAT:1
 
 
-449;JanóRedőny, Pécs;1;1370;2800;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+449;JanóRedőny, Pécs;1;1370;2800;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1340
 NP-TF-7016;1365
@@ -11050,7 +11050,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261028-102722.txt;cuttingplan_20261028-102722.txt;+WtAWwKqDe25LU5oCbFw5gdqbq0GFhNS/2ufrthpgV4=;Present;ORDERS
 ORDERS
-10001;bolt;1;1300;1000;2026-11-11;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
+10001;bolt;1;1300;1000;2026-11-12;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-H-32;1300
 ROL-GYZ;1290
@@ -11061,7 +11061,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261028-105213.txt;cuttingplan_20261028-105213.txt;+sPO6ibkH/OGWTxThes84bDpW6afhggALjxYlBuGQUg=;Present;ORDERS
 ORDERS
-2691;Rellux, Győr;1;1710;1300;2026-11-11;ROL;SRTOK;Gyartasi;RAL 8019;SM;3;0;0;3;MAT:1
+2691;Rellux, Győr;1;1710;1300;2026-11-12;ROL;SRTOK;Gyartasi;RAL 8019;SM;3;0;0;3;MAT:1
 MAT:1
 SR-T;1704
 TE-H-32;1687
@@ -11069,42 +11069,42 @@ ROL-GYZ;1680
 END # MAT:1
 
 
-2694;Oros-Csőszer, Mtúr;1;1650;2500;2026-11-11;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2694;Oros-Csőszer, Mtúr;1;1650;2500;2026-11-12;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-H-32;1615
 ROL-GYZ;1605
 END # MAT:1
 
 
-2697;TátraMix;1;1530;1300;2026-11-11;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2697;TátraMix;1;1530;1300;2026-11-12;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-H-32;1495
 ROL-GYZ;1485
 END # MAT:1
 
 
-2698;TátraMix;1;1530;1300;2026-11-11;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2698;TátraMix;1;1530;1300;2026-11-12;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-H-32;1495
 ROL-GYZ;1485
 END # MAT:1
 
 
-2699;TátraMix;1;1900;1800;2026-11-11;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2699;TátraMix;1;1900;1800;2026-11-12;ROL;UJGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-H-32;1865
 ROL-GYZ;1855
 END # MAT:1
 
 
-2702;Kiss Árnyékolás, Pécs;1;907;1310;2026-11-11;ROL;MINI;Teljes;;SM;2;0;0;2;MAT:1
+2702;Kiss Árnyékolás, Pécs;1;907;1310;2026-11-12;ROL;MINI;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-S-18;877
 ROL-P;867
 END # MAT:1
 
 
-2705;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2705;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;745
 TE-H-18;740
@@ -11113,7 +11113,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2706;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2706;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;745
 TE-H-18;740
@@ -11122,7 +11122,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2707;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2707;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;745
 TE-H-18;740
@@ -11131,7 +11131,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2708;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2708;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;745
 TE-H-18;740
@@ -11140,7 +11140,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2709;Függönycenter;1;715;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2709;Függönycenter;1;715;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;725
 TE-H-18;720
@@ -11149,7 +11149,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2710;Függönycenter;1;715;1450;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2710;Függönycenter;1;715;1450;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;725
 TE-H-18;720
@@ -11162,7 +11162,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261028-152121.txt;cuttingplan_20261028-152121.txt;0k6bljkgtZP7DbjKen5upRCYR9ALkrMdMysLzw44XXA=;Present;ORDERS
 ORDERS
-10002;RolettaMűhely;22;3000;1000;2026-11-11;SR;TN;Gyartasi;RAL 9016;SM;1;0;0;1;MAT:1
+10002;RolettaMűhely;22;3000;1000;2026-11-12;SR;TN;Gyartasi;RAL 9016;SM;1;0;0;1;MAT:1
 MAT:1
 SR-P-3000_NATUR;3000
 END # MAT:1
@@ -11172,7 +11172,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-065835.txt;cuttingplan_20261030-065835.txt;+s0PevA7mLoSnX2ZdCrh/ENzNinK60qn2HTkweNDj0I=;Present;ORDERS
 ORDERS
-512;Frama, Sorel;1;3040;2750;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+512;Frama, Sorel;1;3040;2750;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;3010
 NP-TF-7016;3035
@@ -11183,7 +11183,7 @@ NP-BAR20-6000;2865
 END # MAT:1
 
 
-513;Frama, Sorel;1;2270;2750;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+513;Frama, Sorel;1;2270;2750;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2240
 NP-TF-7016;2265
@@ -11194,7 +11194,7 @@ NP-BAR20-6000;2095
 END # MAT:1
 
 
-514;Frama, Sorel;1;2270;2750;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+514;Frama, Sorel;1;2270;2750;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2240
 NP-TF-7016;2265
@@ -11205,7 +11205,7 @@ NP-BAR20-6000;2095
 END # MAT:1
 
 
-515;Frama, Sorel;1;3100;2070;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+515;Frama, Sorel;1;3100;2070;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;3070
 NP-TF-7016;3095
@@ -11216,7 +11216,7 @@ NP-BAR20-6000;2925
 END # MAT:1
 
 
-516;Frama, Sorel;1;2280;2070;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+516;Frama, Sorel;1;2280;2070;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2250
 NP-TF-7016;2275
@@ -11227,7 +11227,7 @@ NP-BAR20-6000;2105
 END # MAT:1
 
 
-517;Frama, Sorel;1;3000;2020;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+517;Frama, Sorel;1;3000;2020;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2970
 NP-TF-7016;2995
@@ -11242,7 +11242,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-070047.txt;cuttingplan_20261030-070047.txt;ZTtRfuiUOY2Q+GB7MNHvT5jebAhp3gBT9QVe9ecc2HQ=;Present;ORDERS
 ORDERS
-502;Főnix;1;2940;2900;2026-11-11;NP;CIP;Gyartasi;RAL 1015;SM;6;0;0;6;MAT:1
+502;Főnix;1;2940;2900;2026-11-12;NP;CIP;Gyartasi;RAL 1015;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T;2910
 NP-TF;2935
@@ -11253,7 +11253,7 @@ NP-BAR20-6000;2765
 END # MAT:1
 
 
-505;Felföldi K.;1;2320;1170;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+505;Felföldi K.;1;2320;1170;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;2290
 NP-TF-7016;2315
@@ -11264,7 +11264,7 @@ NP-BAR20-6000;2145
 END # MAT:1
 
 
-506;Felföldi K.;1;2025;1170;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+506;Felföldi K.;1;2025;1170;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1995
 NP-TF-7016;2020
@@ -11275,7 +11275,7 @@ NP-BAR20-6000;1850
 END # MAT:1
 
 
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1550
 NP-TF-9010;1575
@@ -11286,7 +11286,7 @@ NP-BAR20-6000;1405
 END # MAT:1
 
 
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1600
 NP-TF-9010;1625
@@ -11297,7 +11297,7 @@ NP-BAR20-6000;1455
 END # MAT:1
 
 
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1190
 NP-TF-9010;1215
@@ -11308,7 +11308,7 @@ NP-BAR20-6000;1045
 END # MAT:1
 
 
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1180
 NP-TF-9010;1205
@@ -11319,7 +11319,7 @@ NP-BAR20-6000;1035
 END # MAT:1
 
 
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -11330,7 +11330,7 @@ NP-BAR20-6000;985
 END # MAT:1
 
 
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -11341,7 +11341,7 @@ NP-BAR20-6000;985
 END # MAT:1
 
 
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -11356,55 +11356,55 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-070047_lab.txt;cuttingplan_20261030-070047_lab.txt;y5hiVx6wZHkK3Nmz8RhgsZwCn/nxlVKgayU4kDnH+k8=;Present;ORDERS
 ORDERS
-505;Felföldi K.;1;2320;1170;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
+505;Felföldi K.;1;2320;1170;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-7016;1067
 END # MAT:1
 
 
-506;Felföldi K.;1;2025;1170;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
+506;Felföldi K.;1;2025;1170;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-7016;1067
 END # MAT:1
 
 
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;1217
 END # MAT:1
 
 
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;1217
 END # MAT:1
 
 
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;1307
 END # MAT:1
 
 
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;1307
 END # MAT:1
 
 
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;997
 END # MAT:1
 
 
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;997
 END # MAT:1
 
 
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;1;0;0;1;MAT:1
 MAT:1
 NP-CL2+CLT2+CLBR2-9010;997
 END # MAT:1
@@ -11414,49 +11414,49 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-070047_vas.txt;cuttingplan_20261030-070047_vas.txt;t/urA3W0JXtdKXd/xNbeksqSYKF71hCdF/4+49KkRkI=;Present;ORDERS
 ORDERS
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1470
 NP-BAR20-6000;1405
 END # MAT:1
 
 
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1520
 NP-BAR20-6000;1455
 END # MAT:1
 
 
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1110
 NP-BAR20-6000;1045
 END # MAT:1
 
 
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1100
 NP-BAR20-6000;1035
 END # MAT:1
 
 
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # MAT:1
 
 
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # MAT:1
 
 
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;2;0;0;2;MAT:1
 MAT:1
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
@@ -11467,28 +11467,28 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-081829.txt;cuttingplan_20261030-081829.txt;w286DOqyHEy14fXRyCTz3AG6MmPbtH5+swxfhph6Ils=;Present;ORDERS
 ORDERS
-2604;AblakGenerál, Pécs;1;2200;2420;2026-11-11;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
+2604;AblakGenerál, Pécs;1;2200;2420;2026-11-12;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-S-36;2170
 ROL-GYZ;2160
 END # MAT:1
 
 
-2605;AblakGenerál, Pécs;1;2200;2420;2026-11-11;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
+2605;AblakGenerál, Pécs;1;2200;2420;2026-11-12;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-S-36;2170
 ROL-GYZ;2160
 END # MAT:1
 
 
-2606;AblakGenerál, Pécs;1;2200;2420;2026-11-11;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
+2606;AblakGenerál, Pécs;1;2200;2420;2026-11-12;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-S-36;2170
 ROL-GYZ;2160
 END # MAT:1
 
 
-2607;AblakGenerál, Pécs;1;2200;2420;2026-11-11;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
+2607;AblakGenerál, Pécs;1;2200;2420;2026-11-12;ROL;ER;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-S-36;2170
 ROL-GYZ;2160
@@ -11499,7 +11499,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-115351.txt;cuttingplan_20261030-115351.txt;cNgtGgyHjq8CFfvLFYSfkO7lt3UoRlrXVeNmGLAhITQ=;Present;ORDERS
 ORDERS
-10003;RolettaMűhely;5;1015;1000;2026-11-11;ROL;UJGY;Gyartasi;;SM;1;0;0;1;MAT:1
+10003;RolettaMűhely;5;1015;1000;2026-11-12;ROL;UJGY;Gyartasi;;SM;1;0;0;1;MAT:1
 MAT:1
 ROL-GYZ;1015
 END # MAT:1
@@ -11509,14 +11509,14 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261030-132020.txt;cuttingplan_20261030-132020.txt;kXF4Wy/BVPahkG8E5iIUtnyk5/EEstlMMcze+CrLy34=;Present;ORDERS
 ORDERS
-2713;Jakufa, Nyh.;1;400;600;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2713;Jakufa, Nyh.;1;400;600;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;370
 ROL-P;373
 END # MAT:1
 
 
-2714;Jakufa, Nyh;1;400;600;2026-11-11;ROL;SRTOK;Gyartasi;;SM;3;0;0;3;MAT:1
+2714;Jakufa, Nyh;1;400;600;2026-11-12;ROL;SRTOK;Gyartasi;;SM;3;0;0;3;MAT:1
 MAT:1
 SR-T;394
 TE-H-32;377
@@ -11524,28 +11524,28 @@ ROL-GYZ;370
 END # MAT:1
 
 
-2717;Rellux, Győr;1;580;1240;2026-11-11;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
+2717;Rellux, Győr;1;580;1240;2026-11-12;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;555
 ROL-P;553
 END # MAT:1
 
 
-2718;Rellux, Győr;1;580;1240;2026-11-11;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
+2718;Rellux, Győr;1;580;1240;2026-11-12;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;555
 ROL-P;553
 END # MAT:1
 
 
-2719;Rellux, Győr;1;580;1240;2026-11-11;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
+2719;Rellux, Győr;1;580;1240;2026-11-12;ROL;TET;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;555
 ROL-P;553
 END # MAT:1
 
 
-902;Napex, Pécs;3;940;1220;2026-11-11;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
+902;Napex, Pécs;3;940;1220;2026-11-12;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;950
 TE-H-18;945
@@ -11554,7 +11554,7 @@ MT-L2;1220
 END # MAT:1
 
 
-905;Jakufa, Nyh;1;400;600;2026-11-11;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
+905;Jakufa, Nyh;1;400;600;2026-11-12;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;410
 TE-H-18;405
@@ -11563,7 +11563,7 @@ MT-L2;600
 END # MAT:1
 
 
-908;ShutterSystem;1;1200;340;2026-11-11;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
+908;ShutterSystem;1;1200;340;2026-11-12;SR;MINIT;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;1210
 TE-H-18;1205
@@ -11576,7 +11576,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261102-115843.txt;cuttingplan_20261102-115843.txt;Opios7zInuZSjQjg17pPjYOKgJK1sSiyOO4ySVNe9Zs=;Present;ORDERS
 ORDERS
-520;Szajkó, Győr;1;1035;1829;2026-11-11;NP;CIP;Gyartasi;RAL 1019;FS;6;0;0;6;MAT:1
+520;Szajkó, Győr;1;1035;1829;2026-11-12;NP;CIP;Gyartasi;RAL 1019;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T;1005
 NP-TF;1030
@@ -11591,42 +11591,42 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261103-125947.txt;cuttingplan_20261103-125947.txt;lO6xrPPjHP6c5DoPCDrXi1xuQ65nbaF6epPxxYudlYc=;Present;ORDERS
 ORDERS
-2722;L.Zs., Nyh;1;775;2300;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2722;L.Zs., Nyh;1;775;2300;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;745
 ROL-P;748
 END # MAT:1
 
 
-2723;L.Zs., Nyh;1;925;1400;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2723;L.Zs., Nyh;1;925;1400;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;895
 ROL-P;898
 END # MAT:1
 
 
-2724;L.Zs., Nyh;1;925;1400;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2724;L.Zs., Nyh;1;925;1400;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;895
 ROL-P;898
 END # MAT:1
 
 
-2725;L.Zs., Nyh;1;925;1400;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2725;L.Zs., Nyh;1;925;1400;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;895
 ROL-P;898
 END # MAT:1
 
 
-2726;L.Zs., Nyh;1;925;1400;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2726;L.Zs., Nyh;1;925;1400;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;895
 ROL-P;898
 END # MAT:1
 
 
-911;Kiss Árnyékolás, Pécs;1;1120;1750;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+911;Kiss Árnyékolás, Pécs;1;1120;1750;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;1104
 TE-H-32;1087
@@ -11635,7 +11635,7 @@ SR-P-3000;1090
 END # MAT:1
 
 
-912;Kiss Árnyékolás, Pécs;1;800;1960;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+912;Kiss Árnyékolás, Pécs;1;800;1960;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;784
 TE-H-32;767
@@ -11644,7 +11644,7 @@ SR-P-3000;770
 END # MAT:1
 
 
-913;Kiss Árnyékolás, Pécs;1;890;400;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+913;Kiss Árnyékolás, Pécs;1;890;400;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;874
 TE-H-32;857
@@ -11653,7 +11653,7 @@ SR-P-3000;860
 END # MAT:1
 
 
-916;Lukács László;2;750;2250;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+916;Lukács László;2;750;2250;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;734
 TE-H-32;717
@@ -11662,7 +11662,7 @@ SR-P-3000;720
 END # MAT:1
 
 
-919;Frama, Georgies;1;1000;1400;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+919;Frama, Georgies;1;1000;1400;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;984
 TE-H-32;967
@@ -11671,7 +11671,7 @@ SR-P-3000;970
 END # MAT:1
 
 
-920;Frama, Georgies;1;800;950;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+920;Frama, Georgies;1;800;950;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;784
 TE-H-32;767
@@ -11684,84 +11684,84 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261104-072921.txt;cuttingplan_20261104-072921.txt;5U/baX3zUQ1kXnAdvFDsov4Tlc37odIrZ+DEocWZUwY=;Present;ORDERS
 ORDERS
-2729;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2729;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2730;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2730;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2731;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2731;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2732;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2732;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2733;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2733;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2734;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2734;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2735;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2735;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2736;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2736;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2737;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2737;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2738;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2738;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1760
 ROL-EZ;1750
 END # MAT:1
 
 
-2739;AjtóPark, Ef_Pécs.;1;1865;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2739;AjtóPark, Ef_Pécs.;1;1865;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1810
 ROL-EZ;1800
 END # MAT:1
 
 
-2740;AjtóPark, Ef_Pécs.;1;1820;2200;2026-11-11;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
+2740;AjtóPark, Ef_Pécs.;1;1820;2200;2026-11-12;ROL;MOT;Teljes;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-B-47;1765
 ROL-EZ;1755
@@ -11772,7 +11772,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261104-104426.txt;cuttingplan_20261104-104426.txt;eVFsdU7WFm9eEHbU/MJZ2ewUwI9NY4crTIGGyMj/LvM=;Present;ORDERS
 ORDERS
-509;Szajkó, Győr;1;990;1745;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+509;Szajkó, Győr;1;990;1745;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;960
 NP-TF-7016;985
@@ -11783,7 +11783,7 @@ NP-BAR22-3000;815
 END # MAT:1
 
 
-532;KoalaAblak, Bp.;1;1470;1480;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+532;KoalaAblak, Bp.;1;1470;1480;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1440
 NP-TF-7016;1465
@@ -11794,7 +11794,7 @@ NP-BAR22-3000;1295
 END # MAT:1
 
 
-533;KoalaAblak, Bp.;1;1465;1485;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+533;KoalaAblak, Bp.;1;1465;1485;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1435
 NP-TF-7016;1460
@@ -11805,7 +11805,7 @@ NP-BAR22-3000;1290
 END # MAT:1
 
 
-534;KoalaAblak, Bp.;1;970;1480;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+534;KoalaAblak, Bp.;1;970;1480;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;940
 NP-TF-7016;965
@@ -11816,7 +11816,7 @@ NP-BAR22-3000;795
 END # MAT:1
 
 
-535;KoalaAblak, Bp.;1;970;2080;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+535;KoalaAblak, Bp.;1;970;2080;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;940
 NP-TF-7016;965
@@ -11827,7 +11827,7 @@ NP-BAR22-3000;795
 END # MAT:1
 
 
-536;KoalaAblak, Bp.;1;975;2080;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+536;KoalaAblak, Bp.;1;975;2080;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;945
 NP-TF-7016;970
@@ -11838,7 +11838,7 @@ NP-BAR22-3000;800
 END # MAT:1
 
 
-537;KoalaAblak, Bp.;1;970;2080;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+537;KoalaAblak, Bp.;1;970;2080;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;940
 NP-TF-7016;965
@@ -11849,7 +11849,7 @@ NP-BAR22-3000;795
 END # MAT:1
 
 
-538;KoalaAblak, Bp.;1;1945;1470;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+538;KoalaAblak, Bp.;1;1945;1470;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1915
 NP-TF-7016;1940
@@ -11864,63 +11864,63 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261105-092255.txt;cuttingplan_20261105-092255.txt;3LsJxDGhNZVUy3egLQRZP99cfvbfbv69tbOW2jz5RrA=;Present;ORDERS
 ORDERS
-2743;Hovefa, Szeged;1;750;1950;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2743;Hovefa, Szeged;1;750;1950;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;715
 ROL-P;705
 END # MAT:1
 
 
-2744;Hovefa, Szeged;1;750;1950;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2744;Hovefa, Szeged;1;750;1950;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;715
 ROL-P;705
 END # MAT:1
 
 
-2745;Hovefa, Szeged;1;750;1950;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2745;Hovefa, Szeged;1;750;1950;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;715
 ROL-P;705
 END # MAT:1
 
 
-2746;Hovefa, Szeged;1;750;1950;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2746;Hovefa, Szeged;1;750;1950;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;715
 ROL-P;705
 END # MAT:1
 
 
-2747;Hovefa, Szeged;1;650;1950;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2747;Hovefa, Szeged;1;650;1950;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;615
 ROL-P;605
 END # MAT:1
 
 
-2753;Seres György;1;1200;1300;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2753;Seres György;1;1200;1300;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;1165
 ROL-P;1155
 END # MAT:1
 
 
-2754;Seres György;1;1200;1300;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2754;Seres György;1;1200;1300;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;1165
 ROL-P;1155
 END # MAT:1
 
 
-2761;Norlux, Bcs;1;1750;1300;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2761;Norlux, Bcs;1;1750;1300;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;1715
 ROL-P;1705
 END # MAT:1
 
 
-2762;Norlux, Bcs;1;1780;1300;2026-11-11;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
+2762;Norlux, Bcs;1;1780;1300;2026-11-12;ROL;ALAP;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;1745
 ROL-P;1735
@@ -11931,7 +11931,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261105-153923.txt;cuttingplan_20261105-153923.txt;9yj6s9FB0h9RQtMX6bERFY0vcCL5h0nOd8YVsC53DJc=;Present;ORDERS
 ORDERS
-923;Szűcs K.;1;1100;1870;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+923;Szűcs K.;1;1100;1870;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1094
 TE-H-32;1077
@@ -11940,7 +11940,7 @@ SR-P-3000;1080
 END # MAT:1
 
 
-924;Szűcs K.;1;1100;1870;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+924;Szűcs K.;1;1100;1870;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1094
 TE-H-32;1077
@@ -11949,7 +11949,7 @@ SR-P-3000;1080
 END # MAT:1
 
 
-925;Szűcs K.;1;1300;1870;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+925;Szűcs K.;1;1300;1870;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1294
 TE-H-32;1277
@@ -11958,7 +11958,7 @@ SR-P-3000;1280
 END # MAT:1
 
 
-928;Bodó Roló, Pécs;2;595;1260;2026-11-11;SR;MINIT;Uveg;RAL 8019;SM;5;0;0;5;MAT:1
+928;Bodó Roló, Pécs;2;595;1260;2026-11-12;SR;MINIT;Uveg;RAL 8019;SM;5;0;0;5;MAT:1
 MAT:1
 MT-T-8019;605
 TE-H-18;600
@@ -11968,7 +11968,7 @@ MT-L2-8019;1260
 END # MAT:1
 
 
-931;Ablakbeépítő, Mtúr.;1;2390;1600;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+931;Ablakbeépítő, Mtúr.;1;2390;1600;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;2384
 TE-H-32;2367
@@ -11977,7 +11977,7 @@ SR-P-3000;2370
 END # MAT:1
 
 
-932;Ablakbeépítő, Mtúr.;1;1280;1600;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+932;Ablakbeépítő, Mtúr.;1;1280;1600;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1274
 TE-H-32;1257
@@ -11986,7 +11986,7 @@ SR-P-3000;1260
 END # MAT:1
 
 
-933;Ablakbeépítő, Mtúr.;1;980;800;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+933;Ablakbeépítő, Mtúr.;1;980;800;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;974
 TE-H-32;957
@@ -11995,7 +11995,7 @@ SR-P-3000;960
 END # MAT:1
 
 
-934;Ablakbeépítő, Mtúr.;1;1860;1600;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+934;Ablakbeépítő, Mtúr.;1;1860;1600;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1854
 TE-H-32;1837
@@ -12008,7 +12008,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261106-124809.txt;cuttingplan_20261106-124809.txt;vUhsm/yPuBtwSJHsQ7M0PeTdecp4sewT9rRHrszh8q8=;Present;ORDERS
 ORDERS
-553;Braun, Győr;1;3500;1600;2026-11-11;NP;BOW;Gyartasi;RAL 7016;FS;5;0;0;5;MAT:1
+553;Braun, Győr;1;3500;1600;2026-11-12;NP;BOW;Gyartasi;RAL 7016;FS;5;0;0;5;MAT:1
 MAT:1
 NP-T-7016;3495
 NP-TF-7016;3495
@@ -12018,7 +12018,7 @@ NP-BAR12-4000;3415
 END # MAT:1
 
 
-554;Braun, Győr;1;1160;1565;2026-11-11;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
+554;Braun, Győr;1;1160;1565;2026-11-12;NP;CIP;Gyartasi;RAL 7016;FS;6;0;0;6;MAT:1
 MAT:1
 NP-T-7016;1130
 NP-TF-7016;1155
@@ -12033,7 +12033,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261106-124811.txt;cuttingplan_20261106-124811.txt;mPXkwiknJdJ51wm2Hs6j5Yj/F8yloyaKp+vT1si2EC0=;Present;ORDERS
 ORDERS
-557;Sutyinszki Zolt, Bcs.;1;1450;880;2026-11-11;NP;BOW;Gyartasi;RAL 8019;SM;5;0;0;5;MAT:1
+557;Sutyinszki Zolt, Bcs.;1;1450;880;2026-11-12;NP;BOW;Gyartasi;RAL 8019;SM;5;0;0;5;MAT:1
 MAT:1
 NP-T;1445
 NP-TF;1445
@@ -12047,7 +12047,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261109-081448.txt;cuttingplan_20261109-081448.txt;DmIl2nDkQSFUsxfz0RcjMxrnCYIkIJuF1UqYi15vL94=;Present;ORDERS
 ORDERS
-545;KoalaAblak, Bp.;1;3310;2700;2026-11-11;NP;CIP;Gyartasi;RAL 8019;SM;6;0;0;6;MAT:1
+545;KoalaAblak, Bp.;1;3310;2700;2026-11-12;NP;CIP;Gyartasi;RAL 8019;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T;3280
 NP-TF;3305
@@ -12058,7 +12058,7 @@ NP-BAR20-6000;3135
 END # MAT:1
 
 
-548;Fenstermann, Szolnok;1;1685;1750;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+548;Fenstermann, Szolnok;1;1685;1750;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1655
 NP-TF-9010;1680
@@ -12069,7 +12069,7 @@ NP-BAR20-6000;1510
 END # MAT:1
 
 
-549;Fenstermann, Szolnok;1;1685;1750;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+549;Fenstermann, Szolnok;1;1685;1750;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1655
 NP-TF-9010;1680
@@ -12080,7 +12080,7 @@ NP-BAR20-6000;1510
 END # MAT:1
 
 
-550;Fenstermann, Szolnok;1;1110;1450;2026-11-11;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
+550;Fenstermann, Szolnok;1;1110;1450;2026-11-12;NP;CIP;Gyartasi;RAL 9010;SM;6;0;0;6;MAT:1
 MAT:1
 NP-T-9010;1080
 NP-TF-9010;1105
@@ -12095,7 +12095,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261109-083103.txt;cuttingplan_20261109-083103.txt;dAo/bCJpTFASun7Wwbf0sy/cRvw9ywx5Z+Ug0bp2VKA=;Present;ORDERS
 ORDERS
-2705;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2705;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;700
 TE-H-18;695
@@ -12104,7 +12104,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2706;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2706;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;700
 TE-H-18;695
@@ -12113,7 +12113,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2707;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2707;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;700
 TE-H-18;695
@@ -12122,7 +12122,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2708;Függönycenter;1;735;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2708;Függönycenter;1;735;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;700
 TE-H-18;695
@@ -12131,7 +12131,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2709;Függönycenter;1;715;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2709;Függönycenter;1;715;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;680
 TE-H-18;675
@@ -12140,7 +12140,7 @@ MT-L2;1450
 END # MAT:1
 
 
-2710;Függönycenter;1;715;1450;2026-11-11;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
+2710;Függönycenter;1;715;1450;2026-11-12;ROL;TSIN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;680
 TE-H-18;675
@@ -12153,21 +12153,21 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261110-103951.txt;cuttingplan_20261110-103951.txt;kUXOP3vOe26hDbhIw4KmpMoFrpoJaeOn/onssMk9RjQ=;Present;ORDERS
 ORDERS
-2765;Tóth Á., Bcs.;1;605;1200;2026-11-11;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2765;Tóth Á., Bcs.;1;605;1200;2026-11-12;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;575
 ROL-P;578
 END # MAT:1
 
 
-2766;Tóth Á., Bcs.;1;605;1200;2026-11-11;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
+2766;Tóth Á., Bcs.;1;605;1200;2026-11-12;ROL;TET_NAGY;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;575
 ROL-P;578
 END # MAT:1
 
 
-2772;Szekér Zsolt, Pécs;1;570;1260;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2772;Szekér Zsolt, Pécs;1;570;1260;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;580
 TE-H-18;575
@@ -12176,7 +12176,7 @@ MT-L2;1260
 END # MAT:1
 
 
-2773;Szekér Zsolt, Pécs;1;570;1260;2026-11-11;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
+2773;Szekér Zsolt, Pécs;1;570;1260;2026-11-12;ROL;TSIN;Uveg;;SM;4;0;0;4;MAT:1
 MAT:1
 MT-T;580
 TE-H-18;575
@@ -12185,7 +12185,7 @@ MT-L2;1260
 END # MAT:1
 
 
-2775;Kiss Árnyékolás, Pécs;1;490;860;2026-11-11;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
+2775;Kiss Árnyékolás, Pécs;1;490;860;2026-11-12;ROL;RUG;Gyartasi;;SM;2;0;0;2;MAT:1
 MAT:1
 TE-R-23;460
 ROL-P;463
@@ -12196,7 +12196,7 @@ END # ORDERS
 
 /home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261110-123634.txt;cuttingplan_20261110-123634.txt;Hx1VOyl6QyIu7UvzjyxYZeGH1DZcU6RQZBeWvUY4sxg=;Present;ORDERS
 ORDERS
-937;Eged J., Bcs.;1;660;1800;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+937;Eged J., Bcs.;1;660;1800;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;654
 TE-H-32;637
@@ -12205,7 +12205,7 @@ SR-P-3000;640
 END # MAT:1
 
 
-940;Árnyhouse, Pécs;2;1550;1500;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+940;Árnyhouse, Pécs;2;1550;1500;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1544
 TE-H-32;1527
@@ -12214,7 +12214,7 @@ SR-P-3000;1530
 END # MAT:1
 
 
-941;Árnyhouse, Pécs;4;1490;850;2026-11-11;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
+941;Árnyhouse, Pécs;4;1490;850;2026-11-12;SR;T;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-T;1484
 TE-H-32;1467
@@ -12223,7 +12223,7 @@ SR-P-3000;1470
 END # MAT:1
 
 
-944;Berkes Balázs, Bcs;1;1000;2500;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+944;Berkes Balázs, Bcs;1;1000;2500;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;984
 TE-H-32;967
@@ -12232,12 +12232,54 @@ SR-P-3000;970
 END # MAT:1
 
 
-947;Szabó Viktor, Bcs;1;730;1370;2026-11-11;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
+947;Szabó Viktor, Bcs;1;730;1370;2026-11-12;SR;TN;Gyartasi;;SM;4;0;0;4;MAT:1
 MAT:1
 SR-FSN;714
 TE-H-32;697
 SR-Z;700
 SR-P-3000;700
+END # MAT:1
+
+
+END # ORDERS
+
+/home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261111-114758.txt;cuttingplan_20261111-114758.txt;cURSCkTBBomtTJdOfQPZ0u6iQkrTIhdrLm+PBVEQEuM=;Present;ORDERS
+ORDERS
+10003;RolettaMűhely;1;1900;1000;2026-11-12;ROL;SRTOK;Gyartasi;;SM;3;0;0;3;MAT:1
+MAT:1
+SR-T;1894
+TE-H-32;1877
+ROL-GYZ;1870
+END # MAT:1
+
+
+10004;RolettaMűhely;2;1530;1000;2026-11-12;ROL;SRTOK;Gyartasi;;SM;3;0;0;3;MAT:1
+MAT:1
+SR-T;1524
+TE-H-32;1507
+ROL-GYZ;1500
+END # MAT:1
+
+
+END # ORDERS
+
+/home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261111-120538.txt;cuttingplan_20261111-120538.txt;B7+3tGqqXPLLY+Yh0wqITPAIfUTFetx2BYlh3Spcxio=;Present;ORDERS
+ORDERS
+10004;10005;2;1755;3200;2026-11-12;NP;BOW;Gyartasi;;SM;1;0;0;1;MAT:1
+MAT:1
+NP-SZ;1715
+END # MAT:1
+
+
+10005;10005;2;1755;3200;2026-11-12;NP;BOW;Gyartasi;;SM;1;0;0;1;MAT:1
+MAT:1
+NP-ROLL70-7000;1711
+END # MAT:1
+
+
+10006;10005;2;1755;3200;2026-11-12;NP;BOW;Gyartasi;;SM;1;0;0;1;MAT:1
+MAT:1
+NP-BAR12-4000;1670
 END # MAT:1
 
 
