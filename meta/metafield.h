@@ -56,6 +56,12 @@ public:
     QVariant GetValue(char* s) const
     {
         char* ptr = GetPtr(s);
+
+        zInfo(
+            QString("GetValue type=%1 id=%2")
+                .arg(type.name())
+                .arg(type.id()));
+
         if(type.id()==QMetaType::QVariant){
             //QMetaType qvm = type;
             //QVariant v(qvm, ptr);
@@ -65,34 +71,42 @@ public:
             // QVariant v(*p);
             // return v;
             return {};
-        } else if(type.id()<QMetaType::User){
+        }
+        if(type.id()<QMetaType::User){
             QVariant v(type, ptr);
-            return v;
-        } else {
-            QMetaType qvm = QMetaType(QMetaType::QVariant);
-            bool cc = QMetaType::canConvert(type, qvm);
 
             zInfo(
-                QString("ENUM %1 cc=%2")
-                    .arg(type.name())
-                    .arg(cc));
+                QString("builtin valid=%1 type=%2")
+                    .arg(v.isValid())
+                    .arg(v.metaType().name()));
 
-            QVariant v;
-            if(cc){
-                bool ok = QMetaType::convert(type, ptr, qvm, &v);
-
-                zInfo(
-                    QString("ENUM %1 ok=%2 valid=%3")
-                        .arg(type.name())
-                        .arg(ok)
-                        .arg(v.isValid()));
-
-                if(!ok){
-                    zInfo("cc err");
-                }
-            }
             return v;
         }
+
+        QMetaType qvm = QMetaType(QMetaType::QVariant);
+        bool cc = QMetaType::canConvert(type, qvm);
+
+        zInfo(
+            QString("usertype %1 cc=%2")
+                .arg(type.name())
+                .arg(cc));
+
+        QVariant v;
+        if(cc){
+            bool ok = QMetaType::convert(type, ptr, qvm, &v);
+
+            zInfo(
+                QString(
+                    "convert ok=%1 valid=%2 resultType=%3")
+                    .arg(ok)
+                    .arg(v.isValid())
+                    .arg(
+                        v.isValid()
+                            ? v.metaType().name()
+                            : "<invalid>"));
+        }
+        return v;
+
     }
 
 };

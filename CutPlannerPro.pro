@@ -236,6 +236,7 @@ HEADERS += \
     meta/collectiontraits.h \
     meta/discoverynode.h \
     meta/discoverypath.h \
+    meta/enumtraits.h \
     meta/icollectionaccessor.h \
     meta/imetadata.h \
     meta/meta.h \

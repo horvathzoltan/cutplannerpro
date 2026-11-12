@@ -178,6 +178,16 @@ public:
             f.collectionAccessor = &accessor;
         }
 
+        if constexpr(std::is_enum_v<FieldType>)
+        {
+            //RegisterEnumConverters<FieldType>();
+
+            zInfo(
+                QString("ENUM FIELD %1 type=%2")
+                    .arg(name)
+                    .arg(typeid(FieldType).name()));
+        }
+
         int offset = field_ptr - (char*)(&_instance);
         f._offset = offset;
 
