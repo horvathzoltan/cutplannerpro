@@ -1,129 +1,145 @@
-Abszolút. Most már van elég információnk ahhoz, hogy ne ötleteljünk, hanem végigverhető tervet rakjunk össze.
+Igen! Szerintem most jutottál el a legszebb architektúrához. És szerintem az előző EnumTraits tervet már el is lehet dobni. 🙂
 
-A cél:
+Ami nekem tetszik a gondolatodban:
 
-enum class WorkSheetPresence
-
-
-esetén automatikusan működjön:
-
-WorkSheetPresence
-    ↔ QString
-
-
-a Meta rendszerben.
-
-És ne kelljen külön serializer-hardcode.
-
-1. lépés - ismerje fel a Meta az enumot
-
-metadata.h
-
-először add hozzá:
-
-#include <type_traits>
+AddMetaField()
+    ↓
+látja hogy enum
+    ↓
+megkeresi az enumhoz tartozó utilst
+    ↓
+ha kell, regisztrálja a konvertert
 
 
-majd az AddField()-be:
+A Meta ugyanúgy automatikus marad.
 
-if constexpr(std::is_enum_v<FieldType>)
-{
-    zInfo(
-        QString("enum=")
-        + QString(typeid(FieldType).name()));
-}
-
-
-Várható log:
-
-enum=17WorkSheetPresence
-enum=12SizeCalcMode
-enum=10NamedColor
-enum=11SurfaceType
-
-
-Ha ez megvan:
-
-✅ enum felismerés kész
-
-2. lépés - EnumTraits bevezetése
-
-Új fájl:
-
-enumtraits.h
-
-#pragma once
-
-template<typename T>
-struct EnumTraits;
-
-
-Semmi más.
-
-3. lépés - 1 enum kipróbálása
-
-Mondjuk:
-
-WorkSheetPresence
-
-
-specializáció:
+De nem kell:
 
 template<>
 struct EnumTraits<WorkSheetPresence>
+
+
+specializációkat gyártani sehol.
+
+Én valami ilyesmit képzelek.
+
+1. Egységes interfész
+class IEnumUtils
 {
-    static QString ToString(
-        WorkSheetPresence v)
+public:
+    virtual ~IEnumUtils() = default;
+
+    virtual std::type_index EnumType() const = 0;
+
+    virtual void RegisterConverters() = 0;
+};
+
+2. Registry
+class EnumUtilsRegistry
+{
+public:
+
+    static void Register(
+        IEnumUtils* utils);
+
+    static IEnumUtils* Find(
+        std::type_index t);
+};
+
+3. Generic mixin
+
+Ez a lényeg.
+
+template<
+    typename EnumType,
+    typename Derived>
+class EnumUtilsBase
+    : public IEnumUtils
+{
+public:
+
+    std::type_index EnumType() const override
     {
-        return ::ToString(v);
+        return std::type_index(
+            typeid(EnumType));
+    }
+
+    void RegisterConverters()
+        override
+    {
+        static bool done = false;
+
+        if(done)
+            return;
+
+        done = true;
+
+        QMetaType::registerConverter<
+            EnumType,
+            QString>(
+            EnumType v
+            {
+                return
+                    Derived::ToString(v);
+            });
+
+        QMetaType::registerConverter<
+            QString,
+            EnumType>(
+            const QString& s
+            {
+                return
+                    Derived::Parse(s);
+            });
+    }
+};
+
+4. WorkSheetPresenceUtils
+
+Ekkor:
+
+class WorkSheetPresenceUtils
+    : public EnumUtilsBase<
+          WorkSheetPresence,
+          WorkSheetPresenceUtils>
+{
+public:
+
+    static QString ToString(
+        WorkSheetPresence s)
+    {
+        ...
     }
 
     static WorkSheetPresence Parse(
         const QString& s)
     {
-        return ::ParseWorkSheetPresence(s);
+        ...
     }
 };
 
+5. Automatikus regisztráció
 
-A te meglévő függvényeidet kell hívni.
+Pl.
 
-4. lépés - Qt konverter regisztráció
+static WorkSheetPresenceUtils
+    _instance;
 
-Új helper:
 
-template<typename EnumType>
-void RegisterEnumConverters()
+és konstruktor:
+
+WorkSheetPresenceUtils::
+WorkSheetPresenceUtils()
 {
-    static bool done = false;
-
-    if(done)
-        return;
-
-    done = true;
-
-    QMetaType::registerConverter<
-        EnumType,
-        QString>(
-        EnumType v
-        {
-            return EnumTraits<
-                EnumType>::ToString(v);
-        });
-
-    QMetaType::registerConverter<
-        QString,
-        EnumType>(
-        const QString& s
-        {
-            return EnumTraits<
-                EnumType>::Parse(s);
-        });
+    EnumUtilsRegistry::
+        Register(this);
 }
 
-5. lépés - AddField bekötés
+6. AddField
 
-A meglévő:
+Na itt lesz szép.
+
+A mostani:
 
 if constexpr(std::is_enum_v<FieldType>)
 {
@@ -131,72 +147,84 @@ if constexpr(std::is_enum_v<FieldType>)
 }
 
 
-blokk legyen:
+helyett:
 
 if constexpr(std::is_enum_v<FieldType>)
 {
-    RegisterEnumConverters<
-        FieldType>();
-}
+    auto* utils =
+        EnumUtilsRegistry::Find(
+            std::type_index(
+                typeid(FieldType)));
 
-6. lépés - log ellenőrzés
-
-A mostani:
-
-ENUM WorkSheetPresence cc=0
-
-
-helyett ezt várod:
-
-ENUM WorkSheetPresence cc=1
-
-7. lépés - QVariant ellenőrzés
-
-A mostani:
-
-presence -> valid=0
-
-
-helyett valami:
-
-presence -> QString valid=1
-
-
-vagy
-
-presence -> WorkSheetPresence valid=1
-
-
-attól függően, hogyan kezeli a Qt.
-
-8. lépés - formatter
-
-Ha a QVariant már valid:
-
-A formatterben:
-
-if(value.metaType().id() ==
-   QMetaType::QString)
-{
-    return value.toString();
+    if(utils)
+    {
+        utils->RegisterConverters();
+    }
 }
 
 
-nagy valószínűséggel már elegendő lesz.
+Amitől ez nagyon jó:
 
-Megállási pont
+A Meta nem tudja mi az:
 
-Ha idáig eljutsz és a logban ez látszik:
+WorkSheetPresence
+SizeCalcMode
+SurfaceType
 
-ENUM WorkSheetPresence cc=1
+
+nem függ semmitől.
+
+Csak ezt tudja:
+
+std::type_index
 
 
-akkor megállunk.
+Az enum saját utilsa pedig tudja:
 
-Nem írunk még enum accessort.
+enum ↔ string
 
-Nem bonyolítjuk túl.
 
-Előbb nézzük meg, hogy a Qt konverter-regisztráció önmagában megoldja-e a problémát.
+és saját magát regisztrálja.
 
-Szerintem ez a legkisebb, auditálható, lépésenként végrehajtható út. 🚀
+Őszintén szerintem ez szebb, mint az EnumTraits.
+
+Mert:
+
+WorkSheetPresence
+    ↓
+WorkSheetPresenceUtils
+
+
+kapcsolat természetes.
+
+Viszont:
+
+WorkSheetPresence
+    ↓
+EnumTraits<WorkSheetPresence>
+
+
+egy mesterséges adapterréteg.
+
+És a legjobb rész:
+
+Ha valaki új enumot csinál:
+
+enum class NewState
+
+
+akkor elég megírni:
+
+NewStateUtils
+
+
+ami örököl:
+
+EnumUtilsBase
+
+
+és az egész Meta rendszer automatikusan működni fog.
+
+Szerintem ez az irány hosszú távon sokkal elegánsabb. 🚀
+
+észrevételek: az addfield adjon hibát, ha valaki nem a bázisinterfészből származó enumot próbál reggelni
