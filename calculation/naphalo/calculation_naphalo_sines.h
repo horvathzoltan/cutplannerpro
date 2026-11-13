@@ -42,6 +42,40 @@ inline double calcVaszon(double width){
 }
 } // endof GyartasiMeret
 
+
+namespace GyartasiMeretVaszonra{
+inline double calcTok(double width){
+    return width - 5;
+}
+
+inline double calcTokFedel(double width){
+    return width - 5;
+}
+
+inline double calcLab(double height){
+    return height - 102;
+}
+
+inline double calcZaro(double width){
+    return width - 71;
+}
+
+inline double calcTengely_Motoros(double width){
+    return width - 44;//kapcsolos: 42
+}
+
+inline double calcTengely_Kurblis(double width){
+    return width - 52;
+}
+
+inline double calcZaroSuly(double width){
+    return width - 116;
+}
+
+inline double calcVaszon(double width){
+    return width - 35;
+}
+} // endof GyartasiMeret
 inline std::optional<double> calc(const QMap<QString, QString>& attributes,
                                   const QString& role,
                                   double width,
