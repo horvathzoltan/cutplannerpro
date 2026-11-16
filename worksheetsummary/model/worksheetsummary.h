@@ -16,7 +16,6 @@ enum class WorkSheetPresence
     Unknown
 };
 
-
 namespace WorkSheetPresenceUtils{
 
 inline QString toDisplayText(WorkSheetPresence s){
@@ -46,23 +45,6 @@ inline WorkSheetPresence fromCsv(const QString& s) {
 }
 
 }
-
-
-struct WorkSheetPresenceCsvBinding
-{
-    using ValueType =
-        WorkSheetPresence;
-
-    static QString toCsv(WorkSheetPresence v)
-    {
-        return WorkSheetPresenceUtils::toCsv(v);
-    }
-
-    static WorkSheetPresence fromCsv(const QString& s)
-    {
-        return WorkSheetPresenceUtils::fromCsv(s);
-    }
-};
 
 struct WorkSheetSummary
 {

@@ -240,34 +240,48 @@ void TestManager::runBuildSchemaTest()
     zInfo(data_txt);
 
 
-    auto* utils =
-        EnumUtilsRegistry::Find(
-            std::type_index(
-                typeid(
-                    WorkSheetPresence)));
+    const MetaField* presenceField = nullptr;
+
+    for(const auto& f :
+         WorkSheetSummary::Meta().fieldsRef())
+    {
+        if(f.name == "presence")
+        {
+            presenceField = &f;
+            break;
+        }
+    }
 
     zInfo(
-        QString("EnumUtils found=%1")
-            .arg(utils != nullptr));
+        QString(
+            "presence field found=%1")
+            .arg(
+                presenceField != nullptr));
+
+    if(presenceField)
+    {
+        zInfo(
+            QString(
+                "csvExport attached=%1")
+                .arg(
+                    presenceField
+                        ->adapters
+                        .csvExport
+                    != nullptr));
+    }
 
 
-    const TypeCsvAdapter* adapter =
-        TypeCsvAdapterRegistry::Find(
-            std::type_index(
-                typeid(
-                    WorkSheetPresence)));
-
-    zInfo(
-        QString("Adapter found=%1")
-            .arg(adapter != nullptr));
-
-    if(adapter)
+    if(presenceField &&
+        presenceField->adapters.csvExport)
     {
         WorkSheetPresence p =
             WorkSheetPresence::Present;
 
         QString text =
-            adapter->toCsv(&p);
+            presenceField
+                ->adapters
+                .csvExport
+                ->toCsv(&p);
 
         zInfo(
             QString(
@@ -275,22 +289,28 @@ void TestManager::runBuildSchemaTest()
                 .arg(text));
     }
 
-    if(adapter)
+    if(presenceField &&
+        presenceField->adapters.csvExport)
     {
         WorkSheetPresence p =
             WorkSheetPresence::Unknown;
 
-        adapter->fromCsv(
-            "Missing",
-            &p);
+        presenceField
+            ->adapters
+            .csvExport
+            ->fromCsv(
+                "Missing",
+                &p);
 
         QString text =
-            adapter->toCsv(&p);
+            presenceField
+                ->adapters
+                .csvExport
+                ->toCsv(&p);
 
         zInfo(
             QString(
                 "Roundtrip -> %1")
                 .arg(text));
     }
-
 }

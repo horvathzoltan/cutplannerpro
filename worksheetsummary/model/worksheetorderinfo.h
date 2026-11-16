@@ -26,8 +26,7 @@ struct WorkSheetOrderInfo
 
     QUuid productTypeId;
     QUuid productSubtypeId;
-    SizeCalcMode calcMode =
-        SizeCalcMode::Unknown;
+    SizeCalcMode calcMode = SizeCalcMode::Unknown;
 
     int requestCount = 0;
 
@@ -53,3 +52,9 @@ public:
     static MetaData<WorkSheetOrderInfo>& Meta();
     static void MetaInit();
 };
+
+
+
+
+
+

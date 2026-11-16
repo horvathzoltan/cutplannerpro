@@ -4,7 +4,6 @@
 #include <QMetaType>
 #include <QString>
 #include <QVariant>
-#include <meta/enum/enumutilsregistry.h>
 #include "common/logger.h"
 #include "collectiontraits.h"
 #include "metafield.h"
@@ -14,6 +13,7 @@
 #include "imetadata.h"
 #include "metaregistry.h"
 #include "qlistaccessor.h"
+#include "meta/typeadapter/typecsv_binding.h"
 
 //#define AddMetaField(b) _meta.AddField(#b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b));
 #define AddMetaField(b) _meta.AddField< decltype(_meta._instance.b) >( #b, QMetaType::fromType<decltype(_meta._instance.b)>(), (char*)(&_meta._instance.b))
@@ -34,6 +34,14 @@
 #define SetMetaIdMegnev(t, a, b) setMetaIdMegnev(FieldName(t,a), FieldName(t,b))
 #define AddMegnev(t, a) addMetaIdMegnev(FieldName(t,a))
 #define AddCode(t, a) addMetaIdCode(FieldName(t,a))
+
+
+enum class BindContext
+{
+    CsvExport,
+    CsvImport,
+    Display
+};
 
 template<typename T>
 class MetaData : public IMetaData{
@@ -164,8 +172,32 @@ public:
         f.name = name;
         f.wcode = _baseWcode+"::"+f.name;
         f.type = t;
-
         f.declaredType = std::type_index(typeid(FieldType));
+        //f.adapters.csvExport = FieldAdapterRegistry::Find_CsvExport(f.wcode);
+
+        if(f.adapters.csvExport)
+        {
+            if(
+                f.adapters.csvExport->valueType
+                !=
+                f.declaredType)
+            {
+                zError(
+                    QString(
+                        "FieldCsvAdapter type mismatch: %1")
+                        .arg(
+                            f.wcode));
+            }
+        }
+
+        if(f.adapters.csvExport)
+        {
+            zInfo(
+                QString(
+                    "Field adapter attached: %1")
+                    .arg(
+                        f.wcode));
+        }
 
         zInfo(QString("declared=") + QString(typeid(FieldType).name()));
 
@@ -524,6 +556,48 @@ public:
             + fields.join(';');
     }
 
+
+    template<typename Binding>
+    void Bind(
+        const QString& fieldName,
+        BindContext context)
+    {
+        int ix = GetMetaFieldIx( fieldName);
+
+        if(ix < 0)
+        {
+            zError(
+                QString(
+                    "Meta field not found: %1")
+                    .arg(fieldName));
+            return;
+        }
+
+        auto& field = _fields[ix];
+
+        switch(context)
+        {
+        case BindContext::CsvExport:
+            field.adapters.csvExport =CreateCsvExportAdapter<Binding>();
+            break;
+        }
+    }
+
+
+    template<typename Binding>
+    static const TypeCsvAdapter*
+    CreateCsvExportAdapter()
+    {
+        static TypeCsvAdapter adapter;
+
+        adapter.valueType =std::type_index(typeid(typename Binding::ValueType));
+
+        adapter.toCsv =&TypeCsvBinding<Binding>::ToCsv;
+
+        adapter.fromCsv =&TypeCsvBinding<Binding>::FromCsv;
+
+        return &adapter;
+    }
 };
 
 

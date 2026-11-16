@@ -1,5 +1,7 @@
 #include "worksheetmaterialinfo.h"
 
+#include <meta_binders/csv/Material_BarcodeBinding.h>
+
 
 MetaData<WorkSheetMaterialInfo> WorkSheetMaterialInfo::_meta;
 
@@ -20,7 +22,8 @@ void WorkSheetMaterialInfo::MetaInit()
     AddMetaField(materialId);
     AddMetaField(cutLengthMm);
 
-    _meta.setInitialized();
+    _meta.Bind<Material_BarcodeBinding>("materialId",BindContext::CsvExport);
 
+    _meta.setInitialized();
     _meta.RegisterSelf();
 }

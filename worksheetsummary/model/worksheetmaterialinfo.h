@@ -2,6 +2,7 @@
 
 #include "meta/meta.h"
 #include <QUuid>
+#include <materials/registry/material_registry.h>
 
 
 // 1 rekord = 1 konkrét levágott anyag

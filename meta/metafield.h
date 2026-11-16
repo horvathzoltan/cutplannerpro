@@ -2,12 +2,15 @@
 
 #include "common/logger.h"
 #include "icollectionaccessor.h"
-#include "meta/typeadapter/typecsvadapter.h"
+#include "meta/typeadapter/typecsv_adapter.h"
 #include "metavalue.h"
 #include <QMetaType>
 #include <typeindex>
-#include <meta/typeadapter/typecsvadapter_registry.h>
 
+struct MetaFieldAdapters
+{
+    const TypeCsvAdapter* csvExport = nullptr;
+};
 
 struct MetaFieldBase{
 public:
@@ -19,6 +22,8 @@ public:
 
     std::type_index itemType =
         std::type_index(typeid(void));
+
+    MetaFieldAdapters adapters;
 
     RefType refType=RefType::None;
 
@@ -64,6 +69,21 @@ public:
                 .arg(type.name())
                 .arg(type.id()));
 
+        if(adapters.csvExport)
+        {
+            QString text =
+                adapters.csvExport->toCsv(ptr);
+
+            zInfo(
+                QString(
+                    "field adapter %1 -> %2")
+                    .arg(wcode)
+                    .arg(text));
+
+            return text;
+        }
+
+
         if(type.id()==QMetaType::QVariant){
             //QMetaType qvm = type;
             //QVariant v(qvm, ptr);
@@ -85,24 +105,6 @@ public:
             return v;
         }
 
-        const TypeCsvAdapter* adapter =
-            TypeCsvAdapterRegistry::Find(
-                declaredType);
-
-        if(adapter)
-        {
-            QString text =
-                adapter->toCsv(ptr);
-
-            zInfo(
-                QString(
-                    "adapter %1 -> %2")
-                    .arg(
-                        declaredType.name())
-                    .arg(text));
-
-            return text;
-        }
 
         return {};
 
