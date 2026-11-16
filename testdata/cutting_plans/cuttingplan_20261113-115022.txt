@@ -1,0 +1,21 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"950";"Atiza 2000, Szolnok";410;1340;420;;4;2;2;"";MT-T;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"950";"Atiza 2000, Szolnok";410;1340;415;;4;2;2;"";TE-H-18;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"950";"Atiza 2000, Szolnok";410;1340;403;;4;2;2;"";MT-Z+P;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"950";"Atiza 2000, Szolnok";410;1340;1340;;4;2;2;"";MT-L2;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"953";"Unimont, Szeged";1650;2350;1644;;1;1;0;"";SR-T;Width;false;2026.11.25;SR;T;;SM;Gyartasi;UNKNOWN
+"953";"Unimont, Szeged";1650;2350;1627;;1;1;0;"";TE-H-32;Width;false;2026.11.25;SR;T;;SM;Gyartasi;UNKNOWN
+"953";"Unimont, Szeged";1650;2350;1630;;1;1;0;"";SR-Z;Width;false;2026.11.25;SR;T;;SM;Gyartasi;UNKNOWN
+"953";"Unimont, Szeged";1650;2350;1630;;1;1;0;"";SR-P-3000;Width;false;2026.11.25;SR;T;;SM;Gyartasi;UNKNOWN
+"956";"Árnyhouse, Pécs";690;1100;700;;1;0;1;"";MT-T;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"956";"Árnyhouse, Pécs";690;1100;695;;1;0;1;"";TE-H-18;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"956";"Árnyhouse, Pécs";690;1100;683;;1;0;1;"";MT-Z+P;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"956";"Árnyhouse, Pécs";690;1100;1100;;1;0;1;"";MT-L2;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"957";"Árnyhouse, Pécs";640;940;650;;2;1;1;"";MT-T;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"957";"Árnyhouse, Pécs";640;940;645;;2;1;1;"";TE-H-18;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"957";"Árnyhouse, Pécs";640;940;633;;2;1;1;"";MT-Z+P;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"957";"Árnyhouse, Pécs";640;940;940;;2;1;1;"";MT-L2;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"958";"Árnyhouse, Pécs";935;935;945;;1;1;0;"";MT-T;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"958";"Árnyhouse, Pécs";935;935;940;;1;1;0;"";TE-H-18;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"958";"Árnyhouse, Pécs";935;935;928;;1;1;0;"";MT-Z+P;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
+"958";"Árnyhouse, Pécs";935;935;935;;1;1;0;"";MT-L2;Width;false;2026.11.20;SR;MINIT;;SM;Uveg;UNKNOWN
