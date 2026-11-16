@@ -1,9 +1,13 @@
 #pragma once
 
+#include "meta/typeadapter/typecsv_binding.h"
 #include "worksheetsummary/model/worksheetorderinfo.h"
 #include <QString>
 #include <QByteArray>
 #include "meta/meta.h"
+
+// #include "meta/enum/enumutilsbase.h"
+// #include "meta/enum/enumutilsregistry.h"
 
 enum class WorkSheetPresence
 {
@@ -11,6 +15,7 @@ enum class WorkSheetPresence
     Missing,
     Unknown
 };
+
 
 namespace WorkSheetPresenceUtils{
 
@@ -41,6 +46,23 @@ inline WorkSheetPresence fromCsv(const QString& s) {
 }
 
 }
+
+
+struct WorkSheetPresenceCsvBinding
+{
+    using ValueType =
+        WorkSheetPresence;
+
+    static QString toCsv(WorkSheetPresence v)
+    {
+        return WorkSheetPresenceUtils::toCsv(v);
+    }
+
+    static WorkSheetPresence fromCsv(const QString& s)
+    {
+        return WorkSheetPresenceUtils::fromCsv(s);
+    }
+};
 
 struct WorkSheetSummary
 {

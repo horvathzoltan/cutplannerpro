@@ -2,9 +2,11 @@
 
 #include "common/logger.h"
 #include "icollectionaccessor.h"
+#include "meta/typeadapter/typecsvadapter.h"
 #include "metavalue.h"
 #include <QMetaType>
 #include <typeindex>
+#include <meta/typeadapter/typecsvadapter_registry.h>
 
 
 struct MetaFieldBase{
@@ -83,29 +85,26 @@ public:
             return v;
         }
 
-        QMetaType qvm = QMetaType(QMetaType::QVariant);
-        bool cc = QMetaType::canConvert(type, qvm);
+        const TypeCsvAdapter* adapter =
+            TypeCsvAdapterRegistry::Find(
+                declaredType);
 
-        zInfo(
-            QString("usertype %1 cc=%2")
-                .arg(type.name())
-                .arg(cc));
-
-        QVariant v;
-        if(cc){
-            bool ok = QMetaType::convert(type, ptr, qvm, &v);
+        if(adapter)
+        {
+            QString text =
+                adapter->toCsv(ptr);
 
             zInfo(
                 QString(
-                    "convert ok=%1 valid=%2 resultType=%3")
-                    .arg(ok)
-                    .arg(v.isValid())
+                    "adapter %1 -> %2")
                     .arg(
-                        v.isValid()
-                            ? v.metaType().name()
-                            : "<invalid>"));
+                        declaredType.name())
+                    .arg(text));
+
+            return text;
         }
-        return v;
+
+        return {};
 
     }
 

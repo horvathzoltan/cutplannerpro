@@ -1,5 +1,7 @@
 #include "worksheetsummary.h"
 
+#include <meta/typeadapter/typecsv_binding.h>
+
 /*
 #include "meta/meta.h"
 
@@ -24,6 +26,8 @@ void WorkSheetSummary::MetaInit()
     if(_meta.isInitialized())
         return;
 
+    TypeCsvAdapterRegistry::RegisterBinding<WorkSheetPresenceCsvBinding>();
+
     AddMetaBase(WorkSheetSummary);
 
     AddMetaField(filePath);
@@ -31,7 +35,6 @@ void WorkSheetSummary::MetaInit()
     AddMetaField(fileHash);
     AddMetaField(presence);
     AddMetaField(orders);
-
 
     _meta.setInitialized();
     _meta.RegisterSelf();

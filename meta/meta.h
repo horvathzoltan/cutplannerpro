@@ -4,6 +4,7 @@
 #include <QMetaType>
 #include <QString>
 #include <QVariant>
+#include <meta/enum/enumutilsregistry.h>
 #include "common/logger.h"
 #include "collectiontraits.h"
 #include "metafield.h"
@@ -178,15 +179,31 @@ public:
             f.collectionAccessor = &accessor;
         }
 
-        if constexpr(std::is_enum_v<FieldType>)
-        {
-            //RegisterEnumConverters<FieldType>();
+        // if constexpr(std::is_enum_v<FieldType>)
+        // {
+        //     auto* utils =
+        //         EnumUtilsRegistry::Find(
+        //             std::type_index(
+        //                 typeid(FieldType)));
 
-            zInfo(
-                QString("ENUM FIELD %1 type=%2")
-                    .arg(name)
-                    .arg(typeid(FieldType).name()));
-        }
+        //     if(!utils)
+        //     {
+        //         zError(
+        //             QString(
+        //                 "EnumUtils not registered: %1")
+        //                 .arg(
+        //                     typeid(FieldType).name()));
+        //     }
+        //     else
+        //     {
+        //         utils->RegisterConverters();
+        //     }
+
+        //     zInfo(
+        //         QString("ENUM FIELD %1 type=%2")
+        //             .arg(name)
+        //             .arg(typeid(FieldType).name()));
+        // }
 
         int offset = field_ptr - (char*)(&_instance);
         f._offset = offset;

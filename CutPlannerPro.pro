@@ -36,6 +36,8 @@ SOURCES += \
     materials/repository/material_paintgroup_repository.cpp \
     materials/repository/material_rolegroup_repository.cpp \
     materials/repository/material_storagegrouprepository.cpp \
+    meta/enum/enumutilsregistry.cpp \
+    meta/typeadapter/typecsvadapter_registry.cpp \
     meta/typehelper.cpp \
     model/cutting/optimizer/cutengine.cpp \
     model/cutting/optimizer/fitengine.cpp \
@@ -236,6 +238,9 @@ HEADERS += \
     meta/collectiontraits.h \
     meta/discoverynode.h \
     meta/discoverypath.h \
+    meta/enum/enumutilsbase.h \
+    meta/enum/enumutilsregistry.h \
+    meta/enum/ienumutils.h \
     meta/enumtraits.h \
     meta/icollectionaccessor.h \
     meta/imetadata.h \
@@ -251,6 +256,9 @@ HEADERS += \
     meta/rbcsv_modelworker.h \
     meta/rbcsv_schemavalueprovider.h \
     meta/rbcsv_testvalueprovider.h \
+    meta/typeadapter/typecsv_binding.h \
+    meta/typeadapter/typecsvadapter.h \
+    meta/typeadapter/typecsvadapter_registry.h \
     meta/typehelper.h \
     model/cutting/optimizer/bundle_overcuttingdetector.h \
     model/cutting/plan/requeststate.h \

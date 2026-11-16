@@ -239,4 +239,58 @@ void TestManager::runBuildSchemaTest()
     zInfo("=== DATA EXPORT ===");
     zInfo(data_txt);
 
+
+    auto* utils =
+        EnumUtilsRegistry::Find(
+            std::type_index(
+                typeid(
+                    WorkSheetPresence)));
+
+    zInfo(
+        QString("EnumUtils found=%1")
+            .arg(utils != nullptr));
+
+
+    const TypeCsvAdapter* adapter =
+        TypeCsvAdapterRegistry::Find(
+            std::type_index(
+                typeid(
+                    WorkSheetPresence)));
+
+    zInfo(
+        QString("Adapter found=%1")
+            .arg(adapter != nullptr));
+
+    if(adapter)
+    {
+        WorkSheetPresence p =
+            WorkSheetPresence::Present;
+
+        QString text =
+            adapter->toCsv(&p);
+
+        zInfo(
+            QString(
+                "Present -> %1")
+                .arg(text));
+    }
+
+    if(adapter)
+    {
+        WorkSheetPresence p =
+            WorkSheetPresence::Unknown;
+
+        adapter->fromCsv(
+            "Missing",
+            &p);
+
+        QString text =
+            adapter->toCsv(&p);
+
+        zInfo(
+            QString(
+                "Roundtrip -> %1")
+                .arg(text));
+    }
+
 }
