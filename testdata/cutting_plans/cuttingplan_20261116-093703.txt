@@ -1,0 +1,22 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"578";"Atiza 2000, Szolnok";1450;1450;1420;;1;0;1;"RAL EPOSZKRÉM";NP-T;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"578";"Atiza 2000, Szolnok";1450;1450;1445;;1;0;1;"RAL EPOSZKRÉM";NP-TF;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"578";"Atiza 2000, Szolnok";1450;1450;1327;;1;0;1;"RAL EPOSZKRÉM";NP-CZ;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"578";"Atiza 2000, Szolnok";1450;1450;1347;;1;0;1;"RAL EPOSZKRÉM";NP-CL2+CLT2+CLBR2;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"578";"Atiza 2000, Szolnok";1450;1450;1340;;1;0;1;"RAL EPOSZKRÉM";NP-ROLL70-7000;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"578";"Atiza 2000, Szolnok";1450;1450;1275;;1;0;1;"RAL EPOSZKRÉM";NP-BAR20-6000;Width;false;2026.11.27;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"573";"Szajkó, Győr";1200;3360;1195;;1;0;1;"RAL 8017";NP-T;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"573";"Szajkó, Győr";1200;3360;1195;;1;0;1;"RAL 8017";NP-TF;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"573";"Szajkó, Győr";1200;3360;1160;;1;0;1;"RAL 8017";NP-SZ;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"573";"Szajkó, Győr";1200;3360;1156;;1;0;1;"RAL 8017";NP-ROLL70-7000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"573";"Szajkó, Győr";1200;3360;1115;;1;0;1;"RAL 8017";NP-BAR12-4000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"574";"Szajkó, Győr";1200;3360;1195;;1;1;0;"RAL 8017";NP-T;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"574";"Szajkó, Győr";1200;3360;1195;;1;1;0;"RAL 8017";NP-TF;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"574";"Szajkó, Győr";1200;3360;1160;;1;1;0;"RAL 8017";NP-SZ;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"574";"Szajkó, Győr";1200;3360;1156;;1;1;0;"RAL 8017";NP-ROLL70-7000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"574";"Szajkó, Győr";1200;3360;1115;;1;1;0;"RAL 8017";NP-BAR12-4000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"575";"Szajkó, Győr";2280;3360;2275;;1;1;0;"RAL 8017";NP-T;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"575";"Szajkó, Győr";2280;3360;2275;;1;1;0;"RAL 8017";NP-TF;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"575";"Szajkó, Győr";2280;3360;2240;;1;1;0;"RAL 8017";NP-SZ;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"575";"Szajkó, Győr";2280;3360;2236;;1;1;0;"RAL 8017";NP-ROLL70-7000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"575";"Szajkó, Győr";2280;3360;2195;;1;1;0;"RAL 8017";NP-BAR12-4000;Width;false;2026.11.30;NP;BOW;meghajtas=motoros;SM;Gyartasi;UNKNOWN
