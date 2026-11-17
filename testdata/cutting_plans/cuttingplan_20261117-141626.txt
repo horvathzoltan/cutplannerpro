@@ -1,0 +1,27 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2815";"Bor M.";450;1500;415;;1;0;1;"";TE-R-23;Width;false;2026.11.20;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2815";"Bor M.";450;1500;405;;1;0;1;"";ROL-P;Width;false;2026.11.20;ROL;ALAP;;SM;Gyartasi;UNKNOWN
+"2818";"Árnyhouse, Pécs";775;1275;785;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2818";"Árnyhouse, Pécs";775;1275;780;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2818";"Árnyhouse, Pécs";775;1275;770;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2818";"Árnyhouse, Pécs";775;1275;1275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2819";"Árnyhouse, Pécs";775;1275;785;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2819";"Árnyhouse, Pécs";775;1275;780;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2819";"Árnyhouse, Pécs";775;1275;770;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2819";"Árnyhouse, Pécs";775;1275;1275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2820";"Árnyhouse, Pécs";775;1275;785;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2820";"Árnyhouse, Pécs";775;1275;780;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2820";"Árnyhouse, Pécs";775;1275;770;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2820";"Árnyhouse, Pécs";775;1275;1275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2821";"Árnyhouse, Pécs";775;1275;785;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2821";"Árnyhouse, Pécs";775;1275;780;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2821";"Árnyhouse, Pécs";775;1275;770;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2821";"Árnyhouse, Pécs";775;1275;1275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2822";"Árnyhouse, Pécs";775;1275;785;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2822";"Árnyhouse, Pécs";775;1275;780;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2822";"Árnyhouse, Pécs";775;1275;770;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2822";"Árnyhouse, Pécs";775;1275;1275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2823";"Árnyhouse, Pécs";575;275;585;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2823";"Árnyhouse, Pécs";575;275;580;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2823";"Árnyhouse, Pécs";575;275;570;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2823";"Árnyhouse, Pécs";575;275;275;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
