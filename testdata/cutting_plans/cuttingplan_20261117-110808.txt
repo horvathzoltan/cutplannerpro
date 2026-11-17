@@ -1,0 +1,25 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"961";"MolKomfort, Eger";700;1200;684;;1;0;1;"";SR-FSN;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"961";"MolKomfort, Eger";700;1200;667;;1;0;1;"";TE-H-32;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"961";"MolKomfort, Eger";700;1200;670;;1;0;1;"";SR-Z;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"961";"MolKomfort, Eger";700;1200;670;;1;0;1;"";SR-P-3000;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"962";"MolKomfort, Eger";700;1200;684;;1;1;0;"";SR-FSN;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"962";"MolKomfort, Eger";700;1200;667;;1;1;0;"";TE-H-32;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"962";"MolKomfort, Eger";700;1200;670;;1;1;0;"";SR-Z;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"962";"MolKomfort, Eger";700;1200;670;;1;1;0;"";SR-P-3000;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"963";"MolKomfort, Eger";725;1200;709;;1;1;0;"";SR-FSN;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"963";"MolKomfort, Eger";725;1200;692;;1;1;0;"";TE-H-32;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"963";"MolKomfort, Eger";725;1200;695;;1;1;0;"";SR-Z;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"963";"MolKomfort, Eger";725;1200;695;;1;1;0;"";SR-P-3000;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"964";"MolKomfort, Eger";820;1320;804;;1;0;1;"";SR-FSN;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"964";"MolKomfort, Eger";820;1320;787;;1;0;1;"";TE-H-32;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"964";"MolKomfort, Eger";820;1320;790;;1;0;1;"";SR-Z;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"964";"MolKomfort, Eger";820;1320;790;;1;0;1;"";SR-P-3000;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"967";"HZ-Ablak, Szeged";910;1235;920;;1;0;1;"";MT-T;Width;false;2026.11.25;SR;MINIT;;SM;Uveg;UNKNOWN
+"967";"HZ-Ablak, Szeged";910;1235;915;;1;0;1;"";TE-H-18;Width;false;2026.11.25;SR;MINIT;;SM;Uveg;UNKNOWN
+"967";"HZ-Ablak, Szeged";910;1235;903;;1;0;1;"";MT-Z+P;Width;false;2026.11.25;SR;MINIT;;SM;Uveg;UNKNOWN
+"967";"HZ-Ablak, Szeged";910;1235;1235;;1;0;1;"";MT-L2;Width;false;2026.11.25;SR;MINIT;;SM;Uveg;UNKNOWN
+"2812";"Fenstermann, Szolnok";315;350;325;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2812";"Fenstermann, Szolnok";315;350;320;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2812";"Fenstermann, Szolnok";315;350;310;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2812";"Fenstermann, Szolnok";315;350;350;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
