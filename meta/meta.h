@@ -192,20 +192,26 @@ public:
 
         if(f.adapters.csvExport)
         {
+            if(MetaLog::BuildSchema){
             zInfo(
                 QString(
                     "Field adapter attached: %1")
                     .arg(
                         f.wcode));
+            }
         }
 
-        zInfo(QString("declared=") + QString(typeid(FieldType).name()));
+        if(MetaLog::BuildSchema){
+            zInfo(QString("declared=") + QString(typeid(FieldType).name()));
+        }
 
         if constexpr(CollectionTraits<FieldType>::IsCollection)
         {
             using ItemType = typename CollectionTraits<FieldType>::ItemType;
             f.itemType = std::type_index(typeid(ItemType));
-            zInfo(QString("item=")+ QString(typeid(ItemType).name()));
+            if(MetaLog::BuildSchema){
+                zInfo(QString("item=")+ QString(typeid(ItemType).name()));
+            }
 
             static QListAccessor<ItemType> accessor;
             f.collectionAccessor = &accessor;
@@ -240,7 +246,8 @@ public:
         int offset = field_ptr - (char*)(&_instance);
         f._offset = offset;
 
-        if(_verbose){
+        if(MetaLog::BuildSchema){
+
             QString msg = QStringLiteral("AddField: ")
             +QString::number(offset)
                 +" "+t.name() + '('+QString::number(t.sizeOf())+")"

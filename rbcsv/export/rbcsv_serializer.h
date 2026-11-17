@@ -86,11 +86,13 @@ private:
                         (char*)currentObject):
                                      "NULL";
 
-                zInfo(
-                    QString("SerializeSection: %1 -> %2 valid=%3")
-                        .arg(field->name)
-                        .arg(value.metaType().name())
-                        .arg(value.isValid()));
+                if(MetaLog::Serialization){
+                    zInfo(
+                        QString("SerializeSection: %1 -> %2 valid=%3")
+                            .arg(field->name)
+                            .arg(value.metaType().name())
+                            .arg(value.isValid()));
+                }
 
                 record.append(
                     RbCsvValueFormatter::ToString(

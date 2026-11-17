@@ -3,6 +3,7 @@
 #include "common/logger.h"
 #include "icollectionaccessor.h"
 #include "meta/typeadapter/typecsv_adapter.h"
+#include "meta_log.h"
 #include "metavalue.h"
 #include <QMetaType>
 #include <typeindex>
@@ -64,22 +65,25 @@ public:
     {
         char* ptr = GetPtr(s);
 
-        zInfo(
-            QString("GetValue type=%1 id=%2")
-                .arg(type.name())
-                .arg(type.id()));
-
+        if(MetaLog::GetValue)
+        {
+            zInfo(
+                QString("GetValue type=%1 id=%2")
+                    .arg(type.name())
+                    .arg(type.id()));
+        }
         if(adapters.csvExport)
         {
             QString text =
                 adapters.csvExport->toCsv(ptr);
 
+            if(MetaLog::Bindings){
             zInfo(
                 QString(
                     "field adapter %1 -> %2")
                     .arg(wcode)
                     .arg(text));
-
+            }
             return text;
         }
 
@@ -97,11 +101,13 @@ public:
         if(type.id()<QMetaType::User){
             QVariant v(type, ptr);
 
-            zInfo(
-                QString("builtin valid=%1 type=%2")
-                    .arg(v.isValid())
-                    .arg(v.metaType().name()));
-
+            if(MetaLog::GetValue)
+            {
+                zInfo(
+                    QString("builtin valid=%1 type=%2")
+                        .arg(v.isValid())
+                        .arg(v.metaType().name()));
+            }
             return v;
         }
 

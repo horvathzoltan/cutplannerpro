@@ -3,6 +3,9 @@
 #include "meta_binders/csv/NamedColor_CsvBinding.h"
 #include "meta_binders/csv/SizeCalcMode_CsvBinding.h"
 #include "meta_binders/csv/SurfaceType_CsvBinding.h"
+#include "meta_binders/csv/ProductType_CodeBinding.h"
+#include "meta_binders/csv/ProductSubtype_CodeBinding.h"
+
 
 /*
 #include "meta/meta.h"
@@ -60,6 +63,8 @@ void WorkSheetOrderInfo::MetaInit()
     _meta.Bind<SizeCalcMode_CsvBinding>("calcMode",BindContext::CsvExport);
     _meta.Bind<SurfaceType_CsvBinding>("requiredSurface",BindContext::CsvExport);
     _meta.Bind<NamedColor_CsvBinding>("requiredColor",BindContext::CsvExport);
+    _meta.Bind<ProductType_CodeBinding>("productTypeId",BindContext::CsvExport);
+    _meta.Bind<ProductSubType_CodeBinding>("productSubtypeId",BindContext::CsvExport);
 
     _meta.setInitialized();
     _meta.RegisterSelf();

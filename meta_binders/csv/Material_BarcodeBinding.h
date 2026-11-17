@@ -6,23 +6,12 @@
 
 struct Material_BarcodeBinding
 {
-    static const MaterialMaster*FindMaterial(const QUuid& id)
-    {
-        return MaterialRegistry::instance().findById(id);
-    }
-
-    static const MaterialMaster* FindMaterial(const QString& barcode)
-    {
-        return MaterialRegistry::instance().findByBarcode(barcode);
-    }
-
-    using ValueType =
-        QUuid;
+    using ValueType = QUuid;
 
     static QString toCsv(
         const QUuid& materialId)
     {
-        auto* material = FindMaterial(materialId);
+        auto* material = MaterialRegistry::instance().findById(materialId);
 
         if(!material)
         {
@@ -41,7 +30,7 @@ struct Material_BarcodeBinding
     static QUuid fromCsv(
         const QString& barcode)
     {
-        auto* material =FindMaterial(barcode);
+        auto* material = MaterialRegistry::instance().findByBarcode(barcode);
 
         if(!material)
         {

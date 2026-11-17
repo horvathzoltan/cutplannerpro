@@ -240,6 +240,7 @@ HEADERS += \
     meta/icollectionaccessor.h \
     meta/imetadata.h \
     meta/meta.h \
+    meta/meta_log.h \
     meta/metadiscovery.h \
     meta/metadumpworker.h \
     meta/metafield.h \
@@ -256,6 +257,8 @@ HEADERS += \
     meta/typehelper.h \
     meta_binders/csv/Material_BarcodeBinding.h \
     meta_binders/csv/NamedColor_CsvBinding.h \
+    meta_binders/csv/ProductSubtype_CodeBinding.h \
+    meta_binders/csv/ProductType_CodeBinding.h \
     meta_binders/csv/SizeCalcMode_CsvBinding.h \
     meta_binders/csv/SurfaceType_CsvBinding.h \
     meta_binders/csv/WorkSheetPresence_CsvBinding.h \
