@@ -1,0 +1,7 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"581";"Ablakbeépítő, Mtúr.";4060;1780;4030;;1;0;1;"RAL 9010";NP-T-9010;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"581";"Ablakbeépítő, Mtúr.";4060;1780;4055;;1;0;1;"RAL 9010";NP-TF-9010;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"581";"Ablakbeépítő, Mtúr.";4060;1780;3937;;1;0;1;"RAL 9010";NP-CZ-9010;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"581";"Ablakbeépítő, Mtúr.";4060;1780;1677;;1;0;1;"RAL 9010";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"581";"Ablakbeépítő, Mtúr.";4060;1780;3950;;1;0;1;"RAL 9010";NP-ROLL78-7000;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"581";"Ablakbeépítő, Mtúr.";4060;1780;3885;;1;0;1;"RAL 9010";NP-BAR20-6000;Width;false;2026.11.30;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
