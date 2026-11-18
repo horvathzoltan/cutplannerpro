@@ -409,6 +409,23 @@ bool WorkSheetSummaryRepository::saveToFile(
     const WorkSheetSummaryRegistry& registry,
     const QString& filePath)
 {
+
+    zInfo("WorkSheetSummaryRepository::saveToFile begin");
+
+    //QString schema;
+
+
+    // // ezek letapogatják a metát, és kellenek a registry-hez, hogy a meták regisztrálva legyenek
+    // ebben a Meta() hívás csinál egy initial WorkSheetSummary::MetaInit() hívást
+    // schema = WorkSheetSummary::Meta().FlatSchemaDump();
+    // zInfo(schema);
+
+    // schema = WorkSheetOrderInfo::Meta().FlatSchemaDump();
+    // zInfo(schema);
+
+    // schema = WorkSheetMaterialInfo::Meta().FlatSchemaDump();
+    // zInfo(schema);
+
     QFile file(filePath);
 
     if (!file.open(
@@ -426,10 +443,12 @@ bool WorkSheetSummaryRepository::saveToFile(
     RbCsvExportPlanBuilder builder;
     DiscoveryPath path;
 
-    DiscoverTree(
-        &WorkSheetSummary::Meta(),
-        builder,
-        path);
+    DiscoverTree(&WorkSheetSummary::Meta(),builder,path);
+
+    auto schema_txt =RbCsvSerializer::SerializeSchema(builder.plan());
+    out << "#SCHEMA\n\n";
+    out << schema_txt;
+    out << "\n#DATA\n\n";
 
     const auto& worksheets =
         registry.readAll();
@@ -449,6 +468,8 @@ bool WorkSheetSummaryRepository::saveToFile(
             builder.plan(),
             &ws);
     }
+
+    zInfo("WorkSheetSummaryRepository::saveToFile end");
 
     return true;
 }

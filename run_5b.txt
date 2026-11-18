@@ -1,308 +1,446 @@
-Igen, át kell dolgozni a tervet, mert azóta volt két fontos felismerés:
+WorkSheetSummary import rendszer - technikai terv v1
 
-nem csv adaptert akarunk tárolni a mezőn
-a binding mezőhöz tartozik, a típus csak validációra kell
+A cél:
 
-A mostani tervet én így módosítanám.
+Fájl (bármely korábbi verzió)
+            ↓
+Schema olvasás
+            ↓
+Schema migráció
+            ↓
+Érték migráció
+            ↓
+MetaValue lista
+            ↓
+Meta::FromMetaValues()
+            ↓
+Aktuális modell
 
-PATCH 1 - csvAdapter ELVETÉSE
-Hely
+1. lépés - fájl parser
 
-metafield.h
+Első körben még NEM építünk objektumot.
 
-MOST:
+Csak olvassuk ki a fájlt.
 
-const TypeCsvAdapter* csvAdapter =
-    nullptr;
+Bemenet:
+
+#SCHEMA
+
+...
+
+#DATA
+
+...
 
 
-NE ezt vezessük be.
+Kimenet:
 
-HELYETTE:
-
-struct MetaFieldAdapters
+struct ImportRecord
 {
-    const TypeCsvAdapter* csv = nullptr;
+    QMap<QString, QString> values;
 };
 
 
-és a MetaFieldBase:
+példa:
 
-MetaFieldAdapters adapters;
-
-
-Miért?
-
-Mert hamarosan lesz:
-
-csv
-display
-report
-editor
-
-
-is.
-
-Nem akarjuk:
-
-csvAdapter
-displayAdapter
-reportAdapter
-
-
-sorokat külön.
-
-PATCH 2 - TypeCsvAdapterRegistry marad
-NEM töröljük
-
-A mostani:
-
-TypeCsvAdapter
-
-
-szerkezet teljesen jó.
-
-A probléma nem az adapter.
-
-A probléma a kulcs.
-
-PATCH 3 - ÚJ FieldCsvAdapterRegistry
-Új fájl
-meta/typeadapter/fieldcsvadapter_registry.h
-
-
-Kulcs:
-
-QString
-
-
-ami:
-
-field.wcode
-
-
-Érték:
-
-TypeCsvAdapter
-
-
-Tehát:
-
-"WCodes::WorkSheetSummary::presence"
-    ->
-TypeCsvAdapter
-
-PATCH 4 - Field binding regisztráció
-Új helper
-Hely
-
-FieldCsvAdapterRegistry
-
-Valami ilyesmi:
-
-template<typename Binding>
-static void RegisterBinding(
-    const QString& fieldWCode)
-
-
-Jelenlegi:
-
-std::type_index(
-    typeid(
-        typename Binding::ValueType))
-
-
-kulcs helyett:
-
-fieldWCode
-
-
-kulcs.
-
-PATCH 5 - Adapter típusinformáció
-TypeCsvAdapter bővítés
-Hely
-
-typecsvadapter.h
-
-MOST:
-
-struct TypeCsvAdapter
 {
-    QString (*toCsv)(const void*);
+    "externalReference" : "2815",
+    "ownerName" : "Bor M.",
+    "productTypeId" : "ROL",
+    "calcMode" : "Gyartasi"
+}
 
-    bool (*fromCsv)(
-        const QString&,
-        void*);
+
+Kell:
+
+RbCsvImportParser
+
+
+ami visszaad:
+
+struct ImportDocument
+{
+    ImportSchema schema;
+
+    QVector<ImportRecord> records;
+};
+
+2. lépés - schema reprezentáció
+
+A schema-t objektummá kell alakítani.
+
+Például:
+
+struct ImportField
+{
+    QString name;
 };
 
 
-BŐVÍTÉS:
+Szekció:
 
-std::type_index valueType =
-    std::type_index(typeid(void));
-
-
-Miért?
-
-Mert a binding típusa kell majd.
-
-PATCH 6 - RegisterBinding() módosítás
-Hely
-
-FieldCsvAdapterRegistry
-
-Adapter létrehozáskor:
-
-adapter.valueType =
-    std::type_index(
-        typeid(
-            typename Binding::ValueType));
-
-PATCH 7 - AddField()
-Hely
-
-MetaData::AddField()
-
-Közvetlenül ez után:
-
-f.declaredType =
-    std::type_index(
-        typeid(FieldType));
-
-
-Beszúrás:
-
-f.adapters.csv =
-    FieldCsvAdapterRegistry::
-        Find(
-            f.wcode);
-
-PATCH 8 - Típusellenőrzés
-Ugyanitt
-
-Közvetlenül a Find után.
-
-Beszúrás:
-
-if(f.adapters.csv)
+struct ImportSection
 {
-    if(f.adapters.csv->valueType
-       != f.declaredType)
-    {
-        zError(
-            QString(
-                "Field adapter type mismatch: %1")
-                .arg(
-                    f.wcode));
-    }
+    QString name;
+
+    QVector<ImportField> fields;
+
+    QVector<ImportSection> children;
+};
+
+
+A teljes séma:
+
+struct ImportSchema
+{
+    ImportSection root;
+};
+
+
+Ugyanaz a fa lesz, mint:
+
+RbCsvExportPlan
+
+
+csak fájlból építve.
+
+3. lépés - schema migráció
+
+Feladat:
+
+régi mezőnév
+      ↓
+aktuális mezőnév
+
+
+Példa:
+
+subtype
+
+
+↓
+
+productSubtypeCode
+
+
+Kell:
+
+class SchemaMigrationRegistry
+{
+};
+
+
+Egy elem:
+
+struct FieldRename
+{
+    QString oldField;
+    QString newField;
+};
+
+
+példa:
+
+{
+    "subtype",
+    "productSubtypeCode"
 }
 
 
-Ez szerintem kritikus.
+Feladat:
 
-Itt derül ki rögtön a hibás binding.
-
-PATCH 9 - GetValue()
-Hely
-
-MetaField::GetValue()
-
-MOST:
-
-const TypeCsvAdapter* adapter =
-    TypeCsvAdapterRegistry::Find(
-        declaredType);
+ImportRecord
 
 
-TELJES TÖRLÉS.
+átalakítása:
 
-HELYETTE:
-
-if(adapters.csv)
 {
-    QString text =
-        adapters.csv->toCsv(ptr);
-
-    zInfo(
-        QString(
-            "field adapter %1 -> %2")
-            .arg(wcode)
-            .arg(text));
-
-    return text;
+    "subtype" : "TSIN"
 }
 
 
-Nincs több runtime registry lookup.
+↓
 
-PATCH 10 - WorkSheetSummary::MetaInit()
+{
+    "productSubtypeCode" : "TSIN"
+}
 
-MOST:
+4. lépés - érték migráció
 
-TypeCsvAdapterRegistry::
-    RegisterBinding<
-        WorkSheetPresenceCsvBinding>();
+Ez teljesen külön probléma.
+
+Nem a mező neve változott.
+
+Hanem a tartalma.
+
+Példa:
+
+régi:
+
+surface=1
 
 
-ÚJ:
+mai:
 
-FieldCsvAdapterRegistry::
-    RegisterBinding<
-        WorkSheetPresenceCsvBinding>(
-            "WCodes::WorkSheetSummary::presence");
+surface=SM
 
-PATCH 11 - Material
 
-Később.
+vagy:
 
-Ugyanígy:
+régi:
 
-FieldCsvAdapterRegistry::
-    RegisterBinding<
-        MaterialBarcodeBinding>(
-            "WCodes::WorkSheetMaterialInfo::materialId");
+handlerSide=Left
 
-A végeredmény
 
-A rendszer logikája:
+mai:
 
-MetaInit
+leftCount=1
+rightCount=0
+
+
+Ez már:
+
+field+value
+
+
+szintű migráció.
+
+Kell:
+
+class ValueMigrationRegistry
+{
+};
+
+
+Interface:
+
+class IValueMigration
+{
+public:
+
+    virtual void Migrate(
+        ImportRecord& record) const = 0;
+};
+
+
+Példák:
+
+SurfaceMigration_V1
+
+HandlerSideMigration_V1
+
+SubtypeMigration_V2
+
+
+Ezek ugyanazt a szerepet veszik át, mint ma:
+
+convertRowToCuttingRequestRow_V1()
+
+
+csak sokkal kisebb granulációban.
+
+5. lépés - MetaField lookup
+
+Amikor már minden migráció lefutott:
+
+ImportRecord
+
+
+↓
+
+MetaField
+
+
+keresés.
+
+Példa:
+
+productSubtypeCode
+
+
+↓
+
+MetaField*
+
+
+Ehhez kell:
+
+MetaFieldLookup
+
+
+vagy csak egy helper.
+
+6. lépés - TypeCsvBinding::FromCsv
+
+Meglévő infrastruktúra.
+
+Most export:
+
+Value
+   ↓
+ToCsv()
+
+
+Import:
+
+Csv
+   ↓
+FromCsv()
+
+
+Példa:
+
+ROL
+
+
+↓
+
+QUuid
+
+SM
+
+
+↓
+
+SurfaceType::Smooth
+
+Present
+
+
+↓
+
+WorkSheetPresence::Present
+
+
+Ehhez már megvannak a binderek.
+
+7. lépés - MetaValue építés
+
+Eredmény:
+
+QList<MetaValue>
+
+
+példa:
+
+MetaValue(
+    "requiredSurface",
+    SurfaceType::Smooth);
+
+MetaValue(
+    "productTypeId",
+    uuid);
+
+8. lépés - modell építés
+
+Meglévő infrastruktúra:
+
+Meta<T>::FromMetaValues(...)
+
+
+Példa:
+
+auto summary =
+    WorkSheetSummary::Meta()
+        .FromMetaValues(values);
+
+9. lépés - composition betöltés
+
+Rekurzívan.
+
+WorkSheetSummary
     ↓
-field.wcode
+orders
     ↓
-binding
-    ↓
-adapter
-    ↓
-MetaField.adapters.csv
+materials
 
 
-és futás közben:
+ugyanazzal a mechanizmussal.
 
-GetValue
-    ↓
-adapters.csv
-    ↓
-toCsv
+10. lépés - verziókezelés filozófiája
 
+NEM lesz:
 
-nincs lookup.
-
-És ami szerintem a legfontosabb:
-
-Most már nem:
-
-WorkSheetPresence típus
+enum Version
+{
+    V1,
+    V2,
+    ...
+}
 
 
-kap adaptert.
+NEM lesz:
+
+convertRow_V1()
+convertRow_V2()
+...
+
 
 Hanem:
 
-WorkSheetSummary::presence mező
+SchemaMigration
+
+ValueMigration
 
 
-kap adaptert.
+A rendszer mindig ezt kérdezi:
 
-Ez sokkal jobban illeszkedik ahhoz a domain szemlélethez, amit ma megfogalmaztál. A reprezentáció a mező tulajdonsága, a típus csak biztonsági ellenőrzés. 🚀
+Mit látok a fájlban?
+
+
+és nem azt:
+
+Milyen verzió ez?
+
+Első implementációs sorrend
+
+Holnap szerintem:
+
+1
+ImportSchema
+ImportSection
+ImportField
+
+
+adatszerkezet.
+
+2
+RbCsvImportParser
+
+
+ami a
+
+#SCHEMA
+#DATA
+
+
+fájlt beolvassa.
+
+3
+ImportRecord
+
+
+előállítása:
+
+QMap<QString, QString>
+
+
+formában.
+
+4
+
+Bizonyító teszt:
+
+Export
+    ↓
+Import
+
+
+és visszakapod ugyanazt a
+
+ImportRecord
+
+
+struktúrát.
+
+Csak ezután érdemes ráépíteni a migrációs és MetaValue réteget. Ez a legkisebb kockázatú, lépésenként validálható út. 🚀

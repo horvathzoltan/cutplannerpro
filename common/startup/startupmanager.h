@@ -84,4 +84,6 @@ private:
     bool worksheetChanged(
         const QString& fileName,
         const WorkSheetSummary* summary);
+
+    void initMetaModels();
 };

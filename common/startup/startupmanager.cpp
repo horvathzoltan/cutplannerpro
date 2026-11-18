@@ -51,8 +51,13 @@
 #include <worksheetsummary/repository/worksheetsummary_repository.h>
 
 #include <worksheetsummary/worksheetsummary_builder.h>
+#include "metamodelbootstrap.h"
 
 StartupStatus StartupManager::runStartupSequence() {
+
+    initMetaModels();
+
+
     StartupStatus ralColorStatus = initRalColors();
     if (!ralColorStatus.isSuccess())
         return ralColorStatus;
@@ -903,4 +908,9 @@ bool StartupManager::worksheetChanged(
 
     return currentHash !=
            summary->fileHash;
+}
+
+void StartupManager::initMetaModels()
+{
+    MetaModelBootstrap::Init();
 }

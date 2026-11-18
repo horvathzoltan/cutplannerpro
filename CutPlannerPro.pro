@@ -201,6 +201,7 @@ HEADERS += \
     common/audit/agelogicutils.h \
     common/audit/agestate.h \
     common/audit/agestyleutils.h \
+    common/startup/metamodelbootstrap.h \
     common/stringsimilarity_helper.h \
     common/qrcodepainter.h \
     common/qrcodegen/qrcodegen.hpp \
