@@ -75,13 +75,13 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
 
     // 🥇 Teljes elfogyasztás – pszichológiai bónusz
     if (waste == 0) {
-        score += 800;
+        score += 1000;
     }
 
     // 🎯 Pontos egy darabos illeszkedés – külön jutalom
     if (leftoverLength <= sp.scrap_mm ) {
         if(pieceCount == 1)
-            score += 750;//200;
+            score += 850;//200;
         else
             score += 500;//200;
     }
@@ -89,7 +89,7 @@ inline int calcScore(int pieceCount, int waste, int leftoverLength, MaterialScor
     // 😊 Jó leftover tartomány – „jó érzésű” maradék
     if (leftoverLength >= sp.goodLeftOver_Min_mm &&
         leftoverLength <= sp.goodLeftOver_Max_mm) {
-        score += 300;
+        score += 250;
     }
 
     // 😬 Selejt leftover
