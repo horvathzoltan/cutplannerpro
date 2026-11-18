@@ -30,7 +30,12 @@ void TestManager::runBusinessLogicTests(const QString& profile) {
     // }
     else if (profile == "schema") {
         runBuildSchemaTest();
-    } else {
+    }
+    else if (profile == "schema_all") {
+        runBuildSchemaExportAllTest();
+    }
+
+    else {
         zWarning(QString("⚠️ Ismeretlen tesztprofil: %1").arg(profile));
     }
 }
@@ -313,4 +318,32 @@ void TestManager::runBuildSchemaTest()
                 "Roundtrip -> %1")
                 .arg(text));
     }
+}
+
+void TestManager::runBuildSchemaExportAllTest()
+{
+    RbCsvExportPlanBuilder builder;
+    DiscoveryPath path;
+
+    DiscoverTree(
+        &WorkSheetSummary::Meta(),
+        builder,
+        path);
+
+    auto worksheets =
+        WorkSheetSummaryRegistry::instance()
+            .readAll();
+
+    QStringList documents;
+
+    for(const auto& ws : worksheets)
+    {
+        documents.append(
+            RbCsvSerializer::SerializeData(
+                builder.plan(),
+                &ws));
+    }
+
+    zInfo(
+        documents.join("\n"));
 }

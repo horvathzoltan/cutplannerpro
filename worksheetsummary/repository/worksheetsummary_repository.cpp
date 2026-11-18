@@ -12,6 +12,10 @@
 
 #include <materials/registry/material_registry.h>
 
+#include <meta/rbcsv_modelworker.h>
+
+#include <rbcsv/export/rbcsv_serializer.h>
+
 
 const QString WorkSheetSummaryRepository::MaterialSectionKey = "MAT:1";
 const QString WorkSheetSummaryRepository::OrdersSectionKey = "ORDERS";
@@ -401,9 +405,6 @@ bool WorkSheetSummaryRepository::loadFromFile(
 }
 
 
-
-
-
 bool WorkSheetSummaryRepository::saveToFile(
     const WorkSheetSummaryRegistry& registry,
     const QString& filePath)
@@ -422,111 +423,34 @@ bool WorkSheetSummaryRepository::saveToFile(
     out.setEncoding(
         QStringConverter::Utf8);
 
-    QVector<WorkSheetSummary> worksheets = registry.readAll();
-    for (const auto& ws : worksheets)
+    RbCsvExportPlanBuilder builder;
+    DiscoveryPath path;
+
+    DiscoverTree(
+        &WorkSheetSummary::Meta(),
+        builder,
+        path);
+
+    const auto& worksheets =
+        registry.readAll();
+
+    bool first = true;
+
+    for(const auto& ws : worksheets)
     {
-        writeWorksheetRow(out, ws);
-        out << "\n";
+        if(!first)
+        {
+            out << "\n";
+        }
+
+        first = false;
+
+        out << RbCsvSerializer::SerializeData(
+            builder.plan(),
+            &ws);
     }
 
     return true;
-}
-
-void WorkSheetSummaryRepository::writeWorksheetRow(QTextStream& out,const WorkSheetSummary& ws)
-{
-    out
-        << ws.filePath
-        << ";"
-        << ws.fileName
-        << ";"
-        << ws.fileHash.toBase64()
-        << ";"
-        << WorkSheetPresenceUtils::toCsv(ws.presence)
-        << ";"
-        << OrdersSectionKey
-        << "\n";
-
-    out << OrdersSectionKey << "\n";
-
-    for (const auto& order : ws.orders)
-    {
-        writeOrderRow(out, order);
-        out << "\n";
-    }
-
-    out << "END # " << OrdersSectionKey << "\n";
-}
-
-void WorkSheetSummaryRepository::
-    writeOrderRow(
-        QTextStream& out,
-        const WorkSheetOrderInfo& order)
-{
-    auto* type =
-        ProductTypeRegistry::instance()
-            .findById(
-                order.productTypeId);
-
-    auto* subtype =
-        ProductSubtypeRegistry::instance()
-            .findById(
-                order.productSubtypeId);
-
-    out
-        << order.externalReference
-        << ";"
-        << order.ownerName
-        << ";"
-        << order.quantity
-        << ";"
-        << order.fullWidthMm
-        << ";"
-        << order.fullHeightMm
-        << ";"
-        << order.dueDate.toString("yyyy-MM-dd")
-        << ";"
-        << (type ? type->code : "")
-        << ";"
-        << (subtype ? subtype->code : "")
-        << ";"
-        << SizeCalcModeUtils::toString(order.calcMode)
-        << ";"
-        << order.requiredColor.code()
-        << ";"
-        << SurfaceTypeUtils::toCode(order.requiredSurface)
-        << ";"
-        << order.requestCount
-        << ";"
-        << order.completedCount
-        << ";"
-        << order.uncompletedCount
-        << ";"
-        << order.undefinedCount
-        << ";"
-        << MaterialSectionKey
-        << "\n";
-
-        writeMaterialSection(out, order.materials);
-
-        out << "\n";
-}
-
-void WorkSheetSummaryRepository::writeMaterialSection(QTextStream& out, const QVector<WorkSheetMaterialInfo>& materials)
-{
-    out << MaterialSectionKey << "\n";
-
-    for (const auto& matInfo : materials)
-    {
-        const auto* mat =MaterialRegistry::instance().findById(matInfo.materialId);
-
-        out
-            << (mat? mat->barcode: "")
-            << ";"
-            << matInfo.cutLengthMm
-            << "\n";
-    }
-
-    out << "END # " << MaterialSectionKey << "\n";
 }
 
 

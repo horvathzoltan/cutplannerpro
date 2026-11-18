@@ -83,9 +83,6 @@ private:
         QString name;
     };
 
-    static void writeWorksheetRow(QTextStream& out,const WorkSheetSummary& ws);
-    static void writeOrderRow(QTextStream& out, const WorkSheetOrderInfo& order);
-    static void writeMaterialSection(QTextStream& out, const QVector<WorkSheetMaterialInfo>& materials);
 
 private:
 

@@ -17,4 +17,5 @@ private:
     void runMakiTests();
     void runFullTests();
     void runBuildSchemaTest(); // --test schema
+    void runBuildSchemaExportAllTest(); // --test schema_all
 };
