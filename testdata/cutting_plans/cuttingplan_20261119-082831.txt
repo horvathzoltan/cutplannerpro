@@ -1,0 +1,37 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"970";"Kiss Gy. Msz.";812;1090;822;;2;1;1;"";MT-T;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"970";"Kiss Gy. Msz.";812;1090;817;;2;1;1;"";TE-H-18;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"970";"Kiss Gy. Msz.";812;1090;805;;2;1;1;"";MT-Z+P;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"970";"Kiss Gy. Msz.";812;1090;1090;;2;1;1;"";MT-L2;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"971";"Kiss Gy. Msz.";832;1220;842;;2;1;1;"";MT-T;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"971";"Kiss Gy. Msz.";832;1220;837;;2;1;1;"";TE-H-18;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"971";"Kiss Gy. Msz.";832;1220;825;;2;1;1;"";MT-Z+P;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"971";"Kiss Gy. Msz.";832;1220;1220;;2;1;1;"";MT-L2;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"972";"Kiss Gy. Msz.";350;350;360;;2;2;0;"";MT-T;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"972";"Kiss Gy. Msz.";350;350;355;;2;2;0;"";TE-H-18;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"972";"Kiss Gy. Msz.";350;350;343;;2;2;0;"";MT-Z+P;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"972";"Kiss Gy. Msz.";350;350;350;;2;2;0;"";MT-L2;Width;false;2026.11.19;SR;MINIT;;SM;Uveg;UNKNOWN
+"975";"Szabó Géza";1400;1800;1394;;1;0;1;"RAL 9005";SR-T;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"975";"Szabó Géza";1400;1800;1377;;1;0;1;"RAL 9005";TE-H-32;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"975";"Szabó Géza";1400;1800;1380;;1;0;1;"RAL 9005";SR-Z;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"975";"Szabó Géza";1400;1800;1380;;1;0;1;"RAL 9005";SR-P-3000;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"976";"Szabó Géza";1550;2700;1544;;1;0;1;"RAL 9005";SR-T;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"976";"Szabó Géza";1550;2700;1527;;1;0;1;"RAL 9005";TE-H-32;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"976";"Szabó Géza";1550;2700;1530;;1;0;1;"RAL 9005";SR-Z;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"976";"Szabó Géza";1550;2700;1530;;1;0;1;"RAL 9005";SR-P-3000;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"977";"Szabó Géza";920;2700;914;;1;1;0;"RAL 9005";SR-T;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"977";"Szabó Géza";920;2700;897;;1;1;0;"RAL 9005";TE-H-32;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"977";"Szabó Géza";920;2700;900;;1;1;0;"RAL 9005";SR-Z;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"977";"Szabó Géza";920;2700;900;;1;1;0;"RAL 9005";SR-P-3000;Width;false;2026.11.19;SR;T;;SM;Gyartasi;UNKNOWN
+"2826";"Generálkiv., Pécs";700;1005;710;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2826";"Generálkiv., Pécs";700;1005;705;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2826";"Generálkiv., Pécs";700;1005;695;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2826";"Generálkiv., Pécs";700;1005;1005;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2827";"Generálkiv., Pécs";400;1005;410;;1;0;1;"";MT-T;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2827";"Generálkiv., Pécs";400;1005;405;;1;0;1;"";TE-H-18;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2827";"Generálkiv., Pécs";400;1005;395;;1;0;1;"";MT-Z;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2827";"Generálkiv., Pécs";400;1005;1005;;1;0;1;"";MT-L2;Width;false;2026.11.20;ROL;TSIN;;SM;Uveg;UNKNOWN
+"2830";"PálinkásTestvérek, Szolnok";625;1027;600;;1;0;0;"";TE-R-23;Width;false;2026.11.20;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2830";"PálinkásTestvérek, Szolnok";625;1027;598;;1;0;0;"";ROL-P;Width;false;2026.11.20;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2831";"PálinkásTestvérek, Szolnok";625;1027;600;;1;0;0;"";TE-R-23;Width;false;2026.11.20;ROL;TET;;SM;Gyartasi;UNKNOWN
+"2831";"PálinkásTestvérek, Szolnok";625;1027;598;;1;0;0;"";ROL-P;Width;false;2026.11.20;ROL;TET;;SM;Gyartasi;UNKNOWN
