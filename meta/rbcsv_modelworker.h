@@ -5,13 +5,13 @@
 #include "meta/discoverypath.h"
 #include "meta/imetadata.h"
 #include "meta/metafield.h"
-#include "rbcsv/model/rbcsv_exportplan.h"
+#include "rbcsv/model/rbcsv_schema.h"
 
 class RbCsvExportPlanBuilder
 {
 private:
 
-    RbCsvExportPlan _plan;
+    RbCsvSchema _plan;
 
 public:
 
@@ -20,7 +20,7 @@ public:
         _plan.root.sectionName = "root";
     }
 
-    const RbCsvExportPlan& plan() const
+    const RbCsvSchema& plan() const
     {
         return _plan;
     }
@@ -58,7 +58,7 @@ public:
                 ? field.name
                 : path.Path() + "/" + field.name;
 
-        RbCsvExportSection child;
+        RbCsvSchemaSection child;
         child.sectionName = field.name;
 
         _plan.sections.insert(
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    RbCsvExportSection& CurrentSection(
+    RbCsvSchemaSection& CurrentSection(
         const DiscoveryPath& path)
     {
         if(path.Depth() == 0)

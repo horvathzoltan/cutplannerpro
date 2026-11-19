@@ -770,9 +770,7 @@ StartupStatus StartupManager::initWorkSheetSummaryRegistry()
     auto fn1 = fnh.getWorkSheetSummaryFilePath();
     auto& wssr = WorkSheetSummaryRegistry::instance();
 
-    WorkSheetSummaryRepository::loadFromFile(
-        wssr,
-        fn1);
+    WorkSheetSummaryRepository::loadFromFile(wssr,fn1);
 
     zInfo(
         QString("📦 %1 cache rekord betöltve")

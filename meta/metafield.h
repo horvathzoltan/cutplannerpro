@@ -10,7 +10,7 @@
 
 struct MetaFieldAdapters
 {
-    const TypeCsvAdapter* csvExport = nullptr;
+    const TypeCsvAdapter* csvBinding = nullptr;
 };
 
 struct MetaFieldBase{
@@ -72,10 +72,10 @@ public:
                     .arg(type.name())
                     .arg(type.id()));
         }
-        if(adapters.csvExport)
+        if(adapters.csvBinding)
         {
             QString text =
-                adapters.csvExport->toCsv(ptr);
+                adapters.csvBinding->toCsv(ptr);
 
             if(MetaLog::Bindings){
             zInfo(

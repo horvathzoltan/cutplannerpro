@@ -271,13 +271,13 @@ void TestManager::runBuildSchemaTest()
                 .arg(
                     presenceField
                         ->adapters
-                        .csvExport
+                        .csvBinding
                     != nullptr));
     }
 
 
     if(presenceField &&
-        presenceField->adapters.csvExport)
+        presenceField->adapters.csvBinding)
     {
         WorkSheetPresence p =
             WorkSheetPresence::Present;
@@ -285,7 +285,7 @@ void TestManager::runBuildSchemaTest()
         QString text =
             presenceField
                 ->adapters
-                .csvExport
+                .csvBinding
                 ->toCsv(&p);
 
         zInfo(
@@ -295,14 +295,14 @@ void TestManager::runBuildSchemaTest()
     }
 
     if(presenceField &&
-        presenceField->adapters.csvExport)
+        presenceField->adapters.csvBinding)
     {
         WorkSheetPresence p =
             WorkSheetPresence::Unknown;
 
         presenceField
             ->adapters
-            .csvExport
+            .csvBinding
             ->fromCsv(
                 "Missing",
                 &p);
@@ -310,7 +310,7 @@ void TestManager::runBuildSchemaTest()
         QString text =
             presenceField
                 ->adapters
-                .csvExport
+                .csvBinding
                 ->toCsv(&p);
 
         zInfo(

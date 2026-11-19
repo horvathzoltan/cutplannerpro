@@ -1,0 +1,317 @@
+Szerintem most már elég tisztán látszik az első, végrehajtható mérföldkő.
+
+Nem meta. Nem migráció. Nem WorkSheetSummary.
+
+Hanem kizárólag:
+
+Fájl
+ ↓
+RbCsvDocument
+
+
+építés.
+
+Cél
+
+A végén legyen:
+
+struct RbCsvDocument
+{
+    RbCsvImportNode schema;
+    QList<RbCsvImportNode> data;
+};
+
+
+vagy akár:
+
+struct RbCsvDocument
+{
+    RbCsvImportNode schema;
+    RbCsvImportNode data;
+};
+
+
+Erről majd dönthettek később.
+
+Én jelenleg inkább ezt preferálnám:
+
+struct RbCsvDocument
+{
+    RbCsvImportNode schema;
+    QList<RbCsvImportNode> data;
+};
+
+
+mert a fájlban több root worksheet van.
+
+1. lépés
+
+Új modell:
+
+#pragma once
+
+#include "rbcsv_importnode.h"
+
+struct RbCsvDocument
+{
+    RbCsvImportNode schema;
+
+    QList<RbCsvImportNode> data;
+};
+
+
+Még semmi logika.
+
+2. lépés
+
+Új parser skeleton:
+
+class RbCsvImportParser
+{
+public:
+
+    static RbCsvDocument Parse(
+        const QString& text);
+};
+
+3. lépés
+
+A fájl kettévágása
+
+Input:
+
+#SCHEMA
+
+...
+
+#DATA
+
+...
+
+
+Output:
+
+QStringList schemaLines;
+QStringList dataLines;
+
+
+Valami ilyesmivel:
+
+enum class ParseSection
+{
+    None,
+    Schema,
+    Data
+};
+
+4. lépés
+
+Schema blokk külön
+
+A schema blokkból:
+
+RbCsvImportNode schemaRoot;
+
+
+épül.
+
+Például:
+
+filePath;fileName;fileHash;presence;orders;[orders]
+
+orders
+
+externalReference;...
+
+
+↓
+
+[schema-root]
+ └─ [orders]
+      └─ [materials]
+
+
+és a mezőnevek mennek:
+
+record.values
+
+
+alá.
+
+5. lépés
+
+Data blokk külön
+
+A data blokkból:
+
+QList<RbCsvImportNode>
+
+
+épül.
+
+Például:
+
+worksheet1
+END # orders
+
+worksheet2
+END # orders
+
+
+↓
+
+data[0]
+data[1]
+data[2]
+
+6. lépés
+
+Nagyon fontos:
+
+Schema és data parser ugyanazt a motort használja.
+
+Mert:
+
+externalReference;ownerName
+
+
+schema esetén
+
+és
+
+2815;Bor M.
+
+
+data esetén
+
+szerkezetileg ugyanaz.
+
+Csak más a tartalom.
+
+Ez szerintem nagyon jó ötlet volt a részedről.
+
+A schema konkrétan beolvasható ugyanabba a modellbe.
+
+7. lépés
+
+Kell egy parser állapotgép
+
+Valami ilyesmi:
+
+enum class ParserState
+{
+    RootRecord,
+    SectionName,
+    SectionRecord,
+    EndSection
+};
+
+
+Vagy még egyszerűbb:
+
+stack.
+
+QStack<RbCsvImportNode*>
+
+
+Amikor jön:
+
+orders
+
+
+akkor:
+
+push(node)
+
+
+Amikor jön:
+
+END # orders
+
+
+akkor:
+
+pop()
+
+
+Ez szerintem a legszebb megoldás.
+
+8. lépés
+
+Első validáció
+
+Parser után:
+
+zInfo(
+    RbCsvImportDump::ToString(
+        document.schema));
+
+for(const auto& node :
+    document.data)
+{
+    zInfo(
+        RbCsvImportDump::ToString(
+            node));
+}
+
+Elvárt eredmény
+
+Valami ilyesmi:
+
+[root] records=1 children=1
+
+  row[0]
+    filePath=filePath
+    fileName=fileName
+    presence=presence
+
+  [orders]
+    records=1
+
+    [materials]
+      records=1
+
+
+és egy konkrét worksheet:
+
+[root]
+
+  row[0]
+    fileName=cuttingplan_20261119-082831.txt
+
+  [orders]
+
+    row[0]
+      externalReference=2826
+
+    [materials]
+
+      row[0]
+        materialId=MT-T
+        cutLengthMm=710
+
+      row[1]
+        materialId=TE-H-18
+        cutLengthMm=705
+
+Amit MOST NEM csinálnék
+
+Még nincs:
+
+MetaData
+MetaValue
+Migration
+Schema compare
+FromMetaValues
+
+
+Az első milestone kizárólag:
+
+RBCSV fájl
+    ↓
+RbCsvDocument
+    ↓
+Dump
+
+
+Ha ez működik, utána a migráció gyakorlatilag egy RbCsvImportNode átalakító lesz, és a meta-rendszer ráépíthető anélkül, hogy a parserhez újra hozzá kellene nyúlni. Ez szerintem nagyon fontos architekturális választóvonal. 🚀

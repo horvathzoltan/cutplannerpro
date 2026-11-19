@@ -4,7 +4,7 @@
 #include <QStringList>
 #include <meta/metafield.h>
 
-struct RbCsvExportSection
+struct RbCsvSchemaSection
 {
     QString sectionName;
 

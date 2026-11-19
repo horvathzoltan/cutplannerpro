@@ -175,10 +175,10 @@ public:
         f.declaredType = std::type_index(typeid(FieldType));
         //f.adapters.csvExport = FieldAdapterRegistry::Find_CsvExport(f.wcode);
 
-        if(f.adapters.csvExport)
+        if(f.adapters.csvBinding)
         {
             if(
-                f.adapters.csvExport->valueType
+                f.adapters.csvBinding->valueType
                 !=
                 f.declaredType)
             {
@@ -190,7 +190,7 @@ public:
             }
         }
 
-        if(f.adapters.csvExport)
+        if(f.adapters.csvBinding)
         {
             if(MetaLog::BuildSchema){
             zInfo(
@@ -585,7 +585,7 @@ public:
         switch(context)
         {
         case BindContext::CsvExport:
-            field.adapters.csvExport =CreateCsvExportAdapter<Binding>();
+            field.adapters.csvBinding =CreateCsvExportAdapter<Binding>();
             break;
         }
     }

@@ -5,7 +5,7 @@
 
 #include <worksheetsummary/model/worksheetorderinfo.h>
 
-#include "../model/rbcsv_exportplan.h"
+#include "../model/rbcsv_schema.h"
 
 #include "rbcsv_valueformatter.h"
 
@@ -20,7 +20,7 @@ public:
     };
 
     static QString SerializeSchema(
-        const RbCsvExportPlan& plan)
+        const RbCsvSchema& plan)
     {
         QString out;
 
@@ -37,7 +37,7 @@ public:
 
 
     static QString SerializeData(
-        const RbCsvExportPlan& plan,
+        const RbCsvSchema& plan,
         const void* rootObject)
     {
         QString out;
@@ -56,8 +56,8 @@ public:
 private:
 
     static void SerializeSection(
-        const RbCsvExportSection& section,
-        const RbCsvExportPlan& plan,
+        const RbCsvSchemaSection& section,
+        const RbCsvSchema& plan,
         QString& out,
         bool writeHeader,
         SerializeMode mode,
@@ -150,28 +150,33 @@ private:
 
                         if(a->collectionAccessor)
                         {
-                            int count =
-                                a->collectionAccessor
-                                    ->Count(ptr);
+                            int count = a->collectionAccessor->Count(ptr);
+
+                            if(count > 0)
+                            {
+                                out += it.value().sectionName;
+                                out += "\n";
+                            }
 
                             for(int i=0;i<count;i++)
                             {
-                                const void* item =
-                                    a->collectionAccessor
-                                        ->ItemAt(ptr,i);
+                                const void* item =a->collectionAccessor->ItemAt(ptr,i);
 
                                 SerializeSection(
                                     it.value(),
                                     plan,
                                     out,
-                                    true,
+                                    false,
                                     mode,
                                     item);
                             }
 
-                            out += "END # ";
-                            out += it.value().sectionName;
-                            out += "\n";
+                            if(count > 0)
+                            {
+                                out += "END # ";
+                                out += it.value().sectionName;
+                                out += "\n";
+                            }
 
                             bejarva = true;
                         }
