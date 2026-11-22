@@ -4,7 +4,7 @@
 
 #include <QList>
 
-#include "meta/rbcsv_modelworker.h"
+#include "meta/rbcsv_exportplanbuilder.h"
 #include "worksheetsummary/model/worksheetsummary.h"
 #include "rbcsv/export/rbcsv_serializer.h"
 #include "worksheetsummary/registry/worksheetsummary_registry.h"

@@ -911,4 +911,6 @@ bool StartupManager::worksheetChanged(
 void StartupManager::initMetaModels()
 {
     MetaModelBootstrap::Init();
+    MetaModelBootstrap::Finalize();
+    MetaModelBootstrap::Seal();
 }

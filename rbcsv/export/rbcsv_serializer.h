@@ -75,45 +75,51 @@ private:
         {
             if(mode == SerializeMode::Schema)
             {
-                record.append(field->name);
+                QString fn = field->toExportString();
+                record.append(fn);
             }
             else
             {
+                QVariant value;
+                if(field->kind == MetaFieldKind::Composition)
+                {
+                    value = field->toExportString();
+                }
+                else if(field->kind == MetaFieldKind::Reference)
+                {
+                    value = field->toExportString();
+                }
+                else if(field->kind == MetaFieldKind::Value)
+                {
+                     value =currentObject ? field->GetValue((char*)currentObject):"NULL";
 
-                QVariant value =
-                    currentObject ?
-                    field->GetValue(
-                        (char*)currentObject):
-                                     "NULL";
-
-                if(MetaLog::Serialization){
-                    zInfo(
-                        QString("SerializeSection: %1 -> %2 valid=%3")
-                            .arg(field->name)
-                            .arg(value.metaType().name())
-                            .arg(value.isValid()));
+                    if(MetaLog::Serialization){
+                        zInfo(
+                            QString("SerializeSection: %1 -> %2 valid=%3")
+                                .arg(field->name)
+                                .arg(value.metaType().name())
+                                .arg(value.isValid()));
+                    }
                 }
 
-                record.append(
-                    RbCsvValueFormatter::ToString(
-                        field,
-                        value));
+                record.append(RbCsvValueFormatter::ToString(field,value));
+
             }
         }
 
-        for(const auto& childKey : section.children)
-        {
-            int pos =
-                childKey.lastIndexOf('/');
+        // for(const auto& childKey : section.children)
+        // {
+        //     int pos =
+        //         childKey.lastIndexOf('/');
 
-            QString sectionName =
-                pos < 0
-                    ? childKey
-                    : childKey.mid(pos + 1);
+        //     QString sectionName =
+        //         pos < 0
+        //             ? childKey
+        //             : childKey.mid(pos + 1);
 
-            record.append(
-                "[" + sectionName + "]");
-        }
+        //     record.append(
+        //         "[" + sectionName + "]");
+        // }
 
         if(!record.isEmpty())
         {

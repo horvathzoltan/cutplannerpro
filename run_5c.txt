@@ -1,28 +1,339 @@
-Igen, a megbeszélésünk után szerintem a terv több ponton finomodott.
+Szerintem a tegnapi terv meglepően jól öregedett. 🙂
 
-A legnagyobb változás:
+Nem új terv kell, hanem egy státuszfelülvizsgálat, hogy mi készült el, mi részben készült el, és mi előttünk van még.
 
-a schema már nem csak validációs segédanyag lesz, hanem az import motor elsődleges inputja.
-
-Korábban még úgy gondolkodtunk, hogy:
-
-Schema
- ↓
-később valami compare
-
-
-Most már inkább:
-
-Schema
- ↓
-mezőnevek
- ↓
-QMap<QString,QString>
-
-Aktualizált terv v2
+1. mérföldkő állapota
 Cél
+RBCSV file
+ ↓
+RbCsvDocument
+ ↓
+Dump
+ ↓
+Log
 
-Első milestone:
+Állapot
+
+🟢 Folyamatban, jó úton halad.
+
+Még nem kész.
+
+1. Parser osztály
+Terv
+class RbCsvImportParser
+{
+public:
+    static RbCsvDocument Parse(
+        const QString& text);
+};
+
+Állapot
+
+✅ Kész
+
+2. Fájl kettévágása
+Terv
+#SCHEMA
+...
+#DATA
+...
+
+
+szétválasztás.
+
+Állapot
+
+✅ Kész
+
+Bizonyíték:
+
+INFO:RBCSV schema lines: 9
+INFO:RBCSV data lines: 9969
+
+3. Sor parser
+Terv
+2815;Bor M.;1;450
+
+
+↓
+
+QStringList
+
+Állapot
+
+🟡 Gyakorlatilag kész, de implicit.
+
+Jelenleg:
+
+line.split(';',Qt::KeepEmptyParts);
+
+
+több helyen.
+
+Még nincs külön:
+
+RbCsvRowParser
+
+
+osztály.
+
+De a funkcionalitás megvan.
+
+Én egyelőre nem bontanám külön.
+
+4. Sor típus felismerés
+Terv
+LineType
+{
+    Empty,
+    SectionBegin,
+    SectionEnd,
+    Record
+}
+
+Állapot
+
+🟡 Részben kész.
+
+Jelenleg:
+
+IsSectionBegin()
+
+
+létezik.
+
+line.startsWith("END")
+
+
+létezik.
+
+De nincs még egységes:
+
+LineType Detect(...)
+
+
+függvény.
+
+5. Schema parser
+Terv
+
+Schema →
+
+RbCsvImportNode
+
+
+fa.
+
+Állapot
+
+✅ Első verzió kész.
+
+Bizonyíték:
+
+[schema]
+  [orders]
+    [materials]
+
+
+és:
+
+0=filePath
+1=fileName
+...
+
+5/a. Schema rekordok
+Terv
+0 -> externalReference
+1 -> ownerName
+
+Állapot
+
+✅ Kész
+
+5/b. Schema lookup
+Terv
+
+Schema-ból tudjuk:
+
+0 -> externalReference
+
+Állapot
+
+✅ Kész
+
+Ezt bizonyítja:
+
+BuildDataRecord()
+
+6. BuildDataRecord
+Terv
+2826;Generálkiv., Pécs;1;700
+
+
+↓
+
+{
+    externalReference=2826
+    ownerName=Generálkiv., Pécs
+    quantity=1
+    fullWidthMm=700
+}
+
+Állapot
+
+✅ Kész
+
+Bizonyított.
+
+A log ezt egyértelműen mutatja:
+
+BuildDataRecord fields=4
+
+externalReference=2826
+ownerName=Generálkiv., Pécs
+quantity=1
+fullWidthMm=700
+
+7. Hierarchia visszaépítése stackkel
+Terv
+QStack<RbCsvImportNode*>
+
+
+és:
+
+orders
+ ↓
+push
+
+END # orders
+ ↓
+pop
+
+Állapot
+
+🔴 Nincs kész.
+
+Ez szerintem MOST a legfontosabb hiányzó elem.
+
+Miért?
+
+A jelenlegi schema parser:
+
+RbCsvImportNode* current
+
+
+modellt használ.
+
+És:
+
+END
+
+
+sorokat ignorálja.
+
+Ez addig működik, amíg:
+
+root
+ └─ orders
+      └─ materials
+
+
+van.
+
+De általános esetben nem.
+
+8. Data parser
+Terv
+dataLines
+ ↓
+document.data
+
+Állapot
+
+🔴 Még nincs.
+
+Ez a következő nagy feladat.
+
+9. Parser validáció
+Terv
+
+Ellenőrizni:
+
+túl sok END
+
+nyitva maradt szekció
+
+ismeretlen szekció
+
+Állapot
+
+🔴 Nincs.
+
+A terv legnagyobb felismerése
+
+Ez tegnap még csak hipotézis volt.
+
+Ma már bizonyított.
+
+✅ Működik:
+
+Schema
+ ↓
+index -> mezőnév
+ ↓
+Data
+ ↓
+mezőnév -> érték
+
+
+A BuildDataRecord() ezt gyakorlatilag igazolta.
+
+Amit MOST nem csinálnék
+
+Továbbra sem:
+
+MetaValue
+
+FromMetaValues
+
+WorkSheetSummary
+
+Migration
+
+
+Mert még nincs kész:
+
+RBCSV file
+ ↓
+RbCsvDocument
+
+Szerintem a következő helyes sorrend
+Következő patch
+
+Schema parser stackesítése.
+
+QStack<RbCsvImportNode*>
+
+
+bevezetése.
+
+Az END # ... sorok tényleges kezelése.
+
+Utána
+
+Data parser.
+
+QStringList dataLines
+ ↓
+document.data
+
+Utána
+
+Parser validáció.
+
+Utána
+
+Az első milestone teljesül:
 
 RBCSV file
  ↓
@@ -31,359 +342,147 @@ RbCsvDocument
 Dump
 
 
-Semmi meta.
+Őszintén szerintem most kb. 65-70%-nál járunk az első milestone felé vezető úton. A legnagyobb technikai kockázat, a schema-alapú mezőfeloldás (BuildDataRecord) már kipipálható. Innentől a fő munka a stackes hierarchiaépítés és a DATA blokk tényleges feldolgozása lesz. 🚀
 
-Semmi migráció.
 
-Semmi WorkSheetSummary.
 
-1. lépés
 
-Új modell
+Nagyon jó ötlet. Inkább csináljunk egy projekt audit táblát, ne csak "kész / nincs kész" listát.
 
-struct RbCsvDocument
-{
-    RbCsvImportNode schema;
+Tervpont                   Eredeti cél                    Állapot     Kell még?       Megjegyzés
+--------------------------------------------------------------------------------------------------------------
+Parser osztály             RbCsvImportParser::Parse()    ✅ Kész      ✅ Igen         Megfelelő alap
 
-    QList<RbCsvImportNode> data;
-};
+File split                 #SCHEMA/#DATA szétválasztás   ✅ Kész      ✅ Igen         Stabil
 
-2. lépés
+schemaLines                schema sorok kinyerése        ✅ Kész      ✅ Igen         Használjuk
 
-Új parser
+dataLines                  data sorok kinyerése          ✅ Kész      ✅ Igen         Használjuk
 
-class RbCsvImportParser
-{
-public:
+Sor parser                 split(';')                    ✅ Kész      ✅ Igen         Külön osztály nem kell egyelőre
 
-    static RbCsvDocument Parse(
-        const QString& text);
-};
+LineType enum              Empty/Begin/End/Record        ❌ Nincs     🟡 Talán        Később segíthet, nem blokkol
 
-3. lépés
+IsSectionBegin()           szekciófelismerés             ✅ Kész      ✅ Igen         Már használjuk
 
-Fájl kettévágása
+Schema parser              Schema -> Node fa             ✅ Kész      ✅ Igen         Működik
 
-Input:
+Schema rekordok            0 -> fieldName               ✅ Kész      ✅ Igen         Kritikus elem
 
-#SCHEMA
-...
-#DATA
-...
+BuildDataRecord()          Schema + sor -> rekord        ✅ Kész      ✅ Igen         Bizonyított működés
 
+RbCsvImportDump            Debug dump                    ✅ Kész      ✅ Igen         Nélkülözhetetlen
 
-Output:
+Data parser                Data -> Node fa               ❌ Nincs     ✅ Igen         Következő nagy feladat
 
-QStringList schemaLines;
-QStringList dataLines;
+document.data feltöltése   Worksheet-ek beolvasása       ❌ Nincs     ✅ Igen         Közvetlen következő cél
 
-4. lépés
+Data parse context         push()/pop()                  ❌ Nincs     ✅ Igen         Következő patch jelölt
 
-Schema beolvasása
+END kezelés                Hierarchia lezárás            ❌ Nincs     ✅ Igen         Stack parser része
 
-Fontos változás az eredeti tervhez képest.
+Schema validáció           túl sok END stb.              ❌ Nincs     ✅ Igen         Később
 
-A schema nem külön típus lesz.
+Data validáció             ismeretlen szekció            ❌ Nincs     ✅ Igen         Később
 
-Hanem ugyanaz:
+MetaValue                  RBCSV -> Meta                 ❌ Nincs     ❌ Nem          2. mérföldkő
 
-RbCsvImportNode
+FromMetaValues             Meta -> Objektum              ❌ Nincs     ❌ Nem          2. mérföldkő
 
+Migráció                   Schema migration              ❌ Nincs     ❌ Nem          Később
 
-Például:
+Normalization              Domain utófeldolgozás         ❌ Nincs     ❌ Nem          Később
 
-filePath;fileName;fileHash;presence;orders;[orders]
+WorkSheetSummary           Objektumépítés                ❌ Nincs     ❌ Nem          Később
+Ami külön érdekes
 
-orders
+Van néhány pont, ami a tervben szerepelt, de ma már szerintem nem prioritás.
 
-externalReference;ownerName;...
+Elem	Akkor	MostKülön RbCsvRowParser osztály	Jó ötlet volt	Nem szükséges
+LineType enum	Jó ötlet	Nem biztos, hogy kell
+Schema parser refaktor	Szükségesnek tűnt	Jelenleg működik
+Mi van valójában kész?
 
+Ha az eredeti célt nézzük:
 
-↓
-
-schema
-{
-    root
-    └─ orders
-        └─ materials
-}
-
-
-A mezőnevek bekerülnek:
-
-RbCsvImportRecord::values
-
-
-alá.
-
-Például:
-
-{
-    "0" : "filePath",
-    "1" : "fileName",
-    ...
-}
-
-
-vagy valamilyen hasonló belső reprezentációval.
-
-Még nem migrálunk.
-
-Még nem típusosítunk.
-
-5. lépés
-
-Data parser
-
-Nagyon fontos változás.
-
-A data parser már a schema alapján dolgozik.
-
-Korábban:
-
-QStringList
-
-
-ötlet volt.
-
-Most:
-
-QMap<QString,QString>
-
-
-rögtön.
-
-Példa:
-
-Schema:
-
-externalReference
-ownerName
-quantity
-
-
-Adat:
-
-2826;Generálkiv., Pécs;1
-
-
-↓
-
-{
-    "externalReference" : "2826",
-    "ownerName" : "Generálkiv., Pécs",
-    "quantity" : "1"
-}
-
-
-Ez szerintem hatalmas nyereség.
-
-6. lépés
-
-Node hierarchy
-
-Marad.
-
-Parser stack segítségével.
-
-Valami ilyesmi:
-
-QStack<RbCsvImportNode*>
-
-orders
-
-
-↓
-
-push()
-
-END # orders
-
-
-↓
-
-pop()
-
-7. lépés
-
-Dump
-
-Most már a megírt:
-
-RbCsvImportDump
-
-
-segítségével.
-
-Schema dump:
-
-zInfo(
-    RbCsvImportDump::ToString(
-        doc.schema));
-
-
-Data dump:
-
-for(const auto& node : doc.data)
-{
-    zInfo(
-        RbCsvImportDump::ToString(
-            node));
-}
-
-8. lépés
-
-Validáljuk ezt
-
-Elvárt eredmény:
-
-[root]
-
-  row[0]
-    fileName=cuttingplan...
-
-  [orders]
-
-    row[0]
-      externalReference=2826
-
-    [materials]
-
-      row[0]
-        materialId=MT-T
-
-      row[1]
-        materialId=TE-H-18
-
-Ami változott a migráció kapcsán
-
-Ez szerintem nagyon fontos.
-
-Korábban:
-
-Schema migration
-Value migration
-
-
-volt a terv.
-
-Most már inkább:
-
-Schema migration
-Record migration
-Object normalization
-
-Schema migration
-
-Példa:
-
-subtype
-    ->
-productSubtypeCode
-
-
-Kizárólag:
-
-QMap<QString,QString>
-
-
-szinten.
-
-Record migration
-
-Példa:
-
-surface=1
-    ->
-surface=SM
-
-
-Még mindig:
-
-QMap<QString,QString>
-
-
-szinten.
-
-Object normalization
-
-NAGY változás.
-
-Korábbi beszélgetésünk alapján.
-
-Példa:
-
-régi fájlban nincs:
-
-dueDate
-
-
-Nem migráljuk a rekordot.
-
-Objektum épül:
-
-Request
-
-
-majd:
-
-RequestNormalizer::Apply(
-    request);
-
-
-és:
-
-if(!request.dueDate.isValid())
-{
-    ...
-}
-
-
-Itt már típusos adat van.
-
-Nem stringekkel dolgozunk.
-
-Amit továbbra sem csinálunk
-
-Nincs:
-
-V1 -> V2 -> V3 -> V4
-
-
-lánc.
-
-Nincs:
-
-convertRowToV1()
-convertRowToV2()
-convertRowToV3()
-
-
-típusú architektúra.
-
-A rendszer alapelve:
-
-Mit látok?
-↓
-Mi hiányzik?
-↓
-Hozzuk aktuális állapotba
-
-
-nem pedig:
-
-Melyik verzióból jött?
-
-
-Szerintem mostanra a milestone kristálytisztán ez lett:
-
-Fájl
+RBCSV file
  ↓
 RbCsvDocument
  ↓
-QMap<QString,QString>
- ↓
 Dump
 
 
-Ha ez kész, akkor a parser gyakorlatilag lezárt komponens lesz, és a további munka (migráció, meta, objektumépítés) már a parser fölé épülhet. Ez szerintem nagyon jó architekturális határvonal. 🚀
+akkor szerintem így állunk:
+
+RBCSV file
+ ↓
+schema
+ ✅
+
+data
+ ❌
+
+dump
+ ✅
+
+
+Vagyis:
+
+schema ág: ~90%
+data ág: 0-10%
+
+Mi a következő helyes feladat?
+
+Szerintem nem a validáció.
+
+Nem a migráció.
+
+Nem a meta.
+
+Nem a WorkSheetSummary.
+
+Hanem:
+
+Data parser
+
+
+Ehhez pedig először:
+
+QStack<RbCsvImportNode*>
+
+
+és
+
+push()
+pop()
+END # ...
+
+
+mechanizmus.
+
+Amit ma már bizonyítottunk
+
+Ez volt a legnagyobb technikai kockázat:
+
+Schema
+ ↓
+index -> field name
+ ↓
+Data row
+ ↓
+field name -> value
+
+
+A BuildDataRecord() log alapján ez kipipálható:
+
+✅ Megoldott probléma.
+
+Ha prioritási sorrendet kellene mondanom:
+
+Stackes parser
+Data parser
+document.data feltöltés
+Dump a data oldalra
+Parser-validáció
+
+és csak utána bármi más. Szerintem ezzel az első milestone már valóban befejezhető lesz. 🚀

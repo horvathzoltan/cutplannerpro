@@ -8,6 +8,13 @@
 #include <QMetaType>
 #include <typeindex>
 
+enum class MetaFieldKind
+{
+    Value,
+    Composition,
+    Reference
+};
+
 struct MetaFieldAdapters
 {
     const TypeCsvAdapter* csvBinding = nullptr;
@@ -32,9 +39,11 @@ public:
 
     const ICollectionAccessor* collectionAccessor = nullptr;
 
-    bool IsCollection() const
-    {
-        return itemType != std::type_index(typeid(void));
+    MetaFieldKind kind = MetaFieldKind::Value;
+
+    QString toExportString() const{
+        if(kind == MetaFieldKind::Composition) return "[" + name + "]";
+        return name;
     }
 };
 

@@ -63,13 +63,23 @@ public:
 
 };
 
-inline bool IsComposition(
+
+inline MetaFieldKind DetectFieldKind(
     const MetaFieldBase& field)
 {
-    return
-        field.IsCollection()
-        && HasMeta(field.itemType);
+    if(HasMeta(field.declaredType))
+    {
+        return MetaFieldKind::Composition;
+    }
+
+    if(HasMeta(field.itemType))
+    {
+        return MetaFieldKind::Composition;
+    }
+
+    return MetaFieldKind::Value;
 }
+
 
 inline void DumpMetaTree(
     IMetaData* meta)

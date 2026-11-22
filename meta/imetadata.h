@@ -15,4 +15,6 @@ public:
     //virtual QList<MetaFieldBase> fields() const = 0;
 
     virtual const QList<MetaField>& fieldsRef() const = 0;
+
+    virtual void Finalize() = 0;
 };

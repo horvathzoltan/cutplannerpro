@@ -75,6 +75,15 @@ public:
             this);
     }
 
+
+    void Finalize() override
+    {
+        for(auto& field : _fields)
+        {
+            field.kind = DetectFieldKind(field);
+        }
+    }
+
     //QVariantList _references;
     //QList<RefBase> _references;
 

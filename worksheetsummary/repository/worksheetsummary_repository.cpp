@@ -2,6 +2,7 @@
 
 #include "common/filehelper.h"
 #include "common/logger.h"
+#include "rbcsv/model/rbcsv_document.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -12,9 +13,13 @@
 
 #include <materials/registry/material_registry.h>
 
-#include <meta/rbcsv_modelworker.h>
+#include <meta/rbcsv_exportplanbuilder.h>
 
 #include <rbcsv/export/rbcsv_serializer.h>
+
+#include <rbcsv/import/rbcsv_importparser.h>
+
+#include <rbcsv/model/rbcsvimportdump.h>
 
 
 const QString WorkSheetSummaryRepository::MaterialSectionKey = "MAT:1";
@@ -388,20 +393,34 @@ bool WorkSheetSummaryRepository::loadFromFile(
     WorkSheetSummaryRegistry& registry,
     const QString& filePath)
 {
-    auto sections =
-        readMsffSections(
-            filePath);
 
-    if (sections.isEmpty())
+    zInfo("\n***\n***\n***");
+    zInfo("WorkSheetSummaryRepository::loadFromFile START");
+
+    QFile f(filePath);
+
+    if(f.open(
+            QIODevice::ReadOnly |
+            QIODevice::Text))
     {
-        return false;
+        QTextStream in(&f);
+
+        in.setEncoding(
+            QStringConverter::Utf8);
+
+        QString text = in.readAll();
+
+        RbCsvDocument doc = RbCsvImportParser::Parse(text);
+
+        zInfo("\n***\n***\n***");
+        zInfo("RbCsvDocument dump:");
+
+        zInfo(RbCsvImportDump::ToString(doc.schema));
+
+        zInfo("WorkSheetSummaryRepository::loadFromFile END");
+        zInfo("\n***\n***\n***");
     }
-
-    registry.clear();
-
-    return parseMsffSections(
-        sections,
-        registry);
+    return false;
 }
 
 
@@ -411,20 +430,6 @@ bool WorkSheetSummaryRepository::saveToFile(
 {
 
     zInfo("WorkSheetSummaryRepository::saveToFile begin");
-
-    //QString schema;
-
-
-    // // ezek letapogatják a metát, és kellenek a registry-hez, hogy a meták regisztrálva legyenek
-    // ebben a Meta() hívás csinál egy initial WorkSheetSummary::MetaInit() hívást
-    // schema = WorkSheetSummary::Meta().FlatSchemaDump();
-    // zInfo(schema);
-
-    // schema = WorkSheetOrderInfo::Meta().FlatSchemaDump();
-    // zInfo(schema);
-
-    // schema = WorkSheetMaterialInfo::Meta().FlatSchemaDump();
-    // zInfo(schema);
 
     QFile file(filePath);
 
