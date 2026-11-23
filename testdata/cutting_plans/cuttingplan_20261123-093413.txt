@@ -1,0 +1,39 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"980";"Kasza L./Tamás, Szeged";880;1200;864;;1;0;1;"";SR-FSN;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"980";"Kasza L./Tamás, Szeged";880;1200;847;;1;0;1;"";TE-H-32;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"980";"Kasza L./Tamás, Szeged";880;1200;850;;1;0;1;"";SR-Z;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"980";"Kasza L./Tamás, Szeged";880;1200;850;;1;0;1;"";SR-P-3000;Width;false;2026.11.25;SR;TN;;SM;Gyartasi;UNKNOWN
+"983";"Jövő 2008, Bp";660;885;670;;4;2;2;"";MT-T;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"983";"Jövő 2008, Bp";660;885;665;;4;2;2;"";TE-H-18;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"983";"Jövő 2008, Bp";660;885;653;;4;2;2;"";MT-Z+P;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"983";"Jövő 2008, Bp";660;885;885;;4;2;2;"";MT-L2;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"984";"Jövő 2008, Bp";655;885;665;;2;1;1;"";MT-T;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"984";"Jövő 2008, Bp";655;885;660;;2;1;1;"";TE-H-18;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"984";"Jövő 2008, Bp";655;885;648;;2;1;1;"";MT-Z+P;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"984";"Jövő 2008, Bp";655;885;885;;2;1;1;"";MT-L2;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"987";"TátraMix";1560;1560;1554;;1;0;1;"";SR-T;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"987";"TátraMix";1560;1560;1537;;1;0;1;"";TE-H-32;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"987";"TátraMix";1560;1560;1540;;1;0;1;"";SR-Z;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"987";"TátraMix";1560;1560;1540;;1;0;1;"";SR-P-3000;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"988";"TátraMix";1545;1560;1539;;1;1;0;"";SR-T;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"988";"TátraMix";1545;1560;1522;;1;1;0;"";TE-H-32;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"988";"TátraMix";1545;1560;1525;;1;1;0;"";SR-Z;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"988";"TátraMix";1545;1560;1525;;1;1;0;"";SR-P-3000;Width;false;2026.12.01;SR;T;;SM;Gyartasi;UNKNOWN
+"2834";"Bányai L.";1030;1280;1000;;1;0;0;"";TE-R-23;Width;false;2026.11.26;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2834";"Bányai L.";1030;1280;1003;;1;0;0;"";ROL-P;Width;false;2026.11.26;ROL;TET_NAGY;;SM;Gyartasi;UNKNOWN
+"2837";"ThermoNyílászáró, Miskolc";605;1020;575;;1;0;0;"";TE-R-23;Width;false;2026.11.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2837";"ThermoNyílászáró, Miskolc";605;1020;578;;1;0;0;"";ROL-P;Width;false;2026.11.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2838";"ThermoNyílászáró, Miskolc";605;1020;575;;1;0;0;"";TE-R-23;Width;false;2026.12.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2838";"ThermoNyílászáró, Miskolc";605;1020;578;;1;0;0;"";ROL-P;Width;false;2026.12.30;ROL;RUG;;SM;Gyartasi;UNKNOWN
+"2844";"AluInvest";455;980;420;;1;0;1;"RAL 9006";MT-T;Width;false;2027.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2844";"AluInvest";455;980;415;;1;0;1;"RAL 9006";TE-H-18;Width;false;2027.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2844";"AluInvest";455;980;402;;1;0;1;"RAL 9006";MT-Z;Width;false;2027.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2844";"AluInvest";455;980;980;;1;0;1;"RAL 9006";MT-L2;Width;false;2027.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2845";"AluInvest";630;980;595;;1;0;1;"RAL 9006";MT-T;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2845";"AluInvest";630;980;590;;1;0;1;"RAL 9006";TE-H-18;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2845";"AluInvest";630;980;577;;1;0;1;"RAL 9006";MT-Z;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2845";"AluInvest";630;980;980;;1;0;1;"RAL 9006";MT-L2;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2846";"AluInvest";630;980;595;;1;1;0;"RAL 9006";MT-T;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2846";"AluInvest";630;980;590;;1;1;0;"RAL 9006";TE-H-18;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2846";"AluInvest";630;980;577;;1;1;0;"RAL 9006";MT-Z;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
+"2846";"AluInvest";630;980;980;;1;1;0;"RAL 9006";MT-L2;Width;false;2026.11.26;ROL;TSIN;;SM;Gyartasi;UNKNOWN
