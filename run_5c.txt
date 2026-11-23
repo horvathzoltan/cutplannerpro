@@ -373,27 +373,47 @@ BuildDataRecord()          Schema + sor -> rekord        ✅ Kész      ✅ Igen
 
 RbCsvImportDump            Debug dump                    ✅ Kész      ✅ Igen         Nélkülözhetetlen
 
+Stack parser               push()/pop() hierarchia       ✅ Kész      ✅ Igen         ParseSchema már stackes
+
+END kezelés                Hierarchia lezárás            ✅ Kész      ✅ Igen         ParseSchema kezeli
+
+MetaFieldKind              Value/Composition             ✅ Kész      ✅ Igen         Finalize tölti ki
+
+DetectFieldKind            Meta alapú felismerés         ✅ Kész      ✅ Igen         declaredType/itemType
+
+Meta finalize              Kind kitöltés                ✅ Kész      ✅ Igen         MetaData::Finalize()
+
+Registry finalize          Meta véglegesítés             ✅ Kész      ✅ Igen         MetaRegistry::Finalize()
+
+Registry seal              Meta lezárás                  ✅ Kész      ✅ Igen         Startupkor lefut
+
+Schema export cleanup      [orders] jelölés             ✅ Kész      ✅ Igen         MetaField::toExportString()
+
+Dupla child kiírás         orders+[orders] hiba          ✅ Kész      ✅ Igen         Serializer tisztítva
+
 Data parser                Data -> Node fa               ❌ Nincs     ✅ Igen         Következő nagy feladat
 
 document.data feltöltése   Worksheet-ek beolvasása       ❌ Nincs     ✅ Igen         Közvetlen következő cél
 
-Data parse context         push()/pop()                  ❌ Nincs     ✅ Igen         Következő patch jelölt
+Data parse context         push()/pop()                  ❌ Nincs     ✅ Igen         Data oldalon még hiányzik
 
-END kezelés                Hierarchia lezárás            ❌ Nincs     ✅ Igen         Stack parser része
+Schema lookup              schema node keresés           ❌ Nincs     ✅ Igen         Data parserhez kell
 
-Schema validáció           túl sok END stb.              ❌ Nincs     ✅ Igen         Később
+Data END kezelés           Hierarchia lezárás            ❌ Nincs     ✅ Igen         Data parser része
 
 Data validáció             ismeretlen szekció            ❌ Nincs     ✅ Igen         Később
+
+Schema validáció           túl sok END stb.              ❌ Nincs     ✅ Igen         Később
 
 MetaValue                  RBCSV -> Meta                 ❌ Nincs     ❌ Nem          2. mérföldkő
 
 FromMetaValues             Meta -> Objektum              ❌ Nincs     ❌ Nem          2. mérföldkő
 
+WorkSheetSummary           Objektumépítés                ❌ Nincs     ❌ Nem          2. mérföldkő
+
 Migráció                   Schema migration              ❌ Nincs     ❌ Nem          Később
 
 Normalization              Domain utófeldolgozás         ❌ Nincs     ❌ Nem          Később
-
-WorkSheetSummary           Objektumépítés                ❌ Nincs     ❌ Nem          Később
 Ami külön érdekes
 
 Van néhány pont, ami a tervben szerepelt, de ma már szerintem nem prioritás.
