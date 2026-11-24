@@ -1,0 +1,19 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"597";"T-Delux";3495;2175;3465;;1;1;0;"RAL 8019";NP-T;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"597";"T-Delux";3495;2175;3490;;1;1;0;"RAL 8019";NP-TF;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"597";"T-Delux";3495;2175;3372;;1;1;0;"RAL 8019";NP-CZ-7016;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"597";"T-Delux";3495;2175;2072;;1;1;0;"RAL 8019";NP-CL2+CLT2+CLBR2;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"597";"T-Delux";3495;2175;3385;;1;1;0;"RAL 8019";NP-ROLL70-7000;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"597";"T-Delux";3495;2175;3320;;1;1;0;"RAL 8019";NP-BAR20-6000;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2860;;1;1;0;"RAL 1015";NP-T;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2885;;1;1;0;"RAL 1015";NP-TF;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2767;;1;1;0;"RAL 1015";NP-CZ-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2717;;1;1;0;"RAL 1015";NP-CL2+CLT2+CLBR2;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2780;;1;1;0;"RAL 1015";NP-ROLL70-7000;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2715;;1;1;0;"RAL 1015";NP-BAR20-6000;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;1900;;1;0;1;"RAL 1015";NP-T;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;1925;;1;0;1;"RAL 1015";NP-TF;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;1807;;1;0;1;"RAL 1015";NP-CZ-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;2717;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;1820;;1;0;1;"RAL 1015";NP-ROLL70-7000;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;1755;;1;0;1;"RAL 1015";NP-BAR20-6000;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
