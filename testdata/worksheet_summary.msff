@@ -28,75 +28,75 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260407-190651.txt;cuttingplan_20260407-190651.txt;y/tqhhfDsJOXeRzeJBNb3z2lSWb8wrK3XUTmt5ff4EQ=;Present;[orders]
 orders
-1173;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1173;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1500
 END # materials
-1274;frama;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1274;frama;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1210
 END # materials
-1275;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1275;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1250
 END # materials
-1276;frama;8;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1276;frama;8;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1280
 END # materials
-1277;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1277;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1810
 END # materials
-1278;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1278;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1800
 END # materials
-1279;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1279;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1250
 END # materials
-1280;frama;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1280;frama;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1660
 END # materials
-1281;frama;10;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1281;frama;10;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1700
 END # materials
-1282;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1282;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1170
 END # materials
-1283;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1283;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1070
 END # materials
-1284;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1284;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1170
 END # materials
-1285;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1285;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1040
 END # materials
-1286;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1286;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1040
 END # materials
-1287;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1287;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1960
 END # materials
-1288;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1288;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1960
 END # materials
-1289;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1289;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1960
 END # materials
-1290;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1290;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1960
 END # materials
@@ -104,75 +104,75 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260407-205650.txt;cuttingplan_20260407-205650.txt;iHOkp5yEL0ekt/CpChKEpniBd5taPjiSzaTYNnSTb4k=;Present;[orders]
 orders
-1273;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1273;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1140
 END # materials
-1274;frama;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1274;frama;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;850
 END # materials
-1275;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1275;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;790
 END # materials
-1276;frama;8;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1276;frama;8;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;720
 END # materials
-1277;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1277;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1780
 END # materials
-1278;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1278;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;2850
 END # materials
-1279;frama;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1279;frama;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;790
 END # materials
-1280;frama;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1280;frama;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1630
 END # materials
-1281;frama;10;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1281;frama;10;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1670
 END # materials
-1282;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1282;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1210
 END # materials
-1283;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1283;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1100
 END # materials
-1284;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1284;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1910
 END # materials
-1285;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1285;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;860
 END # materials
-1286;frama;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1286;frama;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;860
 END # materials
-1287;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1287;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1430
 END # materials
-1288;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1288;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1430
 END # materials
-1289;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1289;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1430
 END # materials
-1290;frama;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1290;frama;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SL-7016;1430
 END # materials
@@ -308,127 +308,127 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-173255_maki.txt;cuttingplan_20260506-173255_maki.txt;76EkrBx7Y/14BhYu97+fpzN6SZYqITgsbH+r6+a/c6U=;Present;[orders]
 orders
-1413;PrémiumHoliday;5;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1413;PrémiumHoliday;5;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1730
 END # materials
-1414;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1414;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1145
 END # materials
-1415;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1415;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;540
 END # materials
-1416;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1416;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1735
 END # materials
-1417;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1417;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2075
 END # materials
-1418;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1418;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;945
 END # materials
-1419;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1419;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1740
 END # materials
-1420;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1420;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1135
 END # materials
-1421;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1421;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;545
 END # materials
-1422;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1422;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1745
 END # materials
-1423;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1423;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2075
 END # materials
-1424;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1424;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;935
 END # materials
-1425;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1425;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;945
 END # materials
-1426;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1426;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2125
 END # materials
-1427;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1427;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1140
 END # materials
-1428;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1428;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;530
 END # materials
-1429;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1429;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1135
 END # materials
-1430;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1430;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;545
 END # materials
-1431;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1431;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1145
 END # materials
-1432;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1432;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1150
 END # materials
-1433;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1433;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;550
 END # materials
-1434;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1434;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1150
 END # materials
-1435;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1435;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;545
 END # materials
-1436;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1436;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;1140
 END # materials
-1437;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1437;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2095
 END # materials
-1438;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1438;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;945
 END # materials
-1439;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1439;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2425
 END # materials
-1440;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1440;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;840
 END # materials
-1443;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1443;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2375
 END # materials
-1444;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1444;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;3599
 END # materials
-1445;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1445;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;2270
 END # materials
@@ -440,127 +440,127 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-203455.txt;cuttingplan_20260506-203455.txt;8XEqTYDj1B1Ahyafzp9yCxI9z5ujvyLofMCLzb8UbMQ=;Present;[orders]
 orders
-1413;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1413;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1622
 END # materials
-1414;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1414;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1037
 END # materials
-1415;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1415;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;432
 END # materials
-1416;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1416;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1627
 END # materials
-1417;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1417;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1967
 END # materials
-1418;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1418;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;837
 END # materials
-1419;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1419;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1632
 END # materials
-1420;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1420;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1027
 END # materials
-1421;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1421;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;437
 END # materials
-1422;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1422;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1637
 END # materials
-1423;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1423;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1967
 END # materials
-1424;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1424;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;827
 END # materials
-1425;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1425;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;837
 END # materials
-1426;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1426;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;2017
 END # materials
-1427;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1427;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1032
 END # materials
-1428;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1428;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;422
 END # materials
-1429;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1429;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1027
 END # materials
-1430;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1430;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;437
 END # materials
-1431;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1431;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1037
 END # materials
-1432;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1432;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1042
 END # materials
-1433;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1433;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;442
 END # materials
-1434;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1434;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1042
 END # materials
-1435;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1435;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;437
 END # materials
-1436;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1436;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1032
 END # materials
-1437;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1437;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;1987
 END # materials
-1438;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1438;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;837
 END # materials
-1439;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1439;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;2317
 END # materials
-1440;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1440;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;732
 END # materials
-1443;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1443;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;2267
 END # materials
-1444;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1444;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;3492
 END # materials
-1445;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1445;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CZ-7016;2232
 END # materials
@@ -570,127 +570,127 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260506-210828.txt;cuttingplan_20260506-210828.txt;t6Vp+dQWMn/1lz1TTQfeuHfU5UZUanNML4AbeaicyNo=;Present;[orders]
 orders
-1413;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1413;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1414;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1414;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1415;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1415;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1416;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1416;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1417;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1417;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2397
 END # materials
-1418;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1418;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1419;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1419;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1420;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1420;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1421;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1421;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1422;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1422;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1487
 END # materials
-1423;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1423;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2397
 END # materials
-1424;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1424;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1425;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1425;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1426;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1426;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2397
 END # materials
-1427;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1427;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1428;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1428;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1429;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1429;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1430;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1430;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1431;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1431;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1432;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1432;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1433;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1433;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1434;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1434;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1482
 END # materials
-1435;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1435;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1436;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1436;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1437;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1437;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2297
 END # materials
-1438;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1438;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1477
 END # materials
-1439;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1439;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2257
 END # materials
-1440;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1440;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;1327
 END # materials
-1443;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1443;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2237
 END # materials
-1444;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1444;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2237
 END # materials
-1445;PrémiumHoliday;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1445;PrémiumHoliday;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-CL-7016;2237
 END # materials
@@ -700,71 +700,71 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260511-082828.txt;cuttingplan_20260511-082828.txt;ds8tSb0Fsf6l45fy6hI6NivWIRNgNdF6Y/BbYMzU9RI=;Present;[orders]
 orders
-1477;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1477;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;995
 END # materials
-1478;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1478;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;665
 END # materials
-1479;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1479;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;665
 END # materials
-1480;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1480;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;995
 END # materials
-1481;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1481;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;955
 END # materials
-1482;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1482;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;945
 END # materials
-1483;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1483;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;935
 END # materials
-1484;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1484;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;965
 END # materials
-1485;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1485;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;950
 END # materials
-1486;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1486;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;950
 END # materials
-1487;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1487;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;955
 END # materials
-1488;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1488;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;945
 END # materials
-1489;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1489;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;950
 END # materials
-1490;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1490;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;950
 END # materials
-1491;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1491;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;950
 END # materials
-1492;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1492;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;955
 END # materials
-1493;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1493;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;955
 END # materials
@@ -772,71 +772,71 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260511-092413.txt;cuttingplan_20260511-092413.txt;dosN1Io8irjMBNTT7ce7ypakXpULRHdKXm5YVWlDsrs=;Present;[orders]
 orders
-1477;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1477;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;960
 END # materials
-1478;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1478;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;630
 END # materials
-1479;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1479;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;630
 END # materials
-1480;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1480;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;960
 END # materials
-1481;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1481;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;920
 END # materials
-1482;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1482;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;910
 END # materials
-1483;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1483;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;900
 END # materials
-1484;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1484;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;930
 END # materials
-1485;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1485;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;915
 END # materials
-1486;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1486;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;915
 END # materials
-1487;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1487;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;920
 END # materials
-1488;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1488;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;910
 END # materials
-1489;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1489;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;915
 END # materials
-1490;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1490;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;915
 END # materials
-1491;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1491;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;915
 END # materials
-1492;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1492;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;920
 END # materials
-1493;HajduAlu_Porta;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1493;HajduAlu_Porta;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-SZ-7016;920
 END # materials
@@ -846,31 +846,31 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260512-072220_lab.txt;cuttingplan_20260512-072220_lab.txt;E3n/kK2jHdOJGU9ZmptizSa07efaG/zBwq/bwo2r8Dc=;Present;[orders]
 orders
-1880;LosoncziR;9;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1880;LosoncziR;9;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1231
 END # materials
-1881;LosoncziR;9;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1881;LosoncziR;9;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1231
 END # materials
-1882;LosoncziR;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1882;LosoncziR;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1246
 END # materials
-1883;LosoncziR;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1883;LosoncziR;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1246
 END # materials
-1884;LosoncziR;10;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1884;LosoncziR;10;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1231
 END # materials
-1885;LosoncziR;4;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1885;LosoncziR;4;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1231
 END # materials
-1886;LosoncziR;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1886;LosoncziR;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 MT-L;1231
 END # materials
@@ -886,87 +886,87 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260516-104949.txt;cuttingplan_20260516-104949.txt;1HBReioXfl1ynug13wyxpcs+lVK7ie8PDoqUYtbvYdc=;Present;[orders]
 orders
-1264;Hovafa;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1264;Hovafa;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;615
 END # materials
-1265;Hovafa;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1265;Hovafa;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;495
 END # materials
-1284;Tóth M.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1284;Tóth M.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;570
 END # materials
-1287;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1287;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1288;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1288;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1289;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1289;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1290;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1290;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1291;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1291;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1292;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1292;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1293;SándorÁrnyék;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1293;SándorÁrnyék;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;582
 END # materials
-1308;RedőnyShop;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1308;RedőnyShop;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;545
 END # materials
-1322;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1322;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1100
 END # materials
-1323;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1323;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1100
 END # materials
-1324;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1324;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1030
 END # materials
-1325;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1325;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1030
 END # materials
-1326;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1326;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1030
 END # materials
-1327;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1327;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1030
 END # materials
-1328;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1328;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1010
 END # materials
-1329;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1329;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1010
 END # materials
-1330;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1330;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1010
 END # materials
-1331;György Zs.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1331;György Zs.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1010
 END # materials
@@ -976,15 +976,15 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260520-085143.txt;cuttingplan_20260520-085143.txt;B5662UNbmbRkhQUNZ2StBmf68dCpcS4XGMIYJGVDmoo=;Present;[orders]
 orders
-1496;teszt1;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1496;teszt1;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;3413
 END # materials
-1497;teszt1;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1497;teszt1;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;3268
 END # materials
-1498;teszt1;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1498;teszt1;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 NP-T-7016;3368
 END # materials
@@ -996,23 +996,23 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260527-132401.txt;cuttingplan_20260527-132401.txt;2O30nGEp3VvCx/qFeUf3x7L3qwgK2BGYCbD9QLrKJpA=;Present;[orders]
 orders
-1395;Rellux;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1395;Rellux;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1510
 END # materials
-1396;Rellux;13;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1396;Rellux;13;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1590
 END # materials
-1397;Rellux;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1397;Rellux;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;2070
 END # materials
-1398;Rellux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1398;Rellux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1310
 END # materials
-1399;Rellux;2;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1399;Rellux;2;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1590
 END # materials
@@ -1024,175 +1024,175 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-072103.txt;cuttingplan_20260603-072103.txt;b6IOXa44SMMRSlYcLVgoZcvo+cG7tm/27Kp2pDPOSCU=;Present;[orders]
 orders
-1402;BányaiLajos;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1402;BányaiLajos;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;1340
 END # materials
-1429;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1429;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;975
 END # materials
-1430;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1430;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;975
 END # materials
-1431;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1431;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;575
 END # materials
-1432;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1432;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;495
 END # materials
-1433;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1433;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;575
 END # materials
-1434;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1434;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;975
 END # materials
-1435;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1435;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;515
 END # materials
-1436;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1436;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;445
 END # materials
-1437;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1437;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;515
 END # materials
-1438;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1438;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;450
 END # materials
-1439;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1439;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;510
 END # materials
-1440;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1440;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;500
 END # materials
-1441;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1441;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;500
 END # materials
-1442;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1442;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;500
 END # materials
-1443;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1443;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;750
 END # materials
-1444;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1444;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;590
 END # materials
-1445;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1445;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;975
 END # materials
-1446;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1446;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;730
 END # materials
-1447;Norlux;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1447;Norlux;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;590
 END # materials
-1458;Timi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1458;Timi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;765
 END # materials
-1459;Timi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1459;Timi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;765
 END # materials
-1462;Frama/Bokor;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1462;Frama/Bokor;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;595
 END # materials
-1463;Frama/Bokor;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1463;Frama/Bokor;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;595
 END # materials
-1466;Bányai;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1466;Bányai;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;700
 END # materials
-1467;Bányai;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1467;Bányai;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;970
 END # materials
-1468;Bányai;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1468;Bányai;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;970
 END # materials
-1471;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1471;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;580
 END # materials
-1472;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1472;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;580
 END # materials
-1473;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1473;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;761
 END # materials
-1474;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1474;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;761
 END # materials
-1475;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1475;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;761
 END # materials
-1478;Hör-Mi;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1478;Hör-Mi;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;660
 END # materials
-1481;Pro-Plast;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1481;Pro-Plast;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;630
 END # materials
-1498;DriszkuZs;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1498;DriszkuZs;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;710
 END # materials
-1499;DriszkuZs;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1499;DriszkuZs;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;710
 END # materials
-1502;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1502;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;405
 END # materials
-1503;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1503;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;405
 END # materials
-1504;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1504;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;405
 END # materials
-1505;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1505;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;405
 END # materials
-1506;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1506;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;645
 END # materials
-1507;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1507;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;645
 END # materials
-1508;Tiba Zoltán;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1508;Tiba Zoltán;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-R-23;645
 END # materials
@@ -1202,83 +1202,83 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500.txt;cuttingplan_20260603-103500.txt;dWGW/7G0XgMcRO3OfvgNmWQcLX51DkZofGHzcI2Xe0I=;Present;[orders]
 orders
-1454;Perei;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1454;Perei;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;815
 END # materials
-1455;Perei;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1455;Perei;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;825
 END # materials
-1484;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1484;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1485;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1485;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1486;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1486;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1487;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1487;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1488;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1488;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1165
 END # materials
-15;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+15;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;627
 END # materials
-16;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+16;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;627
 END # materials
-17;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+17;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;797
 END # materials
-18;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+18;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;657
 END # materials
-19;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+19;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;577
 END # materials
-1976;Csák L.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1976;Csák L.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;723
 END # materials
-1979;Rada;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1979;Rada;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;907
 END # materials
-1980;Rada;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1980;Rada;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;947
 END # materials
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;997
 END # materials
-5;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+5;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1657
 END # materials
-6;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+6;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1857
 END # materials
-7;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+7;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1987
 END # materials
-8;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+8;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1537
 END # materials
@@ -1290,31 +1290,31 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_5.txt;cuttingplan_20260603-103500_5.txt;0OJc9w/lHsBpzbbZi3ihKd6vY4FZOk88fuIrgjzNMbk=;Present;[orders]
 orders
-15;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+15;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;644
 END # materials
-16;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+16;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;644
 END # materials
-17;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+17;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;814
 END # materials
-18;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+18;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;674
 END # materials
-19;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+19;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;594
 END # materials
-1976;Csák L.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1976;Csák L.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;740
 END # materials
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 SR-FSN;1014
 END # materials
@@ -1322,31 +1322,31 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_rol_z.txt;cuttingplan_20260603-103500_rol_z.txt;1VA74398Bwe2JixcZ20FyRrpFL8tKHLIN33lzSEd+Xs=;Present;[orders]
 orders
-1454;Perei;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1454;Perei;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;815
 END # materials
-1455;Perei;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1455;Perei;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;825
 END # materials
-1484;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1484;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1485;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1485;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1486;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1486;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1487;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1487;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1015
 END # materials
-1488;ZentaiAblak;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1488;ZentaiAblak;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1165
 END # materials
@@ -1354,55 +1354,55 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-103500_savr_z.txt;cuttingplan_20260603-103500_savr_z.txt;FL5H8AWiHDwXy279VATZBo6Bo5UoV7kh+P6ZhVPnR3I=;Present;[orders]
 orders
-15;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+15;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;627
 END # materials
-16;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+16;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;627
 END # materials
-17;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+17;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;797
 END # materials
-18;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+18;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;657
 END # materials
-19;Nistor Egon;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+19;Nistor Egon;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;577
 END # materials
-1976;Csák L.;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1976;Csák L.;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;723
 END # materials
-1979;Rada;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1979;Rada;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;907
 END # materials
-1980;Rada;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1980;Rada;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;947
 END # materials
-1986;Kovácsné T. Gyöngy;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+1986;Kovácsné T. Gyöngy;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;997
 END # materials
-5;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+5;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1657
 END # materials
-6;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+6;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1857
 END # materials
-7;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+7;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1987
 END # materials
-8;AblakBeÉpítő;1;0;0;2026-11-23;;;Unknown;1;0;0;1;;Unknown;[materials]
+8;AblakBeÉpítő;1;0;0;2026-11-24;;;Unknown;1;0;0;1;;Unknown;[materials]
 materials
 TE-H-32;1537
 END # materials
@@ -1410,13 +1410,13 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20260603-141820.txt;cuttingplan_20260603-141820.txt;6mZLPxZZ1AZ1VJlpkfsu4u+wWKF6/m68CpYCJhpiX7E=;Present;[orders]
 orders
-1;SzabóG.;1;0;0;2026-11-23;;;Unknown;3;0;0;3;;Unknown;[materials]
+1;SzabóG.;1;0;0;2026-11-24;;;Unknown;3;0;0;3;;Unknown;[materials]
 materials
 TE-H-18;825
 MT-Z;813
 MT-L;1240
 END # materials
-1983;SzabóMihály;1;0;0;2026-11-23;;;Unknown;3;0;0;3;;Unknown;[materials]
+1983;SzabóMihály;1;0;0;2026-11-24;;;Unknown;3;0;0;3;;Unknown;[materials]
 materials
 TE-H-18;650
 MT-P;638
@@ -8357,7 +8357,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261027-071100.txt;cuttingplan_20261027-071100.txt;2XNPXgFcm5txU3mKo2b0/z1MZwRXXqWi2QoHbuEn6ec=;Present;[orders]
 orders
-478;Sideral, Ro;1;1950;2340;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+478;Sideral, Ro;1;1950;2340;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -8366,7 +8366,7 @@ NP-CL2+CLT2+CLB2-7016;2237
 NP-ROLL70-7000;1840
 NP-BAR20-6000;1775
 END # materials
-479;Sideral, Ro;1;1950;2340;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+479;Sideral, Ro;1;1950;2340;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -8375,7 +8375,7 @@ NP-CL2+CLT2+CLB2-7016;2237
 NP-ROLL70-7000;1840
 NP-BAR20-6000;1775
 END # materials
-480;Sideral, Ro;1;3010;2340;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+480;Sideral, Ro;1;3010;2340;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2980
 NP-TF-7016;3005
@@ -8384,7 +8384,7 @@ NP-CL2+CLT2+CLB2-7016;2237
 NP-ROLL70-7000;2900
 NP-BAR20-6000;2835
 END # materials
-481;Sideral, Ro;1;1950;2340;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+481;Sideral, Ro;1;1950;2340;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -8393,7 +8393,7 @@ NP-CL2+CLT2+CLB2-7016;2237
 NP-ROLL70-7000;1840
 NP-BAR20-6000;1775
 END # materials
-482;Sideral, Ro;1;2010;2315;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+482;Sideral, Ro;1;2010;2315;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1980
 NP-TF-7016;2005
@@ -8402,7 +8402,7 @@ NP-CL2+CLT2+CLB2-7016;2212
 NP-ROLL70-7000;1900
 NP-BAR20-6000;1835
 END # materials
-483;Sideral, Ro;1;1950;2315;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+483;Sideral, Ro;1;1950;2315;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1920
 NP-TF-7016;1945
@@ -8411,7 +8411,7 @@ NP-CL2+CLT2+CLB2-7016;2212
 NP-ROLL70-7000;1840
 NP-BAR20-6000;1775
 END # materials
-484;Sideral, Ro;1;2000;2335;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+484;Sideral, Ro;1;2000;2335;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1970
 NP-TF-7016;1995
@@ -8420,7 +8420,7 @@ NP-CL2+CLT2+CLB2-7016;2232
 NP-ROLL70-7000;1890
 NP-BAR20-6000;1825
 END # materials
-497;KoalaAblak, Bp.;1;4375;2220;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+497;KoalaAblak, Bp.;1;4375;2220;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;4345
 NP-TF-9010;4370
@@ -8429,7 +8429,7 @@ NP-CL2+CLT2+CLB2-9010;2117
 NP-ROLL78-7000;4265
 NP-BAR20-6000;4200
 END # materials
-498;KoalaAblak, Bp.;1;3130;2170;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+498;KoalaAblak, Bp.;1;3130;2170;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;3100
 NP-TF-9010;3125
@@ -8442,12 +8442,12 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261027-071100_koala_vas.txt;cuttingplan_20261027-071100_koala_vas.txt;QesAf+xcJmyTbRtEXWZGu1BZms/304+42Hu75CkGhms=;Present;[orders]
 orders
-497;KoalaAblak, Bp.;1;4375;2220;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+497;KoalaAblak, Bp.;1;4375;2220;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL78-7000;4265
 NP-BAR20-6000;4200
 END # materials
-498;KoalaAblak, Bp.;1;3130;2170;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+498;KoalaAblak, Bp.;1;3130;2170;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;3020
 NP-BAR20-6000;2955
@@ -8456,12 +8456,12 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261027-142143.txt;cuttingplan_20261027-142143.txt;6ljHpklGsfovOkRAArgSh8zwDgDgs0FDu0aj6s0uqOc=;Present;[orders]
 orders
-2688;Perei J., Bcs;1;660;1400;2026-11-23;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
+2688;Perei J., Bcs;1;660;1400;2026-11-24;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;630
 ROL-P;633
 END # materials
-482;Sideral, Ro;1;2010;2315;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
+482;Sideral, Ro;1;2010;2315;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
 materials
 NP-CLB2;2212
 END # materials
@@ -8469,7 +8469,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261027-154751.txt;cuttingplan_20261027-154751.txt;evBZcNzZl8se0EX5L7GhhA0gSfbH5+Ii9EozMBiWgN8=;Present;[orders]
 orders
-447;JanóRedőny, Pécs;1;2160;1850;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+447;JanóRedőny, Pécs;1;2160;1850;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2130
 NP-TF-7016;2155
@@ -8478,7 +8478,7 @@ NP-CL2+CLT2+CLB2-7016;1747
 NP-ROLL70-7000;2050
 NP-BAR20-6000;1985
 END # materials
-448;JanóRedőny, Pécs;1;2155;1855;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+448;JanóRedőny, Pécs;1;2155;1855;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2125
 NP-TF-7016;2150
@@ -8487,7 +8487,7 @@ NP-CL2+CLT2+CLB2-7016;1752
 NP-ROLL70-7000;2045
 NP-BAR20-6000;1980
 END # materials
-449;JanóRedőny, Pécs;1;1370;2800;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+449;JanóRedőny, Pécs;1;1370;2800;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1340
 NP-TF-7016;1365
@@ -8500,7 +8500,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261028-102722.txt;cuttingplan_20261028-102722.txt;+WtAWwKqDe25LU5oCbFw5gdqbq0GFhNS/2ufrthpgV4=;Present;[orders]
 orders
-10001;bolt;1;1300;1000;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+10001;bolt;1;1300;1000;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;1300
 ROL-GYZ;1290
@@ -8509,73 +8509,73 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261028-105213.txt;cuttingplan_20261028-105213.txt;+sPO6ibkH/OGWTxThes84bDpW6afhggALjxYlBuGQUg=;Present;[orders]
 orders
-2691;Rellux, Győr;1;1710;1300;2026-11-23;ROL;SRTOK;Gyartasi;3;0;0;3;RAL 8019;SM;[materials]
+2691;Rellux, Győr;1;1710;1300;2026-11-24;ROL;SRTOK;Gyartasi;3;0;0;3;RAL 8019;SM;[materials]
 materials
 SR-T;1704
 TE-H-32;1687
 ROL-GYZ;1680
 END # materials
-2694;Oros-Csőszer, Mtúr;1;1650;2500;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2694;Oros-Csőszer, Mtúr;1;1650;2500;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;1615
 ROL-GYZ;1605
 END # materials
-2697;TátraMix;1;1530;1300;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2697;TátraMix;1;1530;1300;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;1495
 ROL-GYZ;1485
 END # materials
-2698;TátraMix;1;1530;1300;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2698;TátraMix;1;1530;1300;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;1495
 ROL-GYZ;1485
 END # materials
-2699;TátraMix;1;1900;1800;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2699;TátraMix;1;1900;1800;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;1865
 ROL-GYZ;1855
 END # materials
-2702;Kiss Árnyékolás, Pécs;1;907;1310;2026-11-23;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
+2702;Kiss Árnyékolás, Pécs;1;907;1310;2026-11-24;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-S-18;877
 ROL-P;867
 END # materials
-2705;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2705;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;745
 TE-H-18;740
 MT-Z;730
 MT-L2;1450
 END # materials
-2706;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2706;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;745
 TE-H-18;740
 MT-Z;730
 MT-L2;1450
 END # materials
-2707;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2707;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;745
 TE-H-18;740
 MT-Z;730
 MT-L2;1450
 END # materials
-2708;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2708;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;745
 TE-H-18;740
 MT-Z;730
 MT-L2;1450
 END # materials
-2709;Függönycenter;1;715;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2709;Függönycenter;1;715;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;725
 TE-H-18;720
 MT-Z;710
 MT-L2;1450
 END # materials
-2710;Függönycenter;1;715;1450;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2710;Függönycenter;1;715;1450;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;725
 TE-H-18;720
@@ -8586,7 +8586,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261028-152121.txt;cuttingplan_20261028-152121.txt;0k6bljkgtZP7DbjKen5upRCYR9ALkrMdMysLzw44XXA=;Present;[orders]
 orders
-10002;RolettaMűhely;22;3000;1000;2026-11-23;SR;TN;Gyartasi;1;0;0;1;RAL 9016;SM;[materials]
+10002;RolettaMűhely;22;3000;1000;2026-11-24;SR;TN;Gyartasi;1;0;0;1;RAL 9016;SM;[materials]
 materials
 SR-P-3000_NATUR;3000
 END # materials
@@ -8594,7 +8594,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-065835.txt;cuttingplan_20261030-065835.txt;+s0PevA7mLoSnX2ZdCrh/ENzNinK60qn2HTkweNDj0I=;Present;[orders]
 orders
-512;Frama, Sorel;1;3040;2750;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+512;Frama, Sorel;1;3040;2750;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;3010
 NP-TF-7016;3035
@@ -8603,7 +8603,7 @@ NP-CL2+CLT2+CLBR2-7016;2647
 NP-ROLL70-7000;2930
 NP-BAR20-6000;2865
 END # materials
-513;Frama, Sorel;1;2270;2750;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+513;Frama, Sorel;1;2270;2750;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2240
 NP-TF-7016;2265
@@ -8612,7 +8612,7 @@ NP-CL2+CLT2+CLBR2-7016;2647
 NP-ROLL70-7000;2160
 NP-BAR20-6000;2095
 END # materials
-514;Frama, Sorel;1;2270;2750;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+514;Frama, Sorel;1;2270;2750;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2240
 NP-TF-7016;2265
@@ -8621,7 +8621,7 @@ NP-CL2+CLT2+CLBR2-7016;2647
 NP-ROLL70-7000;2160
 NP-BAR20-6000;2095
 END # materials
-515;Frama, Sorel;1;3100;2070;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+515;Frama, Sorel;1;3100;2070;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;3070
 NP-TF-7016;3095
@@ -8630,7 +8630,7 @@ NP-CL2+CLT2+CLBR2-7016;1967
 NP-ROLL70-7000;2990
 NP-BAR20-6000;2925
 END # materials
-516;Frama, Sorel;1;2280;2070;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+516;Frama, Sorel;1;2280;2070;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2250
 NP-TF-7016;2275
@@ -8639,7 +8639,7 @@ NP-CL2+CLT2+CLBR2-7016;1967
 NP-ROLL70-7000;2170
 NP-BAR20-6000;2105
 END # materials
-517;Frama, Sorel;1;3000;2020;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+517;Frama, Sorel;1;3000;2020;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2970
 NP-TF-7016;2995
@@ -8652,7 +8652,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-070047.txt;cuttingplan_20261030-070047.txt;ZTtRfuiUOY2Q+GB7MNHvT5jebAhp3gBT9QVe9ecc2HQ=;Present;[orders]
 orders
-502;Főnix;1;2940;2900;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 1015;SM;[materials]
+502;Főnix;1;2940;2900;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 1015;SM;[materials]
 materials
 NP-T;2910
 NP-TF;2935
@@ -8661,7 +8661,7 @@ NP-CL2+CLT2+CLBR2;2797
 NP-ROLL70-7000;2830
 NP-BAR20-6000;2765
 END # materials
-505;Felföldi K.;1;2320;1170;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+505;Felföldi K.;1;2320;1170;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2290
 NP-TF-7016;2315
@@ -8670,7 +8670,7 @@ NP-CL2+CLT2+CLBR2-7016;1067
 NP-ROLL70-7000;2210
 NP-BAR20-6000;2145
 END # materials
-506;Felföldi K.;1;2025;1170;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+506;Felföldi K.;1;2025;1170;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1995
 NP-TF-7016;2020
@@ -8679,7 +8679,7 @@ NP-CL2+CLT2+CLBR2-7016;1067
 NP-ROLL70-7000;1915
 NP-BAR20-6000;1850
 END # materials
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1550
 NP-TF-9010;1575
@@ -8688,7 +8688,7 @@ NP-CL2+CLT2+CLBR2-9010;1217
 NP-ROLL70-7000;1470
 NP-BAR20-6000;1405
 END # materials
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1600
 NP-TF-9010;1625
@@ -8697,7 +8697,7 @@ NP-CL2+CLT2+CLBR2-9010;1217
 NP-ROLL70-7000;1520
 NP-BAR20-6000;1455
 END # materials
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1190
 NP-TF-9010;1215
@@ -8706,7 +8706,7 @@ NP-CL2+CLT2+CLBR2-9010;1307
 NP-ROLL70-7000;1110
 NP-BAR20-6000;1045
 END # materials
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1180
 NP-TF-9010;1205
@@ -8715,7 +8715,7 @@ NP-CL2+CLT2+CLBR2-9010;1307
 NP-ROLL70-7000;1100
 NP-BAR20-6000;1035
 END # materials
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -8724,7 +8724,7 @@ NP-CL2+CLT2+CLBR2-9010;997
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # materials
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -8733,7 +8733,7 @@ NP-CL2+CLT2+CLBR2-9010;997
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # materials
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1130
 NP-TF-9010;1155
@@ -8746,39 +8746,39 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-070047_lab.txt;cuttingplan_20261030-070047_lab.txt;y5hiVx6wZHkK3Nmz8RhgsZwCn/nxlVKgayU4kDnH+k8=;Present;[orders]
 orders
-505;Felföldi K.;1;2320;1170;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
+505;Felföldi K.;1;2320;1170;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
 materials
 NP-CL2+CLT2+CLBR2-7016;1067
 END # materials
-506;Felföldi K.;1;2025;1170;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
+506;Felföldi K.;1;2025;1170;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;FS;[materials]
 materials
 NP-CL2+CLT2+CLBR2-7016;1067
 END # materials
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;1217
 END # materials
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;1217
 END # materials
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;1307
 END # materials
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;1307
 END # materials
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;997
 END # materials
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;997
 END # materials
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 9010;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-9010;997
 END # materials
@@ -8786,37 +8786,37 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-070047_vas.txt;cuttingplan_20261030-070047_vas.txt;t/urA3W0JXtdKXd/xNbeksqSYKF71hCdF/4+49KkRkI=;Present;[orders]
 orders
-523;Fény-Őr, Bp.;1;1580;1320;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+523;Fény-Őr, Bp.;1;1580;1320;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1470
 NP-BAR20-6000;1405
 END # materials
-524;Fény-Őr, Bp.;1;1630;1320;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+524;Fény-Őr, Bp.;1;1630;1320;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1520
 NP-BAR20-6000;1455
 END # materials
-525;Fény-Őr, Bp.;1;1220;1410;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+525;Fény-Őr, Bp.;1;1220;1410;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1110
 NP-BAR20-6000;1045
 END # materials
-526;Fény-Őr, Bp.;1;1210;1410;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+526;Fény-Őr, Bp.;1;1210;1410;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1100
 NP-BAR20-6000;1035
 END # materials
-527;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+527;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # materials
-528;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+528;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
 END # materials
-529;Fény-Őr, Bp.;1;1160;1100;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
+529;Fény-Őr, Bp.;1;1160;1100;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL 9010;SM;[materials]
 materials
 NP-ROLL70-7000;1050
 NP-BAR20-6000;985
@@ -8825,22 +8825,22 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-081829.txt;cuttingplan_20261030-081829.txt;w286DOqyHEy14fXRyCTz3AG6MmPbtH5+swxfhph6Ils=;Present;[orders]
 orders
-2604;AblakGenerál, Pécs;1;2200;2420;2026-11-23;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
+2604;AblakGenerál, Pécs;1;2200;2420;2026-11-24;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-S-36;2170
 ROL-GYZ;2160
 END # materials
-2605;AblakGenerál, Pécs;1;2200;2420;2026-11-23;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
+2605;AblakGenerál, Pécs;1;2200;2420;2026-11-24;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-S-36;2170
 ROL-GYZ;2160
 END # materials
-2606;AblakGenerál, Pécs;1;2200;2420;2026-11-23;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
+2606;AblakGenerál, Pécs;1;2200;2420;2026-11-24;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-S-36;2170
 ROL-GYZ;2160
 END # materials
-2607;AblakGenerál, Pécs;1;2200;2420;2026-11-23;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
+2607;AblakGenerál, Pécs;1;2200;2420;2026-11-24;ROL;ER;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-S-36;2170
 ROL-GYZ;2160
@@ -8849,7 +8849,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-115351.txt;cuttingplan_20261030-115351.txt;cNgtGgyHjq8CFfvLFYSfkO7lt3UoRlrXVeNmGLAhITQ=;Present;[orders]
 orders
-10003;RolettaMűhely;5;1015;1000;2026-11-23;ROL;UJGY;Gyartasi;1;0;0;1;;SM;[materials]
+10003;RolettaMűhely;5;1015;1000;2026-11-24;ROL;UJGY;Gyartasi;1;0;0;1;;SM;[materials]
 materials
 ROL-GYZ;1015
 END # materials
@@ -8857,47 +8857,47 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261030-132020.txt;cuttingplan_20261030-132020.txt;kXF4Wy/BVPahkG8E5iIUtnyk5/EEstlMMcze+CrLy34=;Present;[orders]
 orders
-2713;Jakufa, Nyh.;1;400;600;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2713;Jakufa, Nyh.;1;400;600;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;370
 ROL-P;373
 END # materials
-2714;Jakufa, Nyh;1;400;600;2026-11-23;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
+2714;Jakufa, Nyh;1;400;600;2026-11-24;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
 materials
 SR-T;394
 TE-H-32;377
 ROL-GYZ;370
 END # materials
-2717;Rellux, Győr;1;580;1240;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2717;Rellux, Győr;1;580;1240;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;555
 ROL-P;553
 END # materials
-2718;Rellux, Győr;1;580;1240;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2718;Rellux, Győr;1;580;1240;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;555
 ROL-P;553
 END # materials
-2719;Rellux, Győr;1;580;1240;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2719;Rellux, Győr;1;580;1240;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;555
 ROL-P;553
 END # materials
-902;Napex, Pécs;3;940;1220;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+902;Napex, Pécs;3;940;1220;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;950
 TE-H-18;945
 MT-Z+P;933
 MT-L2;1220
 END # materials
-905;Jakufa, Nyh;1;400;600;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+905;Jakufa, Nyh;1;400;600;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;410
 TE-H-18;405
 MT-Z+P;393
 MT-L2;600
 END # materials
-908;ShutterSystem;1;1200;340;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+908;ShutterSystem;1;1200;340;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;1210
 TE-H-18;1205
@@ -8908,7 +8908,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261102-115843.txt;cuttingplan_20261102-115843.txt;Opios7zInuZSjQjg17pPjYOKgJK1sSiyOO4ySVNe9Zs=;Present;[orders]
 orders
-520;Szajkó, Győr;1;1035;1829;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 1019;FS;[materials]
+520;Szajkó, Győr;1;1035;1829;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 1019;FS;[materials]
 materials
 NP-T;1005
 NP-TF;1030
@@ -8921,67 +8921,67 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261103-125947.txt;cuttingplan_20261103-125947.txt;lO6xrPPjHP6c5DoPCDrXi1xuQ65nbaF6epPxxYudlYc=;Present;[orders]
 orders
-2722;L.Zs., Nyh;1;775;2300;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2722;L.Zs., Nyh;1;775;2300;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;745
 ROL-P;748
 END # materials
-2723;L.Zs., Nyh;1;925;1400;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2723;L.Zs., Nyh;1;925;1400;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;895
 ROL-P;898
 END # materials
-2724;L.Zs., Nyh;1;925;1400;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2724;L.Zs., Nyh;1;925;1400;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;895
 ROL-P;898
 END # materials
-2725;L.Zs., Nyh;1;925;1400;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2725;L.Zs., Nyh;1;925;1400;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;895
 ROL-P;898
 END # materials
-2726;L.Zs., Nyh;1;925;1400;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2726;L.Zs., Nyh;1;925;1400;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;895
 ROL-P;898
 END # materials
-911;Kiss Árnyékolás, Pécs;1;1120;1750;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+911;Kiss Árnyékolás, Pécs;1;1120;1750;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;1104
 TE-H-32;1087
 SR-Z;1090
 SR-P-3000;1090
 END # materials
-912;Kiss Árnyékolás, Pécs;1;800;1960;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+912;Kiss Árnyékolás, Pécs;1;800;1960;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;784
 TE-H-32;767
 SR-Z;770
 SR-P-3000;770
 END # materials
-913;Kiss Árnyékolás, Pécs;1;890;400;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+913;Kiss Árnyékolás, Pécs;1;890;400;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;874
 TE-H-32;857
 SR-Z;860
 SR-P-3000;860
 END # materials
-916;Lukács László;2;750;2250;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+916;Lukács László;2;750;2250;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;734
 TE-H-32;717
 SR-Z;720
 SR-P-3000;720
 END # materials
-919;Frama, Georgies;1;1000;1400;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+919;Frama, Georgies;1;1000;1400;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;984
 TE-H-32;967
 SR-Z;970
 SR-P-3000;970
 END # materials
-920;Frama, Georgies;1;800;950;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+920;Frama, Georgies;1;800;950;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;784
 TE-H-32;767
@@ -8992,62 +8992,62 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261104-072921.txt;cuttingplan_20261104-072921.txt;5U/baX3zUQ1kXnAdvFDsov4Tlc37odIrZ+DEocWZUwY=;Present;[orders]
 orders
-2729;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2729;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2730;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2730;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2731;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2731;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2732;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2732;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2733;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2733;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2734;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2734;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2735;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2735;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2736;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2736;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2737;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2737;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2738;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2738;AjtóPark, Ef_Pécs.;1;1815;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1760
 ROL-EZ;1750
 END # materials
-2739;AjtóPark, Ef_Pécs.;1;1865;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2739;AjtóPark, Ef_Pécs.;1;1865;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1810
 ROL-EZ;1800
 END # materials
-2740;AjtóPark, Ef_Pécs.;1;1820;2200;2026-11-23;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
+2740;AjtóPark, Ef_Pécs.;1;1820;2200;2026-11-24;ROL;MOT;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-B-47;1765
 ROL-EZ;1755
@@ -9056,7 +9056,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261104-104426.txt;cuttingplan_20261104-104426.txt;eVFsdU7WFm9eEHbU/MJZ2ewUwI9NY4crTIGGyMj/LvM=;Present;[orders]
 orders
-509;Szajkó, Győr;1;990;1745;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+509;Szajkó, Győr;1;990;1745;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;960
 NP-TF-7016;985
@@ -9065,7 +9065,7 @@ NP-CL2+CLT2+CLBR2-7016;1642
 NP-ROLL70-7000;880
 NP-BAR22-3000;815
 END # materials
-532;KoalaAblak, Bp.;1;1470;1480;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+532;KoalaAblak, Bp.;1;1470;1480;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1440
 NP-TF-7016;1465
@@ -9074,7 +9074,7 @@ NP-CL2+CLT2+CLBR2-7016;1377
 NP-ROLL70-7000;1360
 NP-BAR22-3000;1295
 END # materials
-533;KoalaAblak, Bp.;1;1465;1485;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+533;KoalaAblak, Bp.;1;1465;1485;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1435
 NP-TF-7016;1460
@@ -9083,7 +9083,7 @@ NP-CL2+CLT2+CLBR2-7016;1382
 NP-ROLL70-7000;1355
 NP-BAR22-3000;1290
 END # materials
-534;KoalaAblak, Bp.;1;970;1480;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+534;KoalaAblak, Bp.;1;970;1480;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;940
 NP-TF-7016;965
@@ -9092,7 +9092,7 @@ NP-CL2+CLT2+CLBR2-7016;1377
 NP-ROLL70-7000;860
 NP-BAR22-3000;795
 END # materials
-535;KoalaAblak, Bp.;1;970;2080;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+535;KoalaAblak, Bp.;1;970;2080;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;940
 NP-TF-7016;965
@@ -9101,7 +9101,7 @@ NP-CL2+CLT2+CLBR2-7016;1977
 NP-ROLL70-7000;860
 NP-BAR22-3000;795
 END # materials
-536;KoalaAblak, Bp.;1;975;2080;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+536;KoalaAblak, Bp.;1;975;2080;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;945
 NP-TF-7016;970
@@ -9110,7 +9110,7 @@ NP-CL2+CLT2+CLBR2-7016;1977
 NP-ROLL70-7000;865
 NP-BAR22-3000;800
 END # materials
-537;KoalaAblak, Bp.;1;970;2080;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+537;KoalaAblak, Bp.;1;970;2080;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;940
 NP-TF-7016;965
@@ -9119,7 +9119,7 @@ NP-CL2+CLT2+CLBR2-7016;1977
 NP-ROLL70-7000;860
 NP-BAR22-3000;795
 END # materials
-538;KoalaAblak, Bp.;1;1945;1470;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+538;KoalaAblak, Bp.;1;1945;1470;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1915
 NP-TF-7016;1940
@@ -9132,47 +9132,47 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261105-092255.txt;cuttingplan_20261105-092255.txt;3LsJxDGhNZVUy3egLQRZP99cfvbfbv69tbOW2jz5RrA=;Present;[orders]
 orders
-2743;Hovefa, Szeged;1;750;1950;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2743;Hovefa, Szeged;1;750;1950;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;715
 ROL-P;705
 END # materials
-2744;Hovefa, Szeged;1;750;1950;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2744;Hovefa, Szeged;1;750;1950;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;715
 ROL-P;705
 END # materials
-2745;Hovefa, Szeged;1;750;1950;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2745;Hovefa, Szeged;1;750;1950;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;715
 ROL-P;705
 END # materials
-2746;Hovefa, Szeged;1;750;1950;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2746;Hovefa, Szeged;1;750;1950;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;715
 ROL-P;705
 END # materials
-2747;Hovefa, Szeged;1;650;1950;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2747;Hovefa, Szeged;1;650;1950;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;615
 ROL-P;605
 END # materials
-2753;Seres György;1;1200;1300;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2753;Seres György;1;1200;1300;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;1165
 ROL-P;1155
 END # materials
-2754;Seres György;1;1200;1300;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2754;Seres György;1;1200;1300;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;1165
 ROL-P;1155
 END # materials
-2761;Norlux, Bcs;1;1750;1300;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2761;Norlux, Bcs;1;1750;1300;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;1715
 ROL-P;1705
 END # materials
-2762;Norlux, Bcs;1;1780;1300;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2762;Norlux, Bcs;1;1780;1300;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;1745
 ROL-P;1735
@@ -9181,28 +9181,28 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261105-153923.txt;cuttingplan_20261105-153923.txt;9yj6s9FB0h9RQtMX6bERFY0vcCL5h0nOd8YVsC53DJc=;Present;[orders]
 orders
-923;Szűcs K.;1;1100;1870;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+923;Szűcs K.;1;1100;1870;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1094
 TE-H-32;1077
 SR-Z;1080
 SR-P-3000;1080
 END # materials
-924;Szűcs K.;1;1100;1870;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+924;Szűcs K.;1;1100;1870;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1094
 TE-H-32;1077
 SR-Z;1080
 SR-P-3000;1080
 END # materials
-925;Szűcs K.;1;1300;1870;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+925;Szűcs K.;1;1300;1870;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1294
 TE-H-32;1277
 SR-Z;1280
 SR-P-3000;1280
 END # materials
-928;Bodó Roló, Pécs;2;595;1260;2026-11-23;SR;MINIT;Uveg;5;0;0;5;RAL 8019;SM;[materials]
+928;Bodó Roló, Pécs;2;595;1260;2026-11-24;SR;MINIT;Uveg;5;0;0;5;RAL 8019;SM;[materials]
 materials
 MT-T-8019;605
 TE-H-18;600
@@ -9210,28 +9210,28 @@ MT-Z-8019;588
 MT-P;588
 MT-L2-8019;1260
 END # materials
-931;Ablakbeépítő, Mtúr.;1;2390;1600;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+931;Ablakbeépítő, Mtúr.;1;2390;1600;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;2384
 TE-H-32;2367
 SR-Z;2370
 SR-P-3000;2370
 END # materials
-932;Ablakbeépítő, Mtúr.;1;1280;1600;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+932;Ablakbeépítő, Mtúr.;1;1280;1600;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1274
 TE-H-32;1257
 SR-Z;1260
 SR-P-3000;1260
 END # materials
-933;Ablakbeépítő, Mtúr.;1;980;800;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+933;Ablakbeépítő, Mtúr.;1;980;800;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;974
 TE-H-32;957
 SR-Z;960
 SR-P-3000;960
 END # materials
-934;Ablakbeépítő, Mtúr.;1;1860;1600;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+934;Ablakbeépítő, Mtúr.;1;1860;1600;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1854
 TE-H-32;1837
@@ -9242,7 +9242,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261106-124809.txt;cuttingplan_20261106-124809.txt;vUhsm/yPuBtwSJHsQ7M0PeTdecp4sewT9rRHrszh8q8=;Present;[orders]
 orders
-553;Braun, Győr;1;3500;1600;2026-11-23;NP;BOW;Gyartasi;5;0;0;5;RAL 7016;FS;[materials]
+553;Braun, Győr;1;3500;1600;2026-11-24;NP;BOW;Gyartasi;5;0;0;5;RAL 7016;FS;[materials]
 materials
 NP-T-7016;3495
 NP-TF-7016;3495
@@ -9250,7 +9250,7 @@ NP-SZ-7016;3460
 NP-ROLL78-7000;3448
 NP-BAR12-4000;3415
 END # materials
-554;Braun, Győr;1;1160;1565;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+554;Braun, Győr;1;1160;1565;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1130
 NP-TF-7016;1155
@@ -9263,7 +9263,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261106-124811.txt;cuttingplan_20261106-124811.txt;mPXkwiknJdJ51wm2Hs6j5Yj/F8yloyaKp+vT1si2EC0=;Present;[orders]
 orders
-557;Sutyinszki Zolt, Bcs.;1;1450;880;2026-11-23;NP;BOW;Gyartasi;5;0;0;5;RAL 8019;SM;[materials]
+557;Sutyinszki Zolt, Bcs.;1;1450;880;2026-11-24;NP;BOW;Gyartasi;5;0;0;5;RAL 8019;SM;[materials]
 materials
 NP-T;1445
 NP-TF;1445
@@ -9275,7 +9275,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261109-081448.txt;cuttingplan_20261109-081448.txt;DmIl2nDkQSFUsxfz0RcjMxrnCYIkIJuF1UqYi15vL94=;Present;[orders]
 orders
-545;KoalaAblak, Bp.;1;3310;2700;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 8019;SM;[materials]
+545;KoalaAblak, Bp.;1;3310;2700;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8019;SM;[materials]
 materials
 NP-T;3280
 NP-TF;3305
@@ -9284,7 +9284,7 @@ NP-CL2+CLT2+CLBR2;2597
 NP-ROLL70-7000;3200
 NP-BAR20-6000;3135
 END # materials
-548;Fenstermann, Szolnok;1;1685;1750;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+548;Fenstermann, Szolnok;1;1685;1750;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1655
 NP-TF-9010;1680
@@ -9293,7 +9293,7 @@ NP-CL2+CLT2+CLBR2-9010;1647
 NP-ROLL70-7000;1575
 NP-BAR20-6000;1510
 END # materials
-549;Fenstermann, Szolnok;1;1685;1750;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+549;Fenstermann, Szolnok;1;1685;1750;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1655
 NP-TF-9010;1680
@@ -9302,7 +9302,7 @@ NP-CL2+CLT2+CLBR2-9010;1647
 NP-ROLL70-7000;1575
 NP-BAR20-6000;1510
 END # materials
-550;Fenstermann, Szolnok;1;1110;1450;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+550;Fenstermann, Szolnok;1;1110;1450;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1080
 NP-TF-9010;1105
@@ -9315,42 +9315,42 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261109-083103.txt;cuttingplan_20261109-083103.txt;dAo/bCJpTFASun7Wwbf0sy/cRvw9ywx5Z+Ug0bp2VKA=;Present;[orders]
 orders
-2705;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2705;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;700
 TE-H-18;695
 MT-Z;682
 MT-L2;1450
 END # materials
-2706;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2706;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;700
 TE-H-18;695
 MT-Z;682
 MT-L2;1450
 END # materials
-2707;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2707;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;700
 TE-H-18;695
 MT-Z;682
 MT-L2;1450
 END # materials
-2708;Függönycenter;1;735;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2708;Függönycenter;1;735;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;700
 TE-H-18;695
 MT-Z;682
 MT-L2;1450
 END # materials
-2709;Függönycenter;1;715;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2709;Függönycenter;1;715;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;680
 TE-H-18;675
 MT-Z;662
 MT-L2;1450
 END # materials
-2710;Függönycenter;1;715;1450;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
+2710;Függönycenter;1;715;1450;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 MT-T;680
 TE-H-18;675
@@ -9361,31 +9361,31 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261110-103951.txt;cuttingplan_20261110-103951.txt;kUXOP3vOe26hDbhIw4KmpMoFrpoJaeOn/onssMk9RjQ=;Present;[orders]
 orders
-2765;Tóth Á., Bcs.;1;605;1200;2026-11-23;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
+2765;Tóth Á., Bcs.;1;605;1200;2026-11-24;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;575
 ROL-P;578
 END # materials
-2766;Tóth Á., Bcs.;1;605;1200;2026-11-23;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
+2766;Tóth Á., Bcs.;1;605;1200;2026-11-24;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;575
 ROL-P;578
 END # materials
-2772;Szekér Zsolt, Pécs;1;570;1260;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2772;Szekér Zsolt, Pécs;1;570;1260;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;580
 TE-H-18;575
 MT-Z;565
 MT-L2;1260
 END # materials
-2773;Szekér Zsolt, Pécs;1;570;1260;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2773;Szekér Zsolt, Pécs;1;570;1260;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;580
 TE-H-18;575
 MT-Z;565
 MT-L2;1260
 END # materials
-2775;Kiss Árnyékolás, Pécs;1;490;860;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2775;Kiss Árnyékolás, Pécs;1;490;860;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;460
 ROL-P;463
@@ -9394,35 +9394,35 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261110-123634.txt;cuttingplan_20261110-123634.txt;Hx1VOyl6QyIu7UvzjyxYZeGH1DZcU6RQZBeWvUY4sxg=;Present;[orders]
 orders
-937;Eged J., Bcs.;1;660;1800;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+937;Eged J., Bcs.;1;660;1800;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;654
 TE-H-32;637
 SR-Z;640
 SR-P-3000;640
 END # materials
-940;Árnyhouse, Pécs;2;1550;1500;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+940;Árnyhouse, Pécs;2;1550;1500;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1544
 TE-H-32;1527
 SR-Z;1530
 SR-P-3000;1530
 END # materials
-941;Árnyhouse, Pécs;4;1490;850;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+941;Árnyhouse, Pécs;4;1490;850;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1484
 TE-H-32;1467
 SR-Z;1470
 SR-P-3000;1470
 END # materials
-944;Berkes Balázs, Bcs;1;1000;2500;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+944;Berkes Balázs, Bcs;1;1000;2500;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;984
 TE-H-32;967
 SR-Z;970
 SR-P-3000;970
 END # materials
-947;Szabó Viktor, Bcs;1;730;1370;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+947;Szabó Viktor, Bcs;1;730;1370;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;714
 TE-H-32;697
@@ -9433,13 +9433,13 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261111-114758.txt;cuttingplan_20261111-114758.txt;cURSCkTBBomtTJdOfQPZ0u6iQkrTIhdrLm+PBVEQEuM=;Present;[orders]
 orders
-10003;RolettaMűhely;1;1900;1000;2026-11-23;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
+10003;RolettaMűhely;1;1900;1000;2026-11-24;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
 materials
 SR-T;1894
 TE-H-32;1877
 ROL-GYZ;1870
 END # materials
-10004;RolettaMűhely;2;1530;1000;2026-11-23;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
+10004;RolettaMűhely;2;1530;1000;2026-11-24;ROL;SRTOK;Gyartasi;3;0;0;3;;SM;[materials]
 materials
 SR-T;1524
 TE-H-32;1507
@@ -9449,15 +9449,15 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261111-120538.txt;cuttingplan_20261111-120538.txt;B7+3tGqqXPLLY+Yh0wqITPAIfUTFetx2BYlh3Spcxio=;Present;[orders]
 orders
-10004;10005;2;1755;3200;2026-11-23;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
+10004;10005;2;1755;3200;2026-11-24;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
 materials
 NP-SZ;1715
 END # materials
-10005;10005;2;1755;3200;2026-11-23;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
+10005;10005;2;1755;3200;2026-11-24;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
 materials
 NP-ROLL70-7000;1711
 END # materials
-10006;10005;2;1755;3200;2026-11-23;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
+10006;10005;2;1755;3200;2026-11-24;NP;BOW;Gyartasi;1;0;0;1;;SM;[materials]
 materials
 NP-BAR12-4000;1670
 END # materials
@@ -9465,47 +9465,47 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261112-083115.txt;cuttingplan_20261112-083115.txt;a7sdrU1mc/1C3y3R7wE9Lm5OdhsDlFLgEicubd2rHNo=;Present;[orders]
 orders
-2778;Bence L.;1;670;900;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2778;Bence L.;1;670;900;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;640
 ROL-P;643
 END # materials
-2779;Bence L.;1;670;900;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2779;Bence L.;1;670;900;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;640
 ROL-P;643
 END # materials
-2780;Bence L.;1;745;650;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2780;Bence L.;1;745;650;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;710
 ROL-P;700
 END # materials
-2781;Bence L.;1;745;650;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2781;Bence L.;1;745;650;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;710
 ROL-P;700
 END # materials
-2782;Bence L.;1;745;650;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2782;Bence L.;1;745;650;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;710
 ROL-P;700
 END # materials
-2783;Bence L.;1;745;650;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2783;Bence L.;1;745;650;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;710
 ROL-P;700
 END # materials
-2786;Driszku Zs.;1;605;1300;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2786;Driszku Zs.;1;605;1300;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;570
 ROL-P;560
 END # materials
-2789;Varga L.;1;875;2300;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2789;Varga L.;1;875;2300;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;840
 ROL-GYZ;830
 END # materials
-2790;Varga L.;1;875;2300;2026-11-23;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
+2790;Varga L.;1;875;2300;2026-11-24;ROL;UJGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-H-32;840
 ROL-GYZ;830
@@ -9514,7 +9514,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261112-094337.txt;cuttingplan_20261112-094337.txt;G597bHNzdGHBbfZpG1FWJ2YTlsd4BfcsZlhdXe1oml4=;Present;[orders]
 orders
-10008;SürgősTétel;2;100;2500;2026-11-23;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;SM;[materials]
+10008;SürgősTétel;2;100;2500;2026-11-24;NP;CIP;Gyartasi;1;0;0;1;RAL 7016;SM;[materials]
 materials
 NP-CL2+CLT2+CLBR2-7016;2500
 END # materials
@@ -9522,7 +9522,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261112-115850.txt;cuttingplan_20261112-115850.txt;5lDDgot4BNYwW0UdAAXQacOYqh11lSJPZUuorQsJicI=;Present;[orders]
 orders
-563;Szajkó, Győr;1;3460;2270;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+563;Szajkó, Győr;1;3460;2270;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;3430
 NP-TF-7016;3455
@@ -9531,7 +9531,7 @@ NP-CL2+CLT2+CLBR2-7016;2167
 NP-ROLL70-7000;3350
 NP-BAR20-6000;3285
 END # materials
-564;Szajkó, Győr;1;2990;2270;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+564;Szajkó, Győr;1;2990;2270;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;2960
 NP-TF-7016;2985
@@ -9540,7 +9540,7 @@ NP-CL2+CLT2+CLBR2-7016;2167
 NP-ROLL70-7000;2880
 NP-BAR20-6000;2815
 END # materials
-567;Pro-Plast;1;1070;2200;2026-11-23;NP;SIN;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+567;Pro-Plast;1;1070;2200;2026-11-24;NP;SIN;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;1065
 NP-TF-7016;1065
@@ -9549,7 +9549,7 @@ NP-SL2-7016;2098
 NP-ROLL70-7000;1026
 NP-BAR12-4000;950
 END # materials
-570;Napex, Pécs;1;3355;2545;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
+570;Napex, Pécs;1;3355;2545;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 7016;FS;[materials]
 materials
 NP-T-7016;3325
 NP-TF-7016;3350
@@ -9562,47 +9562,47 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261113-091456.txt;cuttingplan_20261113-091456.txt;qt6aaDM/VtqulTRuTva0VmZPsEMJWOfnPUEtGGgfRf0=;Present;[orders]
 orders
-2793;Tóth Mónika;1;972;1100;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2793;Tóth Mónika;1;972;1100;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;947
 ROL-P;945
 END # materials
-2794;Tóth Mónika;1;972;1100;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2794;Tóth Mónika;1;972;1100;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 ROL-P;945
 TE-R-23;947
 END # materials
-2795;Tóth Mónika;1;972;1100;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2795;Tóth Mónika;1;972;1100;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;947
 ROL-P;945
 END # materials
-2796;Tóth Mónika;1;972;1100;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2796;Tóth Mónika;1;972;1100;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;947
 ROL-P;945
 END # materials
-2797;Tóth Mónika;1;972;1100;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2797;Tóth Mónika;1;972;1100;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;947
 ROL-P;945
 END # materials
-2803;Oláh Szabolcs, Bcs;1;630;680;2026-11-23;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
+2803;Oláh Szabolcs, Bcs;1;630;680;2026-11-24;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-S-18;600
 ROL-P;590
 END # materials
-2804;Oláh Szabolcs, Bcs;1;630;680;2026-11-23;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
+2804;Oláh Szabolcs, Bcs;1;630;680;2026-11-24;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-S-18;600
 ROL-P;590
 END # materials
-2805;Oláh Szabolcs, Bcs;1;630;680;2026-11-23;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
+2805;Oláh Szabolcs, Bcs;1;630;680;2026-11-24;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-S-18;600
 ROL-P;590
 END # materials
-2806;Oláh Szabolcs, Bcs;1;725;680;2026-11-23;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
+2806;Oláh Szabolcs, Bcs;1;725;680;2026-11-24;ROL;MINI;Teljes;2;0;0;2;;SM;[materials]
 materials
 TE-S-18;695
 ROL-P;685
@@ -9611,35 +9611,35 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261113-115022.txt;cuttingplan_20261113-115022.txt;Y7ZkKPudVe7iRW32oHbGgGcXBLBPtezr/a9NnBgX9YQ=;Present;[orders]
 orders
-950;Atiza 2000, Szolnok;4;410;1340;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+950;Atiza 2000, Szolnok;4;410;1340;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;420
 TE-H-18;415
 MT-Z+P;403
 MT-L2;1340
 END # materials
-953;Unimont, Szeged;1;1650;2350;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+953;Unimont, Szeged;1;1650;2350;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1644
 TE-H-32;1627
 SR-Z;1630
 SR-P-3000;1630
 END # materials
-956;Árnyhouse, Pécs;1;690;1100;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+956;Árnyhouse, Pécs;1;690;1100;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;700
 TE-H-18;695
 MT-Z+P;683
 MT-L2;1100
 END # materials
-957;Árnyhouse, Pécs;2;640;940;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+957;Árnyhouse, Pécs;2;640;940;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;650
 TE-H-18;645
 MT-Z+P;633
 MT-L2;940
 END # materials
-958;Árnyhouse, Pécs;1;935;935;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+958;Árnyhouse, Pécs;1;935;935;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;945
 TE-H-18;940
@@ -9650,7 +9650,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261116-093703.txt;cuttingplan_20261116-093703.txt;+yr8sJjB9El5l2oR2v6CnBbrrc+6HIhh1/r5syOYAAY=;Present;[orders]
 orders
-573;Szajkó, Győr;1;1200;3360;2026-11-23;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
+573;Szajkó, Győr;1;1200;3360;2026-11-24;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
 materials
 NP-T;1195
 NP-TF;1195
@@ -9658,7 +9658,7 @@ NP-SZ;1160
 NP-ROLL70-7000;1156
 NP-BAR12-4000;1115
 END # materials
-574;Szajkó, Győr;1;1200;3360;2026-11-23;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
+574;Szajkó, Győr;1;1200;3360;2026-11-24;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
 materials
 NP-T;1195
 NP-TF;1195
@@ -9666,7 +9666,7 @@ NP-SZ;1160
 NP-ROLL70-7000;1156
 NP-BAR12-4000;1115
 END # materials
-575;Szajkó, Győr;1;2280;3360;2026-11-23;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
+575;Szajkó, Győr;1;2280;3360;2026-11-24;NP;BOW;Gyartasi;5;0;0;5;RAL 8017;SM;[materials]
 materials
 NP-T;2275
 NP-TF;2275
@@ -9674,7 +9674,7 @@ NP-SZ;2240
 NP-ROLL70-7000;2236
 NP-BAR12-4000;2195
 END # materials
-578;Atiza 2000, Szolnok;1;1450;1450;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL EPOSZKRÉM;SM;[materials]
+578;Atiza 2000, Szolnok;1;1450;1450;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL EPOSZKRÉM;SM;[materials]
 materials
 NP-T;1420
 NP-TF;1445
@@ -9687,22 +9687,22 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261116-093703_vas.txt;cuttingplan_20261116-093703_vas.txt;w5lu7TypTg0xCALWv+/t1sz2X5gAUb1BQzV36tRvrQk=;Present;[orders]
 orders
-573;Szajkó, Győr;1;1200;3360;2026-11-23;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
+573;Szajkó, Győr;1;1200;3360;2026-11-24;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
 materials
 NP-ROLL70-7000;1156
 NP-BAR12-4000;1115
 END # materials
-574;Szajkó, Győr;1;1200;3360;2026-11-23;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
+574;Szajkó, Győr;1;1200;3360;2026-11-24;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
 materials
 NP-ROLL70-7000;1156
 NP-BAR12-4000;1115
 END # materials
-575;Szajkó, Győr;1;2280;3360;2026-11-23;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
+575;Szajkó, Győr;1;2280;3360;2026-11-24;NP;BOW;Gyartasi;2;0;0;2;RAL 8017;SM;[materials]
 materials
 NP-ROLL70-7000;2236
 NP-BAR12-4000;2195
 END # materials
-578;Atiza 2000, Szolnok;1;1450;1450;2026-11-23;NP;CIP;Gyartasi;2;0;0;2;RAL EPOSZKRÉM;SM;[materials]
+578;Atiza 2000, Szolnok;1;1450;1450;2026-11-24;NP;CIP;Gyartasi;2;0;0;2;RAL EPOSZKRÉM;SM;[materials]
 materials
 NP-ROLL70-7000;1340
 NP-BAR20-6000;1275
@@ -9711,42 +9711,42 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261117-110808.txt;cuttingplan_20261117-110808.txt;LuqxVerOxpjAobcsAJxevbaF2L06IjvVqCMbdxVGUKk=;Present;[orders]
 orders
-2812;Fenstermann, Szolnok;1;315;350;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2812;Fenstermann, Szolnok;1;315;350;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;325
 TE-H-18;320
 MT-Z;310
 MT-L2;350
 END # materials
-961;MolKomfort, Eger;1;700;1200;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+961;MolKomfort, Eger;1;700;1200;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;684
 TE-H-32;667
 SR-Z;670
 SR-P-3000;670
 END # materials
-962;MolKomfort, Eger;1;700;1200;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+962;MolKomfort, Eger;1;700;1200;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;684
 TE-H-32;667
 SR-Z;670
 SR-P-3000;670
 END # materials
-963;MolKomfort, Eger;1;725;1200;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+963;MolKomfort, Eger;1;725;1200;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;709
 TE-H-32;692
 SR-Z;695
 SR-P-3000;695
 END # materials
-964;MolKomfort, Eger;1;820;1320;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+964;MolKomfort, Eger;1;820;1320;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;804
 TE-H-32;787
 SR-Z;790
 SR-P-3000;790
 END # materials
-967;HZ-Ablak, Szeged;1;910;1235;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+967;HZ-Ablak, Szeged;1;910;1235;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;920
 TE-H-18;915
@@ -9757,47 +9757,47 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261117-141626.txt;cuttingplan_20261117-141626.txt;oboe9yZJL6Uu2ptLt30I9mi6gLAytiV301iN8T+RWvo=;Present;[orders]
 orders
-2815;Bor M.;1;450;1500;2026-11-23;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
+2815;Bor M.;1;450;1500;2026-11-24;ROL;ALAP;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;415
 ROL-P;405
 END # materials
-2818;Árnyhouse, Pécs;1;775;1275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2818;Árnyhouse, Pécs;1;775;1275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;785
 TE-H-18;780
 MT-Z;770
 MT-L2;1275
 END # materials
-2819;Árnyhouse, Pécs;1;775;1275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2819;Árnyhouse, Pécs;1;775;1275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;785
 TE-H-18;780
 MT-Z;770
 MT-L2;1275
 END # materials
-2820;Árnyhouse, Pécs;1;775;1275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2820;Árnyhouse, Pécs;1;775;1275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;785
 TE-H-18;780
 MT-Z;770
 MT-L2;1275
 END # materials
-2821;Árnyhouse, Pécs;1;775;1275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2821;Árnyhouse, Pécs;1;775;1275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;785
 TE-H-18;780
 MT-Z;770
 MT-L2;1275
 END # materials
-2822;Árnyhouse, Pécs;1;775;1275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2822;Árnyhouse, Pécs;1;775;1275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;785
 TE-H-18;780
 MT-Z;770
 MT-L2;1275
 END # materials
-2823;Árnyhouse, Pécs;1;575;275;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2823;Árnyhouse, Pécs;1;575;275;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;585
 TE-H-18;580
@@ -9808,7 +9808,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261118-085520.txt;cuttingplan_20261118-085520.txt;2Oe1Q3/75fxAovh7ny7QHyS0BCx+KoIrUqPmcy/JFAA=;Present;[orders]
 orders
-584;Kezs Ablak, Bcs.;1;1120;2030;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
+584;Kezs Ablak, Bcs.;1;1120;2030;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
 materials
 NP-T;1090
 NP-TF;1115
@@ -9817,7 +9817,7 @@ NP-CL2+CLT2+CLBR2;1927
 NP-ROLL70-7000;1010
 NP-BAR20-6000;945
 END # materials
-585;Kezs Ablak, Bcs.;1;1920;2030;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
+585;Kezs Ablak, Bcs.;1;1920;2030;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
 materials
 NP-T;1890
 NP-TF;1915
@@ -9826,7 +9826,7 @@ NP-CL2+CLT2+CLBR2;1927
 NP-ROLL70-7000;1810
 NP-BAR20-6000;1745
 END # materials
-586;Kezs Ablak, Bcs.;1;1910;2030;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
+586;Kezs Ablak, Bcs.;1;1910;2030;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
 materials
 NP-T;1880
 NP-TF;1905
@@ -9835,7 +9835,7 @@ NP-CL2+CLT2+CLBR2;1927
 NP-ROLL70-7000;1800
 NP-BAR20-6000;1735
 END # materials
-587;Kezs Ablak, Bcs.;1;1230;2070;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
+587;Kezs Ablak, Bcs.;1;1230;2070;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8004;SM;[materials]
 materials
 NP-T;1200
 NP-TF;1225
@@ -9848,7 +9848,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261118-150045.txt;cuttingplan_20261118-150045.txt;xWRBtIvKE6xmv3VSkRewH7PUVqSfe6wbuzB6HJimRVU=;Present;[orders]
 orders
-581;Ablakbeépítő, Mtúr.;1;4060;1780;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+581;Ablakbeépítő, Mtúr.;1;4060;1780;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;4030
 NP-TF-9010;4055
@@ -9861,66 +9861,66 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261119-082831.txt;cuttingplan_20261119-082831.txt;u/IAIbs7a2E7jKR6WmLSIbisRKTzr1dBBngPj+/ZM0k=;Present;[orders]
 orders
-2826;Generálkiv., Pécs;1;700;1005;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2826;Generálkiv., Pécs;1;700;1005;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;710
 TE-H-18;705
 MT-Z;695
 MT-L2;1005
 END # materials
-2827;Generálkiv., Pécs;1;400;1005;2026-11-23;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
+2827;Generálkiv., Pécs;1;400;1005;2026-11-24;ROL;TSIN;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;410
 TE-H-18;405
 MT-Z;395
 MT-L2;1005
 END # materials
-2830;PálinkásTestvérek, Szolnok;1;625;1027;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2830;PálinkásTestvérek, Szolnok;1;625;1027;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;600
 ROL-P;598
 END # materials
-2831;PálinkásTestvérek, Szolnok;1;625;1027;2026-11-23;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
+2831;PálinkásTestvérek, Szolnok;1;625;1027;2026-11-24;ROL;TET;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;600
 ROL-P;598
 END # materials
-970;Kiss Gy. Msz.;2;812;1090;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+970;Kiss Gy. Msz.;2;812;1090;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;822
 TE-H-18;817
 MT-Z+P;805
 MT-L2;1090
 END # materials
-971;Kiss Gy. Msz.;2;832;1220;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+971;Kiss Gy. Msz.;2;832;1220;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;842
 TE-H-18;837
 MT-Z+P;825
 MT-L2;1220
 END # materials
-972;Kiss Gy. Msz.;2;350;350;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+972;Kiss Gy. Msz.;2;350;350;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;360
 TE-H-18;355
 MT-Z+P;343
 MT-L2;350
 END # materials
-975;Szabó Géza;1;1400;1800;2026-11-23;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
+975;Szabó Géza;1;1400;1800;2026-11-24;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
 materials
 SR-T;1394
 TE-H-32;1377
 SR-Z;1380
 SR-P-3000;1380
 END # materials
-976;Szabó Géza;1;1550;2700;2026-11-23;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
+976;Szabó Géza;1;1550;2700;2026-11-24;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
 materials
 SR-T;1544
 TE-H-32;1527
 SR-Z;1530
 SR-P-3000;1530
 END # materials
-977;Szabó Géza;1;920;2700;2026-11-23;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
+977;Szabó Géza;1;920;2700;2026-11-24;SR;T;Gyartasi;4;0;0;4;RAL 9005;SM;[materials]
 materials
 SR-T;914
 TE-H-32;897
@@ -9931,7 +9931,7 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261120-103701.txt;cuttingplan_20261120-103701.txt;teExjB6mejYz88SdChuzrnSF1llyAxLdzvI/foiIIjw=;Present;[orders]
 orders
-590;Frama, Ayanter;2;950;1510;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+590;Frama, Ayanter;2;950;1510;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;920
 NP-TF-9010;945
@@ -9940,7 +9940,7 @@ NP-CL2+CLT2+CLBR2-9010;1407
 NP-ROLL70-7000;840
 NP-BAR20-6000;775
 END # materials
-591;Frama, Ayanter;5;1110;1280;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+591;Frama, Ayanter;5;1110;1280;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1080
 NP-TF-9010;1105
@@ -9949,7 +9949,7 @@ NP-CL2+CLT2+CLBR2-9010;1177
 NP-ROLL70-7000;1000
 NP-BAR20-6000;935
 END # materials
-592;Frama, Ayanter;1;950;1210;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+592;Frama, Ayanter;1;950;1210;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;920
 NP-TF-9010;945
@@ -9958,7 +9958,7 @@ NP-CL2+CLT2+CLBR2-9010;1107
 NP-ROLL70-7000;840
 NP-BAR20-6000;775
 END # materials
-593;Frama, Ayanter;1;920;2190;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+593;Frama, Ayanter;1;920;2190;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;890
 NP-TF-9010;915
@@ -9967,7 +9967,7 @@ NP-CL2+CLT2+CLBR2-9010;2087
 NP-ROLL70-7000;810
 NP-BAR20-6000;745
 END # materials
-594;Frama, Ayanter;1;1680;1280;2026-11-23;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
+594;Frama, Ayanter;1;1680;1280;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 9010;SM;[materials]
 materials
 NP-T-9010;1650
 NP-TF-9010;1675
@@ -9980,75 +9980,106 @@ END # orders
 
 /home/zoli/source/repos/CutPlannerPro/testdata/cutting_plans/cuttingplan_20261123-093413.txt;cuttingplan_20261123-093413.txt;9jH3kLW3BazYUrE6bm36e2rMaWIlI7kkNDctWnK6JKc=;Present;[orders]
 orders
-2834;Bányai L.;1;1030;1280;2026-11-23;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
+2834;Bányai L.;1;1030;1280;2026-11-24;ROL;TET_NAGY;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;1000
 ROL-P;1003
 END # materials
-2837;ThermoNyílászáró, Miskolc;1;605;1020;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2837;ThermoNyílászáró, Miskolc;1;605;1020;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;575
 ROL-P;578
 END # materials
-2838;ThermoNyílászáró, Miskolc;1;605;1020;2026-11-23;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
+2838;ThermoNyílászáró, Miskolc;1;605;1020;2026-11-24;ROL;RUG;Gyartasi;2;0;0;2;;SM;[materials]
 materials
 TE-R-23;575
 ROL-P;578
 END # materials
-2844;AluInvest;1;455;980;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
+2844;AluInvest;1;455;980;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
 materials
 MT-T;420
 TE-H-18;415
 MT-Z;402
 MT-L2;980
 END # materials
-2845;AluInvest;1;630;980;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
+2845;AluInvest;1;630;980;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
 materials
 MT-T;595
 TE-H-18;590
 MT-Z;577
 MT-L2;980
 END # materials
-2846;AluInvest;1;630;980;2026-11-23;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
+2846;AluInvest;1;630;980;2026-11-24;ROL;TSIN;Gyartasi;4;0;0;4;RAL 9006;SM;[materials]
 materials
 MT-T;595
 TE-H-18;590
 MT-Z;577
 MT-L2;980
 END # materials
-980;Kasza L./Tamás, Szeged;1;880;1200;2026-11-23;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
+980;Kasza L./Tamás, Szeged;1;880;1200;2026-11-24;SR;TN;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-FSN;864
 TE-H-32;847
 SR-Z;850
 SR-P-3000;850
 END # materials
-983;Jövő 2008, Bp;4;660;885;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+983;Jövő 2008, Bp;4;660;885;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;670
 TE-H-18;665
 MT-Z+P;653
 MT-L2;885
 END # materials
-984;Jövő 2008, Bp;2;655;885;2026-11-23;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
+984;Jövő 2008, Bp;2;655;885;2026-11-24;SR;MINIT;Uveg;4;0;0;4;;SM;[materials]
 materials
 MT-T;665
 TE-H-18;660
 MT-Z+P;648
 MT-L2;885
 END # materials
-987;TátraMix;1;1560;1560;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+987;TátraMix;1;1560;1560;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1554
 TE-H-32;1537
 SR-Z;1540
 SR-P-3000;1540
 END # materials
-988;TátraMix;1;1545;1560;2026-11-23;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
+988;TátraMix;1;1545;1560;2026-11-24;SR;T;Gyartasi;4;0;0;4;;SM;[materials]
 materials
 SR-T;1539
 TE-H-32;1522
 SR-Z;1525
 SR-P-3000;1525
+END # materials
+END # orders
+
+/home/zoli/repos/cutplannerpro/testdata/cutting_plans/cuttingplan_20261124-080635.txt;cuttingplan_20261124-080635.txt;3+mgf0LnDS1yEEaN9uXJaAupXthr/f6+8g/F2szZu9o=;Present;[orders]
+orders
+597;T-Delux;1;3495;2175;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 8019;SM;[materials]
+materials
+NP-T;3465
+NP-TF;3490
+NP-CZ-7016;3372
+NP-CL2+CLT2+CLBR2;2072
+NP-ROLL70-7000;3385
+NP-BAR20-6000;3320
+END # materials
+600;Délroll, Szeged;1;2890;2820;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 1015;SM;[materials]
+materials
+NP-T;2860
+NP-TF;2885
+NP-CZ-9010;2767
+NP-CL2+CLT2+CLBR2;2717
+NP-ROLL70-7000;2780
+NP-BAR20-6000;2715
+END # materials
+601;Délroll, Szeged;1;1930;2820;2026-11-24;NP;CIP;Gyartasi;6;0;0;6;RAL 1015;SM;[materials]
+materials
+NP-T;1900
+NP-TF;1925
+NP-CZ-9010;1807
+NP-CL2+CLT2+CLBR2;2717
+NP-ROLL70-7000;1820
+NP-BAR20-6000;1755
 END # materials
 END # orders
