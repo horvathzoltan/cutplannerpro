@@ -53,10 +53,10 @@ public:
         IMetaData*,
         const DiscoveryPath& path)
     {
+        QString ps = PathString(path);
+
         QString childPath =
-            path.Path().isEmpty()
-                ? field.name
-                : path.Path() + "/" + field.name;
+            ps.isEmpty() ? field.name : ps + "/" + field.name;
 
         RbCsvSchemaSection child;
         child.sectionName = field.name;
@@ -87,6 +87,7 @@ private:
         if(path.Depth() == 0)
             return _plan.root;
 
-        return _plan.sections[path.Path()];
+        QString ps = PathString(path);
+        return _plan.sections[ps];
     }
 };

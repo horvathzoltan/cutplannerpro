@@ -16,8 +16,8 @@ struct RbCsvImportNode
 {
     QString sectionName;
 
-    QList<RbCsvImportRecord> records;
+    RbCsvImportRecord record;
 
-    QList<RbCsvImportNode> children;
+    QHash<QString,QList<RbCsvImportNode>> children;
 };
 
