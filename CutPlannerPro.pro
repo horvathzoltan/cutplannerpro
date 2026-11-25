@@ -276,8 +276,11 @@ HEADERS += \
     product/utils/subtype_utils.h \
     rbcsv/export/rbcsv_serializer.h \
     rbcsv/export/rbcsv_valueformatter.h \
+    rbcsv/import/databuildcontext.h \
+    rbcsv/import/datanodepath.h \
     rbcsv/import/importtreecontext.h \
     rbcsv/import/rbcsv_importparser.h \
+    rbcsv/import/rbcsv_pathutils.h \
     rbcsv/import/rbcsv_schemautils.h \
     rbcsv/model/rbcsv_document.h \
     rbcsv/model/rbcsv_importnode.h \

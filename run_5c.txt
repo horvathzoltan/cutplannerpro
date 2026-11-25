@@ -365,55 +365,96 @@ LineType enum              Empty/Begin/End/Record        ❌ Nincs     🟡 Tal�
 
 IsSectionBegin()           szekciófelismerés             ✅ Kész      ✅ Igen         Már használjuk
 
-Schema parser              Schema -> Node fa             ✅ Kész      ✅ Igen         Működik
+Schema parser              Schema -> Node fa             ✅ Kész      ✅ Igen         Stabil
 
 Schema rekordok            0 -> fieldName               ✅ Kész      ✅ Igen         Kritikus elem
 
 BuildDataRecord()          Schema + sor -> rekord        ✅ Kész      ✅ Igen         Bizonyított működés
 
-RbCsvImportDump            Debug dump                    ✅ Kész      ✅ Igen         Nélkülözhetetlen
+RbCsvImportDump            Debug dump                    ✅ Kész      ❌ Nem          ToString() modellbe költözött
+
+Import modell redesign     Meta kompatibilis fa          ✅ Kész      ✅ Igen         Nagy architekturális mérföldkő
+
+RbCsvImportNode v2         children hash alapú           ✅ Kész      ✅ Igen         QHash<QString,QList<Node>>
+
+Field-name lookup          Név alapú gyermekkezelés      ✅ Kész      ✅ Igen         Meta mezőkhöz illeszkedik
 
 Stack parser               push()/pop() hierarchia       ✅ Kész      ✅ Igen         ParseSchema már stackes
 
 END kezelés                Hierarchia lezárás            ✅ Kész      ✅ Igen         ParseSchema kezeli
 
+Schema lookup              schema node keresés           ✅ Kész      ✅ Igen         FindSchemaNode() működik
+
+Schema lookup refactor     Hash child kezelés            ✅ Kész      ✅ Igen         Új Node modellre átállítva
+
+RbCsvImportRecord::ToString Rekord dump                  ✅ Kész      ✅ Igen         Beépült a modellbe
+
+RbCsvImportNode::Summary   Rövid debug nézet             ✅ Kész      ✅ Igen         Logoláshoz jó
+
+RbCsvImportNode::ToString  Rekurzív fa dump              ✅ Kész      ✅ Igen         Teljes struktúra dump
+
+RbCsvDocument::ToString    Dokumentum dump               ✅ Kész      ✅ Igen         Schema + Data egyben
+
 MetaFieldKind              Value/Composition             ✅ Kész      ✅ Igen         Finalize tölti ki
 
 DetectFieldKind            Meta alapú felismerés         ✅ Kész      ✅ Igen         declaredType/itemType
 
-Meta finalize              Kind kitöltés                ✅ Kész      ✅ Igen         MetaData::Finalize()
+Meta finalize              Kind kitöltés                 ✅ Kész      ✅ Igen         MetaData::Finalize()
 
 Registry finalize          Meta véglegesítés             ✅ Kész      ✅ Igen         MetaRegistry::Finalize()
 
 Registry seal              Meta lezárás                  ✅ Kész      ✅ Igen         Startupkor lefut
 
-Schema export cleanup      [orders] jelölés             ✅ Kész      ✅ Igen         MetaField::toExportString()
+Schema export cleanup      [orders] jelölés              ✅ Kész      ✅ Igen         MetaField::toExportString()
 
 Dupla child kiírás         orders+[orders] hiba          ✅ Kész      ✅ Igen         Serializer tisztítva
 
-Data parser                Data -> Node fa               ❌ Nincs     ✅ Igen         Következő nagy feladat
+Data parser                Data -> Node fa               ✅ Kész      ✅ Igen         Generikus faépítő működik
 
-document.data feltöltése   Worksheet-ek beolvasása       ❌ Nincs     ✅ Igen         Közvetlen következő cél
+document.data feltöltése   Worksheet-ek beolvasása       ✅ Kész      ✅ Igen         Több száz ROOT validálva
 
-Data parse context         push()/pop()                  ❌ Nincs     ✅ Igen         Data oldalon még hiányzik
+Data parse context         push()/pop()                  ✅ Kész      ✅ Igen         DataBuildContext elkészült
 
-Schema lookup              schema node keresés           ❌ Nincs     ✅ Igen         Data parserhez kell
+Data END kezelés           Hierarchia lezárás            ✅ Kész      ✅ Igen         Path stack kezeli
 
-Data END kezelés           Hierarchia lezárás            ❌ Nincs     ✅ Igen         Data parser része
+Data validáció             ismeretlen szekció            🟡 Részben   ✅ Igen         Hiányzó schema logolva
 
-Data validáció             ismeretlen szekció            ❌ Nincs     ✅ Igen         Később
+Schema validáció           túl sok END stb.              ❌ Nincs     ✅ Igen         Későbbi hardening
 
-Schema validáció           túl sok END stb.              ❌ Nincs     ✅ Igen         Később
+ParentPath helper          Szülő útvonal feloldás        ✅ Kész      ✅ Igen         Data parser használja
 
-MetaValue                  RBCSV -> Meta                 ❌ Nincs     ❌ Nem          2. mérföldkő
+LeafName helper            Aktuális szekció név          ✅ Kész      ✅ Igen         Data parser használja
 
-FromMetaValues             Meta -> Objektum              ❌ Nincs     ❌ Nem          2. mérföldkő
+DataNodePath               Pointermentes state           ✅ Kész      ✅ Igen         Pointer-hiba megszüntetve
 
-WorkSheetSummary           Objektumépítés                ❌ Nincs     ❌ Nem          2. mérföldkő
+ResolveNode                Path -> Node feloldás         ✅ Kész      ✅ Igen         Assert-ekkel védett
+
+Pointer stability          Realloc biztonság             ✅ Kész      ✅ Igen         DataBuildContext már nem pointeres
+
+Data tree dump audit       Valós adatok ellenőrzése      ✅ Kész      ❌ Nem          Több száz rekord validálva
+
+Meta materializer          Node -> MetaValue             ❌ Nincs     ✅ Igen         Következő nagy mérföldkő
+
+MetaValue                  RBCSV -> Meta                 ❌ Nincs     ✅ Igen         Materializer része
+
+Meta type conversion       QString -> valódi típus       ❌ Nincs     ✅ Igen         int, enum, bool, QDate stb.
+
+FromMetaValues             Meta -> Objektum              ❌ Nincs     ✅ Igen         Materializer használja
+
+Collection materializer    QList child kezelés           ❌ Nincs     ✅ Igen         orders/materials feltöltés
+
+Composition materializer   Beágyazott objektumok         ❌ Nincs     ✅ Igen         MetaFieldKind::Composition
+
+WorkSheetMaterialInfo      Objektumépítés                ❌ Nincs     ✅ Igen         Első materializer célpont
+
+WorkSheetOrderInfo         Objektumépítés                ❌ Nincs     ✅ Igen         Második lépcső
+
+WorkSheetSummary           Objektumépítés                ❌ Nincs     ✅ Igen         Végső cél
 
 Migráció                   Schema migration              ❌ Nincs     ❌ Nem          Később
 
 Normalization              Domain utófeldolgozás         ❌ Nincs     ❌ Nem          Később
+
 Ami külön érdekes
 
 Van néhány pont, ami a tervben szerepelt, de ma már szerintem nem prioritás.
@@ -506,3 +547,172 @@ Dump a data oldalra
 Parser-validáció
 
 és csak utána bármi más. Szerintem ezzel az első milestone már valóban befejezhető lesz. 🚀
+
+
+
+
+MATERIALIZER MILESTONE
+================================================================================
+
+Cél:
+
+RbCsvImportNode
+    ->
+Meta alapú objektumpéldány
+    ->
+WorkSheetSummary / WorkSheetOrderInfo / WorkSheetMaterialInfo
+
+domén-specifikus kód nélkül.
+
+
+------------------------------------------------------------------------------------------------------------
+Tervpont                          Cél                                          Állapot     Prioritás
+------------------------------------------------------------------------------------------------------------
+
+RbCsvMaterializer osztály         Publikus materializer API                     ❌ Nincs     🔴 Következő
+
+Materialize<T>()                  Típusos belépési pont                         ❌ Nincs     🔴 Következő
+
+MaterializeNode()                 Rekurzív motor                               ❌ Nincs     🔴 Következő
+
+Node -> MetaField lookup          Név alapján mezőkeresés                       ❌ Nincs     🔴 Következő
+
+Value field kezelés               Record.values -> mező                         ❌ Nincs     🔴 Következő
+
+QString -> QVariant               Alap konverzió                               ❌ Nincs     🔴 Következő
+
+MetaField::SetValue() integráció  tényleges mezőbe írás                         ❌ Nincs     🔴 Következő
+
+------------------------------------------------------------------------------------------------------------
+1. MILESTONE
+WorkSheetMaterialInfo
+------------------------------------------------------------------------------------------------------------
+
+Material node materializálás      Child nélküli objektum                        ❌ Nincs     🔴 Első teszt
+
+materialId feltöltés              QString mező                                 ❌ Nincs     🔴 Első teszt
+
+cutLengthMm feltöltés             numerikus mező                               ❌ Nincs     🔴 Első teszt
+
+Materializer smoke test           Node -> WorkSheetMaterialInfo                ❌ Nincs     🔴 Első teszt
+
+
+------------------------------------------------------------------------------------------------------------
+2. MILESTONE
+Composition támogatás
+------------------------------------------------------------------------------------------------------------
+
+MetaFieldKind::Composition        Kompozíció felismerése                       ❌ Nincs     🟠 Utána
+
+Child node lookup                 source.children[field.name]                  ❌ Nincs     🟠 Utána
+
+Single composition                1:1 beágyazás                               ❌ Nincs     🟠 Utána
+
+Recursive materialization         MaterializeNode() hívás                      ❌ Nincs     🟠 Utána
+
+
+------------------------------------------------------------------------------------------------------------
+3. MILESTONE
+QList támogatás
+------------------------------------------------------------------------------------------------------------
+
+Collection detect                 QList<T> felismerés                          ❌ Nincs     🟠 Utána
+
+Collection create                 Kolekció feltöltése                          ❌ Nincs     🟠 Utána
+
+Collection append                 Elemek hozzáadása                            ❌ Nincs     🟠 Utána
+
+Materials collection              Order.materials feltöltése                   ❌ Nincs     🟠 Utána
+
+
+------------------------------------------------------------------------------------------------------------
+4. MILESTONE
+WorkSheetOrderInfo
+------------------------------------------------------------------------------------------------------------
+
+Order node materializálás         Value mezők + materials                      ❌ Nincs     🟡 Később
+
+WorkSheetOrderInfo test           Valódi order adatok                          ❌ Nincs     🟡 Később
+
+
+------------------------------------------------------------------------------------------------------------
+5. MILESTONE
+WorkSheetSummary
+------------------------------------------------------------------------------------------------------------
+
+Summary node materializálás       Root objektum                                ❌ Nincs     🟡 Később
+
+Orders collection                 Worksheet.orders feltöltése                  ❌ Nincs     🟡 Később
+
+Teljes fa materializálás          ROOT -> WorkSheetSummary                     ❌ Nincs     🟡 Később
+
+
+------------------------------------------------------------------------------------------------------------
+TÍPUSKONVERZIÓ
+------------------------------------------------------------------------------------------------------------
+
+QString -> int                    Numerikus mezők                              ❌ Nincs     🟠 Szükséges
+
+QString -> double                 Numerikus mezők                              ❌ Nincs     🟠 Szükséges
+
+QString -> bool                   Logikai mezők                                ❌ Nincs     🟠 Szükséges
+
+QString -> enum                   CalcMode, Surface stb.                       ❌ Nincs     🟠 Szükséges
+
+QString -> QDate                  dueDate                                      ❌ Nincs     🟠 Szükséges
+
+QString -> optional<T>            opcionális mezők                             ❌ Nincs     🟠 Szükséges
+
+
+------------------------------------------------------------------------------------------------------------
+NEM KELL EGYELŐRE
+------------------------------------------------------------------------------------------------------------
+
+MetaValue köztes modell           Node -> MetaValue -> Objektum                ⏸ Nem kell
+
+ImportPlan                        Serializer fordítottja                       ⏸ Nem kell
+
+DiscoverTree()                    Materializerhez                             ⏸ Nem kell
+
+Domain materializerek             WorkSheetSummaryMaterializer stb.            ⏸ Nem kell
+
+Migráció                           Verzióváltás                               ⏸ Később
+
+Normalizáció                       Domain utófeldolgozás                       ⏸ Később
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Patch 1
+rbcsv_materializer.h
+
+Patch 2
+template<typename T>
+Materialize(...)
+
+Patch 3
+MaterializeNode(...)
+
+Patch 4
+Meta field lookup
+
+Patch 5
+String -> típus konverzió
+
+Patch 6
+Value field write
+
+Patch 7
+WorkSheetMaterialInfo teszt
+
+=== Első mérföldkő teljesítve ===

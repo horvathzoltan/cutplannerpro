@@ -16,25 +16,28 @@ FindSchemaNodeRecursive(
         return &node;
     }
 
-    const QString& target =
-        parts[depth];
+    const QString& target = parts[depth];
 
-    for(const auto& child : node.children)
+    auto it = node.children.find(target);
+
+    if(it == node.children.end())
     {
-        if(child.sectionName == target)
-        {
-            return
-                FindSchemaNodeRecursive(
-                    child,
-                    parts,
-                    depth + 1);
-        }
+        return nullptr;
     }
 
-    return nullptr;
+    const auto& children = it.value();
+
+    if(children.isEmpty())
+    {
+        return nullptr;
+    }
+
+    return
+        FindSchemaNodeRecursive(children.first(),parts,depth + 1);
 }
 
-}
+} // end of namespace
+
 
 const RbCsvImportNode*
 FindSchemaNode(
@@ -46,14 +49,8 @@ FindSchemaNode(
         return &root;
     }
 
-    QStringList parts =
-        path.split(
-            '/',
-            Qt::SkipEmptyParts);
+    QStringList parts = path.split('/', Qt::SkipEmptyParts);
 
-    return
-        FindSchemaNodeRecursive(
-            root,
-            parts,
-            0);
+    auto a =  FindSchemaNodeRecursive(root,parts,0);
+    return a;
 }
