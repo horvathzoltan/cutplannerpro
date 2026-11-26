@@ -415,7 +415,7 @@ bool WorkSheetSummaryRepository::loadFromFile(
         zInfo("\n***\n***\n***");
         zInfo("RbCsvDocument dump:");
 
-        zInfo(RbCsvImportDump::ToString(doc.schema));
+        zInfo(doc.ToString());
 
         zInfo("WorkSheetSummaryRepository::loadFromFile END");
         zInfo("\n***\n***\n***");

@@ -21,10 +21,12 @@ void DiscoverTree(IMetaData* meta, Worker& worker, DiscoveryPath& path)
         if(child)
         {
             worker.EnterComposition(meta,field,child,path);
-            path.fields.append(field);
+            //path.fields.append(field);
+            path.Push(field);
             DiscoverTree(child,worker,path);
             worker.LeaveComposition(meta,field,child,path);
-            path.fields.removeLast();
+            //path.fields.removeLast();
+            path.Pop();
         }
         else
         {

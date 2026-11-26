@@ -31,13 +31,13 @@ public:
     void EnterComposition(IMetaData* parent,const MetaFieldBase& field,IMetaData* child, const DiscoveryPath& path)
     {
         int depth = path.Depth();
-        zInfo("composition: " + field.name + " path:" + path.Path());
+        zInfo("composition: " + field.name + " path:" + PathString(path));
     }
 
     void LeaveComposition(IMetaData* parent,const MetaFieldBase& field,IMetaData* child,const DiscoveryPath& path)
     {
         int depth = path.Depth();
-        zInfo("leave composition: "+ field.name+ " path:"+ path.Path());
+        zInfo("leave composition: "+ field.name+ " path:"+ PathString(path));
     }
 
 

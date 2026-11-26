@@ -1,45 +1,89 @@
 #pragma once
 
+#include "meta/metafield.h"
 #include <QList>
 #include <QString>
 #include <QStringList>
 
-#include "metafield.h"
-
-struct DiscoveryPath
+template<typename T>
+struct TreePath
 {
-    QList<MetaFieldBase> fields;
+    QList<T> items;
 
-    const MetaFieldBase* Current() const
+    const T* Current() const
     {
-        if(fields.isEmpty())
+        if(items.isEmpty())
             return nullptr;
 
-        return &fields.last();
+        return &items.last();
     }
 
-    const MetaFieldBase* Parent() const
+    const T* Parent() const
     {
-        if(fields.size() < 2)
+        if(items.size() < 2)
             return nullptr;
 
-        return &fields[fields.size() - 2];
-    }
-
-    QString Path() const
-    {
-        QStringList parts;
-
-        for(const auto& field : fields)
-        {
-            parts.append(field.name);
-        }
-
-        return parts.join('/');
+        return &items[items.size() - 2];
     }
 
     int Depth() const
     {
-        return fields.size();
+        return items.size();
+    }
+
+    bool IsEmpty() const
+    {
+        return items.isEmpty();
+    }
+
+    void Push(const T& item)
+    {
+        items.append(item);
+    }
+
+    void Pop()
+    {
+        if(!items.isEmpty())
+        {
+            items.removeLast();
+        }
+    }
+
+    template<typename NameGetter>
+    QString Path(NameGetter getName) const
+    {
+        QStringList parts;
+
+        for(const auto& item : items)
+        {
+            parts.append(
+                getName(item));
+        }
+
+        return parts.join('/');
     }
 };
+
+using DiscoveryPath = TreePath<MetaFieldBase>;
+using SchemaPath = TreePath<QString>;
+
+
+inline QString PathString(
+    const DiscoveryPath& path)
+{
+    return path.Path(
+        [](const MetaFieldBase& field)
+        {
+            return field.name;
+        });
+}
+
+inline QString PathString(
+    const SchemaPath& path)
+{
+    return path.Path(
+        [](const QString& s)
+        {
+            return s;
+        });
+}

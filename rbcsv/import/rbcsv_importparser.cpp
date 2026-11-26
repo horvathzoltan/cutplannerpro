@@ -1,8 +1,15 @@
+#include "importtreecontext.h"
 #include "rbcsv_importparser.h"
 #include "common/logger.h"
+#include "meta/discoverypath.h"
+#include "databuildcontext.h"
+#include "rbcsv_schemautils.h"
 
 #include <QStringList>
 #include <QStack>
+
+#include "rbcsv/import/rbcsv_pathutils.h"
+#include "datanodepath.h"
 
 namespace
 {
@@ -58,21 +65,16 @@ static RbCsvImportRecord BuildDataRecord(
 {
     RbCsvImportRecord record;
 
-    if(schemaNode.records.isEmpty())
-    {
-        return record;
-    }
-
     const auto& schemaRecord =
-        schemaNode.records.first();
+        schemaNode.record;
 
     QStringList parts =
         line.split(
             ';',
             Qt::KeepEmptyParts);
 
-    for(int i=0;
-         i<parts.size();
+    for(int i = 0;
+         i < parts.size();
          ++i)
     {
         QString schemaKey =
@@ -106,9 +108,9 @@ static RbCsvImportNode ParseSchema(
 
     root.sectionName = "schema";
 
-    QStack<RbCsvImportNode*> stack;
+    ImportTreeContext ctx;
 
-    stack.push(&root);
+    ctx.nodes.push(&root);
 
     for(const QString& line : lines)
     {
@@ -119,11 +121,7 @@ static RbCsvImportNode ParseSchema(
 
         if(line.startsWith("END"))
         {
-            if(stack.size() > 1)
-            {
-                stack.pop();
-            }
-
+            ctx.Pop();
             continue;
         }
 
@@ -133,20 +131,197 @@ static RbCsvImportNode ParseSchema(
 
             node.sectionName = line;
 
-            stack.top()->children.append(node);
+            ctx.Current() ->children[line].append(node);
 
-            stack.push(
-                &stack.top()->children.last());
+            RbCsvImportNode* child =&ctx.Current()->children[line].last();
+
+            ctx.Push(line,child);
 
             continue;
         }
 
-        stack.top()->records.append(
-            BuildSchemaRecord(line));
+        ctx.Current()->record = BuildSchemaRecord(line);
     }
 
     return root;
 }
+
+
+static RbCsvImportNode&
+ResolveNode(
+    QList<RbCsvImportNode>& roots,
+    const DataNodePath& path)
+{
+    Q_ASSERT(path.IsValid());
+    Q_ASSERT(path.rootIndex >= 0);
+    Q_ASSERT(path.rootIndex < roots.size());
+
+    RbCsvImportNode* node = &roots[path.rootIndex];
+
+    for(const auto& item : path.items)
+    {
+        auto childIt = node->children.find(item.collectionName);
+
+        Q_ASSERT(childIt !=node->children.end());
+        Q_ASSERT(item.index >= 0);
+        Q_ASSERT(item.index <childIt->size());
+
+        node = &(*childIt)[item.index];
+    }
+
+    return *node;
+}
+
+/*
+schema által definiált szerkezetű
+RbCsvImportNode fát épít.
+*/
+static QList<RbCsvImportNode>
+ParseData(
+    const QStringList& lines,
+    const RbCsvImportNode& schemaRoot)
+{
+    QList<RbCsvImportNode> result;
+
+    DataBuildContext ctx;
+
+    SchemaPath path;
+
+    for(const QString& line : lines)
+    {
+        if(line.isEmpty())
+        {
+            continue;
+        }
+
+        if(line.startsWith("END"))
+        {
+            QString leavingSection =
+                PathString(path);
+
+            path.Pop();
+
+            zInfo(
+                QString(
+                    "LEAVE SECTION: %1")
+                    .arg(
+                        leavingSection));
+
+            continue;
+        }
+
+        if(IsSectionBegin(line))
+        {
+            path.Push(line);
+
+            const auto* schemaNode =
+                FindSchemaNode(
+                    schemaRoot,
+                    PathString(path));
+
+            zInfo(
+                QString(
+                    "ENTER SECTION: %1 -> %2")
+                    .arg(
+                        PathString(path))
+                    .arg(
+                        schemaNode
+                            ? schemaNode->sectionName
+                            : "NULL"));
+
+            if(!schemaNode)
+            {
+                zWarning(
+                    QString(
+                        "Schema section not found: %1")
+                        .arg(
+                            PathString(path)));
+            }
+
+            continue;
+        }
+
+        const auto* schemaNode =
+            FindSchemaNode(
+                schemaRoot,
+                PathString(path));
+
+        if(!schemaNode)
+        {
+            zWarning(
+                QString(
+                    "No schema for path: %1")
+                    .arg(
+                        PathString(path)));
+
+            continue;
+        }
+
+        RbCsvImportRecord record =
+            BuildDataRecord(
+                line,
+                *schemaNode);
+
+        if(record.values.isEmpty())
+        {
+            continue;
+        }
+
+        zInfo(
+            QString("DATA RECORD path=%1 fields=%2").arg(PathString(path)).arg(record.values.size()));
+
+        const QString currentPath =PathString(path);
+
+        if(currentPath.isEmpty())
+        {
+            result.append(RbCsvImportNode{});
+            RbCsvImportNode& root =result.last();
+            root.record =record;
+            ctx.lastRecordAtPath.clear();
+
+            DataNodePath rootPath;
+            rootPath.rootIndex =result.size() - 1;
+            ctx.lastRecordAtPath[""] =rootPath;
+            continue;
+        }
+
+        QString parentPath = ParentPath(currentPath);
+        QString leaf =LeafName(currentPath);
+
+        auto parentIt = ctx.lastRecordAtPath.find(parentPath);
+
+        if(parentIt ==ctx.lastRecordAtPath.end())
+        {
+            zWarning(QString("Missing parent path: %1").arg(parentPath));
+
+            continue;
+        }
+
+        RbCsvImportNode& parent =ResolveNode(result,parentIt.value());
+        parent.children[leaf].append(RbCsvImportNode{});
+
+        RbCsvImportNode& node =parent.children[leaf].last();
+        node.sectionName =leaf;
+        node.record =record;
+
+        DataNodePath nodePath =parentIt.value();
+
+        const int childIndex = static_cast<int>(parent.children[leaf].size() - 1);
+
+        nodePath.items.append({leaf,childIndex});
+
+        ctx.lastRecordAtPath[currentPath] = nodePath;
+        zInfo(
+            QString(
+                "NODE CREATED path=%1 parent=%2")
+                .arg(currentPath)
+                .arg(parentPath));
+
+    }
+
+    return result;
+}
+
 
 } //end of anonymous namespace
 
@@ -202,20 +377,30 @@ RbCsvDocument RbCsvImportParser::Parse(
     RbCsvDocument doc;
 
     doc.schema = ParseSchema(schemaLines);
-
+    doc.data = ParseData( dataLines,doc.schema);
     zInfo("=== AFTER PARSE SCHEMA ===");
 
-    if(!doc.schema.children.isEmpty())
+    const RbCsvImportNode* ordersSchema =
+        FindSchemaNode(
+            doc.schema,
+            "orders");
+
+    if(ordersSchema)
     {
         zInfo("=== ENTER BUILD DATA TEST ===");
 
-        const auto& ordersSchema =doc.schema.children.first();
-
-        auto testRecord = BuildDataRecord("2826;Generálkiv., Pécs;1;700",ordersSchema);
+        auto testRecord =
+            BuildDataRecord(
+                "2826;Generálkiv., Pécs;1;700",
+                *ordersSchema);
 
         zInfo("=== BUILD DATA RETURNED ===");
 
-        zInfo(QString("BuildDataRecord fields=%1").arg(testRecord.values.size()));
+        zInfo(
+            QString(
+                "BuildDataRecord fields=%1")
+                .arg(
+                    testRecord.values.size()));
 
         for(auto it = testRecord.values.begin();
              it != testRecord.values.end();
@@ -226,7 +411,6 @@ RbCsvDocument RbCsvImportParser::Parse(
                     .arg(it.key())
                     .arg(it.value()));
         }
-
 
         QStringList values;
 
