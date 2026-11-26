@@ -57,6 +57,7 @@ SOURCES += \
     product/repository/product_calcmode_repository.cpp \
     rbcsv/export/rbcsv_valueformatter.cpp \
     rbcsv/import/rbcsv_importparser.cpp \
+    rbcsv/import/rbcsv_metavalueadapter.cpp \
     rbcsv/import/rbcsv_schemautils.cpp \
     rbcsv/model/rbcsvimportdump.cpp \
     service/snapshot/inventoryauditbuilder.cpp \
@@ -280,6 +281,8 @@ HEADERS += \
     rbcsv/import/datanodepath.h \
     rbcsv/import/importtreecontext.h \
     rbcsv/import/rbcsv_importparser.h \
+    rbcsv/import/rbcsv_materializer.h \
+    rbcsv/import/rbcsv_metavalueadapter.h \
     rbcsv/import/rbcsv_pathutils.h \
     rbcsv/import/rbcsv_schemautils.h \
     rbcsv/model/rbcsv_document.h \

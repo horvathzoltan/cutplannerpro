@@ -551,168 +551,467 @@ Parser-validáció
 
 
 
-MATERIALIZER MILESTONE
-================================================================================
 
-Cél:
+
+
+
+
+
+
+
+
+Szerintem most először érdemes szétválasztani a tervezési mérföldköveket és a konkrét patcheket, mert tegnap még a "Materialize a scalar field-eket" korszakban voltunk, ma viszont már bebizonyítottuk, hogy:
 
 RbCsvImportNode
     ->
-Meta alapú objektumpéldány
+MetaField lookup
     ->
-WorkSheetSummary / WorkSheetOrderInfo / WorkSheetMaterialInfo
+csvBinding->fromCsv()
+    ->
+domain objektum
 
-domén-specifikus kód nélkül.
+
+működik.
+
+A materializer valódi végcélja tehát:
+
+WorkSheetSummary summary =
+    Materialize<WorkSheetSummary>(
+        rootNode);
 
 
-------------------------------------------------------------------------------------------------------------
-Tervpont                          Cél                                          Állapot     Prioritás
-------------------------------------------------------------------------------------------------------------
+ahol a materializer:
 
-RbCsvMaterializer osztály         Publikus materializer API                     ❌ Nincs     🔴 Következő
+létrehozza a root objektumot
+feltölti a scalar mezőket
+létrehozza az order objektumokat
+feltölti az order scalar mezőit
+létrehozza a material objektumokat
+feltölti a material mezőit
+a kollekciókba behelyezi őket
+visszatér a teljes gráffal
 
-Materialize<T>()                  Típusos belépési pont                         ❌ Nincs     🔴 Következő
+sehol:
 
-MaterializeNode()                 Rekurzív motor                               ❌ Nincs     🔴 Következő
+WorkSheetOrderInfo order;
+WorkSheetMaterialInfo material;
 
-Node -> MetaField lookup          Név alapján mezőkeresés                       ❌ Nincs     🔴 Következő
 
-Value field kezelés               Record.values -> mező                         ❌ Nincs     🔴 Következő
+nem szerepel kézzel.
 
-QString -> QVariant               Alap konverzió                               ❌ Nincs     🔴 Következő
+1. Mérföldkő: Scalar materializer
+Cél
 
-MetaField::SetValue() integráció  tényleges mezőbe írás                         ❌ Nincs     🔴 Következő
+Bizonyítani:
 
-------------------------------------------------------------------------------------------------------------
-1. MILESTONE
+RbCsvImportNode
+    ->
+T
+
+
+ahol T nem tartalmaz compositon-t.
+
+Állapot
+✅ KÉSZ
+
+
+A mostani log ezt bizonyítja:
+
+cutLengthMm=3465
+materialId=NP-T
+
+↓
+
 WorkSheetMaterialInfo
-------------------------------------------------------------------------------------------------------------
 
-Material node materializálás      Child nélküli objektum                        ❌ Nincs     🔴 Első teszt
+2. Mérföldkő: Objektum létrehozás a materializerben
+Cél
 
-materialId feltöltés              QString mező                                 ❌ Nincs     🔴 Első teszt
+A materializer maga készítse a példányt.
 
-cutLengthMm feltöltés             numerikus mező                               ❌ Nincs     🔴 Első teszt
+Most:
 
-Materializer smoke test           Node -> WorkSheetMaterialInfo                ❌ Nincs     🔴 Első teszt
-
-
-------------------------------------------------------------------------------------------------------------
-2. MILESTONE
-Composition támogatás
-------------------------------------------------------------------------------------------------------------
-
-MetaFieldKind::Composition        Kompozíció felismerése                       ❌ Nincs     🟠 Utána
-
-Child node lookup                 source.children[field.name]                  ❌ Nincs     🟠 Utána
-
-Single composition                1:1 beágyazás                               ❌ Nincs     🟠 Utána
-
-Recursive materialization         MaterializeNode() hívás                      ❌ Nincs     🟠 Utána
+T object;
+Materialize(node,object);
 
 
-------------------------------------------------------------------------------------------------------------
-3. MILESTONE
-QList támogatás
-------------------------------------------------------------------------------------------------------------
+Cél:
 
-Collection detect                 QList<T> felismerés                          ❌ Nincs     🟠 Utána
+T object =
+    Materialize<T>(node);
 
-Collection create                 Kolekció feltöltése                          ❌ Nincs     🟠 Utána
+Patch A1
 
-Collection append                 Elemek hozzáadása                            ❌ Nincs     🟠 Utána
+Új overload:
 
-Materials collection              Order.materials feltöltése                   ❌ Nincs     🟠 Utána
-
-
-------------------------------------------------------------------------------------------------------------
-4. MILESTONE
-WorkSheetOrderInfo
-------------------------------------------------------------------------------------------------------------
-
-Order node materializálás         Value mezők + materials                      ❌ Nincs     🟡 Később
-
-WorkSheetOrderInfo test           Valódi order adatok                          ❌ Nincs     🟡 Később
-
-
-------------------------------------------------------------------------------------------------------------
-5. MILESTONE
-WorkSheetSummary
-------------------------------------------------------------------------------------------------------------
-
-Summary node materializálás       Root objektum                                ❌ Nincs     🟡 Később
-
-Orders collection                 Worksheet.orders feltöltése                  ❌ Nincs     🟡 Később
-
-Teljes fa materializálás          ROOT -> WorkSheetSummary                     ❌ Nincs     🟡 Később
-
-
-------------------------------------------------------------------------------------------------------------
-TÍPUSKONVERZIÓ
-------------------------------------------------------------------------------------------------------------
-
-QString -> int                    Numerikus mezők                              ❌ Nincs     🟠 Szükséges
-
-QString -> double                 Numerikus mezők                              ❌ Nincs     🟠 Szükséges
-
-QString -> bool                   Logikai mezők                                ❌ Nincs     🟠 Szükséges
-
-QString -> enum                   CalcMode, Surface stb.                       ❌ Nincs     🟠 Szükséges
-
-QString -> QDate                  dueDate                                      ❌ Nincs     🟠 Szükséges
-
-QString -> optional<T>            opcionális mezők                             ❌ Nincs     🟠 Szükséges
-
-
-------------------------------------------------------------------------------------------------------------
-NEM KELL EGYELŐRE
-------------------------------------------------------------------------------------------------------------
-
-MetaValue köztes modell           Node -> MetaValue -> Objektum                ⏸ Nem kell
-
-ImportPlan                        Serializer fordítottja                       ⏸ Nem kell
-
-DiscoverTree()                    Materializerhez                             ⏸ Nem kell
-
-Domain materializerek             WorkSheetSummaryMaterializer stb.            ⏸ Nem kell
-
-Migráció                           Verzióváltás                               ⏸ Később
-
-Normalizáció                       Domain utófeldolgozás                       ⏸ Később
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Patch 1
-rbcsv_materializer.h
-
-Patch 2
 template<typename T>
-Materialize(...)
+T Materialize(
+    const RbCsvImportNode& node)
+{
+    T object;
 
-Patch 3
-MaterializeNode(...)
+    Materialize(
+        node,
+        object);
 
-Patch 4
-Meta field lookup
+    return object;
+}
 
-Patch 5
-String -> típus konverzió
+Elvárt teszt
+auto material =
+    Materialize<
+        WorkSheetMaterialInfo>(
+        materialNode);
 
-Patch 6
-Value field write
+Eredmény
+✅ első truly self-materializing API
 
-Patch 7
-WorkSheetMaterialInfo teszt
+3. Mérföldkő: Meta alapú composition felismerés
+Cél
 
-=== Első mérföldkő teljesítve ===
+A materializer felismerje:
+
+MetaFieldKind::Composition
+
+
+mezőket.
+
+Patch B1
+
+Új helper:
+
+bool IsComposition(
+    const MetaField& field);
+
+
+bár valójában:
+
+field.kind
+
+
+már tudja.
+
+Patch B2
+
+Materialize scalar mezők:
+
+most:
+
+for(field : meta.fieldsRef())
+
+
+↓
+
+szétválasztani:
+
+Value
+Composition
+
+
+ágakra.
+
+Elvárt állapot
+MetaFieldKind::Value
+
+
+továbbra is működik.
+
+MetaFieldKind::Composition
+
+
+még logol.
+
+4. Mérföldkő: Child lookup
+Cél
+
+Meta mezőnév
+
+↓
+
+ImportNode gyermek
+
+leképzés.
+
+Példa:
+
+materials
+
+
+↓
+
+node.children["materials"]
+
+Patch C1
+
+Új helper:
+
+const QList<RbCsvImportNode>*
+FindChildren(
+    const RbCsvImportNode& node,
+    const MetaField& field);
+
+Teszt
+field.name == "materials"
+
+
+↓
+
+6 child node
+
+5. Mérföldkő: Generikus objektumgyártás meta alapján
+
+Ez a projekt kulcspontja.
+
+Cél
+
+Ne legyen:
+
+Materialize<WorkSheetMaterialInfo>
+Materialize<WorkSheetOrderInfo>
+
+
+speciális kód.
+
+Ehhez kell:
+
+MetaRegistry
+
+
+amit tegnap végre értelmeztünk.
+
+Van:
+
+field.itemType
+
+
+és
+
+MetaRegistry::Find(...)
+
+
+De hiányzik:
+
+CreateInstance(type)
+
+Patch D1
+
+Meta rendszer bővítés
+
+Valamelyik új struktúra:
+
+struct IMetaFactory
+{
+    virtual void* Create() const = 0;
+};
+
+
+vagy
+
+template<typename T>
+struct MetaFactory
+
+Patch D2
+
+MetaRegistry
+
+ne csak:
+
+Find()
+
+
+tudjon,
+
+hanem:
+
+Create()
+
+
+is.
+
+Cél
+
+Ez működjön:
+
+field.itemType
+    ->
+WorkSheetMaterialInfo
+
+
+↓
+
+új példány.
+
+6. Mérföldkő: Collection materialization
+Cél
+
+Ez:
+
+QVector<WorkSheetMaterialInfo>
+
+
+automatikusan feltöltődjön.
+
+Patch E1
+
+Collection write API
+
+A jelenlegi meta rendszer tud olvasni:
+
+QListAccessor
+
+
+Nem tud írni.
+
+Új interfész:
+
+class ICollectionAccessor
+{
+public:
+
+    virtual void AppendDefault(
+        void* collection) const = 0;
+
+    virtual void* MutableItemAt(
+        void* collection,
+        int index) const = 0;
+};
+
+Patch E2
+
+QListAccessor bővítés
+
+list->append(T{});
+
+Patch E3
+
+Materializer:
+
+child node
+    ↓
+append
+    ↓
+MutableItemAt
+    ↓
+rekurzív Materialize
+
+7. Mérföldkő: Rekurzív composition materializer
+Cél
+
+Ez működjön:
+
+WorkSheetOrderInfo
+
+
+↓
+
+materials
+
+
+↓
+
+WorkSheetMaterialInfo
+
+Patch F1
+
+Új belső függvény:
+
+MaterializeNode(
+    node,
+    meta,
+    object);
+
+Patch F2
+
+Value ág
+
+(már kész)
+
+Patch F3
+
+Composition ág
+
+(új)
+
+8. Mérföldkő: WorkSheetOrderInfo
+Teszt
+auto order =
+    Materialize<
+        WorkSheetOrderInfo>(
+        orderNode);
+
+Elvárt
+externalReference
+ownerName
+quantity
+...
+materials[6]
+
+
+helyes.
+
+9. Mérföldkő: WorkSheetSummary
+Teszt
+auto summary =
+    Materialize<
+        WorkSheetSummary>(
+        rootNode);
+
+Elvárt
+filePath
+fileName
+fileHash
+presence
+
+orders[3]
+
+materials összesen:
+18
+
+Végső implementációs/patching terv
+PATCH A1
+Materialize<T>(node) overload
+
+PATCH B1
+Value/Composition ágak szétválasztása
+
+PATCH C1
+FindChildren()
+
+PATCH D1
+MetaFactory koncepció
+
+PATCH D2
+MetaRegistry Create()
+
+PATCH E1
+ICollectionAccessor író API
+
+PATCH E2
+QListAccessor append + mutable access
+
+PATCH F1
+Rekurzív MaterializeNode()
+
+PATCH F2
+Collection materialization
+
+PATCH F3
+WorkSheetOrderInfo teszt
+
+PATCH F4
+WorkSheetSummary teszt
+
+PATCH F5
+WorkSheetSummaryRepository::loadFromFile
+    rootNode
+        ->
+    Materialize<WorkSheetSummary>()
+        ->
+    registry.registerData()
+
+=== MATERIALIZER MILESTONE COMPLETE ===
+
+
+Szerintem a legnagyobb tervezési kockázatot már tegnap és ma megoldottuk: a MetaField::SetValue() + csvBinding->fromCsv() irány működik. Innen már nagyrészt infrastruktúra-építés van hátra, nem alapelvi bizonytalanság. 🚀
+
+
