@@ -1,0 +1,27 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"2853";"Magyari Attila";1100;1600;1065;;1;0;1;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2853";"Magyari Attila";1100;1600;1055;;1;0;1;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2854";"Magyari Attila";1100;1600;1065;;1;1;0;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2854";"Magyari Attila";1100;1600;1055;;1;1;0;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2855";"Magyari Attila";1150;1600;1115;;1;0;1;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2855";"Magyari Attila";1150;1600;1105;;1;0;1;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2856";"Magyari Attila";2600;1600;2565;;1;0;1;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2856";"Magyari Attila";2600;1600;2555;;1;0;1;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2857";"Magyari Attila";2650;1600;2615;;1;0;1;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2857";"Magyari Attila";2650;1600;2605;;1;0;1;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2858";"Magyari Attila";2650;1600;2615;;1;1;0;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2858";"Magyari Attila";2650;1600;2605;;1;1;0;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2859";"Magyari Attila";2700;1600;2665;;1;0;1;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2859";"Magyari Attila";2700;1600;2655;;1;0;1;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2860";"Magyari Attila";2700;1600;2665;;1;1;0;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2860";"Magyari Attila";2700;1600;2655;;1;1;0;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2861";"Magyari Attila";2850;1600;2815;;1;1;0;"";TE-B-47;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2861";"Magyari Attila";2850;1600;2805;;1;1;0;"";ROL-EZ;Width;false;2026.12.04;ROL;MAXI;;SM;Gyartasi;UNKNOWN
+"2867";"HorizontRollo, Eger";1500;2800;1470;;1;0;1;"";TE-S-36;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2867";"HorizontRollo, Eger";1500;2800;1460;;1;0;1;"";ROL-GYZ;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2868";"HorizontRollo, Eger";1500;2800;1470;;1;0;1;"";TE-S-36;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2868";"HorizontRollo, Eger";1500;2800;1460;;1;0;1;"";ROL-GYZ;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2869";"HorizontRollo, Eger";1070;2400;1040;;1;0;1;"";TE-S-36;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2869";"HorizontRollo, Eger";1070;2400;1030;;1;0;1;"";ROL-GYZ;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2870";"HorizontRollo, Eger";1040;2400;1010;;1;1;0;"";TE-S-36;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN
+"2870";"HorizontRollo, Eger";1040;2400;1000;;1;1;0;"";ROL-GYZ;Width;false;2026.12.02;ROL;ER;;SM;Gyartasi;UNKNOWN

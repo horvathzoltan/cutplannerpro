@@ -1,0 +1,33 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"991";"Nistor Egon";720;1000;704;;2;1;1;"";SR-FSN;Width;false;2026.11.30;SR;TN;;SM;Gyartasi;UNKNOWN
+"991";"Nistor Egon";720;1000;687;;2;1;1;"";TE-H-32;Width;false;2026.11.30;SR;TN;;SM;Gyartasi;UNKNOWN
+"991";"Nistor Egon";720;1000;690;;2;1;1;"";SR-Z;Width;false;2026.11.30;SR;TN;;SM;Gyartasi;UNKNOWN
+"991";"Nistor Egon";720;1000;690;;2;1;1;"";SR-P-3000;Width;false;2026.11.30;SR;TN;;SM;Gyartasi;UNKNOWN
+"994";"Driszku Zs.";550;600;544;;1;0;1;"";SR-T;Width;false;2026.11.30;SR;T;;SM;Gyartasi;UNKNOWN
+"994";"Driszku Zs.";550;600;527;;1;0;1;"";TE-H-32;Width;false;2026.11.30;SR;T;;SM;Gyartasi;UNKNOWN
+"994";"Driszku Zs.";550;600;530;;1;0;1;"";SR-Z;Width;false;2026.11.30;SR;T;;SM;Gyartasi;UNKNOWN
+"994";"Driszku Zs.";550;600;530;;1;0;1;"";SR-P-3000;Width;false;2026.11.30;SR;T;;SM;Gyartasi;UNKNOWN
+"997";"Kiss Krisztián";1550;1700;1544;;1;0;0;"";SR-T;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"997";"Kiss Krisztián";1550;1700;1527;;1;0;0;"";TE-H-32;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"997";"Kiss Krisztián";1550;1700;1530;;1;0;0;"";SR-Z;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"997";"Kiss Krisztián";1550;1700;1530;;1;0;0;"";SR-P-3000;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"998";"Kiss Krisztián";1600;1700;1594;;1;0;0;"";SR-T;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"998";"Kiss Krisztián";1600;1700;1577;;1;0;0;"";TE-H-32;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"998";"Kiss Krisztián";1600;1700;1580;;1;0;0;"";SR-Z;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"998";"Kiss Krisztián";1600;1700;1580;;1;0;0;"";SR-P-3000;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"999";"Kiss Krisztián";2480;1700;2474;;1;0;0;"";SR-T;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"999";"Kiss Krisztián";2480;1700;2457;;1;0;0;"";TE-H-32;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"999";"Kiss Krisztián";2480;1700;2460;;1;0;0;"";SR-Z;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"999";"Kiss Krisztián";2480;1700;2460;;1;0;0;"";SR-P-3000;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1002";"Szűcs K.";1150;1260;1144;;1;0;1;"";SR-T;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1002";"Szűcs K.";1150;1260;1127;;1;0;1;"";TE-H-32;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1002";"Szűcs K.";1150;1260;1130;;1;0;1;"";SR-Z;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1002";"Szűcs K.";1150;1260;1130;;1;0;1;"";SR-P-3000;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1003";"Szűcs K.";930;1070;924;;1;0;1;"";SR-T;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1003";"Szűcs K.";930;1070;907;;1;0;1;"";TE-H-32;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1003";"Szűcs K.";930;1070;910;;1;0;1;"";SR-Z;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1003";"Szűcs K.";930;1070;910;;1;0;1;"";SR-P-3000;Width;false;2026.12.03;SR;T;;SM;Gyartasi;UNKNOWN
+"1006";"Bobály András, Bcs";520;1500;530;;1;1;0;"";MT-T;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"1006";"Bobály András, Bcs";520;1500;525;;1;1;0;"";TE-H-18;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"1006";"Bobály András, Bcs";520;1500;513;;1;1;0;"";MT-Z+P;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
+"1006";"Bobály András, Bcs";520;1500;1500;;1;1;0;"";MT-L2;Width;false;2026.12.01;SR;MINIT;;SM;Uveg;UNKNOWN
