@@ -311,7 +311,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V3(const QVector<QString
 
     // dueDate
     QString dueStr = parts[14].trimmed();
-    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+    QDate d = QDate::fromString(dueStr, "yyyy.MM.dd");
     row.dueDate = d.isValid() ? d : QDate::currentDate();
 
     return row;
@@ -344,7 +344,7 @@ CuttingRequestRepository::convertRowToCuttingRequestRow_V4(const QVector<QString
     row.isMeasurementNeeded = (parts[12].trimmed().toLower() == "true");
 
     QString dueStr = parts[13].trimmed();
-    QDate d = QDate::fromString(dueStr, "yyyy-MM-dd");
+    QDate d = QDate::fromString(dueStr, "yyyy.MM.dd");
     row.dueDate = d.isValid() ? d : QDate::currentDate();
 
     row.typeCode    = parts[14].trimmed();
