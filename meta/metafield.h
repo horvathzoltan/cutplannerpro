@@ -125,4 +125,71 @@ public:
 
     }
 
+
+    bool SetValue(
+        char* object,
+        const QVariant& value) const
+    {
+        char* ptr =
+            GetPtr(object);
+
+        if(adapters.csvBinding)
+        {
+            QString text =
+                value.toString();
+
+            return
+                adapters.csvBinding
+                    ->fromCsv(
+                        text,
+                        ptr);
+        }
+
+        if(type.id() == QMetaType::QVariant)
+        {
+            zError(
+                QString(
+                    "SetValue QVariant field not supported: %1")
+                    .arg(name));
+
+            return false;
+        }
+
+        const QMetaType sourceType =
+            value.metaType();
+
+        if(!QMetaType::canConvert(
+                sourceType,
+                type))
+        {
+            zWarning(
+                QString(
+                    "No converter from %1 to %2 field=%3")
+                    .arg(sourceType.name())
+                    .arg(type.name())
+                    .arg(name));
+
+            return false;
+        }
+
+        bool ok =
+            QMetaType::convert(
+                sourceType,
+                value.constData(),
+                type,
+                ptr);
+
+        if(!ok)
+        {
+            zWarning(
+                QString(
+                    "Convert failed from %1 to %2 field=%3")
+                    .arg(sourceType.name())
+                    .arg(type.name())
+                    .arg(name));
+        }
+
+        return ok;
+    }
+
 };

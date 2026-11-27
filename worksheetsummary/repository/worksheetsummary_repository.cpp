@@ -2,6 +2,8 @@
 
 #include "common/filehelper.h"
 #include "common/logger.h"
+#include "rbcsv/import/rbcsv_materializer.h"
+#include "rbcsv/import/rbcsv_metavalueadapter.h"
 #include "rbcsv/model/rbcsv_document.h"
 
 #include <QFile>
@@ -417,9 +419,90 @@ bool WorkSheetSummaryRepository::loadFromFile(
 
         zInfo(doc.ToString());
 
+
+
+
+        if(!doc.data.isEmpty())
+        {
+
+            zInfo("WorkSheetSummaryRepository::loadFromFile Materialize");
+            zInfo("\n***\n***\n***");
+
+            const auto& root = doc.data.last();
+
+            auto ordersIt =
+                root.children.find("orders");
+
+            if(ordersIt != root.children.end()
+                && !ordersIt->isEmpty())
+            {
+                const auto& firstOrder =
+                    ordersIt->first();
+
+                auto materialsIt =
+                    firstOrder.children.find(
+                        "materials");
+
+                if(materialsIt != firstOrder.children.end()
+                    && !materialsIt->isEmpty())
+                {
+                    const auto& materialNode =
+                        materialsIt->first();
+
+                    zInfo("\n=== MATERIAL NODE TEST ===");
+
+                    auto values =
+                        NodeToMetaValues(
+                            materialNode);
+
+                    for(const auto& v : values)
+                    {
+                        zInfo(
+                            QString("%1=%2 (%3)")
+                                .arg(v.metaField_name)
+                                .arg(v.value.toString())
+                                .arg(v.value.metaType().name()));
+                    }
+
+                    WorkSheetMaterialInfo material;
+
+                    bool ok = Materialize(materialNode,material);
+
+                    zInfo(
+                        QString(
+                            "Materialize result=%1")
+                            .arg(ok));
+
+                    zInfo(
+                        QString(
+                            "Materialized length=%1")
+                            .arg(
+                                material.cutLengthMm));
+
+                    const MaterialMaster* mat = MaterialRegistry::instance().findById(material.materialId);
+                    auto msg = mat?mat->toReportLabel():"<unknown material>";
+
+
+                    zInfo(
+                        QString(
+                            "Materialized materialId=%1 \n%2")
+                            .arg(material.materialId.toString())
+                            .arg(msg)
+                        );
+
+
+
+                }
+            }
+        }
+
         zInfo("WorkSheetSummaryRepository::loadFromFile END");
         zInfo("\n***\n***\n***");
+
     }
+
+
+
     return false;
 }
 
