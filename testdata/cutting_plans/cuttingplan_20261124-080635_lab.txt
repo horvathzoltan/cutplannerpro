@@ -1,0 +1,8 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"597";"T-Delux";3495;2175;2072;;1;1;0;"RAL 8019";NP-CL2+CLT2+CLBR2-7016;Width;false;2026.12.04;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"600";"Délroll, Szeged";2890;2820;2717;;1;1;0;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"601";"Délroll, Szeged";1930;2820;2717;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"604";"Neva-Tech, Szeged";3450;1940;1837;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"605";"Neva-Tech, Szeged";3450;1940;1837;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"606";"Neva-Tech, Szeged";3450;1940;1837;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN
+"607";"Neva-Tech, Szeged";3450;1940;1837;;1;0;1;"RAL 1015";NP-CL2+CLT2+CLBR2-9010;Width;false;2026.12.02;NP;CIP;meghajtas=motoros;SM;Gyartasi;UNKNOWN

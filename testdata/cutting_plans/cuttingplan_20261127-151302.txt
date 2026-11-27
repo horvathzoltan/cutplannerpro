@@ -1,0 +1,5 @@
+externalReference;ownerName;fullWidth_mm;fullHeight_mm;requiredLength;tolerance;quantity;leftCount;rightCount;requiredColorName;materialBarCode;relevantDim;isMeasurementNeeded;dueDate;typeCode;subtypeCode;attributes;surface;calcMode;requestState
+"1006_2";"Bob";520;1500;485;;1;1;0;"";MT-T;Width;false;2026.12.01;SR;MINIT;;SM;Gyartasi;UNKNOWN
+"1006_2";"Bob";520;1500;480;;1;1;0;"";TE-H-18;Width;false;2026.12.01;SR;MINIT;;SM;Gyartasi;UNKNOWN
+"1006_2";"Bob";520;1500;467;;1;1;0;"";MT-Z+P;Width;false;2026.12.01;SR;MINIT;;SM;Gyartasi;UNKNOWN
+"1006_2";"Bob";520;1500;1500;;1;1;0;"";MT-L2;Width;false;2026.12.01;SR;MINIT;;SM;Gyartasi;UNKNOWN
